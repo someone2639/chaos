@@ -15,14 +15,14 @@
 .word  0x00000000               /* Unknown */
 .word  0x00000000               /* Unknown */
 .ascii INTERNAL_ROM_NAME   /* Internal ROM name */
-#if defined(EMU_DEFAULT_TO_GCN)
+#if defined(USE_GAMECUBE_CONTROLLER)
 /* Advanced homebrew ROM header bytes: https://n64brew.dev/wiki/ROM_Header#Advanced_Homebrew_ROM_Header */
 .word  0x82000000
 #else
 .word  0x00000000               /* Unknown */
 #endif
 .word  0x0000004E               /* Cartridge */
-#if defined(EEP4K) && !defined(EMU_DEFAULT_TO_GCN)
+#if defined(EEP4K) && !defined(USE_GAMECUBE_CONTROLLER)
 .ascii "SM"                     /* Cartridge ID */
 #else
 .ascii "ED"                     /* Cartridge ID */
@@ -35,7 +35,9 @@
     .ascii "E"                  /* NTSC-U (North America) */
 #endif
 
-#if defined(SRAM)
+#if defined(EEP4K) && !defined(USE_GAMECUBE_CONTROLLER)
+    .byte  0x00                 /* Version */
+#elif defined(SRAM)
     .byte  0x32                 /* Version */
 #elif defined(EEP16K)
     .byte  0x22                 /* Version */

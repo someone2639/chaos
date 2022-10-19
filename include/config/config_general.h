@@ -32,3 +32,8 @@
  * Can exit course in all situations (assumes DISABLE_EXIT_COURSE is not being used).
  */
 #define ALWAYS_EXIT_COURSE
+
+/**
+ * Informs supported emulators to default to gamecube controller inputs
+ */
+// #define USE_GAMECUBE_CONTROLLER

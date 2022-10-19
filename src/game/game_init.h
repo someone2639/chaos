@@ -30,7 +30,7 @@ struct DemoInput {
 
 extern struct Controller gControllers[3];
 extern OSContStatus gControllerStatuses[4];
-extern OSContPad gControllerPads[4];
+extern OSContPadEx gControllerPads[4];
 extern OSMesgQueue gGameVblankQueue;
 extern OSMesgQueue gGfxVblankQueue;
 extern OSMesg gGameMesgBuf[1];
@@ -45,6 +45,7 @@ extern Gfx *gDisplayListHead;
 extern u8 *gGfxPoolEnd;
 extern struct GfxPool *gGfxPool;
 extern u8 gControllerBits;
+extern s8 gGamecubeControllerPort;
 extern u8 gBorderHeight;
 #ifdef EEP
 extern s8 gEepromProbe;
