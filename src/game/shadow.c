@@ -358,8 +358,7 @@ void get_vertex_coords(s8 index, s8 shadowVertexType, s8 *xCoord, s8 *zCoord) {
  * vertex and 4 vertex cases are identical, and the above-described clamping
  * behavior is overwritten.
  */
-void calculate_vertex_xyz(struct Shadow s, f32 *xPosVtx, f32 *yPosVtx, f32 *zPosVtx,
-                          f32 floorHeight, s8 shadowVertexType, s8 index) {
+void calculate_vertex_xyz(struct Shadow s, f32 *xPosVtx, f32 *yPosVtx, f32 *zPosVtx, s8 shadowVertexType, s8 index) {
     f32 tiltedScale = cosf(s.floorTilt * (f32) M_PI / 180.0f) * s.shadowScale;
     f32 downwardAngle = s.floorDownwardAngle * (f32) M_PI / 180.0f;
     f32 halfScale;
@@ -388,7 +387,7 @@ void calculate_vertex_xyz(struct Shadow s, f32 *xPosVtx, f32 *yPosVtx, f32 *zPos
                 // Clamp this vertex's y-position to that of the floor directly
                 // below it, which may differ from the floor below the center
                 // vertex.
-                *yPosVtx = floorHeight;
+                *yPosVtx = find_floor_height(*xPosVtx, s.parentY, *zPosVtx);
                 break;
             case SHADOW_WITH_4_VERTS:
                 // Do not clamp. Instead, extrapolate the y-position of this
@@ -423,7 +422,7 @@ s16 floor_local_tilt(struct Shadow s, f32 vtxX, f32 vtxY, f32 vtxZ) {
 /**
  * Make a particular vertex from a shadow, calculating its position and solidity.
  */
-void make_shadow_vertex(Vtx *vertices, struct Shadow s, f32 floorHeight, s8 index, s8 shadowVertexType) {
+void make_shadow_vertex(Vtx *vertices, struct Shadow s, s8 index, s8 shadowVertexType) {
     f32 xPosVtx, yPosVtx, zPosVtx;
     f32 relX, relY, relZ;
 
@@ -432,7 +431,7 @@ void make_shadow_vertex(Vtx *vertices, struct Shadow s, f32 floorHeight, s8 inde
         solidity = 200;
     }
 
-    calculate_vertex_xyz(s, &xPosVtx, &yPosVtx, &zPosVtx, floorHeight, shadowVertexType, index);
+    calculate_vertex_xyz(s, &xPosVtx, &yPosVtx, &zPosVtx, shadowVertexType, index);
 
     /**
      * This is the hack that makes "SHADOW_WITH_9_VERTS" act identically to
@@ -635,7 +634,7 @@ Gfx *create_shadow_player(struct Surface *floor, f32 xPos, f32 yPos, f32 zPos, f
     correct_lava_shadow_height(&shadow);
 
     for (i = 0; i < 9; i++) {
-        make_shadow_vertex(verts, shadow, floorHeight, i, SHADOW_WITH_9_VERTS);
+        make_shadow_vertex(verts, shadow, i, SHADOW_WITH_9_VERTS);
     }
     add_shadow_to_display_list(displayList, verts, SHADOW_WITH_9_VERTS, SHADOW_SHAPE_CIRCLE);
     return displayList;
@@ -661,7 +660,7 @@ Gfx *create_shadow_circle_9_verts(struct Surface *floor, f32 xPos, f32 yPos, f32
         return 0;
     }
     for (i = 0; i < 9; i++) {
-        make_shadow_vertex(verts, shadow, floorHeight, i, SHADOW_WITH_9_VERTS);
+        make_shadow_vertex(verts, shadow, i, SHADOW_WITH_9_VERTS);
     }
     add_shadow_to_display_list(displayList, verts, SHADOW_WITH_9_VERTS, SHADOW_SHAPE_CIRCLE);
     return displayList;
@@ -688,7 +687,7 @@ Gfx *create_shadow_circle_4_verts(struct Surface *floor, f32 xPos, f32 yPos, f32
     }
 
     for (i = 0; i < 4; i++) {
-        make_shadow_vertex(verts, shadow, floorHeight, i, SHADOW_WITH_4_VERTS);
+        make_shadow_vertex(verts, shadow, i, SHADOW_WITH_4_VERTS);
     }
     add_shadow_to_display_list(displayList, verts, SHADOW_WITH_4_VERTS, SHADOW_SHAPE_CIRCLE);
     return displayList;
