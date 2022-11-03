@@ -6,6 +6,7 @@
 #include "behavior_actions.h"
 #include "behavior_data.h"
 #include "camera.h"
+#include "emutest.h"
 #include "engine/graph_node.h"
 #include "engine/math_util.h"
 #include "engine/surface_collision.h"
@@ -1883,7 +1884,7 @@ void init_mario_from_save_file(void) {
     gMarioState->statusForCamera = &gPlayerCameraState[0];
     gMarioState->marioBodyState = &gBodyStates[0];
     gMarioState->animList = &gMarioAnimsBuf;
-    if (gIsConsole && __osControllerTypes[1] == CONT_TYPE_GCN) {
+    if ((gEmulator & EMU_CONSOLE) && __osControllerTypes[1] == CONT_TYPE_GCN) {
         gMarioState->controller = &gControllers[1];
     } else {
         gMarioState->controller = &gControllers[0];
