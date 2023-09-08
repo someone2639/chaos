@@ -43,11 +43,21 @@ const LevelScript level_intro_splash_screen[] = {
     EXIT_AND_EXECUTE(/*seg*/ 0x14, _introSegmentRomStart, _introSegmentRomEnd, level_intro_mario_head_regular),
 };
 
+#ifdef DEBUG_LEVEL_SELECT
+const LevelScript level_intro_mario_head_jump_to_level_select[] = {
+    EXIT_AND_EXECUTE(/*seg*/ 0x14, _introSegmentRomStart, _introSegmentRomEnd, level_intro_entry_4),
+};
+#endif
+
 const LevelScript level_intro_mario_head_regular[] = {
-    INIT_LEVEL(),
 #ifndef GODDARD
+#ifdef DEBUG_LEVEL_SELECT
+    CALL(/*arg*/ 0, /*func*/ check_holding_l),
+    JUMP_IF(/*op*/ OP_EQ, /*arg*/ TRUE, level_intro_mario_head_jump_to_level_select),
+#endif
     EXIT_AND_EXECUTE(/*seg*/ 0x14, _menuSegmentRomStart, _menuSegmentRomEnd, level_main_menu_entry_1),
 #endif
+    INIT_LEVEL(),
     BLACKOUT(/*active*/ TRUE),
     FIXED_LOAD(/*loadAddr*/ _goddardSegmentStart, /*romStart*/ _goddardSegmentRomStart, /*romEnd*/ _goddardSegmentRomEnd),
 #ifdef GODDARD
@@ -68,8 +78,8 @@ const LevelScript level_intro_mario_head_regular[] = {
     TRANSITION(/*transType*/ WARP_TRANSITION_FADE_FROM_STAR, /*time*/ 20, /*color*/ 0x00, 0x00, 0x00),
     SLEEP(/*frames*/ 20),
     CALL_LOOP(/*arg*/ LVL_INTRO_REGULAR, /*func*/ lvl_intro_update),
-    JUMP_IF(/*op*/ OP_EQ, /*arg*/ 100, script_intro_L1),
-    JUMP_IF(/*op*/ OP_EQ, /*arg*/ 101, script_intro_L2),
+    JUMP_IF(/*op*/ OP_EQ, /*arg*/ LEVEL_FILE_SELECT, script_intro_L1),
+    JUMP_IF(/*op*/ OP_EQ, /*arg*/ LEVEL_LEVEL_SELECT, script_intro_L2),
     JUMP(script_intro_L4),
 };
 
@@ -95,8 +105,8 @@ const LevelScript level_intro_mario_head_dizzy[] = {
     TRANSITION(/*transType*/ WARP_TRANSITION_FADE_FROM_STAR, /*time*/ 20, /*color*/ 0x00, 0x00, 0x00),
     SLEEP(/*frames*/ 20),
     CALL_LOOP(/*arg*/ LVL_INTRO_GAME_OVER, /*func*/ lvl_intro_update),
-    JUMP_IF(/*op*/ OP_EQ, /*arg*/ 100, script_intro_L1),
-    JUMP_IF(/*op*/ OP_EQ, /*arg*/ 101, script_intro_L2),
+    JUMP_IF(/*op*/ OP_EQ, /*arg*/ LEVEL_FILE_SELECT, script_intro_L1),
+    JUMP_IF(/*op*/ OP_EQ, /*arg*/ LEVEL_LEVEL_SELECT, script_intro_L2),
     JUMP(script_intro_L4),
 };
 
@@ -116,6 +126,8 @@ const LevelScript level_intro_entry_4[] = {
     SET_MENU_MUSIC(/*seq*/ SEQ_MENU_TITLE_SCREEN),
     TRANSITION(/*transType*/ WARP_TRANSITION_FADE_FROM_COLOR, /*time*/ 16, /*color*/ 0xFF, 0xFF, 0xFF),
     SLEEP(/*frames*/ 16),
+    SET_REG(/*value*/ 1),
+    GET_OR_SET(/*op*/ OP_SET, /*var*/ VAR_CURR_SAVE_FILE_NUM),
     CALL_LOOP(/*arg*/ LVL_INTRO_LEVEL_SELECT, /*func*/ lvl_intro_update),
     JUMP_IF(/*op*/ OP_EQ, /*arg*/ -1, script_intro_L5),
     JUMP(script_intro_L3),

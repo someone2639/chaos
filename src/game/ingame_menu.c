@@ -39,6 +39,11 @@ s16 gDialogY;
 s16 gCutsceneMsgXOffset;
 s16 gCutsceneMsgYOffset;
 s8 gRedCoinsCollected;
+#ifdef WIDE
+u8 textCurrRatio43[] = { TEXT_HUD_CURRENT_RATIO_43 };
+u8 textCurrRatio169[] = { TEXT_HUD_CURRENT_RATIO_169 };
+u8 textPressL[] = { TEXT_HUD_PRESS_L };
+#endif
 
 extern u8 gLastCompletedCourseNum;
 extern u8 gLastCompletedStarNum;
@@ -378,6 +383,10 @@ void print_generic_string(s16 x, s16 y, const u8 *str) {
     s16 xCoord = x;
     s16 yCoord = 240 - y;
 #endif
+    s16 colorLoop;
+    u8 rgbaColors[4] = { 0x00, 0x00, 0x00, 0x00 };
+    u8 customColor = 0;
+    u8 diffTmp     = 0;
 
 #ifndef VERSION_EU
     create_dl_translation_matrix(MENU_MTX_PUSH, x, y, 0.0f);
@@ -385,6 +394,44 @@ void print_generic_string(s16 x, s16 y, const u8 *str) {
 
     while (str[strPos] != DIALOG_CHAR_TERMINATOR) {
         switch (str[strPos]) {
+            case DIALOG_CHAR_COLOR:
+                customColor = 1;
+                strPos++;
+                for (colorLoop = (strPos + 8); strPos < colorLoop; ++strPos) {
+                    diffTmp = 0;
+                    if ((str[strPos] >= 0x24)
+                     && (str[strPos] <= 0x29)) {
+                        diffTmp = 0x1A;
+                    } else if (str[strPos] >= 0x10) {
+                        customColor = 2;
+                        strPos = (colorLoop - 8);
+                        for (diffTmp = 0; diffTmp < 8; ++diffTmp) {
+                            if (str[strPos + diffTmp] != 0x9F) {
+                                break;
+                            }
+                        }
+                        if (diffTmp == 8) {
+                            strPos += diffTmp;
+                        }
+                        break;
+                    }
+                    if (((8 - (colorLoop - strPos)) % 2) == 0) {
+                        rgbaColors[(8 - (colorLoop - strPos)) / 2] = (((str[strPos] - diffTmp) & 0x0F) << 4);
+                    } else {
+                        rgbaColors[(8 - (colorLoop - strPos)) / 2] += ((str[strPos] - diffTmp) & 0x0F);
+                    }
+                }
+                strPos--;
+                if (customColor == 1) {
+                    gDPSetEnvColor(gDisplayListHead++, rgbaColors[0],
+                                                    rgbaColors[1],
+                                                    rgbaColors[2],
+                                                    rgbaColors[3]);
+                } else if (customColor == 2) {
+                    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 255);
+                    customColor = 0;
+                }
+                break;
 #ifdef VERSION_EU
             case DIALOG_CHAR_SPACE:
                 xCoord += 5;
@@ -971,7 +1018,7 @@ void render_dialog_box_type(struct DialogEntry *dialog, s8 linesPerBox) {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
-void change_and_flash_dialog_text_color_lines(s8 colorMode, s8 lineNum) {
+void change_and_flash_dialog_text_color_lines(s8 colorMode, s8 lineNum, u8 *customColor) {
     u8 colorFade;
 
     if (colorMode == 1) {
@@ -988,6 +1035,10 @@ void change_and_flash_dialog_text_color_lines(s8 colorMode, s8 lineNum) {
     } else {
         switch (gDialogBoxType) {
             case DIALOG_TYPE_ROTATE:
+                if (*customColor == 2) {
+                    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 255);
+                    *customColor = 0;
+                }
                 break;
             case DIALOG_TYPE_ZOOM:
                 gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 255);
@@ -1194,6 +1245,10 @@ void handle_dialog_text_and_pages(s8 colorMode, struct DialogEntry *dialog, s8 l
     s16 startY = 14;
 #endif
     u8 strChar;
+    u8 rgbaColors[4] = { 0x00, 0x00, 0x00, 0x00 };
+    u8 customColor = 0;
+    u8 diffTmp = 0;
+    s16 colorLoop;
     u8 *str = segmented_to_virtual(dialog->str);
     s8 lineNum = 1;
     s8 totalLines;
@@ -1236,7 +1291,12 @@ void handle_dialog_text_and_pages(s8 colorMode, struct DialogEntry *dialog, s8 l
 #endif
 
     while (pageState == DIALOG_PAGE_STATE_NONE) {
-        change_and_flash_dialog_text_color_lines(colorMode, lineNum);
+        // Can this be moved to only happen pre-loop or inside DIALOG_CHAR_TERMINATOR? Seems likely but not willing to risk visual glitchiness.
+        if (customColor == 1) {
+            gDPSetEnvColor(gDisplayListHead++, rgbaColors[0], rgbaColors[1], rgbaColors[2], rgbaColors[3]);
+        } else {
+            change_and_flash_dialog_text_color_lines(colorMode, lineNum, &customColor);
+        }
         strChar = str[strIdx];
 
         switch (strChar) {
@@ -1245,6 +1305,35 @@ void handle_dialog_text_and_pages(s8 colorMode, struct DialogEntry *dialog, s8 l
 #ifndef VERSION_EU
                 gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 #endif
+                break;
+            case DIALOG_CHAR_COLOR:
+                // Not the most elegant code but it'll have to do for now.
+                customColor = 1;
+                strIdx++;
+                for (colorLoop = (strIdx + 8); strIdx < colorLoop; ++strIdx) {
+                    diffTmp = 0;
+                    if ((str[strIdx] >= 0x24) && (str[strIdx] <= 0x29)) {
+                        diffTmp = 0x1A;
+                    } else if (str[strIdx] >= 0x10) {
+                        customColor = 2;
+                        strIdx = (colorLoop - 8);
+                        for (diffTmp = 0; diffTmp < 8; ++diffTmp) {
+                            if (str[strIdx + diffTmp] != 0x9F) {
+                                break;
+                            }
+                        }
+                        if (diffTmp == 8) {
+                            strIdx += diffTmp;
+                        }
+                        break;
+                    }
+                    if (((8 - (colorLoop - strIdx)) % 2) == 0) {
+                        rgbaColors[(8 - (colorLoop - strIdx)) / 2] = (((str[strIdx] - diffTmp) & 0x0F) << 4);
+                    } else {
+                        rgbaColors[(8 - (colorLoop - strIdx)) / 2] += ((str[strIdx] - diffTmp) & 0x0F);
+                    }
+                }
+                strIdx--;
                 break;
             case DIALOG_CHAR_NEWLINE:
                 lineNum++;
@@ -2168,6 +2257,25 @@ void render_pause_red_coins(void) {
     }
 }
 
+#ifdef WIDE
+void render_widescreen_setting(void) {
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
+    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
+    if (!widescreenConfig) {
+        print_generic_string(10, 20, textCurrRatio43);
+        print_generic_string(10,  7, textPressL);
+    } else {
+        print_generic_string(10, 20, textCurrRatio169);
+        print_generic_string(10,  7, textPressL);
+    }
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
+    if (gPlayer1Controller->buttonPressed & L_TRIG){
+        widescreenConfig ^= 1;
+        save_file_set_widescreen_mode(widescreenConfig);
+    }
+}
+#endif
+
 #ifdef VERSION_EU
 u8 gTextCourse[][7] = {
     { TEXT_COURSE },
@@ -2626,9 +2734,15 @@ s16 render_pause_courses_and_castle(void) {
             render_pause_my_score_coins();
             render_pause_red_coins();
 
+#ifndef DISABLE_EXIT_COURSE
+#ifdef ALWAYS_EXIT_COURSE
+            render_pause_course_options(99, 93, &gDialogLineNum, 15);
+#else
             if (gMarioStates[0].action & ACT_FLAG_PAUSE_EXIT) {
                 render_pause_course_options(99, 93, &gDialogLineNum, 15);
             }
+#endif
+#endif
 
 #ifdef VERSION_EU
             if (gPlayer3Controller->buttonPressed & (A_BUTTON | Z_TRIG | START_BUTTON))
@@ -2674,7 +2788,9 @@ s16 render_pause_courses_and_castle(void) {
             }
             break;
     }
-
+#ifdef WIDE
+        render_widescreen_setting();
+#endif
     if (gDialogTextAlpha < 250) {
         gDialogTextAlpha += 25;
     }
@@ -2762,10 +2878,12 @@ void print_hud_course_complete_coins(s16 x, s16 y) {
             gCourseCompleteCoins++;
             play_sound(SOUND_MENU_YOSHI_GAIN_LIVES, gGlobalSoundSource);
 
+#ifndef DISABLE_LIVES
             if (gCourseCompleteCoins == 50 || gCourseCompleteCoins == 100 || gCourseCompleteCoins == 150) {
                 play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
                 gMarioState->numLives++;
             }
+#endif
         }
 
         if (gHudDisplay.coins == gCourseCompleteCoins && gGotFileCoinHiScore) {

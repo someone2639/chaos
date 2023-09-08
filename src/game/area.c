@@ -22,6 +22,7 @@
 #include "save_file.h"
 #include "level_table.h"
 #include "dialog_ids.h"
+#include "profiling.h"
 
 struct SpawnInfo gPlayerSpawnInfos[1];
 struct GraphNode *D_8033A160[0x100];
@@ -414,4 +415,7 @@ void render_game(void) {
 
     D_8032CE74 = NULL;
     D_8032CE78 = NULL;
+    
+    profiler_update(PROFILER_TIME_GFX);
+    profiler_print_times();
 }

@@ -534,17 +534,23 @@ s32 act_reading_sign(struct MarioState *m) {
 }
 
 s32 act_debug_free_move(struct MarioState *m) {
-    struct Surface *surf;
-    f32 floorHeight;
+    struct Surface *wall;
+    struct Surface *floor, *ceil;
+    f32 floorHeight, ceilHeight;
     Vec3f pos;
     f32 speed;
-    u32 action;
+
+    if (gPlayer1Controller->buttonPressed & L_TRIG) {
+        m->health = 0x880;
+    }
 
     // integer immediates, generates convert instructions for some reason
-    speed = gPlayer1Controller->buttonDown & B_BUTTON ? 4 : 1;
-    if (gPlayer1Controller->buttonDown & L_TRIG) {
+    speed = (gPlayer1Controller->buttonDown & B_BUTTON) ? 4.0f : 1.0f;
+    if (gPlayer1Controller->buttonDown & Z_TRIG)
         speed = 0.01f;
-    }
+
+    // if (m->area->camera->mode != CAMERA_MODE_8_DIRECTIONS)
+    //     set_camera_mode(m->area->camera, CAMERA_MODE_8_DIRECTIONS, 1);
 
     set_mario_animation(m, MARIO_ANIM_A_POSE);
     vec3f_copy(pos, m->pos);
@@ -556,17 +562,46 @@ s32 act_debug_free_move(struct MarioState *m) {
         pos[1] -= 16.0f * speed;
     }
 
-    if (m->intendedMag > 0) {
-        pos[0] += 32.0f * speed * sins(m->intendedYaw);
-        pos[2] += 32.0f * speed * coss(m->intendedYaw);
+    if (gPlayer1Controller->buttonPressed & A_BUTTON) {
+        vec3f_set(m->vel, 0.0f, 0.0f, 0.0f);
+        m->forwardVel = 0.0f;
+
+        set_camera_mode(m->area->camera, m->area->camera->defMode, 1);
+        m->input &= ~INPUT_A_PRESSED;
+        if (m->pos[1] <= (m->waterLevel - 100)) {
+            return set_mario_action(m, ACT_WATER_IDLE, 0);
+        } else if (m->pos[1] <= m->floorHeight) {
+            return set_mario_action(m, ACT_IDLE, 0);
+        } else {
+            // slight upwards boost to get you some hover time
+            m->vel[1] = 20.0f;
+            gPlayer1Controller->buttonDown &= ~U_JPAD;
+            return set_mario_action(m, ACT_FREEFALL, 0);
+        }
     }
 
-    resolve_and_return_wall_collisions(pos, 60.0f, 50.0f);
+    if (m->intendedMag > 0) {
+        speed *= m->intendedMag * 2.0f;
+        pos[0] += speed * sins(m->intendedYaw);
+        pos[2] += speed * coss(m->intendedYaw);
+    }
 
-    floorHeight = find_floor(pos[0], pos[1], pos[2], &surf);
-    if (surf != NULL) {
-        if (pos[1] < floorHeight) {
+    wall = resolve_and_return_wall_collisions(pos, 60.0f, 50.0f);
+    if (m->wall != wall)
+        m->wall = wall;
+
+    floorHeight = find_floor(pos[0], pos[1], pos[2], &floor);
+    ceilHeight = find_ceil(pos[0], MAX(floorHeight, pos[1]) + 3.0f, pos[2], &ceil);
+
+    if (floor == NULL)
+        return FALSE;
+
+    if (ceilHeight - floorHeight >= 160.0f) {
+        if (floor != NULL && pos[1] < floorHeight) {
             pos[1] = floorHeight;
+        }
+        if (ceil != NULL && pos[1] + 160.0f > ceilHeight) {
+            pos[1] = ceilHeight - 160.0f;
         }
         vec3f_copy(m->pos, pos);
     }
@@ -574,15 +609,6 @@ s32 act_debug_free_move(struct MarioState *m) {
     m->faceAngle[1] = m->intendedYaw;
     vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
     vec3s_set(m->marioObj->header.gfx.angle, 0, m->faceAngle[1], 0);
-
-    if (gPlayer1Controller->buttonPressed == A_BUTTON) {
-        if (m->pos[1] <= m->waterLevel - 100) {
-            action = ACT_WATER_IDLE;
-        } else {
-            action = ACT_IDLE;
-        }
-        set_mario_action(m, action, 0);
-    }
 
     return FALSE;
 }
@@ -1164,7 +1190,9 @@ s32 act_death_exit(struct MarioState *m) {
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
+#ifndef DISABLE_LIVES
         m->numLives--;
+#endif
         // restore 7.75 units of health
         m->healCounter = 31;
     }
@@ -1180,7 +1208,9 @@ s32 act_unused_death_exit(struct MarioState *m) {
 #else
         play_sound(SOUND_MARIO_OOOF2, m->marioObj->header.gfx.cameraToObject);
 #endif
+#ifndef DISABLE_LIVES
         m->numLives--;
+#endif
         // restore 7.75 units of health
         m->healCounter = 31;
     }
@@ -1199,7 +1229,9 @@ s32 act_falling_death_exit(struct MarioState *m) {
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
+#ifndef DISABLE_LIVES
         m->numLives--;
+#endif
         // restore 7.75 units of health
         m->healCounter = 31;
     }
@@ -1246,7 +1278,9 @@ s32 act_special_death_exit(struct MarioState *m) {
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
+#ifndef DISABLE_LIVES
         m->numLives--;
+#endif
         m->healCounter = 31;
     }
     // show Mario

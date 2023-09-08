@@ -19,6 +19,7 @@
 #include "platform_displacement.h"
 #include "profiler.h"
 #include "spawn_object.h"
+#include "profiling.h"
 
 
 /**
@@ -562,8 +563,10 @@ void clear_objects(void) {
  */
 void update_terrain_objects(void) {
     gObjectCounter = update_objects_in_list(&gObjectLists[OBJ_LIST_SPAWNER]);
-    //! This was meant to be +=
-    gObjectCounter = update_objects_in_list(&gObjectLists[OBJ_LIST_SURFACE]);
+    profiler_update(PROFILER_TIME_SPAWNER);
+
+    gObjectCounter += update_objects_in_list(&gObjectLists[OBJ_LIST_SURFACE]);
+    profiler_update(PROFILER_TIME_DYNAMIC);
 }
 
 /**
@@ -576,7 +579,13 @@ void update_non_terrain_objects(void) {
 
     s32 i = 2;
     while ((listIndex = sObjectListUpdateOrder[i]) != -1) {
+        if (listIndex == OBJ_LIST_PLAYER) {
+            profiler_update(PROFILER_TIME_BEHAVIOR_BEFORE_MARIO);
+        }
         gObjectCounter += update_objects_in_list(&gObjectLists[listIndex]);
+        if (listIndex == OBJ_LIST_PLAYER) {
+            profiler_update(PROFILER_TIME_MARIO);
+        }
         i++;
     }
 }
@@ -683,4 +692,6 @@ void update_objects(UNUSED s32 unused) {
     }
 
     gPrevFrameObjectCount = gObjectCounter;
+
+    profiler_update(PROFILER_TIME_BEHAVIOR_AFTER_MARIO);
 }

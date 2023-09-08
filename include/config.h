@@ -57,4 +57,9 @@
 #define BORDER_HEIGHT_EMULATOR 0
 #endif
 
+#include "config/config_general.h"
+#include "config/config_debug.h"
+
+#include "config/config_safeguards.h"
+
 #endif // CONFIG_H

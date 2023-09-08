@@ -15,6 +15,7 @@
 #include "sm64.h"
 #include "sound_init.h"
 #include "rumble_init.h"
+#include "profiling.h"
 
 #define MUSIC_NONE 0xFFFF
 
@@ -346,6 +347,7 @@ void thread4_sound(UNUSED void *arg) {
         OSMesg msg;
 
         osRecvMesg(&sSoundMesgQueue, &msg, OS_MESG_BLOCK);
+        profiler_audio_started();
         if (gResetTimer < 25) {
             struct SPTask *spTask;
             profiler_log_thread4_time();
@@ -355,5 +357,6 @@ void thread4_sound(UNUSED void *arg) {
             }
             profiler_log_thread4_time();
         }
+        profiler_audio_completed();
     }
 }

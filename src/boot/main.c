@@ -14,6 +14,7 @@
 #include "game/main.h"
 #include "game/rumble_init.h"
 #include "game/version.h"
+#include "game/profiling.h"
 #ifdef UNF
 #include "usb/usb.h"
 #include "usb/debug.h"
@@ -183,6 +184,7 @@ void start_gfx_sptask(void) {
         && sCurrentDisplaySPTask->state == SPTASK_STATE_NOT_STARTED) {
         profiler_log_gfx_time(TASKS_QUEUED);
         start_sptask(M_GFXTASK);
+        profiler_rsp_started(PROFILER_RSP_GFX);
     }
 }
 
@@ -222,12 +224,14 @@ void handle_vblank(void) {
             } else {
                 pretend_audio_sptask_done();
             }
+            profiler_rsp_started(PROFILER_RSP_AUDIO);
         }
     } else {
         if (gActiveSPTask == NULL && sCurrentDisplaySPTask != NULL
             && sCurrentDisplaySPTask->state != SPTASK_STATE_FINISHED) {
             profiler_log_gfx_time(TASKS_QUEUED);
             start_sptask(M_GFXTASK);
+            profiler_rsp_started(PROFILER_RSP_GFX);
         }
     }
 #if ENABLE_RUMBLE
@@ -260,6 +264,9 @@ void handle_sp_complete(void) {
             // Mark it finished, just like below.
             curSPTask->state = SPTASK_STATE_FINISHED;
             profiler_log_gfx_time(RSP_COMPLETE);
+            profiler_rsp_completed(PROFILER_RSP_GFX);
+        } else {
+            profiler_rsp_yielded();
         }
 
         // Start the audio task, as expected by handle_vblank.
@@ -269,15 +276,20 @@ void handle_sp_complete(void) {
         } else {
             pretend_audio_sptask_done();
         }
+        profiler_rsp_started(PROFILER_RSP_AUDIO);
     } else {
         curSPTask->state = SPTASK_STATE_FINISHED;
         if (curSPTask->task.t.type == M_AUDTASK) {
+            profiler_rsp_completed(PROFILER_RSP_AUDIO);
             // After audio tasks come gfx tasks.
             profiler_log_vblank_time();
             if (sCurrentDisplaySPTask != NULL
                 && sCurrentDisplaySPTask->state != SPTASK_STATE_FINISHED) {
-                if (sCurrentDisplaySPTask->state != SPTASK_STATE_INTERRUPTED) {
+                if (sCurrentDisplaySPTask->state == SPTASK_STATE_INTERRUPTED) {
+                    profiler_rsp_resumed();
+                } else {
                     profiler_log_gfx_time(TASKS_QUEUED);
+                    profiler_rsp_started(PROFILER_RSP_GFX);
                 }
                 start_sptask(M_GFXTASK);
             }
@@ -290,6 +302,7 @@ void handle_sp_complete(void) {
             // that needs to arrive before we can consider the task completely finished and
             // null out sCurrentDisplaySPTask. That happens in handle_dp_complete.
             profiler_log_gfx_time(RSP_COMPLETE);
+            profiler_rsp_completed(PROFILER_RSP_GFX);
         }
     }
 }
