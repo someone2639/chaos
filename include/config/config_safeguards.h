@@ -1,0 +1,17 @@
+#pragma once
+
+#ifdef DISABLE_ALL
+    #undef USE_PROFILER
+    #undef TEST_LEVEL
+    #undef DEBUG_LEVEL_SELECT
+    #undef ENABLE_DEBUG_FREE_MOVE
+    #undef DEBUG_ASSERTIONS
+#endif // DISABLE_ALL
+
+#ifdef USE_PROFILER
+    #define PROFILER_DEBUG_INFO
+#endif // USE_PROFILER
+
+#ifdef DISABLE_EXIT_COURSE
+    #undef ALWAYS_EXIT_COURSE
+#endif // DISABLE_EXIT_COURSE

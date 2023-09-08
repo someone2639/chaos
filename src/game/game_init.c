@@ -20,6 +20,7 @@
 #include "segment2.h"
 #include "segment_symbols.h"
 #include "rumble_init.h"
+#include "profiling.h"
 #ifdef HVQM
 #include <hvqm/hvqm.h>
 #endif
@@ -48,6 +49,9 @@ u8 gControllerBits;
 u8 gIsConsole;
 u8 gCacheEmulated = TRUE;
 u8 gBorderHeight;
+#ifdef WIDE
+u8 widescreenConfig;
+#endif
 #ifdef EEP
 s8 gEepromProbe;
 #endif
@@ -749,9 +753,13 @@ void thread5_game_loop(UNUSED void *arg) {
 
     play_music(SEQ_PLAYER_SFX, SEQUENCE_ARGS(0, SEQ_SOUND_PLAYER), 0);
     set_sound_mode(save_file_get_sound_mode());
+#ifdef WIDE
+    widescreenConfig = save_file_get_widescreen_mode();
+#endif
     render_init();
 
     while (TRUE) {
+        profiler_frame_setup();
         // If the reset timer is active, run the process to reset the game.
         if (gResetTimer != 0) {
             draw_reset_bars();
@@ -771,6 +779,7 @@ void thread5_game_loop(UNUSED void *arg) {
         audio_game_loop_tick();
         select_gfx_pool();
         read_controller_inputs();
+        profiler_update(PROFILER_TIME_CONTROLLERS);
         addr = level_script_execute(addr);
 
         if (gPlayer1Controller->buttonPressed & L_TRIG) {

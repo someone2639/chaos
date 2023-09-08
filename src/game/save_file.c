@@ -639,6 +639,19 @@ void save_file_move_cap_to_default_location(void) {
     }
 }
 
+#ifdef WIDE
+u32 save_file_get_widescreen_mode(void) {
+    return gSaveBuffer.menuData[0].wideMode;
+}
+
+void save_file_set_widescreen_mode(u8 mode) {
+    gSaveBuffer.menuData[0].wideMode = mode;
+
+    gMainMenuDataModified = TRUE;
+    save_main_menu_data();
+}
+#endif
+
 #ifdef VERSION_EU
 void eu_set_language(u16 language) {
     gSaveBuffer.menuData[0].language = language;
