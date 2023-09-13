@@ -30,6 +30,11 @@ u32 audio_start;
 u32 audio_buffer_index;
 u32 preempted_time;
 
+#ifdef AUDIO_PROFILING
+u32 audio_subset_starts[AUDIO_SUBSET_SIZE];
+u32 audio_subset_tallies[AUDIO_SUBSET_SIZE];
+#endif
+
 static void buffer_update(ProfileTimeData* data, u32 new, int buffer_index) {
     u32 old = data->counts[buffer_index];
     data->total -= old;
@@ -86,6 +91,14 @@ void profiler_rsp_resumed() {
 
 void profiler_audio_started() {
     audio_start = osGetCount();
+    
+#ifdef AUDIO_PROFILING
+    for (s32 i = 0; i < AUDIO_SUBSET_SIZE; i++) {
+        audio_subset_tallies[i] = 0;
+    }
+
+    audio_subset_starts[PROFILER_TIME_SUB_AUDIO_UPDATE - PROFILER_TIME_SUB_AUDIO_START] = audio_start;
+#endif
 }
 
 void profiler_audio_completed() {
@@ -95,6 +108,16 @@ void profiler_audio_completed() {
 
     preempted_time = time;
     buffer_update(cur_data, time, cur_index);
+
+#ifdef AUDIO_PROFILING
+    audio_subset_tallies[PROFILER_TIME_SUB_AUDIO_UPDATE - PROFILER_TIME_SUB_AUDIO_START] += time - audio_subset_starts[PROFILER_TIME_SUB_AUDIO_UPDATE - PROFILER_TIME_SUB_AUDIO_START];
+
+    for (s32 i = 0; i < AUDIO_SUBSET_SIZE; i++) {
+        cur_data = &all_profiling_data[i + PROFILER_TIME_SUB_AUDIO_START];
+        buffer_update(cur_data, audio_subset_tallies[i], cur_index);
+    }
+#endif
+
     cur_index++;
     if (cur_index >= PROFILING_BUFFER_SIZE) {
         cur_index = 0;

@@ -260,7 +260,7 @@ void hvqm_main_proc(uintptr_t vidPtr) {
         }
         
         if (video_remain == 0) {
-            osAiSetFrequency(gAudioSessionPresets[0].frequency);
+            osAiSetFrequency(gAudioSessionSettings.frequency);
             osSetEventMesg(OS_EVENT_AI, NULL, 0);
             osDestroyThread(&tkThread);
             osDestroyThread(&daCounterThread);

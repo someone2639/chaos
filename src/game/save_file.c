@@ -3,6 +3,7 @@
 #include "sm64.h"
 #include "game_init.h"
 #include "main.h"
+#include "audio/external.h"
 #include "engine/math_util.h"
 #include "area.h"
 #include "level_update.h"
@@ -14,8 +15,6 @@
 #ifdef SRAM
 #include "sram.h"
 #endif
-
-#define ALIGN4(val) (((val) + 0x3) & ~0x3)
 
 #define MENU_DATA_MAGIC 0x4849
 #define SAVE_FILE_MAGIC 0x4441
@@ -619,6 +618,10 @@ void save_file_set_sound_mode(u16 mode) {
 }
 
 u16 save_file_get_sound_mode(void) {
+    if (gSaveBuffer.menuData[0].soundMode >= SOUND_MODE_COUNT) {
+        return 0;
+    }
+
     return gSaveBuffer.menuData[0].soundMode;
 }
 

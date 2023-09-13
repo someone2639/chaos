@@ -21,6 +21,7 @@
 #include "segment_symbols.h"
 #include "rumble_init.h"
 #include "profiling.h"
+#include "emutest.h"
 #ifdef HVQM
 #include <hvqm/hvqm.h>
 #endif
@@ -32,6 +33,9 @@
 #include "usb/debug.h"
 #endif
 #include <prevent_bss_reordering.h>
+
+// Emulators that the Instant Input patch should not be applied to
+#define INSTANT_INPUT_BLACKLIST (EMU_CONSOLE | EMU_WIIVC | EMU_ARES | EMU_SIMPLE64 | EMU_CEN64)
 
 // First 3 controller slots
 struct Controller gControllers[3];
@@ -46,8 +50,6 @@ struct GfxPool *gGfxPool;
 OSContStatus gControllerStatuses[4];
 OSContPad gControllerPads[4];
 u8 gControllerBits;
-u8 gIsConsole;
-u8 gCacheEmulated = TRUE;
 u8 gBorderHeight;
 #ifdef WIDE
 u8 widescreenConfig;
@@ -382,33 +384,10 @@ void draw_reset_bars(void) {
     osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
 }
 
-void check_cache_emulation() {
-    // Disable interrupts to ensure that nothing evicts the variable from cache while we're using it.
-    u32 saved = __osDisableInt();
-    // Create a variable with an initial value of 1. This value will remain cached.
-    volatile u8 sCachedValue = 1;
-    // Overwrite the variable directly in RDRAM without going through cache.
-    // This should preserve its value of 1 in dcache if dcache is emulated correctly.
-    *(u8*)(K0_TO_K1(&sCachedValue)) = 0;
-    // Read the variable back from dcache, if it's still 1 then cache is emulated correctly.
-    // If it's zero, then dcache is not emulated correctly.
-    gCacheEmulated = sCachedValue;
-    // Restore interrupts
-    __osRestoreInt(saved);
-}
-
 /**
  * Initial settings for the first rendered frame.
  */
-void render_init(void) {
-    if (IO_READ(DPC_PIPEBUSY_REG) == 0) {
-        gIsConsole = 0;
-        gBorderHeight = BORDER_HEIGHT_EMULATOR;
-        check_cache_emulation();
-    } else {
-        gIsConsole = 1;
-        gBorderHeight = BORDER_HEIGHT_CONSOLE;
-    }    
+void render_init(void) {  
     gGfxPool = &gGfxPools[0];
     set_segment_base_addr(1, gGfxPool->buffer);
     gGfxSPTask = &gGfxPool->spTask;
@@ -419,8 +398,10 @@ void render_init(void) {
     end_master_display_list();
     exec_display_list(&gGfxPool->spTask);
 
-    // Skip incrementing the initial framebuffer index on emulators other than Ares so that they display immediately as the Gfx task finishes
-    if (gIsConsole || gCacheEmulated) { // Read RDP Clock Register, has a value of zero on emulators
+    // Skip incrementing the initial framebuffer index on emulators so that they display immediately as the Gfx task finishes
+    // VC probably emulates osViSwapBuffer accurately so instant patch breaks VC compatibility
+    // Currently, Ares and Simple64 have issues with single buffering so disable it there as well.
+    if (gEmulator & INSTANT_INPUT_BLACKLIST) {
         sRenderingFramebuffer++;
     }
     gGlobalTimer++;
@@ -457,8 +438,8 @@ void display_and_vsync(void) {
     osViSwapBuffer((void *) PHYSICAL_TO_VIRTUAL(gPhysicalFramebuffers[sRenderedFramebuffer]));
     profiler_log_thread5_time(THREAD5_END);
     osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
-    // Skip swapping buffers on emulator other than Ares so that they display immediately as the Gfx task finishes
-    if (gIsConsole || gCacheEmulated) { // Read RDP Clock Register, has a value of zero on emulators
+    // Skip swapping buffers on inaccurate emulators other than VC so that they display immediately as the Gfx task finishes
+    if (gEmulator & INSTANT_INPUT_BLACKLIST) {
         if (++sRenderedFramebuffer == 3) {
             sRenderedFramebuffer = 0;
         }
