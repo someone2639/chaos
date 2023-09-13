@@ -11,6 +11,7 @@
 #include "game/profiler.h"
 #include "buffers/buffers.h"
 #include "segments.h"
+#include "game/emutest.h"
 #include "game/main.h"
 #include "game/rumble_init.h"
 #include "game/version.h"
@@ -327,6 +328,7 @@ void thread3_main(UNUSED void *arg) {
     setup_mesg_queues();
     alloc_pool();
     load_engine_code_segment();
+    detect_emulator();
 #ifndef UNF
     crash_screen_init();
 #endif
@@ -343,6 +345,12 @@ void thread3_main(UNUSED void *arg) {
     osSyncPrintf("Compiler: %s\n", __compiler__);
     osSyncPrintf("Linker  : %s\n", __linker__);
 #endif
+
+    if (!(gEmulator & EMU_CONSOLE)) {
+        gBorderHeight = BORDER_HEIGHT_EMULATOR;
+    } else {
+        gBorderHeight = BORDER_HEIGHT_CONSOLE;
+    }
 
     create_thread(&gSoundThread, 4, thread4_sound, NULL, gThread4Stack + 0x2000, 20);
     osStartThread(&gSoundThread);

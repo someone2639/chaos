@@ -57,6 +57,7 @@
 #define BORDER_HEIGHT_EMULATOR 0
 #endif
 
+#include "config/config_audio.h"
 #include "config/config_general.h"
 #include "config/config_debug.h"
 
