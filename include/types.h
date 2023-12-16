@@ -22,9 +22,13 @@
 #define SCREEN_CENTER_X (SCREEN_WIDTH  / 2)
 #define SCREEN_CENTER_Y (SCREEN_HEIGHT / 2)
 
+struct Config {
+    f32 audioFrequency;
 #ifdef WIDE
-extern u8 widescreenConfig;
+    s16 widescreen;
 #endif
+    u8 tvType;
+};
 
 struct Controller {
   /*0x00*/ s16 rawStickX;       //

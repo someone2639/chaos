@@ -51,9 +51,6 @@ OSContStatus gControllerStatuses[4];
 OSContPad gControllerPads[4];
 u8 gControllerBits;
 u8 gBorderHeight;
-#ifdef WIDE
-u8 widescreenConfig;
-#endif
 #ifdef EEP
 s8 gEepromProbe;
 #endif
@@ -735,7 +732,7 @@ void thread5_game_loop(UNUSED void *arg) {
     play_music(SEQ_PLAYER_SFX, SEQUENCE_ARGS(0, SEQ_SOUND_PLAYER), 0);
     set_sound_mode(save_file_get_sound_mode());
 #ifdef WIDE
-    widescreenConfig = save_file_get_widescreen_mode();
+    gConfig.widescreen = save_file_get_widescreen_mode();
 #endif
     render_init();
 

@@ -3,7 +3,10 @@
 #include "effects.h"
 #include "load.h"
 #include "data.h"
+#include "external.h"
 #include "seqplayer.h"
+#include "external.h"
+#include "game/game_init.h"
 #include "game/main.h"
 #include "engine/math_util.h"
 

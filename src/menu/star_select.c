@@ -92,7 +92,7 @@ void render_100_coin_star(u8 stars) {
     if (stars & (1 << 6)) {
 #ifdef WIDE
         f32 aspectRatio = 370.0f;
-        if (widescreenConfig) {
+        if (gConfig.widescreen) {
             aspectRatio *= (4.0f / 3.0f);
         }
 
@@ -158,7 +158,7 @@ void bhv_act_selector_init(void) {
 
     // Render star selector objects
 #ifdef WIDE
-    if (widescreenConfig) {
+    if (gConfig.widescreen) {
         for (i = 0; i < sVisibleStars; i++) {
             sStarSelectorModels[i] =
                 spawn_object_abs_with_rot(gCurrentObject, 0, selectorModelIDs[i], bhvActSelectorStarType,
