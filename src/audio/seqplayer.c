@@ -2075,15 +2075,14 @@ void sequence_channel_process_script(struct SequenceChannel *seqChannel) {
                         }
                         break;
 #else
-                    case 0x00: // chan_testlayerfinished
-                        if (seqChannel->layers[loBits] != NULL) {
-                            value = seqChannel->layers[loBits]->finished;
+                    case 0x00: // chan_testlayersfinished (NOTE: does not use loBits)
+                        value = TRUE;
+                        for (i = 0; i < LAYERS_MAX; i++) {
+                            if (seqChannel->layers[i] != NULL && !seqChannel->layers[i]->finished) {
+                                value = FALSE;
+                                break;
+                            }
                         }
-#ifdef VERSION_EU
-                        else {
-                            value = -1;
-                        }
-#endif
                         break;
 #endif
 
@@ -2123,8 +2122,10 @@ void sequence_channel_process_script(struct SequenceChannel *seqChannel) {
                         }
                         break;
 
-                    case 0xa0: // chan_freelayer
-                        seq_channel_layer_free(seqChannel, loBits);
+                    case 0xa0: // chan_freelayers (NOTE: does not use loBits)
+                        for (i = 0; i < LAYERS_MAX; i++) {
+                            seq_channel_layer_free(seqChannel, i);
+                        }
                         break;
 
                     case 0xb0: // chan_dynsetlayer
