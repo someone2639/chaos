@@ -51,7 +51,6 @@ struct GfxPool *gGfxPool;
 OSContStatus gControllerStatuses[4];
 OSContPadEx gControllerPads[4];
 u8 gControllerBits;
-s8 gGamecubeControllerPort = -1; // This is set to -1 if there's no GC controller, 0 if there's one in the first port and 1 if there's one in the second port.
 u8 gBorderHeight;
 #ifdef EEP
 s8 gEepromProbe;
@@ -557,7 +556,7 @@ void adjust_analog_stick(struct Controller *controller) {
  */
 void run_demo_inputs(void) {
     // Eliminate the unused bits.
-    gControllers[0].controllerData->button &= VALID_BUTTONS;
+    gPlayer1Controller->controllerData->button &= VALID_BUTTONS;
 
     // Check if a demo inputs list exists and if so,
     // run the active demo input list.
@@ -567,26 +566,26 @@ void run_demo_inputs(void) {
         // may have planned for there to be a demo where 2 players moved
         // around instead of just one, so clearing player 2's influence from
         // the demo had to have been necessary to perform this. Co-op mode, perhaps?
-        if (gControllers[1].controllerData != NULL) {
-            gControllers[1].controllerData->stick_x = 0;
-            gControllers[1].controllerData->stick_y = 0;
-            gControllers[1].controllerData->button = 0;
+        if (gPlayer2Controller->controllerData != NULL) {
+            gPlayer2Controller->controllerData->stick_x = 0;
+            gPlayer2Controller->controllerData->stick_y = 0;
+            gPlayer2Controller->controllerData->button = 0;
         }
 
         // The timer variable being 0 at the current input means the demo is over.
         // Set the button to the END_DEMO mask to end the demo.
         if (gCurrDemoInput->timer == 0) {
-            gControllers[0].controllerData->stick_x = 0;
-            gControllers[0].controllerData->stick_y = 0;
-            gControllers[0].controllerData->button = END_DEMO;
+            gPlayer1Controller->controllerData->stick_x = 0;
+            gPlayer1Controller->controllerData->stick_y = 0;
+            gPlayer1Controller->controllerData->button = END_DEMO;
         } else {
             // Backup the start button if it is pressed, since we don't want the
             // demo input to override the mask where start may have been pressed.
-            u16 startPushed = gControllers[0].controllerData->button & START_BUTTON;
+            u16 startPushed = gPlayer1Controller->controllerData->button & START_BUTTON;
 
             // Perform the demo inputs by assigning the current button mask and the stick inputs.
-            gControllers[0].controllerData->stick_x = gCurrDemoInput->rawStickX;
-            gControllers[0].controllerData->stick_y = gCurrDemoInput->rawStickY;
+            gPlayer1Controller->controllerData->stick_x = gCurrDemoInput->rawStickX;
+            gPlayer1Controller->controllerData->stick_y = gCurrDemoInput->rawStickY;
 
             // To assign the demo input, the button information is stored in
             // an 8-bit mask rather than a 16-bit mask. this is because only
@@ -595,11 +594,11 @@ void run_demo_inputs(void) {
             // upper 4 bits (A, B, Z, and Start) and shift then left by 8 to
             // match the correct input mask. We then add this to the masked
             // lower 4 bits to get the correct button mask.
-            gControllers[0].controllerData->button =
+            gPlayer1Controller->controllerData->button =
                 ((gCurrDemoInput->buttonMask & 0xF0) << 8) + ((gCurrDemoInput->buttonMask & 0xF));
 
             // If start was pushed, put it into the demo sequence being input to end the demo.
-            gControllers[0].controllerData->button |= startPushed;
+            gPlayer1Controller->controllerData->button |= startPushed;
 
             // Run the current demo input's timer down. if it hits 0, advance the demo input list.
             if (--gCurrDemoInput->timer == 0) {
@@ -613,8 +612,6 @@ void run_demo_inputs(void) {
  * Update the controller struct with available inputs if present.
  */
 void read_controller_inputs(void) {
-    s32 i;
-
     // If any controllers are plugged in, update the controller information.
     if (gControllerBits) {
         osRecvMesg(&gSIEventMesgQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
@@ -625,12 +622,12 @@ void read_controller_inputs(void) {
     }
     run_demo_inputs();
 
-    for (i = 0; i < 2; i++) {
-        struct Controller *controller = &gControllers[i];
+    for (s32 cont = 0; cont < MAX_NUM_PLAYERS; cont++) {
+        struct Controller *controller = &gControllers[cont];
         // if we're receiving inputs, update the controller struct with the new button info.
         if (controller->controllerData != NULL) {
             // HackerSM64: Swaps Z and L, only on console, and only when playing with a GameCube controller.
-            if ((gEmulator & EMU_CONSOLE) && i == gGamecubeControllerPort) {
+            if ((controller->statusData->type & CONT_CONSOLE_MASK) == CONT_CONSOLE_GCN) {
                 u32 oldButton = controller->controllerData->button;
                 u32 newButton = oldButton & ~(Z_TRIG | L_TRIG);
                 if (oldButton & Z_TRIG) {
@@ -672,54 +669,81 @@ void read_controller_inputs(void) {
 }
 
 /**
+ * @brief Links a controller struct to the appropriate status and pad.
+ *
+ * @param[out] controller The controller to link.
+ * @param[in ] port The port to get the data from.
+ */
+static void assign_controller_data_to_port(struct Controller* controller, int port) {
+    controller->statusData = &gControllerStatuses[port];
+    controller->controllerData = &gControllerPads[port];
+    controller->port = port;
+}
+
+/**
  * Initialize the controller structs to point at the OSCont information.
  */
 void init_controllers(void) {
-    s16 port, cont;
+    int port, cont = 0;
+    int lastUsedPort = -1;
 
     // Set controller 1 to point to the set of status/pads for input 1 and
     // init the controllers.
-    gControllers[0].statusData = &gControllerStatuses[0];
-    gControllers[0].controllerData = &gControllerPads[0];
-    osContInit(&gSIEventMesgQueue, &gControllerBits, &gControllerStatuses[0]);
+    assign_controller_data_to_port(&gControllers[0], 0);
+    osContInit(&gSIEventMesgQueue, &gControllerBits, gControllerStatuses);
 
 #ifdef EEP
     // strangely enough, the EEPROM probe for save data is done in this function.
     // save pak detection?
+
     gEepromProbe = osEepromProbe(&gSIEventMesgQueue);
+    // TODO: VC eeprom stuffs instead of the above
+    // gEepromProbe = (gIsVC)
+    //              ? osEepromProbeVC(&gSIEventMesgQueue)
+    //              : osEepromProbe  (&gSIEventMesgQueue);
+
 #endif
 #ifdef SRAM
     gSramProbe = nuPiInitSram();
 #endif
 
-    // Loop over the 4 ports and link the controller structs to the appropriate
-    // status and pad. Interestingly, although there are pointers to 3 controllers,
-    // only 2 are connected here. The third seems to have been reserved for debug
-    // purposes and was never connected in the retail ROM, thus gPlayer3Controller
-    // cannot be used, despite being referenced in various code.
-    for (cont = 0, port = 0; port < 4 && cont < 2; port++) {
+    // Loop over the 4 ports and link the controller structs to the appropriate status and pad.
+    for (port = 0; port < MAXCONTROLLERS; port++) {
+        if (cont >= MAX_NUM_PLAYERS) {
+            break;
+        }
+
         // Is controller plugged in?
         if (gControllerBits & (1 << port)) {
             // The game allows you to have just 1 controller plugged
             // into any port in order to play the game. this was probably
             // so if any of the ports didn't work, you can have controllers
             // plugged into any of them and it will work.
-#if ENABLE_RUMBLE
-            gControllers[cont].port = port;
+            assign_controller_data_to_port(&gControllers[cont], port);
+
+            lastUsedPort = port;
+
+            cont++;
+        }
+    }
+
+#if (MAX_NUM_PLAYERS >= 2)
+    //! Some flashcarts (eg. ED64p) don't let you start a ROM with a GameCube controller in port 1,
+    //   so if port 1 is an N64 controller and port 2 is a GC controller, swap them.
+    if (
+        (gIsConsole) &&
+        ((gControllerBits & 0b11) == 0b11) && // Only swap if the first two ports both have controllers plugged in.
+        ((gControllerStatuses[0].type & CONT_CONSOLE_MASK) == CONT_CONSOLE_N64) && // If the 1st port's controller is N64.
+        ((gControllerStatuses[1].type & CONT_CONSOLE_MASK) == CONT_CONSOLE_GCN)    // If the 2nd port's controller is GCN.
+    ) {
+        struct Controller temp = gControllers[0];
+        gControllers[0] = gControllers[1];
+        gControllers[1] = temp;
+    }
 #endif
-            gControllers[cont].statusData = &gControllerStatuses[port];
-            gControllers[cont++].controllerData = &gControllerPads[port];
-        }
-    }
-    if ((__osControllerTypes[1] == CONT_TYPE_GCN) && (gEmulator & EMU_CONSOLE)) {
-        gGamecubeControllerPort = 1;
-        gPlayer1Controller = &gControllers[1];
-    } else {
-        if (__osControllerTypes[0] == CONT_TYPE_GCN) {
-            gGamecubeControllerPort = 0;
-        }
-        gPlayer1Controller = &gControllers[0];
-    }
+
+    // Disable the ports after the last used one.
+    osContSetCh(lastUsedPort + 1);
 }
 
 // Game thread core

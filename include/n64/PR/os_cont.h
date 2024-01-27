@@ -112,6 +112,11 @@ typedef struct {
 
 /* Controller type */
 
+// Console ID:
+#define CONT_CONSOLE_MASK       (0x3 <<  3) // 0x0018 | 0: N64, 1: Dolphin
+#define CONT_CONSOLE_N64        (  0 <<  3) // 0x0000
+#define CONT_CONSOLE_GCN        (  1 <<  3) // 0x0008
+
 #define CONT_ABSOLUTE           0x0001
 #define CONT_RELATIVE           0x0002
 #define CONT_JOYPORT            0x0004
@@ -193,9 +198,6 @@ typedef struct {
 #define	CONT_ERR_VOICE_MEMORY		13
 #define	CONT_ERR_VOICE_WORD		14
 #define	CONT_ERR_VOICE_NO_RESPONSE	15
-
-#define CONT_TYPE_N64 0
-#define CONT_TYPE_GCN 1
 
 
 #if defined(_LANGUAGE_C) || defined(_LANGUAGE_C_PLUS_PLUS)

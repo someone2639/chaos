@@ -66,8 +66,8 @@ extern s32 osMotorInitEx(OSMesgQueue *, OSPfs *, int);
 #if	1
 #define MOTOR_START		1
 #define MOTOR_STOP		0
-#define	osMotorStart(x)		__osMotorAccess((x), MOTOR_START)
-#define	osMotorStop(x)		__osMotorAccess((x), MOTOR_STOP)
+#define	osMotorStart(x)		__osMotorAccessEx((x), MOTOR_START)
+#define	osMotorStop(x)		__osMotorAccessEx((x), MOTOR_STOP)
 extern s32 __osMotorAccess(OSPfs *, s32);
 extern s32 __osMotorAccessEx(OSPfs *, s32);
 #else

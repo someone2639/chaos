@@ -149,8 +149,6 @@ SECTIONS
       BUILD_DIR/lib/aspMain.o(.text*);
       lib/PR/audio/n_aspMain.o(.text*);
       lib/PR/hvqm/hvqm2sp1.o(.text*);
-      /* Overwrite a libultra function with its modified counterpart for GCN controller support */
-      __osContGetInitData = __osContGetInitDataEx;
 
       /* data */
       BUILD_DIR/src/boot*.o(.data*);
