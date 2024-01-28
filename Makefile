@@ -112,15 +112,72 @@ else ifeq ($(GRUCODE),super3d) # Super3D
   DEFINES += SUPER3D_GBI=1 F3D_NEW=1
 endif
 
+# Default non-gcc opt flags
+DEFAULT_OPT_FLAGS = -falign-functions=32
+# Note: -fno-associative-math is used here to suppress warnings, ideally we would enable this as an optimization but
+# this conflicts with -ftrapping-math apparently.
+SAFETY_OPT_FLAGS = -ftrapping-math -fno-associative-math
+
+# Main opt flags
+GCC_MAIN_OPT_FLAGS = \
+  $(DEFAULT_OPT_FLAGS) $(SAFETY_OPT_FLAGS) \
+  -Os \
+  --param case-values-threshold=20 \
+  --param max-completely-peeled-insns=10 \
+  --param max-unrolled-insns=10 \
+  -finline-limit=1 \
+  -freorder-blocks-algorithm=simple  \
+
+# Surface Collision
+GCC_COLLISION_OPT_FLAGS = \
+  $(DEFAULT_OPT_FLAGS) $(SAFETY_OPT_FLAGS) \
+  -Ofast \
+  --param case-values-threshold=20 \
+  --param max-completely-peeled-insns=100 \
+  --param max-unrolled-insns=100 \
+  -finline-limit=0 \
+  -fno-inline \
+  -freorder-blocks-algorithm=simple  \
+  -falign-functions=32
+
+# Math Util
+GCC_MATH_UTIL_OPT_FLAGS = \
+  $(DEFAULT_OPT_FLAGS) $(SAFETY_OPT_FLAGS) \
+  -Ofast \
+  -fno-unroll-loops \
+  -fno-peel-loops \
+  --param case-values-threshold=20  \
+  -falign-functions=32
+#   - setting any sort of -finline-limit has shown to worsen performance with math_util.c,
+#     lower values were the worst, the higher you go - the closer performance gets to not setting it at all
+
+# Rendering graph node
+GCC_GRAPH_NODE_OPT_FLAGS = \
+  $(DEFAULT_OPT_FLAGS) $(SAFETY_OPT_FLAGS) \
+  -Ofast \
+  --param case-values-threshold=20 \
+  --param max-completely-peeled-insns=100 \
+  --param max-unrolled-insns=100 \
+  -finline-limit=0 \
+  -freorder-blocks-algorithm=simple  \
+  -falign-functions=32
+#==============================================================================#
+
 ifeq ($(COMPILER),gcc)
   NON_MATCHING := 1
   MIPSISET     := -mips3
-  OPT_FLAGS    := -O2
+  OPT_FLAGS           := $(GCC_MAIN_OPT_FLAGS)
+  COLLISION_OPT_FLAGS  = $(GCC_COLLISION_OPT_FLAGS)
+  MATH_UTIL_OPT_FLAGS  = $(GCC_MATH_UTIL_OPT_FLAGS)
+  GRAPH_NODE_OPT_FLAGS = $(GCC_GRAPH_NODE_OPT_FLAGS)
 else ifeq ($(COMPILER),clang)
   NON_MATCHING := 1
   # clang doesn't support ABI 'o32' for 'mips3'
   MIPSISET     := -mips2
-  OPT_FLAGS    := -O2
+  OPT_FLAGS    := $(DEFAULT_OPT_FLAGS)
+  COLLISION_OPT_FLAGS  = $(DEFAULT_OPT_FLAGS)
+  MATH_UTIL_OPT_FLAGS  = $(DEFAULT_OPT_FLAGS)
+  GRAPH_NODE_OPT_FLAGS = $(DEFAULT_OPT_FLAGS)
 endif
 
 
@@ -548,6 +605,18 @@ $(BUILD_DIR)/src/usb/usb.o: OPT_FLAGS := -O0
 $(BUILD_DIR)/src/usb/usb.o: CFLAGS += -Wno-unused-variable -Wno-sign-compare -Wno-unused-function
 $(BUILD_DIR)/src/usb/debug.o: OPT_FLAGS := -O0
 $(BUILD_DIR)/src/usb/debug.o: CFLAGS += -Wno-unused-parameter -Wno-maybe-uninitialized
+# File specific opt flags
+$(BUILD_DIR)/src/audio/heap.o:          OPT_FLAGS := -Os -fno-jump-tables
+$(BUILD_DIR)/src/audio/synthesis.o:     OPT_FLAGS := -Os -fno-jump-tables
+
+$(BUILD_DIR)/src/engine/surface_collision.o:  OPT_FLAGS := $(COLLISION_OPT_FLAGS)
+$(BUILD_DIR)/src/engine/math_util.o:          OPT_FLAGS := $(MATH_UTIL_OPT_FLAGS)
+$(BUILD_DIR)/src/game/rendering_graph_node.o: OPT_FLAGS := $(GRAPH_NODE_OPT_FLAGS)
+
+# $(info OPT_FLAGS:            $(OPT_FLAGS))
+# $(info COLLISION_OPT_FLAGS:  $(COLLISION_OPT_FLAGS))
+# $(info MATH_UTIL_OPT_FLAGS:  $(MATH_UTIL_OPT_FLAGS))
+# $(info GRAPH_NODE_OPT_FLAGS: $(GRAPH_NODE_OPT_FLAGS))
 
 ALL_DIRS := $(BUILD_DIR) $(addprefix $(BUILD_DIR)/,$(SRC_DIRS) $(GODDARD_SRC_DIRS) $(LIBZ_SRC_DIRS) $(ULTRA_BIN_DIRS) $(BIN_DIRS) $(TEXTURE_DIRS) $(TEXT_DIRS) $(SOUND_SAMPLE_DIRS) $(addprefix levels/,$(LEVEL_DIRS)) rsp include) $(YAY0_DIR) $(addprefix $(YAY0_DIR)/,$(VERSION)) $(SOUND_BIN_DIR) $(SOUND_BIN_DIR)/sequences/$(VERSION)
 
