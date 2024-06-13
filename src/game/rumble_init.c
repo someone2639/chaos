@@ -57,7 +57,7 @@ static void start_rumble(void) {
     release_rumble_pak_control();
 }
 
-static void stop_rumble(void) {
+void stop_rumble(void) {
     if (!sRumblePakActive) {
         return;
     }
@@ -283,7 +283,7 @@ void cancel_rumble(void) {
 
 void create_thread_6(void) {
     osCreateMesgQueue(&gRumbleThreadVIMesgQueue, gRumbleThreadVIMesgBuf, 1);
-    osCreateThread(&gRumblePakThread, 6, thread6_rumble_loop, NULL, gThread6Stack + 0x2000, 30);
+    osCreateThread(&gRumblePakThread, 6, thread6_rumble_loop, NULL, gThread6Stack + THREAD6_STACK, 30);
     osStartThread(&gRumblePakThread);
 }
 

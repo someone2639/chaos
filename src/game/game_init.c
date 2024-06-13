@@ -8,6 +8,7 @@
 #include "buffers/gfx_output_buffer.h"
 #include "buffers/framebuffers.h"
 #include "buffers/zbuffer.h"
+#include "debug.h"
 #include "engine/level_script.h"
 #include "game_init.h"
 #include "main.h"
@@ -102,6 +103,10 @@ struct Controller *gPlayer3Controller = &gControllers[2]; // Probably debug only
 struct DemoInput *gCurrDemoInput = NULL;
 u16 gDemoInputListID = 0;
 struct DemoInput gRecordedDemoInput = { 0 };
+
+u8 gFBEEnabled = FALSE;
+static u8 checkingFBE = 0;
+static u8 fbeCheckFinished = FALSE;
 
 // Display
 // ----------------------------------------------------------------------------------------------------
@@ -323,6 +328,8 @@ void create_gfx_task_structure(void) {
     gGfxSPTask->task.t.data_size = entries * sizeof(Gfx);
     gGfxSPTask->task.t.yield_data_ptr = (u64 *) gGfxSPTaskYieldBuffer;
     gGfxSPTask->task.t.yield_data_size = OS_YIELD_DATA_SIZE;
+
+    assert(((u32)gDisplayListHead - ((u32)gGfxPool->buffer)) / 4 < GFX_POOL_SIZE, "GFX pool exceeded!");
 }
 
 /**
@@ -379,6 +386,31 @@ void draw_reset_bars(void) {
     osWritebackDCacheAll();
     osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
     osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
+}
+
+// Check if we are emulating the framebuffer
+s32 check_fbe(UNUSED s16 arg0, UNUSED s32 arg1) {
+    if (fbeCheckFinished) {
+        return TRUE;
+    }
+
+    if (checkingFBE == 0) {
+        gFramebuffers[0][FBE_PIXEL_OFFSET] = FBE_CHECK;
+    }
+    
+    if (checkingFBE < 4) {
+        checkingFBE++;
+        return FALSE;
+    }
+    
+    if (gFramebuffers[0][FBE_PIXEL_OFFSET] == FBE_CHECK) {
+        gFBEEnabled = FALSE;
+    } else {
+        gFBEEnabled = TRUE;
+    }
+
+    fbeCheckFinished = TRUE;
+    return TRUE;
 }
 
 /**

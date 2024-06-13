@@ -9,6 +9,7 @@
 
 extern s32 gRumblePakTimer;
 
+void stop_rumble(void);
 void init_rumble_pak_scheduler_queue(void);
 void block_until_rumble_pak_free(void);
 void release_rumble_pak_control(void);
