@@ -84,3 +84,11 @@ build/*
 
 !/lib/PR/hvqm/*.o
 
+# .orig files
+*.orig
+
+# :Zone_Identifier files
+*Zone.Identifier
+
+# user-specific config file
+include/config/config_local.h
