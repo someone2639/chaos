@@ -134,12 +134,12 @@ SECTIONS
       BUILD_DIR/src/hvqm*.o(.text);
       BUILD_DIR/src/audio*.o(.text);
 #if defined(ISVPRINT) || defined(UNF)
-      */libultra_d.a:*.o(.text);
+      *libultra_d.a:*.o(.text);
 #else
-      */libultra_rom.a:*.o(.text);
+      *libultra_rom.a:*.o(.text);
 #endif
       */libnustd.a:*.o(.text);
-      */libgcc.a:*.o(.text);
+      *libgcc.a:*.o(.text);
       */librtc.a:*.o(.text);
       */libz.a:*.o(.text);
       */libhvqm2.a:*.o(.text);
@@ -153,9 +153,9 @@ SECTIONS
       BUILD_DIR/src/boot*.o(.data*);
       BUILD_DIR/src/audio*.o(.data*);
 #if defined(ISVPRINT) || defined(UNF)
-      */libultra_d.a:*.o(.data*);
+      *libultra_d.a:*.o(.data*);
 #else
-      */libultra_rom.a:*.o(.data*);
+      *libultra_rom.a:*.o(.data*);
 #endif
       */libhvqm2.a:*.o(.data*);
       */librtc.a:*.o(.data*);
@@ -169,11 +169,11 @@ SECTIONS
       BUILD_DIR/src/boot*.o(.rodata*);
       BUILD_DIR/src/audio*.o(.rodata*);
 #if defined(ISVPRINT) || defined(UNF)
-      */libultra_d.a:*.o(.rodata*);
+      *libultra_d.a:*.o(.rodata*);
 #else
-      */libultra_rom.a:*.o(.rodata*);
+      *libultra_rom.a:*.o(.rodata*);
 #endif
-      */libgcc.a:*.o(.rodata*);
+      *libgcc.a:*.o(.rodata*);
       */librtc.a:*.o(.rodata*);
       */libz.a:*.o(.rodata*);
 
@@ -186,13 +186,13 @@ SECTIONS
       BUILD_DIR/src/hvqm*.o(.*bss*);
       BUILD_DIR/src/audio*.o(.*bss*);
 #if defined(ISVPRINT) || defined(UNF)
-      */libultra_d.a:*.o(COMMON);
-      */libultra_d.a:*.o(.scommon);
-      */libultra_d.a:*.o(.*bss*);
+      *libultra_d.a:*.o(COMMON);
+      *libultra_d.a:*.o(.scommon);
+      *libultra_d.a:*.o(.*bss*);
 #else
-      */libultra_rom.a:*.o(COMMON);
-      */libultra_rom.a:*.o(.scommon);
-      */libultra_rom.a:*.o(.*bss*);
+      *libultra_rom.a:*.o(COMMON);
+      *libultra_rom.a:*.o(.scommon);
+      *libultra_rom.a:*.o(.*bss*);
 #endif
       */libhvqm2.a:*.o(.bss*);
       */librtc.a:*.o(.bss*);
