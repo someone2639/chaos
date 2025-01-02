@@ -67,6 +67,14 @@ extern s8 gDebugLevelSelect;
 extern s8 gShowProfiler;
 extern s8 gShowDebugText;
 
+
+// Message IDs
+#define MESG_SP_COMPLETE 100
+#define MESG_DP_COMPLETE 101
+#define MESG_VI_VBLANK 102
+#define MESG_START_GFX_SPTASK 103
+#define MESG_NMI_REQUEST 104
+
 void set_vblank_handler(s32 index, struct VblankHandler *handler, OSMesgQueue *queue, OSMesg *msg);
 void dispatch_audio_sptask(struct SPTask *spTask);
 void exec_display_list(struct SPTask *spTask);

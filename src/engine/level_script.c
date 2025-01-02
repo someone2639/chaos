@@ -7,8 +7,10 @@
 #include "audio/external.h"
 #include "buffers/framebuffers.h"
 #include "buffers/zbuffer.h"
+#include "hvqm/hvqm.h"
 #include "game/area.h"
 #include "game/game_init.h"
+#include "game/main.h"
 #include "game/mario.h"
 #include "game/memory.h"
 #include "game/object_helpers.h"
@@ -755,6 +757,32 @@ static void level_cmd_get_or_set_var(void) {
     sCurrentCmd = CMD_NEXT;
 }
 
+void level_cmd_play_hvqm(void) {
+#ifdef HVQM
+    uintptr_t addr = CMD_GET(uintptr_t, 4);
+
+    extern u8 _hvqmworkSegmentBssStart[];
+    extern u8 _hvqbufSegmentBssEnd[];
+
+    bzero(_hvqmworkSegmentBssStart, (u32)_hvqbufSegmentBssEnd - (u32)_hvqmworkSegmentBssStart);
+
+    hvqm_reset_bss();
+    timekeeper_reset_bss();
+
+    createHvqmThread(addr);
+    osStartThread(&hvqmThread);
+    osRecvMesg(&gHVQM_SyncQueue, NULL, OS_MESG_BLOCK);
+
+    osSetEventMesg(OS_EVENT_SP, &gIntrMesgQueue, (OSMesg) MESG_SP_COMPLETE);
+    osViSetEvent(&gIntrMesgQueue, (OSMesg) MESG_VI_VBLANK, 1);
+
+    osDestroyThread(&hvqmThread);
+
+    audio_init(AUD_REINIT);
+#endif
+    sCurrentCmd = CMD_NEXT;
+}
+
 static void (*LevelScriptJumpTable[])(void) = {
     /*00*/ level_cmd_load_and_execute,
     /*01*/ level_cmd_exit_and_execute,
@@ -817,6 +845,7 @@ static void (*LevelScriptJumpTable[])(void) = {
     /*3A*/ level_cmd_3A,
     /*3B*/ level_cmd_create_whirlpool,
     /*3C*/ level_cmd_get_or_set_var,
+    /*3D*/ level_cmd_play_hvqm,
 };
 
 struct LevelCommand *level_script_execute(struct LevelCommand *cmd) {
@@ -824,6 +853,9 @@ struct LevelCommand *level_script_execute(struct LevelCommand *cmd) {
     sCurrentCmd = cmd;
 
     while (sScriptStatus == SCRIPT_RUNNING) {
+        char aa[100];
+        sprintf(aa, "CMD %02X %08X\n", sCurrentCmd->type, LevelScriptJumpTable[sCurrentCmd->type]);
+        osSyncPrintf(aa);
         LevelScriptJumpTable[sCurrentCmd->type]();
     }
 

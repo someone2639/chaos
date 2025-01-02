@@ -54,6 +54,10 @@ s8 gEepromProbe;
 #ifdef SRAM
 s8 gSramProbe;
 #endif
+#ifdef HVQM
+OSMesgQueue gHVQM_SyncQueue;
+OSMesg gHVQM_SyncMesg;
+#endif
 OSMesgQueue gGameVblankQueue;
 OSMesgQueue gGfxVblankQueue;
 OSMesg gGameMesgBuf[1];
@@ -719,6 +723,7 @@ void setup_game_memory(void) {
 /**
  * Main game loop thread. Runs forever as long as the game continues.
  */
+#include "game/main.h"
 void thread5_game_loop(UNUSED void *arg) {
     struct LevelCommand *addr;
 
@@ -731,8 +736,8 @@ void thread5_game_loop(UNUSED void *arg) {
     create_thread_6();
 #endif
 #ifdef HVQM
-    createHvqmThread();
-#endif
+    osCreateMesgQueue(&gHVQM_SyncQueue, &gHVQM_SyncMesg, 1);
+#endif // HVQM
     save_file_load_all();
 
     set_vblank_handler(2, &gGameVblankHandler, &gGameVblankQueue, (OSMesg) 1);
@@ -777,12 +782,6 @@ void thread5_game_loop(UNUSED void *arg) {
 #ifdef UNF
         if (gPlayer1Controller->buttonPressed & L_TRIG) {
             debug_screenshot();
-        }
-#endif
-#if 0
-        if (gPlayer1Controller->buttonPressed & L_TRIG) {
-            osStartThread(&hvqmThread);
-            osRecvMesg(&gDmaMesgQueue, NULL, OS_MESG_BLOCK);
         }
 #endif
     }

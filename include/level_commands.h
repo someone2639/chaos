@@ -323,4 +323,8 @@
 #define GET_OR_SET(op, var) \
     CMD_BBBB(0x3C, 0x04, op, var)
 
+#define PLAY_HVQM(ptr) \
+    CMD_BBH(0x3D, 0x08, 0), \
+    CMD_PTR(ptr)
+
 #endif // LEVEL_COMMANDS_H

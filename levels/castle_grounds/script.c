@@ -92,7 +92,9 @@ static const LevelScript script_func_local_4[] = {
     RETURN(),
 };
 
+extern u32 _capcomSegmentRomStart[];
 const LevelScript level_castle_grounds_entry[] = {
+    PLAY_HVQM(_capcomSegmentRomStart),
     INIT_LEVEL(),
     LOAD_YAY0(        /*seg*/ 0x07, _castle_grounds_segment_7SegmentRomStart, _castle_grounds_segment_7SegmentRomEnd),
     LOAD_YAY0(        /*seg*/ 0x0A, _water_skybox_yay0SegmentRomStart, _water_skybox_yay0SegmentRomEnd),

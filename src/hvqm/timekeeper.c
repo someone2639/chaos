@@ -7,13 +7,13 @@
 /***********************************************************************
  * Timekeeper thread
  ***********************************************************************/
-static OSThread  tkThread;
+OSThread  tkThread;
 static u64  tkStack[STACKSIZE/sizeof(u64)];
 
 /***********************************************************************
  * Audio DA counter thread
  ***********************************************************************/
-static OSThread  daCounterThread;
+OSThread  daCounterThread;
 static u64  daCounterStack[STACKSIZE/sizeof(u64)];
 
 /***********************************************************************
@@ -124,6 +124,34 @@ static u64  samples_played;
  *    Time measured beyond this point is supplemented with osGetTime().
  ***********************************************************************/
 static OSTime  last_time;
+
+void timekeeper_reset_bss(void) {
+    bzero(&tkCmdMesgQ, sizeof(OSMesgQueue));
+    bzero(&tkCmdMesgBuf, sizeof(OSMesg));
+    bzero(&tkResMesgQ, sizeof(OSMesgQueue));
+    bzero(&tkResMesgBuf, sizeof(OSMesg));
+    bzero(&viMessageQ, sizeof(OSMesgQueue));
+    bzero(viMessages, sizeof(OSMesg));
+    bzero(&aiMessageQ, sizeof(OSMesgQueue));
+    bzero(aiMessages, sizeof(OSMesg));
+    bzero(&videoRing, sizeof(videoRing));
+    bzero(&audioRing, sizeof(audioRing));
+    videoRingCount = 0;
+    videoRingWrite = 0;
+    videoRingRead = 0;
+
+    audioRingCount = 0;
+    audioRingWrite = 0;
+    audioRingRead = 0;
+    pcmBufferCount = 0;
+    aiFIFOsamples = 0;
+    aiDAsamples = 0;
+    bzero(pcmModBuf, sizeof(pcmModBuf));
+    clock_alive = 0;
+    samples_per_sec = 0;
+    samples_played = 0;
+    last_time = 0;
+}
 
 /***********************************************************************
  *

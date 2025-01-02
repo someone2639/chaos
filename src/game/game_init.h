@@ -69,6 +69,11 @@ extern u8 gDemoInputs[];
 extern u16 sRenderingFramebuffer;
 extern u32 gGlobalTimer;
 
+#ifdef HVQM
+extern OSMesgQueue gHVQM_SyncQueue;
+extern OSMesg gHVQM_SyncMesg;
+#endif // HVQM
+
 void setup_game_memory(void);
 void thread5_game_loop(UNUSED void *arg);
 void clear_framebuffer(s32 color);

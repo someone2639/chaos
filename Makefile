@@ -85,7 +85,7 @@ else ifeq ($(VERSION),sh)
   DEFINES += VERSION_SH=1
 endif
 
-TARGET := sm64
+TARGET := epic_chaos_moment
 
 
 # GRUCODE - selects which RSP microcode to use.
@@ -139,7 +139,7 @@ ifeq ($(NON_MATCHING),1)
 endif
 
 
-TARGET_STRING := sm64
+TARGET_STRING := epic_chaos_moment
 
 # UNF - whether to use UNFLoader flashcart library
 #   1 - includes code in ROM
@@ -426,8 +426,8 @@ else
   RSPASM              := $(TOOLS_DIR)/armips
 endif
 ENDIAN_BITWIDTH       := $(BUILD_DIR)/endian-and-bitwidth
-EMULATOR = mupen64plus
-EMU_FLAGS = --noosd
+EMULATOR = parallel-launcher
+EMU_FLAGS =
 LOADER = UNFLoader
 LOADER_FLAGS = -d
 SHA1SUM = sha1sum

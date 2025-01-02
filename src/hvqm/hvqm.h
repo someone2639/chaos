@@ -1,6 +1,7 @@
 #ifndef HVQM_H
 #define HVQM_H
 
+#include "HVQM2File.h"
 
 /*
  * Size of the data area for the HVQ microcode
@@ -88,7 +89,7 @@ void tkStart(tkRewindProc rewind, u32 samples_per_sec);
 void tkPushVideoframe(void *vaddr, u32 *statP, u64 disptime);
 u64 tkGetTime(void);
 void tkStop(void);
-void createHvqmThread(void);
+void createHvqmThread(uintptr_t a);
 
 /*
  * in system.c
@@ -110,6 +111,12 @@ void keep_cfb(int cfbno);
 void release_cfb(int cfbno);
 void release_all_cfb(void);
 int get_cfb();
+void hvqm_reset_bss(void);
+void timekeeper_reset_bss(void);
+
+extern OSThread daCounterThread;
+extern OSThread hvqmThread;
+extern OSThread tkThread;
 
 typedef u32 (*tkAudioProc)(void *pcmbuf);
 typedef tkAudioProc (*tkRewindProc)(void);

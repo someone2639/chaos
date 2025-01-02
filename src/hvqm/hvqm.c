@@ -5,6 +5,8 @@
 #include <hvqm2dec.h>
 #include <adpcmdec.h>
 #include "hvqm.h"
+#include "game/main.h"
+#include "audio/data.h"
 
 #define AUDIO_DMA_MSG_SIZE 1
 static OSIoMesg     audioDmaMesgBlock;
@@ -55,8 +57,40 @@ static ADPCMstate adpcm_state;	/* Buffer for state information passed to the ADP
 #define load32(from) (*(u32*)&(from))
 #define load16(from) (*(u16*)&(from))
 
-extern u8 _capcomSegmentRomStart[];
-extern u8 _seinSegmentRomStart[];
+void *gHVQM_VideoPointer;
+static u64 hvqmStack[STACKSIZE / sizeof(u64)];
+
+HVQM2Header *hvqm_header;
+
+void hvqm_reset_bss(void) {
+    total_frames = 0;
+    total_audio_records = 0;
+    video_streamP = NULL;
+    audio_streamP = NULL;
+    audio_remain = 0;
+    video_remain = 0;
+    disptime = 0;
+    hvqm_header = 0;
+
+    bzero(hvqm_headerBuf, sizeof(hvqm_headerBuf));
+    bzero(&adpcm_state, sizeof(ADPCMstate));
+
+    bzero(&audioDmaMesgBlock, sizeof(OSIoMesg));
+    bzero(&audioDmaMessageQ, sizeof(OSMesgQueue));
+    bzero(audioDmaMessages, sizeof(OSMesg));
+
+    bzero(&videoDmaMesgBlock, sizeof(OSIoMesg));
+    bzero(&videoDmaMessageQ, sizeof(OSMesgQueue));
+    bzero(videoDmaMessages, sizeof(OSMesg));
+
+    bzero(&spMesgQ, sizeof(OSMesgQueue));
+    bzero(&spMesgBuf, sizeof(OSMesg));
+    gHVQM_VideoPointer = NULL;
+    bzero(&hvqtask, sizeof(OSTask));
+    bzero(&hvq_sparg, sizeof(HVQM2Arg));
+
+    bzero(hvqmStack, sizeof(hvqmStack));
+}
 
 static u32 next_audio_record( void *pcmbuf ) {
   ALIGNED16 u8 header_buffer[sizeof(HVQM2Record)+16];
@@ -78,7 +112,7 @@ static u32 next_audio_record( void *pcmbuf ) {
 }
 
 static tkAudioProc rewind( void ) {
-  video_streamP = audio_streamP = (u32)_capcomSegmentRomStart + sizeof(HVQM2Header);
+  video_streamP = audio_streamP = (void*)((u32)gHVQM_VideoPointer + sizeof(HVQM2Header));
   audio_remain = total_audio_records;
   video_remain = total_frames;
   disptime = 0;
@@ -93,13 +127,14 @@ static OSMesg        hvqmMesgBuf;
 OSThread hvqmThread;
 static u64 hvqmStack[STACKSIZE/sizeof(u64)];
 
-void hvqm_main_proc() {
+void hvqm_main_proc(uintptr_t vidPtr) {
     int h_offset, v_offset;	/* Position of image display */
     int screen_offset;		/* Number of pixels from start of frame buffer to display position */
     u32 usec_per_frame;
     int prev_bufno = -1;
 
     
+    gHVQM_VideoPointer = (void*)vidPtr;
     hvqm_header = OS_DCACHE_ROUNDUP_ADDR( hvqm_headerBuf );
     
     osCreateMesgQueue( &spMesgQ, &spMesgBuf, 1 );
@@ -125,7 +160,8 @@ void hvqm_main_proc() {
     init_cfb();
     osViSwapBuffer( gFramebuffers[NUM_CFBs-1] );
 
-    romcpy(hvqm_header, (void *)_capcomSegmentRomStart, sizeof(HVQM2Header), OS_MESG_PRI_NORMAL, &videoDmaMesgBlock, &videoDmaMessageQ);
+    romcpy(hvqm_header, (void *) vidPtr, sizeof(HVQM2Header), OS_MESG_PRI_NORMAL,
+           &videoDmaMesgBlock, &videoDmaMessageQ);
 
     total_frames = load32(hvqm_header->total_frames);
     usec_per_frame = load32(hvqm_header->usec_per_frame);
@@ -138,7 +174,7 @@ void hvqm_main_proc() {
     
     for ( ; ; ) {
 
-        //while ( video_remain > 0 ) {
+        while ( video_remain > 0 ) {
             u8 header_buffer[sizeof(HVQM2Record)+16];
             HVQM2Record *record_header;
             u16 frame_format;
@@ -211,28 +247,31 @@ void hvqm_main_proc() {
                 }
             }
         
-        keep_cfb( bufno );
-        
-        if ( prev_bufno >= 0 && prev_bufno != bufno ) 
-          release_cfb( prev_bufno );
+            keep_cfb( bufno );
+            
+            if ( prev_bufno >= 0 && prev_bufno != bufno ) 
+              release_cfb( prev_bufno );
 
-        tkPushVideoframe( gFramebuffers[bufno], &cfb_status[bufno], disptime );
+            tkPushVideoframe( gFramebuffers[bufno], &cfb_status[bufno], disptime );
 
-        prev_bufno = bufno;
-        disptime += usec_per_frame;
-        --video_remain;
+            prev_bufno = bufno;
+            disptime += usec_per_frame;
+            --video_remain;
+        }
         
-        //if (1) {
-            //osAiSetFrequency(gAudioSessionPresets[0].frequency);
-            //osSendMesg(&gDmaMesgQueue, 0, OS_MESG_BLOCK);
-            //osDestroyThread(&hvqmMesgQ);
-        //}
+        if (video_remain == 0) {
+            osAiSetFrequency(gAudioSessionPresets[0].frequency);
+            osSetEventMesg(OS_EVENT_AI, NULL, 0);
+            osDestroyThread(&tkThread);
+            osDestroyThread(&daCounterThread);
+            osSendMesg(&gHVQM_SyncQueue, 0, OS_MESG_BLOCK);
+        }
     }
 }
 
-void createHvqmThread(void) {
+void createHvqmThread(uintptr_t vidPtr) {
   osCreateMesgQueue( &hvqmMesgQ, &hvqmMesgBuf, 1 );
-  osCreateThread( &hvqmThread, HVQM_THREAD_ID, hvqm_main_proc, 
-		 NULL, hvqmStack + (STACKSIZE/sizeof(u64)), 
+  osCreateThread( &hvqmThread, HVQM_THREAD_ID, (void (*)(void*))hvqm_main_proc, 
+		 (void*)vidPtr, hvqmStack + (STACKSIZE/sizeof(u64)), 
 		 (OSPri)HVQM_PRIORITY );
 }

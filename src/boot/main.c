@@ -19,12 +19,6 @@
 #include "usb/debug.h"
 #endif
 
-// Message IDs
-#define MESG_SP_COMPLETE 100
-#define MESG_DP_COMPLETE 101
-#define MESG_VI_VBLANK 102
-#define MESG_START_GFX_SPTASK 103
-#define MESG_NMI_REQUEST 104
 
 OSThread D_80339210; // unused?
 OSThread gIdleThread;
