@@ -96,18 +96,20 @@ void patch_bg_scroll() {
 void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reverse) {
     s32 quality = card->quality;
     s32 colorID = quality - 1;
-    Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
-    Mtx *transMtx = alloc_display_list(sizeof(Mtx) * (quality + 2));
+    Mtx *cardScaleMtx = alloc_display_list(sizeof(Mtx));
+    Mtx *cardTransMtx = alloc_display_list(sizeof(Mtx));
+    Mtx *qualityTransMtx = alloc_display_list(sizeof(Mtx) * 2);
+    Mtx* timerTransMtx = alloc_display_list(sizeof(Mtx));
 
     gDPSetPrimColor(gDisplayListHead++, 0, 0, 
                     sQualityColors[colorID][0], sQualityColors[colorID][1], sQualityColors[colorID][2], 255);
 
     //Draw patch bg
-    guScale(scaleMtx, scale, scale, 1.0f);
-    guTranslate(transMtx, x, y, 0);
-    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
+    guTranslate(cardTransMtx, x, y, 0);
+    guScale(cardScaleMtx, scale, scale, 1.0f);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardTransMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx),
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardScaleMtx),
           G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
     if(reverse) {
         gSPDisplayList(gDisplayListHead++, patch_bg_r_mesh_r_mesh);
@@ -117,12 +119,12 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
     
     //Draw patch quality beads
     gSPDisplayList(gDisplayListHead++, patch_quality_bead_begin);
-    guTranslate(transMtx, 0, -40, 0);
-    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
+    guTranslate(qualityTransMtx, 0, -40, 0);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(qualityTransMtx++),
           G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
     for(int i = 0; i < quality; i++) {
-        guTranslate(transMtx, 50, 0, 0);
-        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
+        guTranslate(qualityTransMtx, 50, 0, 0);
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(qualityTransMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
         gSPDisplayList(gDisplayListHead++, patch_quality_bead);
     }
@@ -130,11 +132,13 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
 
     //Draw star timer
     if(card->duration > 0) {
-        Mtx* transTimerMtx = alloc_display_list(sizeof(Mtx));
-        //Find offset to draw timer based on how many quality beads there are
-        s32 timerX = 200 + (50 * (MAX_QUALITY - quality));
-        guTranslate(transTimerMtx, timerX, 0, 0);
-        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transTimerMtx),
+        gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardTransMtx),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardScaleMtx),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+        guTranslate(timerTransMtx, 400, -40, 0);
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(timerTransMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
         gSPDisplayList(gDisplayListHead++, star_timer_Mesh_mesh);
         //temp
