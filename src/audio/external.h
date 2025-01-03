@@ -21,9 +21,6 @@
 extern s32 gAudioErrorFlags;
 extern f32 gGlobalSoundSource[3];
 
-#define AUD_INIT 0
-#define AUD_REINIT 1
-
 // defined in data.c, used by the game
 extern u32 gAudioRandom;
 
@@ -62,7 +59,7 @@ void play_toads_jingle(void);
 void sound_reset(u8 presetId);
 void audio_set_sound_mode(u8 arg0);
 
-void audio_init(u32); // in load.c
+void audio_init(void); // in load.c
 
 #if defined(VERSION_EU) || defined(VERSION_SH)
 struct SPTask *unused_80321460();

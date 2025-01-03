@@ -905,111 +905,125 @@ void load_sequence_internal(u32 player, u32 seqId, s32 loadAsync) {
 }
 
 // (void) must be omitted from parameters to fix stack with -framepointer
-void audio_init(u32 initType) {
+void audio_init() {
+#if defined(VERSION_EU)
+    UNUSED s8 pad[16];
+#else
+    UNUSED s8 pad[32];
+#endif
 #if defined(VERSION_JP) || defined(VERSION_US)
     u8 buf[0x10];
 #endif
     s32 i, j, k;
     UNUSED s32 lim1; // lim1 unused in EU
+#if defined(VERSION_EU)
+    UNUSED u8 buf[0x10];
+    s32 UNUSED lim2, lim3;
+#else
     s32 lim2, lim3;
+#endif
     UNUSED u32 size;
     UNUSED u64 *ptr64;
     void *data;
     UNUSED s32 pad2;
 
-    if (initType == AUD_INIT) {
-        gAudioLoadLock = AUDIO_LOCK_UNINITIALIZED;
-
+    gAudioLoadLock = AUDIO_LOCK_UNINITIALIZED;
 
 #if defined(VERSION_JP) || defined(VERSION_US)
-        lim1 = gUnusedCount80333EE8;
-        for (i = 0; i < lim1; i++) {
-            gUnused80226E58[i] = 0;
-            gUnused80226E98[i] = 0;
-        }
+    lim1 = gUnusedCount80333EE8;
+    for (i = 0; i < lim1; i++) {
+        gUnused80226E58[i] = 0;
+        gUnused80226E98[i] = 0;
+    }
 
-        lim2 = gAudioHeapSize;
-        for (i = 0; i <= lim2 / 8 - 1; i++) {
-            ((u64 *) gAudioHeap)[i] = 0;
-        }
+    lim2 = gAudioHeapSize;
+    for (i = 0; i <= lim2 / 8 - 1; i++) {
+        ((u64 *) gAudioHeap)[i] = 0;
+    }
 
 #ifdef TARGET_N64
-        // It seems boot.s doesn't clear the .bss area for audio, so do it here.
-        i = 0;
-        lim3 = ((uintptr_t) &gAudioGlobalsEndMarker - (uintptr_t) &gAudioGlobalsStartMarker) / 8;
-        ptr64 = &gAudioGlobalsStartMarker;
-        for (k = lim3; k >= 0; k--) {
-            ptr64[i] = 0;
-            i++;
-        }
+    // It seems boot.s doesn't clear the .bss area for audio, so do it here.
+    i = 0;
+    lim3 = ((uintptr_t) &gAudioGlobalsEndMarker - (uintptr_t) &gAudioGlobalsStartMarker) / 8;
+    ptr64 = &gAudioGlobalsStartMarker;
+    for (k = lim3; k >= 0; k--) {
+        ptr64[i] = 0;
+        i++;
+    }
 #endif
 
 #else
-        for (i = 0; i < gAudioHeapSize / 8; i++) {
-            ((u64 *) gAudioHeap)[i] = 0;
-        }
+    for (i = 0; i < gAudioHeapSize / 8; i++) {
+        ((u64 *) gAudioHeap)[i] = 0;
+    }
 
 #ifdef TARGET_N64
-        // It seems boot.s doesn't clear the .bss area for audio, so do it here.
-        lim3 = ((uintptr_t) &gAudioGlobalsEndMarker - (uintptr_t) &gAudioGlobalsStartMarker) / 8;
-        ptr64 = &gAudioGlobalsStartMarker;
-        for (k = lim3; k >= 0; k--) {
-            *ptr64++ = 0;
-        }
+    // It seems boot.s doesn't clear the .bss area for audio, so do it here.
+    lim3 = ((uintptr_t) &gAudioGlobalsEndMarker - (uintptr_t) &gAudioGlobalsStartMarker) / 8;
+    ptr64 = &gAudioGlobalsStartMarker;
+    for (k = lim3; k >= 0; k--) {
+        *ptr64++ = 0;
+    }
 #endif
 
-        D_EU_802298D0 = 20.03042f;
-        gRefreshRate = 50;
-        port_eu_init();
-    
+    D_EU_802298D0 = 20.03042f;
+    gRefreshRate = 50;
+    port_eu_init();
+    if (k) {
+    }
 #endif
 
-        for (i = 0; i < NUMAIBUFFERS; i++) {
-            gAiBufferLengths[i] = 0xa0;
+#ifdef TARGET_N64
+    eu_stubbed_printf_3(
+        "Clear Workarea %x -%x size %x \n",
+        (uintptr_t) &gAudioGlobalsStartMarker,
+        (uintptr_t) &gAudioGlobalsEndMarker,
+        (uintptr_t) &gAudioGlobalsEndMarker - (uintptr_t) &gAudioGlobalsStartMarker
+    );
+#endif
+
+    eu_stubbed_printf_1("AudioHeap is %x\n", gAudioHeapSize);
+
+    for (i = 0; i < NUMAIBUFFERS; i++) {
+        gAiBufferLengths[i] = 0xa0;
+    }
+
+    gAudioFrameCount = 0;
+    gAudioTaskIndex = 0;
+    gCurrAiBufferIndex = 0;
+    gSoundMode = 0;
+    gAudioTask = NULL;
+    gAudioTasks[0].task.t.data_size = 0;
+    gAudioTasks[1].task.t.data_size = 0;
+    osCreateMesgQueue(&gAudioDmaMesgQueue, &gAudioDmaMesg, 1);
+    osCreateMesgQueue(&gCurrAudioFrameDmaQueue, gCurrAudioFrameDmaMesgBufs,
+                      ARRAY_COUNT(gCurrAudioFrameDmaMesgBufs));
+    gCurrAudioFrameDmaCount = 0;
+    gSampleDmaNumListItems = 0;
+
+    sound_init_main_pools(gAudioInitPoolSize);
+
+    for (i = 0; i < NUMAIBUFFERS; i++) {
+        gAiBuffers[i] = soundAlloc(&gAudioInitPool, AIBUFFER_LEN);
+
+        for (j = 0; j < (s32) (AIBUFFER_LEN / sizeof(s16)); j++) {
+            gAiBuffers[i][j] = 0;
         }
-
-        gAudioFrameCount = 0;
-        gAudioTaskIndex = 0;
-        gCurrAiBufferIndex = 0;
-        gSoundMode = 0;
-        gAudioTask = NULL;
-        gAudioTasks[0].task.t.data_size = 0;
-        gAudioTasks[1].task.t.data_size = 0;
-        osCreateMesgQueue(&gAudioDmaMesgQueue, &gAudioDmaMesg, 1);
-        osCreateMesgQueue(&gCurrAudioFrameDmaQueue, gCurrAudioFrameDmaMesgBufs,
-                          ARRAY_COUNT(gCurrAudioFrameDmaMesgBufs));
-        gCurrAudioFrameDmaCount = 0;
-        gSampleDmaNumListItems = 0;
-
-        sound_init_main_pools(gAudioInitPoolSize);
-
-        for (i = 0; i < NUMAIBUFFERS; i++) {
-            gAiBuffers[i] = soundAlloc(&gAudioInitPool, AIBUFFER_LEN);
-
-            for (j = 0; j < (s32) (AIBUFFER_LEN / sizeof(s16)); j++) {
-                gAiBuffers[i][j] = 0;
-            }
-        }
+    }
 
 #if defined(VERSION_EU)
-        gAudioResetPresetIdToLoad = 0;
-        gAudioResetStatus = 1;
-        audio_shut_down_and_reset_step();
+    gAudioResetPresetIdToLoad = 0;
+    gAudioResetStatus = 1;
+    audio_shut_down_and_reset_step();
 #else
-        audio_reset_session(&gAudioSessionPresets[0]);
+    audio_reset_session(&gAudioSessionPresets[0]);
 #endif
-    }
-    if (initType == AUD_REINIT) {
-        sound_init_main_pools(gAudioInitPoolSize);
-        bzero(&gAiBuffers, sizeof(gAiBuffers));
-        for (i = 0; i < NUMAIBUFFERS; i++) {
-            gAiBuffers[i] = soundAlloc(&gAudioInitPool, AIBUFFER_LEN);
 
-            /*for (j = 0; j < (s32) (AIBUFFER_LEN / sizeof(s16)); j++) {
-                gAiBuffers[i][j] = 0;
-            }*/
-        }
-    }
+    // Not sure about these prints
+    eu_stubbed_printf_1("Heap reset.Synth Change %x \n", 0);
+    eu_stubbed_printf_3("Heap %x %x %x\n", 0, 0, 0);
+    eu_stubbed_printf_0("Main Heap Initialize.\n");
+
     // Load headers for sounds and sequences
     gSeqFileHeader = (ALSeqFile *) buf;
     data = gMusicData;
