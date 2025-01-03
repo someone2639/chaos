@@ -13,9 +13,6 @@
 #define CELL_HEIGHT_LIMIT           20000
 #define FLOOR_LOWER_LIMIT           -11000
 #define FLOOR_LOWER_LIMIT_MISC      (FLOOR_LOWER_LIMIT + 1000)
-// same as FLOOR_LOWER_LIMIT_MISC, explicitly for shadow.c 
-// It doesn't match if ".0" is removed or ".f" is added
-#define FLOOR_LOWER_LIMIT_SHADOW    (FLOOR_LOWER_LIMIT + 1000.0)
 
 struct WallCollisionData {
     /*0x00*/ f32 x, y, z;
@@ -38,6 +35,7 @@ s32 f32_find_wall_collision(f32 *xPtr, f32 *yPtr, f32 *zPtr, f32 offsetY, f32 ra
 s32 find_wall_collisions(struct WallCollisionData *colData);
 f32 find_ceil(f32 posX, f32 posY, f32 posZ, struct Surface **pceil);
 f32 find_floor_height_and_data(f32 xPos, f32 yPos, f32 zPos, struct FloorGeometry **floorGeo);
+void find_floor_data(struct Surface *floor, struct FloorGeometry **floorGeo);
 f32 find_floor_height(f32 x, f32 y, f32 z);
 f32 find_floor(f32 xPos, f32 yPos, f32 zPos, struct Surface **pfloor);
 f32 find_water_level(f32 x, f32 z);

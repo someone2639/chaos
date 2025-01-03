@@ -302,7 +302,7 @@ static void level_cmd_load_mario_head(void) {
 }
 
 static void level_cmd_load_yay0_texture(void) {
-    load_segment_decompress_heap(CMD_GET(s16, 2), CMD_GET(void *, 4), CMD_GET(void *, 8));
+    load_segment_decompress(CMD_GET(s16, 2), CMD_GET(void *, 4), CMD_GET(void *, 8));
     sCurrentCmd = CMD_NEXT;
 }
 
@@ -477,8 +477,6 @@ static void level_cmd_create_warp_node(void) {
         warpNode->node.destLevel = CMD_GET(u8, 3) + CMD_GET(u8, 6);
         warpNode->node.destArea = CMD_GET(u8, 4);
         warpNode->node.destNode = CMD_GET(u8, 5);
-
-        warpNode->object = NULL;
 
         warpNode->next = gAreas[sCurrAreaIndex].warpNodes;
         gAreas[sCurrAreaIndex].warpNodes = warpNode;

@@ -112,15 +112,72 @@ else ifeq ($(GRUCODE),super3d) # Super3D
   DEFINES += SUPER3D_GBI=1 F3D_NEW=1
 endif
 
+# Default non-gcc opt flags
+DEFAULT_OPT_FLAGS = -falign-functions=32
+# Note: -fno-associative-math is used here to suppress warnings, ideally we would enable this as an optimization but
+# this conflicts with -ftrapping-math apparently.
+SAFETY_OPT_FLAGS = -ftrapping-math -fno-associative-math
+
+# Main opt flags
+GCC_MAIN_OPT_FLAGS = \
+  $(DEFAULT_OPT_FLAGS) $(SAFETY_OPT_FLAGS) \
+  -Os \
+  --param case-values-threshold=20 \
+  --param max-completely-peeled-insns=10 \
+  --param max-unrolled-insns=10 \
+  -finline-limit=1 \
+  -freorder-blocks-algorithm=simple  \
+
+# Surface Collision
+GCC_COLLISION_OPT_FLAGS = \
+  $(DEFAULT_OPT_FLAGS) $(SAFETY_OPT_FLAGS) \
+  -Ofast \
+  --param case-values-threshold=20 \
+  --param max-completely-peeled-insns=100 \
+  --param max-unrolled-insns=100 \
+  -finline-limit=0 \
+  -fno-inline \
+  -freorder-blocks-algorithm=simple  \
+  -falign-functions=32
+
+# Math Util
+GCC_MATH_UTIL_OPT_FLAGS = \
+  $(DEFAULT_OPT_FLAGS) $(SAFETY_OPT_FLAGS) \
+  -Ofast \
+  -fno-unroll-loops \
+  -fno-peel-loops \
+  --param case-values-threshold=20  \
+  -falign-functions=32
+#   - setting any sort of -finline-limit has shown to worsen performance with math_util.c,
+#     lower values were the worst, the higher you go - the closer performance gets to not setting it at all
+
+# Rendering graph node
+GCC_GRAPH_NODE_OPT_FLAGS = \
+  $(DEFAULT_OPT_FLAGS) $(SAFETY_OPT_FLAGS) \
+  -Ofast \
+  --param case-values-threshold=20 \
+  --param max-completely-peeled-insns=100 \
+  --param max-unrolled-insns=100 \
+  -finline-limit=0 \
+  -freorder-blocks-algorithm=simple  \
+  -falign-functions=32
+#==============================================================================#
+
 ifeq ($(COMPILER),gcc)
   NON_MATCHING := 1
   MIPSISET     := -mips3
-  OPT_FLAGS    := -O2
+  OPT_FLAGS           := $(GCC_MAIN_OPT_FLAGS)
+  COLLISION_OPT_FLAGS  = $(GCC_COLLISION_OPT_FLAGS)
+  MATH_UTIL_OPT_FLAGS  = $(GCC_MATH_UTIL_OPT_FLAGS)
+  GRAPH_NODE_OPT_FLAGS = $(GCC_GRAPH_NODE_OPT_FLAGS)
 else ifeq ($(COMPILER),clang)
   NON_MATCHING := 1
   # clang doesn't support ABI 'o32' for 'mips3'
   MIPSISET     := -mips2
-  OPT_FLAGS    := -O2
+  OPT_FLAGS    := $(DEFAULT_OPT_FLAGS)
+  COLLISION_OPT_FLAGS  = $(DEFAULT_OPT_FLAGS)
+  MATH_UTIL_OPT_FLAGS  = $(DEFAULT_OPT_FLAGS)
+  GRAPH_NODE_OPT_FLAGS = $(DEFAULT_OPT_FLAGS)
 endif
 
 
@@ -185,7 +242,7 @@ BUILD_DIR_BASE := build
 # BUILD_DIR is the location where all build artifacts are placed
 BUILD_DIR      := $(BUILD_DIR_BASE)/$(VERSION)_$(CONSOLE)
 
-COMPRESS ?= rnc1
+COMPRESS ?= yay0
 $(eval $(call validate-option,COMPRESS,mio0 yay0 gzip rnc1 rnc2 uncomp))
 ifeq ($(COMPRESS),gzip)
   DEFINES += GZIP=1
@@ -445,12 +502,24 @@ else
 endif
 ENDIAN_BITWIDTH       := $(BUILD_DIR)/endian-and-bitwidth
 EMULATOR = parallel-launcher
+SC64DEPLOYER = /mnt/c/sc64/sc64deployer.exe upload
 EMU_FLAGS =
-ifneq (,$(call find-command,wslview))
-    LOADER = ./$(TOOLS_DIR)/UNFLoader.exe
-else
-    LOADER = ./$(TOOLS_DIR)/UNFLoader
+
+# Adding a txt file to this location will then reference a UNFLoader path specified in the file, instead of locally.
+# This is expecially important for WSL users because UNFLoader.exe is incredibly slow when run within WSL's filesystem, so this can be used to point to the C drive.
+# The file should only contain the directory path that contains UNFLoader[.exe] (do not specify the filename).
+LOADER_DIR_FILE_SPECIFICATION_PATH = ~/.local/share/HackerSM64/UNFLoader-dir.txt
+LOADER_DIR = ./$(TOOLS_DIR)
+
+ifneq (,$(wildcard $(LOADER_DIR_FILE_SPECIFICATION_PATH)))
+  LOADER_DIR = $(shell cat $(LOADER_DIR_FILE_SPECIFICATION_PATH))
 endif
+ifneq (,$(call find-command,wslview))
+  LOADER_EXEC = $(LOADER_DIR)/UNFLoader.exe
+else
+  LOADER_EXEC = $(LOADER_DIR)/UNFLoader
+endif
+
 SHA1SUM = sha1sum
 PRINT = printf
 
@@ -497,9 +566,21 @@ test: $(ROM)
 
 load: $(ROM)
 	cp $< /run/media/faris/CF62-9261
+sc: $(ROM)
+	$(SC64DEPLOYER) $(EMU_FLAGS) $<
 
-unf: $(ROM) $(LOADER)
-	$(LOADER) -d -r $<
+# download and extract most recent unfloader build if needed
+$(LOADER_EXEC):
+ifeq (,$(wildcard $(LOADER_EXEC)))
+	@$(PRINT) "Downloading latest UNFLoader...$(NO_COL)\n"
+	$(PYTHON) $(TOOLS_DIR)/get_latest_unfloader.py $(LOADER_DIR)
+endif
+
+load: $(ROM) $(LOADER_EXEC)
+	$(LOADER_EXEC) -r $<
+
+unf: $(ROM) $(LOADER_EXEC)
+	$(LOADER_EXEC) -d -r $<
 
 libultra: $(BUILD_DIR)/libultra.a
 
@@ -548,6 +629,18 @@ $(BUILD_DIR)/src/usb/usb.o: OPT_FLAGS := -O0
 $(BUILD_DIR)/src/usb/usb.o: CFLAGS += -Wno-unused-variable -Wno-sign-compare -Wno-unused-function
 $(BUILD_DIR)/src/usb/debug.o: OPT_FLAGS := -O0
 $(BUILD_DIR)/src/usb/debug.o: CFLAGS += -Wno-unused-parameter -Wno-maybe-uninitialized
+# File specific opt flags
+$(BUILD_DIR)/src/audio/heap.o:          OPT_FLAGS := -Os -fno-jump-tables
+$(BUILD_DIR)/src/audio/synthesis.o:     OPT_FLAGS := -Os -fno-jump-tables
+
+$(BUILD_DIR)/src/engine/surface_collision.o:  OPT_FLAGS := $(COLLISION_OPT_FLAGS)
+$(BUILD_DIR)/src/engine/math_util.o:          OPT_FLAGS := $(MATH_UTIL_OPT_FLAGS)
+$(BUILD_DIR)/src/game/rendering_graph_node.o: OPT_FLAGS := $(GRAPH_NODE_OPT_FLAGS)
+
+# $(info OPT_FLAGS:            $(OPT_FLAGS))
+# $(info COLLISION_OPT_FLAGS:  $(COLLISION_OPT_FLAGS))
+# $(info MATH_UTIL_OPT_FLAGS:  $(MATH_UTIL_OPT_FLAGS))
+# $(info GRAPH_NODE_OPT_FLAGS: $(GRAPH_NODE_OPT_FLAGS))
 
 ALL_DIRS := $(BUILD_DIR) $(addprefix $(BUILD_DIR)/,$(SRC_DIRS) $(GODDARD_SRC_DIRS) $(LIBZ_SRC_DIRS) $(ULTRA_BIN_DIRS) $(BIN_DIRS) $(TEXTURE_DIRS) $(TEXT_DIRS) $(SOUND_SAMPLE_DIRS) $(addprefix levels/,$(LEVEL_DIRS)) rsp include) $(YAY0_DIR) $(addprefix $(YAY0_DIR)/,$(VERSION)) $(SOUND_BIN_DIR) $(SOUND_BIN_DIR)/sequences/$(VERSION)
 

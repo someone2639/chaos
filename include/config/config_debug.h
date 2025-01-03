@@ -38,3 +38,8 @@
  * Intentionally crash the game if a certain condition is not met.
  */
 #define DEBUG_ASSERTIONS
+
+/**
+ * Because what if I want to listen to other music while working on this without having to hear BoB music?
+ */
+// #define MUTE_MUSIC_PLAYERS

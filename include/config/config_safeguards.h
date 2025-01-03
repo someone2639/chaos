@@ -60,6 +60,7 @@
     #undef DEBUG_LEVEL_SELECT
     #undef ENABLE_DEBUG_FREE_MOVE
     #undef DEBUG_ASSERTIONS
+    #undef MUTE_MUSIC_PLAYERS
 #endif // DISABLE_ALL
 
 #ifdef USE_PROFILER

@@ -148,7 +148,7 @@ SECTIONS
 #include "rsptext.inc.ld"
       BUILD_DIR/lib/aspMain.o(.text*);
       lib/PR/audio/n_aspMain.o(.text*);
-      lib/PR/hvqm/hvqm2sp1.o(.text);
+      lib/PR/hvqm/hvqm2sp1.o(.text*);
 
       /* data */
       BUILD_DIR/src/boot*.o(.data*);

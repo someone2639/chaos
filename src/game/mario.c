@@ -6,6 +6,7 @@
 #include "behavior_actions.h"
 #include "behavior_data.h"
 #include "camera.h"
+#include "emutest.h"
 #include "engine/graph_node.h"
 #include "engine/math_util.h"
 #include "engine/surface_collision.h"
@@ -1882,8 +1883,8 @@ void init_mario_from_save_file(void) {
     gMarioState->spawnInfo = &gPlayerSpawnInfos[0];
     gMarioState->statusForCamera = &gPlayerCameraState[0];
     gMarioState->marioBodyState = &gBodyStates[0];
-    gMarioState->controller = &gControllers[0];
     gMarioState->animList = &gMarioAnimsBuf;
+    gMarioState->controller = &gControllers[0];
 
     gMarioState->numCoins = 0;
     gMarioState->numStars =

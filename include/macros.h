@@ -100,6 +100,12 @@
 #define VIRTUAL_TO_PHYSICAL2(addr)  ((void *)(addr))
 #endif
 
-#define FORCE_CRASH { *(vs8*)0 = 0; }
+#define FORCE_CRASH { *(volatile s8*)0 = 0; }
+
+enum VIModes {
+    MODE_NTSC,
+    MODE_MPAL,
+    MODE_PAL,
+};
 
 #endif // MACROS_H

@@ -120,11 +120,13 @@ s32 act_idle(struct MarioState *m) {
     }
 
     if (m->actionState == 3) {
+#ifndef NO_SLEEP
         if ((m->area->terrainType & TERRAIN_MASK) == TERRAIN_SNOW) {
             return set_mario_action(m, ACT_SHIVERING, 0);
         } else {
             return set_mario_action(m, ACT_START_SLEEPING, 0);
         }
+#endif
     }
 
     if (m->actionArg & 1) {
@@ -153,6 +155,9 @@ s32 act_idle(struct MarioState *m) {
             // and that he's gone through 10 cycles before sleeping.
             // actionTimer is used to track how many cycles have passed.
             if (++m->actionState == 3) {
+#ifdef NO_SLEEP
+                m->actionState = 0;
+#else
                 f32 deltaYOfFloorBehindMario = m->pos[1] - find_floor_height_relative_polar(m, -0x8000, 60.0f);
                 if (deltaYOfFloorBehindMario < -24.0f || 24.0f < deltaYOfFloorBehindMario || m->floor->flags & SURFACE_FLAG_DYNAMIC) {
                     m->actionState = 0;
@@ -163,6 +168,7 @@ s32 act_idle(struct MarioState *m) {
                         m->actionState = 0;
                     }
                 }
+#endif
             }
         }
     }

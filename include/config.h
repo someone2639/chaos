@@ -63,7 +63,7 @@
 #include "config/config_debug.h"
 
 // Local config - include a gitignore'd config file that's specific to just the user (if the file exists)
-#if __has_include("config/config_local.h")
+#if __has_include("config/config_local.h") && !defined(DISABLE_ALL)
     #include "config/config_local.h"
 #endif
 

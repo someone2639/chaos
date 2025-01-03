@@ -2261,7 +2261,7 @@ void render_pause_red_coins(void) {
 void render_widescreen_setting(void) {
     gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
-    if (!widescreenConfig) {
+    if (!gConfig.widescreen) {
         print_generic_string(10, 20, textCurrRatio43);
         print_generic_string(10,  7, textPressL);
     } else {
@@ -2270,8 +2270,8 @@ void render_widescreen_setting(void) {
     }
     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
     if (gPlayer1Controller->buttonPressed & L_TRIG){
-        widescreenConfig ^= 1;
-        save_file_set_widescreen_mode(widescreenConfig);
+        gConfig.widescreen ^= 1;
+        save_file_set_widescreen_mode(gConfig.widescreen);
     }
 }
 #endif
