@@ -29,7 +29,23 @@ struct PatchCard *sAvailablePatches[] = {
     &sTestChaosPatch4,
 };
 
-s32 numCards = 4;
+struct PatchSelectionMenu gPatchSelectionMenu = {
+    0, 4, FALSE,
+};
+
+void handle_patch_selection_inputs() {
+    if(gPlayer1Controller->buttonPressed & D_JPAD) {
+        gPatchSelectionMenu.selectedPatch++;
+        if(gPatchSelectionMenu.selectedPatch > gPatchSelectionMenu.numCards - 1) {
+            gPatchSelectionMenu.selectedPatch = 0;
+        }
+    } else if (gPlayer1Controller->buttonPressed & U_JPAD) {
+        gPatchSelectionMenu.selectedPatch--;
+        if(gPatchSelectionMenu.selectedPatch < 0) {
+            gPatchSelectionMenu.selectedPatch = gPatchSelectionMenu.numCards - 1;
+        }
+    }
+}
 
 void patch_bg_scroll() {
     int i = 0;
@@ -101,17 +117,23 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card) {
 }
 
 void display_patch_selection_ui() {
-    f32 cardScale = 0.27f;
-    f32 startPoint = 10;
-    f32 endPoint = SCREEN_HEIGHT  - startPoint;
-    f32 cardGap = (endPoint - startPoint) / numCards;
+    f32 scale = 0.26f;
+    f32 cardScale;
+    f32 startPoint = SCREEN_HEIGHT - 10;
+    f32 endPoint = 10;
+    f32 cardGap = (endPoint - startPoint) / gPatchSelectionMenu.numCards;
     f32 cardY; 
-    f32 cardX = SCREEN_WIDTH - ((DEFAULT_CARD_WIDTH / 2) * cardScale) - 10;
+    f32 cardX = SCREEN_WIDTH - ((DEFAULT_CARD_WIDTH / 2) * scale) - 10;
 
     patch_bg_scroll();
     create_dl_ortho_matrix();
     
-    for(int i = 0; i < numCards; i++) {
+    for(int i = 0; i < gPatchSelectionMenu.numCards; i++) {
+        if(i == gPatchSelectionMenu.selectedPatch) {
+            cardScale = scale * 1.1f;
+        } else {
+            cardScale = scale;
+        }
         cardY = startPoint + (cardGap * i) + (cardGap * 0.5f);
         render_patch_card(cardX, cardY, cardScale, sAvailablePatches[i]);
     }

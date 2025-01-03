@@ -32,6 +32,7 @@
 #include "save_file.h"
 #include "sound_init.h"
 #include "rumble_init.h"
+#include "patch_selection_ui.h"
 
 u32 unused80339F10;
 u8 unused80339F1C[20];
@@ -1285,6 +1286,15 @@ void update_mario_button_inputs(struct MarioState *m) {
     } else if (m->framesSinceB < 0xFF) {
         m->framesSinceB++;
     }
+
+    //TEMP
+    if(m->controller->buttonDown & L_TRIG) {
+        gPatchSelectionMenu.isActive = TRUE;
+        handle_patch_selection_inputs();
+    } else {
+        gPatchSelectionMenu.isActive = FALSE;
+    }
+    
 }
 
 /**

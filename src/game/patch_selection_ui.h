@@ -7,11 +7,18 @@
 #define DEFAULT_CARD_WIDTH  544
 #define MAX_CARDS   4
 
-extern s32 sSelectedPatch;
-
 struct PatchCard {
     u8 quality;
     const char patchName[];
 };
 
+struct PatchSelectionMenu {
+    s8 selectedPatch;
+    u8 numCards;
+    u8 isActive;
+};
+
+extern struct PatchSelectionMenu gPatchSelectionMenu;
+
 void display_patch_selection_ui();
+void handle_patch_selection_inputs();
