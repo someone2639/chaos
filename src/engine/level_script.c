@@ -777,7 +777,6 @@ void hvqm_play(void *addr) {
     osDestroyThread(&hvqmThread);
     bzero(&hvqmThread, sizeof(OSThread));
 
-    audio_init(AUD_REINIT);
     gHVQMPlaying = 0;
 }
 

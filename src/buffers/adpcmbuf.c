@@ -20,4 +20,6 @@
  */
 ALIGNED16 u8 adpcmbuf[AUDIO_RECORD_SIZE_MAX];
 
+ALIGNED16 s16 pcmbuf[NUM_PCMBUFs][PCMBUF_SIZE];
+
 /* end */
