@@ -10,10 +10,10 @@
 #include "object_helpers.h"
 
 //temp
-struct PatchCard sTestChaosPatch1 = {2, "Effect 1"};
-struct PatchCard sTestChaosPatch2 = {3,  "Effect 2"};
-struct PatchCard sTestChaosPatch3 = {1,  "Effect 3"};
-struct PatchCard sTestChaosPatch4 = {4,  "Effect 4"};
+struct PatchCard sTestChaosPatch1 = {2, 0, "Effect 1"};
+struct PatchCard sTestChaosPatch2 = {3, 2,  "Effect 2"};
+struct PatchCard sTestChaosPatch3 = {1, 10, "Effect 3"};
+struct PatchCard sTestChaosPatch4 = {4, 3, "Effect 4"};
 
 u8 sQualityColors[][4] = {
     {0x9A, 0x9A, 0x9A},
@@ -107,7 +107,7 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
     guTranslate(transMtx, x, y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx++),
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx),
           G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
     if(reverse) {
         gSPDisplayList(gDisplayListHead++, patch_bg_r_mesh_r_mesh);
@@ -127,6 +127,19 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
         gSPDisplayList(gDisplayListHead++, patch_quality_bead);
     }
     gSPDisplayList(gDisplayListHead++, patch_quality_bead_end);
+
+    //Draw star timer
+    if(card->duration > 0) {
+        Mtx* transTimerMtx = alloc_display_list(sizeof(Mtx));
+        //Find offset to draw timer based on how many quality beads there are
+        s32 timerX = 200 + (50 * (MAX_QUALITY - quality));
+        guTranslate(transTimerMtx, timerX, 0, 0);
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transTimerMtx),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+        gSPDisplayList(gDisplayListHead++, star_timer_Mesh_mesh);
+        //temp
+        print_text_fmt_int(x + 110, y - 20, "%d" ,card->duration);
+    }
 
     //temp
     print_text(x + 5, y - 35, card->patchName);
