@@ -63,5 +63,7 @@ extern Gfx dl_billboard_num_6[];
 extern Gfx dl_billboard_num_7[];
 extern Gfx dl_billboard_num_8[];
 extern Gfx dl_billboard_num_9[];
+extern Gfx patch_bg_mesh_mesh[];
+extern Vtx patch_bg_mesh_mesh_vtx_0[];
 
 #endif // SEGMENT2_H
