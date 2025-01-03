@@ -3,7 +3,12 @@
 /**
  * Enables widescreen (16:9) support.
  */
-// #define WIDE
+#define WIDE
+
+/**
+ * Skips the peach letter cutscene.
+ */
+#define PEACH_SKIP
 
 /**
  * Include the English characters that were missing from US segment2
