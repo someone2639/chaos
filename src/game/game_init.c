@@ -724,6 +724,8 @@ void setup_game_memory(void) {
  * Main game loop thread. Runs forever as long as the game continues.
  */
 #include "game/main.h"
+extern void hvqm_play(void*);
+extern u8 _capcomSegmentRomStart[];
 void thread5_game_loop(UNUSED void *arg) {
     struct LevelCommand *addr;
 
@@ -771,6 +773,12 @@ void thread5_game_loop(UNUSED void *arg) {
         read_controller_inputs();
         addr = level_script_execute(addr);
 
+        if (gPlayer1Controller->buttonPressed & L_TRIG) {
+            char aa[100];
+            sprintf(aa, "Play that bitch!\n");
+            osSyncPrintf(aa);
+            hvqm_play(_capcomSegmentRomStart);
+        }
         display_and_vsync();
 
         // when debug info is enabled, print the "BUF %d" information.
@@ -785,4 +793,5 @@ void thread5_game_loop(UNUSED void *arg) {
         }
 #endif
     }
+
 }

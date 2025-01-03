@@ -757,19 +757,17 @@ static void level_cmd_get_or_set_var(void) {
     sCurrentCmd = CMD_NEXT;
 }
 
-void level_cmd_play_hvqm(void) {
-#ifdef HVQM
-    uintptr_t addr = CMD_GET(uintptr_t, 4);
-
+void hvqm_play(void *addr) {
     extern u8 _hvqmworkSegmentBssStart[];
     extern u8 _hvqbufSegmentBssEnd[];
+    gHVQMPlaying = 1;
 
     bzero(_hvqmworkSegmentBssStart, (u32)_hvqbufSegmentBssEnd - (u32)_hvqmworkSegmentBssStart);
 
     hvqm_reset_bss();
     timekeeper_reset_bss();
 
-    createHvqmThread(addr);
+    createHvqmThread((uintptr_t)addr);
     osStartThread(&hvqmThread);
     osRecvMesg(&gHVQM_SyncQueue, NULL, OS_MESG_BLOCK);
 
@@ -777,8 +775,17 @@ void level_cmd_play_hvqm(void) {
     osViSetEvent(&gIntrMesgQueue, (OSMesg) MESG_VI_VBLANK, 1);
 
     osDestroyThread(&hvqmThread);
+    bzero(&hvqmThread, sizeof(OSThread));
 
     audio_init(AUD_REINIT);
+    gHVQMPlaying = 0;
+}
+
+void level_cmd_play_hvqm(void) {
+#ifdef HVQM
+    uintptr_t addr = CMD_GET(uintptr_t, 4);
+
+    hvqm_play((void*)addr);
 #endif
     sCurrentCmd = CMD_NEXT;
 }
@@ -853,9 +860,6 @@ struct LevelCommand *level_script_execute(struct LevelCommand *cmd) {
     sCurrentCmd = cmd;
 
     while (sScriptStatus == SCRIPT_RUNNING) {
-        char aa[100];
-        sprintf(aa, "CMD %02X %08X\n", sCurrentCmd->type, LevelScriptJumpTable[sCurrentCmd->type]);
-        osSyncPrintf(aa);
         LevelScriptJumpTable[sCurrentCmd->type]();
     }
 

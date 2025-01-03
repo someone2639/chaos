@@ -75,6 +75,8 @@ extern s8 gShowDebugText;
 #define MESG_START_GFX_SPTASK 103
 #define MESG_NMI_REQUEST 104
 
+extern u32 gHVQMPlaying;
+
 void set_vblank_handler(s32 index, struct VblankHandler *handler, OSMesgQueue *queue, OSMesg *msg);
 void dispatch_audio_sptask(struct SPTask *spTask);
 void exec_display_list(struct SPTask *spTask);

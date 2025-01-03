@@ -168,6 +168,7 @@ SECTIONS
       /* rodata */
       BUILD_DIR/src/boot*.o(.rodata*);
       BUILD_DIR/src/audio*.o(.rodata*);
+      BUILD_DIR/src/hvqm*.o(.rodata*);
 #if defined(ISVPRINT) || defined(UNF)
       *libultra_d.a:*.o(.rodata*);
 #else

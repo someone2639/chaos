@@ -19,6 +19,7 @@
 #include "usb/debug.h"
 #endif
 
+u32 gHVQMPlaying = 0;
 
 OSThread D_80339210; // unused?
 OSThread gIdleThread;
@@ -251,6 +252,10 @@ void handle_sp_complete(void) {
 
     gActiveSPTask = NULL;
 
+    if (gHVQMPlaying) {
+        return;
+    }
+
     if (curSPTask->state == SPTASK_STATE_INTERRUPTED) {
         // handle_vblank tried to start an audio task while there was already a
         // gfx task running, so it had to interrupt the gfx task. That interruption
@@ -357,19 +362,21 @@ void thread3_main(UNUSED void *arg) {
 }
 
 void set_vblank_handler(s32 index, struct VblankHandler *handler, OSMesgQueue *queue, OSMesg *msg) {
-    handler->queue = queue;
-    handler->msg = msg;
+    if (((u32)handler & 0x80000000) == 0x80000000) {
+        handler->queue = queue;
+        handler->msg = msg;
 
-    switch (index) {
-        case 1:
-            gVblankHandler1 = handler;
-            break;
-        case 2:
-            gVblankHandler2 = handler;
-            break;
-        case 3:
-            gVblankHandler3 = handler;
-            break;
+        switch (index) {
+            case 1:
+                gVblankHandler1 = handler;
+                break;
+            case 2:
+                gVblankHandler2 = handler;
+                break;
+            case 3:
+                gVblankHandler3 = handler;
+                break;
+        }
     }
 }
 

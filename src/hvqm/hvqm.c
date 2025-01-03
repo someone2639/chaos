@@ -90,6 +90,11 @@ void hvqm_reset_bss(void) {
     bzero(&hvq_sparg, sizeof(HVQM2Arg));
 
     bzero(hvqmStack, sizeof(hvqmStack));
+    bzero(hvqwork, sizeof(u16) * (MAXWIDTH/8)*(MAXHEIGHT/4)*4);
+    bzero(hvq_spfifo, HVQ_SPFIFO_SIZE);
+    bzero(hvq_yieldbuf, HVQM2_YIELD_DATA_SIZE);
+
+    init_cfb();
 }
 
 static u32 next_audio_record( void *pcmbuf ) {
@@ -128,8 +133,8 @@ OSThread hvqmThread;
 static u64 hvqmStack[STACKSIZE/sizeof(u64)];
 
 void hvqm_main_proc(uintptr_t vidPtr) {
-    int h_offset, v_offset;	/* Position of image display */
-    int screen_offset;		/* Number of pixels from start of frame buffer to display position */
+    // int h_offset, v_offset;	/* Position of image display */
+    int screen_offset = 0;		/* Number of pixels from start of frame buffer to display position */
     u32 usec_per_frame;
     int prev_bufno = -1;
 
@@ -179,7 +184,11 @@ void hvqm_main_proc(uintptr_t vidPtr) {
             HVQM2Record *record_header;
             u16 frame_format;
             int bufno;
-            OSMesg msg;
+            // OSMesg msg;
+
+            char aa[50];
+            sprintf(aa, "Video Remain: %d\n", video_remain);
+            osSyncPrintf(aa);
 
             if ( disptime > 0 && tkGetTime() > 0) {
                 if ( tkGetTime() < (disptime - (usec_per_frame * 2)) ) {
@@ -202,12 +211,18 @@ void hvqm_main_proc(uintptr_t vidPtr) {
                   release_all_cfb();
                   do {
                     disptime += usec_per_frame;
-                    if ( --video_remain == 0 ) break;
+                    if ( --video_remain == 0 ) {
+                        osSyncPrintf("LINE 215 BREAK\n");
+                        break;
+                    }
                     video_streamP = get_record( record_header, hvqbuf, 
 				    HVQM2_VIDEO, video_streamP, 
 				    &videoDmaMesgBlock, &videoDmaMessageQ );
                   } while (load16( record_header->format ) != HVQM2_VIDEO_KEYFRAME || tkGetTime() > disptime );
-                  if ( video_remain == 0 ) break;
+                  if ( video_remain == 0 ) {
+                      osSyncPrintf("LINE 220 BREAK\n");
+                      break;
+                  }
                 }
             }
             
@@ -260,11 +275,13 @@ void hvqm_main_proc(uintptr_t vidPtr) {
         }
         
         if (video_remain == 0) {
+            osSyncPrintf("Loop Broken\n");
             osAiSetFrequency(gAudioSessionPresets[0].frequency);
             osSetEventMesg(OS_EVENT_AI, NULL, 0);
             osDestroyThread(&tkThread);
             osDestroyThread(&daCounterThread);
             osSendMesg(&gHVQM_SyncQueue, 0, OS_MESG_BLOCK);
+            break;
         }
     }
 }
