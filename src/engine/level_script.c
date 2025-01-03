@@ -28,6 +28,7 @@
 #include "surface_collision.h"
 #include "surface_load.h"
 #include "game/emutest.h"
+#include "audio/data.h"
 
 #define CMD_GET(type, offset) (*(type *) (CMD_PROCESS_OFFSET(offset) + (u8 *) sCurrentCmd))
 
@@ -814,6 +815,8 @@ void hvqm_play(void *addr) {
 
     osDestroyThread(&hvqmThread);
     bzero(&hvqmThread, sizeof(OSThread));
+
+    osAiSetFrequency(gAudioSessionSettings.frequency);
 
     gHVQMPlaying = 0;
 }
