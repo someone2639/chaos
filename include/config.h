@@ -57,9 +57,15 @@
 #define BORDER_HEIGHT_EMULATOR 0
 #endif
 
+#include "config/config_rom.h"
 #include "config/config_audio.h"
 #include "config/config_general.h"
 #include "config/config_debug.h"
+
+// Local config - include a gitignore'd config file that's specific to just the user (if the file exists)
+#if __has_include("config/config_local.h")
+    #include "config/config_local.h"
+#endif
 
 #include "config/config_safeguards.h"
 
