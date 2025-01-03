@@ -190,9 +190,9 @@ void hvqm_main_proc(uintptr_t vidPtr) {
             int bufno;
             // OSMesg msg;
 
-            char aa[50];
-            sprintf(aa, "Video Remain: %d\n", video_remain);
-            osSyncPrintf(aa);
+            // char aa[50];
+            // sprintf(aa, "Video Remain: %d\n", video_remain);
+            // osSyncPrintf(aa);
 
             if ( disptime > 0 && tkGetTime() > 0) {
                 if ( tkGetTime() < (disptime - (usec_per_frame * 2)) ) {
@@ -216,7 +216,7 @@ void hvqm_main_proc(uintptr_t vidPtr) {
                   do {
                     disptime += usec_per_frame;
                     if ( --video_remain == 0 ) {
-                        osSyncPrintf("LINE 215 BREAK\n");
+                        // osSyncPrintf("LINE 215 BREAK\n");
                         break;
                     }
                     video_streamP = get_record( record_header, hvqbuf, 
@@ -224,7 +224,7 @@ void hvqm_main_proc(uintptr_t vidPtr) {
 				    &videoDmaMesgBlock, &videoDmaMessageQ );
                   } while (load16( record_header->format ) != HVQM2_VIDEO_KEYFRAME || tkGetTime() > disptime );
                   if ( video_remain == 0 ) {
-                      osSyncPrintf("LINE 220 BREAK\n");
+                      // osSyncPrintf("LINE 220 BREAK\n");
                       break;
                   }
                 }
@@ -279,7 +279,7 @@ void hvqm_main_proc(uintptr_t vidPtr) {
         }
         
         if (video_remain == 0) {
-            osSyncPrintf("Loop Broken\n");
+            // osSyncPrintf("Loop Broken\n");
             // osAiSetFrequency(gAudioSessionPresets.frequency);
             osSetEventMesg(OS_EVENT_AI, NULL, 0);
             osDestroyThread(&tkThread);
