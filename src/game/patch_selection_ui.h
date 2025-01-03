@@ -4,6 +4,8 @@
 #include "types.h"
 
 #define DEFAULT_CARD_HEIGHT 200
+#define DEFAULT_CARD_WIDTH  544
+#define MAX_CARDS   4
 
 extern s32 sSelectedPatch;
 

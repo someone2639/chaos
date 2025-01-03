@@ -12,7 +12,24 @@
 //temp
 struct PatchCard sTestChaosPatch1 = {2, "Effect 1"};
 struct PatchCard sTestChaosPatch2 = {3,  "Effect 2"};
-s32 numCards = 2;
+struct PatchCard sTestChaosPatch3 = {1,  "Effect 3"};
+struct PatchCard sTestChaosPatch4 = {4,  "Effect 4"};
+
+u8 sQualityColors[][4] = {
+    {0x9A, 0x9A, 0x9A},
+    {0x20, 0xDB, 0x1D},
+    {0x47, 0x42, 0xDB},
+    {0x8B, 0x00, 0xC5},
+};
+
+struct PatchCard *sAvailablePatches[] = {
+    &sTestChaosPatch1,
+    &sTestChaosPatch2,
+    &sTestChaosPatch3,
+    &sTestChaosPatch4,
+};
+
+s32 numCards = 4;
 
 void patch_bg_scroll() {
     int i = 0;
@@ -43,35 +60,59 @@ void patch_bg_scroll() {
 	currentX += deltaX;	currentY += deltaY;
 }
 
-void display_patch_selection_ui() {
-    Mtx *transMtx = alloc_display_list(sizeof(Mtx) * numCards);
-    Mtx *scaleMtx = alloc_display_list(sizeof(Mtx) * numCards);
+/*
+    Draws a patch card at the given x, y coordinates
+*/
+void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card) {
+    s32 quality = card->quality;
+    s32 colorID = quality - 1;
+    Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
+    Mtx *transMtx = alloc_display_list(sizeof(Mtx) * (quality + 2));
 
+    gDPSetPrimColor(gDisplayListHead++, 0, 0, 
+                    sQualityColors[colorID][0], sQualityColors[colorID][1], sQualityColors[colorID][2], 255);
+
+    //Draw patch bg
+    guScale(scaleMtx, scale, scale, 1.0f);
+    guTranslate(transMtx, x, y, 0);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx++),
+          G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+    gSPDisplayList(gDisplayListHead++, patch_bg_mesh_mesh);
+    gSPDisplayList(gDisplayListHead++, patch_quality_bead_begin);
+    
+    //Draw patch quality beads
+    guTranslate(transMtx, -240, 60, 0);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
+          G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+    for(int i = 0; i < quality; i++) {
+        guTranslate(transMtx, 50, 0, 0);
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+        gSPDisplayList(gDisplayListHead++, patch_quality_bead);
+    }
+    gSPDisplayList(gDisplayListHead++, patch_quality_bead_end);
+
+    //temp
+    print_text_centered(x, y - 10, card->patchName);
+
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+}
+
+void display_patch_selection_ui() {
     f32 cardScale = 0.27f;
-    s32 cardHeight = (DEFAULT_CARD_HEIGHT * cardScale);
     f32 startPoint = 10;
     f32 endPoint = SCREEN_HEIGHT  - startPoint;
     f32 cardGap = (endPoint - startPoint) / numCards;
-    f32 cardY;
-    f32 cardX = (SCREEN_WIDTH / 6) * 5;
+    f32 cardY; 
+    f32 cardX = SCREEN_WIDTH - ((DEFAULT_CARD_WIDTH / 2) * cardScale) - 10;
 
     patch_bg_scroll();
     create_dl_ortho_matrix();
-    gDPSetPrimColor(gDisplayListHead++, 0, 0, 255, 0, 255, 255);
     
     for(int i = 0; i < numCards; i++) {
         cardY = startPoint + (cardGap * i) + (cardGap * 0.5f);
-        guScale(scaleMtx, cardScale, cardScale, 1.0f);
-        guTranslate(transMtx, cardX, cardY, 0);
-        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
-                  G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx++),
-              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-
-        gSPDisplayList(gDisplayListHead++, patch_bg_mesh_mesh);
-
-        gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
-        print_text(cardX, cardY, "a");
+        render_patch_card(cardX, cardY, cardScale, sAvailablePatches[i]);
     }
-    //print_text(20, 20, sTestChaosPatch1.patchName);
 }
