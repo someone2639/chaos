@@ -19,6 +19,12 @@
     #define BAD_RETURN(cmd) cmd
 #endif
 
+#define SCREEN_CENTER_X (SCREEN_WIDTH  / 2)
+#define SCREEN_CENTER_Y (SCREEN_HEIGHT / 2)
+
+#ifdef WIDE
+extern u8 widescreenConfig;
+#endif
 
 struct Controller {
   /*0x00*/ s16 rawStickX;       //

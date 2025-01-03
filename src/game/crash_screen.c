@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "sm64.h"
+#include "debug.h"
 
 #include "printf.h"
 
@@ -181,7 +182,12 @@ void draw_crash_screen(OSThread *thread) {
     }
 
     crash_screen_draw_rect(25, 20, 270, 25);
-    crash_screen_print(30, 25, "THREAD:%d  (%s)", thread->id, gCauseDesc[cause]);
+    if (__n64Assert_Filename) {
+        crash_screen_print(30, 15, "Assertion failed");
+        crash_screen_print(30, 25, "%s:%d - %s", __n64Assert_Filename, __n64Assert_LineNum, __n64Assert_Message);
+    } else {
+        crash_screen_print(30, 25, "THREAD:%d  (%s)", thread->id, gCauseDesc[cause]);
+    }
     crash_screen_print(30, 35, "PC:%08XH   SR:%08XH   VA:%08XH", tc->pc, tc->sr, tc->badvaddr);
     osWritebackDCacheAll();
     crash_screen_sleep(2000);
@@ -226,6 +232,18 @@ void draw_crash_screen(OSThread *thread) {
     osWritebackDCacheAll();
     osViBlack(FALSE);
     osViSwapBuffer(gCrashScreen.framebuffer);
+}
+
+char *__n64Assert_Filename;
+u32   __n64Assert_LineNum;
+char *__n64Assert_Message;
+
+void __n64Assert(char *fileName, u32 lineNum, char *message) {
+    __n64Assert_Filename = fileName;
+    __n64Assert_LineNum = lineNum;
+    __n64Assert_Message = message;
+
+    *(volatile int*)NULL = 0;
 }
 
 OSThread *get_crashed_thread(void) {

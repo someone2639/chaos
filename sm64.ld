@@ -129,6 +129,7 @@ SECTIONS
    BEGIN_SEG(main, .)
    {
       KEEP(BUILD_DIR/asm/entry.o(.text));
+      KEEP(BUILD_DIR/asm/pj64_get_count_factor_asm.o(.text*));
 
       BUILD_DIR/src/boot*.o(.text);
       BUILD_DIR/src/hvqm*.o(.text);
@@ -245,7 +246,9 @@ SECTIONS
    __mainPoolSize = RAM_END - .;
 
    __expansionRamStart = 0x80400000;
+#ifndef USE_EXT_RAM
    ASSERT((. <= __expansionRamStart), "Error: RDRAM expanded into Expansion RAM, despite Expansion RAM not being defined.")
+#endif
 
    BEGIN_SEG(entry, 0x10000000)
    {

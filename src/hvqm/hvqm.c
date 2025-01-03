@@ -276,7 +276,7 @@ void hvqm_main_proc(uintptr_t vidPtr) {
         
         if (video_remain == 0) {
             osSyncPrintf("Loop Broken\n");
-            osAiSetFrequency(gAudioSessionPresets[0].frequency);
+            // osAiSetFrequency(gAudioSessionPresets.frequency);
             osSetEventMesg(OS_EVENT_AI, NULL, 0);
             osDestroyThread(&tkThread);
             osDestroyThread(&daCounterThread);
@@ -288,7 +288,7 @@ void hvqm_main_proc(uintptr_t vidPtr) {
 
 void createHvqmThread(uintptr_t vidPtr) {
   osCreateMesgQueue( &hvqmMesgQ, &hvqmMesgBuf, 1 );
-  osCreateThread( &hvqmThread, HVQM_THREAD_ID, (void (*)(void*))hvqm_main_proc, 
+  osCreateThread( &hvqmThread, HVQM_THREAD_ID, (void*) hvqm_main_proc, 
 		 (void*)vidPtr, hvqmStack + (STACKSIZE/sizeof(u64)), 
 		 (OSPri)HVQM_PRIORITY );
 }

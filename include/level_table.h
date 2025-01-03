@@ -12,7 +12,9 @@ enum LevelNum {
 #include "levels/level_defines.h"
     LEVEL_COUNT,
     LEVEL_MAX = LEVEL_COUNT - 1,
-    LEVEL_MIN = LEVEL_NONE + 1
+    LEVEL_MIN = LEVEL_NONE + 1,
+    LEVEL_FILE_SELECT = LEVEL_COUNT + 1,
+    LEVEL_LEVEL_SELECT = LEVEL_FILE_SELECT + 1,
 };
 
 #undef STUB_LEVEL
