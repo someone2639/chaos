@@ -122,7 +122,7 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
     
     //Draw patch quality beads
     gSPDisplayList(gDisplayListHead++, patch_quality_bead_begin);
-    guTranslate(qualityTransMtx, 0, -10.4f, 0);
+    guTranslate(qualityTransMtx, -70, 28, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(qualityTransMtx++),
           G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
     for(int i = 0; i < quality; i++) {
@@ -142,16 +142,16 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
             gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardScaleMtx),
                   G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
         }
-        guTranslate(timerTransMtx, 104, -10.4f, 0);
+        guTranslate(timerTransMtx, 37, 25, 0);
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(timerTransMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
         gSPDisplayList(gDisplayListHead++, star_timer_Mesh_mesh);
         //temp
-        print_text_fmt_int(x + 110, y - 20, "%d" ,card->duration);
+        print_text_fmt_int(x + 42, y + 18, "%d" ,card->duration);
     }
 
     //temp
-    print_text(x + 5, y - 35, card->patchName);
+    print_text(x - 67, y + 5, card->patchName);
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
@@ -161,10 +161,10 @@ void display_patch_selection_ui() {
 
     patch_bg_scroll();
     create_dl_ortho_matrix();
-    
+
     //Ugly and hopefully temporary
-    render_patch_card(10, SCREEN_HEIGHT - 10, (1.0f + (0.05f * (selectedPatch == 0))), sAvailablePatches[0], FALSE);
-    render_patch_card((SCREEN_WIDTH / 2) + 10, SCREEN_HEIGHT - 10, (1.0f + (0.05f * (selectedPatch == 1))), sAvailablePatches[1], TRUE);
-    render_patch_card(10, (SCREEN_HEIGHT / 2) + 30, (1.0f + (0.05f * (selectedPatch == 2))), sAvailablePatches[2], FALSE);
-    render_patch_card((SCREEN_WIDTH / 2) + 10, (SCREEN_HEIGHT / 2) + 30, (1.0f + (0.05f * (selectedPatch == 3))), sAvailablePatches[3], TRUE);
+    render_patch_card(CARD_X_LEFT, CARD_Y_TOP, (1.0f + (0.05f * (selectedPatch == 0))), sAvailablePatches[0], FALSE);
+    render_patch_card(CARD_X_RIGHT, CARD_Y_TOP, (1.0f + (0.05f * (selectedPatch == 1))), sAvailablePatches[1], TRUE);
+    render_patch_card(CARD_X_LEFT, CARD_Y_BOTTOM, (1.0f + (0.05f * (selectedPatch == 2))), sAvailablePatches[2], FALSE);
+    render_patch_card(CARD_X_RIGHT, CARD_Y_BOTTOM, (1.0f + (0.05f * (selectedPatch == 3))), sAvailablePatches[3], TRUE);
 }
