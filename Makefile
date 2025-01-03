@@ -564,7 +564,7 @@ distclean: clean
 test: $(ROM)
 	$(EMULATOR) $(EMU_FLAGS) $<
 
-load: $(ROM)
+load2: $(ROM)
 	cp $< /run/media/faris/CF62-9261
 sc: $(ROM)
 	$(SC64DEPLOYER) $(EMU_FLAGS) $<
