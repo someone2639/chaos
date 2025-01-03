@@ -133,7 +133,7 @@ OSThread hvqmThread;
 static u64 hvqmStack[STACKSIZE/sizeof(u64)];
 
 void hvqm_main_proc(uintptr_t vidPtr) {
-    // int h_offset, v_offset;	/* Position of image display */
+    int h_offset = 0, v_offset = 0;	/* Position of image display */
     int screen_offset = 0;		/* Number of pixels from start of frame buffer to display position */
     u32 usec_per_frame;
     int prev_bufno = -1;
@@ -171,6 +171,10 @@ void hvqm_main_proc(uintptr_t vidPtr) {
     total_frames = load32(hvqm_header->total_frames);
     usec_per_frame = load32(hvqm_header->usec_per_frame);
     total_audio_records = load32(hvqm_header->total_audio_records);
+    
+    h_offset = (SCREEN_WD - hvqm_header->width) / 2;
+    v_offset = (SCREEN_HT - hvqm_header->height) / 2;
+    screen_offset = SCREEN_WD * v_offset + h_offset;
     
     hvqm2SetupSP1(hvqm_header, SCREEN_WD);
     

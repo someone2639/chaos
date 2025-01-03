@@ -495,8 +495,8 @@ distclean: clean
 test: $(ROM)
 	$(EMULATOR) $(EMU_FLAGS) $<
 
-load: $(ROM) $(LOADER)
-	$(LOADER) -r $<
+load: $(ROM)
+	cp $< /run/media/faris/CF62-9261
 
 unf: $(ROM) $(LOADER)
 	$(LOADER) -d -r $<

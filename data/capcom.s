@@ -3,5 +3,5 @@
 .section .data
 
 glabel _capcomRomStart
-.incbin "data/capcom.hvqm"
+.incbin "data/krabs192.hvqm"
 glabel _capcomRomEnd
