@@ -11,8 +11,12 @@ void bhv_yoshi_init(void) {
     o->oBuoyancy = 1.3f;
     o->oInteractionSubtype = INT_SUBTYPE_NPC;
 
+#ifdef UNLOCK_ALL
+    if (sYoshiDead == TRUE) {
+#else
     if (save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) < 120
         || sYoshiDead == TRUE) {
+#endif
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }
 }

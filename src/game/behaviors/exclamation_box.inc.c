@@ -48,12 +48,16 @@ void bhv_rotating_exclamation_box_loop(void) {
 void exclamation_box_act_0(void) {
     if (o->oBehParams2ndByte < 3) {
         o->oAnimState = o->oBehParams2ndByte;
+#ifndef UNLOCK_ALL
         if ((save_file_get_flags() & sCapSaveFlags[o->oBehParams2ndByte])
             || ((o->oBehParams >> 24) & 0xFF)) {
             o->oAction = 2;
         } else {
             o->oAction = 1;
         }
+#else
+        o->oAction = 2;
+#endif
     } else {
         o->oAnimState = 3;
         o->oAction = 2;
