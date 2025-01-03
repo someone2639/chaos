@@ -526,7 +526,11 @@ s32 save_file_get_course_coin_score(s32 fileIndex, s32 courseIndex) {
  * Return TRUE if the cannon is unlocked in the current course.
  */
 s32 save_file_is_cannon_unlocked(void) {
+#ifdef UNLOCK_ALL
+    return TRUE;
+#else
     return (gSaveBuffer.files[gCurrSaveFileNum - 1].courseStars[gCurrCourseNum] & (1 << 7)) != 0;
+#endif
 }
 
 /**

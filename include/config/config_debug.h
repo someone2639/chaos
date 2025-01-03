@@ -35,6 +35,11 @@
 #define ENABLE_DEBUG_FREE_MOVE
 
 /**
+ * Opens all courses and doors. Used for debugging purposes to unlock all content.
+ */
+// #define UNLOCK_ALL
+
+/**
  * Intentionally crash the game if a certain condition is not met.
  */
 #define DEBUG_ASSERTIONS

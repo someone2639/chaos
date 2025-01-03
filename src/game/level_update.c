@@ -247,37 +247,41 @@ void fade_into_special_warp(u32 arg, u32 color) {
 void stub_level_update_1(void) {
 }
 
-void load_level_init_text(u32 arg) {
-    s32 gotAchievement;
-    u32 dialogID = gCurrentArea->dialog[arg];
+void load_level_init_text(UNUSED u32 arg) {
+    return;
 
-    switch (dialogID) {
-        case DIALOG_129:
-            gotAchievement = save_file_get_flags() & SAVE_FLAG_HAVE_VANISH_CAP;
-            break;
+    // s32 gotAchievement;
+    // u32 dialogID = gCurrentArea->dialog[arg];
 
-        case DIALOG_130:
-            gotAchievement = save_file_get_flags() & SAVE_FLAG_HAVE_METAL_CAP;
-            break;
+    
 
-        case DIALOG_131:
-            gotAchievement = save_file_get_flags() & SAVE_FLAG_HAVE_WING_CAP;
-            break;
+    // switch (dialogID) {
+    //     case DIALOG_129:
+    //         gotAchievement = save_file_get_flags() & SAVE_FLAG_HAVE_VANISH_CAP;
+    //         break;
 
-        case (u8)DIALOG_NONE: // 255, cast value to u8 to match (-1)
-            gotAchievement = TRUE;
-            break;
+    //     case DIALOG_130:
+    //         gotAchievement = save_file_get_flags() & SAVE_FLAG_HAVE_METAL_CAP;
+    //         break;
 
-        default:
-            gotAchievement =
-                save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum));
-            break;
-    }
+    //     case DIALOG_131:
+    //         gotAchievement = save_file_get_flags() & SAVE_FLAG_HAVE_WING_CAP;
+    //         break;
 
-    if (!gotAchievement) {
-        level_set_transition(-1, NULL);
-        create_dialog_box(dialogID);
-    }
+    //     case (u8)DIALOG_NONE: // 255, cast value to u8 to match (-1)
+    //         gotAchievement = TRUE;
+    //         break;
+
+    //     default:
+    //         gotAchievement =
+    //             save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum));
+    //         break;
+    // }
+
+    // if (!gotAchievement) {
+    //     level_set_transition(-1, NULL);
+    //     create_dialog_box(dialogID);
+    // }
 }
 
 void init_door_warp(struct SpawnInfo *spawnInfo, u32 arg1) {
@@ -552,8 +556,12 @@ void check_instant_warp(void) {
     s16 cameraAngle;
     struct Surface *floor;
 
+ #ifdef UNLOCK_ALL
+    if (gCurrLevelNum == LEVEL_CASTLE) {
+ #else // !UNLOCK_ALL
     if (gCurrLevelNum == LEVEL_CASTLE
         && save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 70) {
+ #endif // !UNLOCK_ALL
         return;
     }
 
@@ -1299,7 +1307,11 @@ s32 lvl_init_from_save_file(UNUSED s16 arg0, s32 levelNum) {
 #endif
     sWarpDest.type = WARP_TYPE_NOT_WARPING;
     sDelayedWarpOp = WARP_OP_NONE;
+#ifdef PEACH_SKIP
+    gNeverEnteredCastle = 0;
+#else
     gNeverEnteredCastle = !save_file_exists(gCurrSaveFileNum - 1);
+#endif
 
     gCurrLevelNum = levelNum;
     gCurrCourseNum = COURSE_NONE;
