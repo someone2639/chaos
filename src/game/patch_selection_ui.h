@@ -14,7 +14,6 @@ struct PatchCard {
 
 struct PatchSelectionMenu {
     s8 selectedPatch;
-    u8 numCards;
     u8 isActive;
 };
 

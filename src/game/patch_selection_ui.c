@@ -22,7 +22,7 @@ u8 sQualityColors[][4] = {
     {0x8B, 0x00, 0xC5},
 };
 
-struct PatchCard *sAvailablePatches[] = {
+struct PatchCard *sAvailablePatches[MAX_CARDS] = {
     &sTestChaosPatch1,
     &sTestChaosPatch2,
     &sTestChaosPatch3,
@@ -30,19 +30,30 @@ struct PatchCard *sAvailablePatches[] = {
 };
 
 struct PatchSelectionMenu gPatchSelectionMenu = {
-    0, 4, FALSE,
+    0, FALSE,
 };
 
 void handle_patch_selection_inputs() {
+    s32 previousSelection = gPatchSelectionMenu.selectedPatch;
     if(gPlayer1Controller->buttonPressed & D_JPAD) {
-        gPatchSelectionMenu.selectedPatch++;
-        if(gPatchSelectionMenu.selectedPatch > gPatchSelectionMenu.numCards - 1) {
-            gPatchSelectionMenu.selectedPatch = 0;
+        gPatchSelectionMenu.selectedPatch += 2;
+        if(gPatchSelectionMenu.selectedPatch > MAX_CARDS - 1) {
+            gPatchSelectionMenu.selectedPatch = previousSelection;
         }
     } else if (gPlayer1Controller->buttonPressed & U_JPAD) {
+        gPatchSelectionMenu.selectedPatch -= 2;
+        if(gPatchSelectionMenu.selectedPatch < 0) {
+            gPatchSelectionMenu.selectedPatch = previousSelection;
+        }
+    } else if(gPlayer1Controller->buttonPressed & R_JPAD) {
+        gPatchSelectionMenu.selectedPatch++;
+        if(gPatchSelectionMenu.selectedPatch > MAX_CARDS - 1) {
+            gPatchSelectionMenu.selectedPatch = previousSelection;
+        }
+    } else if(gPlayer1Controller->buttonPressed & L_JPAD) {
         gPatchSelectionMenu.selectedPatch--;
         if(gPatchSelectionMenu.selectedPatch < 0) {
-            gPatchSelectionMenu.selectedPatch = gPatchSelectionMenu.numCards - 1;
+            gPatchSelectionMenu.selectedPatch = previousSelection;
         }
     }
 }
@@ -58,6 +69,7 @@ void patch_bg_scroll() {
 	static int currentY = 0;
 	int deltaY;
 	Vtx *vertices = segmented_to_virtual(patch_bg_mesh_mesh_vtx_0);
+	Vtx *vertices_r = segmented_to_virtual(patch_bg_r_mesh_r_mesh_vtx_0);
 
 	deltaX = (int)(-0.25f * 0x20) % width;
 	deltaY = (int)(-0.25f * 0x20) % height;
@@ -72,6 +84,8 @@ void patch_bg_scroll() {
 	for (i = 0; i < count; i++) {
 		vertices[i].n.tc[0] += deltaX;
 		vertices[i].n.tc[1] += deltaY;
+		vertices_r[i].n.tc[0] += deltaX;
+		vertices_r[i].n.tc[1] += deltaY;
 	}
 	currentX += deltaX;	currentY += deltaY;
 }
@@ -79,7 +93,7 @@ void patch_bg_scroll() {
 /*
     Draws a patch card at the given x, y coordinates
 */
-void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card) {
+void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reverse) {
     s32 quality = card->quality;
     s32 colorID = quality - 1;
     Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
@@ -95,11 +109,15 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card) {
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx++),
           G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-    gSPDisplayList(gDisplayListHead++, patch_bg_mesh_mesh);
-    gSPDisplayList(gDisplayListHead++, patch_quality_bead_begin);
+    if(reverse) {
+        gSPDisplayList(gDisplayListHead++, patch_bg_r_mesh_r_mesh);
+    } else {
+        gSPDisplayList(gDisplayListHead++, patch_bg_mesh_mesh);
+    }
     
     //Draw patch quality beads
-    guTranslate(transMtx, -240, 60, 0);
+    gSPDisplayList(gDisplayListHead++, patch_quality_bead_begin);
+    guTranslate(transMtx, 0, -40, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
           G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
     for(int i = 0; i < quality; i++) {
@@ -111,30 +129,21 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card) {
     gSPDisplayList(gDisplayListHead++, patch_quality_bead_end);
 
     //temp
-    print_text_centered(x, y - 10, card->patchName);
+    print_text(x + 5, y - 35, card->patchName);
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
 void display_patch_selection_ui() {
     f32 scale = 0.26f;
-    f32 cardScale;
-    f32 startPoint = SCREEN_HEIGHT - 10;
-    f32 endPoint = 10;
-    f32 cardGap = (endPoint - startPoint) / gPatchSelectionMenu.numCards;
-    f32 cardY; 
-    f32 cardX = SCREEN_WIDTH - ((DEFAULT_CARD_WIDTH / 2) * scale) - 10;
+    s32 selectedPatch = gPatchSelectionMenu.selectedPatch;
 
     patch_bg_scroll();
     create_dl_ortho_matrix();
     
-    for(int i = 0; i < gPatchSelectionMenu.numCards; i++) {
-        if(i == gPatchSelectionMenu.selectedPatch) {
-            cardScale = scale * 1.1f;
-        } else {
-            cardScale = scale;
-        }
-        cardY = startPoint + (cardGap * i) + (cardGap * 0.5f);
-        render_patch_card(cardX, cardY, cardScale, sAvailablePatches[i]);
-    }
+    //Ugly and hopefully temporary
+    render_patch_card(10, SCREEN_HEIGHT - 10, scale * (1.0f + (0.05f * (selectedPatch == 0))), sAvailablePatches[0], FALSE);
+    render_patch_card((SCREEN_WIDTH / 2) + 10, SCREEN_HEIGHT - 10, scale * (1.0f + (0.05f * (selectedPatch == 1))), sAvailablePatches[1], TRUE);
+    render_patch_card(10, (SCREEN_HEIGHT / 2) + 30, scale * (1.0f + (0.05f * (selectedPatch == 2))), sAvailablePatches[2], FALSE);
+    render_patch_card((SCREEN_WIDTH / 2) + 10, (SCREEN_HEIGHT / 2) + 30, scale * (1.0f + (0.05f * (selectedPatch == 3))), sAvailablePatches[3], TRUE);
 }

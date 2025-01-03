@@ -3899,21 +3899,21 @@ u8 patch_bg_patch_bg_2_ia4[] = {
 };
 
 Vtx patch_bg_mesh_mesh_vtx_0[4] = {
-	{{ {-196, -89, 0}, 0, {-4278, 3131}, {255, 255, 255, 255} }},
-	{{ {196, -89, 0}, 0, {3618, 4515}, {255, 255, 255, 255} }},
-	{{ {-241, 89, 0}, 0, {-4572, -613}, {255, 255, 255, 255} }},
-	{{ {241, 89, 0}, 0, {5168, 1095}, {255, 255, 255, 255} }},
+	{{ {13, -270, 0}, 0, {-2035, 3654}, {255, 255, 255, 255} }},
+	{{ {526, -270, 0}, 0, {8244, 5771}, {255, 255, 255, 255} }},
+	{{ {13, -11, 0}, 0, {-968, -1527}, {255, 255, 255, 255} }},
+	{{ {572, -11, 0}, 0, {10229, 779}, {255, 255, 255, 255} }},
 };
 
 Vtx patch_bg_mesh_mesh_vtx_1[8] = {
-	{{ {-272, 100, 0}, 0, {-2158, -1040}, {255, 255, 255, 255} }},
-	{{ {-220, -100, 0}, 0, {-1342, 3056}, {255, 255, 255, 255} }},
-	{{ {-196, -89, 0}, 0, {-1342, 3056}, {255, 255, 255, 255} }},
-	{{ {196, -89, 0}, 0, {1310, 3056}, {255, 255, 255, 255} }},
-	{{ {220, -100, 0}, 0, {1310, 3056}, {255, 255, 255, 255} }},
-	{{ {241, 89, 0}, 0, {2126, -1040}, {255, 255, 255, 255} }},
-	{{ {272, 100, 0}, 0, {2126, -1040}, {255, 255, 255, 255} }},
-	{{ {-241, 89, 0}, 0, {-2158, -1040}, {255, 255, 255, 255} }},
+	{{ {0, 0, 0}, 0, {-2158, -1040}, {255, 255, 255, 255} }},
+	{{ {0, -281, 0}, 0, {-1342, 3056}, {255, 255, 255, 255} }},
+	{{ {13, -270, 0}, 0, {-1342, 3056}, {255, 255, 255, 255} }},
+	{{ {526, -270, 0}, 0, {1456, 2322}, {255, 255, 255, 255} }},
+	{{ {535, -281, 0}, 0, {1671, 2752}, {255, 255, 255, 255} }},
+	{{ {572, -11, 0}, 0, {1978, -298}, {255, 255, 255, 255} }},
+	{{ {587, 0, 0}, 0, {2460, -708}, {255, 255, 255, 255} }},
+	{{ {13, -11, 0}, 0, {-2158, -1040}, {255, 255, 255, 255} }},
 };
 
 Gfx patch_bg_mesh_mesh[] = {
@@ -3932,6 +3932,50 @@ Gfx patch_bg_mesh_mesh[] = {
 	gsDPPipeSync(),
 	gsDPSetCombineLERP(0, 0, 0, PRIMITIVE, 0, 0, 0, 1, 0, 0, 0, PRIMITIVE, 0, 0, 0, 1),
 	gsSPVertex(patch_bg_mesh_mesh_vtx_1 + 0, 8, 0),
+	gsSP2Triangles(0, 1, 2, 0, 1, 3, 2, 0),
+	gsSP2Triangles(1, 4, 3, 0, 4, 5, 3, 0),
+	gsSP2Triangles(4, 6, 5, 0, 6, 7, 5, 0),
+	gsSP2Triangles(6, 0, 7, 0, 0, 2, 7, 0),
+	gsDPPipeSync(),
+	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
+	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+	gsSPEndDisplayList(),
+};
+
+Vtx patch_bg_r_mesh_r_mesh_vtx_0[4] = {
+	{{ {522, -11, 0}, 0, {10229, 590}, {255, 255, 255, 255} }},
+	{{ {9, -11, 0}, 0, {-50, -1527}, {255, 255, 255, 255} }},
+	{{ {522, -270, 0}, 0, {9162, 5771}, {255, 255, 255, 255} }},
+	{{ {-37, -270, 0}, 0, {-2035, 3465}, {255, 255, 255, 255} }},
+};
+
+Vtx patch_bg_r_mesh_r_mesh_vtx_1[8] = {
+	{{ {535, -281, 0}, 0, {-2158, -1040}, {255, 255, 255, 255} }},
+	{{ {535, 0, 0}, 0, {-1342, 3056}, {255, 255, 255, 255} }},
+	{{ {522, -11, 0}, 0, {-1342, 3056}, {255, 255, 255, 255} }},
+	{{ {9, -11, 0}, 0, {1456, 2322}, {255, 255, 255, 255} }},
+	{{ {0, 0, 0}, 0, {1671, 2752}, {255, 255, 255, 255} }},
+	{{ {-37, -270, 0}, 0, {1978, -298}, {255, 255, 255, 255} }},
+	{{ {-52, -281, 0}, 0, {2460, -708}, {255, 255, 255, 255} }},
+	{{ {522, -270, 0}, 0, {-2158, -1040}, {255, 255, 255, 255} }},
+};
+
+Gfx patch_bg_r_mesh_r_mesh[] = {
+	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
+	gsDPSetCombineLERP(0, 0, 0, TEXEL0, 0, 0, 0, 1, 0, 0, 0, TEXEL0, 0, 0, 0, 1),
+	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
+	gsSPTexture(65535, 65535, 0, 0, 1),
+	gsDPSetTextureImage(G_IM_FMT_IA, G_IM_SIZ_16b, 1, patch_bg_patch_bg_2_ia4),
+	gsDPSetTile(G_IM_FMT_IA, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
+	gsDPLoadBlock(7, 0, 0, 2047, 256),
+	gsDPSetTile(G_IM_FMT_IA, G_IM_SIZ_4b, 8, 0, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 6, 0, G_TX_WRAP | G_TX_NOMIRROR, 7, 0),
+	gsDPSetTileSize(0, 0, 0, 508, 252),
+	gsSPVertex(patch_bg_r_mesh_r_mesh_vtx_0 + 0, 4, 0),
+	gsSP2Triangles(0, 1, 2, 0, 2, 1, 3, 0),
+	gsDPPipeSync(),
+	gsDPSetCombineLERP(0, 0, 0, PRIMITIVE, 0, 0, 0, 1, 0, 0, 0, PRIMITIVE, 0, 0, 0, 1),
+	gsSPVertex(patch_bg_r_mesh_r_mesh_vtx_1 + 0, 8, 0),
 	gsSP2Triangles(0, 1, 2, 0, 1, 3, 2, 0),
 	gsSP2Triangles(1, 4, 3, 0, 4, 5, 3, 0),
 	gsSP2Triangles(4, 6, 5, 0, 6, 7, 5, 0),
