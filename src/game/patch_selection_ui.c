@@ -106,11 +106,14 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
 
     //Draw patch bg
     guTranslate(cardTransMtx, x, y, 0);
-    guScale(cardScaleMtx, scale, scale, 1.0f);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardTransMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardScaleMtx),
-          G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+    if(scale != 1.0f) {
+        guScale(cardScaleMtx, scale, scale, 1.0f);
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardScaleMtx),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+    }
+
     if(reverse) {
         gSPDisplayList(gDisplayListHead++, patch_bg_r_mesh_r_mesh);
     } else {
@@ -119,11 +122,11 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
     
     //Draw patch quality beads
     gSPDisplayList(gDisplayListHead++, patch_quality_bead_begin);
-    guTranslate(qualityTransMtx, 0, -40, 0);
+    guTranslate(qualityTransMtx, 0, -10.4f, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(qualityTransMtx++),
           G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
     for(int i = 0; i < quality; i++) {
-        guTranslate(qualityTransMtx, 50, 0, 0);
+        guTranslate(qualityTransMtx, 13, 0, 0);
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(qualityTransMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
         gSPDisplayList(gDisplayListHead++, patch_quality_bead);
@@ -135,9 +138,11 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
         gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardTransMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardScaleMtx),
-              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-        guTranslate(timerTransMtx, 400, -40, 0);
+        if(scale != 1.0f) {
+            gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardScaleMtx),
+                  G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+        }
+        guTranslate(timerTransMtx, 104, -10.4f, 0);
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(timerTransMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
         gSPDisplayList(gDisplayListHead++, star_timer_Mesh_mesh);
@@ -152,15 +157,14 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
 }
 
 void display_patch_selection_ui() {
-    f32 scale = 0.26f;
     s32 selectedPatch = gPatchSelectionMenu.selectedPatch;
 
     patch_bg_scroll();
     create_dl_ortho_matrix();
     
     //Ugly and hopefully temporary
-    render_patch_card(10, SCREEN_HEIGHT - 10, scale * (1.0f + (0.05f * (selectedPatch == 0))), sAvailablePatches[0], FALSE);
-    render_patch_card((SCREEN_WIDTH / 2) + 10, SCREEN_HEIGHT - 10, scale * (1.0f + (0.05f * (selectedPatch == 1))), sAvailablePatches[1], TRUE);
-    render_patch_card(10, (SCREEN_HEIGHT / 2) + 30, scale * (1.0f + (0.05f * (selectedPatch == 2))), sAvailablePatches[2], FALSE);
-    render_patch_card((SCREEN_WIDTH / 2) + 10, (SCREEN_HEIGHT / 2) + 30, scale * (1.0f + (0.05f * (selectedPatch == 3))), sAvailablePatches[3], TRUE);
+    render_patch_card(10, SCREEN_HEIGHT - 10, (1.0f + (0.05f * (selectedPatch == 0))), sAvailablePatches[0], FALSE);
+    render_patch_card((SCREEN_WIDTH / 2) + 10, SCREEN_HEIGHT - 10, (1.0f + (0.05f * (selectedPatch == 1))), sAvailablePatches[1], TRUE);
+    render_patch_card(10, (SCREEN_HEIGHT / 2) + 30, (1.0f + (0.05f * (selectedPatch == 2))), sAvailablePatches[2], FALSE);
+    render_patch_card((SCREEN_WIDTH / 2) + 10, (SCREEN_HEIGHT / 2) + 30, (1.0f + (0.05f * (selectedPatch == 3))), sAvailablePatches[3], TRUE);
 }
