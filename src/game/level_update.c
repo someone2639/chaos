@@ -1211,6 +1211,7 @@ s32 init_level(void) {
         if (gCurrentArea != NULL) {
             reset_camera(gCurrentArea->camera);
 
+#ifdef PEACH_SKIP
             if (gCurrDemoInput != NULL) {
                 set_mario_action(gMarioState, ACT_IDLE, 0);
             } else if (!gDebugLevelSelect) {
@@ -1223,6 +1224,20 @@ s32 init_level(void) {
                     }
                 }
             }
+#else
+            if (gCurrDemoInput != NULL) {
+                set_mario_action(gMarioState, ACT_IDLE, 0);
+            } else if (!gDebugLevelSelect) {
+                if (gMarioState->action != ACT_UNINITIALIZED) {
+                    if (save_file_exists(gCurrSaveFileNum - 1)) {
+                        set_mario_action(gMarioState, ACT_IDLE, 0);
+                    } else {
+                        set_mario_action(gMarioState, ACT_INTRO_CUTSCENE, 0);
+                        val4 = TRUE;
+                    }
+                }
+            }
+#endif
         }
 
         if (val4) {

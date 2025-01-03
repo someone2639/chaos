@@ -13,6 +13,7 @@
 #include "ingame_menu.h"
 #include "level_update.h"
 #include "levels/castle_grounds/header.h"
+#include "main.h"
 #include "memory.h"
 #include "print.h"
 #include "save_file.h"
