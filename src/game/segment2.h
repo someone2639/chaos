@@ -71,5 +71,7 @@ extern Gfx patch_quality_bead_begin[];
 extern Gfx patch_quality_bead[];
 extern Gfx patch_quality_bead_end[];
 extern Gfx star_timer_Mesh_mesh[];
+extern Vtx desc_bg_mesh_mesh_vtx_0[];
+extern Gfx desc_bg_mesh_mesh[];
 
 #endif // SEGMENT2_H

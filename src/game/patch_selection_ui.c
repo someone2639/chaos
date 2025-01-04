@@ -10,10 +10,15 @@
 #include "object_helpers.h"
 
 //temp
-struct PatchCard sTestChaosPatch1 = {2, 0, "Effect 1"};
-struct PatchCard sTestChaosPatch2 = {3, 2,  "Effect 2"};
-struct PatchCard sTestChaosPatch3 = {1, 10, "Effect 3"};
-struct PatchCard sTestChaosPatch4 = {4, 3, "Effect 4"};
+const char testNameGood[] = {"Good Effect"};
+const char testNameBad[] = {"Bad Effect"};
+const char testDescGood[] = {"Good effect description"};
+const char testDescBad[] = {"Bad effect description"};
+
+struct PatchCard sTestChaosPatch1 = {2, 0, testNameGood, testNameBad, testDescGood, testDescBad};
+struct PatchCard sTestChaosPatch2 = {3, 2, testNameGood, testNameBad, testDescGood, testDescBad};
+struct PatchCard sTestChaosPatch3 = {1, 10, testNameGood, testNameBad, testDescGood, testDescBad};
+struct PatchCard sTestChaosPatch4 = {4, 3, testNameGood, testNameBad, testDescGood, testDescBad};
 
 u8 sQualityColors[][4] = {
     {0x9A, 0x9A, 0x9A},
@@ -90,6 +95,35 @@ void patch_bg_scroll() {
 	currentX += deltaX;	currentY += deltaY;
 }
 
+void desc_bg_scroll() {
+	int i = 0;
+	int count = 4;
+	int width = 32 * 0x20;
+	int height = 32 * 0x20;
+
+	static int currentX = 0;
+	int deltaX;
+	static int currentY = 0;
+	int deltaY;
+	Vtx *vertices = segmented_to_virtual(desc_bg_mesh_mesh_vtx_0);
+
+	deltaX = (int)(0.5 * 0x20) % width;
+	deltaY = (int)(-0.5 * 0x20) % height;
+
+	if (absi(currentX) > width) {
+		deltaX -= (int)(absi(currentX) / width) * width * signum_positive(deltaX);
+	}
+	if (absi(currentY) > height) {
+		deltaY -= (int)(absi(currentY) / height) * height * signum_positive(deltaY);
+	}
+
+	for (i = 0; i < count; i++) {
+		vertices[i].n.tc[0] += deltaX;
+		vertices[i].n.tc[1] += deltaY;
+	}
+	currentX += deltaX;	currentY += deltaY;
+}
+
 /*
     Draws a patch card at the given x, y coordinates
 */
@@ -151,15 +185,34 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
     }
 
     //temp
-    print_text(x - 67, y + 5, card->patchName);
+    print_text(x - 67, y + 5, card->patchName1);
+    print_text(x - 67, y - 15, card->patchName2);
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+}
+
+/*
+    Draws the patch description at the given x/y coordinates
+*/
+void render_patch_desc(f32 x, f32 y) {
+    s32 selected = gPatchSelectionMenu.selectedPatch;
+    Mtx *transMtx = alloc_display_list(sizeof(Mtx));
+    guTranslate(transMtx, x, y, 0);
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+    gSPDisplayList(gDisplayListHead++, desc_bg_mesh_mesh);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+
+    //temp
+    print_text(14, 60, sAvailablePatches[selected]->patchDesc1);
+    print_text(14, 30, sAvailablePatches[selected]->patchDesc2);
 }
 
 void display_patch_selection_ui() {
     s32 selectedPatch = gPatchSelectionMenu.selectedPatch;
 
     patch_bg_scroll();
+    desc_bg_scroll();
     create_dl_ortho_matrix();
 
     //Ugly and hopefully temporary
@@ -167,4 +220,5 @@ void display_patch_selection_ui() {
     render_patch_card(CARD_X_RIGHT, CARD_Y_TOP, (1.0f + (0.05f * (selectedPatch == 1))), sAvailablePatches[1], TRUE);
     render_patch_card(CARD_X_LEFT, CARD_Y_BOTTOM, (1.0f + (0.05f * (selectedPatch == 2))), sAvailablePatches[2], FALSE);
     render_patch_card(CARD_X_RIGHT, CARD_Y_BOTTOM, (1.0f + (0.05f * (selectedPatch == 3))), sAvailablePatches[3], TRUE);
+    render_patch_desc(PATCH_DESC_X, PATCH_DESC_Y);
 }
