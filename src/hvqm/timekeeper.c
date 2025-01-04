@@ -4,6 +4,11 @@
 #include "audio/data.h"
 #include "buffers/framebuffers.h"
 
+extern s16 pcmbuf[NUM_PCMBUFs][PCMBUF_SIZE];
+
+// #define HVQM_AI_BUFFER gAiBuffers
+#define HVQM_AI_BUFFER pcmbuf
+
 /***********************************************************************
  * Timekeeper thread
  ***********************************************************************/
@@ -398,26 +403,26 @@ static void timekeeperProc(void UNUSED*argument) {
 	  s16 *sp, *dp;
 	  int i;
 
-	  samples = audioproc( &gAiBuffers[next_pcmbufno][pcm_mod_samples<<PCM_CHANNELS_SHIFT] );
+	  samples = audioproc( &HVQM_AI_BUFFER[next_pcmbufno][pcm_mod_samples<<PCM_CHANNELS_SHIFT] );
 
 	  if ( samples > 0 ) {
 	    ++pcmBufferCount;
 
 	    sp = pcmModBuf;
-	    dp = (s16 *)((u8 *)gAiBuffers[next_pcmbufno]);
+	    dp = (s16 *)((u8 *)HVQM_AI_BUFFER[next_pcmbufno]);
 	    i = pcm_mod_samples << PCM_CHANNELS_SHIFT;
 	    while ( i-- ) *dp++ = *sp++;
 	    samples += pcm_mod_samples;
 	    samples -= (pcm_mod_samples = samples & (PCM_ALIGN-1));
 	    length = samples << PCM_BYTES_PER_SAMPLE_SHIFT;
-	    buffer = gAiBuffers[next_pcmbufno];
+	    buffer = HVQM_AI_BUFFER[next_pcmbufno];
 	    osWritebackDCache( buffer, length );
 	    audioRing[audioRingWrite].buf = buffer;
 	    audioRing[audioRingWrite].len = length;
 	    if ( ++audioRingWrite == AUDIO_RING_BUFFER_SIZE ) audioRingWrite = 0;
 	    ++audioRingCount;
 
-	    sp = (s16 *)((u8 *)(gAiBuffers[next_pcmbufno]) + length);
+	    sp = (s16 *)((u8 *)(HVQM_AI_BUFFER[next_pcmbufno]) + length);
 	    dp = pcmModBuf;
 	    i = pcm_mod_samples << PCM_CHANNELS_SHIFT;
 	    while ( i-- ) *dp++ = *sp++;

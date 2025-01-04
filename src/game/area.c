@@ -22,6 +22,7 @@
 #include "save_file.h"
 #include "level_table.h"
 #include "dialog_ids.h"
+#include "profiling.h"
 #include "patch_selection_ui.h"
 
 struct SpawnInfo gPlayerSpawnInfos[1];
@@ -132,7 +133,7 @@ u32 get_mario_spawn_type(struct Object *o) {
     s32 i;
     const BehaviorScript *behavior = virtual_to_segmented(0x13, o->behavior);
 
-    for (i = 0; i < 20; i++) {
+    for (i = 0; i < ARRAY_COUNT(sWarpBhvSpawnTable); i++) {
         if (sWarpBhvSpawnTable[i] == behavior) {
             return sSpawnTypeFromWarpBhv[i];
         }
@@ -151,27 +152,20 @@ struct ObjectWarpNode *area_get_warp_node(u8 id) {
     return node;
 }
 
-struct ObjectWarpNode *area_get_warp_node_from_params(struct Object *o) {
-    u8 sp1F = (o->oBehParams & 0x00FF0000) >> 16;
-
-    return area_get_warp_node(sp1F);
-}
-
-void load_obj_warp_nodes(void) {
-    struct ObjectWarpNode *sp24;
-    struct Object *sp20 = (struct Object *) gObjParentGraphNode.children;
+struct Object *get_destination_warp_object(u8 warpDestId) {
+    struct Object *children = (struct Object *) gObjParentGraphNode.children;
 
     do {
-        struct Object *sp1C = sp20;
+        struct Object *obj = children;
 
-        if (sp1C->activeFlags != ACTIVE_FLAG_DEACTIVATED && get_mario_spawn_type(sp1C) != 0) {
-            sp24 = area_get_warp_node_from_params(sp1C);
-            if (sp24 != NULL) {
-                sp24->object = sp1C;
-            }
+        u8 bparam2 = (obj->oBehParams >> 16) & 0xFF;
+        if (warpDestId == bparam2 && obj->activeFlags != ACTIVE_FLAG_DEACTIVATED && get_mario_spawn_type(obj) != 0) {
+            return obj;
         }
-    } while ((sp20 = (struct Object *) sp20->header.gfx.node.next)
+    } while ((children = (struct Object *) children->header.gfx.node.next)
              != (struct Object *) gObjParentGraphNode.children);
+
+    return NULL;
 }
 
 void clear_areas(void) {
@@ -202,6 +196,11 @@ void clear_areas(void) {
         gAreaData[i].dialog[1] = DIALOG_NONE;
         gAreaData[i].musicParam = 0;
         gAreaData[i].musicParam2 = 0;
+        gAreaData[i].useEchoOverride = FALSE;
+        gAreaData[i].echoOverride = 0;
+#ifdef BETTER_REVERB
+        gAreaData[i].betterReverbPreset = 0;
+#endif
     }
 }
 
@@ -236,7 +235,6 @@ void load_area(s32 index) {
             spawn_objects_from_info(0, gCurrentArea->objectSpawnInfos);
         }
 
-        load_obj_warp_nodes();
         geo_call_global_function_nodes(&gCurrentArea->unk04->node, GEO_CONTEXT_AREA_LOAD);
     }
 }
@@ -420,4 +418,7 @@ void render_game(void) {
 
     D_8032CE74 = NULL;
     D_8032CE78 = NULL;
+    
+    profiler_update(PROFILER_TIME_GFX);
+    profiler_print_times();
 }

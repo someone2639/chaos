@@ -396,6 +396,22 @@ f32 find_floor_height_and_data(f32 xPos, f32 yPos, f32 zPos, struct FloorGeometr
 }
 
 /**
+ * Populate `floorGeo` and update sFloorGeo.
+ */
+void find_floor_data(struct Surface *floor, struct FloorGeometry **floorGeo) {
+    *floorGeo = NULL;
+
+    if (floor != NULL) {
+        sFloorGeo.normalX = floor->normal.x;
+        sFloorGeo.normalY = floor->normal.y;
+        sFloorGeo.normalZ = floor->normal.z;
+        sFloorGeo.originOffset = floor->originOffset;
+
+        *floorGeo = &sFloorGeo;
+    }
+}
+
+/**
  * Iterate through the list of floors and find the first floor under a given point.
  */
 static struct Surface *find_floor_from_list(struct SurfaceNode *surfaceNode, s32 x, s32 y, s32 z, f32 *pheight) {

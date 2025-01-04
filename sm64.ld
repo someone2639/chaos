@@ -71,6 +71,14 @@ OUTPUT_ARCH (mips)
    _##name##_mio0SegmentRomStart = _##name##_yay0SegmentRomStart; \
    _##name##_mio0SegmentRomEnd = _##name##_yay0SegmentRomEnd;
 
+#define HVQMVID(name) \
+   BEGIN_SEG(name, __romPos) \
+   { \
+      KEEP(BUILD_DIR/data/name.o(.data)); \
+      . = ALIGN(0x10); \
+   } \
+   END_SEG(name)
+
 SECTIONS
 {
    __romPos = 0;
@@ -129,17 +137,18 @@ SECTIONS
    BEGIN_SEG(main, .)
    {
       KEEP(BUILD_DIR/asm/entry.o(.text));
+      KEEP(BUILD_DIR/asm/pj64_get_count_factor_asm.o(.text*));
 
       BUILD_DIR/src/boot*.o(.text);
       BUILD_DIR/src/hvqm*.o(.text);
       BUILD_DIR/src/audio*.o(.text);
 #if defined(ISVPRINT) || defined(UNF)
-      */libultra_d.a:*.o(.text);
+      *libultra_d.a:*.o(.text);
 #else
-      */libultra_rom.a:*.o(.text);
+      *libultra_rom.a:*.o(.text);
 #endif
       */libnustd.a:*.o(.text);
-      */libgcc.a:*.o(.text);
+      *libgcc.a:*.o(.text);
       */librtc.a:*.o(.text);
       */libz.a:*.o(.text);
       */libhvqm2.a:*.o(.text);
@@ -147,15 +156,15 @@ SECTIONS
 #include "rsptext.inc.ld"
       BUILD_DIR/lib/aspMain.o(.text*);
       lib/PR/audio/n_aspMain.o(.text*);
-      lib/PR/hvqm/hvqm2sp1.o(.text);
+      lib/PR/hvqm/hvqm2sp1.o(.text*);
 
       /* data */
       BUILD_DIR/src/boot*.o(.data*);
       BUILD_DIR/src/audio*.o(.data*);
 #if defined(ISVPRINT) || defined(UNF)
-      */libultra_d.a:*.o(.data*);
+      *libultra_d.a:*.o(.data*);
 #else
-      */libultra_rom.a:*.o(.data*);
+      *libultra_rom.a:*.o(.data*);
 #endif
       */libhvqm2.a:*.o(.data*);
       */librtc.a:*.o(.data*);
@@ -168,12 +177,13 @@ SECTIONS
       /* rodata */
       BUILD_DIR/src/boot*.o(.rodata*);
       BUILD_DIR/src/audio*.o(.rodata*);
+      BUILD_DIR/src/hvqm*.o(.rodata*);
 #if defined(ISVPRINT) || defined(UNF)
-      */libultra_d.a:*.o(.rodata*);
+      *libultra_d.a:*.o(.rodata*);
 #else
-      */libultra_rom.a:*.o(.rodata*);
+      *libultra_rom.a:*.o(.rodata*);
 #endif
-      */libgcc.a:*.o(.rodata*);
+      *libgcc.a:*.o(.rodata*);
       */librtc.a:*.o(.rodata*);
       */libz.a:*.o(.rodata*);
 
@@ -186,13 +196,13 @@ SECTIONS
       BUILD_DIR/src/hvqm*.o(.*bss*);
       BUILD_DIR/src/audio*.o(.*bss*);
 #if defined(ISVPRINT) || defined(UNF)
-      */libultra_d.a:*.o(COMMON);
-      */libultra_d.a:*.o(.scommon);
-      */libultra_d.a:*.o(.*bss*);
+      *libultra_d.a:*.o(COMMON);
+      *libultra_d.a:*.o(.scommon);
+      *libultra_d.a:*.o(.*bss*);
 #else
-      */libultra_rom.a:*.o(COMMON);
-      */libultra_rom.a:*.o(.scommon);
-      */libultra_rom.a:*.o(.*bss*);
+      *libultra_rom.a:*.o(COMMON);
+      *libultra_rom.a:*.o(.scommon);
+      *libultra_rom.a:*.o(.*bss*);
 #endif
       */libhvqm2.a:*.o(.bss*);
       */librtc.a:*.o(.bss*);
@@ -244,7 +254,9 @@ SECTIONS
    __mainPoolSize = RAM_END - .;
 
    __expansionRamStart = 0x80400000;
+#ifndef USE_EXT_RAM
    ASSERT((. <= __expansionRamStart), "Error: RDRAM expanded into Expansion RAM, despite Expansion RAM not being defined.")
+#endif
 
    BEGIN_SEG(entry, 0x10000000)
    {
@@ -446,11 +458,7 @@ SECTIONS
    }
    END_SEG(assets)
 #ifdef HVQM 
-   BEGIN_SEG(capcom, __romPos) SUBALIGN(2)
-   {
-      KEEP(BUILD_DIR/data/capcom.o(.data));
-   }
-	END_SEG(capcom)
+   #include "build/us_n64/hvqm_table.ld"
 #endif
    /* DWARF debug sections.
       Symbols in the DWARF debugging sections are relative to the beginning

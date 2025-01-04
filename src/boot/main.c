@@ -11,14 +11,18 @@
 #include "game/profiler.h"
 #include "buffers/buffers.h"
 #include "segments.h"
+#include "game/debug.h"
+#include "game/emutest.h"
 #include "game/main.h"
 #include "game/rumble_init.h"
 #include "game/version.h"
+#include "game/profiling.h"
 #ifdef UNF
 #include "usb/usb.h"
 #include "usb/debug.h"
 #endif
 
+u32 gHVQMPlaying = 0;
 
 OSThread D_80339210; // unused?
 OSThread gIdleThread;
@@ -42,6 +46,8 @@ OSMesg gIntrMesgBuf[16];
 OSMesg gUnknownMesgBuf[16];
 
 OSViMode VI;
+
+struct Config gConfig;
 
 struct VblankHandler *gVblankHandler1 = NULL;
 struct VblankHandler *gVblankHandler2 = NULL;
@@ -87,6 +93,32 @@ void handle_debug_key_sequences(void) {
         }
     }
 }
+
+/**
+ * Increment the first and last values of the stack.
+ * If they're different, that means an error has occured, so trigger a crash.
+*/
+#ifdef DEBUG_ASSERTIONS
+static void check_stack_validity(void) {
+    gIdleThreadStack[0]++;
+    gIdleThreadStack[THREAD1_STACK - 1]++;
+    assert(gIdleThreadStack[0] == gIdleThreadStack[THREAD1_STACK - 1], "Thread 1 stack overflow.");
+    gThread3Stack[0]++;
+    gThread3Stack[THREAD3_STACK - 1]++;
+    assert(gThread3Stack[0] == gThread3Stack[THREAD3_STACK - 1], "Thread 3 stack overflow.");
+    gThread4Stack[0]++;
+    gThread4Stack[THREAD4_STACK - 1]++;
+    assert(gThread4Stack[0] == gThread4Stack[THREAD4_STACK - 1], "Thread 4 stack overflow.");
+    gThread5Stack[0]++;
+    gThread5Stack[THREAD5_STACK - 1]++;
+    assert(gThread5Stack[0] == gThread5Stack[THREAD5_STACK - 1], "Thread 5 stack overflow.");
+#if ENABLE_RUMBLE
+    gThread6Stack[0]++;
+    gThread6Stack[THREAD6_STACK - 1]++;
+    assert(gThread6Stack[0] == gThread6Stack[THREAD6_STACK - 1], "Thread 6 stack overflow.");
+#endif
+}
+#endif
 
 void setup_mesg_queues(void) {
     osCreateMesgQueue(&gDmaMesgQueue, gDmaMesgBuf, ARRAY_COUNT(gDmaMesgBuf));
@@ -183,6 +215,7 @@ void start_gfx_sptask(void) {
         && sCurrentDisplaySPTask->state == SPTASK_STATE_NOT_STARTED) {
         profiler_log_gfx_time(TASKS_QUEUED);
         start_sptask(M_GFXTASK);
+        profiler_rsp_started(PROFILER_RSP_GFX);
     }
 }
 
@@ -222,12 +255,14 @@ void handle_vblank(void) {
             } else {
                 pretend_audio_sptask_done();
             }
+            profiler_rsp_started(PROFILER_RSP_AUDIO);
         }
     } else {
         if (gActiveSPTask == NULL && sCurrentDisplaySPTask != NULL
             && sCurrentDisplaySPTask->state != SPTASK_STATE_FINISHED) {
             profiler_log_gfx_time(TASKS_QUEUED);
             start_sptask(M_GFXTASK);
+            profiler_rsp_started(PROFILER_RSP_GFX);
         }
     }
 #if ENABLE_RUMBLE
@@ -251,6 +286,10 @@ void handle_sp_complete(void) {
 
     gActiveSPTask = NULL;
 
+    if (gHVQMPlaying) {
+        return;
+    }
+
     if (curSPTask->state == SPTASK_STATE_INTERRUPTED) {
         // handle_vblank tried to start an audio task while there was already a
         // gfx task running, so it had to interrupt the gfx task. That interruption
@@ -260,6 +299,9 @@ void handle_sp_complete(void) {
             // Mark it finished, just like below.
             curSPTask->state = SPTASK_STATE_FINISHED;
             profiler_log_gfx_time(RSP_COMPLETE);
+            profiler_rsp_completed(PROFILER_RSP_GFX);
+        } else {
+            profiler_rsp_yielded();
         }
 
         // Start the audio task, as expected by handle_vblank.
@@ -269,15 +311,20 @@ void handle_sp_complete(void) {
         } else {
             pretend_audio_sptask_done();
         }
+        profiler_rsp_started(PROFILER_RSP_AUDIO);
     } else {
         curSPTask->state = SPTASK_STATE_FINISHED;
         if (curSPTask->task.t.type == M_AUDTASK) {
+            profiler_rsp_completed(PROFILER_RSP_AUDIO);
             // After audio tasks come gfx tasks.
             profiler_log_vblank_time();
             if (sCurrentDisplaySPTask != NULL
                 && sCurrentDisplaySPTask->state != SPTASK_STATE_FINISHED) {
-                if (sCurrentDisplaySPTask->state != SPTASK_STATE_INTERRUPTED) {
+                if (sCurrentDisplaySPTask->state == SPTASK_STATE_INTERRUPTED) {
+                    profiler_rsp_resumed();
+                } else {
                     profiler_log_gfx_time(TASKS_QUEUED);
+                    profiler_rsp_started(PROFILER_RSP_GFX);
                 }
                 start_sptask(M_GFXTASK);
             }
@@ -290,6 +337,7 @@ void handle_sp_complete(void) {
             // that needs to arrive before we can consider the task completely finished and
             // null out sCurrentDisplaySPTask. That happens in handle_dp_complete.
             profiler_log_gfx_time(RSP_COMPLETE);
+            profiler_rsp_completed(PROFILER_RSP_GFX);
         }
     }
 }
@@ -309,6 +357,7 @@ void thread3_main(UNUSED void *arg) {
     setup_mesg_queues();
     alloc_pool();
     load_engine_code_segment();
+    detect_emulator();
 #ifndef UNF
     crash_screen_init();
 #endif
@@ -326,16 +375,40 @@ void thread3_main(UNUSED void *arg) {
     osSyncPrintf("Linker  : %s\n", __linker__);
 #endif
 
-    create_thread(&gSoundThread, 4, thread4_sound, NULL, gThread4Stack + 0x2000, 20);
+    if (!(gEmulator & EMU_CONSOLE)) {
+        gBorderHeight = BORDER_HEIGHT_EMULATOR;
+    } else {
+        gBorderHeight = BORDER_HEIGHT_CONSOLE;
+    }
+
+#ifdef DEBUG_ASSERTIONS
+    gIdleThreadStack[0] = 0;
+    gIdleThreadStack[THREAD1_STACK - 1] = 0;
+    gThread3Stack[0] = 0;
+    gThread3Stack[THREAD3_STACK - 1] = 0;
+    gThread4Stack[0] = 0;
+    gThread4Stack[THREAD4_STACK - 1] = 0;
+    gThread5Stack[0] = 0;
+    gThread5Stack[THREAD5_STACK - 1] = 0;
+#if ENABLE_RUMBLE
+    gThread6Stack[0] = 0;
+    gThread6Stack[THREAD6_STACK - 1] = 0;
+#endif
+#endif
+
+    create_thread(&gSoundThread, 4, thread4_sound, NULL, gThread4Stack + THREAD4_STACK, 20);
     osStartThread(&gSoundThread);
 
-    create_thread(&gGameLoopThread, 5, thread5_game_loop, NULL, gThread5Stack + 0x2000, 10);
+    create_thread(&gGameLoopThread, 5, thread5_game_loop, NULL, gThread5Stack + THREAD5_STACK, 10);
     osStartThread(&gGameLoopThread);
 
     while (TRUE) {
         OSMesg msg;
 
         osRecvMesg(&gIntrMesgQueue, &msg, OS_MESG_BLOCK);
+#ifdef DEBUG_ASSERTIONS
+        check_stack_validity();
+#endif
         switch ((uintptr_t) msg) {
             case MESG_VI_VBLANK:
                 handle_vblank();
@@ -357,19 +430,21 @@ void thread3_main(UNUSED void *arg) {
 }
 
 void set_vblank_handler(s32 index, struct VblankHandler *handler, OSMesgQueue *queue, OSMesg *msg) {
-    handler->queue = queue;
-    handler->msg = msg;
+    if (((u32)handler & 0x80000000) == 0x80000000) {
+        handler->queue = queue;
+        handler->msg = msg;
 
-    switch (index) {
-        case 1:
-            gVblankHandler1 = handler;
-            break;
-        case 2:
-            gVblankHandler2 = handler;
-            break;
-        case 3:
-            gVblankHandler3 = handler;
-            break;
+        switch (index) {
+            case 1:
+                gVblankHandler1 = handler;
+                break;
+            case 2:
+                gVblankHandler2 = handler;
+                break;
+            case 3:
+                gVblankHandler3 = handler;
+                break;
+        }
     }
 }
 
@@ -432,6 +507,20 @@ void change_vi(OSViMode *mode, int width, int height){
     }
 }
 
+void get_audio_frequency(void) {
+    switch (gConfig.tvType) {
+#if defined(VERSION_JP) || defined(VERSION_US)
+    case MODE_NTSC: gConfig.audioFrequency = 1.0f;    break;
+    case MODE_MPAL: gConfig.audioFrequency = 0.9915f; break;
+    case MODE_PAL:  gConfig.audioFrequency = 0.9876f; break;
+#else
+    case MODE_NTSC: gConfig.audioFrequency = 1.0126f; break;
+    case MODE_MPAL: gConfig.audioFrequency = 1.0086f; break;
+    case MODE_PAL:  gConfig.audioFrequency = 1.0f;    break;
+#endif
+    }
+}
+
 /**
  * Initialize hardware, start main thread, then idle.
  */
@@ -441,24 +530,28 @@ void thread1_idle(UNUSED void *arg) {
 	switch ( osTvType ) {
 	case OS_TV_NTSC:
 		// NTSC
-        VI = osViModeNtscLan1;
+        VI = osViModeTable[OS_VI_NTSC_LAN1];
+        gConfig.tvType = MODE_NTSC;
 		break;
 	case OS_TV_MPAL:
 		// MPAL
-        VI = osViModeMpalLan1;
+        VI = osViModeTable[OS_VI_NTSC_LAN1];
+        gConfig.tvType = MODE_MPAL;
 		break;
 	case OS_TV_PAL:
 		// PAL
-        VI = osViModePalLan1;
+        VI = osViModeTable[OS_VI_NTSC_LAN1];
+        gConfig.tvType = MODE_PAL;
 		break;
 	}
+    get_audio_frequency();
     change_vi(&VI, SCREEN_WIDTH, SCREEN_HEIGHT);
     osViSetMode(&VI);
     osViBlack(TRUE);
     osViSetSpecialFeatures(OS_VI_DITHER_FILTER_ON);
     osViSetSpecialFeatures(OS_VI_GAMMA_OFF);
     osCreatePiManager(OS_PRIORITY_PIMGR, &gPIMesgQueue, gPIMesgBuf, ARRAY_COUNT(gPIMesgBuf));
-    create_thread(&gMainThread, 3, thread3_main, NULL, gThread3Stack + 0x2000, 100);
+    create_thread(&gMainThread, 3, thread3_main, NULL, gThread3Stack + THREAD3_STACK, 100);
     osStartThread(&gMainThread);
 
     osSetThreadPri(NULL, 0);
@@ -501,6 +594,6 @@ void main_func(void) {
     osInitialize_fakeisv();
 #endif
 
-    create_thread(&gIdleThread, 1, thread1_idle, NULL, gIdleThreadStack + 0x800, 100);
+    create_thread(&gIdleThread, 1, thread1_idle, NULL, gIdleThreadStack + THREAD1_STACK, 100);
     osStartThread(&gIdleThread);
 }

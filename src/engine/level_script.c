@@ -5,6 +5,7 @@
 
 #include "sm64.h"
 #include "audio/external.h"
+#include "audio/synthesis.h"
 #include "buffers/framebuffers.h"
 #include "buffers/zbuffer.h"
 #include "hvqm/hvqm.h"
@@ -26,6 +27,8 @@
 #include "math_util.h"
 #include "surface_collision.h"
 #include "surface_load.h"
+#include "game/emutest.h"
+#include "audio/data.h"
 
 #define CMD_GET(type, offset) (*(type *) (CMD_PROCESS_OFFSET(offset) + (u8 *) sCurrentCmd))
 
@@ -299,7 +302,7 @@ static void level_cmd_load_mario_head(void) {
 }
 
 static void level_cmd_load_yay0_texture(void) {
-    load_segment_decompress_heap(CMD_GET(s16, 2), CMD_GET(void *, 4), CMD_GET(void *, 8));
+    load_segment_decompress(CMD_GET(s16, 2), CMD_GET(void *, 4), CMD_GET(void *, 8));
     sCurrentCmd = CMD_NEXT;
 }
 
@@ -474,8 +477,6 @@ static void level_cmd_create_warp_node(void) {
         warpNode->node.destLevel = CMD_GET(u8, 3) + CMD_GET(u8, 6);
         warpNode->node.destArea = CMD_GET(u8, 4);
         warpNode->node.destNode = CMD_GET(u8, 5);
-
-        warpNode->object = NULL;
 
         warpNode->next = gAreas[sCurrAreaIndex].warpNodes;
         gAreas[sCurrAreaIndex].warpNodes = warpNode;
@@ -700,18 +701,43 @@ static void level_cmd_show_dialog(void) {
 static void level_cmd_set_music(void) {
     if (sCurrAreaIndex != -1) {
         gAreas[sCurrAreaIndex].musicParam = CMD_GET(s16, 2);
-        gAreas[sCurrAreaIndex].musicParam2 = CMD_GET(s16, 4);
+#ifdef BETTER_REVERB
+        if (gEmulator & EMU_CONSOLE)
+            gAreas[sCurrAreaIndex].betterReverbPreset = CMD_GET(u8, 4);
+        else
+            gAreas[sCurrAreaIndex].betterReverbPreset = CMD_GET(u8, 5);
+#endif
+        gAreas[sCurrAreaIndex].musicParam2 = CMD_GET(s16, 6);
     }
     sCurrentCmd = CMD_NEXT;
 }
 
 static void level_cmd_set_menu_music(void) {
+#ifdef BETTER_REVERB
+    // Must come before set_background_music()
+    if (gEmulator & EMU_CONSOLE)
+        gBetterReverbPresetValue = CMD_GET(u8, 4);
+    else
+        gBetterReverbPresetValue = CMD_GET(u8, 5);
+#endif
     set_background_music(0, CMD_GET(s16, 2), 0);
     sCurrentCmd = CMD_NEXT;
 }
 
-static void level_cmd_38(void) {
-    fadeout_music(CMD_GET(s16, 2));
+static void level_cmd_fadeout_music(void) {
+    s16 dur = CMD_GET(s16, 2);
+    if (sCurrAreaIndex != -1 && dur == 0) {
+        // Allow persistent block overrides for SET_BACKGROUND_MUSIC_WITH_REVERB
+        gAreas[sCurrAreaIndex].musicParam = 0x00;
+        gAreas[sCurrAreaIndex].musicParam2 = 0x00;
+#ifdef BETTER_REVERB
+        gAreas[sCurrAreaIndex].betterReverbPreset = 0x00;
+#endif
+    } else {
+        if (dur < 0)
+            dur = 0;
+        fadeout_music(dur);
+    }
     sCurrentCmd = CMD_NEXT;
 }
 
@@ -757,19 +783,28 @@ static void level_cmd_get_or_set_var(void) {
     sCurrentCmd = CMD_NEXT;
 }
 
-void level_cmd_play_hvqm(void) {
-#ifdef HVQM
-    uintptr_t addr = CMD_GET(uintptr_t, 4);
+static void level_cmd_set_echo(void) {
+    if (sCurrAreaIndex >= 0 && sCurrAreaIndex < 8) {
+        gAreaData[sCurrAreaIndex].useEchoOverride = TRUE;
+        if (gEmulator & EMU_CONSOLE)
+            gAreaData[sCurrAreaIndex].echoOverride = CMD_GET(s8, 2);
+        else
+            gAreaData[sCurrAreaIndex].echoOverride = CMD_GET(s8, 3);
+    }
+    sCurrentCmd = CMD_NEXT;
+}
 
+void hvqm_play(void *addr) {
     extern u8 _hvqmworkSegmentBssStart[];
     extern u8 _hvqbufSegmentBssEnd[];
+    gHVQMPlaying = 1;
 
     bzero(_hvqmworkSegmentBssStart, (u32)_hvqbufSegmentBssEnd - (u32)_hvqmworkSegmentBssStart);
 
     hvqm_reset_bss();
     timekeeper_reset_bss();
 
-    createHvqmThread(addr);
+    createHvqmThread((uintptr_t)addr);
     osStartThread(&hvqmThread);
     osRecvMesg(&gHVQM_SyncQueue, NULL, OS_MESG_BLOCK);
 
@@ -777,8 +812,18 @@ void level_cmd_play_hvqm(void) {
     osViSetEvent(&gIntrMesgQueue, (OSMesg) MESG_VI_VBLANK, 1);
 
     osDestroyThread(&hvqmThread);
+    bzero(&hvqmThread, sizeof(OSThread));
 
-    audio_init(AUD_REINIT);
+    osAiSetFrequency(gAudioSessionSettings.frequency);
+
+    gHVQMPlaying = 0;
+}
+
+static void level_cmd_play_hvqm(void) {
+#ifdef HVQM
+    uintptr_t addr = CMD_GET(uintptr_t, 4);
+
+    hvqm_play((void*)addr);
 #endif
     sCurrentCmd = CMD_NEXT;
 }
@@ -840,12 +885,13 @@ static void (*LevelScriptJumpTable[])(void) = {
     /*35*/ level_cmd_set_gamma,
     /*36*/ level_cmd_set_music,
     /*37*/ level_cmd_set_menu_music,
-    /*38*/ level_cmd_38,
+    /*38*/ level_cmd_fadeout_music,
     /*39*/ level_cmd_set_macro_objects,
     /*3A*/ level_cmd_3A,
     /*3B*/ level_cmd_create_whirlpool,
     /*3C*/ level_cmd_get_or_set_var,
-    /*3D*/ level_cmd_play_hvqm,
+    /*3D*/ level_cmd_set_echo,
+    /*3E*/ level_cmd_play_hvqm,
 };
 
 struct LevelCommand *level_script_execute(struct LevelCommand *cmd) {
@@ -853,9 +899,6 @@ struct LevelCommand *level_script_execute(struct LevelCommand *cmd) {
     sCurrentCmd = cmd;
 
     while (sScriptStatus == SCRIPT_RUNNING) {
-        char aa[100];
-        sprintf(aa, "CMD %02X %08X\n", sCurrentCmd->type, LevelScriptJumpTable[sCurrentCmd->type]);
-        osSyncPrintf(aa);
         LevelScriptJumpTable[sCurrentCmd->type]();
     }
 

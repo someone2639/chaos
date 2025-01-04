@@ -9,6 +9,7 @@
 #include "game/game_init.h"
 #include "game/ingame_menu.h"
 #include "game/level_update.h"
+#include "game/main.h"
 #include "game/memory.h"
 #include "game/object_helpers.h"
 #include "game/object_list_processor.h"
@@ -90,9 +91,20 @@ void bhv_act_selector_star_type_loop(void) {
  */
 void render_100_coin_star(u8 stars) {
     if (stars & (1 << 6)) {
+#ifdef WIDE
+        f32 aspectRatio = 370.0f;
+        if (gConfig.widescreen) {
+            aspectRatio *= (4.0f / 3.0f);
+        }
+
+        // If the 100 coin star has been collected, create a new star selector next to the coin score.
+        sStarSelectorModels[6] = spawn_object_abs_with_rot(gCurrentObject, 0, MODEL_STAR,
+                                                        bhvActSelectorStarType, aspectRatio, 24, -300, 0, 0, 0);
+#else
         // If the 100 coin star has been collected, create a new star selector next to the coin score.
         sStarSelectorModels[6] = spawn_object_abs_with_rot(gCurrentObject, 0, MODEL_STAR,
                                                         bhvActSelectorStarType, 370, 24, -300, 0, 0, 0);
+#endif
         sStarSelectorModels[6]->oStarSelectorSize = 0.8;
         sStarSelectorModels[6]->oStarSelectorType = STAR_SELECTOR_100_COINS;
     }
@@ -146,12 +158,25 @@ void bhv_act_selector_init(void) {
     }
 
     // Render star selector objects
-    for (i = 0; i < sVisibleStars; i++) {
-        sStarSelectorModels[i] =
-            spawn_object_abs_with_rot(gCurrentObject, 0, selectorModelIDs[i], bhvActSelectorStarType,
-                                      75 + sVisibleStars * -75 + i * 152, 248, -300, 0, 0, 0);
-        sStarSelectorModels[i]->oStarSelectorSize = 1.0f;
+#ifdef WIDE
+    if (gConfig.widescreen) {
+        for (i = 0; i < sVisibleStars; i++) {
+            sStarSelectorModels[i] =
+                spawn_object_abs_with_rot(gCurrentObject, 0, selectorModelIDs[i], bhvActSelectorStarType,
+                                        (75 + sVisibleStars * -75 + i * 152) * (4.0f / 3.0f), 248, -300, 0, 0, 0);
+            sStarSelectorModels[i]->oStarSelectorSize = 1.0f;
+        }
+    } else {
+#endif
+        for (i = 0; i < sVisibleStars; i++) {
+            sStarSelectorModels[i] =
+                spawn_object_abs_with_rot(gCurrentObject, 0, selectorModelIDs[i], bhvActSelectorStarType,
+                                        75 + sVisibleStars * -75 + i * 152, 248, -300, 0, 0, 0);
+            sStarSelectorModels[i]->oStarSelectorSize = 1.0f;
+        }
+#ifdef WIDE
     }
+#endif
 
     render_100_coin_star(stars);
 }
@@ -210,7 +235,7 @@ void print_course_number(void) {
 #endif
     u8 courseNum[4];
 
-    create_dl_translation_matrix(MENU_MTX_PUSH, 158.0f, 81.0f, 0.0f);
+    create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_PUSH, 158.0f, 81.0f, 0.0f);
 
     // Full wood texture in JP & US, lower part of it on EU
     gSPDisplayList(gDisplayListHead++, dl_menu_rgba16_wood_course);
@@ -281,7 +306,7 @@ void print_act_selector_strings(void) {
     s16 language = eu_get_language();
 #endif
 
-    create_dl_ortho_matrix();
+    create_dl_ortho_matrix(&gDisplayListHead);
 
 #ifdef VERSION_EU
     switch (language) {

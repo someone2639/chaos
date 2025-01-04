@@ -421,22 +421,24 @@ void render_hud(void) {
             return;
         }
 
-        create_dl_identity_matrix();
+        create_dl_identity_matrix(&gDisplayListHead);
         guOrtho(mtx, -16.0f, SCREEN_WIDTH + 16, 0, SCREEN_HEIGHT, -10.0f, 10.0f, 1.0f);
         gSPPerspNormalize(gDisplayListHead++, 0xFFFF);
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx),
                   G_MTX_PROJECTION | G_MTX_MUL | G_MTX_NOPUSH);
 #else
-        create_dl_ortho_matrix();
+        create_dl_ortho_matrix(&gDisplayListHead);
 #endif
 
         if (gCurrentArea != NULL && gCurrentArea->camera->mode == CAMERA_MODE_INSIDE_CANNON) {
             render_hud_cannon_reticle();
         }
 
+#ifndef DISABLE_LIVES
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES) {
             render_hud_mario_lives();
         }
+#endif
 
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_COIN_COUNT) {
             render_hud_coins();

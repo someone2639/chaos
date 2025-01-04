@@ -7,12 +7,16 @@
 
 #define AUDIO_FRAME_DMA_QUEUE_SIZE 0x40
 
-#define PRELOAD_BANKS 2
-#define PRELOAD_SEQUENCE 1
+enum Preloads {
+    PRELOAD_NONE,
+    PRELOAD_SEQUENCE,
+    PRELOAD_BANKS,
+};
 
 #define IS_SEQUENCE_CHANNEL_VALID(ptr) ((uintptr_t)(ptr) != (uintptr_t)&gSequenceChannelNone)
 
 extern struct Note *gNotes;
+extern u8 sAudioIsInitialized;
 
 // Music in SM64 is played using 3 players:
 // gSequencePlayers[0] is level background music
@@ -83,7 +87,7 @@ void *dma_sample_data(uintptr_t devAddr, u32 size, s32 arg2, u8 *dmaIndexRef, s3
 #else
 void *dma_sample_data(uintptr_t devAddr, u32 size, s32 arg2, u8 *dmaIndexRef);
 #endif
-void init_sample_dma_buffers(s32 arg0);
+void init_sample_dma_buffers();
 #if defined(VERSION_SH)
 void patch_audio_bank(s32 bankId, struct AudioBank *mem, struct PatchStruct *patchInfo);
 #else
@@ -103,7 +107,7 @@ struct AudioBankSample *func_sh_802f4978(s32 bankId, s32 idx);
 s32 func_sh_802f47c8(s32 bankId, u8 idx, s8 *io);
 void *func_sh_802f3f08(s32 poolIdx, s32 arg1, s32 arg2, s32 arg3, OSMesgQueue *retQueue);
 void func_sh_802f41e4(s32 audioResetStatus);
-BAD_RETURN(s32) func_sh_802f3368(s32 bankId);
+void func_sh_802f3368(s32 bankId);
 void *func_sh_802f3764(s32 arg0, s32 idx, s32 *arg2);
 s32 func_sh_802f3024(s32 bankId, s32 instId, s32 arg2);
 void func_sh_802f30f4(s32 arg0, s32 arg1, s32 arg2, OSMesgQueue *arg3);

@@ -6,6 +6,7 @@
 
 #include "buffers/buffers.h"
 #include "slidec.h"
+#include "game/debug.h"
 #include "game/game_init.h"
 #include "game/main.h"
 #include "game/memory.h"
@@ -17,12 +18,6 @@
 #if defined(RNC1) || defined(RNC2)
 #include <rnc.h>
 #endif
-
-
-// round up to the next multiple
-#define ALIGN4(val) (((val) + 0x3) & ~0x3)
-#define ALIGN8(val) (((val) + 0x7) & ~0x7)
-#define ALIGN16(val) (((val) + 0xF) & ~0xF)
 
 struct MainPoolState {
     u32 freeSpace;
@@ -160,6 +155,9 @@ void *main_pool_alloc(u32 size, u32 side) {
             addr = (u8 *) sPoolListHeadR + 16;
         }
     }
+
+    aggress(addr != NULL, "MAIN POOL OUT OF MEMORY!");
+
     return addr;
 }
 
@@ -379,44 +377,6 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
     return dest;
 }
 
-void *load_segment_decompress_heap(u32 segment, u8 *srcStart, u8 *srcEnd) {
-    UNUSED void *dest = NULL;
-
-#ifdef UNCOMPRESSED
-    dma_read(gDecompressionHeap, srcStart, srcEnd);
-    set_segment_base_addr(segment, gDecompressionHeap);
-#else
-#ifdef GZIP
-    u32 compSize = (srcEnd - 4 - srcStart);
-#else
-    u32 compSize = ALIGN16(srcEnd - srcStart);
-#endif
-    u8 *compressed = main_pool_alloc(compSize, MEMORY_POOL_RIGHT);
-#ifdef GZIP
-    // Decompressed size from end of gzip
-    u32 *size = (u32 *) (compressed + compSize);
-#endif
-    if (compressed != NULL) {
-        dma_read(compressed, srcStart, srcEnd);
-#ifdef GZIP
-        expand_gzip(compressed, gDecompressionHeap, compSize, (u32)size);
-#elif RNC1
-        Propack_UnpackM1(compressed, gDecompressionHeap);
-#elif RNC2
-        Propack_UnpackM2(compressed, gDecompressionHeap);
-#elif YAY0
-        slidstart(compressed, gDecompressionHeap);
-#elif MIO0
-        decompress(compressed, gDecompressionHeap);
-#endif
-        set_segment_base_addr(segment, gDecompressionHeap);
-        main_pool_free(compressed);
-    } else {
-    }
-#endif
-    return gDecompressionHeap;
-}
-
 void load_engine_code_segment(void) {
     void *startAddr = (void *) _engineSegmentStart;
     u32 totalSize = _engineSegmentEnd - _engineSegmentStart;
@@ -463,6 +423,8 @@ void *alloc_only_pool_alloc(struct AllocOnlyPool *pool, s32 size) {
         addr = pool->freePtr;
         pool->freePtr += size;
         pool->usedSpace += size;
+    } else {
+        aggress(FALSE, "allocPool out of memory!");
     }
     return addr;
 }
@@ -534,6 +496,9 @@ void *mem_pool_alloc(struct MemoryPool *pool, u32 size) {
         }
         freeBlock = freeBlock->next;
     }
+
+    aggress(addr != NULL, "MEM POOL OUT OF MEMORY!");
+
     return addr;
 }
 
@@ -587,6 +552,7 @@ void *alloc_display_list(u32 size) {
         gGfxPoolEnd -= size;
         ptr = gGfxPoolEnd;
     } else {
+        error("GFX POOL OUT OF MEMORY!");
     }
     return ptr;
 }

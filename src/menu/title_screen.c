@@ -84,45 +84,61 @@ s32 run_level_id_or_demo(s32 level) {
  * or the level select to be exited if start or the quit combo is pressed.
  */
 s16 intro_level_select(void) {
-    s32 stageChanged = FALSE;
-
-    // perform the ID updates per each button press.
-    // runs into a loop so after a button is pressed
-    // stageChanged goes back to FALSE
-    if (gPlayer1Controller->buttonPressed & A_BUTTON) {
-        ++gCurrLevelNum, stageChanged = TRUE;
-    }
-    if (gPlayer1Controller->buttonPressed & B_BUTTON) {
-        --gCurrLevelNum, stageChanged = TRUE;
-    }
-    if (gPlayer1Controller->buttonPressed & U_JPAD) {
-        --gCurrLevelNum, stageChanged = TRUE;
-    }
-    if (gPlayer1Controller->buttonPressed & D_JPAD) {
-        ++gCurrLevelNum, stageChanged = TRUE;
-    }
-    if (gPlayer1Controller->buttonPressed & L_JPAD) {
-        gCurrLevelNum -= 10, stageChanged = TRUE;
-    }
-    if (gPlayer1Controller->buttonPressed & R_JPAD) {
-        gCurrLevelNum += 10, stageChanged = TRUE;
+    static u8 gLevelSelectHoldKeyIndex = 0;
+    static u8 gLevelSelectHoldKeyTimer = 0;
+    u32 index = 0;
+    if (gPlayer1Controller->rawStickY < -60
+        || gPlayer1Controller->rawStickX < -60
+        || gPlayer1Controller->buttonDown & (D_CBUTTONS | D_JPAD | L_CBUTTONS | L_JPAD)
+    ) {
+            index++;
     }
 
-    // if the stage was changed, play the sound for changing a stage.
-    if (stageChanged) {
-        play_sound(SOUND_GENERAL_LEVEL_SELECT_CHANGE, gGlobalSoundSource);
+    if (gPlayer1Controller->rawStickY > 60
+        || gPlayer1Controller->rawStickX > 60
+        || gPlayer1Controller->buttonDown & (U_CBUTTONS | U_JPAD | R_CBUTTONS | R_JPAD)
+    ) {
+            index += 2;
     }
 
-    if (gCurrLevelNum > LEVEL_MAX) {
-        gCurrLevelNum = LEVEL_MIN; // exceeded max. set to min.
+    if (((index ^ gLevelSelectHoldKeyIndex) & index) == 2) {
+        if (gCurrLevelNum > LEVEL_MAX) {
+            gCurrLevelNum = LEVEL_MIN;
+        } else if (gPlayer3Controller->buttonDown & B_BUTTON) {
+            play_sound(SOUND_GENERAL_LEVEL_SELECT_CHANGE, gGlobalSoundSource);
+            gCurrLevelNum += 10;
+        } else {
+            play_sound(SOUND_GENERAL_LEVEL_SELECT_CHANGE, gGlobalSoundSource);
+            gCurrLevelNum++;
+        }
     }
 
-    if (gCurrLevelNum < LEVEL_MIN) {
-        gCurrLevelNum = LEVEL_MAX; // exceeded min. set to max.
+    if (((index ^ gLevelSelectHoldKeyIndex) & index) == 1) {
+        if (gCurrLevelNum < LEVEL_MIN) {
+            // Same applies to here as above
+            gCurrLevelNum = LEVEL_MAX;
+        } else if (gPlayer3Controller->buttonDown & B_BUTTON) {
+            play_sound(SOUND_GENERAL_LEVEL_SELECT_CHANGE, gGlobalSoundSource);
+            gCurrLevelNum -= 10;
+        } else {
+            play_sound(SOUND_GENERAL_LEVEL_SELECT_CHANGE, gGlobalSoundSource);
+            gCurrLevelNum--;
+        }
     }
 
-    // Use file 4 and last act as a test
-    gCurrSaveFileNum = 4;
+    if (gLevelSelectHoldKeyTimer == 10) {
+        gLevelSelectHoldKeyTimer = 8;
+        gLevelSelectHoldKeyIndex = 0;
+    } else {
+        gLevelSelectHoldKeyTimer++;
+        gLevelSelectHoldKeyIndex = index;
+    }
+
+    if ((index & 0x3) == 0) gLevelSelectHoldKeyTimer = 0;
+    if (gCurrLevelNum > LEVEL_MAX) gCurrLevelNum = LEVEL_MIN; // exceeded max. set to min.
+    if (gCurrLevelNum < LEVEL_MIN) gCurrLevelNum = LEVEL_MAX; // exceeded min. set to max.
+    // Use file 1 and last act as a test
+    gCurrSaveFileNum = 1;
     gCurrActNum = 6;
 
     print_text_centered(160, 80, "SELECT STAGE");
@@ -130,20 +146,18 @@ s16 intro_level_select(void) {
     print_text_fmt_int(40, 60, "%2d", gCurrLevelNum);
     print_text(80, 60, sLevelSelectStageNames[gCurrLevelNum - 1]); // print stage name
 
-#define QUIT_LEVEL_SELECT_COMBO (Z_TRIG | START_BUTTON | L_CBUTTONS | R_CBUTTONS)
-
     // start being pressed signals the stage to be started. that is, unless...
-    if (gPlayer1Controller->buttonPressed & START_BUTTON) {
+    if (gPlayer1Controller->buttonPressed & (START_BUTTON | A_BUTTON)) {
         // ... the level select quit combo is being pressed, which uses START. If this
         // is the case, quit the menu instead.
-        if (gPlayer1Controller->buttonDown == QUIT_LEVEL_SELECT_COMBO) {
+        if (gPlayer1Controller->buttonDown == (Z_TRIG | START_BUTTON | L_CBUTTONS)) { // quit level select
             gDebugLevelSelect = FALSE;
             return -1;
         }
         play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
         return gCurrLevelNum;
     }
-    return 0;
+    return LEVEL_NONE;
 }
 
 /**
@@ -169,15 +183,17 @@ s32 intro_regular(void) {
     print_intro_text();
 
     if (gPlayer1Controller->buttonPressed & START_BUTTON) {
+#ifdef DEBUG_LEVEL_SELECT // NOTE: This define relies on maintaining functionality for Mario head
+        if (gPlayer3Controller->buttonDown & L_TRIG) {
+            gDebugLevelSelect = TRUE;
+        }
+#endif
         play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 #if ENABLE_RUMBLE
         queue_rumble_data(60, 70);
         func_sh_8024C89C(1);
 #endif
-        // calls level ID 100 (or 101 adding level select bool value)
-        // defined in level_intro_mario_head_regular JUMP_IF commands
-        // 100 is File Select - 101 is Level Select
-        level = 100 + gDebugLevelSelect;
+        level = ((gDebugLevelSelect == TRUE) ? LEVEL_LEVEL_SELECT : LEVEL_FILE_SELECT);
 #ifndef VERSION_JP
         sPlayMarioGreeting = TRUE;
 #endif
@@ -206,8 +222,7 @@ s32 intro_game_over(void) {
         queue_rumble_data(60, 70);
         func_sh_8024C89C(1);
 #endif
-        // same criteria as intro_regular
-        level = 100 + gDebugLevelSelect;
+        level = ((gDebugLevelSelect == TRUE) ? LEVEL_LEVEL_SELECT : LEVEL_FILE_SELECT);
 #ifndef VERSION_JP
         sPlayMarioGameOver = TRUE;
 #endif

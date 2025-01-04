@@ -374,7 +374,7 @@ void display_patch_selection_ui() {
 
     patch_bg_scroll();
     desc_bg_scroll();
-    create_dl_ortho_matrix();
+    create_dl_ortho_matrix(&gDisplayListHead);
 
     //Ugly and hopefully temporary
     render_patch_card(CARD_X_LEFT, CARD_Y_TOP, cardScale1, sAvailablePatches[0], FALSE);

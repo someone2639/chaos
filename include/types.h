@@ -19,6 +19,16 @@
     #define BAD_RETURN(cmd) cmd
 #endif
 
+#define SCREEN_CENTER_X (SCREEN_WIDTH  / 2)
+#define SCREEN_CENTER_Y (SCREEN_HEIGHT / 2)
+
+struct Config {
+    f32 audioFrequency;
+#ifdef WIDE
+    s16 widescreen;
+#endif
+    u8 tvType;
+};
 
 struct Controller {
   /*0x00*/ s16 rawStickX;       //
@@ -29,7 +39,7 @@ struct Controller {
   /*0x10*/ u16 buttonDown;
   /*0x12*/ u16 buttonPressed;
   /*0x14*/ OSContStatus *statusData;
-  /*0x18*/ OSContPad *controllerData;
+  /*0x18*/ OSContPadEx *controllerData;
 #if ENABLE_RUMBLE
   /*0x1C*/ s32 port;
 #endif

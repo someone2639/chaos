@@ -163,11 +163,10 @@ void eu_process_audio_cmd(struct EuAudioCmd *cmd) {
             break;
 
         case 0x83:
-            if (gSequencePlayers[cmd->u.s.arg1].enabled != FALSE) {
+            if (gSequencePlayers[cmd->u.s.arg1].enabled) {
                 if (cmd->u2.as_s32 == 0) {
                     sequence_player_disable(&gSequencePlayers[cmd->u.s.arg1]);
-                }
-                else {
+                } else {
                     seq_player_fade_to_zero_volume(cmd->u.s.arg1, cmd->u2.as_s32);
                 }
             }
@@ -177,7 +176,7 @@ void eu_process_audio_cmd(struct EuAudioCmd *cmd) {
             break;
 
         case 0xf0:
-            gSoundMode = cmd->u2.as_s32;
+            // gSoundMode = cmd->u2.as_s32; // Commenting this out, as the way to reset this has been removed.
             break;
 
         case 0xf1:
@@ -397,9 +396,8 @@ void func_802ad7ec(u32 arg0) {
                             }
                             break;
                         case 5:
-                            //! @bug u8 s8 comparison (but harmless)
-                            if (chan->reverbVol != cmd->u2.as_s8) {
-                                chan->reverbVol = cmd->u2.as_s8;
+                            if (chan->reverbVol != cmd->u2.as_u8) {
+                                chan->reverbVol = cmd->u2.as_u8;
                             }
                             break;
                         case 6:
@@ -432,24 +430,19 @@ u32 func_sh_802f6878(s32 *arg0) {
     return sp1C >> 0x18;
 }
 
-u8 *func_sh_802f68e0(u32 index, u32 *a1) {
+UNUSED u8 *func_sh_802f68e0(u32 index, u32 *a1) {
     return func_sh_802f3220(index, a1);
 }
 
-s32 func_sh_802f6900(void) {
-    s32 ret;
+UNUSED s32 func_sh_802f6900(void) {
     s32 sp18;
 
-    ret = osRecvMesg(D_SH_80350FA8, (OSMesg *) &sp18, 0);
+    s32 ret = osRecvMesg(D_SH_80350FA8, (OSMesg *) &sp18, 0);
 
     if (ret == -1) {
-        return 0;
+        return FALSE;
     }
-    if (sp18 != gAudioResetPresetIdToLoad) {
-        return 0;
-    } else {
-        return 1;
-    }
+    return sp18 == gAudioResetPresetIdToLoad;
 }
 
 // TODO: (Scrub C)
@@ -470,11 +463,9 @@ void func_sh_802f69cc(void) {
     gAudioResetStatus = 0;
 }
 
-s32 func_sh_802f6a08(s32 playerIndex, s32 channelIndex, s32 soundScriptIOIndex) {
+UNUSED s32 func_sh_802f6a08(s32 playerIndex, s32 channelIndex, s32 soundScriptIOIndex) {
     struct SequenceChannel *seqChannel;
-    struct SequencePlayer *player;
-
-    player = &gSequencePlayers[playerIndex];
+    struct SequencePlayer *player = &gSequencePlayers[playerIndex];
     if (player->enabled) {
         seqChannel = player->channels[channelIndex];
         if (IS_SEQUENCE_CHANNEL_VALID(seqChannel)) {
@@ -484,7 +475,7 @@ s32 func_sh_802f6a08(s32 playerIndex, s32 channelIndex, s32 soundScriptIOIndex) 
     return -1;
 }
 
-s8 func_sh_802f6a6c(s32 playerIndex, s32 index) {
+UNUSED s32 func_sh_802f6a6c(s32 playerIndex, s32 index) {
     return gSequencePlayers[playerIndex].seqVariationEu[index];
 }
 

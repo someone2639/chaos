@@ -3,23 +3,32 @@
 
 #include "config.h"
 
+#define THREAD1_STACK 0x100
+#define THREAD2_STACK 0x800
+#define THREAD3_STACK 0x200
+#define THREAD4_STACK 0x2000
+#define THREAD5_STACK 0x2000
+#define THREAD6_STACK 0x400
+
 struct RumbleData {
-    u8 unk00;
-    u8 unk01;
-    s16 unk02;
-    s16 unk04;
+    u8  comm;
+    u8  level;
+    s16 time;
+    s16 decay;
 };
 
-struct StructSH8031D9B0 {
-    s16 unk00;
-    s16 unk02;
-    s16 unk04;
-    s16 unk06;
-    s16 unk08;
-    s16 unk0A;
-    s16 unk0C;
-    s16 unk0E;
+struct RumbleSettings {
+    s16 event;
+    s16 level;
+    s16 timer;
+    s16 count;
+    s16 start;
+    s16 slip;
+    s16 vibrate;
+    s16 decay;
 };
+
+extern struct Config gConfig;
 
 extern OSThread D_80339210;
 extern OSThread gIdleThread;
@@ -54,7 +63,7 @@ extern OSMesg gRumblePakSchedulerMesgBuf[1];
 extern OSMesg gRumbleThreadVIMesgBuf[1];
 
 extern struct RumbleData gRumbleDataQueue[3];
-extern struct StructSH8031D9B0 gCurrRumbleSettings;
+extern struct RumbleSettings gCurrRumbleSettings;
 #endif
 
 extern struct VblankHandler *gVblankHandler1;
@@ -74,6 +83,8 @@ extern s8 gShowDebugText;
 #define MESG_VI_VBLANK 102
 #define MESG_START_GFX_SPTASK 103
 #define MESG_NMI_REQUEST 104
+
+extern u32 gHVQMPlaying;
 
 void set_vblank_handler(s32 index, struct VblankHandler *handler, OSMesgQueue *queue, OSMesg *msg);
 void dispatch_audio_sptask(struct SPTask *spTask);

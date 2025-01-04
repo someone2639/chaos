@@ -90,6 +90,11 @@ void hvqm_reset_bss(void) {
     bzero(&hvq_sparg, sizeof(HVQM2Arg));
 
     bzero(hvqmStack, sizeof(hvqmStack));
+    bzero(hvqwork, sizeof(u16) * (MAXWIDTH/8)*(MAXHEIGHT/4)*4);
+    bzero(hvq_spfifo, HVQ_SPFIFO_SIZE);
+    bzero(hvq_yieldbuf, HVQM2_YIELD_DATA_SIZE);
+
+    init_cfb();
 }
 
 static u32 next_audio_record( void *pcmbuf ) {
@@ -128,8 +133,8 @@ OSThread hvqmThread;
 static u64 hvqmStack[STACKSIZE/sizeof(u64)];
 
 void hvqm_main_proc(uintptr_t vidPtr) {
-    int h_offset, v_offset;	/* Position of image display */
-    int screen_offset;		/* Number of pixels from start of frame buffer to display position */
+    int h_offset = 0, v_offset = 0;	/* Position of image display */
+    int screen_offset = 0;		/* Number of pixels from start of frame buffer to display position */
     u32 usec_per_frame;
     int prev_bufno = -1;
 
@@ -167,11 +172,28 @@ void hvqm_main_proc(uintptr_t vidPtr) {
     usec_per_frame = load32(hvqm_header->usec_per_frame);
     total_audio_records = load32(hvqm_header->total_audio_records);
     
+    h_offset = (SCREEN_WD - hvqm_header->width) / 2;
+    v_offset = (SCREEN_HT - hvqm_header->height) / 2;
+    screen_offset = SCREEN_WD * v_offset + h_offset;
+    
     hvqm2SetupSP1(hvqm_header, SCREEN_WD);
     
     release_all_cfb();
     tkStart( &rewind, load32( hvqm_header->samples_per_sec ) );
-    
+
+    char abuf[60];
+    sprintf(abuf, "HVQM Uses %d samples/sec\n", hvqm_header->samples_per_sec);
+    osSyncPrintf(abuf);
+
+    sprintf(abuf, "    AUDIO FORMAT %d\n", hvqm_header->audio_format);
+    osSyncPrintf(abuf);
+    sprintf(abuf, "    AUDIO CHANNELS %d\n", hvqm_header->channels);
+    osSyncPrintf(abuf);
+    sprintf(abuf, "    AUDIO SAMPLE BITS %d\n", hvqm_header->sample_bits);
+    osSyncPrintf(abuf);
+    sprintf(abuf, "    AUDIO QUANTIZE %d\n", hvqm_header->audio_quantize_step);
+    osSyncPrintf(abuf);
+
     for ( ; ; ) {
 
         while ( video_remain > 0 ) {
@@ -179,13 +201,11 @@ void hvqm_main_proc(uintptr_t vidPtr) {
             HVQM2Record *record_header;
             u16 frame_format;
             int bufno;
-            OSMesg msg;
 
             if ( disptime > 0 && tkGetTime() > 0) {
                 if ( tkGetTime() < (disptime - (usec_per_frame * 2)) ) {
                    tkPushVideoframe( gFramebuffers[prev_bufno], &cfb_status[prev_bufno], disptime );
                    continue;
-                  //if ( video_remain == 0 ) break;
                 }
             }
             
@@ -202,12 +222,18 @@ void hvqm_main_proc(uintptr_t vidPtr) {
                   release_all_cfb();
                   do {
                     disptime += usec_per_frame;
-                    if ( --video_remain == 0 ) break;
+                    if ( --video_remain == 0 ) {
+                        // osSyncPrintf("LINE 215 BREAK\n");
+                        break;
+                    }
                     video_streamP = get_record( record_header, hvqbuf, 
 				    HVQM2_VIDEO, video_streamP, 
 				    &videoDmaMesgBlock, &videoDmaMessageQ );
                   } while (load16( record_header->format ) != HVQM2_VIDEO_KEYFRAME || tkGetTime() > disptime );
-                  if ( video_remain == 0 ) break;
+                  if ( video_remain == 0 ) {
+                      // osSyncPrintf("LINE 220 BREAK\n");
+                      break;
+                  }
                 }
             }
             
@@ -260,18 +286,20 @@ void hvqm_main_proc(uintptr_t vidPtr) {
         }
         
         if (video_remain == 0) {
-            osAiSetFrequency(gAudioSessionPresets[0].frequency);
+            // osSyncPrintf("Loop Broken\n");
+            // osAiSetFrequency(gAudioSessionPresets.frequency);
             osSetEventMesg(OS_EVENT_AI, NULL, 0);
             osDestroyThread(&tkThread);
             osDestroyThread(&daCounterThread);
             osSendMesg(&gHVQM_SyncQueue, 0, OS_MESG_BLOCK);
+            break;
         }
     }
 }
 
 void createHvqmThread(uintptr_t vidPtr) {
   osCreateMesgQueue( &hvqmMesgQ, &hvqmMesgBuf, 1 );
-  osCreateThread( &hvqmThread, HVQM_THREAD_ID, (void (*)(void*))hvqm_main_proc, 
+  osCreateThread( &hvqmThread, HVQM_THREAD_ID, (void*) hvqm_main_proc, 
 		 (void*)vidPtr, hvqmStack + (STACKSIZE/sizeof(u64)), 
 		 (OSPri)HVQM_PRIORITY );
 }

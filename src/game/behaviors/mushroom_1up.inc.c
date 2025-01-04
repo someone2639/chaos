@@ -5,7 +5,9 @@ void bhv_1up_interact(void) {
 
     if (obj_check_if_collided_with_object(o, gMarioObject) == TRUE) {
         play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
+#ifndef DISABLE_LIVES
         gMarioState->numLives++;
+#endif
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
@@ -22,6 +24,7 @@ void bhv_1up_common_init(void) {
 
 void bhv_1up_init(void) {
     bhv_1up_common_init();
+#ifndef UNLOCK_ALL
     if (o->oBehParams2ndByte == 1) {
         if (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_1 | SAVE_FLAG_UNLOCKED_BASEMENT_DOOR))) {
             o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
@@ -31,6 +34,7 @@ void bhv_1up_init(void) {
             o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
         }
     }
+#endif
 }
 
 void one_up_loop_in_air(void) {

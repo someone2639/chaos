@@ -21,6 +21,14 @@ s32 unused8038BE90;
  */
 SpatialPartitionCell gStaticSurfacePartition[NUM_CELLS][NUM_CELLS];
 SpatialPartitionCell gDynamicSurfacePartition[NUM_CELLS][NUM_CELLS];
+struct CellCoords {
+    u8 z;
+    u8 x;
+    u8 partition;
+};
+struct CellCoords sCellsUsed[NUM_CELLS];
+u16 sNumCellsUsed;
+u8 sClearAllCells;
 
 /**
  * Pools of data to contain either surface nodes or surfaces.
@@ -141,6 +149,16 @@ static void add_surface_to_cell(s16 dynamic, s16 cellX, s16 cellZ, struct Surfac
 
     if (dynamic) {
         list = &gDynamicSurfacePartition[cellZ][cellX][listIndex];
+        if (sNumCellsUsed >= sizeof(sCellsUsed) / sizeof(struct CellCoords)) {
+            sClearAllCells = TRUE;
+        } else {
+            if (list->next == NULL) {
+                sCellsUsed[sNumCellsUsed].z = cellZ;
+                sCellsUsed[sNumCellsUsed].x = cellX;
+                sCellsUsed[sNumCellsUsed].partition = listIndex;
+                sNumCellsUsed++;
+            }
+        }
     } else {
         list = &gStaticSurfacePartition[cellZ][cellX][listIndex];
     }
@@ -594,6 +612,9 @@ void load_area_terrain(s16 index, s16 *data, s8 *surfaceRooms, s16 *macroObjects
     unused8038BE90 = 0;
     gSurfaceNodesAllocated = 0;
     gSurfacesAllocated = 0;
+    bzero(&sCellsUsed, sizeof(sCellsUsed));
+    sNumCellsUsed = 0;
+    sClearAllCells = TRUE;
 
     clear_static_surfaces();
 
@@ -645,12 +666,16 @@ void clear_dynamic_surfaces(void) {
     if (!(gTimeStopState & TIME_STOP_ACTIVE)) {
         gSurfacesAllocated = gNumStaticSurfaces;
         gSurfaceNodesAllocated = gNumStaticSurfaceNodes;
-
-        clear_spatial_partition(&gDynamicSurfacePartition[0][0]);
+        if (sClearAllCells) {
+            clear_spatial_partition(&gDynamicSurfacePartition[0][0]);
+        } else {
+            for (u32 i = 0; i < sNumCellsUsed; i++) {
+                gDynamicSurfacePartition[sCellsUsed[i].z][sCellsUsed[i].x][sCellsUsed[i].partition].next = NULL;
+            }
+        }
+        sNumCellsUsed = 0;
+        sClearAllCells = FALSE;
     }
-}
-
-UNUSED static void unused_80383604(void) {
 }
 
 /**

@@ -56,28 +56,24 @@ struct MainMenuSaveData {
     // on the high score screen.
     u32 coinScoreAges[NUM_SAVE_FILES];
     u8 soundMode: 2;
-
-#ifdef VERSION_EU
-    u8 language: 2;
-#define SUBTRAHEND 8
-#else
-#define SUBTRAHEND 6
+#ifdef WIDE
+    u8 wideMode: 1;
 #endif
-
-    // Pad to match the EEPROM size of 0x200 (10 bytes on JP/US, 8 bytes on EU)
-    //u8 filler[EEPROM_SIZE / 2 - SUBTRAHEND - NUM_SAVE_FILES * (4 + sizeof(struct SaveFile))];
 
     struct SaveBlockSignature signature;
 };
 
 struct SaveBuffer {
     // Each of the four save files has two copies. If one is bad, the other is used as a backup.
-    struct SaveFile files[NUM_SAVE_FILES][2];
+    struct SaveFile files[NUM_SAVE_FILES];
     // The main menu data has two copies. If one is bad, the other is used as a backup.
-    struct MainMenuSaveData menuData[2];
+    struct MainMenuSaveData menuData;
 };
 
-STATIC_ASSERT(sizeof(struct SaveBuffer) <= EEPROM_SIZE, "ERROR: Save struct too big for specified save type");
+STATIC_ASSERT(sizeof(struct SaveFile) % 8 == 0, "ERROR: SaveFile struct must be multiple of 8!");
+STATIC_ASSERT(sizeof(struct MainMenuSaveData) % 8 == 0, "ERROR: MainMenuSaveData struct must be multiple of 8!");
+STATIC_ASSERT(sizeof(struct SaveBuffer) % 8 == 0, "ERROR: SaveBuffer should be multiple of 8!");
+STATIC_ASSERT(sizeof(struct SaveBuffer) <= EEPROM_SIZE, "ERROR: Save file too large!");
 
 extern u8 gLastCompletedCourseNum;
 extern u8 gLastCompletedStarNum;
@@ -161,6 +157,11 @@ void save_file_move_cap_to_default_location(void);
 void disable_warp_checkpoint(void);
 void check_if_should_set_warp_checkpoint(struct WarpNode *warpNode);
 s32 check_warp_checkpoint(struct WarpNode *warpNode);
+
+#ifdef WIDE
+u32 save_file_get_widescreen_mode(void);
+void save_file_set_widescreen_mode(u8 mode);
+#endif
 
 #ifdef VERSION_EU
 enum EuLanguages {

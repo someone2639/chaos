@@ -66,7 +66,7 @@ def validate(cond, msg, forstr=""):
 
 
 def strip_comments(string):
-    string = re.sub(re.compile("/\*.*?\*/", re.DOTALL), "", string)
+    string = re.sub(re.compile(r"/\*.*?\*/", re.DOTALL), "", string)
     return re.sub(re.compile("//.*?\n"), "", string)
 
 
@@ -341,10 +341,10 @@ def validate_bank(json, sample_bank):
                     last_fine = True
                 else:
                     validate_int_in_range(
-                        entry[0], 1, 2 ** 16 - 4, "envelope entry's first part"
+                        entry[0], 0, 2 ** 15 - 1, "envelope entry's first part"
                     )
                     validate_int_in_range(
-                        entry[1], 0, 2 ** 16 - 1, "envelope entry's second part"
+                        entry[1], 0, 2 ** 15 - 1, "envelope entry's second part"
                     )
                     last_fine = False
         validate(
@@ -589,7 +589,7 @@ def serialize_ctl(bank, base_ser, is_shindou):
         env_name_to_addr[name] = ser.size
         for entry in env:
             if entry == "stop":
-                entry = [0, 0]
+                entry = [2 ** 16 - 4, 0]
             elif entry == "hang":
                 entry = [2 ** 16 - 1, 0]
             elif entry == "restart":
@@ -781,9 +781,14 @@ def write_sequences(
     defines,
     is_shindou,
 ):
-    bank_names = sorted(
-        [os.path.splitext(os.path.basename(x))[0] for x in os.listdir(sound_bank_dir)]
+    bank_names = []
+    banks = sorted(
+        [os.path.basename(x) for x in os.listdir(sound_bank_dir)]
     )
+
+    for x in banks:
+        if x.endswith(".json"):
+            bank_names.append(os.path.splitext(x)[0])
 
     try:
         with open(seq_json, "r") as inf:
@@ -841,6 +846,15 @@ def write_sequences(
 
     while ind_to_name and json.get(ind_to_name[-1]) is None:
         ind_to_name.pop()
+
+    if ind_to_name:
+        for x in range(len(ind_to_name)):
+            if ind_to_name[x] is None:
+                fail(
+                    "Sequence file index jump detected. "
+                    + "Please make sure your sequence files are labeled correctly "
+                    + "in incremental hexadecimal order."
+                )
 
     def serialize_file(name, ser, is_shindou):
         if json.get(name) is None:

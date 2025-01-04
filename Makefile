@@ -55,7 +55,7 @@ $(eval $(call validate-option,LIBGCCDIR,trap divbreak nocheck))
 #   eep4k - uses EEPROM 4kbit
 #   eep16k - uses EEPROM 16kbit (There aren't any differences in syntax, but this is provided just in case)
 #   sram - uses SRAM 256Kbit
-SAVETYPE ?= eep4k
+SAVETYPE ?= sram
 $(eval $(call validate-option,SAVETYPE,eep4k eep16k sram))
 ifeq ($(SAVETYPE),eep4k)
   DEFINES += EEP=1 EEP4K=1
@@ -112,15 +112,72 @@ else ifeq ($(GRUCODE),super3d) # Super3D
   DEFINES += SUPER3D_GBI=1 F3D_NEW=1
 endif
 
+# Default non-gcc opt flags
+DEFAULT_OPT_FLAGS = -falign-functions=32
+# Note: -fno-associative-math is used here to suppress warnings, ideally we would enable this as an optimization but
+# this conflicts with -ftrapping-math apparently.
+SAFETY_OPT_FLAGS = -ftrapping-math -fno-associative-math
+
+# Main opt flags
+GCC_MAIN_OPT_FLAGS = \
+  $(DEFAULT_OPT_FLAGS) $(SAFETY_OPT_FLAGS) \
+  -Os \
+  --param case-values-threshold=20 \
+  --param max-completely-peeled-insns=10 \
+  --param max-unrolled-insns=10 \
+  -finline-limit=1 \
+  -freorder-blocks-algorithm=simple  \
+
+# Surface Collision
+GCC_COLLISION_OPT_FLAGS = \
+  $(DEFAULT_OPT_FLAGS) $(SAFETY_OPT_FLAGS) \
+  -Ofast \
+  --param case-values-threshold=20 \
+  --param max-completely-peeled-insns=100 \
+  --param max-unrolled-insns=100 \
+  -finline-limit=0 \
+  -fno-inline \
+  -freorder-blocks-algorithm=simple  \
+  -falign-functions=32
+
+# Math Util
+GCC_MATH_UTIL_OPT_FLAGS = \
+  $(DEFAULT_OPT_FLAGS) $(SAFETY_OPT_FLAGS) \
+  -Ofast \
+  -fno-unroll-loops \
+  -fno-peel-loops \
+  --param case-values-threshold=20  \
+  -falign-functions=32
+#   - setting any sort of -finline-limit has shown to worsen performance with math_util.c,
+#     lower values were the worst, the higher you go - the closer performance gets to not setting it at all
+
+# Rendering graph node
+GCC_GRAPH_NODE_OPT_FLAGS = \
+  $(DEFAULT_OPT_FLAGS) $(SAFETY_OPT_FLAGS) \
+  -Ofast \
+  --param case-values-threshold=20 \
+  --param max-completely-peeled-insns=100 \
+  --param max-unrolled-insns=100 \
+  -finline-limit=0 \
+  -freorder-blocks-algorithm=simple  \
+  -falign-functions=32
+#==============================================================================#
+
 ifeq ($(COMPILER),gcc)
   NON_MATCHING := 1
   MIPSISET     := -mips3
-  OPT_FLAGS    := -O2
+  OPT_FLAGS           := $(GCC_MAIN_OPT_FLAGS)
+  COLLISION_OPT_FLAGS  = $(GCC_COLLISION_OPT_FLAGS)
+  MATH_UTIL_OPT_FLAGS  = $(GCC_MATH_UTIL_OPT_FLAGS)
+  GRAPH_NODE_OPT_FLAGS = $(GCC_GRAPH_NODE_OPT_FLAGS)
 else ifeq ($(COMPILER),clang)
   NON_MATCHING := 1
   # clang doesn't support ABI 'o32' for 'mips3'
   MIPSISET     := -mips2
-  OPT_FLAGS    := -O2
+  OPT_FLAGS    := $(DEFAULT_OPT_FLAGS)
+  COLLISION_OPT_FLAGS  = $(DEFAULT_OPT_FLAGS)
+  MATH_UTIL_OPT_FLAGS  = $(DEFAULT_OPT_FLAGS)
+  GRAPH_NODE_OPT_FLAGS = $(DEFAULT_OPT_FLAGS)
 endif
 
 
@@ -185,7 +242,7 @@ BUILD_DIR_BASE := build
 # BUILD_DIR is the location where all build artifacts are placed
 BUILD_DIR      := $(BUILD_DIR_BASE)/$(VERSION)_$(CONSOLE)
 
-COMPRESS ?= rnc1
+COMPRESS ?= yay0
 $(eval $(call validate-option,COMPRESS,mio0 yay0 gzip rnc1 rnc2 uncomp))
 ifeq ($(COMPRESS),gzip)
   DEFINES += GZIP=1
@@ -246,7 +303,25 @@ ifeq ($(filter clean distclean print-%,$(MAKECMDGOALS)),)
   ifeq ($(NOEXTRACT),0)
     DUMMY != $(PYTHON) extract_assets.py $(VERSION) >&2 || echo FAIL
     ifeq ($(DUMMY),FAIL)
-      $(error Failed to extract assets)
+      $(error Failed to extract assets from US ROM)
+    endif
+    ifneq (,$(wildcard baserom.jp.z64))
+      DUMMY != $(PYTHON) extract_assets.py jp >&2 || echo FAIL
+      ifeq ($(DUMMY),FAIL)
+        $(error Failed to extract assets from JP ROM)
+      endif
+    endif
+    ifneq (,$(wildcard baserom.eu.z64))
+      DUMMY != $(PYTHON) extract_assets.py eu >&2 || echo FAIL
+      ifeq ($(DUMMY),FAIL)
+        $(error Failed to extract assets from EU ROM)
+      endif
+    endif
+    ifneq (,$(wildcard baserom.sh.z64))
+      DUMMY != $(PYTHON) extract_assets.py sh >&2 || echo FAIL
+      ifeq ($(DUMMY),FAIL)
+        $(error Failed to extract assets from SH ROM)
+      endif
     endif
   endif
 
@@ -294,6 +369,7 @@ LIBZ_C_FILES     := $(foreach dir,$(LIBZ_SRC_DIRS),$(wildcard $(dir)/*.c))
 GODDARD_C_FILES   := $(foreach dir,$(GODDARD_SRC_DIRS),$(wildcard $(dir)/*.c))
 S_FILES           := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.s))
 GENERATED_C_FILES := $(BUILD_DIR)/assets/mario_anim_data.c $(BUILD_DIR)/assets/demo_data.c
+HVQM_FILES := $(wildcard data/*.hvqm)
 
 # Sound files
 SOUND_BANK_FILES    := $(wildcard sound/sound_banks/*.json)
@@ -309,10 +385,13 @@ SOUND_SEQUENCE_FILES := \
     $(foreach file,$(wildcard $(dir)/*.s),$(BUILD_DIR)/$(file:.s=.m64)) \
   )
 
+HVQM_OBJS := $(foreach file,$(HVQM_FILES),$(BUILD_DIR)/$(file:.hvqm=.o))
+
 # Object files
 O_FILES := $(foreach file,$(C_FILES),$(BUILD_DIR)/$(file:.c=.o)) \
            $(foreach file,$(S_FILES),$(BUILD_DIR)/$(file:.s=.o)) \
            $(foreach file,$(GENERATED_C_FILES),$(file:.c=.o)) \
+           $(HVQM_OBJS) \
            lib/PR/hvqm/hvqm2sp1.o lib/PR/hvqm/hvqm2sp2.o
 
 LIBZ_O_FILES := $(foreach file,$(LIBZ_C_FILES),$(BUILD_DIR)/$(file:.c=.o))
@@ -427,9 +506,24 @@ else
 endif
 ENDIAN_BITWIDTH       := $(BUILD_DIR)/endian-and-bitwidth
 EMULATOR = parallel-launcher
+SC64DEPLOYER = /mnt/c/sc64/sc64deployer.exe upload
 EMU_FLAGS =
-LOADER = UNFLoader
-LOADER_FLAGS = -d
+
+# Adding a txt file to this location will then reference a UNFLoader path specified in the file, instead of locally.
+# This is expecially important for WSL users because UNFLoader.exe is incredibly slow when run within WSL's filesystem, so this can be used to point to the C drive.
+# The file should only contain the directory path that contains UNFLoader[.exe] (do not specify the filename).
+LOADER_DIR_FILE_SPECIFICATION_PATH = ~/.local/share/HackerSM64/UNFLoader-dir.txt
+LOADER_DIR = ./$(TOOLS_DIR)
+
+ifneq (,$(wildcard $(LOADER_DIR_FILE_SPECIFICATION_PATH)))
+  LOADER_DIR = $(shell cat $(LOADER_DIR_FILE_SPECIFICATION_PATH))
+endif
+ifneq (,$(call find-command,wslview))
+  LOADER_EXEC = $(LOADER_DIR)/UNFLoader.exe
+else
+  LOADER_EXEC = $(LOADER_DIR)/UNFLoader
+endif
+
 SHA1SUM = sha1sum
 PRINT = printf
 
@@ -474,14 +568,30 @@ distclean: clean
 test: $(ROM)
 	$(EMULATOR) $(EMU_FLAGS) $<
 
-load: $(ROM)
-	$(LOADER) $(LOADER_FLAGS) -r $<
+load2: $(ROM)
+	cp $< /run/media/faris/CF62-9261
+sc: $(ROM)
+	$(SC64DEPLOYER) $(EMU_FLAGS) $<
+
+# download and extract most recent unfloader build if needed
+$(LOADER_EXEC):
+ifeq (,$(wildcard $(LOADER_EXEC)))
+	@$(PRINT) "Downloading latest UNFLoader...$(NO_COL)\n"
+	$(PYTHON) $(TOOLS_DIR)/get_latest_unfloader.py $(LOADER_DIR)
+endif
+
+load: $(ROM) $(LOADER_EXEC)
+	$(LOADER_EXEC) -r $<
+
+unf: $(ROM) $(LOADER_EXEC)
+	$(LOADER_EXEC) -d -r $<
 
 libultra: $(BUILD_DIR)/libultra.a
 
 # Extra object file dependencies
 $(BUILD_DIR)/asm/boot.o:              $(IPL3_RAW_FILES)
 $(BUILD_DIR)/src/game/crash_screen.o: $(CRASH_TEXTURE_C_FILES)
+$(BUILD_DIR)/src/game/fasttext.o:     $(FASTTEXT_TEXTURE_C_FILES)
 $(BUILD_DIR)/src/game/version.o:      $(BUILD_DIR)/src/game/version_data.h
 $(BUILD_DIR)/lib/aspMain.o:           $(BUILD_DIR)/rsp/audio.bin
 $(SOUND_BIN_DIR)/sound_data.o:        $(SOUND_BIN_DIR)/sound_data.ctl $(SOUND_BIN_DIR)/sound_data.tbl $(SOUND_BIN_DIR)/sequences.bin $(SOUND_BIN_DIR)/bank_sets
@@ -524,6 +634,18 @@ $(BUILD_DIR)/src/usb/usb.o: OPT_FLAGS := -O0
 $(BUILD_DIR)/src/usb/usb.o: CFLAGS += -Wno-unused-variable -Wno-sign-compare -Wno-unused-function
 $(BUILD_DIR)/src/usb/debug.o: OPT_FLAGS := -O0
 $(BUILD_DIR)/src/usb/debug.o: CFLAGS += -Wno-unused-parameter -Wno-maybe-uninitialized
+# File specific opt flags
+$(BUILD_DIR)/src/audio/heap.o:          OPT_FLAGS := -Os -fno-jump-tables
+$(BUILD_DIR)/src/audio/synthesis.o:     OPT_FLAGS := -Os -fno-jump-tables
+
+$(BUILD_DIR)/src/engine/surface_collision.o:  OPT_FLAGS := $(COLLISION_OPT_FLAGS)
+$(BUILD_DIR)/src/engine/math_util.o:          OPT_FLAGS := $(MATH_UTIL_OPT_FLAGS)
+$(BUILD_DIR)/src/game/rendering_graph_node.o: OPT_FLAGS := $(GRAPH_NODE_OPT_FLAGS)
+
+# $(info OPT_FLAGS:            $(OPT_FLAGS))
+# $(info COLLISION_OPT_FLAGS:  $(COLLISION_OPT_FLAGS))
+# $(info MATH_UTIL_OPT_FLAGS:  $(MATH_UTIL_OPT_FLAGS))
+# $(info GRAPH_NODE_OPT_FLAGS: $(GRAPH_NODE_OPT_FLAGS))
 
 ALL_DIRS := $(BUILD_DIR) $(addprefix $(BUILD_DIR)/,$(SRC_DIRS) $(GODDARD_SRC_DIRS) $(LIBZ_SRC_DIRS) $(ULTRA_BIN_DIRS) $(BIN_DIRS) $(TEXTURE_DIRS) $(TEXT_DIRS) $(SOUND_SAMPLE_DIRS) $(addprefix levels/,$(LEVEL_DIRS)) rsp include) $(YAY0_DIR) $(addprefix $(YAY0_DIR)/,$(VERSION)) $(SOUND_BIN_DIR) $(SOUND_BIN_DIR)/sequences/$(VERSION)
 
@@ -546,9 +668,12 @@ $(BUILD_DIR)/%: %.png
 	$(call print,Converting:,$<,$@)
 	$(V)$(N64GRAPHICS) -s raw -i $@ -g $< -f $(lastword $(subst ., ,$@))
 
+$(BUILD_DIR)/%.preswap.inc.c: %.preswap.png
+	$(call print,Converting:,$<,$@)
+	$(V)$(N64GRAPHICS) -s $(TEXTURE_ENCODING) -i $@ -g $< -f $(lastword ,$(subst ., ,$*)) -S
 $(BUILD_DIR)/%.inc.c: %.png
 	$(call print,Converting:,$<,$@)
-	$(V)$(N64GRAPHICS) -s $(TEXTURE_ENCODING) -i $@ -g $< -f $(lastword ,$(subst ., ,$(basename $<)))
+	$(V)$(N64GRAPHICS) -s $(TEXTURE_ENCODING) -i $@ -g $< -f $(lastword ,$(subst ., ,$*))
 
 # Color Index CI8
 $(BUILD_DIR)/%.ci8.inc.c: %.ci8.png
@@ -606,7 +731,7 @@ endif
 
 $(BUILD_DIR)/%.table: %.aiff
 	$(call print,Extracting codebook:,$<,$@)
-	$(V)$(AIFF_EXTRACT_CODEBOOK) $< >$@
+	$(V)$(AIFF_EXTRACT_CODEBOOK) $< $@
 
 $(BUILD_DIR)/%.aifc: $(BUILD_DIR)/%.table %.aiff
 	$(call print,Encoding ADPCM:,$(word 2,$^),$@)
@@ -700,9 +825,15 @@ $(BUILD_DIR)/src/game/version_data.h: tools/make_version.sh
 $(BUILD_DIR)/%.o: %.c
 	$(call print,Compiling:,$<,$@)
 	$(V)$(CC) -c $(CFLAGS) -MMD -MF $(BUILD_DIR)/$*.d  -o $@ $<
+$(BUILD_DIR)/%.o: %.hvqm
+	$(call print,Compiling:,$<,$@)
+	$(V)$(LD) -r -b binary -o $@ $<
 $(BUILD_DIR)/%.o: $(BUILD_DIR)/%.c
 	$(call print,Compiling:,$<,$@)
 	$(V)$(CC) -c $(CFLAGS) -MMD -MF $(BUILD_DIR)/$*.d  -o $@ $<
+
+$(BUILD_DIR)/hvqm_table.ld: $(HVQM_OBJS)
+	$(V)$(PYTHON) tools/make_video_table.py > $@
 
 # Assemble assembly code
 $(BUILD_DIR)/%.o: %.s
@@ -715,7 +846,7 @@ $(BUILD_DIR)/rsp/%.bin $(BUILD_DIR)/rsp/%_data.bin: rsp/%.s
 	$(V)$(RSPASM) -sym $@.sym $(RSPASMFLAGS) -strequ CODE_FILE $(BUILD_DIR)/rsp/$*.bin -strequ DATA_FILE $(BUILD_DIR)/rsp/$*_data.bin $<
 
 # Run linker script through the C preprocessor
-$(BUILD_DIR)/$(LD_SCRIPT): $(LD_SCRIPT)
+$(BUILD_DIR)/$(LD_SCRIPT): $(LD_SCRIPT) $(BUILD_DIR)/hvqm_table.ld
 	$(call print,Preprocessing linker script:,$<,$@)
 	$(V)$(CPP) $(CPPFLAGS) -DBUILD_DIR=$(BUILD_DIR) -MMD -MP -MT $@ -MF $@.d -o $@ $<
 

@@ -4,8 +4,17 @@
 #include <string.h>
 
 #include "sm64.h"
+#include "debug.h"
+#include "main.h"
+
+#include "buffers/framebuffers.h"
+#include "game/emutest.h"
+#include "game/game_init.h"
+#include "game/rumble_init.h"
 
 #include "printf.h"
+
+static char crashScreenBuf[0x200];
 
 u8 gCrashScreenCharToGlyph[128] = {
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -48,19 +57,111 @@ char *gFpcsrDesc[6] = {
     "Inexact operation",
 };
 
-
-
 extern u64 osClockRate;
 
 struct {
     OSThread thread;
-    u64 stack[0x800 / sizeof(u64)];
+    u64 stack[THREAD2_STACK / sizeof(u64)];
     OSMesgQueue mesgQueue;
     OSMesg mesg;
     u16 *framebuffer;
     u16 width;
     u16 height;
 } gCrashScreen;
+
+// non-FBE only
+static void render_multi_image(Texture *image, s32 x, s32 y, s32 width, s32 height) {
+    s32 posW, posH, imW, imH;
+    s32 i     = 0;
+    s32 num   = 256;
+    s32 maskW = 1;
+    s32 maskH = 1;
+
+    gDPSetCycleType( gDisplayListHead++, G_CYC_COPY);
+    gDPSetRenderMode(gDisplayListHead++, G_RM_NOOP, G_RM_NOOP2);
+
+    // Find how best to seperate the horizontal. Keep going until it finds a whole value.
+    while (TRUE) {
+        f32 val = (f32)width / (f32)num;
+
+        if ((s32)val == val && (s32) val >= 1) {
+            imW = num;
+            break;
+        }
+        num /= 2;
+        if (num == 1) {
+            return;
+        }
+    }
+    // Find the tile height
+    imH = 64 / (imW / 32); // This gets the vertical amount.
+
+    num = 2;
+    // Find the width mask
+    while (TRUE) {
+        if ((s32) num == imW) {
+            break;
+        }
+        num *= 2;
+        maskW++;
+        if (maskW == 9) {
+            return;
+        }
+    }
+    num = 2;
+    // Find the height mask
+    while (TRUE) {
+        if ((s32) num == imH) {
+            break;
+        }
+        num *= 2;
+        maskH++;
+        if (maskH == 9) {
+            return;
+        }
+    }
+    num = height;
+    // Find the height remainder
+    s32 peakH  = height - (height % imH);
+    s32 cycles = (width * peakH) / (imW * imH);
+
+    // Pass 1
+    for (i = 0; i < cycles; i++) {
+        posW = 0;
+        posH = i * imH;
+        while (posH >= peakH) {
+            posW += imW;
+            posH -= peakH;
+        }
+
+        gDPLoadSync(gDisplayListHead++);
+        gDPLoadTextureTile(gDisplayListHead++,
+            image, G_IM_FMT_RGBA, G_IM_SIZ_16b, width, height, posW, posH, ((posW + imW) - 1), ((posH + imH) - 1), 0, (G_TX_NOMIRROR | G_TX_WRAP), (G_TX_NOMIRROR | G_TX_WRAP), maskW, maskH, 0, 0);
+        gSPScisTextureRectangle(gDisplayListHead++,
+            ((x + posW) << 2),
+            ((y + posH) << 2),
+            (((x + posW + imW) - 1) << 2),
+            (((y + posH + imH) - 1) << 2),
+            G_TX_RENDERTILE, 0, 0, (4 << 10), (1 << 10));
+    }
+    // If there's a remainder on the vertical side, then it will cycle through that too.
+    if (height-peakH != 0) {
+        posW = 0;
+        posH = peakH;
+        for (i = 0; i < (width / imW); i++) {
+            posW = i * imW;
+            gDPLoadSync(gDisplayListHead++);
+            gDPLoadTextureTile(gDisplayListHead++,
+                image, G_IM_FMT_RGBA, G_IM_SIZ_16b, width, height, posW, posH, ((posW + imW) - 1), (height - 1), 0, (G_TX_NOMIRROR | G_TX_WRAP), (G_TX_NOMIRROR | G_TX_WRAP), maskW, maskH, 0, 0);
+            gSPScisTextureRectangle(gDisplayListHead++,
+                (x + posW) << 2,
+                (y + posH) << 2,
+                ((x + posW + imW) - 1) << 2,
+                ((y + posH + imH) - 1) << 2,
+                G_TX_RENDERTILE, 0, 0, (4 << 10), (1 << 10));
+        }
+    }
+}
 
 void crash_screen_draw_rect(s32 x, s32 y, s32 w, s32 h) {
     u16 *ptr;
@@ -103,21 +204,62 @@ static char *write_to_buf(char *buffer, const char *data, size_t size) {
     return (char *) memcpy(buffer, data, size) + size;
 }
 
-void crash_screen_print(s32 x, s32 y, const char *fmt, ...) {
+void crash_screen_print_with_newlines(s32 x, s32 y, const s32 xNewline, const char *fmt, ...) {
     char *ptr;
     u32 glyph;
     s32 size;
-    char buf[0x100];
+    const s32 xKerning = 6;
 
     va_list args;
     va_start(args, fmt);
 
-    size = _Printf(write_to_buf, buf, fmt, args);
+    size = _Printf(write_to_buf, crashScreenBuf, fmt, args);
+
+    s32 xCurrent = x;
 
     if (size > 0) {
-        ptr = buf;
+        ptr = crashScreenBuf;
 
-        while (*ptr) {
+        while (*ptr && size-- > 0) {
+            if (xCurrent >= SCREEN_WIDTH - (xNewline + xKerning)) {
+                y += 10;
+                xCurrent = xNewline;
+            }
+
+            glyph = gCrashScreenCharToGlyph[*ptr & 0x7f];
+
+            if (*ptr == '\n') {
+                y += 10;
+                xCurrent = x;
+                ptr++;
+                continue;
+            } else if (glyph != 0xff) {
+                crash_screen_draw_glyph(xCurrent, y, glyph);
+            }
+
+            ptr++;
+            xCurrent += xKerning;
+        }
+    }
+
+    va_end(args);
+}
+
+void crash_screen_print(s32 x, s32 y, const char *fmt, ...) {
+    char *ptr;
+    u32 glyph;
+    s32 size;
+    const s32 xKerning = 6;
+
+    va_list args;
+    va_start(args, fmt);
+
+    size = _Printf(write_to_buf, crashScreenBuf, fmt, args);
+
+    if (size > 0) {
+        ptr = crashScreenBuf;
+
+        while (*ptr && size-- > 0) {
 
             glyph = gCrashScreenCharToGlyph[*ptr & 0x7f];
 
@@ -126,7 +268,7 @@ void crash_screen_print(s32 x, s32 y, const char *fmt, ...) {
             }
 
             ptr++;
-            x += 6;
+            x += xKerning;
         }
     }
 
@@ -225,7 +367,41 @@ void draw_crash_screen(OSThread *thread) {
     crash_screen_print_float_reg(30, 220, 30, &tc->fp30.f.f_even);
     osWritebackDCacheAll();
     osViBlack(FALSE);
-    osViSwapBuffer(gCrashScreen.framebuffer);
+}
+
+char *__n64Assert_Filename;
+u32   __n64Assert_LineNum;
+char *__n64Assert_Message;
+
+void __n64Assert(char *fileName, u32 lineNum, char *message) {
+    __n64Assert_Filename = fileName;
+    __n64Assert_LineNum = lineNum;
+    __n64Assert_Message = message;
+
+    *(volatile int*)NULL = 0;
+}
+
+void draw_assert_screen(OSThread *thread) {
+    s16 cause;
+    __OSThreadContext *tc = &thread->context;
+
+    cause = (tc->cause >> 2) & 0x1f;
+    if (cause == 23) { // EXC_WATCH
+        cause = 16;
+    }
+    if (cause == 31) { // EXC_VCED
+        cause = 17;
+    }
+
+    crash_screen_draw_rect(25, 20, 270, 210);
+    crash_screen_print(30, 25, "Assertion Failed!");
+    crash_screen_print(30, 45, "PC:%08XH   SR:%08XH   VA:%08XH", tc->pc, tc->sr, tc->badvaddr);
+    crash_screen_print(30, 65, "FILE: %s", __n64Assert_Filename);
+    crash_screen_print(30, 75, "LINE: %d", __n64Assert_LineNum);
+    crash_screen_print(30, 95, "MESSAGE:", __n64Assert_Message);
+    crash_screen_print_with_newlines(36, 105, 30, __n64Assert_Message);
+    osWritebackDCacheAll();
+    osViBlack(FALSE);
 }
 
 OSThread *get_crashed_thread(void) {
@@ -252,7 +428,41 @@ void thread2_crash_screen(UNUSED void *arg) {
         osRecvMesg(&gCrashScreen.mesgQueue, &mesg, 1);
         thread = get_crashed_thread();
     } while (thread == NULL);
-    draw_crash_screen(thread);
+
+    gCrashScreen.framebuffer = (u16*) gFramebuffers[sRenderingFramebuffer];
+    if (!(gEmulator & (EMU_CONSOLE | EMU_WIIVC | EMU_ARES | EMU_SIMPLE64 | EMU_CEN64))) {
+        gCrashScreen.framebuffer = (u16*) gFramebuffers[(sRenderingFramebuffer + 1) % 3];
+        bcopy(gFramebuffers[sRenderingFramebuffer], gCrashScreen.framebuffer, sizeof(gFramebuffers[0]));
+    }
+
+    if (__n64Assert_Filename) {
+        draw_assert_screen(thread);
+    } else {
+        draw_crash_screen(thread);
+    }
+
+    if (!gFBEEnabled) {
+        select_gfx_pool();
+        init_rcp();
+        clear_framebuffer(0);
+        render_multi_image((Texture*) gCrashScreen.framebuffer, 0, 0, 320, 240);
+        end_master_display_list();
+
+        osRecvMesg(&gGfxVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
+        if (gGoddardVblankCallback != NULL) {
+            gGoddardVblankCallback();
+            gGoddardVblankCallback = NULL;
+        }
+        exec_display_list(&gGfxPool->spTask);
+        osRecvMesg(&gGfxVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
+    }
+    
+    osViSwapBuffer(gCrashScreen.framebuffer);
+
+#if ENABLE_RUMBLE
+    stop_rumble();
+#endif
+
     for (;;) {
     }
 }

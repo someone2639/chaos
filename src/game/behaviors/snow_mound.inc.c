@@ -25,7 +25,7 @@ void bhv_sliding_snow_mound_loop(void) {
 }
 
 void bhv_snow_mound_spawn_loop(void) {
-    struct Object *sp1C;
+    struct Object *sp1C = NULL;
 
     if (!is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 6000)
         || o->oPosY + 1000.0f < gMarioObject->header.gfx.pos[1]) {
@@ -36,7 +36,7 @@ void bhv_snow_mound_spawn_loop(void) {
         sp1C = spawn_object(o, MODEL_SL_SNOW_TRIANGLE, bhvSlidingSnowMound);
     }
 
-    if (o->oTimer == 256) {
+    if (sp1C && o->oTimer == 256) {
         sp1C->header.gfx.scale[0] = 2.0f;
         sp1C->header.gfx.scale[1] = 2.0f;
     }
