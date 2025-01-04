@@ -133,9 +133,11 @@ extern s16 gCutsceneMsgXOffset;
 extern s16 gCutsceneMsgYOffset;
 extern s8 gRedCoinsCollected;
 
-void create_dl_identity_matrix(void);
-void create_dl_translation_matrix(s8 pushOp, f32 x, f32 y, f32 z);
-void create_dl_ortho_matrix(void);
+void create_dl_identity_matrix(Gfx **dl);
+void create_dl_translation_matrix(Gfx **dl, s8 pushOp, f32 x, f32 y, f32 z);
+void create_dl_rotation_matrix(Gfx **dl, s8 pushOp, f32 a, f32 x, f32 y, f32 z);
+void create_dl_scale_matrix(Gfx **dl, s8 pushOp, f32 x, f32 y, f32 z);
+void create_dl_ortho_matrix(Gfx **dl);
 void print_generic_string_alpha(s16 x, s16 y, const u8 *str, s16 alpha);
 void print_generic_string(s16 x, s16 y, const u8 *str);
 void print_hud_lut_string(s8 hudLUT, s16 x, s16 y, const u8 *str);

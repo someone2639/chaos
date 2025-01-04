@@ -235,7 +235,7 @@ void print_course_number(void) {
 #endif
     u8 courseNum[4];
 
-    create_dl_translation_matrix(MENU_MTX_PUSH, 158.0f, 81.0f, 0.0f);
+    create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_PUSH, 158.0f, 81.0f, 0.0f);
 
     // Full wood texture in JP & US, lower part of it on EU
     gSPDisplayList(gDisplayListHead++, dl_menu_rgba16_wood_course);
@@ -306,7 +306,7 @@ void print_act_selector_strings(void) {
     s16 language = eu_get_language();
 #endif
 
-    create_dl_ortho_matrix();
+    create_dl_ortho_matrix(&gDisplayListHead);
 
 #ifdef VERSION_EU
     switch (language) {

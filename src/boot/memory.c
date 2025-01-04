@@ -6,6 +6,7 @@
 
 #include "buffers/buffers.h"
 #include "slidec.h"
+#include "game/debug.h"
 #include "game/game_init.h"
 #include "game/main.h"
 #include "game/memory.h"
@@ -154,6 +155,9 @@ void *main_pool_alloc(u32 size, u32 side) {
             addr = (u8 *) sPoolListHeadR + 16;
         }
     }
+
+    aggress(addr != NULL, "MAIN POOL OUT OF MEMORY!");
+
     return addr;
 }
 
@@ -419,6 +423,8 @@ void *alloc_only_pool_alloc(struct AllocOnlyPool *pool, s32 size) {
         addr = pool->freePtr;
         pool->freePtr += size;
         pool->usedSpace += size;
+    } else {
+        aggress(FALSE, "allocPool out of memory!");
     }
     return addr;
 }
@@ -490,6 +496,9 @@ void *mem_pool_alloc(struct MemoryPool *pool, u32 size) {
         }
         freeBlock = freeBlock->next;
     }
+
+    aggress(addr != NULL, "MEM POOL OUT OF MEMORY!");
+
     return addr;
 }
 
@@ -543,6 +552,7 @@ void *alloc_display_list(u32 size) {
         gGfxPoolEnd -= size;
         ptr = gGfxPoolEnd;
     } else {
+        error("GFX POOL OUT OF MEMORY!");
     }
     return ptr;
 }
