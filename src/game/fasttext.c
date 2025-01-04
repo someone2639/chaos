@@ -146,7 +146,7 @@ void fasttext_compute_print_text_with_line_breaks(const enum FastTextFont font, 
 
         switch (curChar) {
             case '@':
-                // RANDO NOTE: Do not mess up color codes, or this could crash easily!
+                // NOTE: Do not mess up color codes, or this could crash easily!
                 parseIndex += 8;
                 break;
 

@@ -47,21 +47,25 @@ struct FastTextProps {
     const u8 averageCharHeight;
 };
 
-extern const struct FastTextProps gFasttextFonts[FT_FONT_COUNT];
+extern const struct FastTextProps gfasttextFonts[FT_FONT_COUNT];
 extern enum FastTextFont fasttextCachedFontId;
 
 /**
- * Fasttext vs Slowtext:
+ * fasttext vs slowtext:
  * 
- * Fasttext: Uses texrects to render text to the screen.
- *           Fasttext is the more performant option and looks good on all plugins,
+ * fasttext: Uses texrects to render text to the screen.
+ *           fasttext is the more performant option and looks good on all plugins,
  *           however it requires absolute x/y coordinates and is not capable of printing to negative coordinates.
  * 
- * Slowtext: Uses ortho tris to render text to the screen.
- *           Slowtext is the less performant option and eats a significant portion of the Gfx buffer,
+ * slowtext: Uses ortho tris to render text to the screen.
+ *           slowtext is the less performant option and eats a significant portion of the Gfx buffer,
  *           however it may be used to print x/y coordinates relative to a matrix transformation.
  *           It is still more performant than the vanilla text engine though overall.
- *           Slowtext is the preferred option for scalable, translatable, and rotatable text printing.
+ *           slowtext is the preferred option for scalable, translatable, and rotatable text printing.
+ * 
+ * NOTE: Ortho tris and texrexts operate on inverse y coordinates!
+ * fasttext: y=0 at the top of the screen
+ * slowtext: y=0 at the bottom of the screen (or applicable transformation)
 */
 
 /*********************************************************************
