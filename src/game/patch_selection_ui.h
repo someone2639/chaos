@@ -21,11 +21,14 @@ struct PatchCard {
     const char *patchName2;
     const char *patchDesc1;
     const char *patchDesc2;
+    const char *extendedDesc1;
+    const char *extendedDesc2;
 };
 
 enum Patch_Select_Menu_State {
     STATE_SELECT,
     STATE_CONFIRMATION,
+    STATE_SHOW_EXTENDED_DESC,
     STATE_CLOSED,
 };
 

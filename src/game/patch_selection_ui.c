@@ -15,11 +15,12 @@ const char testNameGood[] = {"Good Effect"};
 const char testNameBad[] = {"Bad Effect"};
 const char testDescGood[] = {"Good effect description"};
 const char testDescBad[] = {"Bad effect description"};
+const char testExtendedDesc[] = {"This is the extended description\nThere is more information here."};
 
-struct PatchCard sTestChaosPatch1 = {2, 0, 1, testNameGood, testNameBad, testDescGood, testDescBad};
-struct PatchCard sTestChaosPatch2 = {3, 2, 4, testNameGood, testNameBad, testDescGood, testDescBad};
-struct PatchCard sTestChaosPatch3 = {1, 10, 20, testNameGood, testNameBad, testDescGood, testDescBad};
-struct PatchCard sTestChaosPatch4 = {4, 3, 16, testNameGood, testNameBad, testDescGood, testDescBad};
+struct PatchCard sTestChaosPatch1 = {2, 0, 1, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, testExtendedDesc};
+struct PatchCard sTestChaosPatch2 = {3, 2, 4, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, NULL};
+struct PatchCard sTestChaosPatch3 = {1, 10, 20, testNameGood, testNameBad, testDescGood, testDescBad, NULL, testExtendedDesc};
+struct PatchCard sTestChaosPatch4 = {4, 3, 16, testNameGood, testNameBad, testDescGood, testDescBad, NULL, NULL};
 
 u8 sQualityColors[][4] = {
     {0x9A, 0x9A, 0x9A},
@@ -52,8 +53,12 @@ void handle_inputs_state_select(f32 stickX, f32 stickY) {
 
     if(gPlayer1Controller->buttonPressed & A_BUTTON || gPlayer1Controller->buttonPressed & START_BUTTON) {
         gPatchSelectionMenu.menuState = STATE_CONFIRMATION;
-    }
-    else if(gPlayer1Controller->buttonPressed & D_JPAD || (stickY < -60)) {
+    } else if (gPlayer1Controller->buttonPressed & Z_TRIG || gPlayer1Controller->buttonPressed & L_TRIG) {
+        struct PatchCard *selectedCard = sAvailablePatches[gPatchSelectionMenu.selectedPatch];
+        if(selectedCard->extendedDesc1 || selectedCard->extendedDesc2) {
+            gPatchSelectionMenu.menuState = STATE_SHOW_EXTENDED_DESC;
+        }
+    } else if(gPlayer1Controller->buttonPressed & D_JPAD || (stickY < -60)) {
         gPatchSelectionMenu.selectedPatch += 2;
         if(gPatchSelectionMenu.selectedPatch > MAX_CARDS - 1) {
             gPatchSelectionMenu.selectedPatch = previousSelection;
@@ -73,6 +78,15 @@ void handle_inputs_state_select(f32 stickX, f32 stickY) {
         if(gPatchSelectionMenu.selectedPatch < 0) {
             gPatchSelectionMenu.selectedPatch = previousSelection;
         }
+    }
+}
+
+void handle_inputs_state_show_extended_desc() {
+    if(gPlayer1Controller->buttonPressed & A_BUTTON || gPlayer1Controller->buttonPressed & START_BUTTON
+        || gPlayer1Controller->buttonPressed & B_BUTTON || gPlayer1Controller->buttonPressed & Z_TRIG
+        || gPlayer1Controller->buttonPressed & L_TRIG) 
+    {
+        gPatchSelectionMenu.menuState = STATE_SELECT;
     }
 }
 
@@ -127,6 +141,9 @@ void handle_patch_selection_inputs() {
         case STATE_CONFIRMATION:
             handle_inputs_state_confirmation(stickX, stickY);
             break;
+        case STATE_SHOW_EXTENDED_DESC:
+            handle_inputs_state_show_extended_desc();
+            break;
     }
 }
 
@@ -173,6 +190,7 @@ void desc_bg_scroll() {
 	static int currentY = 0;
 	int deltaY;
 	Vtx *vertices = segmented_to_virtual(desc_bg_mesh_mesh_vtx_0);
+	Vtx *vertices_ext = segmented_to_virtual(ext_desc_bg_ext_mesh_mesh_vtx_0);
 
 	deltaX = (int)(0.5 * 0x20) % width;
 	deltaY = (int)(-0.5 * 0x20) % height;
@@ -187,6 +205,8 @@ void desc_bg_scroll() {
 	for (i = 0; i < count; i++) {
 		vertices[i].n.tc[0] += deltaX;
 		vertices[i].n.tc[1] += deltaY;
+		vertices_ext[i].n.tc[0] += deltaX;
+		vertices_ext[i].n.tc[1] += deltaY;
 	}
 	currentX += deltaX;	currentY += deltaY;
 }
@@ -360,6 +380,36 @@ void render_patch_selection_cursor(f32 x, f32 y) {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
+/*
+    Shows a dialogue box featuring the extended descriptions of the currently selected card
+*/
+void render_extended_description () {
+    s32 selected = gPatchSelectionMenu.selectedPatch;
+    struct PatchCard *selectedCard = sAvailablePatches[selected];
+    
+    Mtx *transMtx = alloc_display_list(sizeof(Mtx));
+    guTranslate(transMtx, SCREEN_CENTER_X, SCREEN_CENTER_Y, 0);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    gSPDisplayList(gDisplayListHead++, ext_desc_bg_ext_mesh_mesh);
+
+    slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
+    if(selectedCard->extendedDesc1) {
+        slowtext_draw_ortho_text(-142, 87, selectedCard->extendedDesc1, FT_FLAG_ALIGN_LEFT, 0x20, 0xFF, 0x30, 0xFF);
+    }
+    if(selectedCard->extendedDesc2) {
+        //Draw second effect description lower if there are two extended descriptions
+        if(selectedCard->extendedDesc1) {
+            slowtext_draw_ortho_text(-142, -13, selectedCard->extendedDesc2, FT_FLAG_ALIGN_LEFT, 0xFF, 0x20, 0x30, 0xFF);
+        } else {
+            slowtext_draw_ortho_text(-142, 87, selectedCard->extendedDesc2, FT_FLAG_ALIGN_LEFT, 0xFF, 0x20, 0x30, 0xFF);
+        }
+    }
+    slowtext_finished_rendering();
+
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+}
+
 void display_patch_selection_ui() {
     s32 selectedPatch = gPatchSelectionMenu.selectedPatch;
     f32 cursorX, cursorY;
@@ -393,11 +443,15 @@ void display_patch_selection_ui() {
     desc_bg_scroll();
     create_dl_ortho_matrix(&gDisplayListHead);
 
-    //Ugly and hopefully temporary
     render_patch_card(CARD_X_LEFT, CARD_Y_TOP, cardScale1, sAvailablePatches[0], FALSE);
     render_patch_card(CARD_X_RIGHT, CARD_Y_TOP, cardScale2, sAvailablePatches[1], TRUE);
     render_patch_card(CARD_X_LEFT, CARD_Y_BOTTOM, cardScale3, sAvailablePatches[2], FALSE);
     render_patch_card(CARD_X_RIGHT, CARD_Y_BOTTOM, cardScale4, sAvailablePatches[3], TRUE);
     render_lower_box(PATCH_DESC_X, PATCH_DESC_Y);
-    render_patch_selection_cursor(cursorX, cursorY);
+
+    if(gPatchSelectionMenu.menuState == STATE_SHOW_EXTENDED_DESC) {
+        render_extended_description();
+    } else {
+        render_patch_selection_cursor(cursorX, cursorY);
+    }
 }
