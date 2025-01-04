@@ -12,7 +12,6 @@
 #include "debug.h"
 
 u8 sQualityColors[][4] = {
-    {0x9A, 0x9A, 0x9A},
     {0x20, 0xDB, 0x1D},
     {0x47, 0x42, 0xDB},
     {0x8B, 0x00, 0xC5},
@@ -39,7 +38,7 @@ void init_patch_selection_menu() {
     load_patch_card(0, 2, 0, 1, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, testExtendedDesc);
     load_patch_card(1, 3, 2, 4, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, NULL);
     load_patch_card(2, 1, 10, 20, testNameGood, testNameBad, testDescGood, testDescBad, NULL, testExtendedDesc);
-    load_patch_card(3, 4, 3, 16, testNameGood, testNameBad, testDescGood, testDescBad, NULL, NULL);
+    load_patch_card(3, 3, 3, 16, testNameGood, testNameBad, testDescGood, testDescBad, NULL, NULL);
 }
 
 /*

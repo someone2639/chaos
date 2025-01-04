@@ -4,7 +4,7 @@
 #include "types.h"
 
 #define MAX_CARDS   4
-#define MAX_QUALITY 4
+#define MAX_QUALITY 3
 
 #define CARD_X_LEFT         (SCREEN_WIDTH / 3) - 25
 #define CARD_X_RIGHT        ((SCREEN_WIDTH / 3) * 2) + 25
