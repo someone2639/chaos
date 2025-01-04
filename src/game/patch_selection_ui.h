@@ -23,10 +23,17 @@ struct PatchCard {
     const char *patchDesc2;
 };
 
+enum Patch_Select_Menu_State {
+    STATE_SELECT,
+    STATE_CONFIRMATION,
+};
+
 struct PatchSelectionMenu {
     s8 selectedPatch;
+    s8 selectedMenuIndex;
     u8 isActive;
     s16 framesSinceLastStickInput;
+    u32 menuState;
 };
 
 extern struct PatchSelectionMenu gPatchSelectionMenu;

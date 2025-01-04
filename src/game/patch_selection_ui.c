@@ -35,29 +35,24 @@ struct PatchCard *sAvailablePatches[MAX_CARDS] = {
 };
 
 struct PatchSelectionMenu gPatchSelectionMenu = {
-    0, FALSE, 0,
+    0, 0, FALSE, 0, STATE_SELECT,
 };
 
-void handle_patch_selection_inputs() {
+void reset_patch_selection_menu() {
+    gPatchSelectionMenu.selectedPatch = 0;
+    gPatchSelectionMenu.selectedMenuIndex = 0;
+    gPatchSelectionMenu.isActive = FALSE;
+    gPatchSelectionMenu.framesSinceLastStickInput = 0;
+    gPatchSelectionMenu.menuState = STATE_SELECT;
+}
+
+void handle_inputs_state_select(f32 stickX, f32 stickY) {
     s32 previousSelection = gPatchSelectionMenu.selectedPatch;
 
-    f32 stickX = gPlayer1Controller->rawStickX;
-    f32 stickY = gPlayer1Controller->rawStickY;
-
-    //Prevents the same stick flick from being read on multiple frames
-    if((absf(stickX) < 60) && (absf(stickY) < 60)){
-        if(gPatchSelectionMenu.framesSinceLastStickInput < 2) {
-            gPatchSelectionMenu.framesSinceLastStickInput++;
-        }
-    } else {
-        if(gPatchSelectionMenu.framesSinceLastStickInput < 2) {
-            stickX = 0;
-            stickY = 0;
-        }
-        gPatchSelectionMenu.framesSinceLastStickInput = 0;
+    if(gPlayer1Controller->buttonPressed & A_BUTTON || gPlayer1Controller->buttonPressed & START_BUTTON) {
+        gPatchSelectionMenu.menuState = STATE_CONFIRMATION;
     }
-
-    if(gPlayer1Controller->buttonPressed & D_JPAD || (stickY < -60)) {
+    else if(gPlayer1Controller->buttonPressed & D_JPAD || (stickY < -60)) {
         gPatchSelectionMenu.selectedPatch += 2;
         if(gPatchSelectionMenu.selectedPatch > MAX_CARDS - 1) {
             gPatchSelectionMenu.selectedPatch = previousSelection;
@@ -77,6 +72,60 @@ void handle_patch_selection_inputs() {
         if(gPatchSelectionMenu.selectedPatch < 0) {
             gPatchSelectionMenu.selectedPatch = previousSelection;
         }
+    }
+}
+
+void handle_inputs_state_confirmation(f32 stickX, UNUSED f32 stickY) {
+    if(gPlayer1Controller->buttonPressed & A_BUTTON || gPlayer1Controller->buttonPressed & START_BUTTON) {
+        if(gPatchSelectionMenu.selectedMenuIndex) {
+            //No
+            gPatchSelectionMenu.menuState = STATE_SELECT;
+            gPatchSelectionMenu.selectedMenuIndex = 0;
+        } else {
+            //Yes
+            reset_patch_selection_menu();
+        }
+    } else if(gPlayer1Controller->buttonPressed & B_BUTTON) {
+        gPatchSelectionMenu.menuState = STATE_SELECT;
+        gPatchSelectionMenu.selectedMenuIndex = 0;
+    }
+    else if(gPlayer1Controller->buttonPressed & R_JPAD || (stickX > 60)) {
+        gPatchSelectionMenu.selectedMenuIndex++;
+        if(gPatchSelectionMenu.selectedMenuIndex > 1) {
+            gPatchSelectionMenu.selectedMenuIndex = 0;
+        }
+    } else if(gPlayer1Controller->buttonPressed & L_JPAD || (stickX < -60)) {
+        gPatchSelectionMenu.selectedMenuIndex--;
+        if(gPatchSelectionMenu.selectedMenuIndex < 0) {
+            gPatchSelectionMenu.selectedMenuIndex = 1;
+        }
+    }
+}
+
+void handle_patch_selection_inputs() {
+    f32 stickX = gPlayer1Controller->rawStickX;
+    f32 stickY = gPlayer1Controller->rawStickY;
+
+    //Prevents the same stick flick from being read on multiple frames
+    if((absf(stickX) < 60) && (absf(stickY) < 60)){
+        if(gPatchSelectionMenu.framesSinceLastStickInput < 2) {
+            gPatchSelectionMenu.framesSinceLastStickInput++;
+        }
+    } else {
+        if(gPatchSelectionMenu.framesSinceLastStickInput < 2) {
+            stickX = 0;
+            stickY = 0;
+        }
+        gPatchSelectionMenu.framesSinceLastStickInput = 0;
+    }
+
+    switch(gPatchSelectionMenu.menuState) {
+        case STATE_SELECT:
+            handle_inputs_state_select(stickX, stickY);
+            break;
+        case STATE_CONFIRMATION:
+            handle_inputs_state_confirmation(stickX, stickY);
+            break;
     }
 }
 
@@ -225,11 +274,49 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
+void render_patch_desc(UNUSED f32 x, UNUSED f32 y) {
+    s32 selected = gPatchSelectionMenu.selectedPatch;
+    //TEMP
+    print_text(14, 60, sAvailablePatches[selected]->patchDesc1);
+    print_text(14, 30, sAvailablePatches[selected]->patchDesc2);
+}
+
+void render_confirmation_dialog(UNUSED f32 x, UNUSED f32 y) {
+    Mtx *transMtx = alloc_display_list(sizeof(Mtx));
+    Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
+
+    s32 selected = gPatchSelectionMenu.selectedMenuIndex;
+    f32 xPos, yPos; 
+
+    if(selected) {
+        xPos = ((SCREEN_WIDTH / 3) * 2) - 10;
+    } else {
+        xPos = (SCREEN_WIDTH / 3) - 10;
+    }
+
+    yPos = y - 20;
+
+    guTranslate(transMtx, xPos, yPos, 0);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
+            G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    guScale(scaleMtx, 0.75f, 0.75f, 1.0f);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx),
+            G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+
+    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 255);
+    gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+
+    //TEMP
+    print_text(14, 60, "Confirm Selection");
+    print_text(SCREEN_WIDTH / 3, 20, "Yes");
+    print_text((SCREEN_WIDTH / 3) * 2, 20, "No");
+}
+
 /*
     Draws the patch description at the given x/y coordinates
 */
-void render_patch_desc(f32 x, f32 y) {
-    s32 selected = gPatchSelectionMenu.selectedPatch;
+void render_lower_box(f32 x, f32 y) {
     Mtx *transMtx = alloc_display_list(sizeof(Mtx));
     guTranslate(transMtx, x, y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
@@ -237,9 +324,14 @@ void render_patch_desc(f32 x, f32 y) {
     gSPDisplayList(gDisplayListHead++, desc_bg_mesh_mesh);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
-    //temp
-    print_text(14, 60, sAvailablePatches[selected]->patchDesc1);
-    print_text(14, 30, sAvailablePatches[selected]->patchDesc2);
+    switch(gPatchSelectionMenu.menuState) {
+        case STATE_CONFIRMATION:
+            render_confirmation_dialog(x, y);
+            break;
+        default:
+            render_patch_desc(x, y);
+            break;
+    }
 }
 
 void render_patch_selection_cursor(f32 x, f32 y) {
@@ -289,6 +381,6 @@ void display_patch_selection_ui() {
     render_patch_card(CARD_X_RIGHT, CARD_Y_TOP, cardScale2, sAvailablePatches[1], TRUE);
     render_patch_card(CARD_X_LEFT, CARD_Y_BOTTOM, cardScale3, sAvailablePatches[2], FALSE);
     render_patch_card(CARD_X_RIGHT, CARD_Y_BOTTOM, cardScale4, sAvailablePatches[3], TRUE);
-    render_patch_desc(PATCH_DESC_X, PATCH_DESC_Y);
+    render_lower_box(PATCH_DESC_X, PATCH_DESC_Y);
     render_patch_selection_cursor(cursorX, cursorY);
 }

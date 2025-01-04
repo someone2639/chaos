@@ -1288,13 +1288,12 @@ void update_mario_button_inputs(struct MarioState *m) {
     }
 
     //TEMP
-    if(m->controller->buttonDown & L_TRIG) {
+    if(m->controller->buttonPressed & L_TRIG) {
         gPatchSelectionMenu.isActive = TRUE;
+    } 
+    if(gPatchSelectionMenu.isActive) {
         handle_patch_selection_inputs();
-    } else {
-        gPatchSelectionMenu.isActive = FALSE;
     }
-    
 }
 
 /**
