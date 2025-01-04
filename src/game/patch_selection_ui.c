@@ -294,8 +294,8 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
 void render_patch_desc() {
     s32 selected = gPatchSelectionMenu.selectedPatch;
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text(-142, 15, sAvailablePatches[selected]->patchDesc1, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_draw_ortho_text(-142, -15, sAvailablePatches[selected]->patchDesc2, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(-142, 15, sAvailablePatches[selected]->patchDesc1, FT_FLAG_ALIGN_LEFT, 0x20, 0xFF, 0x30, 0xFF);
+    slowtext_draw_ortho_text(-142, -15, sAvailablePatches[selected]->patchDesc2, FT_FLAG_ALIGN_LEFT, 0xFF, 0x20, 0x30, 0xFF);
     slowtext_finished_rendering();
 }
 
