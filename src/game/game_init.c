@@ -836,6 +836,7 @@ void thread5_game_loop(UNUSED void *arg) {
         profiler_update(PROFILER_TIME_CONTROLLERS);
         addr = level_script_execute(addr);
 
+#ifdef SOMEONE2639_CRAZY_EXPERIMENTS
         if (gPlayer1Controller->buttonPressed & (A_BUTTON|L_TRIG)) {
             char aa[100];
             sprintf(aa, "44100 hz!\n");
@@ -854,6 +855,7 @@ void thread5_game_loop(UNUSED void *arg) {
             osSyncPrintf(aa);
             HVQM_PLAY(spoon16);
         }
+#endif // SOMEONE2639_CRAZY_EXPERIMENTS
         display_and_vsync();
 
         // when debug info is enabled, print the "BUF %d" information.
