@@ -28,12 +28,14 @@
 #include "level_table.h"
 #include "course_table.h"
 #include "rumble_init.h"
+#include "patch_selection_ui.h"
 
 #define PLAY_MODE_NORMAL 0
 #define PLAY_MODE_PAUSED 2
 #define PLAY_MODE_CHANGE_AREA 3
 #define PLAY_MODE_CHANGE_LEVEL 4
 #define PLAY_MODE_FRAME_ADVANCE 5
+#define PLAY_MODE_SELECT_PATCH 6
 
 #define WARP_TYPE_NOT_WARPING 0
 #define WARP_TYPE_CHANGE_LEVEL 1
@@ -1008,6 +1010,8 @@ s32 play_mode_normal(void) {
 #endif
             gCameraMovementFlags |= CAM_MOVE_PAUSE_SCREEN;
             set_play_mode(PLAY_MODE_PAUSED);
+        } else if (gPlayer1Controller->buttonPressed & L_TRIG) {//TEMP
+            set_play_mode(PLAY_MODE_SELECT_PATCH);
         }
     }
 
@@ -1050,6 +1054,18 @@ s32 play_mode_frame_advance(void) {
         set_play_mode(PLAY_MODE_NORMAL);
     } else {
         gCameraMovementFlags |= CAM_MOVE_PAUSE_SCREEN;
+    }
+
+    return 0;
+}
+
+s32 play_mode_select_patch(void) {
+    if(gPatchSelectionMenu.menuState != STATE_CLOSED) {
+        gPatchSelectionMenu.isActive = TRUE;
+        handle_patch_selection_inputs();
+    }else {
+        reset_patch_selection_menu();
+        set_play_mode(PLAY_MODE_NORMAL);
     }
 
     return 0;
@@ -1147,6 +1163,9 @@ s32 update_level(void) {
             break;
         case PLAY_MODE_FRAME_ADVANCE:
             changeLevel = play_mode_frame_advance();
+            break;
+        case PLAY_MODE_SELECT_PATCH:
+            changeLevel = play_mode_select_patch();
             break;
     }
 

@@ -26,6 +26,7 @@ struct PatchCard {
 enum Patch_Select_Menu_State {
     STATE_SELECT,
     STATE_CONFIRMATION,
+    STATE_CLOSED,
 };
 
 struct PatchSelectionMenu {
@@ -40,3 +41,4 @@ extern struct PatchSelectionMenu gPatchSelectionMenu;
 
 void display_patch_selection_ui();
 void handle_patch_selection_inputs();
+void reset_patch_selection_menu();

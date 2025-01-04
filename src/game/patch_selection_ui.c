@@ -83,7 +83,7 @@ void handle_inputs_state_confirmation(f32 stickX, UNUSED f32 stickY) {
             gPatchSelectionMenu.selectedMenuIndex = 0;
         } else {
             //Yes
-            reset_patch_selection_menu();
+            gPatchSelectionMenu.menuState = STATE_CLOSED;
         }
     } else if(gPlayer1Controller->buttonPressed & B_BUTTON) {
         gPatchSelectionMenu.menuState = STATE_SELECT;
