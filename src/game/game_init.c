@@ -836,12 +836,12 @@ void thread5_game_loop(UNUSED void *arg) {
         profiler_update(PROFILER_TIME_CONTROLLERS);
         addr = level_script_execute(addr);
 
-        // if (gPlayer1Controller->buttonPressed & L_TRIG) {
-        //     char aa[100];
-        //     sprintf(aa, "Play that bitch!\n");
-        //     osSyncPrintf(aa);
-        //     HVQM_PLAY(chaos);
-        // }
+        if (gPlayer1Controller->buttonPressed & L_TRIG) {
+            char aa[100];
+            sprintf(aa, "Play that bitch!\n");
+            osSyncPrintf(aa);
+            HVQM_PLAY(chaos);
+        }
         display_and_vsync();
 
         // when debug info is enabled, print the "BUF %d" information.
