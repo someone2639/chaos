@@ -180,7 +180,20 @@ void hvqm_main_proc(uintptr_t vidPtr) {
     
     release_all_cfb();
     tkStart( &rewind, load32( hvqm_header->samples_per_sec ) );
-    
+
+    char abuf[60];
+    sprintf(abuf, "HVQM Uses %d samples/sec\n", hvqm_header->samples_per_sec);
+    osSyncPrintf(abuf);
+
+    sprintf(abuf, "    AUDIO FORMAT %d\n", hvqm_header->audio_format);
+    osSyncPrintf(abuf);
+    sprintf(abuf, "    AUDIO CHANNELS %d\n", hvqm_header->channels);
+    osSyncPrintf(abuf);
+    sprintf(abuf, "    AUDIO SAMPLE BITS %d\n", hvqm_header->sample_bits);
+    osSyncPrintf(abuf);
+    sprintf(abuf, "    AUDIO QUANTIZE %d\n", hvqm_header->audio_quantize_step);
+    osSyncPrintf(abuf);
+
     for ( ; ; ) {
 
         while ( video_remain > 0 ) {
@@ -188,17 +201,11 @@ void hvqm_main_proc(uintptr_t vidPtr) {
             HVQM2Record *record_header;
             u16 frame_format;
             int bufno;
-            // OSMesg msg;
-
-            // char aa[50];
-            // sprintf(aa, "Video Remain: %d\n", video_remain);
-            // osSyncPrintf(aa);
 
             if ( disptime > 0 && tkGetTime() > 0) {
                 if ( tkGetTime() < (disptime - (usec_per_frame * 2)) ) {
                    tkPushVideoframe( gFramebuffers[prev_bufno], &cfb_status[prev_bufno], disptime );
                    continue;
-                  //if ( video_remain == 0 ) break;
                 }
             }
             

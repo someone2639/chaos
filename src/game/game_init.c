@@ -840,7 +840,7 @@ void thread5_game_loop(UNUSED void *arg) {
             char aa[100];
             sprintf(aa, "Play that bitch!\n");
             osSyncPrintf(aa);
-            HVQM_PLAY(sein800);
+            HVQM_PLAY(chaos);
         }
         display_and_vsync();
 
