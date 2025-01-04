@@ -10,15 +10,15 @@
 #include "object_helpers.h"
 
 //temp
-const char testNameGood[] = {"Good Effect"};
-const char testNameBad[] = {"Bad Effect"};
+const char testNameGood[] = {"Good"};
+const char testNameBad[] = {"Bad"};
 const char testDescGood[] = {"Good effect description"};
 const char testDescBad[] = {"Bad effect description"};
 
-struct PatchCard sTestChaosPatch1 = {2, 0, testNameGood, testNameBad, testDescGood, testDescBad};
-struct PatchCard sTestChaosPatch2 = {3, 2, testNameGood, testNameBad, testDescGood, testDescBad};
-struct PatchCard sTestChaosPatch3 = {1, 10, testNameGood, testNameBad, testDescGood, testDescBad};
-struct PatchCard sTestChaosPatch4 = {4, 3, testNameGood, testNameBad, testDescGood, testDescBad};
+struct PatchCard sTestChaosPatch1 = {2, 0, 1, testNameGood, testNameBad, testDescGood, testDescBad};
+struct PatchCard sTestChaosPatch2 = {3, 2, 4, testNameGood, testNameBad, testDescGood, testDescBad};
+struct PatchCard sTestChaosPatch3 = {1, 10, 20, testNameGood, testNameBad, testDescGood, testDescBad};
+struct PatchCard sTestChaosPatch4 = {4, 3, 16, testNameGood, testNameBad, testDescGood, testDescBad};
 
 u8 sQualityColors[][4] = {
     {0x9A, 0x9A, 0x9A},
@@ -150,7 +150,7 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
     Mtx *cardScaleMtx = alloc_display_list(sizeof(Mtx));
     Mtx *cardTransMtx = alloc_display_list(sizeof(Mtx));
     Mtx *qualityTransMtx = alloc_display_list(sizeof(Mtx) * 2);
-    Mtx* timerTransMtx = alloc_display_list(sizeof(Mtx));
+    Mtx* timerTransMtx = alloc_display_list(sizeof(Mtx) * 2);
 
     gDPSetPrimColor(gDisplayListHead++, 0, 0, 
                     sQualityColors[colorID][0], sQualityColors[colorID][1], sQualityColors[colorID][2], 255);
@@ -184,8 +184,8 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
     }
     gSPDisplayList(gDisplayListHead++, patch_quality_bead_end);
 
-    //Draw star timer
-    if(card->duration > 0) {
+    //Draw star timer for patch 1
+    if(card->duration1 > 0) {
         gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardTransMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
@@ -193,17 +193,34 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
             gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardScaleMtx),
                   G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
         }
-        guTranslate(timerTransMtx, 37, 25, 0);
+        guTranslate(timerTransMtx, 39, 15, 0);
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(timerTransMtx++),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+        gSPDisplayList(gDisplayListHead++, star_timer_Mesh_mesh);
+        //temp
+        print_text_fmt_int(x + 43, y + 7, "%d" ,card->duration1);
+    }
+
+    //Draw star timer for patch 2
+    if(card->duration2 > 0) {
+        gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardTransMtx),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+        if(scale != 1.0f) {
+            gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardScaleMtx),
+                  G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+        }
+        guTranslate(timerTransMtx, 39, -15, 0);
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(timerTransMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
         gSPDisplayList(gDisplayListHead++, star_timer_Mesh_mesh);
         //temp
-        print_text_fmt_int(x + 42, y + 18, "%d" ,card->duration);
+        print_text_fmt_int(x + 43, y - 23, "%d" ,card->duration2);
     }
 
     //temp
-    print_text(x - 67, y + 5, card->patchName1);
-    print_text(x - 67, y - 15, card->patchName2);
+    print_text(x - 67, y + 7, card->patchName1);
+    print_text(x - 67, y - 23, card->patchName2);
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }

@@ -15,7 +15,8 @@
 
 struct PatchCard {
     u8 quality;
-    u16 duration;
+    u16 duration1;
+    u16 duration2;
     const char *patchName1;
     const char *patchName2;
     const char *patchDesc1;
