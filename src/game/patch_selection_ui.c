@@ -9,18 +9,7 @@
 #include "ingame_menu.h"
 #include "object_helpers.h"
 #include "fasttext.h"
-
-//temp
-const char testNameGood[] = {"Good Effect"};
-const char testNameBad[] = {"Bad Effect"};
-const char testDescGood[] = {"Good effect description"};
-const char testDescBad[] = {"Bad effect description"};
-const char testExtendedDesc[] = {"This is the extended description\nThere is more information here."};
-
-struct PatchCard sTestChaosPatch1 = {2, 0, 1, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, testExtendedDesc};
-struct PatchCard sTestChaosPatch2 = {3, 2, 4, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, NULL};
-struct PatchCard sTestChaosPatch3 = {1, 10, 20, testNameGood, testNameBad, testDescGood, testDescBad, NULL, testExtendedDesc};
-struct PatchCard sTestChaosPatch4 = {4, 3, 16, testNameGood, testNameBad, testDescGood, testDescBad, NULL, NULL};
+#include "debug.h"
 
 u8 sQualityColors[][4] = {
     {0x9A, 0x9A, 0x9A},
@@ -29,16 +18,49 @@ u8 sQualityColors[][4] = {
     {0x8B, 0x00, 0xC5},
 };
 
-struct PatchCard *sAvailablePatches[MAX_CARDS] = {
-    &sTestChaosPatch1,
-    &sTestChaosPatch2,
-    &sTestChaosPatch3,
-    &sTestChaosPatch4,
-};
+struct PatchCard gAvailablePatches[MAX_CARDS];
 
 struct PatchSelectionMenu gPatchSelectionMenu = {
     0, 0, FALSE, 0, STATE_SELECT,
 };
+
+//Temp
+const char testNameGood[] = {"Good Effect"};
+const char testNameBad[] = {"Bad Effect"};
+const char testDescGood[] = {"Good effect description"};
+const char testDescBad[] = {"Bad effect description"};
+const char testExtendedDesc[] = {"This is the extended description\nThere is more information here."};
+
+/*
+    Initializes the patch selection menu
+*/
+void init_patch_selection_menu() {
+    //Temporary
+    load_patch_card(0, 2, 0, 1, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, testExtendedDesc);
+    load_patch_card(1, 3, 2, 4, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, NULL);
+    load_patch_card(2, 1, 10, 20, testNameGood, testNameBad, testDescGood, testDescBad, NULL, testExtendedDesc);
+    load_patch_card(3, 4, 3, 16, testNameGood, testNameBad, testDescGood, testDescBad, NULL, NULL);
+}
+
+/*
+    Loads a patch card into gAvailablePatches in the slot specified by index
+*/
+void load_patch_card(s32 index, s32 quality, s32 effect1Duration, s32 effect2Duration, 
+        const char *effect1Name, const char *effect2Name, const char *effect1Desc, const char *effect2Desc, 
+        const char* effect1ExtendedDesc, const char *effect2ExtendedDesc) 
+{
+    assert(index < MAX_CARDS && index >= 0, "Tried to load a card into an invalid index!");
+    gAvailablePatches[index].quality = quality;
+    gAvailablePatches[index].duration1 = effect1Duration;
+    gAvailablePatches[index].duration2 = effect2Duration;
+    gAvailablePatches[index].patchName1 = effect1Name;
+    gAvailablePatches[index].patchName2 = effect2Name;
+    gAvailablePatches[index].patchDesc1 = effect1Desc;
+    gAvailablePatches[index].patchDesc2 = effect2Desc;
+    gAvailablePatches[index].extendedDesc1 = effect1ExtendedDesc;
+    gAvailablePatches[index].extendedDesc2 = effect2ExtendedDesc;
+    //TODO: Add an id or reference of some sort to an actual patch so it can be applied after selection
+}
 
 void reset_patch_selection_menu() {
     gPatchSelectionMenu.selectedPatch = 0;
@@ -54,7 +76,7 @@ void handle_inputs_state_select(f32 stickX, f32 stickY) {
     if(gPlayer1Controller->buttonPressed & A_BUTTON || gPlayer1Controller->buttonPressed & START_BUTTON) {
         gPatchSelectionMenu.menuState = STATE_CONFIRMATION;
     } else if (gPlayer1Controller->buttonPressed & Z_TRIG || gPlayer1Controller->buttonPressed & L_TRIG) {
-        struct PatchCard *selectedCard = sAvailablePatches[gPatchSelectionMenu.selectedPatch];
+        struct PatchCard *selectedCard = &gAvailablePatches[gPatchSelectionMenu.selectedPatch];
         if(selectedCard->extendedDesc1 || selectedCard->extendedDesc2) {
             gPatchSelectionMenu.menuState = STATE_SHOW_EXTENDED_DESC;
         }
@@ -314,8 +336,8 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
 void render_patch_desc() {
     s32 selected = gPatchSelectionMenu.selectedPatch;
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text(-142, 15, sAvailablePatches[selected]->patchDesc1, FT_FLAG_ALIGN_LEFT, 0x20, 0xFF, 0x30, 0xFF);
-    slowtext_draw_ortho_text(-142, -15, sAvailablePatches[selected]->patchDesc2, FT_FLAG_ALIGN_LEFT, 0xFF, 0x20, 0x30, 0xFF);
+    slowtext_draw_ortho_text(-142, 15, gAvailablePatches[selected].patchDesc1, FT_FLAG_ALIGN_LEFT, 0x20, 0xFF, 0x30, 0xFF);
+    slowtext_draw_ortho_text(-142, -15, gAvailablePatches[selected].patchDesc2, FT_FLAG_ALIGN_LEFT, 0xFF, 0x20, 0x30, 0xFF);
     slowtext_finished_rendering();
 }
 
@@ -385,7 +407,7 @@ void render_patch_selection_cursor(f32 x, f32 y) {
 */
 void render_extended_description () {
     s32 selected = gPatchSelectionMenu.selectedPatch;
-    struct PatchCard *selectedCard = sAvailablePatches[selected];
+    struct PatchCard *selectedCard = &gAvailablePatches[selected];
     
     Mtx *transMtx = alloc_display_list(sizeof(Mtx));
     guTranslate(transMtx, SCREEN_CENTER_X, SCREEN_CENTER_Y, 0);
@@ -443,10 +465,10 @@ void display_patch_selection_ui() {
     desc_bg_scroll();
     create_dl_ortho_matrix(&gDisplayListHead);
 
-    render_patch_card(CARD_X_LEFT, CARD_Y_TOP, cardScale1, sAvailablePatches[0], FALSE);
-    render_patch_card(CARD_X_RIGHT, CARD_Y_TOP, cardScale2, sAvailablePatches[1], TRUE);
-    render_patch_card(CARD_X_LEFT, CARD_Y_BOTTOM, cardScale3, sAvailablePatches[2], FALSE);
-    render_patch_card(CARD_X_RIGHT, CARD_Y_BOTTOM, cardScale4, sAvailablePatches[3], TRUE);
+    render_patch_card(CARD_X_LEFT, CARD_Y_TOP, cardScale1, &gAvailablePatches[0], FALSE);
+    render_patch_card(CARD_X_RIGHT, CARD_Y_TOP, cardScale2, &gAvailablePatches[1], TRUE);
+    render_patch_card(CARD_X_LEFT, CARD_Y_BOTTOM, cardScale3, &gAvailablePatches[2], FALSE);
+    render_patch_card(CARD_X_RIGHT, CARD_Y_BOTTOM, cardScale4, &gAvailablePatches[3], TRUE);
     render_lower_box(PATCH_DESC_X, PATCH_DESC_Y);
 
     if(gPatchSelectionMenu.menuState == STATE_SHOW_EXTENDED_DESC) {

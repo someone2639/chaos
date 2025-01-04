@@ -23,6 +23,7 @@ struct PatchCard {
     const char *patchDesc2;
     const char *extendedDesc1;
     const char *extendedDesc2;
+    //TODO: Add an id or reference of some sort to an actual patch so it can be applied after selection
 };
 
 enum Patch_Select_Menu_State {
@@ -41,7 +42,12 @@ struct PatchSelectionMenu {
 };
 
 extern struct PatchSelectionMenu gPatchSelectionMenu;
+extern struct PatchCard gAvailablePatches[];
 
 void display_patch_selection_ui();
 void handle_patch_selection_inputs();
 void reset_patch_selection_menu();
+void load_patch_card(s32 index, s32 quality, s32 effect1Duration, s32 effect2Duration, 
+        const char *effect1Name, const char *effect2Name, const char *effect1Desc, const char *effect2Desc, 
+        const char* effect1ExtendedDesc, const char *effect2ExtendedDesc);
+void init_patch_selection_menu();

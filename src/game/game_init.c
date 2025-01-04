@@ -34,6 +34,7 @@
 #include "usb/debug.h"
 #endif
 #include <prevent_bss_reordering.h>
+#include "patch_selection_ui.h"
 
 // Emulators that the Instant Input patch should not be applied to
 #define INSTANT_INPUT_BLACKLIST (EMU_CONSOLE | EMU_WIIVC | EMU_ARES | EMU_SIMPLE64 | EMU_CEN64)
@@ -811,6 +812,7 @@ void thread5_game_loop(UNUSED void *arg) {
     gConfig.widescreen = save_file_get_widescreen_mode();
 #endif
     render_init();
+    init_patch_selection_menu();
 
     while (TRUE) {
         profiler_frame_setup();
