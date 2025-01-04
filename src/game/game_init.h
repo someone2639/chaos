@@ -11,7 +11,7 @@
 
 #define MAX_NUM_PLAYERS 2
 
-#define GFX_POOL_SIZE 6400 // Size of how large the master display list (gDisplayListHead) can be
+#define GFX_POOL_SIZE 16000 // Size of how large the master display list (gDisplayListHead) can be
 
 // NOTE: For some reason, checking something with index 13 and FBE_CHECK being set to 12 fails on some versions of GlideN64 (pain)
 // So apparently this value actually matters...???

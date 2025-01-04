@@ -273,13 +273,8 @@ void profiler_print_times() {
         );
 
         Gfx* dlHead = gDisplayListHead;
-        gDPPipeSync(dlHead++);
-        gDPSetCycleType(dlHead++, G_CYC_1CYCLE);
-        gDPSetRenderMode(dlHead++, G_RM_TEX_EDGE, G_RM_TEX_EDGE2);
-        gDPSetTexturePersp(dlHead++, G_TP_NONE);
-        gDPSetTextureFilter(dlHead++, G_TF_POINT);
-        gDPSetTextureLUT(dlHead++, G_TT_NONE);
-        drawSmallStringCol(&dlHead, 10, 10, text_buffer, 255, 255, 255, 255);
+        fasttext_setup_textrect_rendering(FT_FONT_OUTLINE);
+        fasttext_draw_texrect(10, 10, text_buffer, FT_FLAG_ALIGN_LEFT, 255, 255, 255, 255);
 
 #ifdef PROFILER_DEBUG_INFO
         text_buffer[0] = 0; // Effectively clear buffer
@@ -322,12 +317,14 @@ void profiler_print_times() {
             );
         }
 
-        drawSmallStringCol(&dlHead, 235, 34, text_buffer, 255, 255, 255, 255);
+        fasttext_draw_texrect(235, 34, text_buffer, FT_FLAG_ALIGN_LEFT, 255, 255, 255, 255);
 #endif
 
         // Print memory usage
         sprintf(text_buffer, "RAM: 0x%06X / 0x%06X", memUsed, totalMem);
-        drawSmallStringCol(&dlHead, 112, 214, text_buffer, 255, 255, 255, 255);
+        fasttext_draw_texrect(112, 214, text_buffer, FT_FLAG_ALIGN_LEFT, 255, 255, 255, 255);
+
+        fasttext_finished_rendering();
 
         gDisplayListHead = dlHead;
     }
