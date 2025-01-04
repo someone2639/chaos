@@ -215,8 +215,8 @@ void render_patch_desc(f32 x, f32 y) {
     s32 selected = gPatchSelectionMenu.selectedPatch;
     Mtx *transMtx = alloc_display_list(sizeof(Mtx));
     guTranslate(transMtx, x, y, 0);
-        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
-              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     gSPDisplayList(gDisplayListHead++, desc_bg_mesh_mesh);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
@@ -225,17 +225,53 @@ void render_patch_desc(f32 x, f32 y) {
     print_text(14, 30, sAvailablePatches[selected]->patchDesc2);
 }
 
+void render_patch_selection_cursor(f32 x, f32 y) {
+    Mtx *transMtx = alloc_display_list(sizeof(Mtx));
+    guTranslate(transMtx, x + 65, y - 30, 0);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    gSPDisplayList(gDisplayListHead++, hand_Mesh_mesh);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+}
+
 void display_patch_selection_ui() {
     s32 selectedPatch = gPatchSelectionMenu.selectedPatch;
+    f32 cursorX, cursorY;
+    f32 cardScale1 = 1.0f, cardScale2 = 1.0f, cardScale3 = 1.0f, cardScale4 = 1.0f;
+
+    switch(selectedPatch) {
+        case 0:
+            cardScale1 = 1.05f;
+            cursorX = CARD_X_LEFT;
+            cursorY = CARD_Y_TOP;
+            break;
+        case 1:
+            cardScale2 = 1.05f;
+            cursorX = CARD_X_RIGHT;
+            cursorY = CARD_Y_TOP;
+            break;
+        case 2:
+            cardScale3 = 1.05f;
+            cursorX = CARD_X_LEFT;
+            cursorY = CARD_Y_BOTTOM;
+            break;
+        case 3:
+        default:
+            cardScale4 = 1.05f;
+            cursorX = CARD_X_RIGHT;
+            cursorY = CARD_Y_BOTTOM;
+            break;
+    }
 
     patch_bg_scroll();
     desc_bg_scroll();
     create_dl_ortho_matrix();
 
     //Ugly and hopefully temporary
-    render_patch_card(CARD_X_LEFT, CARD_Y_TOP, (1.0f + (0.05f * (selectedPatch == 0))), sAvailablePatches[0], FALSE);
-    render_patch_card(CARD_X_RIGHT, CARD_Y_TOP, (1.0f + (0.05f * (selectedPatch == 1))), sAvailablePatches[1], TRUE);
-    render_patch_card(CARD_X_LEFT, CARD_Y_BOTTOM, (1.0f + (0.05f * (selectedPatch == 2))), sAvailablePatches[2], FALSE);
-    render_patch_card(CARD_X_RIGHT, CARD_Y_BOTTOM, (1.0f + (0.05f * (selectedPatch == 3))), sAvailablePatches[3], TRUE);
+    render_patch_card(CARD_X_LEFT, CARD_Y_TOP, cardScale1, sAvailablePatches[0], FALSE);
+    render_patch_card(CARD_X_RIGHT, CARD_Y_TOP, cardScale2, sAvailablePatches[1], TRUE);
+    render_patch_card(CARD_X_LEFT, CARD_Y_BOTTOM, cardScale3, sAvailablePatches[2], FALSE);
+    render_patch_card(CARD_X_RIGHT, CARD_Y_BOTTOM, cardScale4, sAvailablePatches[3], TRUE);
     render_patch_desc(PATCH_DESC_X, PATCH_DESC_Y);
+    render_patch_selection_cursor(cursorX, cursorY);
 }
