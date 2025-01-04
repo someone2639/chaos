@@ -92,7 +92,7 @@ void slowtext_draw_ortho_text(s32 x, s32 y, const char* string, enum FastTextFla
     const struct FastTextProps *fontProps = &gFasttextFonts[fasttextCachedFontId];
     const u8 *kerningTable = fontProps->kerningTable;
     y += fontProps->yShift;
-    yPos = (SCREEN_HEIGHT - fontProps->textureHeight) - y;
+    yPos = y;
 
     gDPSetPrimColor(dlHead++, 0, 0, rgbaBaseColors[0], rgbaBaseColors[1], rgbaBaseColors[2], rgbaBaseColors[3]);
 

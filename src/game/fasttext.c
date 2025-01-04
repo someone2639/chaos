@@ -4,6 +4,7 @@
 #include <ultra64.h>
 #include "macros.h"
 #include "segment2.h"
+#include "camera.h"
 #include "debug.h"
 #include "game_init.h"
 #include "fasttext.h"
@@ -106,6 +107,114 @@ int fasttext_calculate_width_of_line(const char* string) {
     }
 
     return xPos;
+}
+
+void fasttext_compute_print_text_with_line_breaks(const enum FastTextFont font, const s32 lineWidth, s32 *numComputedLines, s32 *strComputedLength, char *dst, const char *src) {
+    const s32 newLineWidth = ABS(lineWidth);
+
+    aggress(font != FT_FONT_NONE, "fasttext_compute_print_text_with_line_breaks:\nPassed in invalid font!");
+
+    if (!dst) {
+        assert(FALSE, "fasttext_compute_print_text_with_line_breaks:\nAttempted to pass NULL dst pointer!");
+        return;
+    }
+
+    if (!src) {
+        assert(FALSE, "fasttext_compute_print_text_with_line_breaks:\nAttempted to pass NULL src pointer!");
+        return;
+    }
+
+    if (newLineWidth == 0) {
+        assert(FALSE, "fasttext_compute_print_text_with_line_breaks:\nAttempted to pass 0 or negative line width!");
+    }
+
+    const struct FastTextProps *props = &gFasttextFonts[font];
+    const unsigned char *kerningTable = props->kerningTable;
+
+    s32 width = 0;
+    s32 lastWidth = 0;
+    s32 parseIndex = 0;
+    s32 fillStrIndex = 0;
+    s32 lastFilledParseIndex = 0;
+    u8 automaticNewline = FALSE;
+    *numComputedLines = 1;
+
+    do {
+        s32 curChar = src[parseIndex];
+        s32 charIndex = curChar - ' ';
+        s32 tabCount;
+
+        switch (curChar) {
+            case '@':
+                // RANDO NOTE: Do not mess up color codes, or this could crash easily!
+                parseIndex += 8;
+                break;
+
+            case '\t':    
+                tabCount = (width + FT_TAB_WIDTH) / FT_TAB_WIDTH;
+                width = tabCount * FT_TAB_WIDTH;
+                break;
+
+            case '\n':
+            case ' ':
+            case '\0':
+                if (width >= newLineWidth) {
+                    width -= lastWidth;
+
+                    for (; fillStrIndex > 0; fillStrIndex--) {
+                        if (dst[fillStrIndex - 1] != ' ') {
+                            break;
+                        }
+                    }
+
+                    for (; lastFilledParseIndex < parseIndex; lastFilledParseIndex++) {
+                        if (src[lastFilledParseIndex] != ' ') {
+                            break;
+                        }
+
+                        width -= kerningTable[src[lastFilledParseIndex] - ' '];
+                    }
+
+                    if (width < 0) {
+                        width = 0;
+                    }
+
+                    (*numComputedLines)++;
+                    dst[fillStrIndex++] = '\n';
+                    automaticNewline = TRUE;
+                }
+                
+                while (lastFilledParseIndex < parseIndex) {
+                    dst[fillStrIndex++] = src[lastFilledParseIndex++];
+                }
+
+                lastWidth = width;
+                if (curChar == '\n') {
+                    dst[fillStrIndex++] = curChar;
+                    lastFilledParseIndex++;
+                    (*numComputedLines)++;
+                    width = 0;
+                    lastWidth = 0;
+                    automaticNewline = FALSE;
+                } else if (curChar == ' ') {
+                    if (width == 0 && automaticNewline) {
+                        lastFilledParseIndex++;
+                    } else {
+                        width += kerningTable[charIndex];
+                    }
+                }
+
+                break;
+
+            default:
+                width += kerningTable[charIndex];
+                break;
+        }
+
+    } while (src[parseIndex++] != '\0');
+
+    dst[fillStrIndex] = '\0';
+    *strComputedLength = fillStrIndex;
 }
 
 void fasttext_draw_texrect(int x, int y, const char* string, enum FastTextFlags flags, int r, int g, int b, int a) {
