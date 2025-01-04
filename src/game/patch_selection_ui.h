@@ -25,6 +25,7 @@ struct PatchCard {
 struct PatchSelectionMenu {
     s8 selectedPatch;
     u8 isActive;
+    s16 framesSinceLastStickInput;
 };
 
 extern struct PatchSelectionMenu gPatchSelectionMenu;

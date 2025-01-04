@@ -35,27 +35,44 @@ struct PatchCard *sAvailablePatches[MAX_CARDS] = {
 };
 
 struct PatchSelectionMenu gPatchSelectionMenu = {
-    0, FALSE,
+    0, FALSE, 0,
 };
 
 void handle_patch_selection_inputs() {
     s32 previousSelection = gPatchSelectionMenu.selectedPatch;
-    if(gPlayer1Controller->buttonPressed & D_JPAD) {
+
+    f32 stickX = gPlayer1Controller->rawStickX;
+    f32 stickY = gPlayer1Controller->rawStickY;
+
+    //Prevents the same stick flick from being read on multiple frames
+    if((absf(stickX) < 60) && (absf(stickY) < 60)){
+        if(gPatchSelectionMenu.framesSinceLastStickInput < 2) {
+            gPatchSelectionMenu.framesSinceLastStickInput++;
+        }
+    } else {
+        if(gPatchSelectionMenu.framesSinceLastStickInput < 2) {
+            stickX = 0;
+            stickY = 0;
+        }
+        gPatchSelectionMenu.framesSinceLastStickInput = 0;
+    }
+
+    if(gPlayer1Controller->buttonPressed & D_JPAD || (stickY < -60)) {
         gPatchSelectionMenu.selectedPatch += 2;
         if(gPatchSelectionMenu.selectedPatch > MAX_CARDS - 1) {
             gPatchSelectionMenu.selectedPatch = previousSelection;
         }
-    } else if (gPlayer1Controller->buttonPressed & U_JPAD) {
+    } else if (gPlayer1Controller->buttonPressed & U_JPAD || (stickY > 60)) {
         gPatchSelectionMenu.selectedPatch -= 2;
         if(gPatchSelectionMenu.selectedPatch < 0) {
             gPatchSelectionMenu.selectedPatch = previousSelection;
         }
-    } else if(gPlayer1Controller->buttonPressed & R_JPAD) {
+    } else if(gPlayer1Controller->buttonPressed & R_JPAD || (stickX > 60)) {
         gPatchSelectionMenu.selectedPatch++;
         if(gPatchSelectionMenu.selectedPatch > MAX_CARDS - 1) {
             gPatchSelectionMenu.selectedPatch = previousSelection;
         }
-    } else if(gPlayer1Controller->buttonPressed & L_JPAD) {
+    } else if(gPlayer1Controller->buttonPressed & L_JPAD || (stickX < -60)) {
         gPatchSelectionMenu.selectedPatch--;
         if(gPatchSelectionMenu.selectedPatch < 0) {
             gPatchSelectionMenu.selectedPatch = previousSelection;
