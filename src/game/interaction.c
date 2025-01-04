@@ -920,7 +920,7 @@ u32 interact_warp_door(struct MarioState *m, UNUSED u32 interactType, struct Obj
                 return FALSE;
             }
 
-            doorAction = ACT_UNLOCKING_KEY_DOOR;
+            // doorAction = ACT_UNLOCKING_KEY_DOOR;
         }
 
         if (warpDoorId == 2 && !(saveFlags & SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)) {
@@ -935,25 +935,23 @@ u32 interact_warp_door(struct MarioState *m, UNUSED u32 interactType, struct Obj
                 return FALSE;
             }
 
-            doorAction = ACT_UNLOCKING_KEY_DOOR;
+            // doorAction = ACT_UNLOCKING_KEY_DOOR;
         }
 #endif
 
-        if (m->action == ACT_WALKING || m->action == ACT_DECELERATING) {
-            actionArg = should_push_or_pull_door(m, o) + 0x00000004;
+        actionArg = should_push_or_pull_door(m, o) + 0x00000004;
 
-            if (doorAction == 0) {
-                if (actionArg & 0x00000001) {
-                    doorAction = ACT_PULLING_DOOR;
-                } else {
-                    doorAction = ACT_PUSHING_DOOR;
-                }
+        if (doorAction == 0) {
+            if (actionArg & 0x00000001) {
+                doorAction = ACT_PULLING_DOOR;
+            } else {
+                doorAction = ACT_PUSHING_DOOR;
             }
-
-            m->interactObj = o;
-            m->usedObj = o;
-            return set_mario_action(m, doorAction, actionArg);
         }
+
+        m->interactObj = o;
+        m->usedObj = o;
+        return set_mario_action(m, doorAction, actionArg);
     }
 
     return FALSE;
@@ -1017,7 +1015,7 @@ u32 interact_door(struct MarioState *m, UNUSED u32 interactType, struct Object *
                 enterDoorAction = ACT_PUSHING_DOOR;
             }
 #ifndef UNLOCK_ALL
-            u32 doorSaveFileFlag = get_door_save_file_flag(o);
+            // u32 doorSaveFileFlag = get_door_save_file_flag(o);
 #endif
             m->interactObj = o;
             m->usedObj = o;
@@ -1027,9 +1025,9 @@ u32 interact_door(struct MarioState *m, UNUSED u32 interactType, struct Object *
             }
 
 #ifndef UNLOCK_ALL
-            if (doorSaveFileFlag != 0 && !(save_file_get_flags() & doorSaveFileFlag)) {
-                enterDoorAction = ACT_UNLOCKING_STAR_DOOR;
-            }
+            // if (doorSaveFileFlag != 0 && !(save_file_get_flags() & doorSaveFileFlag)) {
+            //     enterDoorAction = ACT_UNLOCKING_STAR_DOOR;
+            // }
 #endif
 
             return set_mario_action(m, enterDoorAction, actionArg);

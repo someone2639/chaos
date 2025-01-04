@@ -46,7 +46,7 @@ static s8 D_8032CBE4 = 0;
 static s8 D_8032CBE8 = 0;
 static s8 D_8032CBEC[7] = { 2, 3, 2, 1, 2, 3, 2 };
 
-static u8 sStarsNeededForDialog[] = { 1, 3, 8, 30, 50, 70 };
+// static u8 sStarsNeededForDialog[] = { 1, 3, 8, 30, 50, 70 };
 
 /**
  * Data for the jumbo star cutscene. It specifies the flight path after triple
@@ -227,21 +227,23 @@ UNUSED static void stub_is_textbox_active(u16 *arg) {
  * if so, return the dialog ID. Otherwise, return 0. A dialog is returned if
  * numStars has reached a milestone and prevNumStarsForDialog has not reached it.
  */
-s32 get_star_collection_dialog(struct MarioState *m) {
-    s32 i;
-    s32 dialogID = 0;
-    s32 numStarsRequired;
+s32 get_star_collection_dialog(UNUSED struct MarioState *m) {
+    return 0;
 
-    for (i = 0; i < ARRAY_COUNT(sStarsNeededForDialog); i++) {
-        numStarsRequired = sStarsNeededForDialog[i];
-        if (m->prevNumStarsForDialog < numStarsRequired && m->numStars >= numStarsRequired) {
-            dialogID = i + DIALOG_141;
-            break;
-        }
-    }
+    // s32 i;
+    // s32 dialogID = 0;
+    // s32 numStarsRequired;
 
-    m->prevNumStarsForDialog = m->numStars;
-    return dialogID;
+    // for (i = 0; i < ARRAY_COUNT(sStarsNeededForDialog); i++) {
+    //     numStarsRequired = sStarsNeededForDialog[i];
+    //     if (m->prevNumStarsForDialog < numStarsRequired && m->numStars >= numStarsRequired) {
+    //         dialogID = i + DIALOG_141;
+    //         break;
+    //     }
+    // }
+
+    // m->prevNumStarsForDialog = m->numStars;
+    // return dialogID;
 }
 
 // save menu handler
