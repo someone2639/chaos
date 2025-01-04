@@ -47,7 +47,7 @@ struct FastTextProps {
     const u8 averageCharHeight;
 };
 
-extern const struct FastTextProps gfasttextFonts[FT_FONT_COUNT];
+extern const struct FastTextProps gFasttextFonts[FT_FONT_COUNT];
 extern enum FastTextFont fasttextCachedFontId;
 
 /**
