@@ -71,6 +71,14 @@ OUTPUT_ARCH (mips)
    _##name##_mio0SegmentRomStart = _##name##_yay0SegmentRomStart; \
    _##name##_mio0SegmentRomEnd = _##name##_yay0SegmentRomEnd;
 
+#define HVQMVID(name) \
+   BEGIN_SEG(name, __romPos) \
+   { \
+      KEEP(BUILD_DIR/data/name.o(.data)); \
+      . = ALIGN(0x10); \
+   } \
+   END_SEG(name)
+
 SECTIONS
 {
    __romPos = 0;
@@ -450,11 +458,7 @@ SECTIONS
    }
    END_SEG(assets)
 #ifdef HVQM 
-   BEGIN_SEG(capcom, __romPos) SUBALIGN(2)
-   {
-      KEEP(BUILD_DIR/data/capcom.o(.data));
-   }
-	END_SEG(capcom)
+   #include "build/us_n64/hvqm_table.ld"
 #endif
    /* DWARF debug sections.
       Symbols in the DWARF debugging sections are relative to the beginning

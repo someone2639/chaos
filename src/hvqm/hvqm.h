@@ -121,5 +121,10 @@ extern OSThread tkThread;
 typedef u32 (*tkAudioProc)(void *pcmbuf);
 typedef tkAudioProc (*tkRewindProc)(void);
 
+extern void hvqm_play(void*);
+#define HVQM_PLAY(ptr) {\
+extern void *_ ## ptr ## SegmentRomStart;\
+hvqm_play(&_ ## ptr ## SegmentRomStart);\
+}
 
 #endif // HVQM_H

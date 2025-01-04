@@ -346,6 +346,6 @@
 
 #define PLAY_HVQM(ptr) \
     CMD_BBH(0x3E, 0x08, 0), \
-    CMD_PTR(ptr)
+    CMD_PTR(_ ## ptr ## SegmentRomStart)
 
 #endif // LEVEL_COMMANDS_H

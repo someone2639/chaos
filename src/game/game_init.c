@@ -783,8 +783,7 @@ void setup_game_memory(void) {
  * Main game loop thread. Runs forever as long as the game continues.
  */
 #include "game/main.h"
-extern void hvqm_play(void*);
-extern u8 _capcomSegmentRomStart[];
+#include "hvqm/hvqm.h"
 void thread5_game_loop(UNUSED void *arg) {
     struct LevelCommand *addr;
 
@@ -841,7 +840,7 @@ void thread5_game_loop(UNUSED void *arg) {
             char aa[100];
             sprintf(aa, "Play that bitch!\n");
             osSyncPrintf(aa);
-            hvqm_play(_capcomSegmentRomStart);
+            HVQM_PLAY(sein800);
         }
         display_and_vsync();
 
