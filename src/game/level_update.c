@@ -1039,7 +1039,7 @@ s32 play_mode_normal(void) {
 #endif
             gCameraMovementFlags |= CAM_MOVE_PAUSE_SCREEN;
             set_play_mode(PLAY_MODE_PAUSED);
-        } else if (gPlayer1Controller->buttonPressed & L_TRIG) {//TEMP
+        } else if (gPlayer1Controller->buttonPressed & R_TRIG && gPlayer1Controller->buttonDown & Z_TRIG) {//TEMP
             set_play_mode(PLAY_MODE_SELECT_PATCH);
         }
     }

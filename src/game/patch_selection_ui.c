@@ -8,10 +8,11 @@
 #include "game_init.h"
 #include "ingame_menu.h"
 #include "object_helpers.h"
+#include "fasttext.h"
 
 //temp
-const char testNameGood[] = {"Good"};
-const char testNameBad[] = {"Bad"};
+const char testNameGood[] = {"Good Effect"};
+const char testNameBad[] = {"Bad Effect"};
 const char testDescGood[] = {"Good effect description"};
 const char testDescBad[] = {"Bad effect description"};
 
@@ -200,6 +201,8 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
     Mtx *cardTransMtx = alloc_display_list(sizeof(Mtx));
     Mtx *qualityTransMtx = alloc_display_list(sizeof(Mtx) * 2);
     Mtx* timerTransMtx = alloc_display_list(sizeof(Mtx) * 2);
+    char timer1Text[4];
+    char timer2Text[4];
 
     gDPSetPrimColor(gDisplayListHead++, 0, 0, 
                     sQualityColors[colorID][0], sQualityColors[colorID][1], sQualityColors[colorID][2], 255);
@@ -242,12 +245,11 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
             gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardScaleMtx),
                   G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
         }
-        guTranslate(timerTransMtx, 39, 15, 0);
+        guTranslate(timerTransMtx, 45, 15, 0);
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(timerTransMtx++),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
         gSPDisplayList(gDisplayListHead++, star_timer_Mesh_mesh);
-        //temp
-        print_text_fmt_int(x + 43, y + 7, "%d" ,card->duration1);
+        sprintf(timer1Text, "%d", card->duration1);
     }
 
     //Draw star timer for patch 2
@@ -259,44 +261,64 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
             gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardScaleMtx),
                   G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
         }
-        guTranslate(timerTransMtx, 39, -15, 0);
+        guTranslate(timerTransMtx, 45, -15, 0);
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(timerTransMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
         gSPDisplayList(gDisplayListHead++, star_timer_Mesh_mesh);
-        //temp
-        print_text_fmt_int(x + 43, y - 23, "%d" ,card->duration2);
+        sprintf(timer2Text, "%d", card->duration2);
     }
 
-    //temp
-    print_text(x - 67, y + 7, card->patchName1);
-    print_text(x - 67, y - 23, card->patchName2);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardTransMtx),
+          G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    if(scale != 1.0f) {
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardScaleMtx),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+    }
+
+    //Write text
+    slowtext_setup_ortho_rendering(FT_FONT_SMALL_THIN);
+    slowtext_draw_ortho_text(-63, 5, card->patchName1, FT_FLAG_ALIGN_LEFT, 0x20, 0xFF, 0x30, 0xFF);
+    slowtext_draw_ortho_text(-63, -25, card->patchName2, FT_FLAG_ALIGN_LEFT, 0xFF, 0x20, 0x30, 0xFF);
+    slowtext_setup_ortho_rendering(FT_FONT_SMALL_BOLD);
+    if(card->duration1 > 0) {
+        slowtext_draw_ortho_text(53, 5, timer1Text, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    }if(card->duration2 > 0) {
+        slowtext_draw_ortho_text(53, -25, timer2Text, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    }
+    slowtext_finished_rendering();
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
-void render_patch_desc(UNUSED f32 x, UNUSED f32 y) {
+void render_patch_desc() {
     s32 selected = gPatchSelectionMenu.selectedPatch;
-    //TEMP
-    print_text(14, 60, sAvailablePatches[selected]->patchDesc1);
-    print_text(14, 30, sAvailablePatches[selected]->patchDesc2);
+    slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
+    slowtext_draw_ortho_text(-142, 15, sAvailablePatches[selected]->patchDesc1, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(-142, -15, sAvailablePatches[selected]->patchDesc2, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_finished_rendering();
 }
 
-void render_confirmation_dialog(UNUSED f32 x, UNUSED f32 y) {
+void render_confirmation_dialog() {
     Mtx *transMtx = alloc_display_list(sizeof(Mtx));
     Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
 
+    slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
+    slowtext_draw_ortho_text(0, 0, "Would you like to select this patch?", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(-30, -20, "Yes", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(30, -20, "No", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_finished_rendering();
+
     s32 selected = gPatchSelectionMenu.selectedMenuIndex;
-    f32 xPos, yPos; 
+    f32 xPos;
 
     if(selected) {
-        xPos = ((SCREEN_WIDTH / 3) * 2) - 10;
+        xPos = 10;
     } else {
-        xPos = (SCREEN_WIDTH / 3) - 10;
+        xPos = -50;
     }
 
-    yPos = y - 20;
-
-    guTranslate(transMtx, xPos, yPos, 0);
+    guTranslate(transMtx, xPos, -15, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
             G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     guScale(scaleMtx, 0.75f, 0.75f, 1.0f);
@@ -306,11 +328,6 @@ void render_confirmation_dialog(UNUSED f32 x, UNUSED f32 y) {
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 255);
     gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
-
-    //TEMP
-    print_text(14, 60, "Confirm Selection");
-    print_text(SCREEN_WIDTH / 3, 20, "Yes");
-    print_text((SCREEN_WIDTH / 3) * 2, 20, "No");
 }
 
 /*
@@ -322,16 +339,16 @@ void render_lower_box(f32 x, f32 y) {
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     gSPDisplayList(gDisplayListHead++, desc_bg_mesh_mesh);
-    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
     switch(gPatchSelectionMenu.menuState) {
         case STATE_CONFIRMATION:
-            render_confirmation_dialog(x, y);
+            render_confirmation_dialog();
             break;
         default:
-            render_patch_desc(x, y);
+            render_patch_desc();
             break;
     }
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
 void render_patch_selection_cursor(f32 x, f32 y) {
