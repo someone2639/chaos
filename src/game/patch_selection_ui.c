@@ -11,10 +11,15 @@
 #include "fasttext.h"
 #include "debug.h"
 
-u8 sQualityColors[][4] = {
+u8 sQualityColors[][3] = {
     {0x20, 0xDB, 0x1D},
     {0x47, 0x42, 0xDB},
     {0x8B, 0x00, 0xC5},
+};
+
+u8 sEffectColors[][3] = {
+    {0x15, 0xD0, 0x25}, //Good
+    {0xC0, 0x25, 0x35}, //Bad
 };
 
 struct PatchCard gAvailablePatches[MAX_CARDS];
@@ -212,7 +217,7 @@ void patch_bg_scroll() {
 void desc_bg_scroll() {
 	int i = 0;
 	int count = 4;
-	int width = 32 * 0x20;
+	int width = 64 * 0x20;
 	int height = 32 * 0x20;
 
 	static int currentX = 0;
@@ -220,10 +225,10 @@ void desc_bg_scroll() {
 	static int currentY = 0;
 	int deltaY;
 	Vtx *vertices = segmented_to_virtual(desc_bg_mesh_mesh_vtx_0);
-	Vtx *vertices_ext = segmented_to_virtual(ext_desc_bg_ext_mesh_mesh_vtx_0);
+	Vtx *ext_vertices = segmented_to_virtual(ext_desc_bg_ext_mesh_mesh_vtx_0);
 
-	deltaX = (int)(0.5 * 0x20) % width;
-	deltaY = (int)(-0.5 * 0x20) % height;
+	deltaX = (int)(0.1 * 0x20) % width;
+	deltaY = (int)(0.1 * 0x20) % height;
 
 	if (absi(currentX) > width) {
 		deltaX -= (int)(absi(currentX) / width) * width * signum_positive(deltaX);
@@ -235,8 +240,8 @@ void desc_bg_scroll() {
 	for (i = 0; i < count; i++) {
 		vertices[i].n.tc[0] += deltaX;
 		vertices[i].n.tc[1] += deltaY;
-		vertices_ext[i].n.tc[0] += deltaX;
-		vertices_ext[i].n.tc[1] += deltaY;
+		ext_vertices[i].n.tc[0] += deltaX;
+		ext_vertices[i].n.tc[1] += deltaY;
 	}
 	currentX += deltaX;	currentY += deltaY;
 }
@@ -338,8 +343,10 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
 
     //Write text
     slowtext_setup_ortho_rendering(FT_FONT_SMALL_THIN);
-    slowtext_draw_ortho_text(-63, 5, card->patchName1, FT_FLAG_ALIGN_LEFT, 0x20, 0xFF, 0x30, 0xFF);
-    slowtext_draw_ortho_text(-63, -25, card->patchName2, FT_FLAG_ALIGN_LEFT, 0xFF, 0x20, 0x30, 0xFF);
+    slowtext_draw_ortho_text(-63, 5, card->patchName1, FT_FLAG_ALIGN_LEFT, 
+        sEffectColors[EFFECT_COLOR_GOOD][0], sEffectColors[EFFECT_COLOR_GOOD][1], sEffectColors[EFFECT_COLOR_GOOD][2], 0xFF);
+    slowtext_draw_ortho_text(-63, -25, card->patchName2, FT_FLAG_ALIGN_LEFT, 
+        sEffectColors[EFFECT_COLOR_BAD][0], sEffectColors[EFFECT_COLOR_BAD][1], sEffectColors[EFFECT_COLOR_BAD][2], 0xFF);
     slowtext_setup_ortho_rendering(FT_FONT_SMALL_BOLD);
     if(card->patchDurationOrUses1 > 0) {
         slowtext_draw_ortho_text(53, 5, timer1Text, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -354,8 +361,10 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
 void render_patch_desc() {
     s32 selected = gPatchSelectionMenu.selectedPatch;
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text(-142, 15, gAvailablePatches[selected].patchDesc1, FT_FLAG_ALIGN_LEFT, 0x20, 0xFF, 0x30, 0xFF);
-    slowtext_draw_ortho_text(-142, -15, gAvailablePatches[selected].patchDesc2, FT_FLAG_ALIGN_LEFT, 0xFF, 0x20, 0x30, 0xFF);
+    slowtext_draw_ortho_text(-142, 15, gAvailablePatches[selected].patchDesc1, FT_FLAG_ALIGN_LEFT, 
+        sEffectColors[EFFECT_COLOR_GOOD][0], sEffectColors[EFFECT_COLOR_GOOD][1], sEffectColors[EFFECT_COLOR_GOOD][2], 0xFF);
+    slowtext_draw_ortho_text(-142, -15, gAvailablePatches[selected].patchDesc2, FT_FLAG_ALIGN_LEFT, 
+        sEffectColors[EFFECT_COLOR_BAD][0], sEffectColors[EFFECT_COLOR_BAD][1], sEffectColors[EFFECT_COLOR_BAD][2], 0xFF);
     slowtext_finished_rendering();
 }
 
@@ -435,14 +444,17 @@ void render_extended_description () {
 
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
     if(selectedCard->extendedDesc1) {
-        slowtext_draw_ortho_text(-142, 87, selectedCard->extendedDesc1, FT_FLAG_ALIGN_LEFT, 0x20, 0xFF, 0x30, 0xFF);
+        slowtext_draw_ortho_text(-142, 87, selectedCard->extendedDesc1, FT_FLAG_ALIGN_LEFT, 
+            sEffectColors[EFFECT_COLOR_GOOD][0], sEffectColors[EFFECT_COLOR_GOOD][1], sEffectColors[EFFECT_COLOR_GOOD][2], 0xFF);
     }
     if(selectedCard->extendedDesc2) {
         //Draw second effect description lower if there are two extended descriptions
         if(selectedCard->extendedDesc1) {
-            slowtext_draw_ortho_text(-142, -13, selectedCard->extendedDesc2, FT_FLAG_ALIGN_LEFT, 0xFF, 0x20, 0x30, 0xFF);
+            slowtext_draw_ortho_text(-142, -13, selectedCard->extendedDesc2, FT_FLAG_ALIGN_LEFT, 
+                sEffectColors[EFFECT_COLOR_BAD][0], sEffectColors[EFFECT_COLOR_BAD][1], sEffectColors[EFFECT_COLOR_BAD][2], 0xFF);
         } else {
-            slowtext_draw_ortho_text(-142, 87, selectedCard->extendedDesc2, FT_FLAG_ALIGN_LEFT, 0xFF, 0x20, 0x30, 0xFF);
+            slowtext_draw_ortho_text(-142, 87, selectedCard->extendedDesc2, FT_FLAG_ALIGN_LEFT, 
+                sEffectColors[EFFECT_COLOR_BAD][0], sEffectColors[EFFECT_COLOR_BAD][1], sEffectColors[EFFECT_COLOR_BAD][2], 0xFF);
         }
     }
     slowtext_finished_rendering();
