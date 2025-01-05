@@ -1092,7 +1092,7 @@ s32 play_mode_frame_advance(void) {
 }
 
 s32 play_mode_select_patch(void) {
-    if(gPatchSelectionMenu.menuState != STATE_CLOSED) {
+    if(gPatchSelectionMenu.menuState != PATCH_SELECT_STATE_CLOSED) {
         gPatchSelectionMenu.isActive = TRUE;
         handle_patch_selection_inputs();
     }else {

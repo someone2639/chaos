@@ -25,7 +25,7 @@ u8 sEffectColors[][3] = {
 struct PatchCard gAvailablePatches[MAX_CARDS];
 
 struct PatchSelectionMenu gPatchSelectionMenu = {
-    0, 0, FALSE, 0, STATE_SELECT,
+    0, 0, FALSE, 0, PATCH_SELECT_STATE_SELECT,
 };
 
 #ifdef DEBUG_PATCH_SELECT_MENU
@@ -41,15 +41,15 @@ const char testExtendedDesc[] = {"This is the extended description\nThere is mor
 */
 void init_patch_selection_menu() {
 #ifdef DEBUG_PATCH_SELECT_MENU
-    load_patch_card(0, 2, 0, 1, TYPE_NONE, TYPE_TIMED, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, testExtendedDesc);
-    load_patch_card(1, 3, 2, 4, TYPE_LIMITED_USE, TYPE_LIMITED_USE, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, NULL);
-    load_patch_card(2, 1, 10, 20, TYPE_TIMED, TYPE_LIMITED_USE, testNameGood, testNameBad, testDescGood, testDescBad, NULL, testExtendedDesc);
-    load_patch_card(3, 3, 3, 16, TYPE_LIMITED_USE, TYPE_TIMED, testNameGood, testNameBad, testDescGood, testDescBad, NULL, NULL);
+    load_patch_card(0, 2, 0, 1, CARD_TYPE_NONE, CARD_TYPE_TIMED, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, testExtendedDesc);
+    load_patch_card(1, 3, 2, 4, CARD_TYPE_LIMITED_USE, CARD_TYPE_LIMITED_USE, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, NULL);
+    load_patch_card(2, 1, 10, 20, CARD_TYPE_TIMED, CARD_TYPE_LIMITED_USE, testNameGood, testNameBad, testDescGood, testDescBad, NULL, testExtendedDesc);
+    load_patch_card(3, 3, 3, 16, CARD_TYPE_LIMITED_USE, CARD_TYPE_TIMED, testNameGood, testNameBad, testDescGood, testDescBad, NULL, NULL);
 #else
-    load_patch_card(0, 0, 0, 0, TYPE_NONE, TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
-    load_patch_card(0, 0, 0, 0, TYPE_NONE, TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
-    load_patch_card(0, 0, 0, 0, TYPE_NONE, TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
-    load_patch_card(0, 0, 0, 0, TYPE_NONE, TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
+    load_patch_card(0, 0, 0, 0, CARD_TYPE_NONE, CARD_TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
+    load_patch_card(0, 0, 0, 0, CARD_TYPE_NONE, CARD_TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
+    load_patch_card(0, 0, 0, 0, CARD_TYPE_NONE, CARD_TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
+    load_patch_card(0, 0, 0, 0, CARD_TYPE_NONE, CARD_TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
 #endif
 }
 
@@ -75,23 +75,29 @@ void load_patch_card(s32 index, s32 quality, s32 effect1DurationOrUses, s32 effe
     //TODO: Add an id or reference of some sort to an actual patch so it can be applied after selection
 }
 
+/*
+    Resets the values of the patch selection menu to their defaults. Should always be called after the patch selection menu is exited.
+*/
 void reset_patch_selection_menu() {
     gPatchSelectionMenu.selectedPatch = 0;
     gPatchSelectionMenu.selectedMenuIndex = 0;
     gPatchSelectionMenu.isActive = FALSE;
     gPatchSelectionMenu.framesSinceLastStickInput = 0;
-    gPatchSelectionMenu.menuState = STATE_SELECT;
+    gPatchSelectionMenu.menuState = PATCH_SELECT_STATE_SELECT;
 }
 
-void handle_inputs_state_select(f32 stickX, f32 stickY) {
+/*
+    Handles the player inputs for the patch selection state in the patch selection menu
+*/
+void handle_inputs_PATCH_SELECT_STATE_SELECT(f32 stickX, f32 stickY) {
     s32 previousSelection = gPatchSelectionMenu.selectedPatch;
 
     if(gPlayer1Controller->buttonPressed & A_BUTTON || gPlayer1Controller->buttonPressed & START_BUTTON) {
-        gPatchSelectionMenu.menuState = STATE_CONFIRMATION;
+        gPatchSelectionMenu.menuState = PATCH_SELECT_STATE_CONFIRMATION;
     } else if (gPlayer1Controller->buttonPressed & Z_TRIG || gPlayer1Controller->buttonPressed & L_TRIG) {
         struct PatchCard *selectedCard = &gAvailablePatches[gPatchSelectionMenu.selectedPatch];
         if(selectedCard->extendedDesc1 || selectedCard->extendedDesc2) {
-            gPatchSelectionMenu.menuState = STATE_SHOW_EXTENDED_DESC;
+            gPatchSelectionMenu.menuState = PATCH_SELECT_STATE_SHOW_EXTENDED_DESC;
         }
     } else if(gPlayer1Controller->buttonPressed & D_JPAD || (stickY < -60)) {
         gPatchSelectionMenu.selectedPatch += 2;
@@ -116,27 +122,33 @@ void handle_inputs_state_select(f32 stickX, f32 stickY) {
     }
 }
 
-void handle_inputs_state_show_extended_desc() {
+/*
+    Handles the player inputs for the extended description state in the patch selection menu
+*/
+void handle_inputs_PATCH_SELECT_STATE_SHOW_EXTENDED_DESC() {
     if(gPlayer1Controller->buttonPressed & A_BUTTON || gPlayer1Controller->buttonPressed & START_BUTTON
         || gPlayer1Controller->buttonPressed & B_BUTTON || gPlayer1Controller->buttonPressed & Z_TRIG
         || gPlayer1Controller->buttonPressed & L_TRIG) 
     {
-        gPatchSelectionMenu.menuState = STATE_SELECT;
+        gPatchSelectionMenu.menuState = PATCH_SELECT_STATE_SELECT;
     }
 }
 
-void handle_inputs_state_confirmation(f32 stickX, UNUSED f32 stickY) {
+/*
+    Handles the player inputs for the confirmation dialog state in the patch selection menu
+*/
+void handle_inputs_PATCH_SELECT_STATE_CONFIRMATION(f32 stickX, UNUSED f32 stickY) {
     if(gPlayer1Controller->buttonPressed & A_BUTTON || gPlayer1Controller->buttonPressed & START_BUTTON) {
         if(gPatchSelectionMenu.selectedMenuIndex) {
             //No
-            gPatchSelectionMenu.menuState = STATE_SELECT;
+            gPatchSelectionMenu.menuState = PATCH_SELECT_STATE_SELECT;
             gPatchSelectionMenu.selectedMenuIndex = 0;
         } else {
             //Yes
-            gPatchSelectionMenu.menuState = STATE_CLOSED;
+            gPatchSelectionMenu.menuState = PATCH_SELECT_STATE_CLOSED;
         }
     } else if(gPlayer1Controller->buttonPressed & B_BUTTON) {
-        gPatchSelectionMenu.menuState = STATE_SELECT;
+        gPatchSelectionMenu.menuState = PATCH_SELECT_STATE_SELECT;
         gPatchSelectionMenu.selectedMenuIndex = 0;
     }
     else if(gPlayer1Controller->buttonPressed & R_JPAD || (stickX > 60)) {
@@ -152,6 +164,9 @@ void handle_inputs_state_confirmation(f32 stickX, UNUSED f32 stickY) {
     }
 }
 
+/*
+    Handles the player inputs for the patch selection menu
+*/
 void handle_patch_selection_inputs() {
     f32 stickX = gPlayer1Controller->rawStickX;
     f32 stickY = gPlayer1Controller->rawStickY;
@@ -170,18 +185,21 @@ void handle_patch_selection_inputs() {
     }
 
     switch(gPatchSelectionMenu.menuState) {
-        case STATE_SELECT:
-            handle_inputs_state_select(stickX, stickY);
+        case PATCH_SELECT_STATE_SELECT:
+            handle_inputs_PATCH_SELECT_STATE_SELECT(stickX, stickY);
             break;
-        case STATE_CONFIRMATION:
-            handle_inputs_state_confirmation(stickX, stickY);
+        case PATCH_SELECT_STATE_CONFIRMATION:
+            handle_inputs_PATCH_SELECT_STATE_CONFIRMATION(stickX, stickY);
             break;
-        case STATE_SHOW_EXTENDED_DESC:
-            handle_inputs_state_show_extended_desc();
+        case PATCH_SELECT_STATE_SHOW_EXTENDED_DESC:
+            handle_inputs_PATCH_SELECT_STATE_SHOW_EXTENDED_DESC();
             break;
     }
 }
 
+/*
+    Scrolls the vertex uvs for the patch card background meshes
+*/
 void patch_bg_scroll() {
     int i = 0;
 	int count = 4;
@@ -214,6 +232,9 @@ void patch_bg_scroll() {
 	currentX += deltaX;	currentY += deltaY;
 }
 
+/*
+    Scrolls the vertex uvs for the descripton and extended description background meshes
+*/
 void desc_bg_scroll() {
 	int i = 0;
 	int count = 4;
@@ -247,15 +268,48 @@ void desc_bg_scroll() {
 }
 
 /*
-    Draws a patch card at the given x, y coordinates
+    Draws the patch quality beads
+*/
+void draw_patch_quality(s32 quality) {
+    Mtx *transMtx = alloc_display_list(sizeof(Mtx) * 2);
+    gSPDisplayList(gDisplayListHead++, patch_quality_bead_begin);
+    guTranslate(transMtx, -70, 28, 0);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
+          G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    for(int i = 0; i < quality; i++) {
+        guTranslate(transMtx, 13, 0, 0);
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+        gSPDisplayList(gDisplayListHead++, patch_quality_bead);
+    }
+    gSPDisplayList(gDisplayListHead++, patch_quality_bead_end);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+}
+
+/*
+    Draws a patch type indicator at the given x/y coordinates
+*/
+void draw_patch_type(f32 x, f32 y, s32 type) {
+    Mtx* transMtx = alloc_display_list(sizeof(Mtx));
+    guTranslate(transMtx, x, y, 0);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
+          G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    if(type == CARD_TYPE_TIMED) {
+        gSPDisplayList(gDisplayListHead++, star_timer);
+    } else if (type == CARD_TYPE_LIMITED_USE) {
+        gSPDisplayList(gDisplayListHead++, uses_counter);
+    }
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+}
+
+/*
+    Draws a patch card at the given x/y coordinates
 */
 void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reverse) {
     s32 quality = card->quality;
     s32 colorID = quality - 1;
     Mtx *cardScaleMtx = alloc_display_list(sizeof(Mtx));
     Mtx *cardTransMtx = alloc_display_list(sizeof(Mtx));
-    Mtx *qualityTransMtx = alloc_display_list(sizeof(Mtx) * 2);
-    Mtx* timerTransMtx = alloc_display_list(sizeof(Mtx) * 2);
     char timer1Text[4];
     char timer2Text[4];
 
@@ -271,7 +325,6 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardScaleMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
     }
-
     if(reverse) {
         gSPDisplayList(gDisplayListHead++, patch_bg_r_mesh_r_mesh);
     } else {
@@ -279,67 +332,19 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
     }
     
     //Draw patch quality beads
-    gSPDisplayList(gDisplayListHead++, patch_quality_bead_begin);
-    guTranslate(qualityTransMtx, -70, 28, 0);
-    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(qualityTransMtx++),
-          G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-    for(int i = 0; i < quality; i++) {
-        guTranslate(qualityTransMtx, 13, 0, 0);
-        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(qualityTransMtx),
-              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-        gSPDisplayList(gDisplayListHead++, patch_quality_bead);
-    }
-    gSPDisplayList(gDisplayListHead++, patch_quality_bead_end);
+    draw_patch_quality(quality);
 
+    //Draw patch type(s)
     gSPDisplayList(gDisplayListHead++, patch_use_type_start);
-    //Draw star timer for patch 1
     if(card->patchDurationOrUses1 > 0) {
-        gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
-        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardTransMtx),
-              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-        if(scale != 1.0f) {
-            gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardScaleMtx),
-                  G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-        }
-        guTranslate(timerTransMtx, 42, 15, 0);
-        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(timerTransMtx++),
-              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-        if(card->patchUseType1 == TYPE_TIMED) {
-            gSPDisplayList(gDisplayListHead++, star_timer);
-        } else if (card->patchUseType1 == TYPE_LIMITED_USE) {
-            gSPDisplayList(gDisplayListHead++, uses_counter);
-        }
+        draw_patch_type(42, 15, card->patchUseType1);
         sprintf(timer1Text, "%d", card->patchDurationOrUses1);
     }
-
-    //Draw star timer for patch 2
     if(card->patchDurationOrUses2 > 0) {
-        gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
-        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardTransMtx),
-              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-        if(scale != 1.0f) {
-            gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardScaleMtx),
-                  G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-        }
-        guTranslate(timerTransMtx, 42, -15, 0);
-        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(timerTransMtx),
-              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-        if(card->patchUseType2 == TYPE_TIMED) {
-            gSPDisplayList(gDisplayListHead++, star_timer);
-        } else if (card->patchUseType2 == TYPE_LIMITED_USE) {
-            gSPDisplayList(gDisplayListHead++, uses_counter);
-        }
+        draw_patch_type(42, -15, card->patchUseType2);
         sprintf(timer2Text, "%d", card->patchDurationOrUses2);
     }
     gSPDisplayList(gDisplayListHead++, patch_use_type_end);
-
-    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
-    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardTransMtx),
-          G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    if(scale != 1.0f) {
-        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardScaleMtx),
-              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-    }
 
     //Write text
     slowtext_setup_ortho_rendering(FT_FONT_SMALL_THIN);
@@ -358,6 +363,9 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
+/*
+    Writes the patch description
+*/
 void render_patch_desc() {
     s32 selected = gPatchSelectionMenu.selectedPatch;
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
@@ -368,6 +376,9 @@ void render_patch_desc() {
     slowtext_finished_rendering();
 }
 
+/*
+    Draws a confirmation dialog
+*/
 void render_confirmation_dialog() {
     Mtx *transMtx = alloc_display_list(sizeof(Mtx));
     Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
@@ -410,7 +421,7 @@ void render_lower_box(f32 x, f32 y) {
     gSPDisplayList(gDisplayListHead++, desc_bg_mesh_mesh);
 
     switch(gPatchSelectionMenu.menuState) {
-        case STATE_CONFIRMATION:
+        case PATCH_SELECT_STATE_CONFIRMATION:
             render_confirmation_dialog();
             break;
         default:
@@ -420,6 +431,9 @@ void render_lower_box(f32 x, f32 y) {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
+/*
+    Draws the cursor for the patch selection menu at the given x/y coordinates
+*/
 void render_patch_selection_cursor(f32 x, f32 y) {
     Mtx *transMtx = alloc_display_list(sizeof(Mtx));
     guTranslate(transMtx, x + 65, y - 30, 0);
@@ -462,6 +476,9 @@ void render_extended_description () {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
+/*
+    Displays the patch selection menu
+*/
 void display_patch_selection_ui() {
     s32 selectedPatch = gPatchSelectionMenu.selectedPatch;
     f32 cursorX, cursorY;
@@ -491,19 +508,22 @@ void display_patch_selection_ui() {
             break;
     }
 
-    patch_bg_scroll();
-    desc_bg_scroll();
-    create_dl_ortho_matrix(&gDisplayListHead);
+    if(gPatchSelectionMenu.menuState != PATCH_SELECT_STATE_CLOSED) {
+        patch_bg_scroll();
+        desc_bg_scroll();
+        create_dl_ortho_matrix(&gDisplayListHead);
 
-    render_patch_card(CARD_X_LEFT, CARD_Y_TOP, cardScale1, &gAvailablePatches[0], FALSE);
-    render_patch_card(CARD_X_RIGHT, CARD_Y_TOP, cardScale2, &gAvailablePatches[1], TRUE);
-    render_patch_card(CARD_X_LEFT, CARD_Y_BOTTOM, cardScale3, &gAvailablePatches[2], FALSE);
-    render_patch_card(CARD_X_RIGHT, CARD_Y_BOTTOM, cardScale4, &gAvailablePatches[3], TRUE);
-    render_lower_box(PATCH_DESC_X, PATCH_DESC_Y);
+        render_patch_card(CARD_X_LEFT, CARD_Y_TOP, cardScale1, &gAvailablePatches[0], FALSE);
+        render_patch_card(CARD_X_RIGHT, CARD_Y_TOP, cardScale2, &gAvailablePatches[1], TRUE);
+        render_patch_card(CARD_X_LEFT, CARD_Y_BOTTOM, cardScale3, &gAvailablePatches[2], FALSE);
+        render_patch_card(CARD_X_RIGHT, CARD_Y_BOTTOM, cardScale4, &gAvailablePatches[3], TRUE);
+        render_lower_box(PATCH_DESC_X, PATCH_DESC_Y);
 
-    if(gPatchSelectionMenu.menuState == STATE_SHOW_EXTENDED_DESC) {
-        render_extended_description();
-    } else {
-        render_patch_selection_cursor(cursorX, cursorY);
+        if(gPatchSelectionMenu.menuState == PATCH_SELECT_STATE_SHOW_EXTENDED_DESC) {
+            render_extended_description();
+        } else {
+            render_patch_selection_cursor(cursorX, cursorY);
+        }
     }
+    
 }
