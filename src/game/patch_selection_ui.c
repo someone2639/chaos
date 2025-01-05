@@ -35,23 +35,25 @@ const char testExtendedDesc[] = {"This is the extended description\nThere is mor
 */
 void init_patch_selection_menu() {
     //Temporary
-    load_patch_card(0, 2, 0, 1, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, testExtendedDesc);
-    load_patch_card(1, 3, 2, 4, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, NULL);
-    load_patch_card(2, 1, 10, 20, testNameGood, testNameBad, testDescGood, testDescBad, NULL, testExtendedDesc);
-    load_patch_card(3, 3, 3, 16, testNameGood, testNameBad, testDescGood, testDescBad, NULL, NULL);
+    load_patch_card(0, 2, 0, 1, TYPE_NONE, TYPE_TIMED, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, testExtendedDesc);
+    load_patch_card(1, 3, 2, 4, TYPE_LIMITED_USE, TYPE_LIMITED_USE, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, NULL);
+    load_patch_card(2, 1, 10, 20, TYPE_TIMED, TYPE_LIMITED_USE, testNameGood, testNameBad, testDescGood, testDescBad, NULL, testExtendedDesc);
+    load_patch_card(3, 3, 3, 16, TYPE_LIMITED_USE, TYPE_TIMED, testNameGood, testNameBad, testDescGood, testDescBad, NULL, NULL);
 }
 
 /*
     Loads a patch card into gAvailablePatches in the slot specified by index
 */
-void load_patch_card(s32 index, s32 quality, s32 effect1Duration, s32 effect2Duration, 
-        const char *effect1Name, const char *effect2Name, const char *effect1Desc, const char *effect2Desc, 
-        const char* effect1ExtendedDesc, const char *effect2ExtendedDesc) 
+void load_patch_card(s32 index, s32 quality, s32 effect1DurationOrUses, s32 effect2DurationOrUses, 
+        s32 effect1UseType, s32 effect2UseType, const char *effect1Name, const char *effect2Name, 
+        const char *effect1Desc, const char *effect2Desc, const char* effect1ExtendedDesc, const char *effect2ExtendedDesc) 
 {
     assert(index < MAX_CARDS && index >= 0, "Tried to load a card into an invalid index!");
     gAvailablePatches[index].quality = quality;
-    gAvailablePatches[index].duration1 = effect1Duration;
-    gAvailablePatches[index].duration2 = effect2Duration;
+    gAvailablePatches[index].patchDurationOrUses1 = effect1DurationOrUses;
+    gAvailablePatches[index].patchDurationOrUses2 = effect2DurationOrUses;
+    gAvailablePatches[index].patchUseType1 = effect1UseType;
+    gAvailablePatches[index].patchUseType2 = effect2UseType;
     gAvailablePatches[index].patchName1 = effect1Name;
     gAvailablePatches[index].patchName2 = effect2Name;
     gAvailablePatches[index].patchDesc1 = effect1Desc;
@@ -277,8 +279,9 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
     }
     gSPDisplayList(gDisplayListHead++, patch_quality_bead_end);
 
+    gSPDisplayList(gDisplayListHead++, patch_use_type_start);
     //Draw star timer for patch 1
-    if(card->duration1 > 0) {
+    if(card->patchDurationOrUses1 > 0) {
         gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardTransMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
@@ -289,12 +292,16 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
         guTranslate(timerTransMtx, 45, 15, 0);
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(timerTransMtx++),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-        gSPDisplayList(gDisplayListHead++, star_timer_Mesh_mesh);
-        sprintf(timer1Text, "%d", card->duration1);
+        if(card->patchUseType1 == TYPE_TIMED) {
+            gSPDisplayList(gDisplayListHead++, star_timer);
+        } else if (card->patchUseType1 == TYPE_LIMITED_USE) {
+            gSPDisplayList(gDisplayListHead++, uses_counter);
+        }
+        sprintf(timer1Text, "%d", card->patchDurationOrUses1);
     }
 
     //Draw star timer for patch 2
-    if(card->duration2 > 0) {
+    if(card->patchDurationOrUses2 > 0) {
         gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardTransMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
@@ -305,9 +312,14 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
         guTranslate(timerTransMtx, 45, -15, 0);
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(timerTransMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-        gSPDisplayList(gDisplayListHead++, star_timer_Mesh_mesh);
-        sprintf(timer2Text, "%d", card->duration2);
+        if(card->patchUseType2 == TYPE_TIMED) {
+            gSPDisplayList(gDisplayListHead++, star_timer);
+        } else if (card->patchUseType2 == TYPE_LIMITED_USE) {
+            gSPDisplayList(gDisplayListHead++, uses_counter);
+        }
+        sprintf(timer2Text, "%d", card->patchDurationOrUses2);
     }
+    gSPDisplayList(gDisplayListHead++, patch_use_type_end);
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardTransMtx),
@@ -322,9 +334,9 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
     slowtext_draw_ortho_text(-63, 5, card->patchName1, FT_FLAG_ALIGN_LEFT, 0x20, 0xFF, 0x30, 0xFF);
     slowtext_draw_ortho_text(-63, -25, card->patchName2, FT_FLAG_ALIGN_LEFT, 0xFF, 0x20, 0x30, 0xFF);
     slowtext_setup_ortho_rendering(FT_FONT_SMALL_BOLD);
-    if(card->duration1 > 0) {
+    if(card->patchDurationOrUses1 > 0) {
         slowtext_draw_ortho_text(53, 5, timer1Text, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    }if(card->duration2 > 0) {
+    }if(card->patchDurationOrUses2 > 0) {
         slowtext_draw_ortho_text(53, -25, timer2Text, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
     }
     slowtext_finished_rendering();

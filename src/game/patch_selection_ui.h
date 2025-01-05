@@ -15,8 +15,10 @@
 
 struct PatchCard {
     u8 quality;
-    u16 duration1;
-    u16 duration2;
+    u16 patchDurationOrUses1;
+    u16 patchDurationOrUses2;
+    u8 patchUseType1;
+    u8 patchUseType2;
     const char *patchName1;
     const char *patchName2;
     const char *patchDesc1;
@@ -33,6 +35,12 @@ enum Patch_Select_Menu_State {
     STATE_CLOSED,
 };
 
+enum PatchCardUseType {
+    TYPE_NONE,
+    TYPE_TIMED,
+    TYPE_LIMITED_USE,
+};
+
 struct PatchSelectionMenu {
     s8 selectedPatch;
     s8 selectedMenuIndex;
@@ -47,7 +55,7 @@ extern struct PatchCard gAvailablePatches[];
 void display_patch_selection_ui();
 void handle_patch_selection_inputs();
 void reset_patch_selection_menu();
-void load_patch_card(s32 index, s32 quality, s32 effect1Duration, s32 effect2Duration, 
-        const char *effect1Name, const char *effect2Name, const char *effect1Desc, const char *effect2Desc, 
-        const char* effect1ExtendedDesc, const char *effect2ExtendedDesc);
+void load_patch_card(s32 index, s32 quality, s32 effect1DurationOrUses, s32 effect2DurationOrUses, 
+        s32 effect1UseType, s32 effect2UseType, const char *effect1Name, const char *effect2Name, 
+        const char *effect1Desc, const char *effect2Desc, const char* effect1ExtendedDesc, const char *effect2ExtendedDesc);
 void init_patch_selection_menu();
