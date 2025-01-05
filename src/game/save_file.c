@@ -518,6 +518,21 @@ void save_file_set_star_flags(s32 fileIndex, s32 courseIndex, u32 starFlags) {
     gSaveFileModified = TRUE;
 }
 
+/**
+ * Remove the bitset of obtained stars in the specified course.
+ * If course is COURSE_NONE, remove from the bitset of obtained castle secret stars.
+ */
+void save_file_remove_star_flags(s32 fileIndex, s32 courseIndex, u32 starFlags) {
+    if (courseIndex == COURSE_NUM_TO_INDEX(COURSE_NONE)) {
+        gSaveBuffer.files[fileIndex].flags &= ~STAR_FLAG_TO_SAVE_FLAG(starFlags);
+    } else {
+        gSaveBuffer.files[fileIndex].courseStars[courseIndex] &= ~starFlags;
+    }
+
+    gSaveBuffer.files[fileIndex].flags |= SAVE_FLAG_FILE_EXISTS;
+    gSaveFileModified = TRUE;
+}
+
 s32 save_file_get_course_coin_score(s32 fileIndex, s32 courseIndex) {
     return gSaveBuffer.files[fileIndex].courseCoinScores[courseIndex];
 }

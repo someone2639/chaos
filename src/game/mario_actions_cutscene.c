@@ -542,9 +542,11 @@ s32 act_debug_free_move(struct MarioState *m) {
     Vec3f pos;
     f32 speed;
 
+#if defined(ENABLE_DEBUG_FREE_MOVE) && !defined(DISABLE_ALL)
     if (gPlayer1Controller->buttonPressed & L_TRIG) {
         m->health = 0x880;
     }
+#endif
 
     // integer immediates, generates convert instructions for some reason
     speed = (gPlayer1Controller->buttonDown & B_BUTTON) ? 4.0f : 1.0f;
