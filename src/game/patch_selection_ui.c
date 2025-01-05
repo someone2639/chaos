@@ -23,22 +23,29 @@ struct PatchSelectionMenu gPatchSelectionMenu = {
     0, 0, FALSE, 0, STATE_SELECT,
 };
 
-//Temp
+#ifdef DEBUG_PATCH_SELECT_MENU
 const char testNameGood[] = {"Good Effect"};
 const char testNameBad[] = {"Bad Effect"};
 const char testDescGood[] = {"Good effect description"};
 const char testDescBad[] = {"Bad effect description"};
 const char testExtendedDesc[] = {"This is the extended description\nThere is more information here."};
+#endif
 
 /*
     Initializes the patch selection menu
 */
 void init_patch_selection_menu() {
-    //Temporary
+#ifdef DEBUG_PATCH_SELECT_MENU
     load_patch_card(0, 2, 0, 1, TYPE_NONE, TYPE_TIMED, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, testExtendedDesc);
     load_patch_card(1, 3, 2, 4, TYPE_LIMITED_USE, TYPE_LIMITED_USE, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, NULL);
     load_patch_card(2, 1, 10, 20, TYPE_TIMED, TYPE_LIMITED_USE, testNameGood, testNameBad, testDescGood, testDescBad, NULL, testExtendedDesc);
     load_patch_card(3, 3, 3, 16, TYPE_LIMITED_USE, TYPE_TIMED, testNameGood, testNameBad, testDescGood, testDescBad, NULL, NULL);
+#else
+    load_patch_card(0, 0, 0, 0, TYPE_NONE, TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
+    load_patch_card(0, 0, 0, 0, TYPE_NONE, TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
+    load_patch_card(0, 0, 0, 0, TYPE_NONE, TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
+    load_patch_card(0, 0, 0, 0, TYPE_NONE, TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
+#endif
 }
 
 /*
