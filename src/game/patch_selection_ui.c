@@ -301,7 +301,7 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
             gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardScaleMtx),
                   G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
         }
-        guTranslate(timerTransMtx, 45, 15, 0);
+        guTranslate(timerTransMtx, 42, 15, 0);
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(timerTransMtx++),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
         if(card->patchUseType1 == TYPE_TIMED) {
@@ -321,7 +321,7 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
             gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardScaleMtx),
                   G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
         }
-        guTranslate(timerTransMtx, 45, -15, 0);
+        guTranslate(timerTransMtx, 42, -15, 0);
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(timerTransMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
         if(card->patchUseType2 == TYPE_TIMED) {
@@ -347,11 +347,11 @@ void render_patch_card(f32 x, f32 y, f32 scale, struct PatchCard *card, s32 reve
         sEffectColors[EFFECT_COLOR_GOOD][0], sEffectColors[EFFECT_COLOR_GOOD][1], sEffectColors[EFFECT_COLOR_GOOD][2], 0xFF);
     slowtext_draw_ortho_text(-63, -25, card->patchName2, FT_FLAG_ALIGN_LEFT, 
         sEffectColors[EFFECT_COLOR_BAD][0], sEffectColors[EFFECT_COLOR_BAD][1], sEffectColors[EFFECT_COLOR_BAD][2], 0xFF);
-    slowtext_setup_ortho_rendering(FT_FONT_SMALL_BOLD);
+    slowtext_setup_ortho_rendering(FT_FONT_OUTLINE);
     if(card->patchDurationOrUses1 > 0) {
-        slowtext_draw_ortho_text(53, 5, timer1Text, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+        slowtext_draw_ortho_text(51, 6, timer1Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
     }if(card->patchDurationOrUses2 > 0) {
-        slowtext_draw_ortho_text(53, -25, timer2Text, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+        slowtext_draw_ortho_text(51, -24, timer2Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
     }
     slowtext_finished_rendering();
 
