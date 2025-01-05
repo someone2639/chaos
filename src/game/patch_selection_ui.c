@@ -89,7 +89,7 @@ void reset_patch_selection_menu() {
 /*
     Handles the player inputs for the patch selection state in the patch selection menu
 */
-void handle_inputs_PATCH_SELECT_STATE_SELECT(f32 stickX, f32 stickY) {
+void handle_inputs_patch_select_state_select(f32 stickX, f32 stickY) {
     s32 previousSelection = gPatchSelectionMenu.selectedPatch;
 
     if(gPlayer1Controller->buttonPressed & A_BUTTON || gPlayer1Controller->buttonPressed & START_BUTTON) {
@@ -125,7 +125,7 @@ void handle_inputs_PATCH_SELECT_STATE_SELECT(f32 stickX, f32 stickY) {
 /*
     Handles the player inputs for the extended description state in the patch selection menu
 */
-void handle_inputs_PATCH_SELECT_STATE_SHOW_EXTENDED_DESC() {
+void handle_inputs_patch_select_state_show_extended_desc() {
     if(gPlayer1Controller->buttonPressed & A_BUTTON || gPlayer1Controller->buttonPressed & START_BUTTON
         || gPlayer1Controller->buttonPressed & B_BUTTON || gPlayer1Controller->buttonPressed & Z_TRIG
         || gPlayer1Controller->buttonPressed & L_TRIG) 
@@ -137,7 +137,7 @@ void handle_inputs_PATCH_SELECT_STATE_SHOW_EXTENDED_DESC() {
 /*
     Handles the player inputs for the confirmation dialog state in the patch selection menu
 */
-void handle_inputs_PATCH_SELECT_STATE_CONFIRMATION(f32 stickX, UNUSED f32 stickY) {
+void handle_inputs_patch_select_state_confirmation(f32 stickX, UNUSED f32 stickY) {
     if(gPlayer1Controller->buttonPressed & A_BUTTON || gPlayer1Controller->buttonPressed & START_BUTTON) {
         if(gPatchSelectionMenu.selectedMenuIndex) {
             //No
@@ -186,13 +186,13 @@ void handle_patch_selection_inputs() {
 
     switch(gPatchSelectionMenu.menuState) {
         case PATCH_SELECT_STATE_SELECT:
-            handle_inputs_PATCH_SELECT_STATE_SELECT(stickX, stickY);
+            handle_inputs_patch_select_state_select(stickX, stickY);
             break;
         case PATCH_SELECT_STATE_CONFIRMATION:
-            handle_inputs_PATCH_SELECT_STATE_CONFIRMATION(stickX, stickY);
+            handle_inputs_patch_select_state_confirmation(stickX, stickY);
             break;
         case PATCH_SELECT_STATE_SHOW_EXTENDED_DESC:
-            handle_inputs_PATCH_SELECT_STATE_SHOW_EXTENDED_DESC();
+            handle_inputs_patch_select_state_show_extended_desc();
             break;
     }
 }
@@ -525,5 +525,4 @@ void display_patch_selection_ui() {
             render_patch_selection_cursor(cursorX, cursorY);
         }
     }
-    
 }
