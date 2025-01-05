@@ -838,22 +838,7 @@ void thread5_game_loop(UNUSED void *arg) {
 
 #ifdef SOMEONE2639_CRAZY_EXPERIMENTS
         if (gPlayer1Controller->buttonPressed & (A_BUTTON|L_TRIG)) {
-            char aa[100];
-            sprintf(aa, "44100 hz!\n");
-            osSyncPrintf(aa);
-            HVQM_PLAY(spoon44);
-        }
-        if (gPlayer1Controller->buttonPressed & (L_TRIG|R_TRIG)) {
-            char aa[100];
-            sprintf(aa, "22050 hz!\n");
-            osSyncPrintf(aa);
-            HVQM_PLAY(spoon22);
-        }
-        if (gPlayer1Controller->buttonPressed & (L_TRIG|Z_TRIG)) {
-            char aa[100];
-            sprintf(aa, "16000 hz!\n");
-            osSyncPrintf(aa);
-            HVQM_PLAY(spoon16);
+            HVQM_PLAY(spoon32);
         }
 #endif // SOMEONE2639_CRAZY_EXPERIMENTS
         display_and_vsync();
