@@ -15,6 +15,16 @@
 #define PATCH_DESC_X        SCREEN_WIDTH / 2
 #define PATCH_DESC_Y        42
 
+#define PATCH_SELECT_MENU_JOYSTICK_HOLD_FRAMES 10
+
+enum JoystickMenuDir {
+    JOYSTICK_MENU_DIR_NONE,
+    JOYSTICK_MENU_DIR_UP,
+    JOYSTICK_MENU_DIR_DOWN,
+    JOYSTICK_MENU_DIR_RIGHT,
+    JOYSTICK_MENU_DIR_LEFT,
+};
+
 struct PatchCard {
     u8 quality;
     u16 patchDurationOrUses1;
@@ -48,6 +58,7 @@ struct PatchSelectionMenu {
     s8 selectedMenuIndex;
     u8 isActive;
     s16 framesSinceLastStickInput;
+    u32 lastStickDir;
     u32 menuState;
 };
 

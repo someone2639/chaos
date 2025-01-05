@@ -25,7 +25,12 @@ u8 sEffectColors[][3] = {
 struct PatchCard gAvailablePatches[MAX_CARDS];
 
 struct PatchSelectionMenu gPatchSelectionMenu = {
-    0, 0, FALSE, 0, PATCH_SELECT_STATE_SELECT,
+    .selectedPatch = 0,
+    .selectedMenuIndex = 0, 
+    .isActive = FALSE, 
+    .framesSinceLastStickInput = 0,
+    .lastStickDir = JOYSTICK_MENU_DIR_NONE,
+    .menuState = PATCH_SELECT_STATE_SELECT,
 };
 
 #ifdef DEBUG_PATCH_SELECT_MENU
@@ -83,53 +88,54 @@ void reset_patch_selection_menu() {
     gPatchSelectionMenu.selectedMenuIndex = 0;
     gPatchSelectionMenu.isActive = FALSE;
     gPatchSelectionMenu.framesSinceLastStickInput = 0;
+    gPatchSelectionMenu.lastStickDir = JOYSTICK_MENU_DIR_NONE;
     gPatchSelectionMenu.menuState = PATCH_SELECT_STATE_SELECT;
 }
 
 /*
     Handles the player inputs for the patch selection state in the patch selection menu
 */
-void handle_inputs_patch_select_state_select(f32 stickX, f32 stickY) {
+void handle_inputs_patch_select_state_select(s32 stickDir) {
     s32 previousSelection = gPatchSelectionMenu.selectedPatch;
+    s32 selection = previousSelection;
 
-    if(gPlayer1Controller->buttonPressed & A_BUTTON || gPlayer1Controller->buttonPressed & START_BUTTON) {
+    if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
         gPatchSelectionMenu.menuState = PATCH_SELECT_STATE_CONFIRMATION;
-    } else if (gPlayer1Controller->buttonPressed & Z_TRIG || gPlayer1Controller->buttonPressed & L_TRIG) {
+    } else if (gPlayer1Controller->buttonPressed & (Z_TRIG | L_TRIG)) {
         struct PatchCard *selectedCard = &gAvailablePatches[gPatchSelectionMenu.selectedPatch];
         if(selectedCard->extendedDesc1 || selectedCard->extendedDesc2) {
             gPatchSelectionMenu.menuState = PATCH_SELECT_STATE_SHOW_EXTENDED_DESC;
         }
-    } else if(gPlayer1Controller->buttonPressed & D_JPAD || (stickY < -60)) {
-        gPatchSelectionMenu.selectedPatch += 2;
-        if(gPatchSelectionMenu.selectedPatch > MAX_CARDS - 1) {
-            gPatchSelectionMenu.selectedPatch = previousSelection;
+    } else if(gPlayer1Controller->buttonPressed & D_JPAD || (stickDir == JOYSTICK_MENU_DIR_DOWN)) {
+        selection += 2;
+        if(selection > MAX_CARDS - 1) {
+            selection = previousSelection;
         }
-    } else if (gPlayer1Controller->buttonPressed & U_JPAD || (stickY > 60)) {
-        gPatchSelectionMenu.selectedPatch -= 2;
-        if(gPatchSelectionMenu.selectedPatch < 0) {
-            gPatchSelectionMenu.selectedPatch = previousSelection;
+    } else if (gPlayer1Controller->buttonPressed & U_JPAD || (stickDir == JOYSTICK_MENU_DIR_UP)) {
+        selection -= 2;
+        if(selection < 0) {
+            selection = previousSelection;
         }
-    } else if(gPlayer1Controller->buttonPressed & R_JPAD || (stickX > 60)) {
-        gPatchSelectionMenu.selectedPatch++;
-        if(gPatchSelectionMenu.selectedPatch > MAX_CARDS - 1) {
-            gPatchSelectionMenu.selectedPatch = previousSelection;
+    } else if(gPlayer1Controller->buttonPressed & R_JPAD || (stickDir == JOYSTICK_MENU_DIR_RIGHT)) {
+        selection++;
+        if(selection > MAX_CARDS - 1 || !(selection % 2)) {
+            selection = previousSelection;
         }
-    } else if(gPlayer1Controller->buttonPressed & L_JPAD || (stickX < -60)) {
-        gPatchSelectionMenu.selectedPatch--;
-        if(gPatchSelectionMenu.selectedPatch < 0) {
-            gPatchSelectionMenu.selectedPatch = previousSelection;
+    } else if(gPlayer1Controller->buttonPressed & L_JPAD || (stickDir == JOYSTICK_MENU_DIR_LEFT)) {
+        selection--;
+        if(selection < 0 || (selection % 2)) {
+            selection = previousSelection;
         }
     }
+
+    gPatchSelectionMenu.selectedPatch = selection;
 }
 
 /*
     Handles the player inputs for the extended description state in the patch selection menu
 */
 void handle_inputs_patch_select_state_show_extended_desc() {
-    if(gPlayer1Controller->buttonPressed & A_BUTTON || gPlayer1Controller->buttonPressed & START_BUTTON
-        || gPlayer1Controller->buttonPressed & B_BUTTON || gPlayer1Controller->buttonPressed & Z_TRIG
-        || gPlayer1Controller->buttonPressed & L_TRIG) 
-    {
+    if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON | B_BUTTON | Z_TRIG | L_TRIG)) {
         gPatchSelectionMenu.menuState = PATCH_SELECT_STATE_SELECT;
     }
 }
@@ -137,8 +143,8 @@ void handle_inputs_patch_select_state_show_extended_desc() {
 /*
     Handles the player inputs for the confirmation dialog state in the patch selection menu
 */
-void handle_inputs_patch_select_state_confirmation(f32 stickX, UNUSED f32 stickY) {
-    if(gPlayer1Controller->buttonPressed & A_BUTTON || gPlayer1Controller->buttonPressed & START_BUTTON) {
+void handle_inputs_patch_select_state_confirmation(s32 stickDir) {
+    if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
         if(gPatchSelectionMenu.selectedMenuIndex) {
             //No
             gPatchSelectionMenu.menuState = PATCH_SELECT_STATE_SELECT;
@@ -151,12 +157,12 @@ void handle_inputs_patch_select_state_confirmation(f32 stickX, UNUSED f32 stickY
         gPatchSelectionMenu.menuState = PATCH_SELECT_STATE_SELECT;
         gPatchSelectionMenu.selectedMenuIndex = 0;
     }
-    else if(gPlayer1Controller->buttonPressed & R_JPAD || (stickX > 60)) {
+    else if(gPlayer1Controller->buttonPressed & R_JPAD || (stickDir == JOYSTICK_MENU_DIR_RIGHT)) {
         gPatchSelectionMenu.selectedMenuIndex++;
         if(gPatchSelectionMenu.selectedMenuIndex > 1) {
             gPatchSelectionMenu.selectedMenuIndex = 0;
         }
-    } else if(gPlayer1Controller->buttonPressed & L_JPAD || (stickX < -60)) {
+    } else if(gPlayer1Controller->buttonPressed & L_JPAD || (stickDir == JOYSTICK_MENU_DIR_LEFT)) {
         gPatchSelectionMenu.selectedMenuIndex--;
         if(gPatchSelectionMenu.selectedMenuIndex < 0) {
             gPatchSelectionMenu.selectedMenuIndex = 1;
@@ -165,31 +171,55 @@ void handle_inputs_patch_select_state_confirmation(f32 stickX, UNUSED f32 stickY
 }
 
 /*
+    Handles joystick navigation for menus. Returns either the stick direction or JOYSTICK_MENU_DIR_NONE if 
+    the direction is the same as the last direction, unless a certain number of frames has passed.
+*/
+u32 update_joystick_menu_dir() {
+    f32 stickX = gPlayer1Controller->rawStickX;
+    f32 stickY = gPlayer1Controller->rawStickY;
+    u32 stickDir = JOYSTICK_MENU_DIR_NONE;
+
+    if(stickY > 60) {
+        stickDir = JOYSTICK_MENU_DIR_UP;
+    } else if(stickY < -60) {
+        stickDir = JOYSTICK_MENU_DIR_DOWN;
+    } else if (stickX > 60) {
+        stickDir = JOYSTICK_MENU_DIR_RIGHT;
+    } else if (stickX < -60) {
+        stickDir = JOYSTICK_MENU_DIR_LEFT;
+    }
+
+    if(gPatchSelectionMenu.framesSinceLastStickInput >= PATCH_SELECT_MENU_JOYSTICK_HOLD_FRAMES 
+        || stickDir != gPatchSelectionMenu.lastStickDir)
+    {
+        gPatchSelectionMenu.lastStickDir = stickDir;
+    } else {
+        stickDir = JOYSTICK_MENU_DIR_NONE;
+    }
+    
+    if(stickDir != JOYSTICK_MENU_DIR_NONE){
+        gPatchSelectionMenu.framesSinceLastStickInput = 0;
+    } else {
+        if(gPatchSelectionMenu.framesSinceLastStickInput < PATCH_SELECT_MENU_JOYSTICK_HOLD_FRAMES) {
+            gPatchSelectionMenu.framesSinceLastStickInput++;
+        }
+    }
+
+    return stickDir;
+}
+
+/*
     Handles the player inputs for the patch selection menu
 */
 void handle_patch_selection_inputs() {
-    f32 stickX = gPlayer1Controller->rawStickX;
-    f32 stickY = gPlayer1Controller->rawStickY;
-
-    //Prevents the same stick flick from being read on multiple frames
-    if((absf(stickX) < 60) && (absf(stickY) < 60)){
-        if(gPatchSelectionMenu.framesSinceLastStickInput < 2) {
-            gPatchSelectionMenu.framesSinceLastStickInput++;
-        }
-    } else {
-        if(gPatchSelectionMenu.framesSinceLastStickInput < 2) {
-            stickX = 0;
-            stickY = 0;
-        }
-        gPatchSelectionMenu.framesSinceLastStickInput = 0;
-    }
+    u32 stickDir = update_joystick_menu_dir();
 
     switch(gPatchSelectionMenu.menuState) {
         case PATCH_SELECT_STATE_SELECT:
-            handle_inputs_patch_select_state_select(stickX, stickY);
+            handle_inputs_patch_select_state_select(stickDir);
             break;
         case PATCH_SELECT_STATE_CONFIRMATION:
-            handle_inputs_patch_select_state_confirmation(stickX, stickY);
+            handle_inputs_patch_select_state_confirmation(stickDir);
             break;
         case PATCH_SELECT_STATE_SHOW_EXTENDED_DESC:
             handle_inputs_patch_select_state_show_extended_desc();
