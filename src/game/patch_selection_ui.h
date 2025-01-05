@@ -38,9 +38,9 @@ enum Patch_Select_Menu_State {
 };
 
 enum PatchCardUseType {
-    CARD_TYPE_NONE,
-    CARD_TYPE_TIMED,
-    CARD_TYPE_LIMITED_USE,
+    USE_TYPE_NONE,
+    USE_TYPE_TIMED,
+    USE_TYPE_LIMITED_USE,
 };
 
 struct PatchSelectionMenu {

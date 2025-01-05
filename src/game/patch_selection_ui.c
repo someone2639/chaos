@@ -41,15 +41,15 @@ const char testExtendedDesc[] = {"This is the extended description\nThere is mor
 */
 void init_patch_selection_menu() {
 #ifdef DEBUG_PATCH_SELECT_MENU
-    load_patch_card(0, 2, 0, 1, CARD_TYPE_NONE, CARD_TYPE_TIMED, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, testExtendedDesc);
-    load_patch_card(1, 3, 2, 4, CARD_TYPE_LIMITED_USE, CARD_TYPE_LIMITED_USE, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, NULL);
-    load_patch_card(2, 1, 10, 20, CARD_TYPE_TIMED, CARD_TYPE_LIMITED_USE, testNameGood, testNameBad, testDescGood, testDescBad, NULL, testExtendedDesc);
-    load_patch_card(3, 3, 3, 16, CARD_TYPE_LIMITED_USE, CARD_TYPE_TIMED, testNameGood, testNameBad, testDescGood, testDescBad, NULL, NULL);
+    load_patch_card(0, 2, 0, 1, USE_TYPE_NONE, USE_TYPE_TIMED, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, testExtendedDesc);
+    load_patch_card(1, 3, 2, 4, USE_TYPE_LIMITED_USE, USE_TYPE_LIMITED_USE, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, NULL);
+    load_patch_card(2, 1, 10, 20, USE_TYPE_TIMED, USE_TYPE_LIMITED_USE, testNameGood, testNameBad, testDescGood, testDescBad, NULL, testExtendedDesc);
+    load_patch_card(3, 3, 3, 16, USE_TYPE_LIMITED_USE, USE_TYPE_TIMED, testNameGood, testNameBad, testDescGood, testDescBad, NULL, NULL);
 #else
-    load_patch_card(0, 0, 0, 0, CARD_TYPE_NONE, CARD_TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
-    load_patch_card(0, 0, 0, 0, CARD_TYPE_NONE, CARD_TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
-    load_patch_card(0, 0, 0, 0, CARD_TYPE_NONE, CARD_TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
-    load_patch_card(0, 0, 0, 0, CARD_TYPE_NONE, CARD_TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
+    load_patch_card(0, 0, 0, 0, USE_TYPE_NONE, USE_TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
+    load_patch_card(0, 0, 0, 0, USE_TYPE_NONE, USE_TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
+    load_patch_card(0, 0, 0, 0, USE_TYPE_NONE, USE_TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
+    load_patch_card(0, 0, 0, 0, USE_TYPE_NONE, USE_TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
 #endif
 }
 
@@ -294,9 +294,9 @@ void draw_patch_type(f32 x, f32 y, s32 type) {
     guTranslate(transMtx, x, y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
           G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    if(type == CARD_TYPE_TIMED) {
+    if(type == USE_TYPE_TIMED) {
         gSPDisplayList(gDisplayListHead++, star_timer);
-    } else if (type == CARD_TYPE_LIMITED_USE) {
+    } else if (type == USE_TYPE_LIMITED_USE) {
         gSPDisplayList(gDisplayListHead++, uses_counter);
     }
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
