@@ -52,6 +52,7 @@ struct PatchCard {
     const char *patchDesc2;
     const char *extendedDesc1;
     const char *extendedDesc2;
+    Vec2f pos;
     //TODO: Add an id or reference of some sort to an actual patch so it can be applied after selection
 };
 
@@ -79,6 +80,7 @@ enum PatchSelectionMenuFlags {
     PATCH_SELECT_FLAG_STOP_GAME_RENDER              = (1 << 1),
     PATCH_SELECT_FLAG_DRAW_EXTENDED_DESCRIPTION     = (1 << 2),
     PATCH_SELECT_FLAG_DRAW_CURSOR                   = (1 << 3),
+    PATCH_SELECT_FLAG_DRAW_START_TEXT               = (1 << 4),
 };
 
 struct PatchSelectionMenu {
@@ -90,10 +92,6 @@ struct PatchSelectionMenu {
     u32 menuState;
     u16 animTimer;
     u8 animPhase;
-    Vec2f cardPos1;
-    Vec2f cardPos2;
-    Vec2f cardPos3;
-    Vec2f cardPos4;
     Vec2f descPos;
     Vec2f curtainPos;
     Vec2f selectPatchTextPos;
