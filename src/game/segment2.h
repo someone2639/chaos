@@ -80,7 +80,10 @@ extern Vtx desc_bg_mesh_mesh_vtx_0[];
 extern Gfx desc_bg_mesh_mesh[];
 extern Vtx ext_desc_bg_ext_mesh_mesh_vtx_0[];
 extern Gfx ext_desc_bg_ext_mesh_mesh[];
-extern const Gfx hand_Mesh_mesh[];
+extern u8 hand_hand_open_ia8[];
+extern u8 hand_closed_hand_closed_ia8[];
+extern Gfx hand_cursor_start[];
+extern Gfx hand_cursor_end[];
 extern Gfx curtain_Plane_mesh[];
 
 #endif // SEGMENT2_H

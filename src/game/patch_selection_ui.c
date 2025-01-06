@@ -768,7 +768,14 @@ void render_patch_selection_cursor(f32 x, f32 y) {
     guTranslate(transMtx, x + 65, y - 30, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    gSPDisplayList(gDisplayListHead++, hand_Mesh_mesh);
+    
+    gSPDisplayList(gDisplayListHead++, hand_cursor_start);
+    if(gPatchSelectionMenu.menuState == PATCH_SELECT_STATE_CONFIRMATION_TRANSITION_ANIM) {
+        gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_IA, G_IM_SIZ_8b_LOAD_BLOCK, 1, hand_closed_hand_closed_ia8);
+    } else {
+        gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_IA, G_IM_SIZ_8b_LOAD_BLOCK, 1, hand_hand_open_ia8);
+    }
+    gSPDisplayList(gDisplayListHead++, hand_cursor_end);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
