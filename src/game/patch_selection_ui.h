@@ -26,6 +26,8 @@
 #define CURTAIN_Y_POS      SCREEN_CENTER_Y
 #define CURTAIN_Y_START    (SCREEN_HEIGHT + SCREEN_CENTER_Y)
 
+#define SELECT_PATCH_TEXT_END   (SCREEN_HEIGHT + 50)
+
 #define PATCH_SELECT_MENU_JOYSTICK_HOLD_FRAMES 10
 
 enum JoystickMenuDir {
@@ -91,8 +93,10 @@ struct PatchSelectionMenu {
     Vec2f cardPos4;
     Vec2f descPos;
     Vec2f curtainPos;
+    Vec2f selectPatchTextPos;
     f32 selectedCardScale;
     f32 extendedDescScale;
+    f32 selectPatchTextScale;
 };
 
 extern struct PatchSelectionMenu gPatchSelectionMenu;

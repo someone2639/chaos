@@ -106,8 +106,11 @@ void reset_patch_selection_menu() {
     gPatchSelectionMenu.descPos[0] = PATCH_DESC_Y_START;
     gPatchSelectionMenu.curtainPos[0] = SCREEN_CENTER_X;
     gPatchSelectionMenu.curtainPos[1] = CURTAIN_Y_START;
+    gPatchSelectionMenu.selectPatchTextPos[0] = SCREEN_CENTER_X;
+    gPatchSelectionMenu.selectPatchTextPos[1] = SCREEN_CENTER_Y;
     gPatchSelectionMenu.selectedCardScale = 1.05f;
     gPatchSelectionMenu.extendedDescScale = 0.0f;
+    gPatchSelectionMenu.selectPatchTextScale = 0.0f;
 }
 
 /*
@@ -254,25 +257,38 @@ f32 menu_translate_percentage(f32 start, f32 end, f32 percent) {
 }
 
 #define PATCH_SELECT_STARTUP_CURTAIN_DROP_FRAMES        15
-#define PATCH_SELECT_STARTUP_CARDS_SLIDE_FRAMES         9
+#define PATCH_SELECT_STARTUP_CARDS_SLIDE_FRAMES         12
+#define PATCH_SELECT_STARTUP_TEXT_SLIDE_FRAMES          15
 /*
     Positions the menu elements to play the startup animation
 */
 void patch_select_menu_startup_anim() {
     s16 curtainAnimTimer = gPatchSelectionMenu.animTimer;
     s16 cardsAnimTimer = 0;
+    s16 textAnimTimer = 0;
+
     if (curtainAnimTimer >= PATCH_SELECT_STARTUP_CURTAIN_DROP_FRAMES) {
         cardsAnimTimer = gPatchSelectionMenu.animTimer - PATCH_SELECT_STARTUP_CURTAIN_DROP_FRAMES;
         curtainAnimTimer = PATCH_SELECT_STARTUP_CURTAIN_DROP_FRAMES;
         gPatchSelectionMenu.flags |= PATCH_SELECT_FLAG_STOP_GAME_RENDER;
     }
+
+    if(cardsAnimTimer >= PATCH_SELECT_STARTUP_CARDS_SLIDE_FRAMES) {
+        textAnimTimer = gPatchSelectionMenu.animTimer - PATCH_SELECT_STARTUP_CARDS_SLIDE_FRAMES - PATCH_SELECT_STARTUP_CURTAIN_DROP_FRAMES;
+        cardsAnimTimer = PATCH_SELECT_STARTUP_CARDS_SLIDE_FRAMES;
+    }
+
     f32 curtainPercent = (1.0f / PATCH_SELECT_STARTUP_CURTAIN_DROP_FRAMES) * curtainAnimTimer;
     f32 cardsPercent = (1.0f / PATCH_SELECT_STARTUP_CARDS_SLIDE_FRAMES) * cardsAnimTimer;
+    f32 textPercent = (1.0f / PATCH_SELECT_STARTUP_TEXT_SLIDE_FRAMES) * textAnimTimer;
 
     f32 leftX = menu_translate_percentage(CARD_X_LEFT_START, CARD_X_LEFT, cardsPercent);
     f32 rightX = menu_translate_percentage(CARD_X_RIGHT_START, CARD_X_RIGHT, cardsPercent);
     f32 descY = menu_translate_percentage(PATCH_DESC_Y_START, PATCH_DESC_Y, cardsPercent);
     f32 curtainY = menu_translate_percentage(CURTAIN_Y_START, CURTAIN_Y_POS, curtainPercent);
+    f32 textY = menu_translate_percentage(SCREEN_CENTER_Y, SELECT_PATCH_TEXT_END, textPercent);
+    gPatchSelectionMenu.selectPatchTextScale = approach_f32(gPatchSelectionMenu.selectPatchTextScale, 1.0f, 0.1f, 0.1f);
+    gPatchSelectionMenu.selectPatchTextPos[1] = textY;
 
     gPatchSelectionMenu.cardPos1[0] = leftX;
     gPatchSelectionMenu.cardPos1[1] = CARD_Y_TOP;
@@ -291,7 +307,7 @@ void patch_select_menu_startup_anim() {
 
     gPatchSelectionMenu.curtainPos[1] = curtainY;
 
-    if(cardsAnimTimer >= PATCH_SELECT_STARTUP_CARDS_SLIDE_FRAMES) {
+    if(textAnimTimer >= PATCH_SELECT_STARTUP_TEXT_SLIDE_FRAMES) {
         set_patch_selection_menu_state(PATCH_SELECT_STATE_SELECT);
     }
 }
@@ -587,6 +603,23 @@ void desc_bg_scroll() {
 	currentX += deltaX;	currentY += deltaY;
 }
 
+void render_select_patch_text() {
+    f32 scale = gPatchSelectionMenu.selectPatchTextScale;
+    f32 posX = gPatchSelectionMenu.selectPatchTextPos[0];
+    f32 posY = gPatchSelectionMenu.selectPatchTextPos[1];
+
+    Mtx *transMtx = alloc_display_list(sizeof(Mtx));
+    Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
+    guTranslate(transMtx, posX, posY, 0);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    guScale(scaleMtx, scale, scale, 1.0f);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx),
+            G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+    gSPDisplayList(gDisplayListHead++, select_patch_text_mesh_mesh);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+}
+
 void render_curtain_bg() {
     Mtx *transMtx = alloc_display_list(sizeof(Mtx));
     guTranslate(transMtx, gPatchSelectionMenu.curtainPos[0], gPatchSelectionMenu.curtainPos[1], 0);
@@ -860,6 +893,7 @@ void display_patch_selection_ui() {
         render_patch_card(gPatchSelectionMenu.cardPos3[0], gPatchSelectionMenu.cardPos3[1], cardScale3, &gAvailablePatches[2], FALSE);
         render_patch_card(gPatchSelectionMenu.cardPos4[0], gPatchSelectionMenu.cardPos4[1], cardScale4, &gAvailablePatches[3], TRUE);
         render_lower_box(gPatchSelectionMenu.descPos[0], gPatchSelectionMenu.descPos[1]);
+        render_select_patch_text();
 
         if(gPatchSelectionMenu.flags & PATCH_SELECT_FLAG_DRAW_EXTENDED_DESCRIPTION) {
             render_extended_description();

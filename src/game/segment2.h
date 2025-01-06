@@ -85,5 +85,6 @@ extern u8 hand_closed_hand_closed_ia8[];
 extern Gfx hand_cursor_start[];
 extern Gfx hand_cursor_end[];
 extern Gfx curtain_Plane_mesh[];
+extern Gfx select_patch_text_mesh_mesh[];
 
 #endif // SEGMENT2_H
