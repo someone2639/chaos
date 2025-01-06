@@ -368,7 +368,7 @@ void render_game(void) {
         gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, gBorderHeight, SCREEN_WIDTH,
                       SCREEN_HEIGHT - gBorderHeight);
                        
-        if(gPatchSelectionMenu.isActive) {
+        if(gPatchSelectionMenu.flags & PATCH_SELECT_FLAG_ACTIVE) {
             display_patch_selection_ui();
         } else {
             render_hud();

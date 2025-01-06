@@ -1093,8 +1093,8 @@ s32 play_mode_frame_advance(void) {
 
 s32 play_mode_select_patch(void) {
     if(gPatchSelectionMenu.menuState != PATCH_SELECT_STATE_CLOSED) {
-        gPatchSelectionMenu.isActive = TRUE;
-        handle_patch_selection_inputs();
+        gPatchSelectionMenu.flags |= PATCH_SELECT_FLAG_ACTIVE;
+        update_patch_selection_menu();
     }else {
         reset_patch_selection_menu();
         set_play_mode(PLAY_MODE_NORMAL);

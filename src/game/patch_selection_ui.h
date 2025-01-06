@@ -2,18 +2,26 @@
 
 #include <PR/ultratypes.h>
 #include "types.h"
+#include "src/engine/math_util.h"
 
 #define MAX_CARDS   4
 #define MAX_QUALITY 3
 #define EFFECT_COLOR_GOOD 0
 #define EFFECT_COLOR_BAD 1
 
-#define CARD_X_LEFT         (SCREEN_WIDTH / 3) - 25
-#define CARD_X_RIGHT        ((SCREEN_WIDTH / 3) * 2) + 25
-#define CARD_Y_TOP          SCREEN_HEIGHT - 45
+#define CARD_X_LEFT         ((SCREEN_WIDTH / 3) - 25)
+#define CARD_X_RIGHT        (((SCREEN_WIDTH / 3) * 2) + 25)
+#define CARD_Y_TOP          (SCREEN_HEIGHT - 45)
 #define CARD_Y_BOTTOM       (SCREEN_HEIGHT / 2)
-#define PATCH_DESC_X        SCREEN_WIDTH / 2
+#define PATCH_DESC_X        (SCREEN_WIDTH / 2)
 #define PATCH_DESC_Y        42
+
+#define CARD_X_LEFT_START -80
+#define CARD_X_RIGHT_START (SCREEN_WIDTH + 80)
+#define PATCH_DESC_Y_START  -50
+
+#define PATCH_SELECTED_X   (SCREEN_WIDTH / 2)
+#define PATCH_SELECTED_Y   (SCREEN_CENTER_Y + 40)
 
 #define PATCH_SELECT_MENU_JOYSTICK_HOLD_FRAMES 10
 
@@ -41,9 +49,15 @@ struct PatchCard {
 };
 
 enum Patch_Select_Menu_State {
+    PATCH_SELECT_STATE_STARTUP_ANIM,
     PATCH_SELECT_STATE_SELECT,
+    PATCH_SELECT_STATE_CONFIRMATION_TRANSITION_ANIM,
+    PATCH_SELECT_STATE_CONFIRMATION_TRANSITION_RETURN_ANIM,
     PATCH_SELECT_STATE_CONFIRMATION,
+    PATCH_SELECT_STATE_EXTENDED_DESC_APPEAR,
+    PATCH_SELECT_STATE_EXTENDED_DESC_DISAPPEAR,
     PATCH_SELECT_STATE_SHOW_EXTENDED_DESC,
+    PATCH_SELECT_STATE_ENDING_ANIM,
     PATCH_SELECT_STATE_CLOSED,
 };
 
@@ -53,20 +67,35 @@ enum PatchCardUseType {
     USE_TYPE_LIMITED_USE,
 };
 
+enum PatchSelectionMenuFlags {
+    PATCH_SELECT_FLAG_ACTIVE                        = (1 << 0),
+    PATCH_SELECT_FLAG_STOP_GAME_RENDER              = (1 << 1),
+    PATCH_SELECT_FLAG_DRAW_EXTENDED_DESCRIPTION     = (1 << 2),
+    PATCH_SELECT_FLAG_DRAW_CURSOR                   = (1 << 3),
+};
+
 struct PatchSelectionMenu {
     s8 selectedPatch;
     s8 selectedMenuIndex;
-    u8 isActive;
+    u32 flags;
     s16 framesSinceLastStickInput;
     u32 lastStickDir;
     u32 menuState;
+    u16 animTimer;
+    Vec2f cardPos1;
+    Vec2f cardPos2;
+    Vec2f cardPos3;
+    Vec2f cardPos4;
+    Vec2f descPos;
+    f32 selectedCardScale;
+    f32 extendedDescScale;
 };
 
 extern struct PatchSelectionMenu gPatchSelectionMenu;
 extern struct PatchCard gAvailablePatches[];
 
 void display_patch_selection_ui();
-void handle_patch_selection_inputs();
+void update_patch_selection_menu();
 void reset_patch_selection_menu();
 void load_patch_card(s32 index, s32 quality, s32 effect1DurationOrUses, s32 effect2DurationOrUses, 
         s32 effect1UseType, s32 effect2UseType, const char *effect1Name, const char *effect2Name, 
