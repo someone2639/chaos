@@ -18,6 +18,8 @@
 
 #define CARD_X_LEFT_START -85
 #define CARD_X_RIGHT_START (SCREEN_WIDTH + 85)
+#define CARD_X_END          (CARD_X_RIGHT_START + 80)
+
 #define PATCH_DESC_Y_START  -50
 
 #define PATCH_SELECTED_X   (SCREEN_WIDTH / 2)
@@ -26,7 +28,7 @@
 #define CURTAIN_Y_POS      SCREEN_CENTER_Y
 #define CURTAIN_Y_START    (SCREEN_HEIGHT + SCREEN_CENTER_Y)
 
-#define SELECT_PATCH_TEXT_END   (SCREEN_HEIGHT + 50)
+#define SELECT_PATCH_TEXT_END   -80
 
 #define PATCH_SELECT_MENU_JOYSTICK_HOLD_FRAMES 10
 
@@ -87,6 +89,7 @@ struct PatchSelectionMenu {
     u32 lastStickDir;
     u32 menuState;
     u16 animTimer;
+    u8 animPhase;
     Vec2f cardPos1;
     Vec2f cardPos2;
     Vec2f cardPos3;
