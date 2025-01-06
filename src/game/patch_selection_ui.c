@@ -97,6 +97,7 @@ void load_patch_card(s32 index, s32 quality, s32 effect1DurationOrUses, s32 effe
 
     gAvailablePatches[index].pos[0] = xPos;
     gAvailablePatches[index].pos[1] = yPos;
+    gAvailablePatches[index].scale = CARD_SCALE_DEFAULT;
 }
 
 /*
@@ -134,9 +135,12 @@ void reset_patch_selection_menu() {
     gPatchSelectionMenu.curtainPos[1] = CURTAIN_Y_START;
     gPatchSelectionMenu.selectPatchTextPos[0] = SCREEN_CENTER_X;
     gPatchSelectionMenu.selectPatchTextPos[1] = SCREEN_CENTER_Y;
-    gPatchSelectionMenu.selectedCardScale = 1.05f;
     gPatchSelectionMenu.extendedDescScale = 0.0f;
     gPatchSelectionMenu.selectPatchTextScale = 0.0f;
+
+    for(int i = 0; i < MAX_CARDS; i++) {
+        gAvailablePatches[i].scale = CARD_SCALE_DEFAULT;
+    }
 }
 
 /*
@@ -389,6 +393,19 @@ void patch_select_menu_ending_anim() {
     }
 }
 
+/*
+    Scales the card that the cursor is hovering over
+*/
+void patch_select_menu_state_select_anim() {
+    s32 selected = gPatchSelectionMenu.selectedPatch;
+    for(int i = 0; i < MAX_CARDS; i++) {
+        if(i != selected) {
+            gAvailablePatches[i].scale = CARD_SCALE_DEFAULT;
+        }
+    }
+    gAvailablePatches[selected].scale = CARD_SCALE_HOVER;
+}
+
 #define PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_ANIM_SCALE_FRAMES 7
 #define PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_ANIM_SLIDE_FRAMES 5
 /*
@@ -399,6 +416,8 @@ void patch_select_menu_confirmation_transition_anim() {
     s32 animTimer = gPatchSelectionMenu.animTimer;
     f32 animPercent;
     s32 totalFrames = -1;
+    f32 xStart = 0, yStart = 0;
+    s32 selectedPatch = gPatchSelectionMenu.selectedPatch;
 
     switch(phase) {
         case 0:
@@ -421,11 +440,10 @@ void patch_select_menu_confirmation_transition_anim() {
             //Selected card scales up and moves to the center of the screen and hide the cursor
             totalFrames = PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_ANIM_SCALE_FRAMES;
             animPercent = (1.0f / totalFrames) * animTimer;
+
             gPatchSelectionMenu.flags &= ~PATCH_SELECT_FLAG_DRAW_CURSOR;
-            gPatchSelectionMenu.selectedCardScale = menu_translate_percentage(1.05f, 1.75f, animPercent);
+            gAvailablePatches[selectedPatch].scale = menu_translate_percentage(CARD_SCALE_HOVER, CARD_SCALE_SELECTED, animPercent);
             
-            f32 xStart = 0, yStart = 0;
-            s32 selectedPatch = gPatchSelectionMenu.selectedPatch;
             switch(selectedPatch) {
                 case 0:
                     xStart = CARD_X_LEFT;
@@ -468,15 +486,17 @@ void patch_select_menu_confirmation_return_transition_anim() {
     s32 animTimer = gPatchSelectionMenu.animTimer;
     f32 animPercent;
     s32 totalFrames = -1;
+    f32 xEnd = 0, yEnd = 0;
+    s32 selectedPatch = gPatchSelectionMenu.selectedPatch;
 
     switch(phase) {
         case 0:
             //Scales the selected card back down and moves it back to its original position
             totalFrames = PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_RETURN_ANIM_SCALE_FRAMES;
             animPercent = (1.0f / totalFrames) * animTimer;
-            gPatchSelectionMenu.selectedCardScale = menu_translate_percentage(1.75f, 1.05f, animPercent);
-            f32 xEnd = 0, yEnd = 0;
-            s32 selectedPatch = gPatchSelectionMenu.selectedPatch;
+
+            gAvailablePatches[selectedPatch].scale = menu_translate_percentage(CARD_SCALE_SELECTED, CARD_SCALE_HOVER, animPercent);
+
             switch(selectedPatch) {
                 case 0:
                     xEnd = CARD_X_LEFT;
@@ -572,6 +592,9 @@ void update_patch_selection_menu_anims() {
     switch(gPatchSelectionMenu.menuState) {
         case PATCH_SELECT_STATE_STARTUP_ANIM:
             patch_select_menu_startup_anim();
+            break;
+        case PATCH_SELECT_STATE_SELECT:
+            patch_select_menu_state_select_anim();
             break;
         case PATCH_SELECT_STATE_CONFIRMATION_TRANSITION_ANIM:
             patch_select_menu_confirmation_transition_anim();
@@ -734,15 +757,16 @@ void draw_patch_type(f32 x, f32 y, s32 type) {
 /*
     Draws a patch card at the given x/y coordinates
 */
-void render_patch_card(Vec2f pos, f32 scale, struct PatchCard *card, s32 reverse) {
+void render_patch_card(struct PatchCard *card, s32 reverse) {
     s32 quality = card->quality;
     s32 colorID = quality - 1;
     Mtx *cardScaleMtx = alloc_display_list(sizeof(Mtx));
     Mtx *cardTransMtx = alloc_display_list(sizeof(Mtx));
     char timer1Text[4];
     char timer2Text[4];
-    f32 x = pos[0];
-    f32 y = pos[1];
+    f32 x = card->pos[0];
+    f32 y = card->pos[1];
+    f32 scale = card->scale;
 
     gDPSetPrimColor(gDisplayListHead++, 0, 0, 
                     sQualityColors[colorID][0], sQualityColors[colorID][1], sQualityColors[colorID][2], 255);
@@ -925,27 +949,22 @@ void render_extended_description() {
 void display_patch_selection_ui() {
     s32 selectedPatch = gPatchSelectionMenu.selectedPatch;
     f32 cursorX, cursorY;
-    f32 cardScale1 = 1.0f, cardScale2 = 1.0f, cardScale3 = 1.0f, cardScale4 = 1.0f;
 
     switch(selectedPatch) {
         case 0:
-            cardScale1 = gPatchSelectionMenu.selectedCardScale;
             cursorX = CARD_X_LEFT;
             cursorY = CARD_Y_TOP;
             break;
         case 1:
-            cardScale2 = gPatchSelectionMenu.selectedCardScale;
             cursorX = CARD_X_RIGHT;
             cursorY = CARD_Y_TOP;
             break;
         case 2:
-            cardScale3 = gPatchSelectionMenu.selectedCardScale;
             cursorX = CARD_X_LEFT;
             cursorY = CARD_Y_BOTTOM;
             break;
         case 3:
         default:
-            cardScale4 = gPatchSelectionMenu.selectedCardScale;
             cursorX = CARD_X_RIGHT;
             cursorY = CARD_Y_BOTTOM;
             break;
@@ -957,10 +976,10 @@ void display_patch_selection_ui() {
         create_dl_ortho_matrix(&gDisplayListHead);
 
         render_curtain_bg();
-        render_patch_card(gAvailablePatches[0].pos, cardScale1, &gAvailablePatches[0], FALSE);
-        render_patch_card(gAvailablePatches[1].pos, cardScale2, &gAvailablePatches[1], TRUE);
-        render_patch_card(gAvailablePatches[2].pos, cardScale3, &gAvailablePatches[2], FALSE);
-        render_patch_card(gAvailablePatches[3].pos, cardScale4, &gAvailablePatches[3], TRUE);
+        render_patch_card(&gAvailablePatches[0], FALSE);
+        render_patch_card(&gAvailablePatches[1], TRUE);
+        render_patch_card(&gAvailablePatches[2], FALSE);
+        render_patch_card(&gAvailablePatches[3], TRUE);
         render_lower_box(gPatchSelectionMenu.descPos[0], gPatchSelectionMenu.descPos[1]);
 
         if(gPatchSelectionMenu.flags & PATCH_SELECT_FLAG_DRAW_START_TEXT) {

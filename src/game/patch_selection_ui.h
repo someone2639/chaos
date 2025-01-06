@@ -20,6 +20,10 @@
 #define CARD_X_RIGHT_START (SCREEN_WIDTH + 85)
 #define CARD_X_END          (CARD_X_RIGHT_START + 80)
 
+#define CARD_SCALE_DEFAULT  1.0f
+#define CARD_SCALE_HOVER    1.05f
+#define CARD_SCALE_SELECTED 1.75f
+
 #define PATCH_DESC_Y_START  -50
 
 #define PATCH_SELECTED_X   (SCREEN_WIDTH / 2)
@@ -53,6 +57,7 @@ struct PatchCard {
     const char *extendedDesc1;
     const char *extendedDesc2;
     Vec2f pos;
+    f32 scale;
     //TODO: Add an id or reference of some sort to an actual patch so it can be applied after selection
 };
 
@@ -95,7 +100,6 @@ struct PatchSelectionMenu {
     Vec2f descPos;
     Vec2f curtainPos;
     Vec2f selectPatchTextPos;
-    f32 selectedCardScale;
     f32 extendedDescScale;
     f32 selectPatchTextScale;
 };
