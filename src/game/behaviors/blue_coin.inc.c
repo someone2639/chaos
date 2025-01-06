@@ -5,6 +5,26 @@
  * you press a blue coin switch (a.k.a. bhvBlueCoinSwitch).
  */
 
+u32 interact_coin_delayed(struct MarioState *m) {
+    m->numCoins += o->oDamageOrCoinValue;
+    m->healCounter += 4 * o->oDamageOrCoinValue;
+
+    o->oInteractStatus = INT_STATUS_INTERACTED;
+
+    if (COURSE_IS_MAIN_COURSE(gCurrCourseNum) && m->numCoins - o->oDamageOrCoinValue < 100
+        && m->numCoins >= 100) {
+        bhv_spawn_star_no_level_exit(6);
+    }
+#if ENABLE_RUMBLE
+    if (o->oDamageOrCoinValue >= 2) {
+        queue_rumble_data(5, 80);
+    }
+#endif
+
+    return FALSE;
+}
+
+#include "hvqm/hvqm.h"
 /**
  * Update function for bhvHiddenBlueCoin.
  */
@@ -43,8 +63,15 @@ void bhv_hidden_blue_coin_loop(void) {
 
             // Delete the coin once collected
             if (o->oInteractStatus & INT_STATUS_INTERACTED) {
-                spawn_object(o, MODEL_SPARKLES, bhvGoldenCoinSparkles);
-                obj_mark_for_deletion(o);
+                // enable_time_stop_including_mario();
+                if (random_float() < 0.5f) {
+                    HVQM_PLAY(redditwin);
+                    o->oDamageOrCoinValue = 100;
+                } else {
+                    HVQM_PLAY(redditfail);
+                    o->oDamageOrCoinValue = 5;
+                }
+                o->oAction++;
             }
 
             // After 200 frames of waiting and 20 2-frame blinks (for 240 frames total),
@@ -52,7 +79,11 @@ void bhv_hidden_blue_coin_loop(void) {
             if (cur_obj_wait_then_blink(200, 20)) {
                 obj_mark_for_deletion(o);
             }
-
+            break;
+        case HIDDEN_BLUE_COIN_ACT_GAMBLE:
+            interact_coin_delayed(gMarioState);
+            spawn_object(o, MODEL_SPARKLES, bhvGoldenCoinSparkles);
+            obj_mark_for_deletion(o);
             break;
     }
 

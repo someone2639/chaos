@@ -146,6 +146,8 @@
     #define HIDDEN_BLUE_COIN_ACT_INACTIVE 0
     #define HIDDEN_BLUE_COIN_ACT_WAITING  1
     #define HIDDEN_BLUE_COIN_ACT_ACTIVE   2
+    #define HIDDEN_BLUE_COIN_ACT_GAMBLE   3
+    #define HIDDEN_BLUE_COIN_ACT_GONE   4
 
 /* Blue Coin Switch */
     /* oAction */

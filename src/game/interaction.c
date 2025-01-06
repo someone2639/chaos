@@ -741,6 +741,10 @@ void reset_mario_pitch(struct MarioState *m) {
 }
 
 u32 interact_coin(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
+    if (o->oDamageOrCoinValue >= 5) {
+        o->oInteractStatus = INT_STATUS_INTERACTED;
+        return FALSE;
+    }
     m->numCoins += o->oDamageOrCoinValue;
     m->healCounter += 4 * o->oDamageOrCoinValue;
 
