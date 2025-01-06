@@ -16,12 +16,15 @@
 #define PATCH_DESC_X        (SCREEN_WIDTH / 2)
 #define PATCH_DESC_Y        42
 
-#define CARD_X_LEFT_START -80
-#define CARD_X_RIGHT_START (SCREEN_WIDTH + 80)
+#define CARD_X_LEFT_START -85
+#define CARD_X_RIGHT_START (SCREEN_WIDTH + 85)
 #define PATCH_DESC_Y_START  -50
 
 #define PATCH_SELECTED_X   (SCREEN_WIDTH / 2)
 #define PATCH_SELECTED_Y   (SCREEN_CENTER_Y + 40)
+
+#define CURTAIN_Y_POS      SCREEN_CENTER_Y
+#define CURTAIN_Y_START    (SCREEN_HEIGHT + SCREEN_CENTER_Y)
 
 #define PATCH_SELECT_MENU_JOYSTICK_HOLD_FRAMES 10
 
@@ -87,6 +90,7 @@ struct PatchSelectionMenu {
     Vec2f cardPos3;
     Vec2f cardPos4;
     Vec2f descPos;
+    Vec2f curtainPos;
     f32 selectedCardScale;
     f32 extendedDescScale;
 };
