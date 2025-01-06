@@ -3,6 +3,7 @@
 
 #include <PR/ultratypes.h>
 
+#include "chaos/chaos.h"
 #include "types.h"
 #include "area.h"
 
@@ -27,9 +28,14 @@ struct SaveFile {
     // Location of lost cap.
     // Note: the coordinates get set, but are never actually used, since the
     // cap can always be found in a fixed spot within the course
-    u8 capLevel;
-    u8 capArea;
-    Vec3s capPos;
+    union {
+        struct {
+            u8 capLevel;
+            u8 capArea;
+            Vec3s capPos;
+        };
+        u64 FORCED_ALIGNMENT;
+    };
 
     u32 flags;
 
@@ -39,6 +45,9 @@ struct SaveFile {
     u8 courseStars[COURSE_COUNT];
 
     u8 courseCoinScores[COURSE_STAGES_COUNT];
+
+    s32 chaosEntryCount;
+    struct ChaosActiveEntry chaosEntries[CHAOS_PATCH_ENTRIES];
 
     struct SaveBlockSignature signature;
 };
@@ -154,6 +163,7 @@ s32 save_file_get_cap_pos(Vec3s capPos);
 void save_file_set_sound_mode(u16 mode);
 u16 save_file_get_sound_mode(void);
 void save_file_move_cap_to_default_location(void);
+void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount);
 
 void disable_warp_checkpoint(void);
 void check_if_should_set_warp_checkpoint(struct WarpNode *warpNode);

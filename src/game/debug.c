@@ -22,6 +22,8 @@
 s16 gDebugPrintState1[6]; // prints top-down?
 s16 gDebugPrintState2[6]; // prints bottom-up?
 
+char gAssertionStr[512];
+
 enum DebugPrintStateInfo {
     DEBUG_PSTATE_DISABLED,
     DEBUG_PSTATE_X_CURSOR,

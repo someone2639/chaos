@@ -7,6 +7,8 @@
 #define CHAOS_PATCH_SEVERITY_MIN 1
 #define CHAOS_PATCH_SEVERITY_MAX 3
 
+#define CHAOS_PATCH_ENTRIES 0x100
+
 enum ChaosPatchID {
 // Empty Modifiers
     CHAOS_PATCH_NONE_POSITIVE,
@@ -74,10 +76,44 @@ struct ChaosPatch {
     const char *longDescription;  // Long description for the patch (if any)
 };
 
+// This represents the modifiable chaos patch data that ultimately gets saved to the save file.
+// Anything not represented here needs to be kept track of and/or saved separately.
+// Because these are saved, any property modification that gets negated via deactivation func SHOULD NOT BE be saved to the save file, even for stacking patches!
+// Similarly, DO NOT track CHAOS_DURATION_USE_COUNT patches with separate variables!
+// Adding manual save data is best reserved for tracking any variables with unrelated outside influence, such as Mario's lives.
+// Lives are applied with a stackable CHAOS_DURATION_ONCE instead of CHAOS_DURATION_USE_COUNT for this reason.
+struct ChaosActiveEntry {
+    enum ChaosPatchID id; // ID of a currently active patch
+    u8 remainingDuration; // Number of stars/uses/etc left for this patch to remain active
+    u8 PADDING[3];
+};
+
 extern const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT];
+extern struct ChaosActiveEntry *gChaosActiveEntries;
 
+// Initialize the chaos data, to be run immediately after loading the save file.
+// Activate any patches that were previously active in a different session.
+void chaos_init(s32 arg, s32 unused);
 
+// Check whether a particular patch is currently active. Optionally retrieve the active patch data.
+u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId, struct ChaosActiveEntry **firstFoundMatch);
 
+// Deactivate an old chaos patch, based on its current index.
+// Be careful when invoking this with stackable patches, as it may cause undesirable behavior if used incorrectly.
+// In general it is not recommended to invoke this (externally) with stackable patches that use CHAOS_DURATION_USE_COUNT (since they get combined).
+void chaos_remove_expired_entry(const s32 patchIndex);
+
+// Activate a new chaos patch.
+void chaos_add_new_entry(const enum ChaosPatchID patchId);
+
+// Handles behavior for decrementing consumable patches (i.e. CHAOS_DURATION_USE_COUNT).
+// This does NOT invoke a callback for what it should do when the patch is consumed,
+// however it will invoke the deactivation callback if remaining uses hit 0.
+void chaos_decrement_patch_usage(const enum ChaosPatchID patchId);
+
+// Decrement all of durations of each pass using a star timer (i.e. CHAOS_DURATION_STARS).
+// Additionally deconstructs any applicable patches if their duration hits 0.
+void chaos_decrement_star_timers(void);
 
 
 #include "chaos_patch_behaviors.h"

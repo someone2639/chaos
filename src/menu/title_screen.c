@@ -3,6 +3,7 @@
 #include "audio/external.h"
 #include "engine/math_util.h"
 #include "game/area.h"
+#include "game/chaos/chaos.h"
 #include "game/game_init.h"
 #include "game/level_update.h"
 #include "game/main.h"
@@ -69,6 +70,8 @@ s32 run_level_id_or_demo(s32 level) {
                 gCurrDemoInput = ((struct DemoInput *) gDemoInputsBuf.bufTarget) + 1;
                 level = (s8)((struct DemoInput *) gDemoInputsBuf.bufTarget)->timer;
                 gCurrSaveFileNum = 1;
+                chaos_init(0, 0);
+
                 gCurrActNum = 1;
             }
         } else { // activity was detected, so reset the demo countdown.
@@ -139,6 +142,8 @@ s16 intro_level_select(void) {
     if (gCurrLevelNum < LEVEL_MIN) gCurrLevelNum = LEVEL_MAX; // exceeded min. set to max.
     // Use file 1 and last act as a test
     gCurrSaveFileNum = 1;
+    chaos_init(0, 0);
+
     gCurrActNum = 6;
 
     print_text_centered(160, 80, "SELECT STAGE");

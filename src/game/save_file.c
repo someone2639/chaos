@@ -636,6 +636,11 @@ u16 eu_get_language(void) {
 }
 #endif
 
+void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount) {
+    *entryData = gSaveBuffer.files[gCurrSaveFileNum - 1].chaosEntries;
+    *currentEntryCount = &gSaveBuffer.files[gCurrSaveFileNum - 1].chaosEntryCount;
+}
+
 void disable_warp_checkpoint(void) {
     // check_warp_checkpoint() checks to see if gWarpCheckpoint.courseNum != COURSE_NONE
     gWarpCheckpoint.courseNum = COURSE_NONE;
