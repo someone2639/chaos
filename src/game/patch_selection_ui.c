@@ -11,6 +11,8 @@
 #include "fasttext.h"
 #include "debug.h"
 #include "src/engine/math_util.h"
+#include "audio/external.h"
+#include "sm64.h"
 
 u8 sQualityColors[][3] = {
     {0x20, 0xDB, 0x1D},
@@ -152,10 +154,12 @@ void handle_inputs_patch_select_state_select(s32 stickDir) {
 
     if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
        set_patch_selection_menu_state(PATCH_SELECT_STATE_CONFIRMATION_TRANSITION_ANIM);
+       play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
     } else if (gPlayer1Controller->buttonPressed & (Z_TRIG | L_TRIG)) {
         struct PatchCard *selectedCard = &gAvailablePatches[gPatchSelectionMenu.selectedPatch];
         if(selectedCard->extendedDesc1 || selectedCard->extendedDesc2) {
             set_patch_selection_menu_state(PATCH_SELECT_STATE_EXTENDED_DESC_APPEAR);
+            play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
         }
     } else if(gPlayer1Controller->buttonPressed & D_JPAD || (stickDir == JOYSTICK_MENU_DIR_DOWN)) {
         selection += 2;
@@ -179,6 +183,10 @@ void handle_inputs_patch_select_state_select(s32 stickDir) {
         }
     }
 
+    if(selection != previousSelection) {
+        play_sound(SOUND_MENU_MESSAGE_NEXT_PAGE, gGlobalSoundSource);
+    }
+
     gPatchSelectionMenu.selectedPatch = selection;
 }
 
@@ -188,6 +196,7 @@ void handle_inputs_patch_select_state_select(s32 stickDir) {
 void handle_inputs_patch_select_state_show_extended_desc() {
     if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON | B_BUTTON | Z_TRIG | L_TRIG)) {
         set_patch_selection_menu_state(PATCH_SELECT_STATE_EXTENDED_DESC_DISAPPEAR);
+        play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
     }
 }
 
@@ -199,13 +208,16 @@ void handle_inputs_patch_select_state_confirmation(s32 stickDir) {
         if(gPatchSelectionMenu.selectedMenuIndex) {
             //No
             set_patch_selection_menu_state(PATCH_SELECT_STATE_CONFIRMATION_TRANSITION_RETURN_ANIM);
+            play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
             gPatchSelectionMenu.selectedMenuIndex = 0;
         } else {
             //Yes
             set_patch_selection_menu_state(PATCH_SELECT_STATE_ENDING_ANIM);
+            play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
         }
     } else if(gPlayer1Controller->buttonPressed & B_BUTTON) {
         set_patch_selection_menu_state(PATCH_SELECT_STATE_CONFIRMATION_TRANSITION_RETURN_ANIM);
+        play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
         gPatchSelectionMenu.selectedMenuIndex = 0;
     }
     else if(gPlayer1Controller->buttonPressed & R_JPAD || (stickDir == JOYSTICK_MENU_DIR_RIGHT)) {
@@ -213,11 +225,13 @@ void handle_inputs_patch_select_state_confirmation(s32 stickDir) {
         if(gPatchSelectionMenu.selectedMenuIndex > 1) {
             gPatchSelectionMenu.selectedMenuIndex = 0;
         }
+        play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
     } else if(gPlayer1Controller->buttonPressed & L_JPAD || (stickDir == JOYSTICK_MENU_DIR_LEFT)) {
         gPatchSelectionMenu.selectedMenuIndex--;
         if(gPatchSelectionMenu.selectedMenuIndex < 0) {
             gPatchSelectionMenu.selectedMenuIndex = 1;
         }
+        play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
     }
 }
 
