@@ -80,19 +80,19 @@ void load_patch_card(s32 index, s32 quality, s32 effect1DurationOrUses, s32 effe
 
     switch(index) {
         case 0:
-            xPos = CARD_X_LEFT_START;
+            xPos = CARD_1_X_START;
             yPos = CARD_Y_TOP;
             break;
         case 1:
-            xPos = CARD_X_RIGHT_START;
+            xPos = CARD_2_X_START;
             yPos = CARD_Y_TOP;
             break;
         case 2:
-            xPos = CARD_X_LEFT_START;
+            xPos = CARD_3_X_START;
             yPos = CARD_Y_BOTTOM;
             break;
         case 3:
-            xPos = CARD_X_RIGHT_START;
+            xPos = CARD_4_X_START;
             yPos = CARD_Y_BOTTOM;
             break;
     }
@@ -143,6 +143,16 @@ void reset_patch_selection_menu() {
     for(int i = 0; i < MAX_CARDS; i++) {
         gAvailablePatches[i].scale = CARD_SCALE_DEFAULT;
     }
+
+    gAvailablePatches[0].pos[0] = CARD_1_X_START;
+    gAvailablePatches[1].pos[0] = CARD_2_X_START;
+    gAvailablePatches[2].pos[0] = CARD_3_X_START;
+    gAvailablePatches[3].pos[0] = CARD_4_X_START;
+
+    gAvailablePatches[0].pos[1] = CARD_Y_TOP;
+    gAvailablePatches[1].pos[1] = CARD_Y_TOP;
+    gAvailablePatches[2].pos[1] = CARD_Y_BOTTOM;
+    gAvailablePatches[3].pos[1] = CARD_Y_BOTTOM;
 }
 
 /*
@@ -300,10 +310,10 @@ f32 menu_translate_percentage(f32 start, f32 end, f32 percent) {
     return point;
 }
 
-#define PATCH_SELECT_STARTUP_CURTAIN_DROP_FRAMES        15
-#define PATCH_SELECT_STARTUP_CARDS_SLIDE_FRAMES         12
-#define PATCH_SELECT_STARTUP_IDLE_FRAMES                15
-#define PATCH_SELECT_STARTUP_TEXT_SLIDE_FRAMES          7
+#define PATCH_SELECT_STARTUP_CURTAIN_DROP_FRAMES        20
+#define PATCH_SELECT_STARTUP_CARDS_SLIDE_FRAMES         20
+#define PATCH_SELECT_STARTUP_IDLE_FRAMES                9
+#define PATCH_SELECT_STARTUP_TEXT_SLIDE_FRAMES          9
 /*
     Positions the menu elements to play the startup animation
 */
@@ -318,7 +328,7 @@ void patch_select_menu_startup_anim() {
             //Drop curtain and scale and show text
             gPatchSelectionMenu.flags |= PATCH_SELECT_FLAG_DRAW_START_TEXT;
             totalFrames = PATCH_SELECT_STARTUP_CURTAIN_DROP_FRAMES;
-            animPercent = (1.0f / totalFrames) * animTimer;
+            animPercent = sins((0x3FFF / totalFrames) * animTimer);
             gPatchSelectionMenu.curtainPos[1] = menu_translate_percentage(CURTAIN_Y_START, CURTAIN_Y_POS, animPercent);
             gPatchSelectionMenu.selectPatchTextScale = approach_f32(gPatchSelectionMenu.selectPatchTextScale, 1.0f, 0.1f, 0.1f);
             break;
@@ -326,26 +336,14 @@ void patch_select_menu_startup_anim() {
             //Cards and description box slide on screen and disable game render
             gPatchSelectionMenu.flags |= PATCH_SELECT_FLAG_STOP_GAME_RENDER;
             totalFrames = PATCH_SELECT_STARTUP_CARDS_SLIDE_FRAMES;
-            animPercent = (1.0f / totalFrames) * animTimer;
+            animPercent = sins((0x3FFF / totalFrames) * animTimer);
 
-            f32 leftX = menu_translate_percentage(CARD_X_LEFT_START, CARD_X_LEFT, animPercent);
-            f32 rightX = menu_translate_percentage(CARD_X_RIGHT_START, CARD_X_RIGHT, animPercent);
-            f32 descY = menu_translate_percentage(PATCH_DESC_Y_START, PATCH_DESC_Y, animPercent);
+            gAvailablePatches[0].pos[0] = menu_translate_percentage(gAvailablePatches[0].pos[0], CARD_X_LEFT, 0.27f);
+            gAvailablePatches[1].pos[0] = menu_translate_percentage(gAvailablePatches[1].pos[0], CARD_X_RIGHT, 0.27f);
+            gAvailablePatches[2].pos[0] = menu_translate_percentage(gAvailablePatches[2].pos[0], CARD_X_LEFT, 0.27f);
+            gAvailablePatches[3].pos[0] = menu_translate_percentage(gAvailablePatches[3].pos[0], CARD_X_RIGHT, 0.27f);
 
-            gAvailablePatches[0].pos[0] = leftX;
-            gAvailablePatches[0].pos[1] = CARD_Y_TOP;
-
-            gAvailablePatches[1].pos[0] = rightX;
-            gAvailablePatches[1].pos[1] = CARD_Y_TOP;
-
-            gAvailablePatches[2].pos[0] = leftX;
-            gAvailablePatches[2].pos[1] = CARD_Y_BOTTOM;
-
-            gAvailablePatches[3].pos[0] = rightX;
-            gAvailablePatches[3].pos[1] = CARD_Y_BOTTOM;
-
-            gPatchSelectionMenu.descPos[0] = PATCH_DESC_X;
-            gPatchSelectionMenu.descPos[1] = descY;
+            gPatchSelectionMenu.descPos[1] = menu_translate_percentage(PATCH_DESC_Y_START, PATCH_DESC_Y, animPercent);
             break;
         case 2:
             //Wait a few frames
@@ -354,7 +352,7 @@ void patch_select_menu_startup_anim() {
         case 3:
             //Text goes off screen
             totalFrames = PATCH_SELECT_STARTUP_TEXT_SLIDE_FRAMES;
-            animPercent = (1.0f / totalFrames) * animTimer;
+            animPercent = 1.0f - coss((0x3FFF / totalFrames) * animTimer);
             gPatchSelectionMenu.selectPatchTextPos[0] = menu_translate_percentage(SCREEN_CENTER_X, SELECT_PATCH_TEXT_END, animPercent);
             break;
         default:
@@ -385,14 +383,14 @@ void patch_select_menu_ending_anim() {
         case 0:
             //Card and description box slides off of the screen
             totalFrames = PATCH_SELECT_ENDING_CARDS_SLIDE_FRAMES;
-            animPercent = (1.0f / totalFrames) * animTimer;
+            animPercent = 1.0f - coss((0x3FFF / totalFrames) * animTimer);
             gPatchSelectionMenu.descPos[1] = menu_translate_percentage(PATCH_DESC_Y, PATCH_DESC_Y_START, animPercent);
             gAvailablePatches[gPatchSelectionMenu.selectedPatch].pos[0] = menu_translate_percentage(PATCH_SELECTED_X, CARD_X_END, animPercent);
             break;
         case 1:
             //Curtain raises and turn on game rendering
             totalFrames = PATCH_SELECT_ENDING_CURTAIN_RAISE_FRAMES;
-            animPercent = (1.0f / totalFrames) * animTimer;
+            animPercent = 1.0f - coss((0x3FFF / totalFrames) * animTimer);
             gPatchSelectionMenu.flags &= ~PATCH_SELECT_FLAG_STOP_GAME_RENDER;
             gPatchSelectionMenu.curtainPos[1] = menu_translate_percentage(CURTAIN_Y_POS, CURTAIN_Y_START, animPercent);
             break;
@@ -421,7 +419,7 @@ void patch_select_menu_state_select_anim() {
 }
 
 #define PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_ANIM_SCALE_FRAMES 7
-#define PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_ANIM_SLIDE_FRAMES 5
+#define PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_ANIM_SLIDE_FRAMES 7
 /*
     Positions the menu elements to play the confirmation transition animation
 */
@@ -437,7 +435,7 @@ void patch_select_menu_confirmation_transition_anim() {
         case 0:
             //Unselected cards slide off screen
             totalFrames = PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_ANIM_SLIDE_FRAMES;
-            animPercent = (1.0f / totalFrames) * animTimer;
+            animPercent = 1.0f - coss((0x3FFF / totalFrames) * animTimer);
             f32 leftX = menu_translate_percentage(CARD_X_LEFT, CARD_X_LEFT_START, animPercent);
             f32 rightX = menu_translate_percentage(CARD_X_RIGHT, CARD_X_RIGHT_START, animPercent);
             for(int i = 0; i < MAX_CARDS; i++) {
@@ -453,7 +451,7 @@ void patch_select_menu_confirmation_transition_anim() {
         case 1:
             //Selected card scales up and moves to the center of the screen and hide the cursor
             totalFrames = PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_ANIM_SCALE_FRAMES;
-            animPercent = (1.0f / totalFrames) * animTimer;
+            animPercent = sins((0x3FFF / totalFrames) * animTimer);
 
             gPatchSelectionMenu.flags &= ~PATCH_SELECT_FLAG_DRAW_CURSOR;
             gAvailablePatches[selectedPatch].scale = menu_translate_percentage(CARD_SCALE_HOVER, CARD_SCALE_SELECTED, animPercent);
@@ -491,7 +489,7 @@ void patch_select_menu_confirmation_transition_anim() {
 }
 
 #define PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_RETURN_ANIM_SCALE_FRAMES 7
-#define PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_RETURN_ANIM_SLIDE_FRAMES 5
+#define PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_RETURN_ANIM_SLIDE_FRAMES 7
 /*
     Positions the menu elements to play the confirmation transition return animation
 */
@@ -507,7 +505,7 @@ void patch_select_menu_confirmation_return_transition_anim() {
         case 0:
             //Scales the selected card back down and moves it back to its original position
             totalFrames = PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_RETURN_ANIM_SCALE_FRAMES;
-            animPercent = (1.0f / totalFrames) * animTimer;
+            animPercent = sins((0x3FFF / totalFrames) * animTimer);
 
             gAvailablePatches[selectedPatch].scale = menu_translate_percentage(CARD_SCALE_SELECTED, CARD_SCALE_HOVER, animPercent);
 
@@ -535,7 +533,7 @@ void patch_select_menu_confirmation_return_transition_anim() {
         case 1:
             //Slides the unselected cards back onto the screen
             totalFrames = PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_RETURN_ANIM_SLIDE_FRAMES;
-            animPercent = (1.0f / totalFrames) * animTimer;
+            animPercent = sins((0x3FFF / totalFrames) * animTimer);
             f32 leftX = menu_translate_percentage(CARD_X_LEFT_START, CARD_X_LEFT, animPercent);
             f32 rightX = menu_translate_percentage(CARD_X_RIGHT_START, CARD_X_RIGHT, animPercent);
             for(int i = 0; i < MAX_CARDS; i++) {
