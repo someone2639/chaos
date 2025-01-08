@@ -142,6 +142,7 @@ SECTIONS
       BUILD_DIR/src/boot*.o(.text);
       BUILD_DIR/src/hvqm*.o(.text);
       BUILD_DIR/src/audio*.o(.text);
+      BUILD_DIR/src/effects*.o(.text);
 #if defined(ISVPRINT) || defined(UNF)
       *libultra_d.a:*.o(.text);
 #else
@@ -161,6 +162,7 @@ SECTIONS
       /* data */
       BUILD_DIR/src/boot*.o(.data*);
       BUILD_DIR/src/audio*.o(.data*);
+      BUILD_DIR/src/effects*.o(.data*);
 #if defined(ISVPRINT) || defined(UNF)
       *libultra_d.a:*.o(.data*);
 #else
@@ -178,6 +180,7 @@ SECTIONS
       BUILD_DIR/src/boot*.o(.rodata*);
       BUILD_DIR/src/audio*.o(.rodata*);
       BUILD_DIR/src/hvqm*.o(.rodata*);
+      BUILD_DIR/src/effects*.o(.rodata*);
 #if defined(ISVPRINT) || defined(UNF)
       *libultra_d.a:*.o(.rodata*);
 #else
@@ -195,6 +198,7 @@ SECTIONS
       BUILD_DIR/src/boot*.o(.*bss*);
       BUILD_DIR/src/hvqm*.o(.*bss*);
       BUILD_DIR/src/audio*.o(.*bss*);
+      BUILD_DIR/src/effects*.o(.*bss*);
 #if defined(ISVPRINT) || defined(UNF)
       *libultra_d.a:*.o(COMMON);
       *libultra_d.a:*.o(.scommon);
