@@ -6913,6 +6913,8 @@ sound_ref .chan_2D18
 sound_ref .sound_menu_power_meter
 sound_ref .sound_menu_camera_buzz
 sound_ref .sound_menu_camera_turn
+sound_ref .sound_menu_curtain_lower
+sound_ref .sound_menu_curtain_raise
 
 .sound_menu_change_select:
 chan_setbank 9
@@ -7227,6 +7229,26 @@ chan_end
 
 .layer_2DB1:
 layer_delay 1
+layer_end
+
+.sound_menu_curtain_lower:
+chan_setbank 9
+chan_setinstr 7
+chan_setlayer 0, .layer_curtain_lower
+chan_end
+
+.layer_curtain_lower:
+layer_note1 39, 0x41, 127
+layer_end
+
+.sound_menu_curtain_raise:
+chan_setbank 9
+chan_setinstr 8
+chan_setlayer 0, .layer_curtain_raise
+chan_end
+
+.layer_curtain_raise:
+layer_note1 39, 0x40, 127
 layer_end
 
 .sound_menu_click_file_select:

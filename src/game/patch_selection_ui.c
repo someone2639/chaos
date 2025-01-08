@@ -170,6 +170,8 @@ void handle_inputs_patch_select_state_select(s32 stickDir) {
         if(selectedCard->extendedDesc1 || selectedCard->extendedDesc2) {
             set_patch_selection_menu_state(PATCH_SELECT_STATE_EXTENDED_DESC_APPEAR);
             play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
+        } else {
+            play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
         }
     } else if(gPlayer1Controller->buttonPressed & D_JPAD || (stickDir == JOYSTICK_MENU_DIR_DOWN)) {
         selection += 2;
@@ -223,7 +225,19 @@ void handle_inputs_patch_select_state_confirmation(s32 stickDir) {
         } else {
             //Yes
             set_patch_selection_menu_state(PATCH_SELECT_STATE_ENDING_ANIM);
-            play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
+
+            //Play increasingly distressed Mario sounds based on severity of patches
+            switch(gAvailablePatches[gPatchSelectionMenu.selectedPatch].quality) {
+                case 1:
+                    play_sound(SOUND_MARIO_HERE_WE_GO, gGlobalSoundSource);
+                    break;
+                case 2:
+                    play_sound(SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x21, 0x00, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE), gGlobalSoundSource); //okey dokey sound
+                    break;
+                case 3:
+                    play_sound(SOUND_MARIO_OOOF, gGlobalSoundSource);
+                    break;
+            }
         }
     } else if(gPlayer1Controller->buttonPressed & B_BUTTON) {
         set_patch_selection_menu_state(PATCH_SELECT_STATE_CONFIRMATION_TRANSITION_RETURN_ANIM);
@@ -325,6 +339,9 @@ void patch_select_menu_startup_anim() {
 
     switch(phase) {
         case 0:
+            if(animTimer == 0) {
+                play_sound(SOUND_MENU_CURTAIN_LOWER, gGlobalSoundSource);
+            }
             //Drop curtain and scale and show text
             gPatchSelectionMenu.flags |= PATCH_SELECT_FLAG_DRAW_START_TEXT;
             totalFrames = PATCH_SELECT_STARTUP_CURTAIN_DROP_FRAMES;
@@ -389,6 +406,9 @@ void patch_select_menu_ending_anim() {
             break;
         case 1:
             //Curtain raises and turn on game rendering
+            if(animTimer == 1) {
+                play_sound(SOUND_MENU_CURTAIN_RAISE, gGlobalSoundSource);
+            }
             totalFrames = PATCH_SELECT_ENDING_CURTAIN_RAISE_FRAMES;
             animPercent = 1.0f - coss((0x3FFF / totalFrames) * animTimer);
             gPatchSelectionMenu.flags &= ~PATCH_SELECT_FLAG_STOP_GAME_RENDER;
