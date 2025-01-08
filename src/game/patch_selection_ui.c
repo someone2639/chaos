@@ -406,7 +406,7 @@ void patch_select_menu_ending_anim() {
             break;
         case 1:
             //Curtain raises and turn on game rendering
-            if(animTimer == 1) {
+            if(animTimer == 0) {
                 play_sound(SOUND_MENU_CURTAIN_RAISE, gGlobalSoundSource);
             }
             totalFrames = PATCH_SELECT_ENDING_CURTAIN_RAISE_FRAMES;
@@ -621,6 +621,7 @@ void patch_select_menu_extended_desc_disappear() {
     Updates the animations for the patch selection menu
 */
 void update_patch_selection_menu_anims() {
+    s32 startPhase = gPatchSelectionMenu.animPhase;
     switch(gPatchSelectionMenu.menuState) {
         case PATCH_SELECT_STATE_STARTUP_ANIM:
             patch_select_menu_startup_anim();
@@ -644,7 +645,10 @@ void update_patch_selection_menu_anims() {
             patch_select_menu_ending_anim();
             break;
     }
-    gPatchSelectionMenu.animTimer++;
+    //Only increment if the phase has not updated
+    if(startPhase == gPatchSelectionMenu.animPhase) {
+        gPatchSelectionMenu.animTimer++;
+    }
 }
 
 /*
