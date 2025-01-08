@@ -361,7 +361,7 @@ void play_transition_after_delay(s16 transType, s16 time, u8 red, u8 green, u8 b
 
 void render_game(void) {
     if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
-        if(!(gPatchSelectionMenu.flags & PATCH_SELECT_FLAG_STOP_GAME_RENDER)) {
+        if(!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_STOP_GAME_RENDER)) {
             geo_process_root(gCurrentArea->unk04, D_8032CE74, D_8032CE78, gFBSetColor);
         }
 
@@ -370,7 +370,7 @@ void render_game(void) {
         gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, gBorderHeight, SCREEN_WIDTH,
                       SCREEN_HEIGHT - gBorderHeight);
                        
-        if(gPatchSelectionMenu.flags & PATCH_SELECT_FLAG_ACTIVE) {
+        if(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_ACTIVE) {
             display_patch_selection_ui();
         } else {
             render_hud();

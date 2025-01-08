@@ -3,6 +3,7 @@
 #include <PR/ultratypes.h>
 #include "types.h"
 #include "src/engine/math_util.h"
+#include "chaos_menus.h"
 
 #define MAX_CARDS   4
 #define MAX_QUALITY 3
@@ -37,16 +38,6 @@
 #define CURTAIN_Y_START    (SCREEN_HEIGHT + 170)
 
 #define SELECT_PATCH_TEXT_END   -80
-
-#define PATCH_SELECT_MENU_JOYSTICK_HOLD_FRAMES 10
-
-enum JoystickMenuDir {
-    JOYSTICK_MENU_DIR_NONE,
-    JOYSTICK_MENU_DIR_UP,
-    JOYSTICK_MENU_DIR_DOWN,
-    JOYSTICK_MENU_DIR_RIGHT,
-    JOYSTICK_MENU_DIR_LEFT,
-};
 
 struct PatchCard {
     u8 quality;
@@ -96,28 +87,21 @@ enum PatchSelectionMenuFlags {
     PATCH_SELECT_FLAG_DRAW_EXTENDED_DESCRIPTION     = (1 << 3),
     PATCH_SELECT_FLAG_DRAW_CURSOR                   = (1 << 4),
     PATCH_SELECT_FLAG_DRAW_START_TEXT               = (1 << 5),
+    PATCH_SELECT_FLAG_DRAW_LOWER_TEXT               = (1 << 6),
 };
 
 struct PatchSelectionMenu {
+    struct ChaosMenu menu;
     s8 selectedPatch;
-    s8 selectedMenuIndex;
-    u32 flags;
-    s16 framesSinceLastStickInput;
-    u32 lastStickDir;
-    u32 menuState;
-    u16 animTimer;
-    u16 animFrames;
-    u8 animID;
-    u8 animPhase;
     Vec2f descPos;
     Vec2f curtainPos;
     Vec2f selectPatchTextPos;
     f32 extendedDescScale;
     f32 selectPatchTextScale;
+    struct PatchCard patchCards[MAX_CARDS];
 };
 
-extern struct PatchSelectionMenu gPatchSelectionMenu;
-extern struct PatchCard gAvailablePatches[];
+extern struct PatchSelectionMenu *gPatchSelectionMenu;
 
 void display_patch_selection_ui();
 void update_patch_selection_menu();

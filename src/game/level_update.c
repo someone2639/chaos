@@ -1041,7 +1041,7 @@ s32 play_mode_normal(void) {
             set_play_mode(PLAY_MODE_PAUSED);
         }
 #ifdef DEBUG_PATCH_SELECT_MENU
-        else if (gPlayer1Controller->buttonPressed & R_TRIG && gPlayer1Controller->buttonDown & Z_TRIG) {//TEMP
+        else if (gPlayer1Controller->buttonPressed & R_TRIG && gPlayer1Controller->buttonDown & Z_TRIG) {
             set_play_mode(PLAY_MODE_SELECT_PATCH);
         }
 #endif
@@ -1092,8 +1092,8 @@ s32 play_mode_frame_advance(void) {
 }
 
 s32 play_mode_select_patch(void) {
-    if(gPatchSelectionMenu.menuState != PATCH_SELECT_STATE_CLOSED) {
-        gPatchSelectionMenu.flags |= PATCH_SELECT_FLAG_ACTIVE;
+    if(gPatchSelectionMenu->menu.menuState != PATCH_SELECT_STATE_CLOSED) {
+        gPatchSelectionMenu->menu.flags |= PATCH_SELECT_FLAG_ACTIVE;
         update_patch_selection_menu();
     }else {
         reset_patch_selection_menu();
