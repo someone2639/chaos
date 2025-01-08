@@ -65,5 +65,26 @@ extern Gfx dl_billboard_num_6[];
 extern Gfx dl_billboard_num_7[];
 extern Gfx dl_billboard_num_8[];
 extern Gfx dl_billboard_num_9[];
+extern Gfx patch_bg_mesh_mesh[];
+extern Vtx patch_bg_mesh_mesh_vtx_0[];
+extern Gfx patch_bg_r_mesh_r_mesh[];
+extern Vtx patch_bg_r_mesh_r_mesh_vtx_0[];
+extern Gfx patch_quality_bead_begin[];
+extern Gfx patch_quality_bead[];
+extern Gfx patch_quality_bead_end[];
+extern Gfx patch_use_type_start[];
+extern Gfx patch_use_type_end[];
+extern Gfx star_timer[];
+extern Gfx uses_counter[];
+extern Vtx desc_bg_mesh_mesh_vtx_0[];
+extern Gfx desc_bg_mesh_mesh[];
+extern Vtx ext_desc_bg_ext_mesh_mesh_vtx_0[];
+extern Gfx ext_desc_bg_ext_mesh_mesh[];
+extern u8 hand_hand_open_ia8[];
+extern u8 hand_closed_hand_closed_ia8[];
+extern Gfx hand_cursor_start[];
+extern Gfx hand_cursor_end[];
+extern Gfx curtain_Plane_mesh[];
+extern Gfx select_patch_text_mesh_mesh[];
 
 #endif // SEGMENT2_H
