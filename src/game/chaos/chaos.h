@@ -4,8 +4,10 @@
 #include <PR/gbi.h>
 #include "types.h"
 
-#define CHAOS_PATCH_SEVERITY_MIN 1
 #define CHAOS_PATCH_SEVERITY_MAX 3
+#define CHAOS_PATCH_SEVERITY_COUNT (CHAOS_PATCH_SEVERITY_MAX + 1)
+
+#define CHAOS_PATCH_MAX_GENERATABLE 4
 
 #define CHAOS_PATCH_ENTRIES 0x100
 
@@ -46,6 +48,14 @@ enum ChaosPatchEffectType {
     CHAOS_EFFECT_POSITIVE,
     CHAOS_EFFECT_NEGATIVE,
     // CHAOS_EFFECT_NEUTRAL, // Undecided if this is worth supporting yet
+
+    CHAOS_EFFECT_COUNT,
+};
+
+enum ChaosDifficulty {
+    CHAOS_DIFFICULTY_EASY   = -1, // Offsets negative patches such that top severities shouldn't ever show up
+    CHAOS_DIFFICULTY_NORMAL =  0, // Standard difficulty
+    CHAOS_DIFFICULTY_HARD   =  1, // Offsets positive patches such that top severities shouldn't ever show up
 };
 
 enum ChaosPatchDurationType {
@@ -76,6 +86,15 @@ struct ChaosPatch {
     const char *longDescription;  // Long description for the patch (if any)
 };
 
+struct ChaosPatchSelection {
+    enum ChaosPatchID positiveId;           // ID of positive generated patch
+    enum ChaosPatchID negativeId;           // ID of negative generated patch
+    const struct ChaosPatch *positivePatch; // pointer to actual positive patch data
+    const struct ChaosPatch *negativePatch; // pointer to actual negative patch data
+
+    u8 severityLevel; // For selection display (since actual patch severities may vary, can be 0)
+};
+
 // This represents the modifiable chaos patch data that ultimately gets saved to the save file.
 // Anything not represented here needs to be kept track of and/or saved separately.
 // Because these are saved, any property modification that gets negated via deactivation func SHOULD NOT BE be saved to the save file, even for stacking patches!
@@ -90,10 +109,7 @@ struct ChaosActiveEntry {
 
 extern const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT];
 extern struct ChaosActiveEntry *gChaosActiveEntries;
-
-// Initialize the chaos data, to be run immediately after loading the save file.
-// Activate any patches that were previously active in a different session.
-void chaos_init(s32 arg, s32 unused);
+extern enum ChaosDifficulty gChaosDifficulty;
 
 // Check whether a particular patch is currently active. Optionally retrieve the active patch data.
 u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId, struct ChaosActiveEntry **firstFoundMatch);
@@ -106,14 +122,21 @@ void chaos_remove_expired_entry(const s32 patchIndex);
 // Activate a new chaos patch.
 void chaos_add_new_entry(const enum ChaosPatchID patchId);
 
+// Decrement all of durations of each pass using a star timer (i.e. CHAOS_DURATION_STARS).
+// Additionally deconstructs any applicable patches if their duration hits 0.
+void chaos_decrement_star_timers(void);
+
 // Handles behavior for decrementing consumable patches (i.e. CHAOS_DURATION_USE_COUNT).
 // This does NOT invoke a callback for what it should do when the patch is consumed,
 // however it will invoke the deactivation callback if remaining uses hit 0.
 void chaos_decrement_patch_usage(const enum ChaosPatchID patchId);
 
-// Decrement all of durations of each pass using a star timer (i.e. CHAOS_DURATION_STARS).
-// Additionally deconstructs any applicable patches if their duration hits 0.
-void chaos_decrement_star_timers(void);
+// Generates a list of CHAOS_PATCH_MAX_GENERATABLE patch combinations for selection use.
+struct ChaosPatchSelection *chaos_roll_for_new_patches(void);
+
+// Initialize the chaos data, to be run immediately after loading the save file.
+// Activate any patches that were previously active in a different session.
+void chaos_init(s32 arg, s32 unused);
 
 
 #include "chaos_patch_behaviors.h"
