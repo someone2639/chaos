@@ -102,21 +102,17 @@ void load_patch_card(s32 index, s32 quality, s32 effect1DurationOrUses, s32 effe
     gAvailablePatches[index].scale = CARD_SCALE_DEFAULT;
 }
 
+void menu_play_anim(s32 animID){
+    gPatchSelectionMenu.animTimer = 0;
+    gPatchSelectionMenu.animPhase = 0;
+    gPatchSelectionMenu.animID = animID;
+}
+
 /*
     Updates the patch selection menu state and resets the animation timer
 */
 void set_patch_selection_menu_state(u32 state) {
     gPatchSelectionMenu.menuState = state;
-    gPatchSelectionMenu.animTimer = 0;
-    gPatchSelectionMenu.animPhase = 0;
-}
-
-/*
-    Increments the animation phase and resets the animation timer
-*/
-void increment_anim_phase() {
-    gPatchSelectionMenu.animTimer = 0;
-    gPatchSelectionMenu.animPhase++;
 }
 
 /*
@@ -125,11 +121,13 @@ void increment_anim_phase() {
 void reset_patch_selection_menu() {
     gPatchSelectionMenu.selectedPatch = 0;
     gPatchSelectionMenu.selectedMenuIndex = 0;
-    gPatchSelectionMenu.flags = 0;
+    gPatchSelectionMenu.flags = (PATCH_SELECT_FLAG_HALT_INPUT);
     gPatchSelectionMenu.framesSinceLastStickInput = 0;
     gPatchSelectionMenu.lastStickDir = JOYSTICK_MENU_DIR_NONE;
-    gPatchSelectionMenu.menuState = PATCH_SELECT_STATE_STARTUP_ANIM;
+    gPatchSelectionMenu.menuState = PATCH_SELECT_STATE_SELECT;
     gPatchSelectionMenu.animTimer = 0;
+    gPatchSelectionMenu.animFrames = -1;
+    gPatchSelectionMenu.animID = PATCH_SELECT_ANIM_STARTUP;
     gPatchSelectionMenu.animPhase = 0;
     gPatchSelectionMenu.descPos[0] = PATCH_DESC_X;
     gPatchSelectionMenu.descPos[1] = PATCH_DESC_Y_START;
@@ -163,12 +161,14 @@ void handle_inputs_patch_select_state_select(s32 stickDir) {
     s32 selection = previousSelection;
 
     if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
-       set_patch_selection_menu_state(PATCH_SELECT_STATE_CONFIRMATION_TRANSITION_ANIM);
-       play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
+        menu_play_anim(PATCH_SELECT_ANIM_CONFIRMATION);
+        set_patch_selection_menu_state(PATCH_SELECT_STATE_CONFIRMATION);
+        play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
     } else if (gPlayer1Controller->buttonPressed & (Z_TRIG | L_TRIG)) {
         struct PatchCard *selectedCard = &gAvailablePatches[gPatchSelectionMenu.selectedPatch];
         if(selectedCard->extendedDesc1 || selectedCard->extendedDesc2) {
-            set_patch_selection_menu_state(PATCH_SELECT_STATE_EXTENDED_DESC_APPEAR);
+            menu_play_anim(PATCH_SELECT_ANIM_EXT_DESC);
+            set_patch_selection_menu_state(PATCH_SELECT_STATE_SHOW_EXTENDED_DESC);
             play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
         } else {
             play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
@@ -207,7 +207,8 @@ void handle_inputs_patch_select_state_select(s32 stickDir) {
 */
 void handle_inputs_patch_select_state_show_extended_desc() {
     if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON | B_BUTTON | Z_TRIG | L_TRIG)) {
-        set_patch_selection_menu_state(PATCH_SELECT_STATE_EXTENDED_DESC_DISAPPEAR);
+        menu_play_anim(PATCH_SELECT_ANIM_EXT_DESC_RETURN);
+        set_patch_selection_menu_state(PATCH_SELECT_STATE_SELECT);
         play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
     }
 }
@@ -219,12 +220,14 @@ void handle_inputs_patch_select_state_confirmation(s32 stickDir) {
     if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
         if(gPatchSelectionMenu.selectedMenuIndex) {
             //No
-            set_patch_selection_menu_state(PATCH_SELECT_STATE_CONFIRMATION_TRANSITION_RETURN_ANIM);
+            menu_play_anim(PATCH_SELECT_ANIM_CONFIRMATION_RETURN);
+            set_patch_selection_menu_state(PATCH_SELECT_STATE_SELECT);
             play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
             gPatchSelectionMenu.selectedMenuIndex = 0;
         } else {
             //Yes
-            set_patch_selection_menu_state(PATCH_SELECT_STATE_ENDING_ANIM);
+            menu_play_anim(PATCH_SELECT_ANIM_ENDING);
+            set_patch_selection_menu_state(PATCH_SELECT_STATE_CLOSING);
 
             //Play increasingly distressed Mario sounds based on severity of patches
             switch(gAvailablePatches[gPatchSelectionMenu.selectedPatch].quality) {
@@ -240,8 +243,9 @@ void handle_inputs_patch_select_state_confirmation(s32 stickDir) {
             }
         }
     } else if(gPlayer1Controller->buttonPressed & B_BUTTON) {
-        set_patch_selection_menu_state(PATCH_SELECT_STATE_CONFIRMATION_TRANSITION_RETURN_ANIM);
-        play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
+        menu_play_anim(PATCH_SELECT_ANIM_CONFIRMATION_RETURN);
+        set_patch_selection_menu_state(PATCH_SELECT_STATE_SELECT);
+        play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
         gPatchSelectionMenu.selectedMenuIndex = 0;
     }
     else if(gPlayer1Controller->buttonPressed & R_JPAD || (stickDir == JOYSTICK_MENU_DIR_RIGHT)) {
@@ -328,14 +332,14 @@ f32 menu_translate_percentage(f32 start, f32 end, f32 percent) {
 #define PATCH_SELECT_STARTUP_CARDS_SLIDE_FRAMES         20
 #define PATCH_SELECT_STARTUP_IDLE_FRAMES                9
 #define PATCH_SELECT_STARTUP_TEXT_SLIDE_FRAMES          9
+
 /*
-    Positions the menu elements to play the startup animation
+    Positions the menu elements to play the startup animation. Returns true when finished.
 */
-void patch_select_menu_startup_anim() {
+s32 patch_select_anim_startup() {
     s32 phase = gPatchSelectionMenu.animPhase;
     s32 animTimer = gPatchSelectionMenu.animTimer;
     f32 animPercent;
-    s32 totalFrames = -1;
 
     switch(phase) {
         case 0:
@@ -344,16 +348,16 @@ void patch_select_menu_startup_anim() {
             }
             //Drop curtain and scale and show text
             gPatchSelectionMenu.flags |= PATCH_SELECT_FLAG_DRAW_START_TEXT;
-            totalFrames = PATCH_SELECT_STARTUP_CURTAIN_DROP_FRAMES;
-            animPercent = sins((0x3FFF / totalFrames) * animTimer);
+            gPatchSelectionMenu.animFrames = PATCH_SELECT_STARTUP_CURTAIN_DROP_FRAMES;
+            animPercent = sins((0x3FFF / gPatchSelectionMenu.animFrames) * animTimer);
             gPatchSelectionMenu.curtainPos[1] = menu_translate_percentage(CURTAIN_Y_START, CURTAIN_Y_POS, animPercent);
             gPatchSelectionMenu.selectPatchTextScale = approach_f32(gPatchSelectionMenu.selectPatchTextScale, 1.0f, 0.1f, 0.1f);
             break;
         case 1:
             //Cards and description box slide on screen and disable game render
             gPatchSelectionMenu.flags |= PATCH_SELECT_FLAG_STOP_GAME_RENDER;
-            totalFrames = PATCH_SELECT_STARTUP_CARDS_SLIDE_FRAMES;
-            animPercent = sins((0x3FFF / totalFrames) * animTimer);
+            gPatchSelectionMenu.animFrames = PATCH_SELECT_STARTUP_CARDS_SLIDE_FRAMES;
+            animPercent = sins((0x3FFF / gPatchSelectionMenu.animFrames) * animTimer);
 
             gAvailablePatches[0].pos[0] = menu_translate_percentage(gAvailablePatches[0].pos[0], CARD_X_LEFT, 0.27f);
             gAvailablePatches[1].pos[0] = menu_translate_percentage(gAvailablePatches[1].pos[0], CARD_X_RIGHT, 0.27f);
@@ -364,98 +368,103 @@ void patch_select_menu_startup_anim() {
             break;
         case 2:
             //Wait a few frames
-            totalFrames = PATCH_SELECT_STARTUP_IDLE_FRAMES;
+            gPatchSelectionMenu.animFrames = PATCH_SELECT_STARTUP_IDLE_FRAMES;
             break;
         case 3:
             //Text goes off screen
-            totalFrames = PATCH_SELECT_STARTUP_TEXT_SLIDE_FRAMES;
-            animPercent = 1.0f - coss((0x3FFF / totalFrames) * animTimer);
+            gPatchSelectionMenu.animFrames = PATCH_SELECT_STARTUP_TEXT_SLIDE_FRAMES;
+            animPercent = 1.0f - coss((0x3FFF / gPatchSelectionMenu.animFrames) * animTimer);
             gPatchSelectionMenu.selectPatchTextPos[0] = menu_translate_percentage(SCREEN_CENTER_X, SELECT_PATCH_TEXT_END, animPercent);
             break;
         default:
-            //End animation, draw the cursor, hide the start text, and go to next state
+            //End animation, draw the cursor, hide the start text, and move to the next animation
             gPatchSelectionMenu.flags &= ~PATCH_SELECT_FLAG_DRAW_START_TEXT;
             gPatchSelectionMenu.flags |= PATCH_SELECT_FLAG_DRAW_CURSOR;
-            set_patch_selection_menu_state(PATCH_SELECT_STATE_SELECT);
+            gPatchSelectionMenu.flags &= ~PATCH_SELECT_FLAG_HALT_INPUT;
+            return TRUE;
             break;
     }
 
-    if(animTimer >= totalFrames) {
-        increment_anim_phase();
-    }
+    return FALSE;
 }
 
 #define PATCH_SELECT_ENDING_CARDS_SLIDE_FRAMES 9
 #define PATCH_SELECT_ENDING_CURTAIN_RAISE_FRAMES 15
+
 /*
-    Positions the menu elements to play the ending animation (TEMP)
+    Positions the menu elements to play the ending animation. Returns true when finished.
 */
-void patch_select_menu_ending_anim() {
+s32 patch_select_anim_ending() {
     s32 phase = gPatchSelectionMenu.animPhase;
     s32 animTimer = gPatchSelectionMenu.animTimer;
     f32 animPercent;
-    s32 totalFrames = -1;
 
     switch(phase) {
         case 0:
-            //Card and description box slides off of the screen
-            totalFrames = PATCH_SELECT_ENDING_CARDS_SLIDE_FRAMES;
-            animPercent = 1.0f - coss((0x3FFF / totalFrames) * animTimer);
+            //Card and description box slides off of the screen and block input
+            gPatchSelectionMenu.animFrames = PATCH_SELECT_ENDING_CARDS_SLIDE_FRAMES;
+            animPercent = 1.0f - coss((0x3FFF / gPatchSelectionMenu.animFrames) * animTimer);
             gPatchSelectionMenu.descPos[1] = menu_translate_percentage(PATCH_DESC_Y, PATCH_DESC_Y_START, animPercent);
             gAvailablePatches[gPatchSelectionMenu.selectedPatch].pos[0] = menu_translate_percentage(PATCH_SELECTED_X, CARD_X_END, animPercent);
+            gPatchSelectionMenu.flags |= PATCH_SELECT_FLAG_HALT_INPUT;
             break;
         case 1:
             //Curtain raises and turn on game rendering
             if(animTimer == 0) {
                 play_sound(SOUND_MENU_CURTAIN_RAISE, gGlobalSoundSource);
             }
-            totalFrames = PATCH_SELECT_ENDING_CURTAIN_RAISE_FRAMES;
-            animPercent = 1.0f - coss((0x3FFF / totalFrames) * animTimer);
+            gPatchSelectionMenu.animFrames = PATCH_SELECT_ENDING_CURTAIN_RAISE_FRAMES;
+            animPercent = 1.0f - coss((0x3FFF / gPatchSelectionMenu.animFrames) * animTimer);
             gPatchSelectionMenu.flags &= ~PATCH_SELECT_FLAG_STOP_GAME_RENDER;
             gPatchSelectionMenu.curtainPos[1] = menu_translate_percentage(CURTAIN_Y_POS, CURTAIN_Y_START, animPercent);
             break;
         default:
             //End animation and go to the next state
-            set_patch_selection_menu_state(PATCH_SELECT_STATE_CLOSED);
+            return TRUE;
             break;
     }
 
-    if(animTimer >= totalFrames) {
-        increment_anim_phase();
-    }
+    return FALSE;
 }
 
 /*
     Scales the card that the cursor is hovering over
 */
-void patch_select_menu_state_select_anim() {
+
+s32 patch_select_anim_select() {
     s32 selected = gPatchSelectionMenu.selectedPatch;
+
+    gPatchSelectionMenu.animFrames = -1;
+
     for(int i = 0; i < MAX_CARDS; i++) {
         if(i != selected) {
             gAvailablePatches[i].scale = CARD_SCALE_DEFAULT;
         }
     }
     gAvailablePatches[selected].scale = CARD_SCALE_HOVER;
+
+    return FALSE;
 }
 
 #define PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_ANIM_SCALE_FRAMES 7
 #define PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_ANIM_SLIDE_FRAMES 7
+
 /*
-    Positions the menu elements to play the confirmation transition animation
+    Positions the menu elements to play the confirmation transition animation. Returns true when finished.
 */
-void patch_select_menu_confirmation_transition_anim() {
+s32 patch_select_anim_confirmation() {
     s32 phase = gPatchSelectionMenu.animPhase;
     s32 animTimer = gPatchSelectionMenu.animTimer;
     f32 animPercent;
-    s32 totalFrames = -1;
     f32 xStart = 0, yStart = 0;
     s32 selectedPatch = gPatchSelectionMenu.selectedPatch;
 
     switch(phase) {
         case 0:
-            //Unselected cards slide off screen
-            totalFrames = PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_ANIM_SLIDE_FRAMES;
-            animPercent = 1.0f - coss((0x3FFF / totalFrames) * animTimer);
+            //Unselected cards slide off screen and halt input
+            gPatchSelectionMenu.flags |= PATCH_SELECT_FLAG_HALT_INPUT;
+            gPatchSelectionMenu.animFrames = PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_ANIM_SLIDE_FRAMES;
+            animPercent = 1.0f - coss((0x3FFF / gPatchSelectionMenu.animFrames) * animTimer);
             f32 leftX = menu_translate_percentage(CARD_X_LEFT, CARD_X_LEFT_START, animPercent);
             f32 rightX = menu_translate_percentage(CARD_X_RIGHT, CARD_X_RIGHT_START, animPercent);
             for(int i = 0; i < MAX_CARDS; i++) {
@@ -470,8 +479,8 @@ void patch_select_menu_confirmation_transition_anim() {
             break;
         case 1:
             //Selected card scales up and moves to the center of the screen and hide the cursor
-            totalFrames = PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_ANIM_SCALE_FRAMES;
-            animPercent = sins((0x3FFF / totalFrames) * animTimer);
+            gPatchSelectionMenu.animFrames = PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_ANIM_SCALE_FRAMES;
+            animPercent = sins((0x3FFF / gPatchSelectionMenu.animFrames) * animTimer);
 
             gPatchSelectionMenu.flags &= ~PATCH_SELECT_FLAG_DRAW_CURSOR;
             gAvailablePatches[selectedPatch].scale = menu_translate_percentage(CARD_SCALE_HOVER, CARD_SCALE_SELECTED, animPercent);
@@ -498,34 +507,34 @@ void patch_select_menu_confirmation_transition_anim() {
             gAvailablePatches[selectedPatch].pos[1] = menu_translate_percentage(yStart, PATCH_SELECTED_Y, animPercent);
             break;
         default:
-            //End animation and go to the next state
-            set_patch_selection_menu_state(PATCH_SELECT_STATE_CONFIRMATION);
+            //End animation and turn on input
+            gPatchSelectionMenu.flags &= ~PATCH_SELECT_FLAG_HALT_INPUT;
+            return TRUE;
             break;
     }
 
-    if(animTimer >= totalFrames) {
-        increment_anim_phase();
-    }
+    return FALSE;
 }
 
 #define PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_RETURN_ANIM_SCALE_FRAMES 7
 #define PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_RETURN_ANIM_SLIDE_FRAMES 7
+
 /*
-    Positions the menu elements to play the confirmation transition return animation
+    Positions the menu elements to play the confirmation transition return animation. Returns true when finished.
 */
-void patch_select_menu_confirmation_return_transition_anim() {
+s32 patch_select_anim_confirmation_return() {
     s32 phase = gPatchSelectionMenu.animPhase;
     s32 animTimer = gPatchSelectionMenu.animTimer;
     f32 animPercent;
-    s32 totalFrames = -1;
     f32 xEnd = 0, yEnd = 0;
     s32 selectedPatch = gPatchSelectionMenu.selectedPatch;
 
     switch(phase) {
         case 0:
             //Scales the selected card back down and moves it back to its original position
-            totalFrames = PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_RETURN_ANIM_SCALE_FRAMES;
-            animPercent = sins((0x3FFF / totalFrames) * animTimer);
+            gPatchSelectionMenu.flags |= PATCH_SELECT_FLAG_HALT_INPUT;
+            gPatchSelectionMenu.animFrames = PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_RETURN_ANIM_SCALE_FRAMES;
+            animPercent = sins((0x3FFF / gPatchSelectionMenu.animFrames) * animTimer);
 
             gAvailablePatches[selectedPatch].scale = menu_translate_percentage(CARD_SCALE_SELECTED, CARD_SCALE_HOVER, animPercent);
 
@@ -552,8 +561,8 @@ void patch_select_menu_confirmation_return_transition_anim() {
             break;
         case 1:
             //Slides the unselected cards back onto the screen
-            totalFrames = PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_RETURN_ANIM_SLIDE_FRAMES;
-            animPercent = sins((0x3FFF / totalFrames) * animTimer);
+            gPatchSelectionMenu.animFrames = PATCH_SELECT_MENU_CONFIRMATION_TRANSITION_RETURN_ANIM_SLIDE_FRAMES;
+            animPercent = sins((0x3FFF / gPatchSelectionMenu.animFrames) * animTimer);
             f32 leftX = menu_translate_percentage(CARD_X_LEFT_START, CARD_X_LEFT, animPercent);
             f32 rightX = menu_translate_percentage(CARD_X_RIGHT_START, CARD_X_RIGHT, animPercent);
             for(int i = 0; i < MAX_CARDS; i++) {
@@ -569,85 +578,95 @@ void patch_select_menu_confirmation_return_transition_anim() {
         default:
             //End the animation, show the cursor, and go to the next state
             gPatchSelectionMenu.flags |= PATCH_SELECT_FLAG_DRAW_CURSOR;
-            set_patch_selection_menu_state(PATCH_SELECT_STATE_SELECT);
+            gPatchSelectionMenu.flags &= ~PATCH_SELECT_FLAG_HALT_INPUT;
+            return TRUE;
             break;
     }
 
-    if(animTimer >= totalFrames) {
-        increment_anim_phase();
-    }
+    return FALSE;
 }
 
 #define PATCH_SELECT_MENU_EXT_DESC_APPEAR_ANIM_FRAMES   7
+
 /*
-    Updates the menu elements to play the extended decsription appearance animation
+    Updates the menu elements to play the extended decsription appearance animation. Returns true when finished.
 */
-void patch_select_menu_extended_desc_appear() {
+s32 patch_select_anim_ext_desc() {
     s32 animTimer = gPatchSelectionMenu.animTimer;
-    s32 totalFrames = PATCH_SELECT_MENU_EXT_DESC_APPEAR_ANIM_FRAMES;
-    f32 animPercent = (1.0f / totalFrames) * animTimer;
+    f32 animPhase = gPatchSelectionMenu.animPhase;
+
+    if(animPhase) {
+        gPatchSelectionMenu.flags &= ~PATCH_SELECT_FLAG_HALT_INPUT;
+        return TRUE;
+    }
+
+    gPatchSelectionMenu.animFrames = PATCH_SELECT_MENU_EXT_DESC_APPEAR_ANIM_FRAMES;
+    f32 animPercent = (1.0f / gPatchSelectionMenu.animFrames) * animTimer;
 
     gPatchSelectionMenu.flags |= PATCH_SELECT_FLAG_DRAW_EXTENDED_DESCRIPTION;
     gPatchSelectionMenu.flags &= ~PATCH_SELECT_FLAG_DRAW_CURSOR;
+    gPatchSelectionMenu.flags |= PATCH_SELECT_FLAG_HALT_INPUT;
 
     f32 scale = menu_translate_percentage(0.0f, 1.0f, animPercent);
     gPatchSelectionMenu.extendedDescScale = scale;
 
-    if(animTimer >= totalFrames) {
-        set_patch_selection_menu_state(PATCH_SELECT_STATE_SHOW_EXTENDED_DESC);
-    }
+    return FALSE;
 }
 
 #define PATCH_SELECT_MENU_EXT_DESC_DISAPPEAR_ANIM_FRAMES   7
+
 /*
-    Updates the menu elements to play the extended decsription appearance animation
+    Updates the menu elements to play the extended decsription appearance animation. Returns true when finished.
 */
-void patch_select_menu_extended_desc_disappear() {
+s32 patch_select_menu_anim_ext_desc_return() {
     s32 animTimer = gPatchSelectionMenu.animTimer;
-    s32 totalFrames = PATCH_SELECT_MENU_EXT_DESC_DISAPPEAR_ANIM_FRAMES;
-    f32 animPercent = (1.0f / totalFrames) * animTimer;
+    f32 animPhase = gPatchSelectionMenu.animPhase;
+
+    if(animPhase) {
+        gPatchSelectionMenu.flags &= ~PATCH_SELECT_FLAG_DRAW_EXTENDED_DESCRIPTION;
+        gPatchSelectionMenu.flags |= PATCH_SELECT_FLAG_DRAW_CURSOR;
+        gPatchSelectionMenu.flags &= ~PATCH_SELECT_FLAG_HALT_INPUT;
+        return TRUE;
+    }
+
+    gPatchSelectionMenu.animFrames = PATCH_SELECT_MENU_EXT_DESC_DISAPPEAR_ANIM_FRAMES;
+    f32 animPercent = (1.0f / gPatchSelectionMenu.animFrames) * animTimer;
+    gPatchSelectionMenu.flags |= PATCH_SELECT_FLAG_HALT_INPUT;
 
     f32 scale = menu_translate_percentage(1.0f, 0.0f, animPercent);
     gPatchSelectionMenu.extendedDescScale = scale;
-    
-    if(animTimer >= totalFrames) {
-        gPatchSelectionMenu.flags &= ~PATCH_SELECT_FLAG_DRAW_EXTENDED_DESCRIPTION;
-        gPatchSelectionMenu.flags |= PATCH_SELECT_FLAG_DRAW_CURSOR;
-        set_patch_selection_menu_state(PATCH_SELECT_STATE_SELECT);
-    }
+
+    return FALSE;
 }
 
+s32 (*sPatchSelectMenuAnims[])(void) = {
+    &patch_select_anim_startup,
+    &patch_select_anim_select,
+    &patch_select_anim_confirmation,
+    &patch_select_anim_confirmation_return,
+    &patch_select_anim_ext_desc,
+    &patch_select_menu_anim_ext_desc_return,
+    &patch_select_anim_ending,
+};
+
 /*
-    Updates the animations for the patch selection menu
+    Updates the animations for the patch selection menu. Returns true if the animation has finished.
 */
-void update_patch_selection_menu_anims() {
-    s32 startPhase = gPatchSelectionMenu.animPhase;
-    switch(gPatchSelectionMenu.menuState) {
-        case PATCH_SELECT_STATE_STARTUP_ANIM:
-            patch_select_menu_startup_anim();
-            break;
-        case PATCH_SELECT_STATE_SELECT:
-            patch_select_menu_state_select_anim();
-            break;
-        case PATCH_SELECT_STATE_CONFIRMATION_TRANSITION_ANIM:
-            patch_select_menu_confirmation_transition_anim();
-            break;
-        case PATCH_SELECT_STATE_CONFIRMATION_TRANSITION_RETURN_ANIM:
-            patch_select_menu_confirmation_return_transition_anim();
-            break;
-        case PATCH_SELECT_STATE_EXTENDED_DESC_APPEAR:
-            patch_select_menu_extended_desc_appear();
-            break;
-        case PATCH_SELECT_STATE_EXTENDED_DESC_DISAPPEAR:
-            patch_select_menu_extended_desc_disappear();
-            break;
-        case PATCH_SELECT_STATE_ENDING_ANIM:
-            patch_select_menu_ending_anim();
-            break;
-    }
-    //Only increment if the phase has not updated
-    if(startPhase == gPatchSelectionMenu.animPhase) {
-        gPatchSelectionMenu.animTimer++;
+s32 update_patch_selection_menu_anims() {
+    s32 animID = gPatchSelectionMenu.animID;
+    s32 animFrames = gPatchSelectionMenu.animFrames;
+
+    s32 (*animFunc)(void) = sPatchSelectMenuAnims[animID];
+    s32 isFinished = animFunc();
+
+    if(isFinished) {
+        return TRUE;
+    } else {
+        if(++gPatchSelectionMenu.animTimer > animFrames) {
+            gPatchSelectionMenu.animTimer = 0;
+            gPatchSelectionMenu.animPhase++;
+        }
+        return FALSE;
     }
 }
 
@@ -655,8 +674,22 @@ void update_patch_selection_menu_anims() {
     Updates the patch selection menu
 */
 void update_patch_selection_menu() {
-    handle_patch_selection_inputs();
-    update_patch_selection_menu_anims();
+    if(!(gPatchSelectionMenu.flags & PATCH_SELECT_FLAG_HALT_INPUT)) {
+        handle_patch_selection_inputs();
+    }
+
+    if(update_patch_selection_menu_anims()) {
+        switch(gPatchSelectionMenu.menuState) {
+            case PATCH_SELECT_STATE_SELECT:
+                //If animation is finished in the patch select state, we should start the patch select animation
+                menu_play_anim(PATCH_SELECT_ANIM_SELECT);
+                break;
+            case PATCH_SELECT_STATE_CLOSING:
+                //When the closing animation is finished, the menu should close
+                set_patch_selection_menu_state(PATCH_SELECT_STATE_CLOSED);
+                break;
+        }
+    }
 }
 
 /*
@@ -932,7 +965,7 @@ void render_patch_selection_cursor(f32 x, f32 y) {
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     
     gSPDisplayList(gDisplayListHead++, hand_cursor_start);
-    if(gPatchSelectionMenu.menuState == PATCH_SELECT_STATE_CONFIRMATION_TRANSITION_ANIM) {
+    if(gPatchSelectionMenu.animID == PATCH_SELECT_ANIM_CONFIRMATION) {
         gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_IA, G_IM_SIZ_8b_LOAD_BLOCK, 1, hand_closed_hand_closed_ia8);
     } else {
         gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_IA, G_IM_SIZ_8b_LOAD_BLOCK, 1, hand_hand_open_ia8);

@@ -65,16 +65,21 @@ struct PatchCard {
     //TODO: Add an id or reference of some sort to an actual patch so it can be applied after selection
 };
 
-enum Patch_Select_Menu_State {
-    PATCH_SELECT_STATE_STARTUP_ANIM,
+enum PatchSelectMenuAnim {
+    PATCH_SELECT_ANIM_STARTUP,
+    PATCH_SELECT_ANIM_SELECT,
+    PATCH_SELECT_ANIM_CONFIRMATION,
+    PATCH_SELECT_ANIM_CONFIRMATION_RETURN,
+    PATCH_SELECT_ANIM_EXT_DESC,
+    PATCH_SELECT_ANIM_EXT_DESC_RETURN,
+    PATCH_SELECT_ANIM_ENDING,
+};
+
+enum PatchSelectMenuState {
     PATCH_SELECT_STATE_SELECT,
-    PATCH_SELECT_STATE_CONFIRMATION_TRANSITION_ANIM,
-    PATCH_SELECT_STATE_CONFIRMATION_TRANSITION_RETURN_ANIM,
     PATCH_SELECT_STATE_CONFIRMATION,
-    PATCH_SELECT_STATE_EXTENDED_DESC_APPEAR,
-    PATCH_SELECT_STATE_EXTENDED_DESC_DISAPPEAR,
     PATCH_SELECT_STATE_SHOW_EXTENDED_DESC,
-    PATCH_SELECT_STATE_ENDING_ANIM,
+    PATCH_SELECT_STATE_CLOSING,
     PATCH_SELECT_STATE_CLOSED,
 };
 
@@ -87,9 +92,10 @@ enum PatchCardUseType {
 enum PatchSelectionMenuFlags {
     PATCH_SELECT_FLAG_ACTIVE                        = (1 << 0),
     PATCH_SELECT_FLAG_STOP_GAME_RENDER              = (1 << 1),
-    PATCH_SELECT_FLAG_DRAW_EXTENDED_DESCRIPTION     = (1 << 2),
-    PATCH_SELECT_FLAG_DRAW_CURSOR                   = (1 << 3),
-    PATCH_SELECT_FLAG_DRAW_START_TEXT               = (1 << 4),
+    PATCH_SELECT_FLAG_HALT_INPUT                    = (1 << 2),
+    PATCH_SELECT_FLAG_DRAW_EXTENDED_DESCRIPTION     = (1 << 3),
+    PATCH_SELECT_FLAG_DRAW_CURSOR                   = (1 << 4),
+    PATCH_SELECT_FLAG_DRAW_START_TEXT               = (1 << 5),
 };
 
 struct PatchSelectionMenu {
@@ -100,6 +106,8 @@ struct PatchSelectionMenu {
     u32 lastStickDir;
     u32 menuState;
     u16 animTimer;
+    u16 animFrames;
+    u8 animID;
     u8 animPhase;
     Vec2f descPos;
     Vec2f curtainPos;
