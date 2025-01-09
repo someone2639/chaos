@@ -12,10 +12,10 @@
 
 #define CARD_X_LEFT         ((SCREEN_WIDTH / 3) - 25)
 #define CARD_X_RIGHT        (((SCREEN_WIDTH / 3) * 2) + 25)
-#define CARD_Y_TOP          (SCREEN_HEIGHT - 45)
-#define CARD_Y_BOTTOM       (SCREEN_HEIGHT / 2)
+#define CARD_Y_TOP          (SCREEN_HEIGHT - 44)
+#define CARD_Y_BOTTOM       ((SCREEN_HEIGHT / 2) + 9)
 #define PATCH_DESC_X        (SCREEN_WIDTH / 2)
-#define PATCH_DESC_Y        42
+#define PATCH_DESC_Y        56
 
 #define CARD_X_LEFT_START -85
 #define CARD_X_RIGHT_START (SCREEN_WIDTH + 85)

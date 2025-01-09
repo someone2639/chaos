@@ -4,6 +4,9 @@
 #include "chaos_menus.h"
 #include "sm64.h"
 #include "game_init.h"
+#include "segment2.h"
+
+static u8 sDisplayButtonsDown = FALSE;
 
 /*
     Returns the point a percentage of the way from start to end, used for menu anims
@@ -87,4 +90,74 @@ s32 menu_update_anims(struct ChaosMenu *menu, s32 (*animFunctions[])(void)) {
         }
         return FALSE;
     }
+}
+
+/*
+    Sets up to draw a button prompt
+*/
+void menu_start_button_prompt() {
+    //Alternate between showing the button sprite pressed and up every second
+    if(!(gGlobalTimer % 30)) {
+        sDisplayButtonsDown = !sDisplayButtonsDown;
+    }
+    gDPPipeSync(gDisplayListHead++);
+	gDPSetCycleType(gDisplayListHead++, G_CYC_COPY);
+	gDPSetTexturePersp(gDisplayListHead++, G_TP_NONE);
+	gDPSetAlphaCompare(gDisplayListHead++, G_AC_THRESHOLD);
+	gDPSetBlendColor(gDisplayListHead++, 255, 255, 255, 255);
+	gDPSetRenderMode(gDisplayListHead++, G_RM_AA_XLU_SURF, G_RM_AA_XLU_SURF2);
+    gDPPipeSync(gDisplayListHead++);
+    gSPTexture(gDisplayListHead++, 65535, 65535, 0, 0, 1);
+}
+
+/*
+    Resets everything after drawing a button prompt
+*/
+void menu_end_button_prompt() {
+	gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
+	gSPTexture(gDisplayListHead++, 65535, 65535, 0, G_TX_RENDERTILE, G_OFF);
+	gDPSetTexturePersp(gDisplayListHead++, G_TP_PERSP);
+	gDPSetAlphaCompare(gDisplayListHead++, G_AC_NONE);
+	gDPSetRenderMode(gDisplayListHead++, G_RM_AA_ZB_OPA_SURF, G_RM_AA_ZB_OPA_SURF2);
+}
+
+/*
+    Draws a button prompt
+*/
+void menu_button_prompt(s32 x, s32 y, s32 button) {
+    u8 *buttonTexture;
+
+    switch(button) {
+        case MENU_PROMPT_A_BUTTON:
+            buttonTexture = (sDisplayButtonsDown) ? texture_icon_a_button_down : texture_icon_a_button;
+            break;
+        case MENU_PROMPT_B_BUTTON:
+            buttonTexture = (sDisplayButtonsDown) ? texture_icon_b_button_down : texture_icon_b_button;
+            break;
+        case MENU_PROMPT_START_BUTTON:
+            buttonTexture = (sDisplayButtonsDown) ? texture_icon_start_button_down : texture_icon_start_button;
+            break;
+        case MENU_PROMPT_L_TRIG:
+            buttonTexture = (sDisplayButtonsDown) ? texture_icon_l_trig_down : texture_icon_l_trig;
+            break;
+        case MENU_PROMPT_R_TRIG:
+            buttonTexture = (sDisplayButtonsDown) ? texture_icon_r_trig_down : texture_icon_r_trig;
+            break;
+        case MENU_PROMPT_Z_TRIG:
+        default:
+            buttonTexture = (sDisplayButtonsDown) ? texture_icon_z_trig_down : texture_icon_z_trig;
+            break;
+    }
+
+    buttonTexture = segmented_to_virtual(buttonTexture);
+
+
+    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, buttonTexture);
+	gDPSetTile(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0);
+	gDPLoadBlock(gDisplayListHead++, 7, 0, 0, 255, 512);
+	gDPSetTile(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 4, 0, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 4, 0, G_TX_WRAP | G_TX_NOMIRROR, 4, 0);
+	gDPSetTileSize(gDisplayListHead++, 0, 0, 0, 60, 60);
+    gSPTextureRectangle(gDisplayListHead++, x << 2, y << 2, (x + 15) << 2, (y + 15) << 2,
+                        G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10);
+    gDPPipeSync(gDisplayListHead++);
 }

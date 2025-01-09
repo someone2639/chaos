@@ -718,7 +718,7 @@ void render_curtain_bg() {
 void draw_patch_quality(s32 quality) {
     Mtx *transMtx = alloc_display_list(sizeof(Mtx) * 2);
     gSPDisplayList(gDisplayListHead++, patch_quality_bead_begin);
-    guTranslate(transMtx, -70, 28, 0);
+    guTranslate(transMtx, -70, 24, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
           G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     for(int i = 0; i < quality; i++) {
@@ -785,26 +785,26 @@ void render_patch_card(struct PatchCard *card, s32 reverse) {
     //Draw patch type(s)
     gSPDisplayList(gDisplayListHead++, patch_use_type_start);
     if(card->patchDurationOrUses1 > 0) {
-        draw_patch_type(42, 15, card->patchUseType1);
+        draw_patch_type(42, 14, card->patchUseType1);
         sprintf(timer1Text, "%d", card->patchDurationOrUses1);
     }
     if(card->patchDurationOrUses2 > 0) {
-        draw_patch_type(42, -15, card->patchUseType2);
+        draw_patch_type(42, -10, card->patchUseType2);
         sprintf(timer2Text, "%d", card->patchDurationOrUses2);
     }
     gSPDisplayList(gDisplayListHead++, patch_use_type_end);
 
     //Write text
     slowtext_setup_ortho_rendering(FT_FONT_SMALL_THIN);
-    slowtext_draw_ortho_text(-63, 5, card->patchName1, FT_FLAG_ALIGN_LEFT, 
+    slowtext_draw_ortho_text(-63, 4, card->patchName1, FT_FLAG_ALIGN_LEFT, 
         sEffectColors[EFFECT_COLOR_GOOD][0], sEffectColors[EFFECT_COLOR_GOOD][1], sEffectColors[EFFECT_COLOR_GOOD][2], 0xFF);
-    slowtext_draw_ortho_text(-63, -25, card->patchName2, FT_FLAG_ALIGN_LEFT, 
+    slowtext_draw_ortho_text(-63, -20, card->patchName2, FT_FLAG_ALIGN_LEFT, 
         sEffectColors[EFFECT_COLOR_BAD][0], sEffectColors[EFFECT_COLOR_BAD][1], sEffectColors[EFFECT_COLOR_BAD][2], 0xFF);
     slowtext_setup_ortho_rendering(FT_FONT_OUTLINE);
     if(card->patchDurationOrUses1 > 0) {
-        slowtext_draw_ortho_text(51, 6, timer1Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
+        slowtext_draw_ortho_text(51, 4, timer1Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
     }if(card->patchDurationOrUses2 > 0) {
-        slowtext_draw_ortho_text(51, -24, timer2Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
+        slowtext_draw_ortho_text(51, -20, timer2Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
     }
     slowtext_finished_rendering();
 
@@ -940,6 +940,52 @@ void render_extended_description() {
 }
 
 /*
+    Determines which button prompts if any to show and draws them
+*/
+void render_button_prompts() {
+    switch(gPatchSelectionMenu->menu.menuState) {
+        case PATCH_SELECT_STATE_SELECT:
+            if(gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].extendedDesc1 || 
+                gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].extendedDesc2) {
+                menu_start_button_prompt();
+                menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 21, MENU_PROMPT_A_BUTTON);
+                menu_button_prompt(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 21, MENU_PROMPT_Z_TRIG);
+                menu_end_button_prompt();
+                fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
+                fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 21, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_draw_texrect(SCREEN_WIDTH - 83, SCREEN_HEIGHT - 21, "Info", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_finished_rendering();
+            } else {
+                menu_start_button_prompt();
+                menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 21, MENU_PROMPT_A_BUTTON);
+                menu_end_button_prompt();
+                fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
+                fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 21, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_finished_rendering();
+            }
+            break;
+        case PATCH_SELECT_STATE_CONFIRMATION:
+            menu_start_button_prompt();
+            menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 21, MENU_PROMPT_A_BUTTON);
+            menu_button_prompt(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 21, MENU_PROMPT_B_BUTTON);
+            menu_end_button_prompt();
+            fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
+            fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 21, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+            fasttext_draw_texrect(SCREEN_WIDTH - 83, SCREEN_HEIGHT - 21, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+            fasttext_finished_rendering();
+            break;
+        case PATCH_SELECT_STATE_SHOW_EXTENDED_DESC:
+            menu_start_button_prompt();
+            menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 30, MENU_PROMPT_B_BUTTON);
+            menu_end_button_prompt();
+            fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
+            fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 30, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+            fasttext_finished_rendering();
+            break;
+    }
+}
+
+/*
     Displays the patch selection menu
 */
 void display_patch_selection_ui() {
@@ -988,6 +1034,10 @@ void display_patch_selection_ui() {
 
         if(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_DRAW_CURSOR) {
             render_patch_selection_cursor(cursorX, cursorY);
+        }
+
+        if(!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_HALT_INPUT)) {
+            render_button_prompts();
         }
     }
 }

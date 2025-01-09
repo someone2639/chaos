@@ -86,5 +86,17 @@ extern Gfx hand_cursor_start[];
 extern Gfx hand_cursor_end[];
 extern Gfx curtain_Plane_mesh[];
 extern Gfx select_patch_text_mesh_mesh[];
+extern u8 texture_icon_a_button[];
+extern u8 texture_icon_a_button_down[];
+extern u8 texture_icon_b_button[];
+extern u8 texture_icon_b_button_down[];
+extern u8 texture_icon_start_button[];
+extern u8 texture_icon_start_button_down[];
+extern u8 texture_icon_l_trig[];
+extern u8 texture_icon_l_trig_down[];
+extern u8 texture_icon_r_trig[];
+extern u8 texture_icon_r_trig_down[];
+extern u8 texture_icon_z_trig[];
+extern u8 texture_icon_z_trig_down[];
 
 #endif // SEGMENT2_H
