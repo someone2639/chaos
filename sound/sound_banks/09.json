@@ -61,6 +61,16 @@
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "06"
+        },
+        "inst7": {
+            "release_rate": 208,
+            "envelope": "envelope0",
+            "sound": "07_curtain_lower_custom"
+        },
+        "inst8": {
+            "release_rate": 208,
+            "envelope": "envelope0",
+            "sound": "08_curtain_raise_custom"
         }
     },
     "instrument_list": [
@@ -70,6 +80,8 @@
         "inst3",
         "inst4",
         "inst5",
-        "inst6"
+        "inst6",
+        "inst7",
+        "inst8"
     ]
 }

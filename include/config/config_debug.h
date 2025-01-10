@@ -48,3 +48,10 @@
  * Because what if I want to listen to other music while working on this without having to hear BoB music?
  */
 // #define MUTE_MUSIC_PLAYERS
+
+/**
+ * Allows you to test the patch selection screen
+ * Hold Z and press R while in PLAY_MODE_NORMAL
+ * Also fills the menu with dummy data for testing
+*/
+// #define DEBUG_PATCH_SELECT_MENU

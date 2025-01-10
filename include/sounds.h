@@ -548,6 +548,8 @@ enum SoundBank {
 // playing, producing the same sound with different pitch.
 #define SOUND_MENU_COLLECT_RED_COIN              /* 0x78289081 */ SOUND_ARG_LOAD(SOUND_BANK_MENU,     0x28, 0x90, SOUND_CONSTANT_FREQUENCY | SOUND_DISCRETE)
 #define SOUND_MENU_COLLECT_SECRET                /* 0x70302081 */ SOUND_ARG_LOAD(SOUND_BANK_MENU,     0x30, 0x20, SOUND_DISCRETE)
+#define SOUND_MENU_CURTAIN_RAISE                                  SOUND_ARG_LOAD(SOUND_BANK_MENU,     0x40, 0xFF, SOUND_DISCRETE)
+#define SOUND_MENU_CURTAIN_LOWER                                  SOUND_ARG_LOAD(SOUND_BANK_MENU,     0x41, 0xFF, SOUND_DISCRETE)
 
 // Channel 8 loads sounds from the same place as channel 3, making it possible
 // to play two channel 3 sounds at once (since just one sound from each channel
