@@ -21,7 +21,7 @@
 #include "game/rumble_init.h"
 #include "sm64.h"
 #include "text_strings.h"
-
+#include "gamemode_select.h"
 #include "eu_translation.h"
 #ifdef VERSION_EU
 #undef LANGUAGE_FUNCTION
@@ -1389,6 +1389,8 @@ void bhv_menu_button_manager_init(void) {
     sMainMenuButtons[MENU_BUTTON_SOUND_MODE]->oMenuButtonScale = 1.0f;
 
     sTextBaseAlpha = 0;
+
+    init_gamemode_select();
 }
 
 #ifdef VERSION_JP
@@ -1627,6 +1629,8 @@ void bhv_menu_button_manager_loop(void) {
 
     sClickPos[0] = -10000;
     sClickPos[1] = -10000;
+
+    update_gamemode_select();
 }
 
 /**
@@ -2856,6 +2860,7 @@ Gfx *geo_file_select_strings_and_menu_cursor(s32 callContext, UNUSED struct Grap
     if (callContext == GEO_CONTEXT_RENDER) {
         print_file_select_strings();
         print_menu_cursor();
+        render_gamemode_select();
     }
     return NULL;
 }
