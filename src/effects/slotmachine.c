@@ -19,7 +19,7 @@ struct Object *currCoin = NULL;
 u32 slot_semaphore = 0;
 
 static f32 chanceroll = 0;
-#define CHANCE 0.5f
+#define CHANCE 0.01f
 
 static f32 globalY = -30;
 u32 timers[NUM_SLOTS] = {
