@@ -81,6 +81,8 @@ void bhv_hidden_blue_coin_loop(void) {
                 interact_coin_delayed(gMarioState);
                 spawn_object(o, MODEL_SPARKLES, bhvGoldenCoinSparkles);
                 obj_mark_for_deletion(o);
+            } else {
+                o->oAnimState--;
             }
             break;
     }
