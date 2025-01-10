@@ -59,7 +59,6 @@ void slot_draw(int timer, int x, int y) {
     Mtx scale;
     Mtx SR;
     Mtx *final = alloc_display_list(sizeof(Mtx));
-    static u32 rotation = 0;
 
     if (final == NULL) {
         return;

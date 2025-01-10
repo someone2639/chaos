@@ -85,10 +85,6 @@ void bhv_hidden_blue_coin_loop(void) {
             break;
     }
 
-    char tt[50];
-    sprintf(tt, "Ac: %d\n", o->oAction);
-    osSyncPrintf(tt);
-
     o->oInteractStatus = 0;
 }
 
