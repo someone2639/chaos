@@ -1,11 +1,59 @@
 #include "actors/group0.h"
+#include "object_fields.h"
 #include "game/ingame_menu.h"
 #include "game/game_init.h"
+#include "game/camera.h"
+#include "game/object_helpers.h"
+#include "game/level_update.h"
+#include "engine/behavior_script.h"
+
+#define NUM_SLOTS 3
 
 // to get slot i: 30 + (60 * i)
 // i = 1 for blue coin
+u32 slot_state = 0;
+u32 slot_nextstate = 0;
+u32 slot_timer = 0;
+struct Object *currCoin = NULL;
 
-void slot_draw(int i, int x, int y) {
+u32 slot_semaphore = 0;
+
+static f32 chanceroll = 0;
+#define CHANCE 0.5f
+
+static f32 globalY = -30;
+u32 timers[NUM_SLOTS] = {
+    15,
+    23,
+    31
+};
+u16 rotations[NUM_SLOTS];
+
+enum SlotStates {
+    S_STANDBY = 0,
+    S_GO,
+    S_SHOWUP,
+    S_ROLL,
+    S_STOP,
+    S_SHOWDOWN,
+    S_FINISH
+};
+
+
+void init_slots(struct Object *oo, f32 chance) {
+    globalY = -30.0f;
+    currCoin = oo;
+    chanceroll = chance;
+    slot_nextstate = S_GO;
+    for (int i = 0; i < NUM_SLOTS; i++) {
+        rotations[i] = 0;
+    }
+    slot_semaphore = 1;
+}
+
+// (60 * i) + (gGlobalTimer * 16)
+
+void slot_draw(int timer, int x, int y) {
     Mtx trans;
     Mtx rot;
     Mtx scale;
@@ -18,7 +66,7 @@ void slot_draw(int i, int x, int y) {
     }
 
     guScale(&scale, 0.25f, 0.25f, 0.25f);
-    guRotate(&rot, (60 * i) + (gGlobalTimer * 16), 1, 0, 0);
+    guRotate(&rot, timer, 1, 0, 0);
     guTranslate(&trans, x, y, -40);
     guMtxCatL(&scale, &rot, &SR);
     guMtxCatL(&SR, &trans, final);
@@ -35,3 +83,77 @@ void slot_draw(int i, int x, int y) {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
+void drawslots() {
+    switch (slot_state) {
+        case S_STANDBY: break;
+        case S_GO:
+            slot_nextstate = S_SHOWUP;
+            break;
+        case S_SHOWUP:
+            globalY = approach_f32_asymptotic(globalY, 30.0f, 0.25f);
+            if (slot_timer > 10) {
+                slot_nextstate = S_ROLL;
+            }
+            break;
+        case S_ROLL:
+            for (int i = 0; i < NUM_SLOTS; i++) {
+                if (slot_timer > timers[i]) {
+                    if (chanceroll < CHANCE) {
+                        rotations[i] = 90;
+                    } else {
+                        if (((rotations[i] + 30) % 60) > 0) {
+                            rotations[i] -= ((rotations[i] + 30) % 60);
+                        } 
+                    }
+                    if (i == NUM_SLOTS - 1) {
+                        slot_nextstate = S_STOP;
+                    }
+                } else {
+                    rotations[i] = (60 * i) + (gGlobalTimer * 32);
+                }
+            }
+            break;
+        case S_STOP:
+            if (rotations[NUM_SLOTS - 1] == 90) {
+                currCoin->oDamageOrCoinValue = 100;
+                disable_time_stop_including_mario();
+                slot_semaphore = 0;
+                // success sound, relish the victory longer
+                if (slot_timer > 40) {
+                    slot_nextstate = S_SHOWDOWN;
+                }
+            } else {
+                currCoin->oDamageOrCoinValue = 5;
+                // failure sound
+                if (slot_timer > 10) {
+                    slot_nextstate = S_SHOWDOWN;
+                }
+            }
+            break;
+        case S_SHOWDOWN:
+            globalY = approach_f32_asymptotic(globalY, -30.0f, 0.25f);
+            if (slot_timer > 10) {
+                slot_nextstate = S_FINISH;
+            }
+            break;
+        case S_FINISH:
+            disable_time_stop_including_mario();
+            slot_semaphore = 0;
+            currCoin = NULL;
+            slot_nextstate = S_STANDBY;
+            break;
+    }
+
+
+
+    for (int i = 0; i < NUM_SLOTS; i++) {
+        slot_draw(rotations[i], 30 + (60 * i), globalY);
+    }
+
+
+    slot_timer++;
+    if (slot_nextstate != slot_state) {
+        slot_state = slot_nextstate;
+        slot_timer = 0;
+    }
+}

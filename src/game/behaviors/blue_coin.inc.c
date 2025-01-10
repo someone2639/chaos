@@ -63,14 +63,9 @@ void bhv_hidden_blue_coin_loop(void) {
 
             // Delete the coin once collected
             if (o->oInteractStatus & INT_STATUS_INTERACTED) {
-                // enable_time_stop_including_mario();
-                if (random_float() < 0.5f) {
-                    HVQM_PLAY(redditwin);
-                    o->oDamageOrCoinValue = 100;
-                } else {
-                    HVQM_PLAY(redditfail);
-                    o->oDamageOrCoinValue = 5;
-                }
+                void init_slots(struct Object *, f32);
+                init_slots(o, random_float());
+                enable_time_stop_including_mario();
                 o->oAction++;
             }
 
@@ -81,11 +76,18 @@ void bhv_hidden_blue_coin_loop(void) {
             }
             break;
         case HIDDEN_BLUE_COIN_ACT_GAMBLE:
-            interact_coin_delayed(gMarioState);
-            spawn_object(o, MODEL_SPARKLES, bhvGoldenCoinSparkles);
-            obj_mark_for_deletion(o);
+            extern u32 slot_semaphore;
+            if (slot_semaphore == 0) {
+                interact_coin_delayed(gMarioState);
+                spawn_object(o, MODEL_SPARKLES, bhvGoldenCoinSparkles);
+                obj_mark_for_deletion(o);
+            }
             break;
     }
+
+    char tt[50];
+    sprintf(tt, "Ac: %d\n", o->oAction);
+    osSyncPrintf(tt);
 
     o->oInteractStatus = 0;
 }

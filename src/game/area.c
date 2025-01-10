@@ -358,7 +358,7 @@ void play_transition_after_delay(s16 transType, s16 time, u8 red, u8 green, u8 b
     play_transition(transType, time, red, green, blue);
 }
 
-void slot_draw(int i, int x, int y);
+void drawslots();
 void render_game(void) {
     if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
         geo_process_root(gCurrentArea->unk04, D_8032CE74, D_8032CE78, gFBSetColor);
@@ -404,9 +404,7 @@ void render_game(void) {
         }
 
         if (gMarioObject) {
-            slot_draw(0, 30, 30);
-            slot_draw(1, 90, 30);
-            slot_draw(2, 150, 30);
+            drawslots();
         }
     } else {
         render_text_labels();
