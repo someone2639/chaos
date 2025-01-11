@@ -9,6 +9,7 @@
 #include "engine/graph_node.h"
 #include "engine/surface_collision.h"
 #include "engine/surface_load.h"
+#include "chaos/chaos.h"
 #include "interaction.h"
 #include "level_update.h"
 #include "mario.h"
@@ -636,6 +637,8 @@ void update_objects(UNUSED s32 unused) {
     s64 cycleCounts[30];
 
     cycleCounts[0] = get_current_clock();
+
+    chaos_frame_update();
 
     gTimeStopState &= ~TIME_STOP_MARIO_OPENED_DOOR;
 

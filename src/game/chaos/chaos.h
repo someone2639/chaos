@@ -103,8 +103,8 @@ struct ChaosPatchSelection {
 // Lives are applied with a stackable CHAOS_DURATION_ONCE instead of CHAOS_DURATION_USE_COUNT for this reason.
 struct ChaosActiveEntry {
     enum ChaosPatchID id; // ID of a currently active patch
-    u8 remainingDuration; // Number of stars/uses/etc left for this patch to remain active
-    u8 PADDING[3];
+    u32 remainingDuration : 8; // Number of stars/uses/etc left for this patch to remain active
+    u32 frameTimer : 24;
 };
 
 extern const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT];
@@ -134,9 +134,21 @@ void chaos_decrement_patch_usage(const enum ChaosPatchID patchId);
 // Generates a list of CHAOS_PATCH_MAX_GENERATABLE patch combinations for selection use.
 struct ChaosPatchSelection *chaos_roll_for_new_patches(void);
 
+// Send a new patch selection to be applied.
+void chaos_select_patches(struct ChaosPatchSelection *patchSelection);
+
 // Initialize the chaos data, to be run immediately after loading the save file.
 // Activate any patches that were previously active in a different session.
 void chaos_init(s32 arg, s32 unused);
+
+// Invokes the area callback for each chaos patch as soon as Mario enters a new area.
+// Is not invoked if the current course is COURSE_NONE.
+void chaos_area_update(void);
+
+// Invokes a frame update for each active and applicable chaos patch.
+// Only updates if current play mode is normal (i.e. not paused) and timestop is inactive.
+// Takes place right before objects are updated.
+void chaos_frame_update(void);
 
 
 #include "chaos_patch_behaviors.h"

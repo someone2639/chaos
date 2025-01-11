@@ -8,6 +8,7 @@
 #include "buffers/buffers.h"
 #include "engine/behavior_script.h"
 #include "game/debug.h"
+#include "game/object_list_processor.h"
 
 #define WEIGHT_OFFSET 1.5f // Cannot be 0 or else div by 0!
 
@@ -135,6 +136,7 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
 
     // Set values for new entry appropriately
     newEntry->id = patchId;
+    newEntry->frameTimer = 0;
     if (patch->durationType == CHAOS_DURATION_ONCE || patch->durationType == CHAOS_DURATION_USE_COUNT) {
         newEntry->remainingDuration = 0;
     } else {
@@ -215,6 +217,8 @@ static void chaos_update_available_patches(void) {
 
 void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_EFFECT_COUNT],
                           u8 posNegPairings[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_EFFECT_COUNT], f32 severityWeights[CHAOS_PATCH_SEVERITY_COUNT]) {
+    bzero(generatedPatches, sizeof(generatedPatches));
+
     // Generate patches
     for (s32 index = 0; index < CHAOS_PATCH_MAX_GENERATABLE; index++) {
         enum ChaosPatchID positivePatchId = CHAOS_PATCH_NONE_POSITIVE;
@@ -417,6 +421,11 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
     return generatedPatches;
 }
 
+void chaos_select_patches(struct ChaosPatchSelection *patchSelection) {
+    chaos_add_new_entry(patchSelection->positiveId);
+    chaos_add_new_entry(patchSelection->negativeId);
+}
+
 void chaos_init(UNUSED s32 arg, UNUSED s32 unused) {
     save_file_get_chaos_data(&gChaosActiveEntries, &gChaosActiveEntryCount);
 
@@ -429,9 +438,43 @@ void chaos_init(UNUSED s32 arg, UNUSED s32 unused) {
         }
 
         if (patch->activatedInitFunc) {
+            gChaosActiveEntries[i].frameTimer = 0; // Is this desirable?
             patch->activatedInitFunc(patch);
         }
     }
 
     chaos_update_available_patches();
+}
+
+void chaos_area_update(void) {
+    if (gCurrCourseNum == COURSE_NONE) {
+        return;
+    }
+
+    for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+        const enum ChaosPatchID patchId = gChaosActiveEntries[i].id;
+        const struct ChaosPatch *patch = &gChaosPatches[patchId];
+
+        if (patch->areaInitFunc) {
+            patch->areaInitFunc(patch);
+        }
+    }
+}
+
+void chaos_frame_update(void) {
+    if (gTimeStopState | TIME_STOP_ACTIVE) {
+        return;
+    }
+
+    for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+        const enum ChaosPatchID patchId = gChaosActiveEntries[i].id;
+        const struct ChaosPatch *patch = &gChaosPatches[patchId];
+
+        if (patch->frameUpdateFunc) {
+            patch->frameUpdateFunc(patch);
+            if (gChaosActiveEntries[i].frameTimer < 0xFFFFFF) {
+                gChaosActiveEntries[i].frameTimer++;
+            }
+        }
+    }
 }

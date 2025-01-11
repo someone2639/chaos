@@ -1875,6 +1875,8 @@ void init_mario(void) {
 
         capObject->oMoveAngleYaw = 0;
     }
+
+    chaos_area_update();
 }
 
 void init_mario_from_save_file(void) {
