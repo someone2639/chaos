@@ -668,6 +668,8 @@
 #define /*0x104*/ oMenuButtonOrigPosZ    OBJECT_FIELD_F32(0x1F)
 #define /*0x108*/ oMenuButtonScale       OBJECT_FIELD_F32(0x20)
 #define /*0x10C*/ oMenuButtonActionPhase OBJECT_FIELD_S32(0x21)
+#define /*0x110*/ oMenuButtonDiffCol     OBJECT_FIELD_S32(0x22)
+#define /*0x1AC*/ oMenuButtonChalCol     OBJECT_FIELD_S32(0x49)
 
 /* Manta Ray */
 #define /*0x0F4*/ oMantaTargetPitch OBJECT_FIELD_S32(0x1B)

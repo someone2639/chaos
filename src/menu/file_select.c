@@ -23,6 +23,9 @@
 #include "text_strings.h"
 #include "gamemode_select.h"
 #include "eu_translation.h"
+#include "game/rendering_graph_node.h"
+#include "game/debug.h"
+#include "levels/menu/chaos_save_button/geo_header.h"
 #ifdef VERSION_EU
 #undef LANGUAGE_FUNCTION
 #define LANGUAGE_FUNCTION sLanguageMode
@@ -340,6 +343,10 @@ void load_main_menu_save_file(struct Object *fileButton, s32 fileNum) {
 */
 static void bhv_menu_button_new_game_create(struct Object *button) {
     s32 fileNum = 0;
+    s32 difficulty = sGamemodeSelectMenu.selectedDifficulty;
+    s32 challenge = sGamemodeSelectMenu.selectedChallenge;
+    button->oMenuButtonDiffCol = difficulty;
+    button->oMenuButtonChalCol = challenge;
     switch(sSelectedButtonID) {
         case MENU_BUTTON_PLAY_FILE_A:
             fileNum = 1;
@@ -1385,7 +1392,7 @@ void bhv_menu_button_manager_init(void) {
     // File A
     if (save_file_exists(SAVE_FILE_A) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_A] =
-            spawn_object_rel_with_rot(gCurrentObject, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON_FADE,
+            spawn_object_rel_with_rot(gCurrentObject, MODEL_CHAOS_SAVE_BUTTON,
                                       bhvMenuButton, -6400, 2800, 0, 0, 0, 0);
     } else {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_A] =
@@ -1396,7 +1403,7 @@ void bhv_menu_button_manager_init(void) {
     // File B
     if (save_file_exists(SAVE_FILE_B) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_B] =
-            spawn_object_rel_with_rot(gCurrentObject, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON_FADE,
+            spawn_object_rel_with_rot(gCurrentObject, MODEL_CHAOS_SAVE_BUTTON,
                                       bhvMenuButton, 1500, 2800, 0, 0, 0, 0);
     } else {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_B] =
@@ -1407,7 +1414,7 @@ void bhv_menu_button_manager_init(void) {
     // File C
     if (save_file_exists(SAVE_FILE_C) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_C] =
-            spawn_object_rel_with_rot(gCurrentObject, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON_FADE,
+            spawn_object_rel_with_rot(gCurrentObject, MODEL_CHAOS_SAVE_BUTTON,
                                       bhvMenuButton, -6400, 0, 0, 0, 0, 0);
     } else {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_C] = spawn_object_rel_with_rot(
@@ -1417,7 +1424,7 @@ void bhv_menu_button_manager_init(void) {
     // File D
     if (save_file_exists(SAVE_FILE_D) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_D] = spawn_object_rel_with_rot(
-            gCurrentObject, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON_FADE, bhvMenuButton, 1500, 0, 0, 0, 0, 0);
+            gCurrentObject, MODEL_CHAOS_SAVE_BUTTON, bhvMenuButton, 1500, 0, 0, 0, 0, 0);
     } else {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_D] = spawn_object_rel_with_rot(
             gCurrentObject, MODEL_MAIN_MENU_MARIO_NEW_BUTTON_FADE, bhvMenuButton, 1500, 0, 0, 0, 0, 0);
@@ -1492,6 +1499,9 @@ void check_main_menu_clicked_buttons(void) {
                     }
                     if(checkFile > -1) {
                         if(!save_file_exists(checkFile)) {
+                            sMainMenuButtons[buttonID]->header.gfx.sharedChild =
+                                gLoadedGraphNodes[MODEL_CHAOS_SAVE_BUTTON];
+                            sMainMenuButtons[buttonID]->oBehParams2ndByte = 1;
                             sMainMenuButtons[buttonID]->oMenuButtonState = MENU_BUTTON_STATE_NEW_GAME_ANIM;
                             sSelectedButtonID = buttonID;
                             play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
@@ -3020,6 +3030,60 @@ s32 lvl_init_menu_values_and_cursor_pos(UNUSED s32 arg, UNUSED s32 unused) {
 s32 lvl_update_obj_and_load_file_selected(UNUSED s32 arg, UNUSED s32 unused) {
     area_update_objects();
     return sSelectedFileNum;
+}
+
+static u8 sDifficultyColors[][3] = {
+    {0x00, 0xFF, 0x00},         //Easy
+    {0xFF, 0xFF, 0xFF},         //Normal
+    {0xFF, 0x00, 0x00},         //Hard
+};
+
+Gfx *geo_file_select_change_difficulty_color(s32 callContext, struct GraphNode *node, UNUSED Mat4 mtx) {
+    if(callContext == GEO_CONTEXT_RENDER) {
+        struct GraphNodeGenerated *this = (struct GraphNodeGenerated *)node;
+        struct Object *nodeObj = (struct Object *) gCurGraphNodeObject;
+        u8 difficulty = nodeObj->oMenuButtonDiffCol;
+        u8 r = sDifficultyColors[difficulty][0];
+        u8 g = sDifficultyColors[difficulty][1];
+        u8 b = sDifficultyColors[difficulty][2];
+        Gfx* dl = alloc_display_list(sizeof(Gfx) * 3);
+        Gfx* head = dl;
+
+        this->fnNode.node.flags = 0x100 | (this->fnNode.node.flags & 0xFF);
+        gDPPipeSync(head++);
+        gDPSetPrimColor(head++, 0, 0, r, g, b, 0xFF);
+        gSPEndDisplayList(head++);
+
+        return dl;
+    }
+
+    return NULL;
+}
+
+Gfx *geo_file_select_change_challenge_texture(s32 callContext, struct GraphNode *node, UNUSED Mat4 mtx) {
+    if(callContext == GEO_CONTEXT_RENDER) {
+        struct GraphNodeGenerated *this = (struct GraphNodeGenerated *)node;
+        struct Object *nodeObj = (struct Object *) gCurGraphNodeObject;
+        u8 challenge = nodeObj->oMenuButtonChalCol;
+        u8 *texture;
+        if(challenge) {
+            texture = chaos_save_button_save_icon_mario_face_challenge_rgba16;
+        } else {
+            texture = chaos_save_button_save_icon_mario_face_rgba16;
+        }
+        Gfx* dl = alloc_display_list(sizeof(Gfx) * 3);
+        Gfx* head = dl;
+
+        ((this->fnNode.node.flags) = ((this->fnNode.node.flags) & 0x00FF) | (((LAYER_TRANSPARENT_DECAL) << 8) & 0xFF00));
+
+        gDPPipeSync(head++);
+        gDPSetTextureImage(head++, G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 1, texture);
+        gSPEndDisplayList(head++);
+
+        return dl;
+    }
+
+    return NULL;
 }
 
 STATIC_ASSERT(SOUND_MODE_COUNT == MENU_BUTTON_SOUND_OPTION_MAX - MENU_BUTTON_SOUND_OPTION_MIN, "Mismatch between number of sound modes in audio code and file select!");
