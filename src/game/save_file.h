@@ -46,6 +46,9 @@ struct SaveFile {
 
     u8 courseCoinScores[COURSE_STAGES_COUNT];
 
+    s8 chaosDifficulty;
+    s8 lives;
+    u8 livesEnabled;
     s32 chaosEntryCount;
     struct ChaosActiveEntry chaosEntries[CHAOS_PATCH_ENTRIES];
 
@@ -158,12 +161,13 @@ void save_file_remove_star_flags(s32 fileIndex, s32 courseIndex, u32 starFlags);
 s32 save_file_get_course_coin_score(s32 fileIndex, s32 courseIndex);
 s32 save_file_is_cannon_unlocked(void);
 void save_file_set_cannon_unlocked(void);
+s8 save_file_get_life_count(s32 fileIndex);
 void save_file_set_cap_pos(s16 x, s16 y, s16 z);
 s32 save_file_get_cap_pos(Vec3s capPos);
 void save_file_set_sound_mode(u16 mode);
 u16 save_file_get_sound_mode(void);
 void save_file_move_cap_to_default_location(void);
-void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount);
+void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount, enum ChaosDifficulty *gChaosDifficulty, u8 *gChaosLivesEnabled);
 
 void disable_warp_checkpoint(void);
 void check_if_should_set_warp_checkpoint(struct WarpNode *warpNode);

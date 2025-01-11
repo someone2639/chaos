@@ -275,6 +275,8 @@ static void touch_high_score_ages(s32 fileIndex) {
 
 void save_file_do_save(s32 fileIndex) {
     if (gSaveFileModified) {
+        gSaveBuffer.files[fileIndex].lives = gMarioState->numLives;
+
         // Compute checksum
         add_save_block_signature(&gSaveBuffer.files[fileIndex],
                                  sizeof(gSaveBuffer.files[fileIndex]), SAVE_FILE_MAGIC);
@@ -557,6 +559,10 @@ void save_file_set_cannon_unlocked(void) {
     gSaveFileModified = TRUE;
 }
 
+s8 save_file_get_life_count(s32 fileIndex) {
+    return gSaveBuffer.files[fileIndex].lives;
+}
+
 void save_file_set_cap_pos(s16 x, s16 y, s16 z) {
     struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
 
@@ -636,9 +642,11 @@ u16 eu_get_language(void) {
 }
 #endif
 
-void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount) {
+void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount, enum ChaosDifficulty *gChaosDifficulty, u8 *gChaosLivesEnabled) {
     *entryData = gSaveBuffer.files[gCurrSaveFileNum - 1].chaosEntries;
     *currentEntryCount = &gSaveBuffer.files[gCurrSaveFileNum - 1].chaosEntryCount;
+    *gChaosDifficulty = gSaveBuffer.files[gCurrSaveFileNum - 1].chaosDifficulty;
+    *gChaosLivesEnabled = gSaveBuffer.files[gCurrSaveFileNum - 1].livesEnabled;
 }
 
 void disable_warp_checkpoint(void) {

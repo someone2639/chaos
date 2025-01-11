@@ -111,6 +111,7 @@ extern const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT];
 extern s32 *gChaosActiveEntryCount;
 extern struct ChaosActiveEntry *gChaosActiveEntries;
 extern enum ChaosDifficulty gChaosDifficulty;
+extern u8 gChaosLivesEnabled;
 
 // Check whether a particular patch is currently active. Optionally retrieve the active patch data.
 u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId, struct ChaosActiveEntry **firstFoundMatch);

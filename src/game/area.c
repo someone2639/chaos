@@ -397,6 +397,7 @@ void render_game(void) {
         }
 
         if (chaosDebugRender) {
+            gFasttextTmpBuffer[0] = '\0';
             s32 length = 0;
             for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
                 struct ChaosActiveEntry *entry = &gChaosActiveEntries[i];

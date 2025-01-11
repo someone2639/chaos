@@ -1894,9 +1894,11 @@ void init_mario_from_save_file(void) {
         save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
     gMarioState->numKeys = 0;
 
-#ifndef DISABLE_LIVES
-    gMarioState->numLives = 4;
-#endif
+    if (save_file_exists(gCurrSaveFileNum - 1)) {
+        gMarioState->numLives = save_file_get_life_count(gCurrSaveFileNum - 1);
+    } else {
+        gMarioState->numLives = 4;
+    }
     gMarioState->health = 0x880;
 
     gMarioState->prevNumStarsForDialog = gMarioState->numStars;

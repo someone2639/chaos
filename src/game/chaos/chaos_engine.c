@@ -15,11 +15,20 @@
 static u8 availablePatches[CHAOS_PATCH_COUNT];
 static struct ChaosPatchSelection generatedPatches[CHAOS_PATCH_MAX_GENERATABLE];
 
-s32 *gChaosActiveEntryCount = &gSaveBuffer.files[0].chaosEntryCount;
-struct ChaosActiveEntry *gChaosActiveEntries = gSaveBuffer.files[0].chaosEntries;
+s32 *gChaosActiveEntryCount = NULL;
+struct ChaosActiveEntry *gChaosActiveEntries = NULL;
+
+// TODO: These are written to by the save file, but are never actually saved to the save file!
+// This essentially means that they will always be 0 and are unconfigurable at compile time!
+// Implement save file options to allow difficulty selection and lives!
 enum ChaosDifficulty gChaosDifficulty = CHAOS_DIFFICULTY_NORMAL;
+u8 gChaosLivesEnabled = FALSE;
 
 u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId, struct ChaosActiveEntry **firstFoundMatch) {
+    if (!gChaosActiveEntryCount) {
+        return FALSE;
+    }
+
     for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
         if (gChaosActiveEntries[i].id == patchId) {
             if (firstFoundMatch) {
@@ -37,6 +46,10 @@ u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId, struct ChaosActi
 }
 
 void chaos_remove_expired_entry(const s32 patchIndex) {
+    if (!gChaosActiveEntryCount) {
+        return;
+    }
+
     const enum ChaosPatchID patchId = gChaosActiveEntries[patchIndex].id;
     const struct ChaosPatch *patch = &gChaosPatches[patchId];
 
@@ -62,6 +75,10 @@ void chaos_remove_expired_entry(const s32 patchIndex) {
 }
 
 void chaos_add_new_entry(const enum ChaosPatchID patchId) {
+    if (!gChaosActiveEntryCount) {
+        return;
+    }
+
     const struct ChaosPatch *patch = &gChaosPatches[patchId];
     s32 matchingIndex = -1;
 
@@ -153,6 +170,10 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
 }
 
 void chaos_decrement_star_timers(void) {
+    if (!gChaosActiveEntryCount) {
+        return;
+    }
+
     gSaveFileModified = TRUE;
 
     for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
@@ -170,6 +191,10 @@ void chaos_decrement_star_timers(void) {
 }
 
 void chaos_decrement_patch_usage(const enum ChaosPatchID patchId) {
+    if (!gChaosActiveEntryCount) {
+        return;
+    }
+
     struct ChaosActiveEntry *firstFoundMatch = NULL;
     s32 matchIndex = -1;
 
@@ -202,6 +227,10 @@ void chaos_decrement_patch_usage(const enum ChaosPatchID patchId) {
 
 // Update a complete list of patches that are acceptible for generation
 static void chaos_update_available_patches(void) {
+    if (!gChaosActiveEntryCount) {
+        return;
+    }
+
     for (s32 i = 0; i < ARRAY_COUNT(availablePatches); i++) {
         availablePatches[i] = TRUE;
     }
@@ -295,6 +324,10 @@ void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_
 }
 
 struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
+    if (!gChaosActiveEntryCount) {
+        return NULL;
+    }
+
     u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_EFFECT_COUNT];
     u8 posNegPairings[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_EFFECT_COUNT];
     s8 allowedSeverities[CHAOS_PATCH_SEVERITY_COUNT];
@@ -439,12 +472,16 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
 }
 
 void chaos_select_patches(struct ChaosPatchSelection *patchSelection) {
+    if (!gChaosActiveEntryCount) {
+        return;
+    }
+
     chaos_add_new_entry(patchSelection->positiveId);
     chaos_add_new_entry(patchSelection->negativeId);
 }
 
 void chaos_init(void) {
-    save_file_get_chaos_data(&gChaosActiveEntries, &gChaosActiveEntryCount);
+    save_file_get_chaos_data(&gChaosActiveEntries, &gChaosActiveEntryCount, &gChaosDifficulty, &gChaosLivesEnabled);
 
     for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
         const enum ChaosPatchID patchId = gChaosActiveEntries[i].id;
@@ -464,6 +501,10 @@ void chaos_init(void) {
 }
 
 void chaos_area_update(void) {
+    if (!gChaosActiveEntryCount) {
+        return;
+    }
+
     if (gCurrCourseNum == COURSE_NONE) {
         return;
     }
@@ -479,6 +520,10 @@ void chaos_area_update(void) {
 }
 
 void chaos_frame_update(void) {
+    if (!gChaosActiveEntryCount) {
+        return;
+    }
+
     if (gTimeStopState | TIME_STOP_ACTIVE) {
         return;
     }

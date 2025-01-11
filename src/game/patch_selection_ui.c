@@ -35,14 +35,6 @@ struct PatchSelectionMenu patchMenu[1];
 struct PatchSelectionMenu *gPatchSelectionMenu = patchMenu;
 
 /*
-    Initializes the patch selection menu
-*/
-void init_patch_selection_menu() {
-    load_new_patches();
-    reset_patch_selection_menu();
-}
-
-/*
     Loads a fresh batch of patches to select from
 */
 void load_new_patches() {

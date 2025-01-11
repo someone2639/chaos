@@ -749,11 +749,9 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 break;
 
             case WARP_OP_DEATH:
-#ifndef DISABLE_LIVES
-                if (m->numLives <= 0) {
+                if (gChaosLivesEnabled && m->numLives <= 0) {
                     sDelayedWarpOp = WARP_OP_GAME_OVER;
                 }
-#endif
                 sDelayedWarpTimer = 48;
                 sSourceWarpNodeId = WARP_NODE_DEATH;
                 play_transition(WARP_TRANSITION_FADE_INTO_BOWSER, 0x30, 0x00, 0x00, 0x00);
@@ -763,15 +761,11 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
             case WARP_OP_WARP_FLOOR:
                 sSourceWarpNodeId = WARP_NODE_WARP_FLOOR;
                 if (area_get_warp_node(sSourceWarpNodeId) == NULL) {
-#ifndef DISABLE_LIVES
-                    if (m->numLives <= 0) {
+                    if (gChaosLivesEnabled && m->numLives <= 0) {
                         sDelayedWarpOp = WARP_OP_GAME_OVER;
                     } else {
                         sSourceWarpNodeId = WARP_NODE_DEATH;
                     }
-#else
-                    sSourceWarpNodeId = WARP_NODE_DEATH;
-#endif
                 }
                 sDelayedWarpTimer = 20;
                 play_transition(WARP_TRANSITION_FADE_INTO_CIRCLE, 0x14, 0x00, 0x00, 0x00);
@@ -860,6 +854,7 @@ void initiate_delayed_warp(void) {
         } else {
             switch (sDelayedWarpOp) {
                 case WARP_OP_GAME_OVER:
+                    save_file_erase(gCurrSaveFileNum - 1);
                     save_file_load_all();
                     warp_special(-3);
                     break;
@@ -943,11 +938,9 @@ void update_hud_values(void) {
             }
         }
 
-#ifndef DISABLE_LIVES
         if (gMarioState->numLives > 100) {
             gMarioState->numLives = 100;
         }
-#endif
 
         if (gMarioState->numCoins > 999) {
             gMarioState->numCoins = 999;

@@ -4,14 +4,15 @@ void bhv_1up_interact(void) {
     UNUSED u8 filler[4];
 
     if (obj_check_if_collided_with_object(o, gMarioObject) == TRUE) {
-        play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
-#ifndef DISABLE_LIVES
-        // gMarioState->numLives++;
-#endif
-        o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
-#if ENABLE_RUMBLE
-        queue_rumble_data(5, 80);
-#endif
+//         play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
+//         if (gChaosLivesEnabled) {
+//             gMarioState->numLives++;
+//         }
+
+        obj_mark_for_deletion(o);
+// #if ENABLE_RUMBLE
+//         queue_rumble_data(5, 80);
+// #endif
     }
 }
 
@@ -20,6 +21,9 @@ void bhv_1up_common_init(void) {
     o->oGravity = 3.0f;
     o->oFriction = 1.0f;
     o->oBuoyancy = 1.0f;
+
+    obj_mark_for_deletion(o);
+    return;
 }
 
 void bhv_1up_init(void) {
@@ -79,6 +83,10 @@ void one_up_move_away_from_mario(s16 collisionFlags) {
 }
 
 void bhv_1up_walking_loop(void) {
+    obj_mark_for_deletion(o);
+    return;
+
+#if 0
     object_step();
 
     switch (o->oAction) {
@@ -115,9 +123,14 @@ void bhv_1up_walking_loop(void) {
     }
 
     set_object_visibility(o, 3000);
+#endif
 }
 
 void bhv_1up_running_away_loop(void) {
+    obj_mark_for_deletion(o);
+    return;
+
+#if 0
     s16 collisionFlags = object_step();
 
     switch (o->oAction) {
@@ -151,9 +164,14 @@ void bhv_1up_running_away_loop(void) {
     }
 
     set_object_visibility(o, 3000);
+#endif
 }
 
 void sliding_1up_move(void) {
+    obj_mark_for_deletion(o);
+    return;
+
+#if 0
     s16 collisionFlags = object_step();
 
     if (collisionFlags & OBJ_COL_FLAG_GROUNDED) {
@@ -170,6 +188,7 @@ void sliding_1up_move(void) {
     if (!is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 5000)) {
         o->oAction = 2;
     }
+#endif
 }
 
 void bhv_1up_sliding_loop(void) {
@@ -196,11 +215,20 @@ void bhv_1up_sliding_loop(void) {
 }
 
 void bhv_1up_loop(void) {
+    obj_mark_for_deletion(o);
+    return;
+
+#if 0
     bhv_1up_interact();
     set_object_visibility(o, 3000);
+#endif
 }
 
 void bhv_1up_jump_on_approach_loop(void) {
+    obj_mark_for_deletion(o);
+    return;
+
+#if 0
     s16 collisionFlags;
 
     switch (o->oAction) {
@@ -225,9 +253,14 @@ void bhv_1up_jump_on_approach_loop(void) {
     }
 
     set_object_visibility(o, 3000);
+#endif
 }
 
 void bhv_1up_hidden_loop(void) {
+    obj_mark_for_deletion(o);
+    return;
+
+#if 0
     s16 collisionFlags;
 
     switch (o->oAction) {
@@ -268,6 +301,7 @@ void bhv_1up_hidden_loop(void) {
             }
             break;
     }
+#endif
 }
 
 void bhv_1up_hidden_trigger_loop(void) {
@@ -282,6 +316,10 @@ void bhv_1up_hidden_trigger_loop(void) {
 }
 
 void bhv_1up_hidden_in_pole_loop(void) {
+    obj_mark_for_deletion(o);
+    return;
+
+#if 0
     UNUSED s16 collisionFlags;
 
     switch (o->oAction) {
@@ -315,9 +353,14 @@ void bhv_1up_hidden_in_pole_loop(void) {
             }
             break;
     }
+#endif
 }
 
 void bhv_1up_hidden_in_pole_trigger_loop(void) {
+    obj_mark_for_deletion(o);
+    return;
+
+#if 0
     if (obj_check_if_collided_with_object(o, gMarioObject) == TRUE) {
         struct Object *sp1C = cur_obj_nearest_object_with_behavior(bhvHidden1upInPole);
         if (sp1C != NULL) {
@@ -326,9 +369,14 @@ void bhv_1up_hidden_in_pole_trigger_loop(void) {
 
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }
+#endif
 }
 
 void bhv_1up_hidden_in_pole_spawner_loop(void) {
+    obj_mark_for_deletion(o);
+    return;
+
+#if 0
     if (is_point_within_radius_of_mario(o->oPosX, o->oPosY, o->oPosZ, 700)) {
         s8 i;
         spawn_object_relative(2, 0, 50, 0, o, MODEL_1UP, bhvHidden1upInPole);
@@ -338,4 +386,5 @@ void bhv_1up_hidden_in_pole_spawner_loop(void) {
 
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }
+#endif
 }
