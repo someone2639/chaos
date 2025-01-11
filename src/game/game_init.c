@@ -592,7 +592,9 @@ void adjust_analog_stick(struct Controller *controller) {
         controller->stickY *= 64 / controller->stickMag;
         controller->stickMag = 64;
     }
-    controller->stickX *= -1;
+    if (isGameFlipped) {
+        controller->stickX *= -1;
+    }
 }
 
 /**
@@ -858,7 +860,7 @@ void thread5_game_loop(UNUSED void *arg) {
     init_patch_selection_menu();
 
     while (TRUE) {
-        isGameFlipped = TRUE;
+        // isGameFlipped = TRUE;
         profiler_frame_setup();
         // If the reset timer is active, run the process to reset the game.
         if (gResetTimer != 0) {

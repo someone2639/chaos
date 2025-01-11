@@ -165,8 +165,8 @@ typedef struct {
 #define R_JPAD		CONT_RIGHT
 #define D_JPAD		CONT_DOWN
 #define U_CBUTTONS	CONT_E
-#define L_CBUTTONS	CONT_F
-#define R_CBUTTONS	CONT_C
+#define L_CBUTTONS	CONT_C
+#define R_CBUTTONS	CONT_F
 #define D_CBUTTONS	CONT_D
 #define GCN_X_BUTTON 0x0040
 #define GCN_Y_BUTTON 0x0080
