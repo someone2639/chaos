@@ -390,13 +390,14 @@ Gfx *geo_mario_tilt_torso(s32 callContext, struct GraphNode *node, UNUSED Mat4 *
 
     if (callContext == GEO_CONTEXT_RENDER) {
         struct GraphNodeRotation *rotNode = (struct GraphNodeRotation *) node->next;
+        s16 rotCorrection = isGameFlipped ? -1 : 1;
 
         if (action != ACT_BUTT_SLIDE && action != ACT_HOLD_BUTT_SLIDE && action != ACT_WALKING
             && action != ACT_RIDING_SHELL_GROUND) {
             vec3s_copy(bodyState->torsoAngle, gVec3sZero);
         }
-        rotNode->rotation[0] = bodyState->torsoAngle[1];
-        rotNode->rotation[1] = bodyState->torsoAngle[2];
+        rotNode->rotation[0] = bodyState->torsoAngle[1] * rotCorrection;
+        rotNode->rotation[1] = bodyState->torsoAngle[2] * rotCorrection;
         rotNode->rotation[2] = bodyState->torsoAngle[0];
     }
     return NULL;
@@ -652,3 +653,46 @@ Gfx *geo_mirror_mario_backface_culling(s32 callContext, struct GraphNode *node, 
     }
     return gfx;
 }
+
+Gfx *geo_flip_mario(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
+    struct GraphNodeGenerated *asGenerated = (struct GraphNodeGenerated *) node;
+    Gfx *gfx = NULL;
+
+    if (callContext == GEO_CONTEXT_RENDER) {
+        gfx = alloc_display_list(3 * sizeof(*gfx));
+
+        if (isGameFlipped) {
+            gSPClearGeometryMode(&gfx[0], G_CULL_BACK);
+            gSPSetGeometryMode(&gfx[1], G_CULL_FRONT);
+            gSPEndDisplayList(&gfx[2]);
+        } else {
+            gSPClearGeometryMode(&gfx[0], G_CULL_FRONT);
+            gSPSetGeometryMode(&gfx[1], G_CULL_BACK);
+            gSPEndDisplayList(&gfx[2]);
+        }
+        asGenerated->fnNode.node.flags = (asGenerated->fnNode.node.flags & 0xFF) | (LAYER_OPAQUE << 8);
+    }
+    return gfx;
+}
+
+Gfx *geo_unflip_mario(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
+    struct GraphNodeGenerated *asGenerated = (struct GraphNodeGenerated *) node;
+    Gfx *gfx = NULL;
+
+    if (callContext == GEO_CONTEXT_RENDER) {
+        gfx = alloc_display_list(3 * sizeof(*gfx));
+
+        if (isGameFlipped) {
+            gSPClearGeometryMode(&gfx[0], G_CULL_FRONT);
+            gSPSetGeometryMode(&gfx[1], G_CULL_BACK);
+            gSPEndDisplayList(&gfx[2]);
+        } else {
+            gSPClearGeometryMode(&gfx[0], G_CULL_BACK);
+            gSPSetGeometryMode(&gfx[1], G_CULL_FRONT);
+            gSPEndDisplayList(&gfx[2]);
+        }
+        asGenerated->fnNode.node.flags = (asGenerated->fnNode.node.flags & 0xFF) | (LAYER_OPAQUE << 8);
+    }
+    return gfx;
+}
+

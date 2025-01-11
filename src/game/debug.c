@@ -13,6 +13,7 @@
 #include "print.h"
 #include "sm64.h"
 #include "types.h"
+#include "rendering_graph_node.h"
 
 #define DEBUG_INFO_NOFLAGS (0 << 0)
 #define DEBUG_INFO_FLAG_DPRINT (1 << 0)
@@ -414,18 +415,8 @@ void stub_debug_5(void) {
  */
 void try_print_debug_mario_object_info(void) {
     if (gMarioObject != NULL) {
-        switch (sDebugPage) {
-            case DEBUG_PAGE_CHECKSURFACEINFO:
-                print_surfaceinfo();
-                break;
-            case DEBUG_PAGE_EFFECTINFO:
-                print_effectinfo();
-                break;
-            case DEBUG_PAGE_ENEMYINFO:
-                print_enemyinfo();
-                break;
-            default:
-                break;
+        if (isGameFlipped) {
+            gMarioObject->header.gfx.scale[0] *= -1;
         }
     }
 
