@@ -70,7 +70,7 @@ s32 run_level_id_or_demo(s32 level) {
                 gCurrDemoInput = ((struct DemoInput *) gDemoInputsBuf.bufTarget) + 1;
                 level = (s8)((struct DemoInput *) gDemoInputsBuf.bufTarget)->timer;
                 gCurrSaveFileNum = 1;
-                chaos_init(0, 0);
+                chaos_init();
 
                 gCurrActNum = 1;
             }
@@ -142,7 +142,7 @@ s16 intro_level_select(void) {
     if (gCurrLevelNum < LEVEL_MIN) gCurrLevelNum = LEVEL_MAX; // exceeded min. set to max.
     // Use file 1 and last act as a test
     gCurrSaveFileNum = 1;
-    chaos_init(0, 0);
+    chaos_init();
 
     gCurrActNum = 6;
 

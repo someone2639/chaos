@@ -139,7 +139,7 @@ void chaos_select_patches(struct ChaosPatchSelection *patchSelection);
 
 // Initialize the chaos data, to be run immediately after loading the save file.
 // Activate any patches that were previously active in a different session.
-void chaos_init(s32 arg, s32 unused);
+void chaos_init(void);
 
 // Invokes the area callback for each chaos patch as soon as Mario enters a new area.
 // Is not invoked if the current course is COURSE_NONE.

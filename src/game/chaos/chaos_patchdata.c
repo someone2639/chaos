@@ -199,8 +199,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = TRUE,
         .duration          = 10,
 
-        .activatedInitFunc = NULL, // TODO:
-        .deactivationFunc  = NULL, // TODO:
+        .conditionalFunc   = chs_cond_gravity_decrease_lv1,
+        .activatedInitFunc = chs_act_gravity_decrease_lv1,
+        .deactivationFunc  = chs_deact_gravity_decrease_lv1,
 
         .name              = "Decreased Gravity (-15%)",
         .shortDescription  = "Decrease Mario's gravity by 15%.",
@@ -212,8 +213,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = TRUE,
         .duration          = 10,
 
-        .activatedInitFunc = NULL, // TODO:
-        .deactivationFunc  = NULL, // TODO:
+        .conditionalFunc   = chs_cond_gravity_decrease_lv2,
+        .activatedInitFunc = chs_act_gravity_decrease_lv2,
+        .deactivationFunc  = chs_deact_gravity_decrease_lv2,
 
         .name              = "Decreased Gravity (-30%)",
         .shortDescription  = "Decrease Mario's gravity by 30%.",
@@ -225,8 +227,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = TRUE,
         .duration          = 10,
 
-        .activatedInitFunc = NULL, // TODO:
-        .deactivationFunc  = NULL, // TODO:
+        .conditionalFunc   = chs_cond_gravity_decrease_lv3,
+        .activatedInitFunc = chs_act_gravity_decrease_lv3,
+        .deactivationFunc  = chs_deact_gravity_decrease_lv3,
 
         .name              = "Decreased Gravity (-50%)",
         .shortDescription  = "Decrease Mario's gravity by 50%.",
@@ -238,8 +241,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = TRUE,
         .duration          = 10,
 
-        .activatedInitFunc = NULL, // TODO:
-        .deactivationFunc  = NULL, // TODO:
+        .conditionalFunc   = chs_cond_gravity_increase_lv1,
+        .activatedInitFunc = chs_act_gravity_increase_lv1,
+        .deactivationFunc  = chs_deact_gravity_increase_lv1,
 
         .name              = "Increased Gravity (+15%)",
         .shortDescription  = "Increase Mario's gravity by 15%.",
@@ -251,8 +255,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = TRUE,
         .duration          = 10,
 
-        .activatedInitFunc = NULL, // TODO:
-        .deactivationFunc  = NULL, // TODO:
+        .conditionalFunc   = chs_cond_gravity_increase_lv2,
+        .activatedInitFunc = chs_act_gravity_increase_lv2,
+        .deactivationFunc  = chs_deact_gravity_increase_lv2,
 
         .name              = "Increased Gravity (+30%)",
         .shortDescription  = "Increase Mario's gravity by 30%.",
@@ -264,8 +269,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = TRUE,
         .duration          = 10,
 
-        .activatedInitFunc = NULL, // TODO:
-        .deactivationFunc  = NULL, // TODO:
+        .conditionalFunc   = chs_cond_gravity_increase_lv3,
+        .activatedInitFunc = chs_act_gravity_increase_lv3,
+        .deactivationFunc  = chs_deact_gravity_increase_lv3,
 
         .name              = "Increased Gravity (+50%)",
         .shortDescription  = "Increase Mario's gravity by 50%.",

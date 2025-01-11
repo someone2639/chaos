@@ -443,7 +443,7 @@ void chaos_select_patches(struct ChaosPatchSelection *patchSelection) {
     chaos_add_new_entry(patchSelection->negativeId);
 }
 
-void chaos_init(UNUSED s32 arg, UNUSED s32 unused) {
+void chaos_init(void) {
     save_file_get_chaos_data(&gChaosActiveEntries, &gChaosActiveEntryCount);
 
     for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {

@@ -31,4 +31,21 @@ void chs_act_stars_decrease_lv3(const struct ChaosPatch *patch);
 void chs_act_stars_decrease_guarantee(const struct ChaosPatch *patch);
 
 // Gravity Modifiers
-// TODO:
+u8 chs_cond_gravity_decrease_lv1(const struct ChaosPatch *patch);
+u8 chs_cond_gravity_decrease_lv2(const struct ChaosPatch *patch);
+u8 chs_cond_gravity_decrease_lv3(const struct ChaosPatch *patch);
+u8 chs_cond_gravity_increase_lv1(const struct ChaosPatch *patch);
+u8 chs_cond_gravity_increase_lv2(const struct ChaosPatch *patch);
+u8 chs_cond_gravity_increase_lv3(const struct ChaosPatch *patch);
+void chs_act_gravity_decrease_lv1(const struct ChaosPatch *patch);
+void chs_act_gravity_decrease_lv2(const struct ChaosPatch *patch);
+void chs_act_gravity_decrease_lv3(const struct ChaosPatch *patch);
+void chs_act_gravity_increase_lv1(const struct ChaosPatch *patch);
+void chs_act_gravity_increase_lv2(const struct ChaosPatch *patch);
+void chs_act_gravity_increase_lv3(const struct ChaosPatch *patch);
+void chs_deact_gravity_decrease_lv1(const struct ChaosPatch *patch);
+void chs_deact_gravity_decrease_lv2(const struct ChaosPatch *patch);
+void chs_deact_gravity_decrease_lv3(const struct ChaosPatch *patch);
+void chs_deact_gravity_increase_lv1(const struct ChaosPatch *patch);
+void chs_deact_gravity_increase_lv2(const struct ChaosPatch *patch);
+void chs_deact_gravity_increase_lv3(const struct ChaosPatch *patch);
