@@ -57,10 +57,11 @@ static void add_uncollected_star(void) {
         }
 
         s32 starFlags = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(course));
-        for (s32 starIndex = 1; starFlags != 0; starFlags >>= 1, starIndex <<= 1) {
+        for (s32 starIndex = 1; starIndex < (1 << 8); starFlags >>= 1, starIndex <<= 1) {
             if (!(starFlags & 1)) {
                 if (starToUpdate == 0) {
                     save_file_set_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(course), starIndex);
+                    gMarioState->numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
                     break;
                 } else {
                     starToUpdate--;
@@ -92,6 +93,7 @@ static void remove_collected_star(void) {
             if (starFlags & 1) {
                 if (starToUpdate == 0) {
                     save_file_remove_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(course), starIndex);
+                    gMarioState->numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
                     break;
                 } else {
                     starToUpdate--;
@@ -118,6 +120,7 @@ static void update_any_star(u8 shouldRemove) {
         } else {
             save_file_set_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(course), 1 << starToUpdate);
         }
+        gMarioState->numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
 
         break;
     }

@@ -10,7 +10,7 @@
 #include "game/debug.h"
 #include "game/object_list_processor.h"
 
-#define WEIGHT_OFFSET 1.5f // Cannot be 0 or else div by 0!
+#define WEIGHT_OFFSET 1.25f // Must be > 0!
 
 static u8 availablePatches[CHAOS_PATCH_COUNT];
 static struct ChaosPatchSelection generatedPatches[CHAOS_PATCH_MAX_GENERATABLE];
@@ -202,14 +202,25 @@ void chaos_decrement_patch_usage(const enum ChaosPatchID patchId) {
 
 // Update a complete list of patches that are acceptible for generation
 static void chaos_update_available_patches(void) {
-    memset(availablePatches, TRUE, ARRAY_COUNT(availablePatches));
+    for (s32 i = 0; i < ARRAY_COUNT(availablePatches); i++) {
+        availablePatches[i] = TRUE;
+    }
 
     for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
         struct ChaosActiveEntry *entry = &gChaosActiveEntries[i];
         const struct ChaosPatch *patch = &gChaosPatches[entry->id];
 
-        if (!patch->isStackable || (patch->conditionalFunc && !patch->conditionalFunc(patch))) {
+        if (!patch->isStackable) {
             availablePatches[entry->id] = FALSE;
+            continue;
+        }
+    }
+
+    for (s32 i = 0; i < CHAOS_PATCH_COUNT; i++) {
+        const struct ChaosPatch *patch = &gChaosPatches[i];
+
+        if (patch->conditionalFunc && !patch->conditionalFunc(patch)) {
+            availablePatches[i] = FALSE;
             continue;
         }
     }
@@ -224,7 +235,7 @@ void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_
         enum ChaosPatchID positivePatchId = CHAOS_PATCH_NONE_POSITIVE;
         enum ChaosPatchID negativePatchId = CHAOS_PATCH_NONE_NEGATIVE;
 
-        s32 totalWeight = 0.0f;
+        f32 totalWeight = 0.0f;
         s32 generatedSeverity = 0;
         for (s32 i = 1; i < CHAOS_PATCH_SEVERITY_COUNT; i++) {
             totalWeight += severityWeights[i];
@@ -336,8 +347,14 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
         if (pos > CHAOS_PATCH_SEVERITY_MAX) {
             pos = CHAOS_PATCH_SEVERITY_MAX;
         }
+        if (pos < 0) {
+            pos = 0;
+        }
         if (neg > CHAOS_PATCH_SEVERITY_MAX) {
             neg = CHAOS_PATCH_SEVERITY_MAX;
+        }
+        if (neg < 0) {
+            neg = 0;
         }
 
         if (severityCounts[pos][CHAOS_EFFECT_POSITIVE] > 0 && severityCounts[neg][CHAOS_EFFECT_NEGATIVE] > 0) {
@@ -352,32 +369,32 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
         }
 
         if (severityCounts[pos][CHAOS_EFFECT_POSITIVE] > 0) {
-            posNegPairings[i][CHAOS_EFFECT_POSITIVE] = i;
+            posNegPairings[i][CHAOS_EFFECT_POSITIVE] = pos;
 
-            if (i < CHAOS_PATCH_SEVERITY_MAX && severityCounts[i + 1][CHAOS_EFFECT_NEGATIVE] > 0) {
-                posNegPairings[i][CHAOS_EFFECT_NEGATIVE] = i + 1;
+            if (neg < CHAOS_PATCH_SEVERITY_MAX && severityCounts[neg + 1][CHAOS_EFFECT_NEGATIVE] > 0) {
+                posNegPairings[i][CHAOS_EFFECT_NEGATIVE] = neg + 1;
                 allowedSeverities[i] = TRUE;
                 continue;
             }
 
-            if (i > 0 && severityCounts[i - 1][CHAOS_EFFECT_NEGATIVE] > 0) {
-                posNegPairings[i][CHAOS_EFFECT_NEGATIVE] = i - 1;
+            if (neg > 0 && severityCounts[neg - 1][CHAOS_EFFECT_NEGATIVE] > 0) {
+                posNegPairings[i][CHAOS_EFFECT_NEGATIVE] = neg - 1;
                 allowedSeverities[i] = TRUE;
                 continue;
             }
         }
 
         if (severityCounts[neg][CHAOS_EFFECT_NEGATIVE] > 0) {
-            posNegPairings[i][CHAOS_EFFECT_NEGATIVE] = i;
+            posNegPairings[i][CHAOS_EFFECT_NEGATIVE] = neg;
 
-            if (i > 0 && severityCounts[i - 1][CHAOS_EFFECT_POSITIVE] > 0) {
-                posNegPairings[i][CHAOS_EFFECT_POSITIVE] = i - 1;
+            if (pos > 0 && severityCounts[pos - 1][CHAOS_EFFECT_POSITIVE] > 0) {
+                posNegPairings[i][CHAOS_EFFECT_POSITIVE] = pos - 1;
                 allowedSeverities[i] = TRUE;
                 continue;
             }
 
-            if (i < CHAOS_PATCH_SEVERITY_MAX && severityCounts[i + 1][CHAOS_EFFECT_POSITIVE] > 0) {
-                posNegPairings[i][CHAOS_EFFECT_POSITIVE] = i + 1;
+            if (pos < CHAOS_PATCH_SEVERITY_MAX && severityCounts[pos + 1][CHAOS_EFFECT_POSITIVE] > 0) {
+                posNegPairings[i][CHAOS_EFFECT_POSITIVE] = pos + 1;
                 allowedSeverities[i] = TRUE;
                 continue;
             }
@@ -405,14 +422,14 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
 
         severityWeights[patch->severity] += 1.0f;
     }
-    for (s32 i = 0; i < ARRAY_COUNT(severityWeights); i++) {
+    for (s32 i = 1; i < ARRAY_COUNT(severityWeights); i++) {
         severityWeights[i] += WEIGHT_OFFSET;
         totalWeight += severityWeights[i];
     }
-    for (s32 i = 0; i < ARRAY_COUNT(severityWeights); i++) {
+    for (s32 i = 1; i < ARRAY_COUNT(severityWeights); i++) {
         severityWeights[i] = 1.0f - (severityWeights[i] / totalWeight);
         severityWeights[i] *= severityWeights[i];
-        if (i != 0 && !allowedSeverities[i]) {
+        if (!allowedSeverities[i]) {
             severityWeights[i] = 0.0f;
         }
     }

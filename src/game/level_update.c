@@ -1093,7 +1093,11 @@ s32 play_mode_frame_advance(void) {
 
 s32 play_mode_select_patch(void) {
     if(gPatchSelectionMenu->menu.menuState != PATCH_SELECT_STATE_CLOSED) {
-        gPatchSelectionMenu->menu.flags |= PATCH_SELECT_FLAG_ACTIVE;
+        if (!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_ACTIVE)) {
+            chaos_decrement_star_timers();
+            load_new_patches();
+            gPatchSelectionMenu->menu.flags |= PATCH_SELECT_FLAG_ACTIVE;
+        }
         update_patch_selection_menu();
     }else {
         reset_patch_selection_menu();

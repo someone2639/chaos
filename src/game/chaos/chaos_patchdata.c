@@ -197,6 +197,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 1,
         .isStackable       = TRUE,
+        .duration          = 10,
 
         .activatedInitFunc = NULL, // TODO:
         .deactivationFunc  = NULL, // TODO:
@@ -209,6 +210,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 2,
         .isStackable       = TRUE,
+        .duration          = 10,
 
         .activatedInitFunc = NULL, // TODO:
         .deactivationFunc  = NULL, // TODO:
@@ -221,6 +223,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 3,
         .isStackable       = TRUE,
+        .duration          = 10,
 
         .activatedInitFunc = NULL, // TODO:
         .deactivationFunc  = NULL, // TODO:
@@ -233,6 +236,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 1,
         .isStackable       = TRUE,
+        .duration          = 10,
 
         .activatedInitFunc = NULL, // TODO:
         .deactivationFunc  = NULL, // TODO:
@@ -245,6 +249,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 2,
         .isStackable       = TRUE,
+        .duration          = 10,
 
         .activatedInitFunc = NULL, // TODO:
         .deactivationFunc  = NULL, // TODO:
@@ -257,6 +262,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = TRUE,
+        .duration          = 10,
 
         .activatedInitFunc = NULL, // TODO:
         .deactivationFunc  = NULL, // TODO:
