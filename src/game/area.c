@@ -361,8 +361,41 @@ void play_transition_after_delay(s16 transType, s16 time, u8 red, u8 green, u8 b
     play_transition(transType, time, red, green, blue);
 }
 
+u32 flipstate = 2;
+
+void process_master_quest_transition(struct GraphNodeRoot *node) {
+    switch (flipstate) {
+        case 0:
+            node->width = approach_s16_asymptotic(node->width, 0, 8);
+
+            if (node->width <= 15) {
+                isGameFlipped ^= 1;
+                flipstate++;
+            }
+            break;
+        case 1:
+            node->width = approach_s16_asymptotic(node->width, SCREEN_WIDTH / 2, 8);
+
+            if (node->width >= 140) {
+                flipstate++;
+                node->width = (SCREEN_WIDTH / 2);
+            }
+            break;
+        case 2:
+            node->width = (SCREEN_WIDTH / 2);
+            break;
+    }
+}
+
 void render_game(void) {
     if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
+        process_master_quest_transition(gCurrentArea->unk04);
+        char tt[100];
+        sprintf(tt, "X %d W %d\n", gCurrentArea->unk04->x, gCurrentArea->unk04->width);
+        osSyncPrintf(tt);
+        if (gPlayer1Controller->buttonPressed & L_TRIG) {
+            flipstate = 0;
+        }
         if(!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_STOP_GAME_RENDER)) {
             geo_process_root(gCurrentArea->unk04, D_8032CE74, D_8032CE78, gFBSetColor);
         }
@@ -418,10 +451,6 @@ void render_game(void) {
         } else {
             clear_framebuffer(gWarpTransFBSetColor);
         }
-    }
-
-    if (gPlayer1Controller->buttonPressed & L_TRIG) {
-        isGameFlipped ^= 1;
     }
 
     D_8032CE74 = NULL;
