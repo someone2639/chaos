@@ -2240,12 +2240,14 @@ static const Vtx vertex_text_bg_box[] = {
 
 // 0x0200EDE8 - 0x0200EE28
 const Gfx dl_draw_text_bg_box[] = {
+    gsSPGeometryMode(G_CULL_BACK, G_CULL_FRONT),
     gsDPPipeSync(),
     gsSPClearGeometryMode(G_LIGHTING),
     gsDPSetCombineMode(G_CC_FADE, G_CC_FADE),
     gsDPSetRenderMode(G_RM_XLU_SURF, G_RM_XLU_SURF2),
     gsSPVertex(vertex_text_bg_box, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
+    gsSPGeometryMode(G_CULL_FRONT, G_CULL_BACK),
     gsSPEndDisplayList(),
 };
 
@@ -2313,6 +2315,7 @@ const Gfx dl_ia_text_begin[] = {
 };
 
 const Gfx dl_ia_text_tex_settings[] = {
+    gsSPGeometryMode(G_CULL_BACK, G_CULL_FRONT),
     gsDPSetTile(G_IM_FMT_IA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, 3, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, 4, G_TX_NOLOD),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, ((16 * 8 + G_IM_SIZ_4b_INCR) >> G_IM_SIZ_4b_SHIFT) - 1, CALC_DXT(16, G_IM_SIZ_4b_BYTES)),
@@ -2320,6 +2323,7 @@ const Gfx dl_ia_text_tex_settings[] = {
     gsDPSetTileSize(0, 0, 0, (16 - 1) << G_TEXTURE_IMAGE_FRAC, (8 - 1) << G_TEXTURE_IMAGE_FRAC),
     gsSPVertex(vertex_ia8_char, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0, 0,  2,  3, 0x0),
+    gsSPGeometryMode(G_CULL_FRONT, G_CULL_BACK),
     gsSPEndDisplayList(),
 };
 
@@ -2372,6 +2376,7 @@ static const Vtx vertex_triangle[] = {
 
 // 0x0200EF60 - 0x0200EFB0
 const Gfx dl_draw_triangle[] = {
+    gsSPGeometryMode(G_CULL_BACK, G_CULL_FRONT),
     gsSPClearGeometryMode(G_LIGHTING),
     gsDPSetCombineMode(G_CC_FADE, G_CC_FADE),
     gsDPSetRenderMode(G_RM_XLU_SURF, G_RM_XLU_SURF2),
@@ -2381,6 +2386,7 @@ const Gfx dl_draw_triangle[] = {
     gsSPSetGeometryMode(G_LIGHTING),
     gsDPSetRenderMode(G_RM_AA_ZB_OPA_SURF, G_RM_AA_ZB_OPA_SURF2),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
+    gsSPGeometryMode(G_CULL_FRONT, G_CULL_BACK),
     gsSPEndDisplayList(),
 };
 

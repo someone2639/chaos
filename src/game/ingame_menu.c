@@ -2133,6 +2133,7 @@ void print_peach_letter_message(void) {
     dialog = segmented_to_virtual(dialogTable[gDialogID]);
     str = segmented_to_virtual(dialog->str);
 
+    gSPGeometryMode(gDisplayListHead++, G_CULL_BACK, G_CULL_FRONT);
     create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_PUSH, 97.0f, 118.0f, 0);
 
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gCutsceneMsgFade);
@@ -2151,6 +2152,7 @@ void print_peach_letter_message(void) {
     gDPSetEnvColor(gDisplayListHead++, 200, 80, 120, gCutsceneMsgFade);
     gSPDisplayList(gDisplayListHead++, castle_grounds_seg7_us_dl_0700F2E8);
 #endif
+    gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
 
     // at the start/end of message, reset the fade.
     if (gCutsceneMsgTimer == 0) {
@@ -2185,6 +2187,7 @@ void print_peach_letter_message(void) {
  * Formed by four triangles.
  */
 void render_hud_cannon_reticle(void) {
+    gSPGeometryMode(gDisplayListHead++, G_CULL_BACK, G_CULL_FRONT);
     create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_PUSH, 160.0f, 120.0f, 0);
 
     gDPSetEnvColor(gDisplayListHead++, 50, 50, 50, 180);
@@ -2208,6 +2211,7 @@ void render_hud_cannon_reticle(void) {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
 }
 
 void reset_red_coins_collected(void) {
@@ -2244,6 +2248,7 @@ void print_animated_red_coin(s16 x, s16 y) {
 
     create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_PUSH, x, y, 0);
     create_dl_scale_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, 0.2f, 0.2f, 1.0f);
+    gSPGeometryMode(gDisplayListHead++, G_CULL_BACK, G_CULL_FRONT);
     gDPSetRenderMode(gDisplayListHead++, G_RM_TEX_EDGE, G_RM_TEX_EDGE2);
 
     switch (globalTimer & 6) {
@@ -2263,6 +2268,7 @@ void print_animated_red_coin(s16 x, s16 y) {
 
     gDPSetRenderMode(gDisplayListHead++, G_RM_AA_ZB_OPA_SURF, G_RM_AA_ZB_OPA_SURF2);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
 }
 
 void render_pause_red_coins(void) {

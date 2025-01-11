@@ -29,7 +29,7 @@
 #include "engine/graph_node.h"
 #include "level_table.h"
 
-#define CBUTTON_MASK (U_CBUTTONS | D_CBUTTONS | L_CBUTTONS | R_CBUTTONS)
+#define CBUTTON_MASK (U_CBUTTONS | D_CBUTTONS | R_CBUTTONS | L_CBUTTONS)
 
 /**
  * @file camera.c

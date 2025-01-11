@@ -63,12 +63,14 @@ s32 dl_transition_color(s8 fadeTimer, u8 transTime, struct WarpTransitionData *t
     Vtx *verts = vertex_transition_color(transData, alpha);
 
     if (verts != NULL) {
+        gSPGeometryMode(gDisplayListHead++, G_CULL_BACK, G_CULL_FRONT);
         gSPDisplayList(gDisplayListHead++, dl_proj_mtx_fullscreen);
         gDPSetCombineMode(gDisplayListHead++, G_CC_SHADE, G_CC_SHADE);
         gDPSetRenderMode(gDisplayListHead++, G_RM_AA_XLU_SURF, G_RM_AA_XLU_SURF2);
         gSPVertex(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(verts), 4, 0);
         gSPDisplayList(gDisplayListHead++, dl_draw_quad_verts_0123);
         gSPDisplayList(gDisplayListHead++, dl_screen_transition_end);
+        gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
     }
     return set_and_reset_transition_fade_timer(fadeTimer, transTime);
 }
@@ -176,6 +178,7 @@ s32 render_textured_transition(s8 fadeTimer, s8 transTime, struct WarpTransition
 
     if (verts != NULL) {
         load_tex_transition_vertex(verts, fadeTimer, transData, centerTransX, centerTransY, texTransRadius, transTexType);
+        gSPGeometryMode(gDisplayListHead++, G_CULL_BACK, G_CULL_FRONT);
         gSPDisplayList(gDisplayListHead++, dl_proj_mtx_fullscreen)
         gDPSetCombineMode(gDisplayListHead++, G_CC_SHADE, G_CC_SHADE);
         gDPSetRenderMode(gDisplayListHead++, G_RM_AA_OPA_SURF, G_RM_AA_OPA_SURF2);
@@ -201,6 +204,7 @@ s32 render_textured_transition(s8 fadeTimer, s8 transTime, struct WarpTransition
         gSPTexture(gDisplayListHead++, 0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF);
         gSPDisplayList(gDisplayListHead++, dl_screen_transition_end);
         sTransitionTextureFadeCount[fadeTimer] += transData->texTimer;
+        gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
     } else {
     }
     return set_and_reset_transition_fade_timer(fadeTimer, transTime);
@@ -247,10 +251,10 @@ s32 render_screen_transition(s8 fadeTimer, s8 transType, u8 transTime, struct Wa
 Gfx *render_cannon_circle_base(void) {
 #ifdef WIDESCREEN
     Vtx *verts = alloc_display_list(8 * sizeof(*verts));
-    Gfx *dlist = alloc_display_list(20 * sizeof(*dlist));
+    Gfx *dlist = alloc_display_list(21 * sizeof(*dlist));
 #else
     Vtx *verts = alloc_display_list(4 * sizeof(*verts));
-    Gfx *dlist = alloc_display_list(16 * sizeof(*dlist));
+    Gfx *dlist = alloc_display_list(17 * sizeof(*dlist));
 #endif
     Gfx *g = dlist;
 
@@ -268,6 +272,7 @@ Gfx *render_cannon_circle_base(void) {
         make_vertex(verts, 7, GFX_DIMENSIONS_FROM_LEFT_EDGE(0), SCREEN_HEIGHT, -1, 0, 0, 0, 0, 0, 255);
 #endif
 
+
         gSPDisplayList(g++, dl_proj_mtx_fullscreen);
         gDPSetCombineMode(g++, G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA);
         gDPSetTextureFilter(g++, G_TF_BILERP);
@@ -275,6 +280,7 @@ Gfx *render_cannon_circle_base(void) {
             G_TX_WRAP | G_TX_MIRROR, G_TX_WRAP | G_TX_MIRROR, 5, 6, G_TX_NOLOD, G_TX_NOLOD);
         gSPTexture(g++, 0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON);
         gSPVertex(g++, VIRTUAL_TO_PHYSICAL(verts), 4, 0);
+        gSPGeometryMode(g++, G_CULL_FRONT, G_CULL_BACK);
         gSPDisplayList(g++, dl_draw_quad_verts_0123);
         gSPTexture(g++, 0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF);
 #ifdef WIDESCREEN

@@ -108,6 +108,8 @@ void render_power_meter_health_segment(s16 numHealthWedges) {
 void render_dl_power_meter(s16 numHealthWedges) {
     Mtx *mtx = alloc_display_list(sizeof(Mtx));
 
+    gSPGeometryMode(gDisplayListHead++, G_CULL_BACK, G_CULL_FRONT);
+
     if (mtx == NULL) {
         return;
     }
@@ -125,6 +127,7 @@ void render_dl_power_meter(s16 numHealthWedges) {
     }
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
 }
 
 /**

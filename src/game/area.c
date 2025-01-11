@@ -127,6 +127,8 @@ void print_intro_text(void) {
 #endif
         }
     }
+    print_text_centered(160, 80, "SM64 MIRROR MODE");
+    print_text_centered(160, 64, "BY RED");
 }
 
 u32 get_mario_spawn_type(struct Object *o) {
@@ -416,6 +418,10 @@ void render_game(void) {
         } else {
             clear_framebuffer(gWarpTransFBSetColor);
         }
+    }
+
+    if (gPlayer1Controller->buttonPressed & L_TRIG) {
+        isGameFlipped ^= 1;
     }
 
     D_8032CE74 = NULL;

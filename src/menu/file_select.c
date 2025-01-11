@@ -14,6 +14,7 @@
 #include "game/object_helpers.h"
 #include "game/object_list_processor.h"
 #include "game/print.h"
+#include "game/rendering_graph_node.h"
 #include "game/save_file.h"
 #include "game/segment2.h"
 #include "game/segment7.h"
@@ -1402,6 +1403,7 @@ void bhv_menu_button_manager_init(void) {
  * Also play a sound and/or render buttons depending of the button ID selected.
  */
 void check_main_menu_clicked_buttons(void) {
+    isGameFlipped = FALSE;
 #ifdef VERSION_EU
     if (sMainMenuTimer >= 5) {
 #endif
@@ -2855,7 +2857,25 @@ static void print_file_select_strings(void) {
 Gfx *geo_file_select_strings_and_menu_cursor(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx) {
     if (callContext == GEO_CONTEXT_RENDER) {
         print_file_select_strings();
+        gSPGeometryMode(gDisplayListHead++, G_CULL_BACK, G_CULL_FRONT);
         print_menu_cursor();
+        gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
+    }
+    return NULL;
+}
+
+// FIX FILE SELECT:
+
+Gfx *geo_invert(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx) {
+    if (callContext == GEO_CONTEXT_RENDER) {
+        gSPGeometryMode(gDisplayListHead++, G_CULL_BACK, G_CULL_FRONT);
+    }
+    return NULL;
+}
+
+Gfx *geo_invert_off(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx) {
+    if (callContext == GEO_CONTEXT_RENDER) {
+        gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
     }
     return NULL;
 }
@@ -2928,6 +2948,7 @@ s32 lvl_init_menu_values_and_cursor_pos(UNUSED s32 arg, UNUSED s32 unused) {
  * defined in load_main_menu_save_file.
  */
 s32 lvl_update_obj_and_load_file_selected(UNUSED s32 arg, UNUSED s32 unused) {
+    isGameFlipped = FALSE;
     area_update_objects();
     return sSelectedFileNum;
 }

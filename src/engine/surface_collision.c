@@ -476,9 +476,10 @@ static struct Surface *find_floor_from_list(struct SurfaceNode *surfaceNode, s32
             continue;
         }
 
-        *pheight = height;
-        floor = surf;
-        break;
+        if (*pheight < height) {
+            *pheight = height;
+            floor = surf;
+        }
     }
 
     //! (Surface Cucking) Since only the first floor is returned and not the highest,

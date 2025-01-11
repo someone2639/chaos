@@ -2346,7 +2346,7 @@ void start_view_dl(struct ObjView *view) {
 
     gDPSetScissor(next_gfx(), G_SC_NON_INTERLACE, ulx, uly, lrx, lry);
     gSPClearGeometryMode(next_gfx(), 0xFFFFFFFF);
-    gSPSetGeometryMode(next_gfx(), G_LIGHTING | G_CULL_BACK | G_SHADING_SMOOTH | G_SHADE);
+    gSPSetGeometryMode(next_gfx(), G_LIGHTING | G_CULL_FRONT | G_SHADING_SMOOTH | G_SHADE);
     if (view->flags & VIEW_ALLOC_ZBUF) {
         gSPSetGeometryMode(next_gfx(), G_ZBUFFER);
     }
@@ -2374,7 +2374,7 @@ void parse_p1_controller(void) {
     currInputs = &sGdContPads[0];
     prevInputs = &sPrevFrameCont[0];
     // stick values
-    gdctrl->stickXf     = currInputs->stick_x;
+    gdctrl->stickXf     = -currInputs->stick_x;
     gdctrl->stickYf     = currInputs->stick_y;
     gdctrl->stickDeltaX = gdctrl->stickX;
     gdctrl->stickDeltaY = gdctrl->stickY;
@@ -2566,10 +2566,10 @@ void gd_setproperty(enum GdProperty prop, f32 f1, f32 f2, f32 f3) {
             parm = (s32) f1;
             switch (parm) {
                 case 1:
-                    gSPSetGeometryMode(next_gfx(), G_CULL_BACK);
+                    gSPSetGeometryMode(next_gfx(), G_CULL_FRONT);
                     break;
                 case 0:
-                    gSPClearGeometryMode(next_gfx(), G_CULL_BACK);
+                    gSPClearGeometryMode(next_gfx(), G_CULL_FRONT);
                     break;
             }
             break;
