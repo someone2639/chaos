@@ -942,7 +942,7 @@ void render_extended_description() {
 /*
     Determines which button prompts if any to show and draws them
 */
-void render_button_prompts() {
+void render_patch_select_button_prompts() {
     switch(gPatchSelectionMenu->menu.menuState) {
         case PATCH_SELECT_STATE_SELECT:
             if(gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].extendedDesc1 || 
@@ -1037,7 +1037,7 @@ void display_patch_selection_ui() {
         }
 
         if(!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_HALT_INPUT)) {
-            render_button_prompts();
+            render_patch_select_button_prompts();
         }
     }
 }

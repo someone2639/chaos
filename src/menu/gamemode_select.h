@@ -12,6 +12,12 @@
 #define CHAL_SELECT_Y           (GM_START_GAME_Y + 39)
 #define DIFF_SELECT_X           GM_START_GAME_X
 #define DIFF_SELECT_Y           (CHAL_SELECT_Y + 60)
+
+#define GM_SELECT_DESC_Y_START    (GM_SELECT_DESC_Y - 100)
+#define DIFF_SELECT_X_START       (SCREEN_WIDTH + 50)
+#define CHAL_SELECT_X_START       (DIFF_SELECT_X_START + 50)
+#define GM_START_GAME_X_START     (CHAL_SELECT_X_START + 50)
+
 #define GM_SELECT_DIFF          0
 #define GM_SELECT_CHAL          1
 #define GM_SELECT_START         2
@@ -33,6 +39,12 @@ enum GamemodeSelectFlags {
     GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR = (1 << 2),
 };
 
+enum GamemodeSelectAnims {
+    GM_SELECT_ANIM_STARTUP,
+    GM_SELECT_ANIM_SELECTING,
+    GM_SELECT_ANIM_CONFIRM,
+};
+
 enum GamemodeSelectState {
     GM_SELECT_STATE_DEFAULT,
     GM_SELECT_STATE_CHANGE_DIFF,
@@ -46,6 +58,10 @@ struct GamemodeSelectMenu {
     u8 selectedDifficulty;
     u8 selectedChallenge;
     u8 prevSelection;
+    Vec2f diffPos;
+    Vec2f chalPos;
+    Vec2f startGamePos;
+    Vec2f descPos;
 };
 
 extern struct GamemodeSelectMenu sGamemodeSelectMenu;

@@ -24,8 +24,11 @@ const char *sGMSelectDescriptions[] = {
     "Enables permadeath. Running out of lives deletes the\nsave file. 1-up mushrooms are removed, and lives can\nonly be increased by collecting yellow stars."
 };
 
+/*
+    Sets the gamemode select menu to the state it should be in when the game starts
+*/
 void init_gamemode_select() {
-    sGamemodeSelectMenu.menu.flags = GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR;
+    sGamemodeSelectMenu.menu.flags = GAMEMODE_SELECT_FLAG_HALT_INPUT;
     sGamemodeSelectMenu.menu.menuState = GM_SELECT_STATE_DEFAULT;
     sGamemodeSelectMenu.menu.selectedMenuIndex = 0;
     sGamemodeSelectMenu.menu.framesSinceLastStickInput = 0;
@@ -37,13 +40,26 @@ void init_gamemode_select() {
     sGamemodeSelectMenu.selectedDifficulty = 1;
     sGamemodeSelectMenu.selectedChallenge = 0;
     sGamemodeSelectMenu.prevSelection = 0;
+
+    sGamemodeSelectMenu.diffPos[0] = DIFF_SELECT_X_START;
+    sGamemodeSelectMenu.diffPos[1] = DIFF_SELECT_Y;
+    sGamemodeSelectMenu.chalPos[0] = CHAL_SELECT_X_START;
+    sGamemodeSelectMenu.chalPos[1] = CHAL_SELECT_Y;
+    sGamemodeSelectMenu.startGamePos[0] = GM_START_GAME_X_START;
+    sGamemodeSelectMenu.startGamePos[1] = GM_START_GAME_Y;
+    sGamemodeSelectMenu.descPos[0] = SCREEN_CENTER_X;
+    sGamemodeSelectMenu.descPos[1] = GM_SELECT_DESC_Y_START;
 }
 
+/*
+    Handles inputs for the main selection menu
+*/
 void handle_inputs_gamemode_select_state_default(f32 stickDir) {
     s32 selection = sGamemodeSelectMenu.menu.selectedMenuIndex;
     s32 prevSelection = selection;
+    s32 playCursorSound = FALSE;
 
-    if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
+    if(gPlayer1Controller->buttonPressed & A_BUTTON) {
         switch(selection) {
             case GM_SELECT_DIFF:
                 menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_CHANGE_DIFF);
@@ -54,37 +70,59 @@ void handle_inputs_gamemode_select_state_default(f32 stickDir) {
                 sGamemodeSelectMenu.prevSelection = sGamemodeSelectMenu.selectedChallenge;
                 break;
             case GM_SELECT_START:
+                sGamemodeSelectMenu.prevSelection = selection;
                 menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_CONFIRM);
                 selection = 0;
-                sGamemodeSelectMenu.menu.flags &= ~GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR;
+                menu_play_anim(&sGamemodeSelectMenu.menu, GM_SELECT_ANIM_CONFIRM);
                 break;
         }
+        play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
+    } else if (gPlayer1Controller->buttonPressed & START_BUTTON) {
+        sGamemodeSelectMenu.prevSelection = selection;
+        menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_CONFIRM);
+        selection = 0;
+        menu_play_anim(&sGamemodeSelectMenu.menu, GM_SELECT_ANIM_CONFIRM);
+        play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
     } else if(gPlayer1Controller->buttonPressed & D_JPAD || (stickDir == MENU_JOYSTICK_DIR_DOWN)) {
         selection++;
+        playCursorSound = TRUE;
     } else if (gPlayer1Controller->buttonPressed & U_JPAD || (stickDir == MENU_JOYSTICK_DIR_UP)) {
         selection--;
+        playCursorSound = TRUE;
     }
 
     if(selection < 0 || selection > 2) {
         selection = prevSelection;
+        playCursorSound = FALSE;
+    }
+
+    if(playCursorSound) {
+        play_sound(SOUND_MENU_MESSAGE_NEXT_PAGE, gGlobalSoundSource);
     }
 
     sGamemodeSelectMenu.menu.selectedMenuIndex = selection;
 }
 
+/*
+    Handles inputs for the difficulty selection submenu
+*/
 void handle_inputs_gamemode_select_state_change_diff(f32 stickDir) {
     s32 selection = sGamemodeSelectMenu.selectedDifficulty;
     s32 prevSelection = sGamemodeSelectMenu.prevSelection;
 
     if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
         menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_DEFAULT);
+        play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
     } else if (gPlayer1Controller->buttonPressed & B_BUTTON) {
         menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_DEFAULT);
         selection = prevSelection;
+        play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
     } else if(gPlayer1Controller->buttonPressed & D_JPAD || (stickDir == MENU_JOYSTICK_DIR_DOWN)) {
         selection++;
+        play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
     } else if (gPlayer1Controller->buttonPressed & U_JPAD || (stickDir == MENU_JOYSTICK_DIR_UP)) {
         selection--;
+        play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
     }
 
     if(selection > 2) {
@@ -96,19 +134,26 @@ void handle_inputs_gamemode_select_state_change_diff(f32 stickDir) {
     sGamemodeSelectMenu.selectedDifficulty = selection;
 }
 
+/*
+    Handles inputs for the challenge selection menu
+*/
 void handle_inputs_gamemode_select_state_change_challenge(f32 stickDir) {
     s32 selection = sGamemodeSelectMenu.selectedChallenge;
     s32 prevSelection = sGamemodeSelectMenu.prevSelection;
 
     if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
         menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_DEFAULT);
+        play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
     } else if (gPlayer1Controller->buttonPressed & B_BUTTON) {
         menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_DEFAULT);
         selection = prevSelection;
+        play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
     } else if(gPlayer1Controller->buttonPressed & D_JPAD || (stickDir == MENU_JOYSTICK_DIR_DOWN)) {
         selection++;
+        play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
     } else if (gPlayer1Controller->buttonPressed & U_JPAD || (stickDir == MENU_JOYSTICK_DIR_UP)) {
         selection--;
+        play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
     }
 
     if(selection > 1) {
@@ -120,21 +165,26 @@ void handle_inputs_gamemode_select_state_change_challenge(f32 stickDir) {
     sGamemodeSelectMenu.selectedChallenge = selection;
 }
 
+/*
+    Handles inputs for the confirmation dialogue
+*/
 void handle_inputs_gamemode_select_state_confirm(f32 stickDir) {
         if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
         if(sGamemodeSelectMenu.menu.selectedMenuIndex) {
             //No
             menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_DEFAULT);
-            sGamemodeSelectMenu.menu.selectedMenuIndex = GM_SELECT_START;
-            sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR;
+            sGamemodeSelectMenu.menu.selectedMenuIndex = sGamemodeSelectMenu.prevSelection;
+            menu_play_anim(&sGamemodeSelectMenu.menu, GM_SELECT_ANIM_SELECTING);
+            play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
         } else {
             //Yes
             menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_ENDING);
+            play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
         }
     } else if(gPlayer1Controller->buttonPressed & B_BUTTON) {
         menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_DEFAULT);
-        sGamemodeSelectMenu.menu.selectedMenuIndex = GM_SELECT_START;
-                sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR;
+        sGamemodeSelectMenu.menu.selectedMenuIndex = sGamemodeSelectMenu.prevSelection;
+        menu_play_anim(&sGamemodeSelectMenu.menu, GM_SELECT_ANIM_SELECTING);
     }
     else if(gPlayer1Controller->buttonPressed & R_JPAD || (stickDir == MENU_JOYSTICK_DIR_RIGHT)) {
         sGamemodeSelectMenu.menu.selectedMenuIndex++;
@@ -151,6 +201,9 @@ void handle_inputs_gamemode_select_state_confirm(f32 stickDir) {
     }
 }
 
+/*
+    Handles inputs for game select menu
+*/
 void handle_gamemode_select_inputs() {
     u32 stickDir = menu_update_joystick_dir(&sGamemodeSelectMenu.menu);
 
@@ -170,8 +223,100 @@ void handle_gamemode_select_inputs() {
     }
 }
 
+/*
+    Plays a startup animation for the gamemode selection menu
+*/
+#define GM_SELECT_STARTUP_FRAMES       7
+
+s32 gm_select_anim_startup() {
+    s32 phase = sGamemodeSelectMenu.menu.animPhase;
+    s32 animTimer = sGamemodeSelectMenu.menu.animTimer;
+
+    if(phase) {
+        sGamemodeSelectMenu.menu.flags &= ~GAMEMODE_SELECT_FLAG_HALT_INPUT;
+        sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR;
+        return TRUE;
+    }
+    
+    sGamemodeSelectMenu.menu.animFrames = GM_SELECT_STARTUP_FRAMES;
+    f32 animPercent = sins((0x3FFF / sGamemodeSelectMenu.menu.animFrames) * animTimer);
+
+    //Slide elements on screen
+    f32 startGameX = menu_translate_percentage(GM_START_GAME_X_START, GM_START_GAME_X, animPercent);
+    f32 challX = menu_translate_percentage(CHAL_SELECT_X_START, CHAL_SELECT_X, animPercent);
+    f32 diffX = menu_translate_percentage(DIFF_SELECT_X_START, (DIFF_SELECT_X - 5), animPercent); //Offset by 5 so it isn't jarring when the selection animation starts playing
+    f32 descY = menu_translate_percentage(GM_SELECT_DESC_Y_START, GM_SELECT_DESC_Y, animPercent);
+
+    sGamemodeSelectMenu.diffPos[0] = diffX;
+    sGamemodeSelectMenu.chalPos[0] = challX;
+    sGamemodeSelectMenu.startGamePos[0] = startGameX;
+    sGamemodeSelectMenu.descPos[1] = descY;
+    
+    return FALSE;
+}
+
+/*
+    Plays a selection animation
+*/
+s32 gm_select_anim_selecting() {
+    s32 selected = sGamemodeSelectMenu.menu.selectedMenuIndex;
+
+    sGamemodeSelectMenu.menu.animFrames = MENU_ANIM_LOOP;
+    sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR;
+
+    sGamemodeSelectMenu.diffPos[0] = DIFF_SELECT_X;
+    sGamemodeSelectMenu.chalPos[0] = CHAL_SELECT_X;
+    sGamemodeSelectMenu.startGamePos[0] = GM_START_GAME_X;
+
+    //Shift selected element to the side
+    switch(selected) {
+        case GM_SELECT_DIFF:
+            sGamemodeSelectMenu.diffPos[0] -= 5;
+            break;
+        case GM_SELECT_CHAL:
+            sGamemodeSelectMenu.chalPos[0] -= 5;
+            break;
+        case GM_SELECT_START:
+            sGamemodeSelectMenu.startGamePos[0] -= 5;
+            break;
+    }
+
+    return FALSE;
+}
+
+/*
+    Plays the confirmation animation
+*/
+s32 gm_select_anim_confirmation() {
+    sGamemodeSelectMenu.menu.animFrames = MENU_ANIM_LOOP;
+    sGamemodeSelectMenu.menu.flags &= ~GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR;
+
+    sGamemodeSelectMenu.diffPos[0] = DIFF_SELECT_X;
+    sGamemodeSelectMenu.chalPos[0] = CHAL_SELECT_X;
+    sGamemodeSelectMenu.startGamePos[0] = GM_START_GAME_X;
+
+    return FALSE;
+}
+
+s32 (*sGMSelectAnims[])(void) = {
+    &gm_select_anim_startup,
+    &gm_select_anim_selecting,
+    &gm_select_anim_confirmation,
+};
+
+/*
+    Main update loop for gamemode selection
+*/
 s32 update_gamemode_select() {
-    handle_gamemode_select_inputs();
+    if(!(sGamemodeSelectMenu.menu.flags & GAMEMODE_SELECT_FLAG_HALT_INPUT)) {
+        handle_gamemode_select_inputs();
+    }
+
+    if(menu_update_anims(&sGamemodeSelectMenu.menu, sGMSelectAnims)) {
+        //There is only one non-looping animation in this menu, if it ends play the next one
+        menu_play_anim(&sGamemodeSelectMenu.menu, GM_SELECT_ANIM_SELECTING);
+    }
+
     if(sGamemodeSelectMenu.menu.menuState == GM_SELECT_STATE_ENDING) {
         return TRUE;
     }
@@ -220,10 +365,15 @@ void scroll_gamemode_select_bg() {
 	currentX += deltaX;	currentY += deltaY;
 }
 
+/*
+    Draws the "Start" option on the menu
+*/
 void render_gm_start_game() {
     Mtx *transMtx = alloc_display_list(sizeof(Mtx));
+    f32 x = sGamemodeSelectMenu.startGamePos[0];
+    f32 y = sGamemodeSelectMenu.startGamePos[1];
 
-    guTranslate(transMtx, GM_START_GAME_X, GM_START_GAME_Y, 0);
+    guTranslate(transMtx, x, y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     gSPDisplayList(gDisplayListHead++, desc_bg_start_start_mesh_mesh);
@@ -235,12 +385,17 @@ void render_gm_start_game() {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
+/*
+    Draws the difficulty selection options on the menu
+*/
 void render_difficulty_select() {
     Mtx *transMtx = alloc_display_list(sizeof(Mtx) * 2);
     Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
     s32 cursorY;
+    f32 x = sGamemodeSelectMenu.diffPos[0];
+    f32 y = sGamemodeSelectMenu.diffPos[1];
 
-    guTranslate(transMtx, DIFF_SELECT_X, DIFF_SELECT_Y, 0);
+    guTranslate(transMtx, x, y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     gSPDisplayList(gDisplayListHead++, desc_bg_diff_diff_mesh_mesh);
@@ -265,12 +420,17 @@ void render_difficulty_select() {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
+/*
+    Draws the challenge selection options on the menu
+*/
 void render_challenge_select() {
     Mtx *transMtx = alloc_display_list(sizeof(Mtx) * 2);
     Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
     s32 cursorY;
+    f32 x = sGamemodeSelectMenu.chalPos[0];
+    f32 y = sGamemodeSelectMenu.chalPos[1];
 
-    guTranslate(transMtx, CHAL_SELECT_X, CHAL_SELECT_Y, 0);
+    guTranslate(transMtx, x, y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     gSPDisplayList(gDisplayListHead++, desc_bg_chal_chal_mesh_mesh);
@@ -351,11 +511,16 @@ void render_gm_confirmation_dialog() {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
+/*
+    Draws the box that contains either the description field or the confirmation dialogue on the menu
+*/
 void render_desc_field() {
     Mtx *transMtx = alloc_display_list(sizeof(Mtx));
+    f32 x = sGamemodeSelectMenu.descPos[0];
+    f32 y = sGamemodeSelectMenu.descPos[1];
     
 
-    guTranslate(transMtx, SCREEN_CENTER_X, GM_SELECT_DESC_Y, 0);
+    guTranslate(transMtx, x, y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     gSPDisplayList(gDisplayListHead++, desc_bg_mesh_mesh);
@@ -374,6 +539,39 @@ void render_desc_field() {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
+/*
+    Draws the appropriate button prompts for the menu state
+*/
+void render_gm_select_button_prompts() {
+    switch(sGamemodeSelectMenu.menu.menuState) {
+        case GM_SELECT_STATE_DEFAULT:
+            menu_start_button_prompt();
+            menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 33, MENU_PROMPT_A_BUTTON);
+            menu_button_prompt(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 33, MENU_PROMPT_START_BUTTON);
+            menu_end_button_prompt();
+            fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
+            fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 33, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+            fasttext_draw_texrect(SCREEN_WIDTH - 83, SCREEN_HEIGHT - 33, "Begin", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+            fasttext_finished_rendering();
+            break;
+        case GM_SELECT_STATE_CHANGE_DIFF:
+        case GM_SELECT_STATE_CHANGE_CHALLENGE:
+        case GM_SELECT_STATE_CONFIRM:
+            menu_start_button_prompt();
+            menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 33, MENU_PROMPT_A_BUTTON);
+            menu_button_prompt(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 33, MENU_PROMPT_B_BUTTON);
+            menu_end_button_prompt();
+            fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
+            fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 33, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+            fasttext_draw_texrect(SCREEN_WIDTH - 83, SCREEN_HEIGHT - 33, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+            fasttext_finished_rendering();
+            break;
+    }
+}
+
+/*
+    Draws the gamemode selection menu
+*/
 void render_gamemode_select() {
     //Draw cursor for submenu selection
     Mtx *transMtx = alloc_display_list(sizeof(Mtx));
@@ -400,7 +598,7 @@ void render_gamemode_select() {
                 break;
         }
 
-        guTranslate(transMtx, (CHAL_SELECT_X - 40), cursorY, 0);
+        guTranslate(transMtx, (CHAL_SELECT_X - 45), cursorY, 0);
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
                 G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
         guScale(scaleMtx, 0.75f, 0.75f, 1.0f);
@@ -417,4 +615,8 @@ void render_gamemode_select() {
     render_challenge_select();
     render_gm_start_game();
     render_desc_field();
+
+    if(!(flags & GAMEMODE_SELECT_FLAG_HALT_INPUT)) {
+        render_gm_select_button_prompts();
+    }
 }
