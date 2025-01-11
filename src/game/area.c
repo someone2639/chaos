@@ -364,17 +364,18 @@ void play_transition_after_delay(s16 transType, s16 time, u8 red, u8 green, u8 b
 u32 flipstate = 2;
 
 void process_master_quest_transition(struct GraphNodeRoot *node) {
+    #define FS_SWAPSPEED 3
     switch (flipstate) {
         case 0:
-            node->width = approach_s16_asymptotic(node->width, 0, 8);
+            node->width = approach_s16_asymptotic(node->width, 0, FS_SWAPSPEED);
 
-            if (node->width <= 15) {
+            if (node->width == 2) {
                 isGameFlipped ^= 1;
                 flipstate++;
             }
             break;
         case 1:
-            node->width = approach_s16_asymptotic(node->width, SCREEN_WIDTH / 2, 8);
+            node->width = approach_s16_asymptotic(node->width, SCREEN_WIDTH / 2, FS_SWAPSPEED);
 
             if (node->width >= 140) {
                 flipstate++;
@@ -390,9 +391,9 @@ void process_master_quest_transition(struct GraphNodeRoot *node) {
 void render_game(void) {
     if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
         process_master_quest_transition(gCurrentArea->unk04);
-        char tt[100];
-        sprintf(tt, "X %d W %d\n", gCurrentArea->unk04->x, gCurrentArea->unk04->width);
-        osSyncPrintf(tt);
+        if (flipstate != 2) {
+            clear_framebuffer(gWarpTransFBSetColor);
+        }
         if (gPlayer1Controller->buttonPressed & L_TRIG) {
             flipstate = 0;
         }
