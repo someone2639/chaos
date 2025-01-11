@@ -49,6 +49,13 @@
 #define MARIO_SPAWN_LAUNCH_DEATH          0x25
 #define MARIO_SPAWN_UNKNOWN_27            0x27
 
+#define PLAY_MODE_NORMAL 0
+#define PLAY_MODE_PAUSED 2
+#define PLAY_MODE_CHANGE_AREA 3
+#define PLAY_MODE_CHANGE_LEVEL 4
+#define PLAY_MODE_FRAME_ADVANCE 5
+#define PLAY_MODE_SELECT_PATCH 6
+
 
 struct CreditsEntry {
     /*0x00*/ u8 levelNum;
@@ -116,6 +123,7 @@ enum HUDDisplayFlag {
 };
 
 
+void set_play_mode(s16 playMode);
 u16 level_control_timer(s32 timerOp);
 void fade_into_special_warp(u32 arg, u32 color);
 void load_level_init_text(u32 arg);

@@ -8,6 +8,7 @@
 
 #include "game/area.h"
 #include "game/level_update.h"
+#include "game/chaos/chaos.h"
 #include "menu/file_select.h"
 #include "menu/star_select.h"
 

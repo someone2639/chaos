@@ -4,9 +4,10 @@
 #include "types.h"
 #include "src/engine/math_util.h"
 #include "chaos_menus.h"
+#include "chaos/chaos.h"
 
-#define MAX_CARDS   4
-#define MAX_QUALITY 3
+#define MAX_CARDS   (CHAOS_PATCH_MAX_GENERATABLE)
+#define MAX_QUALITY (CHAOS_PATCH_SEVERITY_MAX)
 #define EFFECT_COLOR_GOOD 0
 #define EFFECT_COLOR_BAD 1
 
@@ -40,17 +41,8 @@
 #define SELECT_PATCH_TEXT_END   -80
 
 struct PatchCard {
-    u8 quality;
-    u16 patchDurationOrUses1;
-    u16 patchDurationOrUses2;
-    u8 patchUseType1;
-    u8 patchUseType2;
-    const char *patchName1;
-    const char *patchName2;
-    const char *patchDesc1;
-    const char *patchDesc2;
-    const char *extendedDesc1;
-    const char *extendedDesc2;
+    struct ChaosPatchSelection *sel;
+
     Vec2f pos;
     f32 scale;
     //TODO: Add an id or reference of some sort to an actual patch so it can be applied after selection
@@ -72,12 +64,6 @@ enum PatchSelectMenuState {
     PATCH_SELECT_STATE_SHOW_EXTENDED_DESC,
     PATCH_SELECT_STATE_CLOSING,
     PATCH_SELECT_STATE_CLOSED,
-};
-
-enum PatchCardUseType {
-    USE_TYPE_NONE,
-    USE_TYPE_TIMED,
-    USE_TYPE_LIMITED_USE,
 };
 
 enum PatchSelectionMenuFlags {
@@ -106,7 +92,4 @@ extern struct PatchSelectionMenu *gPatchSelectionMenu;
 void display_patch_selection_ui();
 void update_patch_selection_menu();
 void reset_patch_selection_menu();
-void load_patch_card(s32 index, s32 quality, s32 effect1DurationOrUses, s32 effect2DurationOrUses, 
-        s32 effect1UseType, s32 effect2UseType, const char *effect1Name, const char *effect2Name, 
-        const char *effect1Desc, const char *effect2Desc, const char* effect1ExtendedDesc, const char *effect2ExtendedDesc);
-void init_patch_selection_menu();
+void load_new_patches();

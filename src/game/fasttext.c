@@ -16,6 +16,8 @@
 
 enum FastTextFont fasttextCachedFontId = FT_FONT_NONE;
 
+char gFasttextTmpBuffer[0x1000];
+
 #include "fasttext_data.c.in"
 
 u8 fasttext_string_to_byte_with_fallback(u8 leftNibbleChar, u8 rightNibbleChar, u8 fallbackValue) {
@@ -327,6 +329,15 @@ void fasttext_draw_texrect(int x, int y, const char* string, enum FastTextFlags 
     gDPPipeSync(dlHead++);
 
     gDisplayListHead = dlHead;
+}
+
+void fasttext_draw_texrect_linebreaks(int x, int y, int width, const char* string, enum FastTextFlags flags, int r, int g, int b, int a) {
+    int lines = 0;
+    int length = 0;
+    fasttext_compute_print_text_with_line_breaks(fasttextCachedFontId, width, &lines, &length, gFasttextTmpBuffer, string);
+
+    assert(length + 1 < (s32) sizeof(gFasttextTmpBuffer), "fasttext_draw_texrect_linebreaks:\nstring is too long!");
+    fasttext_draw_texrect(x, y, gFasttextTmpBuffer, flags, r, g, b, a);
 }
 
 void fasttext_setup_textrect_rendering(enum FastTextFont fnt) {
