@@ -8,12 +8,15 @@
 #include "game/game_init.h"
 #include "game/fasttext.h"
 #include "game/ingame_menu.h"
+#include "audio/external.h"
+#include "sm64.h"
 
 struct GamemodeSelectMenu sGamemodeSelectMenu;
 
 const char *sGMSelectDescriptions[] = {
     "Select game difficulty",
     "Select game mode",
+    "Begin the game with the selected settings",
     "Patch cards will be more favorable.\nCards will feature stronger positive effects.",
     "Patch cards will be evenly balanced.\nCards will have equal positive and negative effects.",
     "Patch cards will be more punishing.\nCards will feature stronger negative effects.",
@@ -22,7 +25,7 @@ const char *sGMSelectDescriptions[] = {
 };
 
 void init_gamemode_select() {
-    sGamemodeSelectMenu.menu.flags = 0;
+    sGamemodeSelectMenu.menu.flags = GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR;
     sGamemodeSelectMenu.menu.menuState = GM_SELECT_STATE_DEFAULT;
     sGamemodeSelectMenu.menu.selectedMenuIndex = 0;
     sGamemodeSelectMenu.menu.framesSinceLastStickInput = 0;
@@ -38,6 +41,7 @@ void init_gamemode_select() {
 
 void handle_inputs_gamemode_select_state_default(f32 stickDir) {
     s32 selection = sGamemodeSelectMenu.menu.selectedMenuIndex;
+    s32 prevSelection = selection;
 
     if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
         switch(selection) {
@@ -49,11 +53,20 @@ void handle_inputs_gamemode_select_state_default(f32 stickDir) {
                 menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_CHANGE_CHALLENGE);
                 sGamemodeSelectMenu.prevSelection = sGamemodeSelectMenu.selectedChallenge;
                 break;
+            case GM_SELECT_START:
+                menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_CONFIRM);
+                selection = 0;
+                sGamemodeSelectMenu.menu.flags &= ~GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR;
+                break;
         }
     } else if(gPlayer1Controller->buttonPressed & D_JPAD || (stickDir == MENU_JOYSTICK_DIR_DOWN)) {
-        selection = 1;
+        selection++;
     } else if (gPlayer1Controller->buttonPressed & U_JPAD || (stickDir == MENU_JOYSTICK_DIR_UP)) {
-        selection = 0;
+        selection--;
+    }
+
+    if(selection < 0 || selection > 2) {
+        selection = prevSelection;
     }
 
     sGamemodeSelectMenu.menu.selectedMenuIndex = selection;
@@ -108,7 +121,34 @@ void handle_inputs_gamemode_select_state_change_challenge(f32 stickDir) {
 }
 
 void handle_inputs_gamemode_select_state_confirm(f32 stickDir) {
-
+        if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
+        if(sGamemodeSelectMenu.menu.selectedMenuIndex) {
+            //No
+            menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_DEFAULT);
+            sGamemodeSelectMenu.menu.selectedMenuIndex = GM_SELECT_START;
+            sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR;
+        } else {
+            //Yes
+            menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_ENDING);
+        }
+    } else if(gPlayer1Controller->buttonPressed & B_BUTTON) {
+        menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_DEFAULT);
+        sGamemodeSelectMenu.menu.selectedMenuIndex = GM_SELECT_START;
+                sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR;
+    }
+    else if(gPlayer1Controller->buttonPressed & R_JPAD || (stickDir == MENU_JOYSTICK_DIR_RIGHT)) {
+        sGamemodeSelectMenu.menu.selectedMenuIndex++;
+        if(sGamemodeSelectMenu.menu.selectedMenuIndex > 1) {
+            sGamemodeSelectMenu.menu.selectedMenuIndex = 0;
+        }
+        play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
+    } else if(gPlayer1Controller->buttonPressed & L_JPAD || (stickDir == MENU_JOYSTICK_DIR_LEFT)) {
+        sGamemodeSelectMenu.menu.selectedMenuIndex--;
+        if(sGamemodeSelectMenu.menu.selectedMenuIndex < 0) {
+            sGamemodeSelectMenu.menu.selectedMenuIndex = 1;
+        }
+        play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
+    }
 }
 
 void handle_gamemode_select_inputs() {
@@ -130,8 +170,13 @@ void handle_gamemode_select_inputs() {
     }
 }
 
-void update_gamemode_select() {
+s32 update_gamemode_select() {
     handle_gamemode_select_inputs();
+    if(sGamemodeSelectMenu.menu.menuState == GM_SELECT_STATE_ENDING) {
+        return TRUE;
+    }
+    
+    return FALSE;
 }
 
 /*
@@ -147,9 +192,10 @@ void scroll_gamemode_select_bg() {
 	int deltaX;
 	static int currentY = 0;
 	int deltaY;
-	Vtx *vertices = segmented_to_virtual(desc_bg_mesh_mesh_vtx_0);
-	Vtx *verticesSquare = segmented_to_virtual(desc_bg_square_square_mesh_mesh_vtx_0);
-    Vtx *verticesVertical = segmented_to_virtual(desc_bg_vertical_vertical_mesh_mesh_vtx_0);
+    Vtx *vertices = segmented_to_virtual(desc_bg_mesh_mesh_vtx_0);
+	Vtx *verticesDiff = segmented_to_virtual(desc_bg_diff_diff_mesh_mesh_vtx_0);
+	Vtx *verticesChal = segmented_to_virtual(desc_bg_chal_chal_mesh_mesh_vtx_0);
+    Vtx *verticesStart = segmented_to_virtual(desc_bg_start_start_mesh_mesh_vtx_0);
 
 	deltaX = (int)(0.1 * 0x20) % width;
 	deltaY = (int)(0.1 * 0x20) % height;
@@ -164,12 +210,29 @@ void scroll_gamemode_select_bg() {
 	for (i = 0; i < count; i++) {
 		vertices[i].n.tc[0] += deltaX;
 		vertices[i].n.tc[1] += deltaY;
-		verticesSquare[i].n.tc[0] += deltaX;
-		verticesSquare[i].n.tc[1] += deltaY;
-		verticesVertical[i].n.tc[0] += deltaX;
-		verticesVertical[i].n.tc[1] += deltaY;
+		verticesDiff[i].n.tc[0] += deltaX;
+		verticesDiff[i].n.tc[1] += deltaY;
+		verticesChal[i].n.tc[0] += deltaX;
+		verticesChal[i].n.tc[1] += deltaY;
+		verticesStart[i].n.tc[0] += deltaX;
+		verticesStart[i].n.tc[1] += deltaY;
 	}
 	currentX += deltaX;	currentY += deltaY;
+}
+
+void render_gm_start_game() {
+    Mtx *transMtx = alloc_display_list(sizeof(Mtx));
+
+    guTranslate(transMtx, GM_START_GAME_X, GM_START_GAME_Y, 0);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    gSPDisplayList(gDisplayListHead++, desc_bg_start_start_mesh_mesh);
+
+    slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
+    slowtext_draw_ortho_text(0, -10, "Start", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_finished_rendering();
+
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
 void render_difficulty_select() {
@@ -180,7 +243,7 @@ void render_difficulty_select() {
     guTranslate(transMtx, DIFF_SELECT_X, DIFF_SELECT_Y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    gSPDisplayList(gDisplayListHead++, desc_bg_vertical_vertical_mesh_mesh);
+    gSPDisplayList(gDisplayListHead++, desc_bg_diff_diff_mesh_mesh);
 
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
     slowtext_draw_ortho_text(-18, 10, "Easy", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -210,7 +273,7 @@ void render_challenge_select() {
     guTranslate(transMtx, CHAL_SELECT_X, CHAL_SELECT_Y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    gSPDisplayList(gDisplayListHead++, desc_bg_square_square_mesh_mesh);
+    gSPDisplayList(gDisplayListHead++, desc_bg_chal_chal_mesh_mesh);
 
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
     slowtext_draw_ortho_text(-18, 0, "Classic", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -231,10 +294,11 @@ void render_challenge_select() {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
-void render_desc_field() {
-    Mtx *transMtx = alloc_display_list(sizeof(Mtx));
+/*
+    Writes a description based on the currently highlighted menu option
+*/
+void render_menu_desc() {
     const char *desc;
-
     switch(sGamemodeSelectMenu.menu.menuState) {
             case GM_SELECT_STATE_DEFAULT:
             default:
@@ -248,14 +312,64 @@ void render_desc_field() {
                 break;
     }
 
+    slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
+    slowtext_draw_ortho_text(-142, 15, desc, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_finished_rendering();
+}
+
+/*
+    Writes a confirmation dialogue
+*/
+void render_gm_confirmation_dialog() {
+    Mtx *transMtx = alloc_display_list(sizeof(Mtx));
+    Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
+
+    slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
+    slowtext_draw_ortho_text(0, 0, "Begin the game with these settings?", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(-30, -20, "Yes", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(30, -20, "No", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_finished_rendering();
+
+    s32 selected = sGamemodeSelectMenu.menu.selectedMenuIndex;
+    f32 xPos;
+
+    if(selected) {
+        xPos = 10;
+    } else {
+        xPos = -50;
+    }
+
+    guTranslate(transMtx, xPos, -15, 0);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
+            G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    guScale(scaleMtx, 0.75f, 0.75f, 1.0f);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx),
+            G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+
+    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 255);
+    gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+}
+
+void render_desc_field() {
+    Mtx *transMtx = alloc_display_list(sizeof(Mtx));
+    
+
     guTranslate(transMtx, SCREEN_CENTER_X, GM_SELECT_DESC_Y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     gSPDisplayList(gDisplayListHead++, desc_bg_mesh_mesh);
 
-    slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text(-142, 15, desc, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_finished_rendering();
+    switch(sGamemodeSelectMenu.menu.menuState) {
+        case GM_SELECT_STATE_CONFIRM:
+            render_gm_confirmation_dialog();
+            break;
+        case GM_SELECT_STATE_DEFAULT:
+        case GM_SELECT_STATE_CHANGE_DIFF:
+        case GM_SELECT_STATE_CHANGE_CHALLENGE:
+            render_menu_desc();
+            break;
+    }
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
@@ -265,30 +379,42 @@ void render_gamemode_select() {
     Mtx *transMtx = alloc_display_list(sizeof(Mtx));
     Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
     s32 cursorY;
+    u32 flags = sGamemodeSelectMenu.menu.flags;
 
     create_dl_ortho_matrix(&gDisplayListHead);
 
-    if(sGamemodeSelectMenu.menu.selectedMenuIndex) {
-        //Challenge selection
-        cursorY = CHAL_SELECT_Y - 10;
-    } else {
-        //Difficulty selection
-        cursorY = DIFF_SELECT_Y - 10;
+    if(flags & GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR) {
+        switch(sGamemodeSelectMenu.menu.selectedMenuIndex) {
+            case GM_SELECT_DIFF:
+                //Difficulty selection
+                cursorY = DIFF_SELECT_Y - 5;
+                break;
+            case GM_SELECT_CHAL:
+                //Challenge selection
+                cursorY = CHAL_SELECT_Y - 5;
+                break;
+            case GM_SELECT_START:
+            default:
+                //Begin Game
+                cursorY = GM_START_GAME_Y - 5;
+                break;
+        }
+
+        guTranslate(transMtx, (CHAL_SELECT_X - 40), cursorY, 0);
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
+                G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+        guScale(scaleMtx, 0.75f, 0.75f, 1.0f);
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx),
+                G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+        gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 255);
+        gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
+
+        gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
     }
     
-    guTranslate(transMtx, (CHAL_SELECT_X - 50), cursorY, 0);
-    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
-            G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    guScale(scaleMtx, 1.5f, 1.5f, 1.0f);
-    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx),
-            G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-    gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 255);
-    gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
-
-    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
-
     scroll_gamemode_select_bg();
     render_difficulty_select();
     render_challenge_select();
+    render_gm_start_game();
     render_desc_field();
 }

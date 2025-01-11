@@ -1512,6 +1512,10 @@ void check_main_menu_clicked_buttons(void) {
  * is loaded, and that checks what buttonID is clicked in the main menu.
  */
 void bhv_menu_button_manager_loop(void) {
+    if(sGamemodeSelectMenu.menu.flags & GAMEMODE_SELECT_FLAG_ACTIVE) {
+        return;
+    }
+
     switch (sSelectedButtonID) {
         case MENU_BUTTON_NONE:
             check_main_menu_clicked_buttons();
@@ -1629,8 +1633,6 @@ void bhv_menu_button_manager_loop(void) {
 
     sClickPos[0] = -10000;
     sClickPos[1] = -10000;
-
-    update_gamemode_select();
 }
 
 /**
@@ -1638,6 +1640,9 @@ void bhv_menu_button_manager_loop(void) {
  * If the cursor is clicked, sClickPos uses the same value as sCursorPos.
  */
 void handle_cursor_button_input(void) {
+    if(sGamemodeSelectMenu.menu.flags & GAMEMODE_SELECT_FLAG_ACTIVE) {
+        return;
+    }
     // If scoring a file, pressing A just changes the coin score mode.
     if (sSelectedButtonID == MENU_BUTTON_SCORE_FILE_A || sSelectedButtonID == MENU_BUTTON_SCORE_FILE_B
         || sSelectedButtonID == MENU_BUTTON_SCORE_FILE_C
@@ -2858,9 +2863,12 @@ static void print_file_select_strings(void) {
  */
 Gfx *geo_file_select_strings_and_menu_cursor(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx) {
     if (callContext == GEO_CONTEXT_RENDER) {
-        print_file_select_strings();
-        print_menu_cursor();
-        render_gamemode_select();
+        if(sGamemodeSelectMenu.menu.flags & GAMEMODE_SELECT_FLAG_ACTIVE) {
+            render_gamemode_select();
+        } else {
+            print_file_select_strings();
+            print_menu_cursor();
+        }
     }
     return NULL;
 }
@@ -2934,6 +2942,14 @@ s32 lvl_init_menu_values_and_cursor_pos(UNUSED s32 arg, UNUSED s32 unused) {
  */
 s32 lvl_update_obj_and_load_file_selected(UNUSED s32 arg, UNUSED s32 unused) {
     area_update_objects();
+    if(sSelectedFileNum && !save_file_exists(sSelectedFileNum - 1)) {
+        sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_ACTIVE;
+        if(update_gamemode_select()) {
+            return sSelectedFileNum;
+        } else {
+            return 0;
+        }
+    }
     return sSelectedFileNum;
 }
 

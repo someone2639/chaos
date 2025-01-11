@@ -827,7 +827,7 @@ void render_patch_desc() {
 /*
     Draws a confirmation dialog
 */
-void render_confirmation_dialog() {
+void render_patch_confirmation_dialog() {
     Mtx *transMtx = alloc_display_list(sizeof(Mtx));
     Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
 
@@ -871,7 +871,7 @@ void render_lower_box(f32 x, f32 y) {
     if(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_DRAW_LOWER_TEXT) {
         switch(gPatchSelectionMenu->menu.menuState) {
             case PATCH_SELECT_STATE_CONFIRMATION:
-                render_confirmation_dialog();
+                render_patch_confirmation_dialog();
                 break;
             case PATCH_SELECT_STATE_SELECT:
                 render_patch_desc();
