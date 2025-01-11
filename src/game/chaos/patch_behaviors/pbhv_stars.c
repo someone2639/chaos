@@ -5,6 +5,7 @@
 #include "game/chaos/chaos.h"
 
 #include "course_table.h"
+#include "sounds.h"
 #include "audio/external.h"
 #include "engine/behavior_script.h"
 #include "game/debug.h"
@@ -127,29 +128,35 @@ static void update_any_star(u8 shouldRemove) {
 }
 
 u8 chs_cond_stars_increase_guarantee(UNUSED const struct ChaosPatch *patch) {
-    return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) < NUM_STARS;
+    return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) <= (NUM_STARS - 1);
 }
 u8 chs_cond_stars_decrease_guarantee(UNUSED const struct ChaosPatch *patch) {
-    return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) > 0;
+    return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 2;
 }
 
 void chs_act_stars_increase_lv2(UNUSED const struct ChaosPatch *patch) {
     update_any_star(FALSE);
+    play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 }
 void chs_act_stars_increase_lv3(UNUSED const struct ChaosPatch *patch) {
     update_any_star(FALSE);
     update_any_star(FALSE);
+    play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 }
 void chs_act_stars_increase_guarantee(UNUSED const struct ChaosPatch *patch) {
     add_uncollected_star();
+    play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 }
 void chs_act_stars_decrease_lv2(UNUSED const struct ChaosPatch *patch) {
+    update_any_star(TRUE);
     update_any_star(TRUE);
 }
 void chs_act_stars_decrease_lv3(UNUSED const struct ChaosPatch *patch) {
     update_any_star(TRUE);
     update_any_star(TRUE);
+    update_any_star(TRUE);
 }
 void chs_act_stars_decrease_guarantee(UNUSED const struct ChaosPatch *patch) {
+    remove_collected_star();
     remove_collected_star();
 }

@@ -108,6 +108,7 @@ struct ChaosActiveEntry {
 };
 
 extern const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT];
+extern s32 *gChaosActiveEntryCount;
 extern struct ChaosActiveEntry *gChaosActiveEntries;
 extern enum ChaosDifficulty gChaosDifficulty;
 

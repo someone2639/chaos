@@ -57,8 +57,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc   = chs_cond_lives_increase_lv1,
         .activatedInitFunc = chs_act_lives_increase_lv1,
 
-        .name              = "Increase Lives (+5)",
-        .shortDescription  = "Increase Mario's total lives by 5.",
+        .name              = "Increase Lives (+3)",
+        .shortDescription  = "Increase Mario's total lives by 3.",
     },
     [CHAOS_PATCH_LIVES_INCREASE_LV2] = {
         .durationType      = CHAOS_DURATION_ONCE,
@@ -69,8 +69,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc   = chs_cond_lives_increase_lv2,
         .activatedInitFunc = chs_act_lives_increase_lv2,
 
-        .name              = "Increase Lives (+10)",
-        .shortDescription  = "Increase Mario's total lives by 10.",
+        .name              = "Increase Lives (+6)",
+        .shortDescription  = "Increase Mario's total lives by 6.",
     },
     [CHAOS_PATCH_LIVES_INCREASE_LV3] = {
         .durationType      = CHAOS_DURATION_ONCE,
@@ -81,8 +81,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc   = chs_cond_lives_increase_lv3,
         .activatedInitFunc = chs_act_lives_increase_lv3,
 
-        .name              = "Increase Lives (+15)",
-        .shortDescription  = "Increase Mario's total lives by 15.",
+        .name              = "Increase Lives (+10)",
+        .shortDescription  = "Increase Mario's total lives by 10.",
     },
     [CHAOS_PATCH_LIVES_DECREASE_LV1] = {
         .durationType      = CHAOS_DURATION_ONCE,
@@ -93,8 +93,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc   = chs_cond_lives_decrease_lv1,
         .activatedInitFunc = chs_act_lives_decrease_lv1,
 
-        .name              = "Decrease Lives (+5)",
-        .shortDescription  = "Decrease Mario's remaining lives by 5.",
+        .name              = "Decrease Lives (-3)",
+        .shortDescription  = "Decrease Mario's remaining lives by 3.",
     },
     [CHAOS_PATCH_LIVES_DECREASE_LV2] = {
         .durationType      = CHAOS_DURATION_ONCE,
@@ -105,8 +105,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc   = chs_cond_lives_decrease_lv2,
         .activatedInitFunc = chs_act_lives_decrease_lv2,
 
-        .name              = "Decrease Lives (+10)",
-        .shortDescription  = "Decrease Mario's remaining lives by 10.",
+        .name              = "Decrease Lives (-6)",
+        .shortDescription  = "Decrease Mario's remaining lives by 6.",
     },
     [CHAOS_PATCH_LIVES_DECREASE_LV3] = {
         .durationType      = CHAOS_DURATION_ONCE,
@@ -117,8 +117,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc   = chs_cond_lives_decrease_lv3,
         .activatedInitFunc = chs_act_lives_decrease_lv3,
 
-        .name              = "Decrease Lives (+15)",
-        .shortDescription  = "Decrease Mario's remaining lives by 15.",
+        .name              = "Decrease Lives (-10)",
+        .shortDescription  = "Decrease Mario's remaining lives by 10.",
     },
 
 // Star Modifiers
@@ -164,8 +164,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .activatedInitFunc = chs_act_stars_decrease_lv2,
 
-        .name              = "-1 Random Star",
-        .shortDescription  = "Mark a random star as uncollected. This is NOT guaranteed to be a star you have.",
+        .name              = "-2 Random Stars",
+        .shortDescription  = "Mark two random stars as uncollected. These are NOT guaranteed to be stars you have.",
     },
     [CHAOS_PATCH_STARS_DECREASE_LV3] = {
         .durationType      = CHAOS_DURATION_ONCE,
@@ -175,8 +175,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .activatedInitFunc = chs_act_stars_decrease_lv3,
 
-        .name              = "-2 Random Stars",
-        .shortDescription  = "Mark two random stars as uncollected. These are NOT guaranteed to be stars you have.",
+        .name              = "-3 Random Stars",
+        .shortDescription  = "Mark three random stars as uncollected. These are NOT guaranteed to be stars you have.",
     },
     [CHAOS_PATCH_STARS_DECREASE_GUARANTEE] = {
         .durationType      = CHAOS_DURATION_ONCE,
@@ -187,8 +187,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc   = chs_cond_stars_decrease_guarantee,
         .activatedInitFunc = chs_act_stars_decrease_guarantee,
 
-        .name              = "-1 Collected Star",
-        .shortDescription  = "Lose a random star currently in your possession.",
+        .name              = "-2 Collected Stars",
+        .shortDescription  = "Lose two random stars currently in your possession.",
     },
 
 // Gravity Modifiers

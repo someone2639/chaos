@@ -8,9 +8,9 @@
 #include "audio/external.h"
 #include "game/level_update.h"
 
-#define LV1_LIVES 5
-#define LV2_LIVES 10
-#define LV3_LIVES 15
+#define LV1_LIVES 3
+#define LV2_LIVES 6
+#define LV3_LIVES 10
 
 u8 chs_cond_lives_increase_lv1(UNUSED const struct ChaosPatch *patch) { return gMarioState->numLives <= (100 - LV1_LIVES); }
 u8 chs_cond_lives_increase_lv2(UNUSED const struct ChaosPatch *patch) { return gMarioState->numLives <= (100 - LV2_LIVES); }

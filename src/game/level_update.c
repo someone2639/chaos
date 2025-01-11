@@ -31,13 +31,6 @@
 #include "rumble_init.h"
 #include "patch_selection_ui.h"
 
-#define PLAY_MODE_NORMAL 0
-#define PLAY_MODE_PAUSED 2
-#define PLAY_MODE_CHANGE_AREA 3
-#define PLAY_MODE_CHANGE_LEVEL 4
-#define PLAY_MODE_FRAME_ADVANCE 5
-#define PLAY_MODE_SELECT_PATCH 6
-
 #define WARP_TYPE_NOT_WARPING 0
 #define WARP_TYPE_CHANGE_LEVEL 1
 #define WARP_TYPE_CHANGE_AREA 2
@@ -757,7 +750,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
 
             case WARP_OP_DEATH:
 #ifndef DISABLE_LIVES
-                if (m->numLives == 0) {
+                if (m->numLives <= 0) {
                     sDelayedWarpOp = WARP_OP_GAME_OVER;
                 }
 #endif
@@ -771,7 +764,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 sSourceWarpNodeId = WARP_NODE_WARP_FLOOR;
                 if (area_get_warp_node(sSourceWarpNodeId) == NULL) {
 #ifndef DISABLE_LIVES
-                    if (m->numLives == 0) {
+                    if (m->numLives <= 0) {
                         sDelayedWarpOp = WARP_OP_GAME_OVER;
                     } else {
                         sSourceWarpNodeId = WARP_NODE_DEATH;
