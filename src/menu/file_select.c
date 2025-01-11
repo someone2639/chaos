@@ -326,6 +326,59 @@ s32 check_clicked_button(s16 x, s16 y, f32 depth) {
 }
 
 /**
+ * Loads a save file selected after it goes into a full screen state
+ * retuning sSelectedFileNum to a save value defined in fileNum.
+ */
+void load_main_menu_save_file(struct Object *fileButton, s32 fileNum) {
+    if (fileButton->oMenuButtonState == MENU_BUTTON_STATE_FULLSCREEN) {
+        sSelectedFileNum = fileNum;
+    }
+}
+
+/*
+    Updates the new game creation menu
+*/
+static void bhv_menu_button_new_game_create(struct Object *button) {
+    s32 fileNum = 0;
+    switch(sSelectedButtonID) {
+        case MENU_BUTTON_PLAY_FILE_A:
+            fileNum = 1;
+            break;
+        case MENU_BUTTON_PLAY_FILE_B:
+            fileNum = 2;
+            break;
+        case MENU_BUTTON_PLAY_FILE_C:
+            fileNum = 3;
+            break;
+        case MENU_BUTTON_PLAY_FILE_D:
+            fileNum = 4;
+            break;
+    }
+    sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_ACTIVE;
+    if(update_gamemode_select()) {
+        sSelectedFileNum = fileNum;
+    }
+}
+
+/*
+    Grows and moves to the top corner of the screen
+*/
+static void bhv_menu_button_new_game_anim(struct Object *button) {
+    button->oParentRelativePosX -= (button->oMenuButtonOrigPosX + 600) / 14.0;
+    button->oParentRelativePosY -= (button->oMenuButtonOrigPosY - 600) / 14.0;
+    if (button->oPosZ < button->oMenuButtonOrigPosZ + 17800.0) {
+        button->oParentRelativePosZ += 1112.5;
+    }
+    button->oMenuButtonTimer++;
+    if (button->oMenuButtonTimer == 14) {
+        button->oParentRelativePosX = -600.0f;
+        button->oParentRelativePosY = 600.0f;
+        button->oMenuButtonState = MENU_BUTTON_STATE_NEW_GAME_CREATE;
+        button->oMenuButtonTimer = 0;
+    }
+}
+
+/**
  * Grow from main menu, used by selecting files and menus.
  */
 static void bhv_menu_button_growing_from_main_menu(struct Object *button) {
@@ -538,6 +591,15 @@ void bhv_menu_button_loop(void) {
         case MENU_BUTTON_STATE_ZOOM_OUT:
             bhv_menu_button_zoom_out(gCurrentObject);
             sCursorClickingTimer = 4;
+            break;
+        case MENU_BUTTON_STATE_NEW_GAME_ANIM:
+            bhv_menu_button_new_game_anim(gCurrentObject);
+            sTextBaseAlpha = 0;
+            sCursorClickingTimer = 4;
+            break;
+        case MENU_BUTTON_STATE_NEW_GAME_CREATE:
+            bhv_menu_button_new_game_create(gCurrentObject);
+            sTextBaseAlpha = 0;
             break;
     }
     cur_obj_scale(gCurrentObject->oMenuButtonScale);
@@ -1152,16 +1214,6 @@ void check_sound_mode_menu_clicked_buttons(struct Object *soundModeButton) {
 }
 
 /**
- * Loads a save file selected after it goes into a full screen state
- * retuning sSelectedFileNum to a save value defined in fileNum.
- */
-void load_main_menu_save_file(struct Object *fileButton, s32 fileNum) {
-    if (fileButton->oMenuButtonState == MENU_BUTTON_STATE_FULLSCREEN) {
-        sSelectedFileNum = fileNum;
-    }
-}
-
-/**
  * Returns from the previous menu back to the main menu using
  * the return button (or sound mode) as source button.
  */
@@ -1422,6 +1474,31 @@ void check_main_menu_clicked_buttons(void) {
                 s16 buttonY = sMainMenuButtons[buttonID]->oPosY;
 
                 if (check_clicked_button(buttonX, buttonY, 200.0f) == TRUE) {
+                    s32 checkFile = -1;
+                    //Check if the button clicked was a new save file, and if so go to new game creation
+                    switch(buttonID) {
+                        case MENU_BUTTON_PLAY_FILE_A:
+                            checkFile = SAVE_FILE_A;
+                            break;
+                        case MENU_BUTTON_PLAY_FILE_B:
+                            checkFile = SAVE_FILE_B;
+                            break;
+                        case MENU_BUTTON_PLAY_FILE_C:
+                            checkFile = SAVE_FILE_C;
+                            break;
+                        case MENU_BUTTON_PLAY_FILE_D:
+                            checkFile = SAVE_FILE_D;
+                            break;
+                    }
+                    if(checkFile > -1) {
+                        if(!save_file_exists(checkFile)) {
+                            sMainMenuButtons[buttonID]->oMenuButtonState = MENU_BUTTON_STATE_NEW_GAME_ANIM;
+                            sSelectedButtonID = buttonID;
+                            play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
+                            return; //Return early to skip playing the regular sound effect
+                        }
+                    }
+                
                     // If menu button clicked, select it
                     sMainMenuButtons[buttonID]->oMenuButtonState = MENU_BUTTON_STATE_GROWING;
                     sSelectedButtonID = buttonID;
@@ -2942,14 +3019,6 @@ s32 lvl_init_menu_values_and_cursor_pos(UNUSED s32 arg, UNUSED s32 unused) {
  */
 s32 lvl_update_obj_and_load_file_selected(UNUSED s32 arg, UNUSED s32 unused) {
     area_update_objects();
-    if(sSelectedFileNum && !save_file_exists(sSelectedFileNum - 1)) {
-        sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_ACTIVE;
-        if(update_gamemode_select()) {
-            return sSelectedFileNum;
-        } else {
-            return 0;
-        }
-    }
     return sSelectedFileNum;
 }
 
