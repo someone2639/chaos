@@ -53,9 +53,9 @@ enum ChaosPatchEffectType {
 };
 
 enum ChaosDifficulty {
-    CHAOS_DIFFICULTY_EASY   = -1, // Offsets negative patches such that top severities shouldn't ever show up
-    CHAOS_DIFFICULTY_NORMAL =  0, // Standard difficulty
-    CHAOS_DIFFICULTY_HARD   =  1, // Offsets positive patches such that top severities shouldn't ever show up
+    CHAOS_DIFFICULTY_EASY   =  0, // Offsets negative patches such that top severities shouldn't ever show up
+    CHAOS_DIFFICULTY_NORMAL =  1, // Standard difficulty
+    CHAOS_DIFFICULTY_HARD   =  2, // Offsets positive patches such that top severities shouldn't ever show up
 };
 
 enum ChaosPatchDurationType {

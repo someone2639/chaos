@@ -645,8 +645,8 @@ u16 eu_get_language(void) {
 void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount, enum ChaosDifficulty *gChaosDifficulty, u8 *gChaosLivesEnabled) {
     *entryData = gSaveBuffer.files[gCurrSaveFileNum - 1].chaosEntries;
     *currentEntryCount = &gSaveBuffer.files[gCurrSaveFileNum - 1].chaosEntryCount;
-    *gChaosDifficulty = gSaveBuffer.files[gCurrSaveFileNum - 1].chaosDifficulty;
-    *gChaosLivesEnabled = gSaveBuffer.files[gCurrSaveFileNum - 1].livesEnabled;
+    *gChaosDifficulty = save_file_get_difficulty(gCurrSaveFileNum - 1);
+    *gChaosLivesEnabled = save_file_get_challenge_mode(gCurrSaveFileNum - 1);
 }
 
 void disable_warp_checkpoint(void) {

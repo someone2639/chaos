@@ -46,20 +46,11 @@ struct SaveFile {
 
     u8 courseCoinScores[COURSE_STAGES_COUNT];
     u8 gamemode;
-
-    s8 chaosDifficulty;
     s8 lives;
-    u8 livesEnabled;
     s32 chaosEntryCount;
     struct ChaosActiveEntry chaosEntries[CHAOS_PATCH_ENTRIES];
 
     struct SaveBlockSignature signature;
-};
-
-enum SaveFileDifficulty {
-    DIFFICULTY_EASY,
-    DIFFICULTY_NORMAL,
-    DIFFICULTY_HARD,
 };
 
 enum SaveFileChallenge {
