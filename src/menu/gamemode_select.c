@@ -20,8 +20,8 @@ const char *sGMSelectDescriptions[] = {
     "Patch cards will be more favorable.\nCards will feature stronger positive effects.",
     "Patch cards will be evenly balanced.\nCards will have equal positive and negative effects.",
     "Patch cards will be more punishing.\nCards will feature stronger negative effects.",
-    "Normal Super Mario 64 rules. Running out of lives\nleads to a game over. Collect 1-up mushrooms to\nincrease your life counter.",
-    "Enables permadeath. Running out of lives deletes the\nsave file. 1-up mushrooms are removed, and lives can\nonly be increased by collecting yellow stars."
+    "Infinite Lives. Dying will send you out of the course\nwith no additional punishment.",
+    "Enables Lives. Running out of lives deletes the\nsave file. 1-up mushrooms are removed, and lives can\nonly be increased by collecting yellow stars."
 };
 
 /*
