@@ -363,8 +363,7 @@ static void bhv_menu_button_new_game_create(struct Object *button) {
     }
     sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_ACTIVE;
     if(update_gamemode_select()) {
-        save_file_set_difficulty(fileNum - 1, difficulty);
-        save_file_set_challenge_mode(fileNum - 1, challenge);
+        save_file_set_gamemode((fileNum - 1), difficulty, challenge);
         sSelectedFileNum = fileNum;
     }
 }

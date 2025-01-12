@@ -45,8 +45,7 @@ struct SaveFile {
     u8 courseStars[COURSE_COUNT];
 
     u8 courseCoinScores[COURSE_STAGES_COUNT];
-    u32 difficulty;
-    u32 challenge;
+    u8 gamemode;
 
     s8 chaosDifficulty;
     s8 lives;
@@ -204,7 +203,6 @@ u16 eu_get_language(void);
 
 s32 save_file_get_difficulty(s32 fileIndex);
 s32 save_file_get_challenge_mode(s32 fileIndex);
-void save_file_set_difficulty(s32 fileIndex, s32 difficulty);
-void save_file_set_challenge_mode(s32 fileIndex, s32 challenge);
+void save_file_set_gamemode(s32 fileIndex, s32 difficulty, s32 challenge);
 
 #endif // SAVE_FILE_H

@@ -697,7 +697,7 @@ s32 check_warp_checkpoint(struct WarpNode *warpNode) {
     Gets the difficulty of the save file in fileindex
 */
 s32 save_file_get_difficulty(s32 fileIndex) {
-    s32 difficulty = gSaveBuffer.files[fileIndex].difficulty;
+    s32 difficulty = ((gSaveBuffer.files[fileIndex].gamemode & 0xF0) >> 4);
     return difficulty;
 }
 
@@ -705,20 +705,13 @@ s32 save_file_get_difficulty(s32 fileIndex) {
     Gets the challenge mode of the save file in fileindex
 */
 s32 save_file_get_challenge_mode(s32 fileIndex) {
-    s32 challenge = gSaveBuffer.files[fileIndex].challenge;
+    s32 challenge = (gSaveBuffer.files[fileIndex].gamemode & 0x0F);
     return challenge;
 }
 
 /*
-    Sets the difficulty of the save file in fileindex
+    Sets the gamemode of the save file in fileindex
 */
-void save_file_set_difficulty(s32 fileIndex, s32 difficulty) {
-    gSaveBuffer.files[fileIndex].difficulty = difficulty;
-}
-
-/*
-    Sets the challenge mode of the save file in fileindex
-*/
-void save_file_set_challenge_mode(s32 fileIndex, s32 challenge) {
-    gSaveBuffer.files[fileIndex].challenge = challenge;
+void save_file_set_gamemode(s32 fileIndex, s32 difficulty, s32 challenge) {
+    gSaveBuffer.files[fileIndex].gamemode = (difficulty << 4) | challenge;
 }
