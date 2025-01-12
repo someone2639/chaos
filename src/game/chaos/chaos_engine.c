@@ -12,6 +12,7 @@
 
 #define WEIGHT_OFFSET 1.25f // Must be > 0!
 
+static u32 activePatchCounts[CHAOS_PATCH_COUNT];
 static u8 availablePatches[CHAOS_PATCH_COUNT];
 static struct ChaosPatchSelection generatedPatches[CHAOS_PATCH_MAX_GENERATABLE];
 
@@ -24,7 +25,18 @@ struct ChaosActiveEntry *gChaosActiveEntries = NULL;
 enum ChaosDifficulty gChaosDifficulty = CHAOS_DIFFICULTY_NORMAL;
 u8 gChaosLivesEnabled = FALSE;
 
-u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId, struct ChaosActiveEntry **firstFoundMatch) {
+static void chaos_recompute_active_patch_counts(void) {
+    bzero(activePatchCounts, sizeof(activePatchCounts));
+    for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+        activePatchCounts[gChaosActiveEntries[i].id]++;
+    }
+}
+
+u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId) {
+    return (activePatchCounts[patchId] > 0);
+}
+
+u8 chaos_find_first_active_patch(const enum ChaosPatchID patchId, struct ChaosActiveEntry **firstFoundMatch) {
     if (!gChaosActiveEntryCount) {
         return FALSE;
     }
@@ -71,6 +83,10 @@ void chaos_remove_expired_entry(const s32 patchIndex) {
     // Decrease number of active patches and move the last active patch in the array to the index of the removed patch.
     // This means of moving stuff around implies we cannot make use of sorting order!
     (*gChaosActiveEntryCount)--;
+    assert(activePatchCounts[patchId] > 0, "chaos_remove_expired_entry:\nactivePatchCounts mismatch!");
+    if (activePatchCounts[patchId] > 0) {
+        activePatchCounts[patchId]--;
+    }
     gChaosActiveEntries[patchIndex] = gChaosActiveEntries[*gChaosActiveEntryCount];
 }
 
@@ -150,6 +166,7 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
     // Allocate new patch entry
     struct ChaosActiveEntry *newEntry = &gChaosActiveEntries[*gChaosActiveEntryCount];
     (*gChaosActiveEntryCount)++;
+    activePatchCounts[patchId]++;
 
     // Set values for new entry appropriately
     newEntry->id = patchId;
@@ -482,6 +499,7 @@ void chaos_select_patches(struct ChaosPatchSelection *patchSelection) {
 
 void chaos_init(void) {
     save_file_get_chaos_data(&gChaosActiveEntries, &gChaosActiveEntryCount, &gChaosDifficulty, &gChaosLivesEnabled);
+    chaos_recompute_active_patch_counts();
 
     for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
         const enum ChaosPatchID patchId = gChaosActiveEntries[i].id;
@@ -496,8 +514,6 @@ void chaos_init(void) {
             patch->activatedInitFunc(patch);
         }
     }
-
-    chaos_update_available_patches();
 }
 
 void chaos_area_update(void) {
@@ -534,9 +550,9 @@ void chaos_frame_update(void) {
 
         if (patch->frameUpdateFunc) {
             patch->frameUpdateFunc(patch);
-            if (gChaosActiveEntries[i].frameTimer < 0xFFFFFF) {
-                gChaosActiveEntries[i].frameTimer++;
-            }
+        }
+        if (gChaosActiveEntries[i].frameTimer < 0xFFFFFF) {
+            gChaosActiveEntries[i].frameTimer++;
         }
     }
 }

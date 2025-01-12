@@ -276,4 +276,34 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Ultra Gravity",
         .shortDescription  = "Increase Mario's gravity by 50%.",
     },
+    [CHAOS_PATCH_NOHEAL_HEARTS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .name              = "Heartbreak",
+        .shortDescription  = "Spinning hearts no longer heal Mario.",
+    },
+    [CHAOS_PATCH_NOHEAL_WATER] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .name              = "Health Drown",
+        .shortDescription  = "Water no longer heals Mario.",
+    },
+    [CHAOS_PATCH_NOHEAL_COINS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .name              = "Unaffordable Health Care",
+        .shortDescription  = "Coins no longer heal Mario.",
+    },
 };
