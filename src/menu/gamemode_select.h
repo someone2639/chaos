@@ -43,6 +43,7 @@ enum GamemodeSelectAnims {
     GM_SELECT_ANIM_STARTUP,
     GM_SELECT_ANIM_SELECTING,
     GM_SELECT_ANIM_CONFIRM,
+    GM_SELECT_ANIM_RETURN,
 };
 
 enum GamemodeSelectState {
@@ -51,6 +52,7 @@ enum GamemodeSelectState {
     GM_SELECT_STATE_CHANGE_CHALLENGE,
     GM_SELECT_STATE_CONFIRM,
     GM_SELECT_STATE_ENDING,
+    GM_SELECT_STATE_RETURN,
 };
 
 struct GamemodeSelectMenu {

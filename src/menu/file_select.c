@@ -353,6 +353,7 @@ static void bhv_menu_button_new_game_create(struct Object *button) {
     s32 fileNum = 0;
     s32 difficulty = sGamemodeSelectMenu.selectedDifficulty;
     s32 challenge = sGamemodeSelectMenu.selectedChallenge;
+    s32 complete = 0;
     button->oMenuButtonDiffCol = difficulty;
     button->oMenuButtonChalCol = challenge;
     switch(sSelectedButtonID) {
@@ -370,9 +371,15 @@ static void bhv_menu_button_new_game_create(struct Object *button) {
             break;
     }
     sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_ACTIVE;
-    if(update_gamemode_select()) {
+    complete = update_gamemode_select();
+    if(complete == 1) {
         save_file_set_gamemode((fileNum - 1), difficulty, challenge);
         sSelectedFileNum = fileNum;
+    } else if (complete == -1) {
+        sGamemodeSelectMenu.menu.flags  &= ~GAMEMODE_SELECT_FLAG_ACTIVE;
+        button->oMenuButtonState = MENU_BUTTON_STATE_RETURN_NEW_GAME_ANIM;
+        button->oMenuButtonTimer = 0;
+        button->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MAIN_MENU_MARIO_NEW_BUTTON_FADE];
     }
 }
 
@@ -391,6 +398,25 @@ static void bhv_menu_button_new_game_anim(struct Object *button) {
         button->oParentRelativePosY = 600.0f;
         button->oMenuButtonState = MENU_BUTTON_STATE_NEW_GAME_CREATE;
         button->oMenuButtonTimer = 0;
+    }
+}
+
+/*
+    Shrinks and moves back to its original position
+*/
+static void bhv_menu_button_return_new_game_anim(struct Object *button) {
+    button->oParentRelativePosX += (button->oMenuButtonOrigPosX + 600) / 14.0;
+    button->oParentRelativePosY += (button->oMenuButtonOrigPosY - 600) / 14.0;
+    if (button->oPosZ > button->oMenuButtonOrigPosZ) {
+        button->oParentRelativePosZ -= 1112.5;
+    }
+    button->oMenuButtonTimer++;
+    if (button->oMenuButtonTimer == 14) {
+        button->oParentRelativePosX = button->oMenuButtonOrigPosX;
+        button->oParentRelativePosY = button->oMenuButtonOrigPosY;
+        button->oMenuButtonState = MENU_BUTTON_STATE_DEFAULT;
+        button->oMenuButtonTimer = 0;
+        sSelectedButtonID = MENU_BUTTON_NONE;
     }
 }
 
@@ -617,6 +643,12 @@ void bhv_menu_button_loop(void) {
             bhv_menu_button_new_game_create(gCurrentObject);
             sTextBaseAlpha = 0;
             break;
+        case MENU_BUTTON_STATE_RETURN_NEW_GAME_ANIM:
+            bhv_menu_button_return_new_game_anim(gCurrentObject);
+            sTextBaseAlpha = 0;
+            sCursorClickingTimer = 4;
+            break;
+
     }
     cur_obj_scale(gCurrentObject->oMenuButtonScale);
 }
@@ -1631,7 +1663,6 @@ void bhv_menu_button_manager_loop(void) {
     if(sGamemodeSelectMenu.menu.flags & GAMEMODE_SELECT_FLAG_ACTIVE) {
         return;
     }
-
     switch (sSelectedButtonID) {
         case MENU_BUTTON_NONE:
             check_main_menu_clicked_buttons();

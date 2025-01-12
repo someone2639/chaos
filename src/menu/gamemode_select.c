@@ -85,6 +85,10 @@ void handle_inputs_gamemode_select_state_default(f32 stickDir) {
         selection = 0;
         menu_play_anim(&sGamemodeSelectMenu.menu, GM_SELECT_ANIM_CONFIRM);
         play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
+    } else if (gPlayer1Controller->buttonPressed & B_BUTTON) {
+        menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_RETURN);
+        menu_play_anim(&sGamemodeSelectMenu.menu, GM_SELECT_ANIM_RETURN);
+        play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
     } else if(gPlayer1Controller->buttonPressed & D_JPAD || (stickDir == MENU_JOYSTICK_DIR_DOWN)) {
         selection++;
         playCursorSound = TRUE;
@@ -300,10 +304,43 @@ s32 gm_select_anim_confirmation() {
     return FALSE;
 }
 
+/*
+    Plays a return animation for the gamemode selection menu
+*/
+#define GM_SELECT_RETURN_FRAMES       7
+
+s32 gm_select_anim_return() {
+    s32 phase = sGamemodeSelectMenu.menu.animPhase;
+    s32 animTimer = sGamemodeSelectMenu.menu.animTimer;
+
+    if(phase) {
+        sGamemodeSelectMenu.menu.flags &= ~GAMEMODE_SELECT_FLAG_HALT_INPUT;
+        sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR;
+        return TRUE;
+    }
+    
+    sGamemodeSelectMenu.menu.animFrames = GM_SELECT_RETURN_FRAMES;
+    f32 animPercent = sins((0x3FFF / sGamemodeSelectMenu.menu.animFrames) * animTimer);
+
+    //Slide elements on screen
+    f32 startGameX = menu_translate_percentage(GM_START_GAME_X, GM_START_GAME_X_START, animPercent);
+    f32 challX = menu_translate_percentage(CHAL_SELECT_X, CHAL_SELECT_X_START, animPercent);
+    f32 diffX = menu_translate_percentage(DIFF_SELECT_X, DIFF_SELECT_X_START, animPercent);
+    f32 descY = menu_translate_percentage(GM_SELECT_DESC_Y, GM_SELECT_DESC_Y_START, animPercent);
+
+    sGamemodeSelectMenu.diffPos[0] = diffX;
+    sGamemodeSelectMenu.chalPos[0] = challX;
+    sGamemodeSelectMenu.startGamePos[0] = startGameX;
+    sGamemodeSelectMenu.descPos[1] = descY;
+    
+    return FALSE;
+}
+
 s32 (*sGMSelectAnims[])(void) = {
     &gm_select_anim_startup,
     &gm_select_anim_selecting,
     &gm_select_anim_confirmation,
+    &gm_select_anim_return,
 };
 
 /*
@@ -315,15 +352,19 @@ s32 update_gamemode_select() {
     }
 
     if(menu_update_anims(&sGamemodeSelectMenu.menu, sGMSelectAnims)) {
-        //There is only one non-looping animation in this menu, if it ends play the next one
-        menu_play_anim(&sGamemodeSelectMenu.menu, GM_SELECT_ANIM_SELECTING);
+        if(sGamemodeSelectMenu.menu.menuState == GM_SELECT_STATE_RETURN) {
+            init_gamemode_select(); //Also doubles as a reset function!!
+            return -1;
+        } else {
+            menu_play_anim(&sGamemodeSelectMenu.menu, GM_SELECT_ANIM_SELECTING);
+        }
     }
 
     if(sGamemodeSelectMenu.menu.menuState == GM_SELECT_STATE_ENDING) {
-        return TRUE;
+        return 1;
     }
     
-    return FALSE;
+    return 0;
 }
 
 /*
@@ -550,10 +591,12 @@ void render_gm_select_button_prompts() {
             menu_start_button_prompt();
             menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 33, MENU_PROMPT_A_BUTTON);
             menu_button_prompt(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 33, MENU_PROMPT_START_BUTTON);
+            menu_button_prompt(SCREEN_WIDTH - 128, SCREEN_HEIGHT - 33, MENU_PROMPT_B_BUTTON);
             menu_end_button_prompt();
             fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
             fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 33, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
             fasttext_draw_texrect(SCREEN_WIDTH - 83, SCREEN_HEIGHT - 33, "Begin", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+            fasttext_draw_texrect(SCREEN_WIDTH - 129, SCREEN_HEIGHT - 33, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
             fasttext_finished_rendering();
             break;
         case GM_SELECT_STATE_CHANGE_DIFF:
