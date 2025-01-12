@@ -387,10 +387,12 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
         allowedSeverities[i] = FALSE;
 
         // Determine whether to offset pairings of positive and negative effects
-        if (offsetSeverityWeight >= 0.90f) {
+        if (offsetSeverityWeight < 0.10f) {
             pos++;
-        } else if (offsetSeverityWeight < 0.20f) {
+        } else if (offsetSeverityWeight < 0.30f) {
             neg++;
+        } else if (offsetSeverityWeight < 0.40f) {
+            pos = 0;
         }
         if (gChaosDifficulty == CHAOS_DIFFICULTY_EASY) {
             neg--;

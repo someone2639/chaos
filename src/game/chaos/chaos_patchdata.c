@@ -442,4 +442,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Double Trouble",
         .shortDescription  = "Mario can no longer double jump (and by extension, triple jump).",
     },
+
+// Miscellaneous Modifiers
+    [CHAOS_PATCH_MARIO_INVISIBLE] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .name              = "Potion of Invisibility",
+        .shortDescription  = "Mario is now invisible. His shadow is the only visible part of him that remains.",
+    },
 };

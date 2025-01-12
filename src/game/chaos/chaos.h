@@ -61,6 +61,9 @@ enum ChaosPatchID {
     CHAOS_PATCH_LOSEMOVE_WALL_KICK,
     CHAOS_PATCH_LOSEMOVE_DOUBLE_JUMP,
 
+// Miscellaneous Modifiers
+    CHAOS_PATCH_MARIO_INVISIBLE,
+
 // Patch Count
     CHAOS_PATCH_COUNT,
 };
