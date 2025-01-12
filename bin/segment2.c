@@ -8,6 +8,10 @@
 
 #include "make_const_nonconst.h"
 
+#define CHS_SHD_MAX 0xFF
+#define CHS_SHD_MED 0xDF
+#define CHS_SHD_MIN 0xBF
+
 // SM64 (US/JP/EU/SH) Segment 02
 
 ALIGNED8 static const Texture texture_hud_char_0[] = {
@@ -3461,26 +3465,26 @@ u8 patch_bg_patch_bg_2_i4[] = {
 };
 
 Vtx patch_bg_mesh_mesh_vtx_0[4] = {
-	{{ {-67, -30, 0}, 0, {-1972, 3346}, {255, 255, 255, 255} }},
-	{{ {67, -30, 0}, 0, {8308, 5463}, {255, 255, 255, 255} }},
-	{{ {-67, 30, 0}, 0, {-1032, -1218}, {255, 255, 255, 255} }},
-	{{ {79, 30, 0}, 0, {10165, 1087}, {255, 255, 255, 255} }},
+	{{ {-67, -30, 0}, 0, {-1972, 3346}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
+	{{ {67, -30, 0}, 0, {8308, 5463}, {CHS_SHD_MIN, CHS_SHD_MIN, CHS_SHD_MIN, 0xFF} }},
+	{{ {-67, 30, 0}, 0, {-1032, -1218}, {CHS_SHD_MAX, CHS_SHD_MAX, CHS_SHD_MAX, 0xFF} }},
+	{{ {79, 30, 0}, 0, {10165, 1087}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
 };
 
 Vtx patch_bg_mesh_mesh_vtx_1[8] = {
-	{{ {-70, 32, 0}, 0, {-2113, -816}, {255, 255, 255, 255} }},
-	{{ {-70, -32, 0}, 0, {-1387, 2832}, {255, 255, 255, 255} }},
-	{{ {-67, -30, 0}, 0, {-1391, 2812}, {255, 255, 255, 255} }},
-	{{ {67, -30, 0}, 0, {1336, 1922}, {255, 255, 255, 255} }},
-	{{ {69, -32, 0}, 0, {1642, 2495}, {255, 255, 255, 255} }},
-	{{ {79, 30, 0}, 0, {2041, -192}, {255, 255, 255, 255} }},
-	{{ {82, 32, 0}, 0, {2257, -371}, {255, 255, 255, 255} }},
-	{{ {-67, 30, 0}, 0, {-2109, -796}, {255, 255, 255, 255} }},
+	{{ {-70, 32, 0}, 0, {-2113, -816}, {CHS_SHD_MAX, CHS_SHD_MAX, CHS_SHD_MAX, 0xFF} }},
+	{{ {-70, -32, 0}, 0, {-1387, 2832}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
+	{{ {-67, -30, 0}, 0, {-1391, 2812}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
+	{{ {67, -30, 0}, 0, {1336, 1922}, {CHS_SHD_MIN, CHS_SHD_MIN, CHS_SHD_MIN, 0xFF} }},
+	{{ {69, -32, 0}, 0, {1642, 2495}, {CHS_SHD_MIN, CHS_SHD_MIN, CHS_SHD_MIN, 0xFF} }},
+	{{ {79, 30, 0}, 0, {2041, -192}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
+	{{ {82, 32, 0}, 0, {2257, -371}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
+	{{ {-67, 30, 0}, 0, {-2109, -796}, {CHS_SHD_MAX, CHS_SHD_MAX, CHS_SHD_MAX, 0xFF} }},
 };
 
 Gfx patch_bg_mesh_mesh[] = {
-	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
-	gsDPSetCombineLERP(0, 0, 0, TEXEL0, 0, 0, 0, 1, 0, 0, 0, TEXEL0, 0, 0, 0, 1),
+	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADE | G_SHADING_SMOOTH),
+	gsDPSetCombineLERP(SHADE, 0, TEXEL0, 0, 0, 0, 0, 1, SHADE, 0, TEXEL0, 0, 0, 0, 0, 1),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
 	gsSPTexture(65535, 65535, 0, 0, 1),
@@ -3492,7 +3496,7 @@ Gfx patch_bg_mesh_mesh[] = {
 	gsSPVertex(patch_bg_mesh_mesh_vtx_0 + 0, 4, 0),
 	gsSP2Triangles(0, 1, 2, 0, 2, 1, 3, 0),
 	gsDPPipeSync(),
-	gsDPSetCombineLERP(0, 0, 0, PRIMITIVE, 0, 0, 0, 1, 0, 0, 0, PRIMITIVE, 0, 0, 0, 1),
+	gsDPSetCombineLERP(SHADE, 0, PRIMITIVE, 0, 0, 0, 0, 1, SHADE, 0, PRIMITIVE, 0, 0, 0, 0, 1),
 	gsSPVertex(patch_bg_mesh_mesh_vtx_1 + 0, 8, 0),
 	gsSP2Triangles(0, 1, 2, 0, 1, 3, 2, 0),
 	gsSP2Triangles(1, 4, 3, 0, 4, 5, 3, 0),
@@ -3505,26 +3509,26 @@ Gfx patch_bg_mesh_mesh[] = {
 };
 
 Vtx patch_bg_r_mesh_r_mesh_vtx_0[4] = {
-	{{ {67, 30, 0}, 0, {10165, 898}, {255, 255, 255, 255} }},
-	{{ {-67, 30, 0}, 0, {-114, -1218}, {255, 255, 255, 255} }},
-	{{ {67, -30, 0}, 0, {9225, 5463}, {255, 255, 255, 255} }},
-	{{ {-79, -30, 0}, 0, {-1972, 3157}, {255, 255, 255, 255} }},
+	{{ {67, 30, 0}, 0, {10165, 898}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
+	{{ {-67, 30, 0}, 0, {-114, -1218}, {CHS_SHD_MAX, CHS_SHD_MAX, CHS_SHD_MAX, 0xFF} }},
+	{{ {67, -30, 0}, 0, {9225, 5463}, {CHS_SHD_MIN, CHS_SHD_MIN, CHS_SHD_MIN, 0xFF} }},
+	{{ {-79, -30, 0}, 0, {-1972, 3157}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
 };
 
 Vtx patch_bg_r_mesh_r_mesh_vtx_1[8] = {
-	{{ {70, -32, 0}, 0, {-2113, -816}, {255, 255, 255, 255} }},
-	{{ {70, 32, 0}, 0, {-1387, 2832}, {255, 255, 255, 255} }},
-	{{ {67, 30, 0}, 0, {-1391, 2812}, {255, 255, 255, 255} }},
-	{{ {-67, 30, 0}, 0, {1332, 1928}, {255, 255, 255, 255} }},
-	{{ {-69, 32, 0}, 0, {1651, 2493}, {255, 255, 255, 255} }},
-	{{ {-79, -30, 0}, 0, {2038, -209}, {255, 255, 255, 255} }},
-	{{ {-82, -32, 0}, 0, {2257, -373}, {255, 255, 255, 255} }},
-	{{ {67, -30, 0}, 0, {-2109, -796}, {255, 255, 255, 255} }},
+	{{ {70, -32, 0}, 0, {-2113, -816}, {CHS_SHD_MIN, CHS_SHD_MIN, CHS_SHD_MIN, 0xFF} }},
+	{{ {70, 32, 0}, 0, {-1387, 2832}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
+	{{ {67, 30, 0}, 0, {-1391, 2812}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
+	{{ {-67, 30, 0}, 0, {1332, 1928}, {CHS_SHD_MAX, CHS_SHD_MAX, CHS_SHD_MAX, 0xFF} }},
+	{{ {-69, 32, 0}, 0, {1651, 2493}, {CHS_SHD_MAX, CHS_SHD_MAX, CHS_SHD_MAX, 0xFF} }},
+	{{ {-79, -30, 0}, 0, {2038, -209}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
+	{{ {-82, -32, 0}, 0, {2257, -373}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
+	{{ {67, -30, 0}, 0, {-2109, -796}, {CHS_SHD_MIN, CHS_SHD_MIN, CHS_SHD_MIN, 0xFF} }},
 };
 
 Gfx patch_bg_r_mesh_r_mesh[] = {
-	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
-	gsDPSetCombineLERP(0, 0, 0, TEXEL0, 0, 0, 0, 1, 0, 0, 0, TEXEL0, 0, 0, 0, 1),
+	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADE | G_SHADING_SMOOTH),
+	gsDPSetCombineLERP(SHADE, 0, TEXEL0, 0, 0, 0, 0, 1, SHADE, 0, TEXEL0, 0, 0, 0, 0, 1),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
 	gsSPTexture(65535, 65535, 0, 0, 1),
@@ -3536,7 +3540,7 @@ Gfx patch_bg_r_mesh_r_mesh[] = {
 	gsSPVertex(patch_bg_r_mesh_r_mesh_vtx_0 + 0, 4, 0),
 	gsSP2Triangles(0, 1, 2, 0, 2, 1, 3, 0),
 	gsDPPipeSync(),
-	gsDPSetCombineLERP(0, 0, 0, PRIMITIVE, 0, 0, 0, 1, 0, 0, 0, PRIMITIVE, 0, 0, 0, 1),
+	gsDPSetCombineLERP(SHADE, 0, PRIMITIVE, 0, 0, 0, 0, 1, SHADE, 0, PRIMITIVE, 0, 0, 0, 0, 1),
 	gsSPVertex(patch_bg_r_mesh_r_mesh_vtx_1 + 0, 8, 0),
 	gsSP2Triangles(0, 1, 2, 0, 1, 3, 2, 0),
 	gsSP2Triangles(1, 4, 3, 0, 4, 5, 3, 0),
@@ -4329,21 +4333,21 @@ u8 desc_bg_desc_bg_i8[] = {
 };
 
 Vtx desc_bg_mesh_mesh_vtx_0[4] = {
-	{{ {-146, 36, 0}, 0, {-3965, -163}, {255, 255, 255, 255} }},
-	{{ {-146, -32, 0}, 0, {-4564, 825}, {255, 255, 255, 255} }},
-	{{ {146, -32, 0}, 0, {3968, 2120}, {255, 255, 255, 255} }},
-	{{ {146, 36, 0}, 0, {4568, 1133}, {255, 255, 255, 255} }},
+	{{ {-146, 36, 0}, 0, {-3965, -163}, {CHS_SHD_MAX, CHS_SHD_MAX, CHS_SHD_MAX, 0xFF} }},
+	{{ {-146, -32, 0}, 0, {-4564, 825}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
+	{{ {146, -32, 0}, 0, {3968, 2120}, {CHS_SHD_MIN, CHS_SHD_MIN, CHS_SHD_MIN, 0xFF} }},
+	{{ {146, 36, 0}, 0, {4568, 1133}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
 };
 
 Vtx desc_bg_mesh_mesh_vtx_1[8] = {
-	{{ {-146, -32, 0}, 0, {-2290, 825}, {0, 0, 127, 255} }},
-	{{ {-146, 36, 0}, 0, {-1990, -163}, {0, 0, 127, 255} }},
-	{{ {-148, 38, 0}, 0, {-2011, -197}, {0, 0, 127, 255} }},
-	{{ {148, 38, 0}, 0, {2312, 1116}, {0, 0, 127, 255} }},
-	{{ {146, 36, 0}, 0, {2276, 1133}, {0, 0, 127, 255} }},
-	{{ {148, -34, 0}, 0, {1997, 2154}, {0, 0, 127, 255} }},
-	{{ {146, -32, 0}, 0, {1976, 2120}, {0, 0, 127, 255} }},
-	{{ {-148, -34, 0}, 0, {-2327, 842}, {0, 0, 127, 255} }},
+	{{ {-146, -32, 0}, 0, {-2290, 825}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
+	{{ {-146, 36, 0}, 0, {-1990, -163}, {CHS_SHD_MAX, CHS_SHD_MAX, CHS_SHD_MAX, 0xFF} }},
+	{{ {-148, 38, 0}, 0, {-2011, -197}, {CHS_SHD_MAX, CHS_SHD_MAX, CHS_SHD_MAX, 0xFF} }},
+	{{ {148, 38, 0}, 0, {2312, 1116}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
+	{{ {146, 36, 0}, 0, {2276, 1133}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
+	{{ {148, -34, 0}, 0, {1997, 2154}, {CHS_SHD_MIN, CHS_SHD_MIN, CHS_SHD_MIN, 0xFF} }},
+	{{ {146, -32, 0}, 0, {1976, 2120}, {CHS_SHD_MIN, CHS_SHD_MIN, CHS_SHD_MIN, 0xFF} }},
+	{{ {-148, -34, 0}, 0, {-2327, 842}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
 };
 
 Gfx desc_bg_mesh_mesh[] = {
@@ -4360,9 +4364,9 @@ Gfx desc_bg_mesh_mesh[] = {
 	gsDPSetTileSize(0, 0, 0, 252, 124),
 	gsSPVertex(desc_bg_mesh_mesh_vtx_0 + 0, 4, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
+	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_SHADING_SMOOTH),
 	gsDPPipeSync(),
-	gsDPSetCombineLERP(0, 0, 0, PRIMITIVE, 0, 0, 0, 1, 0, 0, 0, PRIMITIVE, 0, 0, 0, 1),
+	gsDPSetCombineLERP(SHADE, 0, PRIMITIVE, 0, 0, 0, 0, 1, SHADE, 0, PRIMITIVE, 0, 0, 0, 0, 1),
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
 	gsDPSetPrimColor(0, 0, 255, 255, 255, 255),
 	gsSPVertex(desc_bg_mesh_mesh_vtx_1 + 0, 8, 0),
@@ -4376,21 +4380,21 @@ Gfx desc_bg_mesh_mesh[] = {
 };
 
 Vtx ext_desc_bg_ext_mesh_mesh_vtx_0[4] = {
-	{{ {-146, 107, 0}, 0, {-3329, -1209}, {255, 255, 255, 255} }},
-	{{ {-146, -107, 0}, 0, {-5235, 1929}, {255, 255, 255, 255} }},
-	{{ {146, -107, 0}, 0, {3297, 3225}, {255, 255, 255, 255} }},
-	{{ {146, 107, 0}, 0, {5203, 87}, {255, 255, 255, 255} }},
+	{{ {-146, 107, 0}, 0, {-3329, -1209}, {CHS_SHD_MAX, CHS_SHD_MAX, CHS_SHD_MAX, 0xFF} }},
+	{{ {-146, -107, 0}, 0, {-5235, 1929}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
+	{{ {146, -107, 0}, 0, {3297, 3225}, {CHS_SHD_MIN, CHS_SHD_MIN, CHS_SHD_MIN, 0xFF} }},
+	{{ {146, 107, 0}, 0, {5203, 87}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
 };
 
 Vtx ext_desc_bg_ext_mesh_mesh_vtx_1[8] = {
-	{{ {-146, -107, 0}, 0, {-2626, 1929}, {0, 0, 127, 255} }},
-	{{ {-146, 107, 0}, 0, {-1673, -1209}, {0, 0, 127, 255} }},
-	{{ {-148, 109, 0}, 0, {-1678, -1294}, {0, 0, 127, 255} }},
-	{{ {148, 109, 0}, 0, {2646, 19}, {0, 0, 127, 255} }},
-	{{ {146, 107, 0}, 0, {2594, 87}, {0, 0, 127, 255} }},
-	{{ {148, -109, 0}, 0, {1646, 3310}, {0, 0, 127, 255} }},
-	{{ {146, -107, 0}, 0, {1641, 3225}, {0, 0, 127, 255} }},
-	{{ {-148, -109, 0}, 0, {-2678, 1997}, {0, 0, 127, 255} }},
+	{{ {-146, -107, 0}, 0, {-2626, 1929}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
+	{{ {-146, 107, 0}, 0, {-1673, -1209}, {CHS_SHD_MAX, CHS_SHD_MAX, CHS_SHD_MAX, 0xFF} }},
+	{{ {-148, 109, 0}, 0, {-1678, -1294}, {CHS_SHD_MAX, CHS_SHD_MAX, CHS_SHD_MAX, 0xFF} }},
+	{{ {148, 109, 0}, 0, {2646, 19}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
+	{{ {146, 107, 0}, 0, {2594, 87}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
+	{{ {148, -109, 0}, 0, {1646, 3310}, {CHS_SHD_MIN, CHS_SHD_MIN, CHS_SHD_MIN, 0xFF} }},
+	{{ {146, -107, 0}, 0, {1641, 3225}, {CHS_SHD_MIN, CHS_SHD_MIN, CHS_SHD_MIN, 0xFF} }},
+	{{ {-148, -109, 0}, 0, {-2678, 1997}, {CHS_SHD_MED, CHS_SHD_MED, CHS_SHD_MED, 0xFF} }},
 };
 
 Gfx ext_desc_bg_ext_mesh_mesh[] = {
@@ -4407,9 +4411,9 @@ Gfx ext_desc_bg_ext_mesh_mesh[] = {
 	gsDPSetTileSize(0, 0, 0, 252, 124),
 	gsSPVertex(ext_desc_bg_ext_mesh_mesh_vtx_0 + 0, 4, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
+	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_SHADING_SMOOTH),
 	gsDPPipeSync(),
-	gsDPSetCombineLERP(0, 0, 0, PRIMITIVE, 0, 0, 0, 1, 0, 0, 0, PRIMITIVE, 0, 0, 0, 1),
+	gsDPSetCombineLERP(SHADE, 0, PRIMITIVE, 0, 0, 0, 0, 1, SHADE, 0, PRIMITIVE, 0, 0, 0, 0, 1),
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
 	gsDPSetPrimColor(0, 0, 255, 255, 255, 255),
 	gsSPVertex(ext_desc_bg_ext_mesh_mesh_vtx_1 + 0, 8, 0),

@@ -353,6 +353,8 @@ void save_file_load_all(void) {
         // Verify the save file is valid.
         if (!verify_save_block_signature(&gSaveBuffer.files[file], sizeof(gSaveBuffer.files[file]), SAVE_FILE_MAGIC)) {
             save_file_erase(file);
+        } else if (!save_file_exists(file)) {
+            save_file_erase(file);
         }
     }
 }
