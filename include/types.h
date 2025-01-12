@@ -323,6 +323,7 @@ struct MarioState {
 
     // CUSTOM
     /*0xC8*/ f32 gravity;
+    /*0xCC*/ s8 hundredCoinOffset;
 };
 
 #endif // TYPES_H

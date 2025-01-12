@@ -214,6 +214,10 @@ s32 intro_game_over(void) {
 
 #ifndef VERSION_JP
     if (sPlayMarioGameOver == TRUE) {
+        // Wipe save file
+        save_file_erase(gCurrSaveFileNum - 1);
+        save_file_load_all();
+
         play_sound(SOUND_MARIO_GAME_OVER, gGlobalSoundSource);
         sPlayMarioGameOver = FALSE;
     }

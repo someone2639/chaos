@@ -1910,4 +1910,5 @@ void init_mario_from_save_file(void) {
     gHudDisplay.wedges = 8;
 
     gMarioState->gravity = 1.0f;
+    gMarioState->hundredCoinOffset = 0;
 }

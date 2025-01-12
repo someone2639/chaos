@@ -47,6 +47,8 @@ enum ChaosPatchID {
 
 // Coin Modifiers
     CHAOS_PATCH_DOUBLE_COINS,
+    CHAOS_PATCH_100C_DECREASE_LV2,
+    CHAOS_PATCH_100C_DECREASE_LV3,
 
 // Patch Count
     CHAOS_PATCH_COUNT,

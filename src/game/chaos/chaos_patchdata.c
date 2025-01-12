@@ -315,11 +315,39 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 12,
+        .duration          = 10,
 
         .levelInitFunc     = chs_lvlinit_double_coins,
 
         .name              = "Coin Rush",
         .shortDescription  = "Coin values will be doubled for 30 seconds upon entering a new level.",
+    },
+    [CHAOS_PATCH_100C_DECREASE_LV2] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = TRUE,
+        .duration          = 10,
+
+        .conditionalFunc   = chs_cond_100c_decrease_lv2,
+        .activatedInitFunc = chs_act_100c_decrease_lv2,
+        .deactivationFunc  = chs_deact_100c_decrease_lv2,
+
+        .name              = "Coin Star Sale",
+        .shortDescription  = "Reduce the price of the 100 coin star by 10 coins.",
+    },
+    [CHAOS_PATCH_100C_DECREASE_LV3] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 3,
+        .isStackable       = TRUE,
+        .duration          = 10,
+
+        .conditionalFunc   = chs_cond_100c_decrease_lv3,
+        .activatedInitFunc = chs_act_100c_decrease_lv3,
+        .deactivationFunc  = chs_deact_100c_decrease_lv3,
+
+        .name              = "Coin Star Bargain",
+        .shortDescription  = "Reduce the price of the 100 coin star by 25 coins.",
     },
 };
