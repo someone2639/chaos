@@ -1,0 +1,99 @@
+#include <PR/ultratypes.h>
+#include <PR/gbi.h>
+#include "types.h"
+#include "game/mario.h"
+#include "sm64.h"
+#include "game/level_update.h"
+#include "game/print.h"
+
+#include "game/chaos/chaos.h"
+
+#define SLEEP_TIME_MIN  10800
+#define SLEEP_TIME_RAND 10800
+
+#define SHOCK_TIME_MIN  5400
+#define SHOCK_TIME_RAND 3600
+
+#define BURN_TIME_MIN  5400
+#define BURN_TIME_RAND 3600
+
+s16 sRandomSleepTimer = -1;
+s16 sRandomShockTimer = -1;
+s16 sRandomBurnTimer = -1;
+
+/*
+    Sleeping
+*/
+void chs_act_random_sleep(void) {
+    sRandomSleepTimer = RAND(SLEEP_TIME_RAND) + SLEEP_TIME_MIN;
+}
+
+void chs_update_random_sleep(void) {
+    if(sRandomSleepTimer == 0) {
+        s32 actGroup = (gMarioState->action & ACT_GROUP_MASK);
+        if(actGroup == ACT_GROUP_MOVING || actGroup == ACT_GROUP_STATIONARY) {
+            set_mario_action(gMarioState, ACT_START_SLEEPING, 0);
+            sRandomSleepTimer = -1;
+        }
+    } else if (sRandomSleepTimer == -1) {
+        if(gMarioState->action != ACT_START_SLEEPING) {
+            sRandomSleepTimer = RAND(SLEEP_TIME_RAND) + SLEEP_TIME_MIN;
+        }
+    } else {
+        sRandomSleepTimer--;
+    }
+}
+
+/*
+    Shocking
+*/
+
+void chs_act_random_shock(void) {
+    sRandomShockTimer = RAND(SHOCK_TIME_RAND) + SHOCK_TIME_MIN;
+}
+
+void chs_update_random_shock(void) {
+    if(sRandomShockTimer == 0) {
+        sRandomShockTimer = -1;
+    } else if (sRandomShockTimer == -1) {
+        s32 actGroup = (gMarioState->action & ACT_GROUP_MASK);
+        if(!(actGroup == ACT_GROUP_CUTSCENE || actGroup == ACT_GROUP_AUTOMATIC)) {
+            hurt_and_set_mario_action(gMarioState, ACT_SHOCKED, 0, 4);
+            sRandomShockTimer = RAND(SHOCK_TIME_RAND) + SHOCK_TIME_MIN;
+        }
+    } else {
+        sRandomShockTimer--;
+    }
+}
+
+/*
+    Burning
+*/
+
+void chs_act_random_burn(void) {
+    sRandomBurnTimer = RAND(BURN_TIME_RAND) + BURN_TIME_MIN;
+}
+
+void chs_update_random_burn(void) {
+    if(sRandomBurnTimer == 0) {
+        sRandomBurnTimer = -1;
+    } else if (sRandomBurnTimer == -1) {
+        s32 actGroup = (gMarioState->action & ACT_GROUP_MASK);
+        if(!(actGroup == ACT_GROUP_CUTSCENE || actGroup == ACT_GROUP_SUBMERGED || actGroup == ACT_GROUP_AUTOMATIC)) {
+            gMarioState->marioObj->oMarioBurnTimer = 0;
+            u32 burningAction = ACT_BURNING_JUMP;
+
+            play_mario_sound(gMarioState, SOUND_MARIO_ON_FIRE, 0);
+
+            if ((gMarioState->action & ACT_FLAG_AIR) && gMarioState->vel[1] <= 0.0f) {
+                burningAction = ACT_BURNING_FALL;
+            }
+
+            set_mario_action(gMarioState, burningAction, 0);
+
+            sRandomBurnTimer = RAND(BURN_TIME_RAND) + BURN_TIME_MIN;
+        }
+    } else {
+        sRandomBurnTimer--;
+    }
+}

@@ -189,10 +189,6 @@ s32 act_start_sleeping(struct MarioState *m) {
     s32 animFrame = 0;
 #endif
 
-    if (check_common_idle_cancels(m)) {
-        return TRUE;
-    }
-
     if (m->quicksandDepth > 30.0f) {
         return set_mario_action(m, ACT_IN_QUICKSAND, 0);
     }
@@ -254,6 +250,14 @@ s32 act_start_sleeping(struct MarioState *m) {
         play_sound_if_no_flag(m, SOUND_MARIO_YAWNING, MARIO_MARIO_SOUND_PLAYED);
     }
 #endif
+
+    if(chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_SLEEP)) {
+        return FALSE;
+    }
+    
+    if (check_common_idle_cancels(m)) {
+        return TRUE;
+    }
 
     stationary_ground_step(m);
     return FALSE;
