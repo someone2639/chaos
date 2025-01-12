@@ -23,10 +23,23 @@ void bhv_collect_star_init(void) {
     }
 
     obj_set_hitbox(o, &sCollectStarHitbox);
+
+    if (chs_pay2win_can_collect_star()) {
+        cur_obj_become_tangible();
+    } else {
+        cur_obj_become_intangible();
+    }
 }
 
 void bhv_collect_star_loop(void) {
     o->oFaceAngleYaw += 0x800;
+
+    if (chs_pay2win_can_collect_star()) {
+        cur_obj_become_tangible();
+    } else {
+        cur_obj_become_intangible();
+    }
+
 
     if (o->oInteractStatus & INT_STATUS_INTERACTED) {
         mark_obj_for_deletion(o);
@@ -89,13 +102,20 @@ void bhv_star_spawn_loop(void) {
 
             if (o->oPosY < o->oHomeY) {
                 cur_obj_play_sound_2(SOUND_GENERAL_STAR_APPEARS);
-                cur_obj_become_tangible();
+                if (chs_pay2win_can_collect_star()) {
+                    cur_obj_become_tangible();
+                }
                 o->oPosY = o->oHomeY;
                 o->oAction = 3;
             }
             break;
 
         case 3:
+            if (chs_pay2win_can_collect_star()) {
+                cur_obj_become_tangible();
+            } else {
+                cur_obj_become_intangible();
+            }
             o->oFaceAngleYaw += 0x800;
             if (o->oTimer == 20) {
                 gObjCutsceneDone = TRUE;

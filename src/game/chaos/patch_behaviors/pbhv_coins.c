@@ -4,8 +4,10 @@
 
 #include "game/chaos/chaos.h"
 
+#include "course_table.h"
 #include "sounds.h"
 #include "audio/external.h"
+#include "game/area.h"
 #include "game/debug.h"
 #include "game/level_update.h"
 
@@ -14,6 +16,7 @@
 #define MIN_100C 25
 #define LV2_100C 10
 #define LV3_100C 25
+#define PAY2WIN_REQ 40
 
 u8 chs_double_coins_under_30s(void) {
     struct ChaosActiveEntry *entry;
@@ -67,3 +70,10 @@ void chs_act_100c_decrease_lv3(void) { gMarioState->hundredCoinOffset -= LV3_100
 void chs_deact_100c_decrease_lv2(void) { gMarioState->hundredCoinOffset += LV2_100C; }
 void chs_deact_100c_decrease_lv3(void) { gMarioState->hundredCoinOffset += LV3_100C; }
 
+u8 chs_pay2win_can_collect_star(void) {
+    return !(
+        chaos_check_if_patch_active(CHAOS_PATCH_PAY2WIN)
+        && gCurrCourseNum != COURSE_NONE
+        && gMarioState->numCoins < PAY2WIN_REQ
+    );
+}

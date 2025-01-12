@@ -22,7 +22,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc   = NULL,
         .deactivationFunc  = NULL,
 
-        .name              = "-",
+        .name              = "---",
         .shortDescription  = "@BFBFBF--No positive effect.@--------",
         .longDescription   = NULL,
     },
@@ -40,7 +40,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc   = NULL,
         .deactivationFunc  = NULL,
 
-        .name              = "-",
+        .name              = "---",
         .shortDescription  = "@BFBFBF--No negative effect.@--------",
         .longDescription   = NULL,
     },
@@ -349,5 +349,15 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Coin Star Bargain",
         .shortDescription  = "Reduce the price of the 100 coin star by 25 coins.",
+    },
+    [CHAOS_PATCH_PAY2WIN] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 10,
+
+        .name              = "Pay To Win",
+        .shortDescription  = "Stars are only collectible when Mario has at least 40 coins.",
     },
 };
