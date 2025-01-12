@@ -730,4 +730,7 @@ s32 save_file_get_challenge_mode(s32 fileIndex) {
 */
 void save_file_set_gamemode(s32 fileIndex, s32 difficulty, s32 challenge) {
     gSaveBuffer.files[fileIndex].gamemode = (difficulty << 4) | challenge;
+    gSaveBuffer.files[fileIndex].flags |= SAVE_FLAG_FILE_EXISTS;
+    gSaveFileModified = TRUE;
+    save_file_do_save(fileIndex);
 }
