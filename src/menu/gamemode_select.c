@@ -11,17 +11,19 @@
 #include "audio/external.h"
 #include "sm64.h"
 
+#define DESC_STRING_WIDTH 284
+
 struct GamemodeSelectMenu sGamemodeSelectMenu;
 
 const char *sGMSelectDescriptions[] = {
-    "Select game difficulty",
-    "Select game mode",
-    "Begin the game with the selected settings",
-    "Patch cards will be more favorable.\nCards will feature stronger positive effects.",
-    "Patch cards will be evenly balanced.\nCards will have equal positive and negative effects.",
-    "Patch cards will be more punishing.\nCards will feature stronger negative effects.",
-    "Infinite Lives. Dying will send you out of the course\nwith no additional punishment.",
-    "Enables Lives. Running out of lives deletes the\nsave file. 1-up mushrooms are removed, and lives can\nonly be increased by collecting yellow stars."
+    "Select game difficulty.",
+    "Select game mode.",
+    "Begin the game with the selected settings.",
+    "Patch cards will be more favorable. Cards will feature weaker negative effects.",
+    "Patch cards will be evenly balanced. Cards will have equal positive and negative effects.",
+    "Patch cards will be more punishing. Cards will feature weaker positive effects.",
+    "Infinite Lives. Dying will send you out of the course with no additional punishment.",
+    "Enables Lives. Running out of lives will delete the save file. 1-UP mushrooms are removed, and lives can only be increased by collecting yellow stars."
 };
 
 /*
@@ -473,7 +475,7 @@ void render_menu_desc() {
     }
 
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text(-142, 15, desc, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text_linebreaks(-142, 15, DESC_STRING_WIDTH, desc, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
     slowtext_finished_rendering();
 }
 

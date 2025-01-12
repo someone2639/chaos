@@ -132,7 +132,9 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
     if (patch->isStackable) {
         if (patch->durationType == CHAOS_DURATION_ONCE) {
             // Activate init func, deactivate, and return immediately, do not add to patch array
-            assert_args(patch->activatedInitFunc || patch->deactivationFunc, "%s%08X", "chaos_add_new_entry\nAttempted to add stackable ONCE patch\nwithout a callback: 0x", patchId);
+            assert_args(patch->activatedInitFunc || patch->deactivationFunc
+                        || (patchId == CHAOS_PATCH_NONE_POSITIVE || patchId == CHAOS_PATCH_NONE_NEGATIVE),
+                        "%s%08X", "chaos_add_new_entry\nAttempted to add stackable ONCE patch\nwithout a callback: 0x", patchId);
             if (patch->activatedInitFunc) {
                 patch->activatedInitFunc();
             }

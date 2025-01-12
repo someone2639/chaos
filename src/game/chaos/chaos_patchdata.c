@@ -125,7 +125,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_STARS_INCREASE_LV2] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_POSITIVE,
-        .severity          = 1,
+        .severity          = 2,
         .isStackable       = TRUE,
 
         .activatedInitFunc = chs_act_stars_increase_lv2,
@@ -136,7 +136,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_STARS_INCREASE_LV3] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_POSITIVE,
-        .severity          = 2,
+        .severity          = 3,
         .isStackable       = TRUE,
 
         .activatedInitFunc = chs_act_stars_increase_lv3,
@@ -159,7 +159,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_STARS_DECREASE_LV2] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 1,
+        .severity          = 2,
         .isStackable       = TRUE,
 
         .activatedInitFunc = chs_act_stars_decrease_lv2,
@@ -170,7 +170,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_STARS_DECREASE_LV3] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 2,
+        .severity          = 3,
         .isStackable       = TRUE,
 
         .activatedInitFunc = chs_act_stars_decrease_lv3,
