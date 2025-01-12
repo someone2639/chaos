@@ -360,4 +360,86 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Pay To Win",
         .shortDescription  = "Stars are only collectible when Mario has at least 40 coins.",
     },
+
+// Moveset Modifiers
+    [CHAOS_PATCH_LOSEMOVE_BREAKDANCE] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 20,
+
+        .name              = "Dance Break",
+        .shortDescription  = "Mario can no longer breakdance.",
+    },
+    [CHAOS_PATCH_LOSEMOVE_LEDGE_GRAB] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .name              = "Sore Arms",
+        .shortDescription  = "Mario can no longer ledge grab.",
+    },
+    [CHAOS_PATCH_LOSEMOVE_KICK] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .name              = "Leg Pain",
+        .shortDescription  = "Mario can no longer kick.",
+    },
+    [CHAOS_PATCH_LOSEMOVE_SIDEFLIP] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .name              = "Unsimple Flips",
+        .shortDescription  = "Mario can no longer sideflip.",
+    },
+    [CHAOS_PATCH_LOSEMOVE_LONG_JUMP] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .name              = "Lazy Leaper",
+        .shortDescription  = "Mario can no longer long jump.",
+    },
+    [CHAOS_PATCH_LOSEMOVE_BACKFLIP] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .name              = "Flipped Off",
+        .shortDescription  = "Mario can no longer backflip.",
+    },
+    [CHAOS_PATCH_LOSEMOVE_WALL_KICK] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .name              = "Wall Kicks Won't Work",
+        .shortDescription  = "Mario can no longer wall kick.",
+    },
+    [CHAOS_PATCH_LOSEMOVE_DOUBLE_JUMP] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .name              = "Double Trouble",
+        .shortDescription  = "Mario can no longer double jump (and by extension, triple jump).",
+    },
 };

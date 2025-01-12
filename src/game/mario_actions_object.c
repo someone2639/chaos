@@ -9,6 +9,7 @@
 #include "interaction.h"
 #include "engine/math_util.h"
 #include "rumble_init.h"
+#include "chaos/chaos.h"
 
 /**
  * Used by act_punching() to determine Mario's forward velocity during each
@@ -102,7 +103,9 @@ s32 mario_update_punch_sequence(struct MarioState *m) {
             }
 
             if (m->input & INPUT_B_PRESSED) {
-                m->actionArg = 6;
+                if (!chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_KICK)) {
+                    m->actionArg = 6;
+                }
             }
 
             if (is_anim_at_end(m)) {
@@ -154,7 +157,9 @@ s32 act_punching(struct MarioState *m) {
     }
 
     if (m->actionState == 0 && (m->input & INPUT_A_DOWN)) {
-        return set_mario_action(m, ACT_JUMP_KICK, 0);
+        if (!chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_KICK)) {
+            return set_mario_action(m, ACT_JUMP_KICK, 0);
+        }
     }
 
     m->actionState = 1;

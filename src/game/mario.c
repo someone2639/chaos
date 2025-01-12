@@ -1035,15 +1035,27 @@ s32 set_jump_from_landing(struct MarioState *m) {
         } else {
             switch (m->prevAction) {
                 case ACT_JUMP_LAND:
-                    set_mario_action(m, ACT_DOUBLE_JUMP, 0);
+                    if (chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_DOUBLE_JUMP)) {
+                        set_mario_action(m, ACT_JUMP, 0);
+                    } else {
+                        set_mario_action(m, ACT_DOUBLE_JUMP, 0);
+                    }
                     break;
 
                 case ACT_FREEFALL_LAND:
-                    set_mario_action(m, ACT_DOUBLE_JUMP, 0);
+                    if (chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_DOUBLE_JUMP)) {
+                        set_mario_action(m, ACT_JUMP, 0);
+                    } else {
+                        set_mario_action(m, ACT_DOUBLE_JUMP, 0);
+                    }
                     break;
 
                 case ACT_SIDE_FLIP_LAND_STOP:
-                    set_mario_action(m, ACT_DOUBLE_JUMP, 0);
+                    if (chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_DOUBLE_JUMP)) {
+                        set_mario_action(m, ACT_JUMP, 0);
+                    } else {
+                        set_mario_action(m, ACT_DOUBLE_JUMP, 0);
+                    }
                     break;
 
                 case ACT_DOUBLE_JUMP_LAND:

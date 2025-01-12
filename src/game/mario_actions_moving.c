@@ -5,6 +5,7 @@
 #include "audio/external.h"
 #include "engine/math_util.h"
 #include "engine/surface_collision.h"
+#include "chaos/chaos.h"
 #include "mario_step.h"
 #include "area.h"
 #include "interaction.h"
@@ -104,6 +105,10 @@ void check_ledge_climb_down(struct MarioState *m) {
     struct Surface *wall;
     s16 wallAngle;
     s16 wallDYaw;
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_LEDGE_GRAB)) {
+        return;
+    }
 
     if (m->forwardVel < 10.0f) {
         wallCols.x = m->pos[0];
@@ -848,7 +853,9 @@ s32 act_move_punching(struct MarioState *m) {
     }
 
     if (m->actionState == 0 && (m->input & INPUT_A_DOWN)) {
-        return set_mario_action(m, ACT_JUMP_KICK, 0);
+        if (!chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_KICK)) {
+            return set_mario_action(m, ACT_JUMP_KICK, 0);
+        }
     }
 
     m->actionState = 1;
@@ -970,7 +977,12 @@ s32 act_turning_around(struct MarioState *m) {
     }
 
     if (m->input & INPUT_A_PRESSED) {
-        return set_jumping_action(m, ACT_SIDE_FLIP, 0);
+        if (!chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_SIDEFLIP)) {
+            return set_jumping_action(m, ACT_SIDE_FLIP, 0);
+        } else {
+            m->faceAngle[1] += 0x8000;
+            return set_jumping_action(m, ACT_JUMP, 0);
+        }
     }
 
     if (m->input & INPUT_UNKNOWN_5) {
@@ -1021,7 +1033,11 @@ s32 act_finish_turning_around(struct MarioState *m) {
     }
 
     if (m->input & INPUT_A_PRESSED) {
-        return set_jumping_action(m, ACT_SIDE_FLIP, 0);
+        if (!chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_SIDEFLIP)) {
+            return set_jumping_action(m, ACT_SIDE_FLIP, 0);
+        } else {
+            return set_jumping_action(m, ACT_JUMP, 0);
+        }
     }
 
     update_walking_speed(m);
@@ -1464,7 +1480,7 @@ s32 act_crouch_slide(struct MarioState *m) {
 
     if (m->actionTimer < 30) {
         m->actionTimer++;
-        if (m->input & INPUT_A_PRESSED) {
+        if (m->input & INPUT_A_PRESSED && !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_LONG_JUMP)) {
             if (m->forwardVel > 10.0f) {
                 return set_jumping_action(m, ACT_LONG_JUMP, 0);
             }
@@ -1475,8 +1491,12 @@ s32 act_crouch_slide(struct MarioState *m) {
         if (m->forwardVel >= 10.0f) {
             return set_mario_action(m, ACT_SLIDE_KICK, 0);
         } else {
-            return set_mario_action(m, ACT_MOVE_PUNCHING, 0x0009);
+            if (!chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_BREAKDANCE)) {
+                return set_mario_action(m, ACT_MOVE_PUNCHING, 0x0009);
+            }
         }
+
+        return set_mario_action(m, ACT_MOVE_PUNCHING, 0);
     }
 
     if (m->input & INPUT_A_PRESSED) {
@@ -1797,6 +1817,9 @@ s32 common_landing_cancels(struct MarioState *m, struct LandingAction *landingAc
 
 s32 act_jump_land(struct MarioState *m) {
     if (common_landing_cancels(m, &sJumpLandAction, set_jumping_action)) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_DOUBLE_JUMP) && m->action == ACT_DOUBLE_JUMP) {
+            set_mario_action(m, ACT_JUMP, 0);
+        }
         return TRUE;
     }
 
@@ -1806,6 +1829,9 @@ s32 act_jump_land(struct MarioState *m) {
 
 s32 act_freefall_land(struct MarioState *m) {
     if (common_landing_cancels(m, &sFreefallLandAction, set_jumping_action)) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_DOUBLE_JUMP) && m->action == ACT_DOUBLE_JUMP) {
+            set_mario_action(m, ACT_JUMP, 0);
+        }
         return TRUE;
     }
 
@@ -1815,6 +1841,9 @@ s32 act_freefall_land(struct MarioState *m) {
 
 s32 act_side_flip_land(struct MarioState *m) {
     if (common_landing_cancels(m, &sSideFlipLandAction, set_jumping_action)) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_DOUBLE_JUMP) && m->action == ACT_DOUBLE_JUMP) {
+            set_mario_action(m, ACT_JUMP, 0);
+        }
         return TRUE;
     }
 
@@ -1863,6 +1892,9 @@ s32 act_long_jump_land(struct MarioState *m) {
     }
 
     if (common_landing_cancels(m, &sLongJumpLandAction, set_jumping_action)) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_LONG_JUMP) && m->action == ACT_LONG_JUMP) {
+            set_mario_action(m, ACT_JUMP, 0);
+        }
         return TRUE;
     }
 
@@ -1906,6 +1938,9 @@ s32 act_backflip_land(struct MarioState *m) {
     }
 
     if (common_landing_cancels(m, &sBackflipLandAction, set_jumping_action)) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_BACKFLIP) && m->action == ACT_BACKFLIP) {
+            set_mario_action(m, ACT_JUMP, 0);
+        }
         return TRUE;
     }
 

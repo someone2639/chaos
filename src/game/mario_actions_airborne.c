@@ -109,7 +109,13 @@ s32 check_fall_damage(struct MarioState *m, u32 hardFallAction) {
 
 s32 check_kick_or_dive_in_air(struct MarioState *m) {
     if (m->input & INPUT_B_PRESSED) {
-        return set_mario_action(m, m->forwardVel > 28.0f ? ACT_DIVE : ACT_JUMP_KICK, 0);
+        if (m->forwardVel > 28.0f) {
+            return set_mario_action(m, ACT_DIVE, 0);
+        }
+
+        if (!chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_KICK)) {
+            return set_mario_action(m, ACT_JUMP_KICK, 0);
+        }
     }
     return FALSE;
 }
@@ -1148,8 +1154,10 @@ u32 common_air_knockback_step(struct MarioState *m, u32 landAction, u32 hardFall
 
 s32 check_wall_kick(struct MarioState *m) {
     if ((m->input & INPUT_A_PRESSED) && m->wallKickTimer != 0 && m->prevAction == ACT_AIR_HIT_WALL) {
-        m->faceAngle[1] += 0x8000;
-        return set_mario_action(m, ACT_WALL_KICK_AIR, 0);
+        if (!chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_WALL_KICK)) {
+            m->faceAngle[1] += 0x8000;
+            return set_mario_action(m, ACT_WALL_KICK_AIR, 0);
+        }
     }
 
     return FALSE;
@@ -1315,9 +1323,11 @@ s32 act_air_hit_wall(struct MarioState *m) {
 
     if (++(m->actionTimer) <= 2) {
         if (m->input & INPUT_A_PRESSED) {
-            m->vel[1] = 52.0f;
-            m->faceAngle[1] += 0x8000;
-            return set_mario_action(m, ACT_WALL_KICK_AIR, 0);
+            if (!chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_WALL_KICK)) {
+                m->vel[1] = 52.0f;
+                m->faceAngle[1] += 0x8000;
+                return set_mario_action(m, ACT_WALL_KICK_AIR, 0);
+            }
         }
     } else if (m->forwardVel >= 38.0f) {
         m->wallKickTimer = 5;

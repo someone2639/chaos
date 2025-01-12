@@ -658,6 +658,9 @@ void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **current
     *currentEntryCount = &gSaveBuffer.files[gCurrSaveFileNum - 1].chaosEntryCount;
     *gChaosDifficulty = save_file_get_difficulty(gCurrSaveFileNum - 1);
     *gChaosLivesEnabled = save_file_get_challenge_mode(gCurrSaveFileNum - 1);
+
+    gSaveBuffer.files[gCurrSaveFileNum - 1].flags |= SAVE_FLAG_FILE_EXISTS;
+    gMainMenuDataModified = TRUE;
 }
 
 void disable_warp_checkpoint(void) {
