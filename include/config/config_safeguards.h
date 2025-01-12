@@ -61,7 +61,6 @@
     #undef ENABLE_DEBUG_FREE_MOVE
     #undef UNLOCK_ALL
     #undef DEBUG_ASSERTIONS
-    #undef MUTE_MUSIC_PLAYERS
 #endif // DISABLE_ALL
 
 #ifdef USE_PROFILER

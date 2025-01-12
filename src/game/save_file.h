@@ -71,6 +71,7 @@ struct MainMenuSaveData {
     // on the high score screen.
     u32 coinScoreAges[NUM_SAVE_FILES];
     u8 soundMode: 2;
+    u8 disableBGMusic: 1;
 #ifdef WIDE
     u8 wideMode: 1;
 #endif
@@ -175,6 +176,9 @@ void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **current
 void disable_warp_checkpoint(void);
 void check_if_should_set_warp_checkpoint(struct WarpNode *warpNode);
 s32 check_warp_checkpoint(struct WarpNode *warpNode);
+
+u32 save_file_get_bg_music_disabled(void);
+void save_file_set_bg_music(u8 shouldDisable);
 
 #ifdef WIDE
 u32 save_file_get_widescreen_mode(void);

@@ -617,6 +617,17 @@ void save_file_move_cap_to_default_location(void) {
     }
 }
 
+u32 save_file_get_bg_music_disabled(void) {
+    return gSaveBuffer.menuData.disableBGMusic;
+}
+
+void save_file_set_bg_music(u8 shouldDisable) {
+    gSaveBuffer.menuData.disableBGMusic = shouldDisable;
+
+    gMainMenuDataModified = TRUE;
+    save_main_menu_data();
+}
+
 #ifdef WIDE
 u32 save_file_get_widescreen_mode(void) {
     return gSaveBuffer.menuData.wideMode;

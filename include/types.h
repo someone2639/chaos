@@ -27,6 +27,7 @@ struct Config {
 #ifdef WIDE
     s16 widescreen;
 #endif
+    u8 disableBGMusic;
     u8 tvType;
 };
 
