@@ -1,4 +1,5 @@
 extern const GeoLayout chaos_save_button_geo[];
+extern const GeoLayout chaos_save_button_score_geo[];
 extern Lights1 chaos_save_button_base_layer1_lights;
 extern Lights1 chaos_save_button_mario_face_lights;
 extern Lights1 chaos_save_button_back_lights;
@@ -10,4 +11,5 @@ extern Vtx chaos_save_button_save_button_mesh_layer_1_vtx_0[20];
 extern Vtx chaos_save_button_save_button_mesh_layer_1_vtx_1[4];
 extern Vtx chaos_save_button_save_button_mesh_layer_6_vtx_0[4];
 extern Gfx chaos_save_button_save_button_mesh_layer_1[];
+extern Gfx chaos_save_button_score_button_mesh_layer_1[];
 extern Gfx chaos_save_button_save_button_mesh_layer_6[];

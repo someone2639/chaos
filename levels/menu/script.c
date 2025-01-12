@@ -21,6 +21,7 @@
 
 const LevelScript fast64_menu_loads[] = {
 	LOAD_MODEL_FROM_GEO(MODEL_CHAOS_SAVE_BUTTON, chaos_save_button_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_CHAOS_SCORE_BUTTON, chaos_save_button_score_geo),
 	RETURN(),
 };
 

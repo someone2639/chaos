@@ -651,7 +651,7 @@ void render_score_menu_buttons(struct Object *scoreButton) {
     // File A
     if (save_file_exists(SAVE_FILE_A) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_A] =
-            spawn_object_rel_with_rot(scoreButton, MODEL_CHAOS_SAVE_BUTTON, bhvMenuButton,
+            spawn_object_rel_with_rot(scoreButton, MODEL_CHAOS_SCORE_BUTTON, bhvMenuButton,
                                       711, 311, -100, 0, -0x8000, 0);
         menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_SCORE_FILE_A], 0);
     } else {
@@ -663,7 +663,7 @@ void render_score_menu_buttons(struct Object *scoreButton) {
     // File B
     if (save_file_exists(SAVE_FILE_B) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_B] =
-            spawn_object_rel_with_rot(scoreButton, MODEL_CHAOS_SAVE_BUTTON, bhvMenuButton,
+            spawn_object_rel_with_rot(scoreButton, MODEL_CHAOS_SCORE_BUTTON, bhvMenuButton,
                                       -166, 311, -100, 0, -0x8000, 0);
         menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_SCORE_FILE_B], 1);
     } else {
@@ -675,7 +675,7 @@ void render_score_menu_buttons(struct Object *scoreButton) {
     // File C
     if (save_file_exists(SAVE_FILE_C) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_C] = spawn_object_rel_with_rot(
-            scoreButton, MODEL_CHAOS_SAVE_BUTTON, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
+            scoreButton, MODEL_CHAOS_SCORE_BUTTON, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
         menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_SCORE_FILE_C], 2);
     } else {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_C] = spawn_object_rel_with_rot(
@@ -685,7 +685,7 @@ void render_score_menu_buttons(struct Object *scoreButton) {
     // File D
     if (save_file_exists(SAVE_FILE_D) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_D] =
-            spawn_object_rel_with_rot(scoreButton, MODEL_CHAOS_SAVE_BUTTON, bhvMenuButton,
+            spawn_object_rel_with_rot(scoreButton, MODEL_CHAOS_SCORE_BUTTON, bhvMenuButton,
                                       -166, 0, -100, 0, -0x8000, 0);
         menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_SCORE_FILE_D], 3);
     } else {
