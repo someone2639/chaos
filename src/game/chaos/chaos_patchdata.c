@@ -276,6 +276,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Ultra Gravity",
         .shortDescription  = "Increase Mario's gravity by 50%.",
     },
+
+// Healing Blockers
     [CHAOS_PATCH_NOHEAL_HEARTS] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
@@ -305,5 +307,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Unaffordable Health Care",
         .shortDescription  = "Coins no longer heal Mario.",
+    },
+
+// Coin Modifiers
+    [CHAOS_PATCH_DOUBLE_COINS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .levelInitFunc     = chs_lvlinit_double_coins,
+
+        .name              = "Coin Rush",
+        .shortDescription  = "Coins will be doubled for 30 seconds upon entering a new level.",
     },
 };

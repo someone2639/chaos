@@ -45,6 +45,9 @@ enum ChaosPatchID {
     CHAOS_PATCH_NOHEAL_WATER,
     CHAOS_PATCH_NOHEAL_COINS,
 
+// Coin Modifiers
+    CHAOS_PATCH_DOUBLE_COINS,
+
 // Patch Count
     CHAOS_PATCH_COUNT,
 };
@@ -80,11 +83,12 @@ struct ChaosPatch {
     const u8 isStackable; // Can this patch be active more than once at a time?
     const u8 duration;    // Ignored for CHAOS_DURATION_ONCE and CHAOS_DURATION_INFINITE
 
-    u8   (*conditionalFunc  )(const struct ChaosPatch *); // Check specific scenarios for whether this patch type is allowed to show up (Optional)
-    void (*activatedInitFunc)(const struct ChaosPatch *); // Invoked the moment this patch takes effect (Optional)
-    void (*areaInitFunc     )(const struct ChaosPatch *); // Invoked once immediately after warping into a new level/area that isn't COURSE_NONE (Optional)
-    void (*frameUpdateFunc  )(const struct ChaosPatch *); // Invoked once at the start of each frame while active (Optional)
-    void (*deactivationFunc )(const struct ChaosPatch *); // Invoked once the patch is deactivated (Optional)
+    u8   (*conditionalFunc  )(void); // Check specific scenarios for whether this patch type is allowed to show up (Optional)
+    void (*activatedInitFunc)(void); // Invoked the moment this patch takes effect (Optional)
+    void (*levelInitFunc    )(void); // Invoked once immediately after warping into a new level that isn't COURSE_NONE (Optional)
+    void (*areaInitFunc     )(void); // Invoked once immediately after warping into a new level and/or area that isn't COURSE_NONE (Optional)
+    void (*frameUpdateFunc  )(void); // Invoked once at the start of each frame while active (Optional)
+    void (*deactivationFunc )(void); // Invoked once the patch is deactivated (Optional)
 
     const char *name;             // Display name for the patch
     const char *shortDescription; // Short description for the patch
@@ -115,6 +119,7 @@ struct ChaosActiveEntry {
 extern const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT];
 extern s32 *gChaosActiveEntryCount;
 extern struct ChaosActiveEntry *gChaosActiveEntries;
+extern u8 gChaosLevelWarped;
 extern enum ChaosDifficulty gChaosDifficulty;
 extern u8 gChaosLivesEnabled;
 
