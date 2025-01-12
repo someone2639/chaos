@@ -3062,9 +3062,9 @@ s32 lvl_update_obj_and_load_file_selected(UNUSED s32 arg, UNUSED s32 unused) {
 }
 
 static u8 sDifficultyColors[][3] = {
-    {0x00, 0xFF, 0x00},         //Easy
+    {0x10, 0xF0, 0x20},         //Easy
     {0xFF, 0xFF, 0xFF},         //Normal
-    {0xFF, 0x00, 0x00},         //Hard
+    {0xF0, 0x20, 0x10},         //Hard
 };
 
 Gfx *geo_file_select_change_difficulty_color(s32 callContext, struct GraphNode *node, UNUSED Mat4 mtx) {
