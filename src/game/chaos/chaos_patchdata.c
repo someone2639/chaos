@@ -361,7 +361,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription  = "Stars are only collectible when Mario has at least 40 coins.",
     },
 
-// Moveset Modifiers
+// Movement Modifiers
     [CHAOS_PATCH_LOSEMOVE_BREAKDANCE] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
@@ -441,6 +441,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Double Trouble",
         .shortDescription  = "Mario can no longer double jump (and by extension, triple jump).",
+    },
+    [CHAOS_PATCH_BRAWL_TRIPPING] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .frameUpdateFunc   = chs_update_brawl_tripping,
+
+        .name              = "Brawl Mode",
+        .shortDescription  = "Mario trips randomly sometimes.",
     },
 
 // Miscellaneous Modifiers
