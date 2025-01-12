@@ -39,8 +39,20 @@ struct SaveFile {
     u8 courseStars[COURSE_COUNT];
 
     u8 courseCoinScores[COURSE_STAGES_COUNT];
-
+    u32 difficulty;
+    u32 challenge;
     struct SaveBlockSignature signature;
+};
+
+enum SaveFileDifficulty {
+    DIFFICULTY_EASY,
+    DIFFICULTY_NORMAL,
+    DIFFICULTY_HARD,
+};
+
+enum SaveFileChallenge {
+    CHALLENGE_MODE_OFF,
+    CHALLENGE_MODE_ON,
 };
 
 enum SaveFileIndex {
@@ -173,5 +185,10 @@ enum EuLanguages {
 void eu_set_language(u16 language);
 u16 eu_get_language(void);
 #endif
+
+s32 save_file_get_difficulty(s32 fileIndex);
+s32 save_file_get_challenge_mode(s32 fileIndex);
+void save_file_set_difficulty(s32 fileIndex, s32 difficulty);
+void save_file_set_challenge_mode(s32 fileIndex, s32 challenge);
 
 #endif // SAVE_FILE_H

@@ -363,6 +363,8 @@ static void bhv_menu_button_new_game_create(struct Object *button) {
     }
     sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_ACTIVE;
     if(update_gamemode_select()) {
+        save_file_set_difficulty(fileNum - 1, difficulty);
+        save_file_set_challenge_mode(fileNum - 1, challenge);
         sSelectedFileNum = fileNum;
     }
 }
@@ -1394,6 +1396,8 @@ void bhv_menu_button_manager_init(void) {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_A] =
             spawn_object_rel_with_rot(gCurrentObject, MODEL_CHAOS_SAVE_BUTTON,
                                       bhvMenuButton, -6400, 2800, 0, 0, 0, 0);
+        sMainMenuButtons[MENU_BUTTON_PLAY_FILE_A]->oMenuButtonDiffCol = save_file_get_difficulty(0);
+        sMainMenuButtons[MENU_BUTTON_PLAY_FILE_A]->oMenuButtonChalCol = save_file_get_challenge_mode(0);
     } else {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_A] =
             spawn_object_rel_with_rot(gCurrentObject, MODEL_MAIN_MENU_MARIO_NEW_BUTTON_FADE,
@@ -1405,6 +1409,8 @@ void bhv_menu_button_manager_init(void) {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_B] =
             spawn_object_rel_with_rot(gCurrentObject, MODEL_CHAOS_SAVE_BUTTON,
                                       bhvMenuButton, 1500, 2800, 0, 0, 0, 0);
+        sMainMenuButtons[MENU_BUTTON_PLAY_FILE_B]->oMenuButtonDiffCol = save_file_get_difficulty(1);
+        sMainMenuButtons[MENU_BUTTON_PLAY_FILE_B]->oMenuButtonChalCol = save_file_get_challenge_mode(1);
     } else {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_B] =
             spawn_object_rel_with_rot(gCurrentObject, MODEL_MAIN_MENU_MARIO_NEW_BUTTON_FADE,
@@ -1416,6 +1422,8 @@ void bhv_menu_button_manager_init(void) {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_C] =
             spawn_object_rel_with_rot(gCurrentObject, MODEL_CHAOS_SAVE_BUTTON,
                                       bhvMenuButton, -6400, 0, 0, 0, 0, 0);
+        sMainMenuButtons[MENU_BUTTON_PLAY_FILE_C]->oMenuButtonDiffCol = save_file_get_difficulty(2);
+        sMainMenuButtons[MENU_BUTTON_PLAY_FILE_C]->oMenuButtonChalCol = save_file_get_challenge_mode(2);
     } else {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_C] = spawn_object_rel_with_rot(
             gCurrentObject, MODEL_MAIN_MENU_MARIO_NEW_BUTTON_FADE, bhvMenuButton, -6400, 0, 0, 0, 0, 0);
@@ -1425,6 +1433,8 @@ void bhv_menu_button_manager_init(void) {
     if (save_file_exists(SAVE_FILE_D) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_D] = spawn_object_rel_with_rot(
             gCurrentObject, MODEL_CHAOS_SAVE_BUTTON, bhvMenuButton, 1500, 0, 0, 0, 0, 0);
+        sMainMenuButtons[MENU_BUTTON_PLAY_FILE_D]->oMenuButtonDiffCol = save_file_get_difficulty(3);
+        sMainMenuButtons[MENU_BUTTON_PLAY_FILE_D]->oMenuButtonChalCol = save_file_get_challenge_mode(3);
     } else {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_D] = spawn_object_rel_with_rot(
             gCurrentObject, MODEL_MAIN_MENU_MARIO_NEW_BUTTON_FADE, bhvMenuButton, 1500, 0, 0, 0, 0, 0);
@@ -1501,7 +1511,8 @@ void check_main_menu_clicked_buttons(void) {
                         if(!save_file_exists(checkFile)) {
                             sMainMenuButtons[buttonID]->header.gfx.sharedChild =
                                 gLoadedGraphNodes[MODEL_CHAOS_SAVE_BUTTON];
-                            sMainMenuButtons[buttonID]->oBehParams2ndByte = 1;
+                            sMainMenuButtons[buttonID]->oMenuButtonDiffCol = 1;
+                            sMainMenuButtons[buttonID]->oMenuButtonChalCol = 0;
                             sMainMenuButtons[buttonID]->oMenuButtonState = MENU_BUTTON_STATE_NEW_GAME_ANIM;
                             sSelectedButtonID = buttonID;
                             play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
