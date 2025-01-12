@@ -320,6 +320,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .levelInitFunc     = chs_lvlinit_double_coins,
 
         .name              = "Coin Rush",
-        .shortDescription  = "Coins will be doubled for 30 seconds upon entering a new level.",
+        .shortDescription  = "Coin values will be doubled for 30 seconds upon entering a new level.",
     },
 };

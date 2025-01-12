@@ -742,7 +742,6 @@ void reset_mario_pitch(struct MarioState *m) {
 
 u32 interact_coin(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
     s32 coinCount = o->oDamageOrCoinValue;
-    s32 healCount = o->oDamageOrCoinValue;
 
     if (chs_double_coins_under_30s()) {
         coinCount *= 2;
@@ -751,7 +750,7 @@ u32 interact_coin(struct MarioState *m, UNUSED u32 interactType, struct Object *
     m->numCoins += coinCount;
 
     if (!chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_COINS)) {
-        m->healCounter += 4 * healCount;
+        m->healCounter += 4 * coinCount;
     }
 
     o->oInteractStatus = INT_STATUS_INTERACTED;
