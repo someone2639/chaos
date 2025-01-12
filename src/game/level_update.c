@@ -458,7 +458,7 @@ void init_mario_after_warp(void) {
 
         if (sWarpDest.levelNum == LEVEL_CASTLE && sWarpDest.areaIdx == 1
 #ifndef VERSION_JP
-            && (sWarpDest.nodeId == 0x1F || sWarpDest.nodeId == 0x20)
+            && (sWarpDest.nodeId == 0x1F || sWarpDest.nodeId == 0x20 || sWarpDest.nodeId == 0x29)
 #else
             && sWarpDest.nodeId == 0x1F
 #endif
@@ -1046,11 +1046,16 @@ s32 play_mode_paused(void) {
             fade_into_special_warp(-9, 1);
         } else {
             gSavedCourseNum = COURSE_NONE;
-            if (gMarioState->numLives > 0) {
+            if (gChaosLivesEnabled) {
+                if (gMarioState->numLives > 0) {
+                    initiate_warp(LEVEL_CASTLE, 1, 0x29, 0);
+                    fade_into_special_warp(0, 0);
+                } else {
+                    fade_into_special_warp(-3, 0);
+                }
+            } else {
                 initiate_warp(LEVEL_CASTLE, 1, 0x1F, 0);
                 fade_into_special_warp(0, 0);
-            } else {
-                fade_into_special_warp(-3, 0);
             }
         }
 

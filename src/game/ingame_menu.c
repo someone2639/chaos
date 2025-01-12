@@ -2503,6 +2503,7 @@ void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) {
 #else
     u8 textContinue[] = { TEXT_CONTINUE };
     u8 textExitCourse[] = { TEXT_EXIT_COURSE };
+    u8 textExitCourseWithDeath[] = { TEXT_EXIT_COURSE_WITH_DEATH };
     u8 textCameraAngleR[] = { TEXT_CAMERA_ANGLE_R };
 #endif
 
@@ -2512,7 +2513,11 @@ void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) {
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
 
     print_generic_string(x + 10, y - 2, LANGUAGE_ARRAY(textContinue));
-    print_generic_string(x + 10, y - 17, LANGUAGE_ARRAY(textExitCourse));
+    if (gChaosLivesEnabled) {
+        print_generic_string(x + 10, y - 17, LANGUAGE_ARRAY(textExitCourseWithDeath));
+    } else {
+        print_generic_string(x + 10, y - 17, LANGUAGE_ARRAY(textExitCourse));
+    }
 
     if (*index != MENU_OPT_CAMERA_ANGLE_R) {
         print_generic_string(x + 10, y - 33, LANGUAGE_ARRAY(textCameraAngleR));
