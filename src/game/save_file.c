@@ -275,8 +275,6 @@ static void touch_high_score_ages(s32 fileIndex) {
 
 void save_file_do_save(s32 fileIndex) {
     if (gSaveFileModified) {
-        gSaveBuffer.files[fileIndex].lives = gMarioState->numLives;
-
         // Compute checksum
         add_save_block_signature(&gSaveBuffer.files[fileIndex],
                                  sizeof(gSaveBuffer.files[fileIndex]), SAVE_FILE_MAGIC);
@@ -290,9 +288,19 @@ void save_file_do_save(s32 fileIndex) {
     save_main_menu_data();
 }
 
+void save_file_populate_default_params(s32 fileIndex) {
+    struct SaveFile *file = &gSaveBuffer.files[fileIndex];
+
+    file->lives = 4;
+    file->chaosDifficulty = CHAOS_DIFFICULTY_NORMAL;
+    file->chaosChallengeMode = FALSE;
+    file->chaosEntryCount = 0;
+}
+
 void save_file_erase(s32 fileIndex) {
     touch_high_score_ages(fileIndex);
     bzero(&gSaveBuffer.files[fileIndex], sizeof(gSaveBuffer.files[fileIndex]));
+    save_file_populate_default_params(fileIndex);
 
     gSaveFileModified = TRUE;
     save_file_do_save(fileIndex);
@@ -565,6 +573,13 @@ s8 save_file_get_life_count(s32 fileIndex) {
     return gSaveBuffer.files[fileIndex].lives;
 }
 
+void save_file_set_life_count(s32 fileIndex, s8 lives) {
+    gSaveBuffer.files[fileIndex].lives = lives;
+    gSaveFileModified = TRUE;
+
+    save_file_do_save(fileIndex);
+}
+
 void save_file_set_cap_pos(s16 x, s16 y, s16 z) {
     struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
 
@@ -713,23 +728,23 @@ s32 check_warp_checkpoint(struct WarpNode *warpNode) {
     Gets the difficulty of the save file in fileindex
 */
 s32 save_file_get_difficulty(s32 fileIndex) {
-    s32 difficulty = ((gSaveBuffer.files[fileIndex].gamemode & 0xF0) >> 4);
-    return difficulty;
+    return gSaveBuffer.files[fileIndex].chaosDifficulty;
 }
 
 /*
     Gets the challenge mode of the save file in fileindex
 */
 s32 save_file_get_challenge_mode(s32 fileIndex) {
-    s32 challenge = (gSaveBuffer.files[fileIndex].gamemode & 0x0F);
-    return challenge;
+    return gSaveBuffer.files[fileIndex].chaosChallengeMode;
 }
 
 /*
     Sets the gamemode of the save file in fileindex
 */
 void save_file_set_gamemode(s32 fileIndex, s32 difficulty, s32 challenge) {
-    gSaveBuffer.files[fileIndex].gamemode = (difficulty << 4) | challenge;
+    gSaveBuffer.files[fileIndex].chaosDifficulty = difficulty;
+    gSaveBuffer.files[fileIndex].chaosChallengeMode = challenge;
+
     gSaveBuffer.files[fileIndex].flags |= SAVE_FLAG_FILE_EXISTS;
     gSaveFileModified = TRUE;
     save_file_do_save(fileIndex);

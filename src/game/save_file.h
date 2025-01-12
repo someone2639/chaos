@@ -45,8 +45,11 @@ struct SaveFile {
     u8 courseStars[COURSE_COUNT];
 
     u8 courseCoinScores[COURSE_STAGES_COUNT];
-    u8 gamemode;
+
     s8 lives;
+    s8 chaosDifficulty;
+    u8 chaosChallengeMode;
+
     s32 chaosEntryCount;
     struct ChaosActiveEntry chaosEntries[CHAOS_PATCH_ENTRIES];
 
@@ -166,6 +169,7 @@ s32 save_file_get_course_coin_score(s32 fileIndex, s32 courseIndex);
 s32 save_file_is_cannon_unlocked(void);
 void save_file_set_cannon_unlocked(void);
 s8 save_file_get_life_count(s32 fileIndex);
+void save_file_set_life_count(s32 fileIndex, s8 lives);
 void save_file_set_cap_pos(s16 x, s16 y, s16 z);
 s32 save_file_get_cap_pos(Vec3s capPos);
 void save_file_set_sound_mode(u16 mode);

@@ -8,6 +8,7 @@ void bhv_1up_interact(void) {
 //         if (gChaosLivesEnabled) {
 //             gMarioState->numLives++;
 //         }
+//         save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives);
 
         obj_mark_for_deletion(o);
 // #if ENABLE_RUMBLE

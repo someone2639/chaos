@@ -251,11 +251,13 @@ SECTIONS
    END_NOLOAD(framebuffers)
 
    __mainPoolStart = .;
-   __mainPoolSize = RAM_END - .;
+   __mainPoolSize = (RAM_END - .);
 
-   __expansionRamStart = 0x80400000;
+   __expansionRamStart = (RAM_START + (RAM_1MB * 4));
 #ifndef USE_EXT_RAM
-   ASSERT((. <= __expansionRamStart), "Error: RDRAM expanded into Expansion RAM, despite Expansion RAM not being defined.")
+   #ifndef PRELIMINARY
+         ASSERT((. <= __expansionRamStart), "Error: RDRAM expanded into Expansion RAM, despite Expansion RAM not being defined.")
+   #endif
 #endif
 
    BEGIN_SEG(entry, 0x10000000)
@@ -306,9 +308,10 @@ SECTIONS
    END_SEG(behavior)
 
    /* 0x8016F000 21D7D0-255EC0 [386F0] */
-   BEGIN_SEG(goddard, SEG_GODDARD)
+   BEGIN_SEG(goddard, (RAM_END - GODDARD_SIZE))
    {
       BUILD_DIR/src/menu*.o(.text);
+      _goddardSegmentTextEnd = .;
       BUILD_DIR/src/menu*.o(.data*);
       BUILD_DIR/src/menu*.o(.rodata*);
 #ifdef GODDARD
@@ -339,6 +342,7 @@ SECTIONS
       BUILD_DIR/libgoddard.a:shape_helper.o(.rodata*);
       BUILD_DIR/libgoddard.a:renderer.o(.rodata*);
 #endif
+      . = ALIGN(16);
    }
    END_SEG(goddard)
    BEGIN_NOLOAD(goddard)
@@ -347,10 +351,15 @@ SECTIONS
 #ifdef GODDARD
       BUILD_DIR/libgoddard.a:*.o(.bss*);
 #endif
+      . = ALIGN(16);
    }
    END_NOLOAD(goddard)
 
-   ASSERT((. <= (SEG_POOL_START + POOL_SIZE)), "Error: extended past pool end.")
+#ifdef PRELIMINARY
+      GODDARD_SIZE = SIZEOF(.goddard) + SIZEOF(.goddard.noload);
+#else
+      ASSERT((. <= (SEG_POOL_START + POOL_SIZE)), "Error: extended past pool end.")
+#endif
 
    /* 0x268020 0x268020-0 [0] */
    BEGIN_SEG(intro, 0x14000000)

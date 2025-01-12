@@ -64,7 +64,7 @@ u8 chs_pay2win_can_collect_star(void);
 // Movement Modifiers
 void chs_update_brawl_tripping(void);
 
-//Random Griefing
+// Random Griefing
 void chs_act_random_sleep(void);
 void chs_update_random_sleep(void);
 void chs_act_random_shock(void);

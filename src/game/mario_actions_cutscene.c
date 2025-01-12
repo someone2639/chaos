@@ -1191,8 +1191,7 @@ s32 act_death_exit(struct MarioState *m) {
         if (gChaosLivesEnabled) {
             m->numLives--;
         }
-        gSaveFileModified = TRUE;
-        save_file_do_save(gCurrSaveFileNum - 1);
+        save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives);
 
         // restore 7.75 units of health
         m->healCounter = 31;
@@ -1212,8 +1211,7 @@ s32 act_unused_death_exit(struct MarioState *m) {
         if (gChaosLivesEnabled) {
             m->numLives--;
         }
-        gSaveFileModified = TRUE;
-        save_file_do_save(gCurrSaveFileNum - 1);
+        save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives);
 
         // restore 7.75 units of health
         m->healCounter = 31;
@@ -1236,8 +1234,7 @@ s32 act_falling_death_exit(struct MarioState *m) {
         if (gChaosLivesEnabled) {
             m->numLives--;
         }
-        gSaveFileModified = TRUE;
-        save_file_do_save(gCurrSaveFileNum - 1);
+        save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives);
 
         // restore 7.75 units of health
         m->healCounter = 31;
@@ -1288,8 +1285,7 @@ s32 act_special_death_exit(struct MarioState *m) {
         if (gChaosLivesEnabled) {
             m->numLives--;
         }
-        gSaveFileModified = TRUE;
-        save_file_do_save(gCurrSaveFileNum - 1);
+        save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives);
 
         m->healCounter = 31;
     }

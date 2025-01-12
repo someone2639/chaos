@@ -266,7 +266,7 @@ $(eval $(call validate-option,GZIPVER,std libdef))
 # GODDARD - whether to use libgoddard (Mario Head)
 #   1 - includes code in ROM
 #   0 - does not 
-GODDARD ?= 0
+GODDARD ?= 1
 $(eval $(call validate-option,GODDARD,0 1))
 ifeq ($(GODDARD),1)
   GODDARDRULE := $(BUILD_DIR)/libgoddard.a
@@ -846,7 +846,7 @@ $(BUILD_DIR)/rsp/%.bin $(BUILD_DIR)/rsp/%_data.bin: rsp/%.s
 	$(V)$(RSPASM) -sym $@.sym $(RSPASMFLAGS) -strequ CODE_FILE $(BUILD_DIR)/rsp/$*.bin -strequ DATA_FILE $(BUILD_DIR)/rsp/$*_data.bin $<
 
 # Run linker script through the C preprocessor
-$(BUILD_DIR)/$(LD_SCRIPT): $(LD_SCRIPT) $(BUILD_DIR)/hvqm_table.ld
+$(BUILD_DIR)/$(LD_SCRIPT): $(LD_SCRIPT) $(BUILD_DIR)/goddard.txt $(BUILD_DIR)/hvqm_table.ld
 	$(call print,Preprocessing linker script:,$<,$@)
 	$(V)$(CPP) $(CPPFLAGS) -DBUILD_DIR=$(BUILD_DIR) -MMD -MP -MT $@ -MF $@.d -o $@ $<
 
@@ -860,10 +860,23 @@ $(BUILD_DIR)/libz.a: $(LIBZ_O_FILES)
 	@$(PRINT) "$(GREEN)Linking libz:  $(BLUE)$@ $(NO_COL)\n"
 	$(V)$(AR) rcs -o $@ $(LIBZ_O_FILES)
 
+# SS2: Goddard rules to get size
+$(BUILD_DIR)/sm64_prelim.ld: sm64.ld $(O_FILES) $(YAY0_OBJ_FILES) $(SEG_FILES) $(GODDARDRULE) $(LIBZRULE)
+	$(call print,Preprocessing preliminary linker script:,$<,$@)
+	$(V)$(CPP) $(CPPFLAGS) -DPRELIMINARY=1 -DBUILD_DIR=$(BUILD_DIR) -DULTRALIB=lib$(ULTRALIB) -MMD -MP -MT $@ -MF $@.d -o $@ $<
+
+$(BUILD_DIR)/sm64_prelim.elf: $(BUILD_DIR)/sm64_prelim.ld
+	@$(PRINT) "$(GREEN)Linking Preliminary ELF file:  $(BLUE)$@ $(NO_COL)\n"
+	$(V)$(LD) --gc-sections -L $(BUILD_DIR) -T $< -Map $(BUILD_DIR)/sm64_prelim.map --no-check-sections $(addprefix -R ,$(SEG_FILES)) -o $@ $(O_FILES) -L$(LIBS_DIR) -l$(ULTRALIB) -Llib $(LINK_LIBRARIES) -u sprintf -u osMapTLB -Llib/gcclib/$(LIBGCCDIR) -lgcc -lhvqm2 $(GODDARDLINK)
+
+$(BUILD_DIR)/goddard.txt: $(BUILD_DIR)/sm64_prelim.elf
+	$(call print,Getting Goddard size...)
+	$(V)python3 tools/getGoddardSize.py $(BUILD_DIR)/sm64_prelim.map $(VERSION)
+
 # Link SM64 ELF file
-$(ELF): $(O_FILES) $(YAY0_OBJ_FILES) $(SEG_FILES) $(BUILD_DIR)/$(LD_SCRIPT) undefined_syms.txt $(LIBZRULE) $(GODDARDRULE)
+$(ELF): $(BUILD_DIR)/sm64_prelim.elf $(O_FILES) $(YAY0_OBJ_FILES) $(SEG_FILES) $(BUILD_DIR)/$(LD_SCRIPT) $(LIBZRULE) $(GODDARDRULE)
 	@$(PRINT) "$(GREEN)Linking ELF file:  $(BLUE)$@ $(NO_COL)\n"
-	$(V)$(LD) --gc-sections -L $(BUILD_DIR) -T undefined_syms.txt -T $(BUILD_DIR)/$(LD_SCRIPT) -Map $(BUILD_DIR)/sm64.$(VERSION).map --no-check-sections $(addprefix -R ,$(SEG_FILES)) -o $@ $(O_FILES) -L$(LIBS_DIR) -l$(ULTRALIB) -Llib -Llib/gcclib/$(LIBGCCDIR) -lgcc -lrtc -lnustd -lhvqm2 $(LIBZLINK) $(GODDARDLINK) -u sprintf -u osMapTLB
+	$(V)$(LD) --gc-sections -L $(BUILD_DIR) -T $(BUILD_DIR)/$(LD_SCRIPT) -T goddard.txt -Map $(BUILD_DIR)/sm64.$(VERSION).map --no-check-sections $(addprefix -R ,$(SEG_FILES)) -o $@ $(O_FILES) -L$(LIBS_DIR) -l$(ULTRALIB) -Llib -Llib/gcclib/$(LIBGCCDIR) -lgcc -lrtc -lnustd -lhvqm2 $(LIBZLINK) $(GODDARDLINK) -u sprintf -u osMapTLB
 
 # Build ROM
 $(ROM): $(ELF)

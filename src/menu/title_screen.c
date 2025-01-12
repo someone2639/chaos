@@ -203,7 +203,8 @@ s32 intro_regular(void) {
         sPlayMarioGreeting = TRUE;
 #endif
     }
-    return run_level_id_or_demo(level);
+    // return run_level_id_or_demo(level); // Demos break stuff currently
+    return level;
 }
 
 /**
@@ -236,7 +237,8 @@ s32 intro_game_over(void) {
         sPlayMarioGameOver = TRUE;
 #endif
     }
-    return run_level_id_or_demo(level);
+    // return run_level_id_or_demo(level); // Demos break stuff currently
+    return level;
 }
 
 /**
