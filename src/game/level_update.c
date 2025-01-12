@@ -31,13 +31,6 @@
 #include "rumble_init.h"
 #include "patch_selection_ui.h"
 
-#define PLAY_MODE_NORMAL 0
-#define PLAY_MODE_PAUSED 2
-#define PLAY_MODE_CHANGE_AREA 3
-#define PLAY_MODE_CHANGE_LEVEL 4
-#define PLAY_MODE_FRAME_ADVANCE 5
-#define PLAY_MODE_SELECT_PATCH 6
-
 #define WARP_TYPE_NOT_WARPING 0
 #define WARP_TYPE_CHANGE_LEVEL 1
 #define WARP_TYPE_CHANGE_AREA 2
@@ -756,11 +749,9 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 break;
 
             case WARP_OP_DEATH:
-#ifndef DISABLE_LIVES
-                if (m->numLives == 0) {
+                if (gChaosLivesEnabled && m->numLives <= 0) {
                     sDelayedWarpOp = WARP_OP_GAME_OVER;
                 }
-#endif
                 sDelayedWarpTimer = 48;
                 sSourceWarpNodeId = WARP_NODE_DEATH;
                 play_transition(WARP_TRANSITION_FADE_INTO_BOWSER, 0x30, 0x00, 0x00, 0x00);
@@ -770,15 +761,11 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
             case WARP_OP_WARP_FLOOR:
                 sSourceWarpNodeId = WARP_NODE_WARP_FLOOR;
                 if (area_get_warp_node(sSourceWarpNodeId) == NULL) {
-#ifndef DISABLE_LIVES
-                    if (m->numLives == 0) {
+                    if (gChaosLivesEnabled && m->numLives <= 0) {
                         sDelayedWarpOp = WARP_OP_GAME_OVER;
                     } else {
                         sSourceWarpNodeId = WARP_NODE_DEATH;
                     }
-#else
-                    sSourceWarpNodeId = WARP_NODE_DEATH;
-#endif
                 }
                 sDelayedWarpTimer = 20;
                 play_transition(WARP_TRANSITION_FADE_INTO_CIRCLE, 0x14, 0x00, 0x00, 0x00);
@@ -867,6 +854,7 @@ void initiate_delayed_warp(void) {
         } else {
             switch (sDelayedWarpOp) {
                 case WARP_OP_GAME_OVER:
+                    save_file_erase(gCurrSaveFileNum - 1);
                     save_file_load_all();
                     warp_special(-3);
                     break;
@@ -950,11 +938,9 @@ void update_hud_values(void) {
             }
         }
 
-#ifndef DISABLE_LIVES
         if (gMarioState->numLives > 100) {
             gMarioState->numLives = 100;
         }
-#endif
 
         if (gMarioState->numCoins > 999) {
             gMarioState->numCoins = 999;
@@ -1093,7 +1079,11 @@ s32 play_mode_frame_advance(void) {
 
 s32 play_mode_select_patch(void) {
     if(gPatchSelectionMenu->menu.menuState != PATCH_SELECT_STATE_CLOSED) {
-        gPatchSelectionMenu->menu.flags |= PATCH_SELECT_FLAG_ACTIVE;
+        if (!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_ACTIVE)) {
+            chaos_decrement_star_timers();
+            load_new_patches();
+            gPatchSelectionMenu->menu.flags |= PATCH_SELECT_FLAG_ACTIVE;
+        }
         update_patch_selection_menu();
     }else {
         reset_patch_selection_menu();
@@ -1346,6 +1336,7 @@ s32 lvl_init_from_save_file(UNUSED s16 arg0, s32 levelNum) {
     save_file_move_cap_to_default_location();
     select_mario_cam_mode();
     set_yoshi_as_not_dead();
+    chaos_init();
 
     return levelNum;
 }

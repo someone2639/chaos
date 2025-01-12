@@ -434,11 +434,9 @@ void render_hud(void) {
             render_hud_cannon_reticle();
         }
 
-#ifndef DISABLE_LIVES
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES) {
+        if (gChaosLivesEnabled && (hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES)) {
             render_hud_mario_lives();
         }
-#endif
 
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_COIN_COUNT) {
             render_hud_coins();

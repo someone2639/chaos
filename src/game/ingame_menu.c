@@ -2893,13 +2893,6 @@ void print_hud_course_complete_coins(s16 x, s16 y) {
         if ((gCourseDoneMenuTimer & 1) || gHudDisplay.coins > 70) {
             gCourseCompleteCoins++;
             play_sound(SOUND_MENU_YOSHI_GAIN_LIVES, gGlobalSoundSource);
-
-#ifndef DISABLE_LIVES
-            if (gCourseCompleteCoins == 50 || gCourseCompleteCoins == 100 || gCourseCompleteCoins == 150) {
-                play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
-                gMarioState->numLives++;
-            }
-#endif
         }
 
         if (gHudDisplay.coins == gCourseCompleteCoins && gGotFileCoinHiScore) {
@@ -3131,7 +3124,6 @@ void render_save_confirmation(s16 x, s16 y, s8 *index, s16 sp6e)
 }
 
 s16 render_course_complete_screen(void) {
-    s16 index;
 #ifdef VERSION_EU
     gInGameLanguage = eu_get_language();
 #endif
@@ -3148,34 +3140,17 @@ s16 render_course_complete_screen(void) {
             break;
 
         case DIALOG_STATE_VERTICAL:
-            shade_screen();
-            render_course_complete_lvl_info_and_hud_str();
-#ifdef VERSION_EU
-            render_save_confirmation(86, &gDialogLineNum, 20);
-#else
-            render_save_confirmation(100, 86, &gDialogLineNum, 20);
-#endif
+            level_set_transition(0, NULL);
+            gDialogBoxState = DIALOG_STATE_OPENING;
+            gMenuMode = MENU_MODE_NONE;
+            gCourseDoneMenuTimer = 0;
+            gCourseCompleteCoins = 0;
+            gCourseCompleteCoinsEqual = FALSE;
+            gHudFlash = 0;
 
-            if (gCourseDoneMenuTimer > 110
-                && (gPlayer3Controller->buttonPressed & A_BUTTON
-                 || gPlayer3Controller->buttonPressed & START_BUTTON
-#ifdef VERSION_EU
-                 || gPlayer3Controller->buttonPressed & Z_TRIG
-#endif
-                )) {
-                level_set_transition(0, NULL);
-                play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
-                gDialogBoxState = DIALOG_STATE_OPENING;
-                gMenuMode = MENU_MODE_NONE;
-                index = gDialogLineNum;
-                gCourseDoneMenuTimer = 0;
-                gCourseCompleteCoins = 0;
-                gCourseCompleteCoinsEqual = FALSE;
-                gHudFlash = 0;
+            set_play_mode(PLAY_MODE_SELECT_PATCH);
 
-                return index;
-            }
-            break;
+            return MENU_OPT_SAVE_AND_CONTINUE;
     }
 
     if (gDialogTextAlpha < 250) {

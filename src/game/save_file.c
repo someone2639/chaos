@@ -275,6 +275,8 @@ static void touch_high_score_ages(s32 fileIndex) {
 
 void save_file_do_save(s32 fileIndex) {
     if (gSaveFileModified) {
+        gSaveBuffer.files[fileIndex].lives = gMarioState->numLives;
+
         // Compute checksum
         add_save_block_signature(&gSaveBuffer.files[fileIndex],
                                  sizeof(gSaveBuffer.files[fileIndex]), SAVE_FILE_MAGIC);
@@ -518,6 +520,21 @@ void save_file_set_star_flags(s32 fileIndex, s32 courseIndex, u32 starFlags) {
     gSaveFileModified = TRUE;
 }
 
+/**
+ * Remove the bitset of obtained stars in the specified course.
+ * If course is COURSE_NONE, remove from the bitset of obtained castle secret stars.
+ */
+void save_file_remove_star_flags(s32 fileIndex, s32 courseIndex, u32 starFlags) {
+    if (courseIndex == COURSE_NUM_TO_INDEX(COURSE_NONE)) {
+        gSaveBuffer.files[fileIndex].flags &= ~STAR_FLAG_TO_SAVE_FLAG(starFlags);
+    } else {
+        gSaveBuffer.files[fileIndex].courseStars[courseIndex] &= ~starFlags;
+    }
+
+    gSaveBuffer.files[fileIndex].flags |= SAVE_FLAG_FILE_EXISTS;
+    gSaveFileModified = TRUE;
+}
+
 s32 save_file_get_course_coin_score(s32 fileIndex, s32 courseIndex) {
     return gSaveBuffer.files[fileIndex].courseCoinScores[courseIndex];
 }
@@ -540,6 +557,10 @@ void save_file_set_cannon_unlocked(void) {
     gSaveBuffer.files[gCurrSaveFileNum - 1].courseStars[gCurrCourseNum] |= (1 << 7);
     gSaveBuffer.files[gCurrSaveFileNum - 1].flags |= SAVE_FLAG_FILE_EXISTS;
     gSaveFileModified = TRUE;
+}
+
+s8 save_file_get_life_count(s32 fileIndex) {
+    return gSaveBuffer.files[fileIndex].lives;
 }
 
 void save_file_set_cap_pos(s16 x, s16 y, s16 z) {
@@ -620,6 +641,13 @@ u16 eu_get_language(void) {
     return gSaveBuffer.menuData.language;
 }
 #endif
+
+void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount, enum ChaosDifficulty *gChaosDifficulty, u8 *gChaosLivesEnabled) {
+    *entryData = gSaveBuffer.files[gCurrSaveFileNum - 1].chaosEntries;
+    *currentEntryCount = &gSaveBuffer.files[gCurrSaveFileNum - 1].chaosEntryCount;
+    *gChaosDifficulty = gSaveBuffer.files[gCurrSaveFileNum - 1].chaosDifficulty;
+    *gChaosLivesEnabled = gSaveBuffer.files[gCurrSaveFileNum - 1].livesEnabled;
+}
 
 void disable_warp_checkpoint(void) {
     // check_warp_checkpoint() checks to see if gWarpCheckpoint.courseNum != COURSE_NONE

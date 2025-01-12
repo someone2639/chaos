@@ -19,11 +19,6 @@
 #define COMPLETE_EN_US_SEGMENT2
 
 /**
- * Disable lives and the lives counter.
- */
-#define DISABLE_LIVES
-
-/**
  * If A and Z are pressed on the same frame while running, Mario will long jump instead of ground pound.
  */
 // #define EASIER_LONG_JUMPS

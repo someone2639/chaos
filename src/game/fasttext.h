@@ -49,6 +49,7 @@ struct FastTextProps {
 
 extern const struct FastTextProps gFasttextFonts[FT_FONT_COUNT];
 extern enum FastTextFont fasttextCachedFontId;
+extern char gFasttextTmpBuffer[0x1000];
 
 /**
  * fasttext vs slowtext:
@@ -79,6 +80,9 @@ void fasttext_setup_textrect_rendering(enum FastTextFont fnt);
 // fasttext function used for physically drawing a message to the screen using texrects.
 void fasttext_draw_texrect(int x, int y, const char* string, enum FastTextFlags flags, int r, int g, int b, int a);
 
+// same as above, but autocomputes newlines based on a provided string width value.
+void fasttext_draw_texrect_linebreaks(int x, int y, int width, const char* string, enum FastTextFlags flags, int r, int g, int b, int a);
+
 // fasttext finalization function used when done rendering texrects.
 // Do not forget to invoke this!
 void fasttext_finished_rendering(void);
@@ -94,6 +98,9 @@ void slowtext_setup_ortho_rendering(enum FastTextFont fnt);
 
 // slowtext function used for physically drawing a message to the screen using ortho tris.
 void slowtext_draw_ortho_text(s32 x, s32 y, const char* string, enum FastTextFlags flags, s32 r, s32 g, s32 b, s32 a);
+
+// same as above, but autocomputes newlines based on a provided string width value.
+void slowtext_draw_ortho_text_linebreaks(s32 x, s32 y, s32 width, const char* string, enum FastTextFlags flags, s32 r, s32 g, s32 b, s32 a);
 
 // slowtext finalization function used when done rendering ortho tris.
 // Do not forget to invoke this!

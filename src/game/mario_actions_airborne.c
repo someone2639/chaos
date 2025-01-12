@@ -25,7 +25,7 @@ void play_far_fall_sound(struct MarioState *m) {
     u32 action = m->action;
     if (!(action & ACT_FLAG_INVULNERABLE) && action != ACT_TWIRLING && action != ACT_FLYING
         && !(m->flags & MARIO_UNKNOWN_18)) {
-        if (m->peakHeight - m->pos[1] > 1150.0f) {
+        if (m->peakHeight - m->pos[1] > MAX(1150.0f, 1150.0f * m->gravity)) {
             play_sound(SOUND_MARIO_WAAAOOOW, m->marioObj->header.gfx.cameraToObject);
             m->flags |= MARIO_UNKNOWN_18;
         }
@@ -77,6 +77,8 @@ s32 check_fall_damage(struct MarioState *m, u32 hardFallAction) {
     } else {
         damageHeight = 1150.0f;
     }
+
+    damageHeight /= m->gravity;
 
 #pragma GCC diagnostic pop
 

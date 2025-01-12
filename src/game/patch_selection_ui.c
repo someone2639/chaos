@@ -13,15 +13,20 @@
 #include "src/engine/math_util.h"
 #include "audio/external.h"
 #include "sm64.h"
+#include "save_file.h"
 #include "chaos_menus.h"
 
-u8 sQualityColors[][3] = {
+#define CARD_STRING_WIDTH 94
+#define DESC_STRING_WIDTH 284
+
+u8 sQualityColors[CHAOS_PATCH_SEVERITY_COUNT][3] = {
+    {0x7F, 0x7F, 0x7F},
     {0x20, 0xDB, 0x1D},
     {0x47, 0x42, 0xDB},
     {0x8B, 0x00, 0xC5},
 };
 
-u8 sEffectColors[][3] = {
+u8 sEffectColors[CHAOS_EFFECT_COUNT][3] = {
     {0x15, 0xD0, 0x25}, //Good
     {0xC0, 0x25, 0x35}, //Bad
 };
@@ -29,83 +34,22 @@ u8 sEffectColors[][3] = {
 struct PatchSelectionMenu patchMenu[1];
 struct PatchSelectionMenu *gPatchSelectionMenu = patchMenu;
 
-#ifdef DEBUG_PATCH_SELECT_MENU
-const char testNameGood[] = {"Good Effect"};
-const char testNameBad[] = {"Bad Effect"};
-const char testDescGood[] = {"Good effect description"};
-const char testDescBad[] = {"Bad effect description"};
-const char testExtendedDesc[] = {"This is the extended description\nThere is more information here."};
-#endif
-
 /*
-    Initializes the patch selection menu
+    Loads a fresh batch of patches to select from
 */
-void init_patch_selection_menu() {
-#ifdef DEBUG_PATCH_SELECT_MENU
-    load_patch_card(0, 2, 0, 1, USE_TYPE_NONE, USE_TYPE_TIMED, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, testExtendedDesc);
-    load_patch_card(1, 3, 2, 4, USE_TYPE_LIMITED_USE, USE_TYPE_LIMITED_USE, testNameGood, testNameBad, testDescGood, testDescBad, testExtendedDesc, NULL);
-    load_patch_card(2, 1, 10, 20, USE_TYPE_TIMED, USE_TYPE_LIMITED_USE, testNameGood, testNameBad, testDescGood, testDescBad, NULL, testExtendedDesc);
-    load_patch_card(3, 3, 3, 16, USE_TYPE_LIMITED_USE, USE_TYPE_TIMED, testNameGood, testNameBad, testDescGood, testDescBad, NULL, NULL);
-#else
-    load_patch_card(0, 0, 0, 0, USE_TYPE_NONE, USE_TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
-    load_patch_card(0, 0, 0, 0, USE_TYPE_NONE, USE_TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
-    load_patch_card(0, 0, 0, 0, USE_TYPE_NONE, USE_TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
-    load_patch_card(0, 0, 0, 0, USE_TYPE_NONE, USE_TYPE_NONE, NULL, NULL, NULL, NULL, NULL, NULL);
-#endif
-    reset_patch_selection_menu();
-}
-
-/*
-    Loads a patch card into the slot specified by index
-*/
-void load_patch_card(s32 index, s32 quality, s32 effect1DurationOrUses, s32 effect2DurationOrUses, 
-        s32 effect1UseType, s32 effect2UseType, const char *effect1Name, const char *effect2Name, 
-        const char *effect1Desc, const char *effect2Desc, const char* effect1ExtendedDesc, const char *effect2ExtendedDesc) 
-{
-    assert(index < MAX_CARDS && index >= 0, "Tried to load a card into an invalid index!");
-    f32 xPos = 0, yPos = 0;
-
-    gPatchSelectionMenu->patchCards[index].quality = quality;
-    gPatchSelectionMenu->patchCards[index].patchDurationOrUses1 = effect1DurationOrUses;
-    gPatchSelectionMenu->patchCards[index].patchDurationOrUses2 = effect2DurationOrUses;
-    gPatchSelectionMenu->patchCards[index].patchUseType1 = effect1UseType;
-    gPatchSelectionMenu->patchCards[index].patchUseType2 = effect2UseType;
-    gPatchSelectionMenu->patchCards[index].patchName1 = effect1Name;
-    gPatchSelectionMenu->patchCards[index].patchName2 = effect2Name;
-    gPatchSelectionMenu->patchCards[index].patchDesc1 = effect1Desc;
-    gPatchSelectionMenu->patchCards[index].patchDesc2 = effect2Desc;
-    gPatchSelectionMenu->patchCards[index].extendedDesc1 = effect1ExtendedDesc;
-    gPatchSelectionMenu->patchCards[index].extendedDesc2 = effect2ExtendedDesc;
-    //TODO: Add an id or reference of some sort to an actual patch so it can be applied after selection
-
-    switch(index) {
-        case 0:
-            xPos = CARD_1_X_START;
-            yPos = CARD_Y_TOP;
-            break;
-        case 1:
-            xPos = CARD_2_X_START;
-            yPos = CARD_Y_TOP;
-            break;
-        case 2:
-            xPos = CARD_3_X_START;
-            yPos = CARD_Y_BOTTOM;
-            break;
-        case 3:
-            xPos = CARD_4_X_START;
-            yPos = CARD_Y_BOTTOM;
-            break;
+void load_new_patches() {
+    // Generate new patches
+    struct ChaosPatchSelection *patches = chaos_roll_for_new_patches();
+    for (s32 i = 0; i < MAX_CARDS; i++) {
+        gPatchSelectionMenu->patchCards[i].sel = &patches[i];
     }
-
-    gPatchSelectionMenu->patchCards[index].pos[0] = xPos;
-    gPatchSelectionMenu->patchCards[index].pos[1] = yPos;
-    gPatchSelectionMenu->patchCards[index].scale = CARD_SCALE_DEFAULT;
 }
 
 /*
     Resets the values of the patch selection menu to their defaults. Should always be called after the patch selection menu is exited.
 */
 void reset_patch_selection_menu() {
+    // Reset other patch properties
     gPatchSelectionMenu->selectedPatch = 0;
     gPatchSelectionMenu->menu.selectedMenuIndex = 0;
     gPatchSelectionMenu->menu.flags = (PATCH_SELECT_FLAG_HALT_INPUT);
@@ -153,7 +97,13 @@ void handle_inputs_patch_select_state_select(s32 stickDir) {
         play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
     } else if (gPlayer1Controller->buttonPressed & (Z_TRIG | L_TRIG)) {
         struct PatchCard *selectedCard = &gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch];
-        if(selectedCard->extendedDesc1 || selectedCard->extendedDesc2) {
+        aggress(selectedCard, "render_patch_card:\ncard is NULL!");
+        aggress(selectedCard->sel, "render_patch_card:\ncard->sel is NULL!");
+        struct ChaosPatchSelection *sel = selectedCard->sel;
+        const struct ChaosPatch *pos = sel->positivePatch;
+        const struct ChaosPatch *neg = sel->negativePatch;
+
+        if(pos->longDescription || neg->longDescription) {
             menu_play_anim(&gPatchSelectionMenu->menu, PATCH_SELECT_ANIM_EXT_DESC);
             menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_SHOW_EXTENDED_DESC);
             play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
@@ -217,7 +167,9 @@ void handle_inputs_patch_select_state_confirmation(s32 stickDir) {
             menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_CLOSING);
 
             //Play increasingly distressed Mario sounds based on severity of patches
-            switch(gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].quality) {
+            aggress(gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].sel,
+                    "handle_inputs_patch_select_state_confirmation:\nsel undefined!");
+            switch(gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].sel->severityLevel) {
                 case 1:
                     play_sound(SOUND_MARIO_HERE_WE_GO, gGlobalSoundSource);
                     break;
@@ -611,6 +563,8 @@ void update_patch_selection_menu() {
             case PATCH_SELECT_STATE_CLOSING:
                 //When the closing animation is finished, the menu should close
                 menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_CLOSED);
+                chaos_select_patches(gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].sel);
+                save_file_do_save(gCurrSaveFileNum - 1);
                 break;
         }
     }
@@ -734,14 +688,14 @@ void draw_patch_quality(s32 quality) {
 /*
     Draws a patch type indicator at the given x/y coordinates
 */
-void draw_patch_type(f32 x, f32 y, s32 type) {
+void draw_patch_type(f32 x, f32 y, enum ChaosPatchDurationType type) {
     Mtx* transMtx = alloc_display_list(sizeof(Mtx));
     guTranslate(transMtx, x, y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
           G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    if(type == USE_TYPE_TIMED) {
+    if(type == CHAOS_DURATION_STARS) {
         gSPDisplayList(gDisplayListHead++, star_timer);
-    } else if (type == USE_TYPE_LIMITED_USE) {
+    } else if (type == CHAOS_DURATION_USE_COUNT) {
         gSPDisplayList(gDisplayListHead++, uses_counter);
     }
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
@@ -751,8 +705,14 @@ void draw_patch_type(f32 x, f32 y, s32 type) {
     Draws a patch card at the given x/y coordinates
 */
 void render_patch_card(struct PatchCard *card, s32 reverse) {
-    s32 quality = card->quality;
-    s32 colorID = quality - 1;
+    aggress(card, "render_patch_card:\ncard is NULL!");
+    aggress(card->sel, "render_patch_card:\ncard->sel is NULL!");
+
+    struct ChaosPatchSelection *sel = card->sel;
+    const struct ChaosPatch *pos = sel->positivePatch;
+    const struct ChaosPatch *neg = sel->negativePatch;
+
+    s32 quality = sel->severityLevel;
     Mtx *cardScaleMtx = alloc_display_list(sizeof(Mtx));
     Mtx *cardTransMtx = alloc_display_list(sizeof(Mtx));
     char timer1Text[4];
@@ -762,7 +722,7 @@ void render_patch_card(struct PatchCard *card, s32 reverse) {
     f32 scale = card->scale;
 
     gDPSetPrimColor(gDisplayListHead++, 0, 0, 
-                    sQualityColors[colorID][0], sQualityColors[colorID][1], sQualityColors[colorID][2], 255);
+                    sQualityColors[quality][0], sQualityColors[quality][1], sQualityColors[quality][2], 255);
 
     //Draw patch bg
     guTranslate(cardTransMtx, x, y, 0);
@@ -784,26 +744,29 @@ void render_patch_card(struct PatchCard *card, s32 reverse) {
 
     //Draw patch type(s)
     gSPDisplayList(gDisplayListHead++, patch_use_type_start);
-    if(card->patchDurationOrUses1 > 0) {
-        draw_patch_type(42, 14, card->patchUseType1);
-        sprintf(timer1Text, "%d", card->patchDurationOrUses1);
+    if(pos->durationType == CHAOS_DURATION_STARS || pos->durationType == CHAOS_DURATION_USE_COUNT) {
+        draw_patch_type(42, 14, pos->durationType);
+        assert(pos->duration < 1000, "render_patch_card:\nduration out of range!");
+        sprintf(timer1Text, "%d", pos->duration);
     }
-    if(card->patchDurationOrUses2 > 0) {
-        draw_patch_type(42, -10, card->patchUseType2);
-        sprintf(timer2Text, "%d", card->patchDurationOrUses2);
+    if(neg->durationType == CHAOS_DURATION_STARS || neg->durationType == CHAOS_DURATION_USE_COUNT) {
+        draw_patch_type(42, -10, neg->durationType);
+        assert(neg->duration < 1000, "render_patch_card:\nduration out of range!");
+        sprintf(timer2Text, "%d", neg->duration);
     }
     gSPDisplayList(gDisplayListHead++, patch_use_type_end);
 
     //Write text
     slowtext_setup_ortho_rendering(FT_FONT_SMALL_THIN);
-    slowtext_draw_ortho_text(-63, 4, card->patchName1, FT_FLAG_ALIGN_LEFT, 
+    slowtext_draw_ortho_text_linebreaks(-63, 4, CARD_STRING_WIDTH, pos->name, FT_FLAG_ALIGN_LEFT, 
         sEffectColors[EFFECT_COLOR_GOOD][0], sEffectColors[EFFECT_COLOR_GOOD][1], sEffectColors[EFFECT_COLOR_GOOD][2], 0xFF);
-    slowtext_draw_ortho_text(-63, -20, card->patchName2, FT_FLAG_ALIGN_LEFT, 
+    slowtext_draw_ortho_text_linebreaks(-63, -20, CARD_STRING_WIDTH, neg->name, FT_FLAG_ALIGN_LEFT, 
         sEffectColors[EFFECT_COLOR_BAD][0], sEffectColors[EFFECT_COLOR_BAD][1], sEffectColors[EFFECT_COLOR_BAD][2], 0xFF);
     slowtext_setup_ortho_rendering(FT_FONT_OUTLINE);
-    if(card->patchDurationOrUses1 > 0) {
+    if(pos->durationType == CHAOS_DURATION_STARS || pos->durationType == CHAOS_DURATION_USE_COUNT) {
         slowtext_draw_ortho_text(51, 4, timer1Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
-    }if(card->patchDurationOrUses2 > 0) {
+    }
+    if(neg->durationType == CHAOS_DURATION_STARS || neg->durationType == CHAOS_DURATION_USE_COUNT) {
         slowtext_draw_ortho_text(51, -20, timer2Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
     }
     slowtext_finished_rendering();
@@ -815,11 +778,14 @@ void render_patch_card(struct PatchCard *card, s32 reverse) {
     Writes the patch description
 */
 void render_patch_desc() {
-    s32 selected = gPatchSelectionMenu->selectedPatch;
+    struct ChaosPatchSelection *sel = gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].sel;
+    const struct ChaosPatch *pos = sel->positivePatch;
+    const struct ChaosPatch *neg = sel->negativePatch;
+
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text(-142, 15, gPatchSelectionMenu->patchCards[selected].patchDesc1, FT_FLAG_ALIGN_LEFT, 
+    slowtext_draw_ortho_text_linebreaks(-142, 15, DESC_STRING_WIDTH, pos->shortDescription, FT_FLAG_ALIGN_LEFT, 
         sEffectColors[EFFECT_COLOR_GOOD][0], sEffectColors[EFFECT_COLOR_GOOD][1], sEffectColors[EFFECT_COLOR_GOOD][2], 0xFF);
-    slowtext_draw_ortho_text(-142, -15, gPatchSelectionMenu->patchCards[selected].patchDesc2, FT_FLAG_ALIGN_LEFT, 
+    slowtext_draw_ortho_text_linebreaks(-142, -15, DESC_STRING_WIDTH, neg->shortDescription, FT_FLAG_ALIGN_LEFT, 
         sEffectColors[EFFECT_COLOR_BAD][0], sEffectColors[EFFECT_COLOR_BAD][1], sEffectColors[EFFECT_COLOR_BAD][2], 0xFF);
     slowtext_finished_rendering();
 }
@@ -908,6 +874,10 @@ void render_extended_description() {
     s32 selected = gPatchSelectionMenu->selectedPatch;
     struct PatchCard *selectedCard = &gPatchSelectionMenu->patchCards[selected];
     f32 scale = gPatchSelectionMenu->extendedDescScale;
+
+    struct ChaosPatchSelection *sel = selectedCard->sel;
+    const struct ChaosPatch *pos = sel->positivePatch;
+    const struct ChaosPatch *neg = sel->negativePatch;
     
     Mtx *transMtx = alloc_display_list(sizeof(Mtx));
     Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
@@ -920,17 +890,17 @@ void render_extended_description() {
     gSPDisplayList(gDisplayListHead++, ext_desc_bg_ext_mesh_mesh);
 
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    if(selectedCard->extendedDesc1) {
-        slowtext_draw_ortho_text(-142, 87, selectedCard->extendedDesc1, FT_FLAG_ALIGN_LEFT, 
+    if(pos->longDescription) {
+        slowtext_draw_ortho_text_linebreaks(-142, 87, DESC_STRING_WIDTH, pos->longDescription, FT_FLAG_ALIGN_LEFT, 
             sEffectColors[EFFECT_COLOR_GOOD][0], sEffectColors[EFFECT_COLOR_GOOD][1], sEffectColors[EFFECT_COLOR_GOOD][2], 0xFF);
     }
-    if(selectedCard->extendedDesc2) {
+    if(neg->longDescription) {
         //Draw second effect description lower if there are two extended descriptions
-        if(selectedCard->extendedDesc1) {
-            slowtext_draw_ortho_text(-142, -13, selectedCard->extendedDesc2, FT_FLAG_ALIGN_LEFT, 
+        if(pos->longDescription) {
+            slowtext_draw_ortho_text_linebreaks(-142, -13, DESC_STRING_WIDTH, neg->longDescription, FT_FLAG_ALIGN_LEFT, 
                 sEffectColors[EFFECT_COLOR_BAD][0], sEffectColors[EFFECT_COLOR_BAD][1], sEffectColors[EFFECT_COLOR_BAD][2], 0xFF);
         } else {
-            slowtext_draw_ortho_text(-142, 87, selectedCard->extendedDesc2, FT_FLAG_ALIGN_LEFT, 
+            slowtext_draw_ortho_text_linebreaks(-142, 87, DESC_STRING_WIDTH, neg->longDescription, FT_FLAG_ALIGN_LEFT, 
                 sEffectColors[EFFECT_COLOR_BAD][0], sEffectColors[EFFECT_COLOR_BAD][1], sEffectColors[EFFECT_COLOR_BAD][2], 0xFF);
         }
     }
@@ -943,10 +913,14 @@ void render_extended_description() {
     Determines which button prompts if any to show and draws them
 */
 void render_patch_select_button_prompts() {
+    struct ChaosPatchSelection *sel = gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].sel;
+    const struct ChaosPatch *pos = sel->positivePatch;
+    const struct ChaosPatch *neg = sel->negativePatch;
+
     switch(gPatchSelectionMenu->menu.menuState) {
         case PATCH_SELECT_STATE_SELECT:
-            if(gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].extendedDesc1 || 
-                gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].extendedDesc2) {
+            if(pos->longDescription || 
+                neg->longDescription) {
                 menu_start_button_prompt();
                 menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 21, MENU_PROMPT_A_BUTTON);
                 menu_button_prompt(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 21, MENU_PROMPT_Z_TRIG);

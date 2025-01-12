@@ -542,9 +542,11 @@ s32 act_debug_free_move(struct MarioState *m) {
     Vec3f pos;
     f32 speed;
 
+#if defined(ENABLE_DEBUG_FREE_MOVE) && !defined(DISABLE_ALL)
     if (gPlayer1Controller->buttonPressed & L_TRIG) {
         m->health = 0x880;
     }
+#endif
 
     // integer immediates, generates convert instructions for some reason
     speed = (gPlayer1Controller->buttonDown & B_BUTTON) ? 4.0f : 1.0f;
@@ -640,18 +642,12 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
             case 80:
                 if (!(m->actionArg & 1)) {
                     level_trigger_warp(m, WARP_OP_STAR_EXIT);
-                } else {
-                    enable_time_stop();
-                    create_dialog_box_with_response(gLastCompletedStarNum == 7 ? DIALOG_013 : DIALOG_014);
-                    m->actionState = 1;
+                } else {                    
+                    set_play_mode(PLAY_MODE_SELECT_PATCH);
+                    m->actionState = 2;
                 }
                 break;
         }
-    } else if (m->actionState == 1 && gDialogResponse != DIALOG_RESPONSE_NONE) {
-        if (gDialogResponse == DIALOG_RESPONSE_YES) {
-            save_file_do_save(gCurrSaveFileNum - 1);
-        }
-        m->actionState = 2;
     } else if (m->actionState == 2 && is_anim_at_end(m)) {
         disable_time_stop();
         enable_background_sound();
@@ -1192,9 +1188,12 @@ s32 act_death_exit(struct MarioState *m) {
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
-#ifndef DISABLE_LIVES
-        m->numLives--;
-#endif
+        if (gChaosLivesEnabled) {
+            m->numLives--;
+        }
+        gSaveFileModified = TRUE;
+        save_file_do_save(gCurrSaveFileNum - 1);
+
         // restore 7.75 units of health
         m->healCounter = 31;
     }
@@ -1210,9 +1209,12 @@ s32 act_unused_death_exit(struct MarioState *m) {
 #else
         play_sound(SOUND_MARIO_OOOF2, m->marioObj->header.gfx.cameraToObject);
 #endif
-#ifndef DISABLE_LIVES
-        m->numLives--;
-#endif
+        if (gChaosLivesEnabled) {
+            m->numLives--;
+        }
+        gSaveFileModified = TRUE;
+        save_file_do_save(gCurrSaveFileNum - 1);
+
         // restore 7.75 units of health
         m->healCounter = 31;
     }
@@ -1231,9 +1233,12 @@ s32 act_falling_death_exit(struct MarioState *m) {
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
-#ifndef DISABLE_LIVES
-        m->numLives--;
-#endif
+        if (gChaosLivesEnabled) {
+            m->numLives--;
+        }
+        gSaveFileModified = TRUE;
+        save_file_do_save(gCurrSaveFileNum - 1);
+
         // restore 7.75 units of health
         m->healCounter = 31;
     }
@@ -1280,9 +1285,12 @@ s32 act_special_death_exit(struct MarioState *m) {
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
-#ifndef DISABLE_LIVES
-        m->numLives--;
-#endif
+        if (gChaosLivesEnabled) {
+            m->numLives--;
+        }
+        gSaveFileModified = TRUE;
+        save_file_do_save(gCurrSaveFileNum - 1);
+
         m->healCounter = 31;
     }
     // show Mario
