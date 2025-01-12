@@ -72,5 +72,5 @@ void chs_update_random_shock(void);
 void chs_act_random_burn(void);
 void chs_update_random_burn(void);
 
-//Object Spawners
+// Object Spawners
 void chs_area_init_green_demon(void);

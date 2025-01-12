@@ -45,6 +45,7 @@
     (INT_GROUND_POUND_OR_TWIRL | INT_PUNCH | INT_KICK | INT_TRIP | INT_HIT_FROM_BELOW)
 
 u8 sDelayInvincTimer;
+s32 gShouldGive1UP = FALSE;
 s16 sInvulnerable;
 u32 interact_coin(struct MarioState *, u32, struct Object *);
 u32 interact_water_ring(struct MarioState *, u32, struct Object *);
@@ -779,6 +780,9 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
     u32 starGrabAction = ACT_STAR_DANCE_EXIT;
     u32 noExit = (o->oInteractionSubtype & INT_SUBTYPE_NO_EXIT) != 0;
     u32 grandStar = (o->oInteractionSubtype & INT_SUBTYPE_GRAND_STAR) != 0;
+    s32 previousStarCount;
+    u32 previousSaveFlags;
+    u32 newSaveFlags;
 
     if (m->health >= 0x100) {
         mario_stop_riding_and_holding(m);
@@ -816,11 +820,18 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
         m->interactObj = o;
         m->usedObj = o;
 
+        previousStarCount = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
+        previousSaveFlags = save_file_get_flags();
         starIndex = (o->oBehParams >> 24) & 0x1F;
         save_file_collect_star_or_key(m->numCoins, starIndex);
+        m->numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
+        newSaveFlags = save_file_get_flags();
 
-        m->numStars =
-            save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
+        if (gChaosLivesEnabled && (m->numStars > previousStarCount || (newSaveFlags & ~previousSaveFlags))) {
+            gShouldGive1UP = TRUE;
+        } else {
+            gShouldGive1UP = FALSE;
+        }
 
         if (!noExit) {
             drop_queued_background_music();

@@ -642,7 +642,13 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
             case 80:
                 if (!(m->actionArg & 1)) {
                     level_trigger_warp(m, WARP_OP_STAR_EXIT);
-                } else {                    
+                } else {
+                    if (gChaosLivesEnabled && gShouldGive1UP) {
+                        play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
+                        m->numLives++;
+                        gShouldGive1UP = FALSE;
+                        // Do not save here, handle that later after spplying new patch!
+                    }
                     set_play_mode(PLAY_MODE_SELECT_PATCH);
                     m->actionState = 2;
                 }
@@ -1076,10 +1082,20 @@ s32 act_exit_airborne(struct MarioState *m) {
         && launch_mario_until_land(m, ACT_EXIT_LAND_SAVE_DIALOG, MARIO_ANIM_GENERAL_FALL, -32.0f)) {
         // heal Mario
         m->healCounter = 31;
+        if (gChaosLivesEnabled && gShouldGive1UP) {
+            play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
+            m->numLives++;
+            gShouldGive1UP = FALSE;
+            // Do not save here, handle that later after spplying new patch!
+        }
     }
     // rotate him to face away from the entrance
     m->marioObj->header.gfx.angle[1] += 0x8000;
     m->particleFlags |= PARTICLE_SPARKLES;
+    // one unit of health
+    if (m->health < 0x0100) {
+        m->health = 0x0100;
+    }
     return FALSE;
 }
 
@@ -1087,10 +1103,21 @@ s32 act_falling_exit_airborne(struct MarioState *m) {
     if (launch_mario_until_land(m, ACT_EXIT_LAND_SAVE_DIALOG, MARIO_ANIM_GENERAL_FALL, 0.0f)) {
         // heal Mario
         m->healCounter = 31;
+        if (gChaosLivesEnabled && gShouldGive1UP) {
+            play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
+            m->numLives++;
+            gShouldGive1UP = FALSE;
+            // Do not save here, handle that later after spplying new patch!
+        }
     }
+
     // rotate Mario to face away from the entrance
     m->marioObj->header.gfx.angle[1] += 0x8000;
     m->particleFlags |= PARTICLE_SPARKLES;
+    // one unit of health
+    if (m->health < 0x0100) {
+        m->health = 0x0100;
+    }
     return FALSE;
 }
 
@@ -1259,6 +1286,12 @@ s32 act_special_exit_airborne(struct MarioState *m) {
         // heal Mario
         m->healCounter = 31;
         m->actionArg = 1;
+        if (gChaosLivesEnabled && gShouldGive1UP) {
+            play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
+            m->numLives++;
+            gShouldGive1UP = FALSE;
+            // Do not save here, handle that later after spplying new patch!
+        }
     }
 
     m->particleFlags |= PARTICLE_SPARKLES;
@@ -1266,6 +1299,10 @@ s32 act_special_exit_airborne(struct MarioState *m) {
     marioObj->header.gfx.angle[1] += 0x8000;
     // show Mario
     marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
+    // one unit of health
+    if (m->health < 0x0100) {
+        m->health = 0x0100;
+    }
 
     return FALSE;
 }

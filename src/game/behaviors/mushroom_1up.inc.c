@@ -24,7 +24,6 @@ void bhv_1up_common_init(void) {
     o->oBuoyancy = 1.0f;
 
     obj_mark_for_deletion(o);
-    return;
 }
 
 void bhv_1up_init(void) {
@@ -395,13 +394,12 @@ void bhv_green_demon_init(void) {
     o->oGravity = 3.0f;
     o->oFriction = 1.0f;
     o->oBuoyancy = 1.0f;
-    return;
 }
 
 void bhv_green_demon_interact(void) {
     if (obj_check_if_collided_with_object(o, gMarioObject)) {
         play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
-        gMarioState->health = 0;
+        gMarioState->health = 0xFF;
         obj_mark_for_deletion(o);
     }
 }
