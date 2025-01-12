@@ -645,8 +645,8 @@ u16 eu_get_language(void) {
 void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount, enum ChaosDifficulty *gChaosDifficulty, u8 *gChaosLivesEnabled) {
     *entryData = gSaveBuffer.files[gCurrSaveFileNum - 1].chaosEntries;
     *currentEntryCount = &gSaveBuffer.files[gCurrSaveFileNum - 1].chaosEntryCount;
-    *gChaosDifficulty = gSaveBuffer.files[gCurrSaveFileNum - 1].chaosDifficulty;
-    *gChaosLivesEnabled = gSaveBuffer.files[gCurrSaveFileNum - 1].livesEnabled;
+    *gChaosDifficulty = save_file_get_difficulty(gCurrSaveFileNum - 1);
+    *gChaosLivesEnabled = save_file_get_challenge_mode(gCurrSaveFileNum - 1);
 }
 
 void disable_warp_checkpoint(void) {
@@ -691,4 +691,27 @@ s32 check_warp_checkpoint(struct WarpNode *warpNode) {
     }
 
     return warpCheckpointActive;
+}
+
+/*
+    Gets the difficulty of the save file in fileindex
+*/
+s32 save_file_get_difficulty(s32 fileIndex) {
+    s32 difficulty = ((gSaveBuffer.files[fileIndex].gamemode & 0xF0) >> 4);
+    return difficulty;
+}
+
+/*
+    Gets the challenge mode of the save file in fileindex
+*/
+s32 save_file_get_challenge_mode(s32 fileIndex) {
+    s32 challenge = (gSaveBuffer.files[fileIndex].gamemode & 0x0F);
+    return challenge;
+}
+
+/*
+    Sets the gamemode of the save file in fileindex
+*/
+void save_file_set_gamemode(s32 fileIndex, s32 difficulty, s32 challenge) {
+    gSaveBuffer.files[fileIndex].gamemode = (difficulty << 4) | challenge;
 }

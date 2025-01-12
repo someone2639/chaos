@@ -45,14 +45,17 @@ struct SaveFile {
     u8 courseStars[COURSE_COUNT];
 
     u8 courseCoinScores[COURSE_STAGES_COUNT];
-
-    s8 chaosDifficulty;
+    u8 gamemode;
     s8 lives;
-    u8 livesEnabled;
     s32 chaosEntryCount;
     struct ChaosActiveEntry chaosEntries[CHAOS_PATCH_ENTRIES];
 
     struct SaveBlockSignature signature;
+};
+
+enum SaveFileChallenge {
+    CHALLENGE_MODE_OFF,
+    CHALLENGE_MODE_ON,
 };
 
 enum SaveFileIndex {
@@ -188,5 +191,9 @@ enum EuLanguages {
 void eu_set_language(u16 language);
 u16 eu_get_language(void);
 #endif
+
+s32 save_file_get_difficulty(s32 fileIndex);
+s32 save_file_get_challenge_mode(s32 fileIndex);
+void save_file_set_gamemode(s32 fileIndex, s32 difficulty, s32 challenge);
 
 #endif // SAVE_FILE_H
