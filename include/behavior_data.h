@@ -429,6 +429,7 @@ extern const BehaviorScript bhvHidden1upTrigger[];
 extern const BehaviorScript bhvHidden1upInPole[];
 extern const BehaviorScript bhvHidden1upInPoleTrigger[];
 extern const BehaviorScript bhvHidden1upInPoleSpawner[];
+extern const BehaviorScript bhvGreenDemon[];
 extern const BehaviorScript bhvControllablePlatform[];
 extern const BehaviorScript bhvControllablePlatformSub[];
 extern const BehaviorScript bhvBreakableBoxSmall[];

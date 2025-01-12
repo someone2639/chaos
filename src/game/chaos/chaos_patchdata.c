@@ -506,4 +506,17 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Potion of Invisibility",
         .shortDescription  = "Mario is now invisible. His shadow is the only visible part of him that remains.",
     },
+//Object Spawners
+    [CHAOS_PATCH_GREEN_DEMON] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .areaInitFunc      = chs_area_init_green_demon,
+
+        .name              = "Green Demon",
+        .shortDescription  = "Of course this one's in the game. Spawns a poison 1-up mushroom that chases Mario.",
+    },
 };

@@ -70,6 +70,9 @@ enum ChaosPatchID {
 // Miscellaneous Modifiers
     CHAOS_PATCH_MARIO_INVISIBLE,
 
+// Object Spawners
+    CHAOS_PATCH_GREEN_DEMON,
+
 // Patch Count
     CHAOS_PATCH_COUNT,
 };

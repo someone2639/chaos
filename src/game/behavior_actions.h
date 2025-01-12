@@ -401,6 +401,8 @@ void bhv_1up_hidden_trigger_loop(void);
 void bhv_1up_hidden_in_pole_loop(void);
 void bhv_1up_hidden_in_pole_trigger_loop(void);
 void bhv_1up_hidden_in_pole_spawner_loop(void);
+void bhv_green_demon_init(void);
+void bhv_green_demon_loop(void);
 void bhv_controllable_platform_init(void);
 void bhv_controllable_platform_loop(void);
 void bhv_controllable_platform_sub_loop(void);

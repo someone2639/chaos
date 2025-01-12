@@ -180,8 +180,10 @@ extern const Gfx mist_seg3_dl_03000920[];
 
 // mushroom_1up
 extern const GeoLayout mushroom_1up_geo[];
+extern const GeoLayout green_demon_geo[];
 extern const Gfx mushroom_1up_seg3_dl_0302A628[];
 extern const Gfx mushroom_1up_seg3_dl_0302A660[];
+extern const Gfx greem_demon_dl_main[];
 
 // number
 extern const GeoLayout number_geo[];

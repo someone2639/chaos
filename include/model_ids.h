@@ -553,6 +553,7 @@
 #define MODEL_CASTLE_STAR_DOOR_50_STARS   0xD1        // castle_geo_000F00
 #define MODEL_CCM_SNOWMAN_BASE            0xD2        // ccm_geo_0003F0
 // find me
+#define MODEL_GREEN_DEMON                 0xD3        
 #define MODEL_1UP                         0xD4        // mushroom_1up_geo
 #define MODEL_CASTLE_STAR_DOOR_8_STARS    0xD5        // castle_geo_000F00
 #define MODEL_CASTLE_STAR_DOOR_70_STARS   0xD6        // castle_geo_000F00
