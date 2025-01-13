@@ -853,6 +853,7 @@ void thread5_game_loop(UNUSED void *arg) {
 
     play_music(SEQ_PLAYER_SFX, SEQUENCE_ARGS(0, SEQ_SOUND_PLAYER), 0);
     set_sound_mode(save_file_get_sound_mode());
+    gConfig.disableBGMusic = save_file_get_bg_music_disabled();
 #ifdef WIDE
     gConfig.widescreen = save_file_get_widescreen_mode();
 #endif

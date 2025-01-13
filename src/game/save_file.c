@@ -275,8 +275,6 @@ static void touch_high_score_ages(s32 fileIndex) {
 
 void save_file_do_save(s32 fileIndex) {
     if (gSaveFileModified) {
-        gSaveBuffer.files[fileIndex].lives = gMarioState->numLives;
-
         // Compute checksum
         add_save_block_signature(&gSaveBuffer.files[fileIndex],
                                  sizeof(gSaveBuffer.files[fileIndex]), SAVE_FILE_MAGIC);
@@ -290,9 +288,19 @@ void save_file_do_save(s32 fileIndex) {
     save_main_menu_data();
 }
 
+void save_file_populate_default_params(s32 fileIndex) {
+    struct SaveFile *file = &gSaveBuffer.files[fileIndex];
+
+    file->lives = 4;
+    file->chaosDifficulty = CHAOS_DIFFICULTY_NORMAL;
+    file->chaosChallengeMode = FALSE;
+    file->chaosEntryCount = 0;
+}
+
 void save_file_erase(s32 fileIndex) {
     touch_high_score_ages(fileIndex);
     bzero(&gSaveBuffer.files[fileIndex], sizeof(gSaveBuffer.files[fileIndex]));
+    save_file_populate_default_params(fileIndex);
 
     gSaveFileModified = TRUE;
     save_file_do_save(fileIndex);
@@ -324,8 +332,8 @@ static void calculate_unique_save_magic(void) {
         checksum += (u16) INTERNAL_ROM_NAME[i] << (i & 0x07);
     }
 
-    MENU_DATA_MAGIC += checksum;
-    SAVE_FILE_MAGIC += checksum;
+    MENU_DATA_MAGIC += (checksum + CHAOS_PATCH_COUNT);
+    SAVE_FILE_MAGIC += (checksum + CHAOS_PATCH_COUNT);
 
     computed = TRUE;
 }
@@ -352,6 +360,8 @@ void save_file_load_all(void) {
     for (file = 0; file < NUM_SAVE_FILES; file++) {
         // Verify the save file is valid.
         if (!verify_save_block_signature(&gSaveBuffer.files[file], sizeof(gSaveBuffer.files[file]), SAVE_FILE_MAGIC)) {
+            save_file_erase(file);
+        } else if (!save_file_exists(file)) {
             save_file_erase(file);
         }
     }
@@ -563,6 +573,13 @@ s8 save_file_get_life_count(s32 fileIndex) {
     return gSaveBuffer.files[fileIndex].lives;
 }
 
+void save_file_set_life_count(s32 fileIndex, s8 lives) {
+    gSaveBuffer.files[fileIndex].lives = lives;
+    gSaveFileModified = TRUE;
+
+    save_file_do_save(fileIndex);
+}
+
 void save_file_set_cap_pos(s16 x, s16 y, s16 z) {
     struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
 
@@ -617,6 +634,17 @@ void save_file_move_cap_to_default_location(void) {
     }
 }
 
+u32 save_file_get_bg_music_disabled(void) {
+    return gSaveBuffer.menuData.disableBGMusic;
+}
+
+void save_file_set_bg_music(u8 shouldDisable) {
+    gSaveBuffer.menuData.disableBGMusic = shouldDisable;
+
+    gMainMenuDataModified = TRUE;
+    save_main_menu_data();
+}
+
 #ifdef WIDE
 u32 save_file_get_widescreen_mode(void) {
     return gSaveBuffer.menuData.wideMode;
@@ -645,8 +673,11 @@ u16 eu_get_language(void) {
 void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount, enum ChaosDifficulty *gChaosDifficulty, u8 *gChaosLivesEnabled) {
     *entryData = gSaveBuffer.files[gCurrSaveFileNum - 1].chaosEntries;
     *currentEntryCount = &gSaveBuffer.files[gCurrSaveFileNum - 1].chaosEntryCount;
-    *gChaosDifficulty = gSaveBuffer.files[gCurrSaveFileNum - 1].chaosDifficulty;
-    *gChaosLivesEnabled = gSaveBuffer.files[gCurrSaveFileNum - 1].livesEnabled;
+    *gChaosDifficulty = save_file_get_difficulty(gCurrSaveFileNum - 1);
+    *gChaosLivesEnabled = save_file_get_challenge_mode(gCurrSaveFileNum - 1);
+
+    gSaveBuffer.files[gCurrSaveFileNum - 1].flags |= SAVE_FLAG_FILE_EXISTS;
+    gMainMenuDataModified = TRUE;
 }
 
 void disable_warp_checkpoint(void) {
@@ -691,4 +722,30 @@ s32 check_warp_checkpoint(struct WarpNode *warpNode) {
     }
 
     return warpCheckpointActive;
+}
+
+/*
+    Gets the difficulty of the save file in fileindex
+*/
+s32 save_file_get_difficulty(s32 fileIndex) {
+    return gSaveBuffer.files[fileIndex].chaosDifficulty;
+}
+
+/*
+    Gets the challenge mode of the save file in fileindex
+*/
+s32 save_file_get_challenge_mode(s32 fileIndex) {
+    return gSaveBuffer.files[fileIndex].chaosChallengeMode;
+}
+
+/*
+    Sets the gamemode of the save file in fileindex
+*/
+void save_file_set_gamemode(s32 fileIndex, s32 difficulty, s32 challenge) {
+    gSaveBuffer.files[fileIndex].chaosDifficulty = difficulty;
+    gSaveBuffer.files[fileIndex].chaosChallengeMode = challenge;
+
+    gSaveBuffer.files[fileIndex].flags |= SAVE_FLAG_FILE_EXISTS;
+    gSaveFileModified = TRUE;
+    save_file_do_save(fileIndex);
 }

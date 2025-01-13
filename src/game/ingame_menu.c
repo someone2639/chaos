@@ -40,6 +40,9 @@ s16 gDialogY;
 s16 gCutsceneMsgXOffset;
 s16 gCutsceneMsgYOffset;
 s8 gRedCoinsCollected;
+u8 textBGMOn[] = { TEXT_HUD_BGM_ON };
+u8 textBGMOff[] = { TEXT_HUD_BGM_OFF };
+u8 textPressR[] = { TEXT_HUD_PRESS_R };
 #ifdef WIDE
 u8 textCurrRatio43[] = { TEXT_HUD_CURRENT_RATIO_43 };
 u8 textCurrRatio169[] = { TEXT_HUD_CURRENT_RATIO_169 };
@@ -2298,6 +2301,23 @@ void render_widescreen_setting(void) {
 }
 #endif
 
+void render_bgmusic_setting(void) {
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
+    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
+    if (!gConfig.disableBGMusic) {
+        print_generic_string((SCREEN_WIDTH - 96) - 10, 20, textBGMOn);
+        print_generic_string((SCREEN_WIDTH - 96) - 10,  7, textPressR);
+    } else {
+        print_generic_string((SCREEN_WIDTH - 96) - 10, 20, textBGMOff);
+        print_generic_string((SCREEN_WIDTH - 96) - 10,  7, textPressR);
+    }
+    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
+    if (gPlayer1Controller->buttonPressed & R_TRIG){
+        gConfig.disableBGMusic ^= 1;
+        save_file_set_bg_music(gConfig.disableBGMusic);
+    }
+}
+
 #ifdef VERSION_EU
 u8 gTextCourse[][7] = {
     { TEXT_COURSE },
@@ -2509,6 +2529,7 @@ void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) {
 #else
     u8 textContinue[] = { TEXT_CONTINUE };
     u8 textExitCourse[] = { TEXT_EXIT_COURSE };
+    u8 textExitCourseWithDeath[] = { TEXT_EXIT_COURSE_WITH_DEATH };
     u8 textCameraAngleR[] = { TEXT_CAMERA_ANGLE_R };
 #endif
 
@@ -2518,7 +2539,11 @@ void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) {
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
 
     print_generic_string(x + 10, y - 2, LANGUAGE_ARRAY(textContinue));
-    print_generic_string(x + 10, y - 17, LANGUAGE_ARRAY(textExitCourse));
+    if (gChaosLivesEnabled) {
+        print_generic_string(x + 10, y - 17, LANGUAGE_ARRAY(textExitCourseWithDeath));
+    } else {
+        print_generic_string(x + 10, y - 17, LANGUAGE_ARRAY(textExitCourse));
+    }
 
     if (*index != MENU_OPT_CAMERA_ANGLE_R) {
         print_generic_string(x + 10, y - 33, LANGUAGE_ARRAY(textCameraAngleR));
@@ -2810,6 +2835,7 @@ s16 render_pause_courses_and_castle(void) {
             }
             break;
     }
+        render_bgmusic_setting();
 #ifdef WIDE
         render_widescreen_setting();
 #endif

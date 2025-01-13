@@ -166,6 +166,8 @@ void yoshi_give_present_loop(void) {
         gSpecialTripleJump = TRUE;
         o->oAction = YOSHI_ACT_WALK_JUMP_OFF_ROOF;
     // }
+
+    // save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives);
 }
 
 void bhv_yoshi_loop(void) {

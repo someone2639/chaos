@@ -5,6 +5,7 @@
 #include "engine/surface_collision.h"
 #include "mario.h"
 #include "audio/external.h"
+#include "chaos/chaos.h"
 #include "game_init.h"
 #include "interaction.h"
 #include "mario_step.h"
@@ -351,6 +352,10 @@ u32 check_ledge_grab(struct MarioState *m, struct Surface *wall, Vec3f intendedP
     Vec3f ledgePos;
     f32 displacementX;
     f32 displacementZ;
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_LEDGE_GRAB)) {
+        return FALSE;
+    }
 
     if (m->vel[1] > 0) {
         return FALSE;

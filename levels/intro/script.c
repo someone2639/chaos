@@ -50,37 +50,37 @@ const LevelScript level_intro_mario_head_jump_to_level_select[] = {
 #endif
 
 const LevelScript level_intro_mario_head_regular[] = {
-#ifndef GODDARD
+// #ifndef GODDARD
 #ifdef DEBUG_LEVEL_SELECT
     CALL(/*arg*/ 0, /*func*/ check_holding_l),
     JUMP_IF(/*op*/ OP_EQ, /*arg*/ TRUE, level_intro_mario_head_jump_to_level_select),
 #endif
     EXIT_AND_EXECUTE(/*seg*/ 0x14, _menuSegmentRomStart, _menuSegmentRomEnd, level_main_menu_entry_1),
-#endif
-    INIT_LEVEL(),
-    BLACKOUT(/*active*/ TRUE),
-    FIXED_LOAD(/*loadAddr*/ _goddardSegmentStart, /*romStart*/ _goddardSegmentRomStart, /*romEnd*/ _goddardSegmentRomEnd),
-#ifdef GODDARD
-    LOAD_MARIO_HEAD(/*loadHeadID*/ REGULAR_FACE),
-#endif
-    LOAD_RAW(/*seg*/ 0x13, _behaviorSegmentRomStart, _behaviorSegmentRomEnd),
-    LOAD_YAY0_TEXTURE(/*seg*/ 0x0A, _title_screen_bg_yay0SegmentRomStart, _title_screen_bg_yay0SegmentRomEnd),
+// #endif
+//     INIT_LEVEL(),
+//     BLACKOUT(/*active*/ TRUE),
+//     FIXED_LOAD(/*loadAddr*/ _goddardSegmentStart, /*romStart*/ _goddardSegmentRomStart, /*romEnd*/ _goddardSegmentRomEnd),
+// #ifdef GODDARD
+//     LOAD_MARIO_HEAD(/*loadHeadID*/ REGULAR_FACE),
+// #endif
+//     LOAD_RAW(/*seg*/ 0x13, _behaviorSegmentRomStart, _behaviorSegmentRomEnd),
+//     LOAD_YAY0_TEXTURE(/*seg*/ 0x0A, _title_screen_bg_yay0SegmentRomStart, _title_screen_bg_yay0SegmentRomEnd),
 
-    ALLOC_LEVEL_POOL(),
-    AREA(/*index*/ 1, intro_geo_mario_head_regular),
-    END_AREA(),
-    FREE_LEVEL_POOL(),
+//     ALLOC_LEVEL_POOL(),
+//     AREA(/*index*/ 1, intro_geo_mario_head_regular),
+//     END_AREA(),
+//     FREE_LEVEL_POOL(),
 
-    SLEEP(/*frames*/ 2),
-    BLACKOUT(/*active*/ FALSE),
-    LOAD_AREA(/*area*/ 1),
-    SET_MENU_MUSIC(/*seq*/ SEQ_MENU_TITLE_SCREEN),
-    TRANSITION(/*transType*/ WARP_TRANSITION_FADE_FROM_STAR, /*time*/ 20, /*color*/ 0x00, 0x00, 0x00),
-    SLEEP(/*frames*/ 20),
-    CALL_LOOP(/*arg*/ LVL_INTRO_REGULAR, /*func*/ lvl_intro_update),
-    JUMP_IF(/*op*/ OP_EQ, /*arg*/ LEVEL_FILE_SELECT, script_intro_L1),
-    JUMP_IF(/*op*/ OP_EQ, /*arg*/ LEVEL_LEVEL_SELECT, script_intro_L2),
-    JUMP(script_intro_L4),
+//     SLEEP(/*frames*/ 2),
+//     BLACKOUT(/*active*/ FALSE),
+//     LOAD_AREA(/*area*/ 1),
+//     SET_MENU_MUSIC(/*seq*/ SEQ_MENU_TITLE_SCREEN),
+//     TRANSITION(/*transType*/ WARP_TRANSITION_FADE_FROM_STAR, /*time*/ 20, /*color*/ 0x00, 0x00, 0x00),
+//     SLEEP(/*frames*/ 20),
+//     CALL_LOOP(/*arg*/ LVL_INTRO_REGULAR, /*func*/ lvl_intro_update),
+//     JUMP_IF(/*op*/ OP_EQ, /*arg*/ LEVEL_FILE_SELECT, script_intro_L1),
+//     JUMP_IF(/*op*/ OP_EQ, /*arg*/ LEVEL_LEVEL_SELECT, script_intro_L2),
+//     JUMP(script_intro_L4),
 };
 
 const LevelScript level_intro_mario_head_dizzy[] = {

@@ -21,6 +21,10 @@
 
 #define MODEL_NONE                        0x00
 
+/* fast64 object exports get inserted here */
+#define MODEL_CHAOS_SAVE_BUTTON           13
+#define MODEL_CHAOS_SCORE_BUTTON          14
+
 /* Global models that are loaded for every level */
 
 #define MODEL_MARIO                       0x01        // mario_geo
@@ -534,8 +538,8 @@
 #define MODEL_AMP                         0xC2        // dAmpGeo
 #define MODEL_BOBOMB_BUDDY                0xC3        // bobomb_buddy_geo
 // find me
-// find me
-// find me
+#define MODEL_SILVER_COIN                 0xC5        // silver_coin_geo
+#define MODEL_SILVER_COIN_NO_SHADOW       0xC6        // silver_coin_no_shadow_geo
 #define MODEL_SSL_TOX_BOX                 0xC7        // ssl_geo_000630
 #define MODEL_BOWSER_KEY_CUTSCENE         0xC8        // bowser_key_cutscene_geo
 #define MODEL_DL_CANNON_LID               0xC9        // cannon_closed_seg8_dl_080048E0
@@ -549,6 +553,7 @@
 #define MODEL_CASTLE_STAR_DOOR_50_STARS   0xD1        // castle_geo_000F00
 #define MODEL_CCM_SNOWMAN_BASE            0xD2        // ccm_geo_0003F0
 // find me
+#define MODEL_GREEN_DEMON                 0xD3        
 #define MODEL_1UP                         0xD4        // mushroom_1up_geo
 #define MODEL_CASTLE_STAR_DOOR_8_STARS    0xD5        // castle_geo_000F00
 #define MODEL_CASTLE_STAR_DOOR_70_STARS   0xD6        // castle_geo_000F00

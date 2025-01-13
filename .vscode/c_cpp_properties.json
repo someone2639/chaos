@@ -29,7 +29,8 @@
                 "F3DEX_GBI_SHARED=1",
                 "NON_MATCHING=1",
                 "AVOID_UB=1",
-                "SRAM=1"
+                "SRAM=1",
+                "GODDARD=1"
             ],
             "compilerPath": "/usr/bin/mips-linux-gnu-gcc",
             "cStandard": "gnu17",

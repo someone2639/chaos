@@ -67,10 +67,24 @@ void bhv_temp_coin_loop(void) {
 }
 
 void bhv_coin_init(void) {
-    o->oVelY = random_float() * 10.0f + 30 + o->oCoinUnk110;
+    o->oVelY = random_float() * 10.0f + 30 + o->oCoinBaseYVel;
     o->oForwardVel = random_float() * 10.0f;
     o->oMoveAngleYaw = random_u16();
 
+    cur_obj_set_behavior(bhvYellowCoin);
+    obj_set_hitbox(o, &sYellowCoinHitbox);
+    cur_obj_become_intangible();
+}
+
+/**
+ * Bouncey coin initialization function. Sets the coin's hitbox and parent object.
+ */
+void bhv_bouncey_coin_init(void) {
+    o->oVelY = random_float() * 45.0f + 20.0f;
+    o->oForwardVel = random_float() * 30.0f + 5.0f;
+    o->oMoveAngleYaw = random_u16();
+
+    o->oDroppedCoinBounce = TRUE;
     cur_obj_set_behavior(bhvYellowCoin);
     obj_set_hitbox(o, &sYellowCoinHitbox);
     cur_obj_become_intangible();
@@ -96,12 +110,14 @@ void bhv_coin_loop(void) {
         }
     }
 
-    if (o->oTimer == 0) {
+    if (o->oTimer == 0 && !o->oDroppedCoinBounce) {
         cur_obj_play_sound_2(SOUND_GENERAL_COIN_SPURT);
     }
 
-    if (o->oVelY < 0) {
-        cur_obj_become_tangible();
+    if (o->oVelY <= 0) {
+        if (!o->oDroppedCoinBounce || o->oTimer >= 20) {
+            cur_obj_become_tangible();
+        }
     }
 
     if (o->oMoveFlags & OBJ_MOVE_LANDED) {
@@ -117,10 +133,10 @@ void bhv_coin_loop(void) {
 
     if (o->oMoveFlags & OBJ_MOVE_BOUNCE) {
 #ifndef VERSION_JP
-        if (o->oCoinUnk1B0 < 5) {
+        if (o->oCoinBounceTimer < 5) {
             cur_obj_play_sound_2(SOUND_GENERAL_COIN_DROP);
         }
-        o->oCoinUnk1B0++;
+        o->oCoinBounceTimer++;
 #else
         cur_obj_play_sound_2(SOUND_GENERAL_COIN_DROP);
 #endif
@@ -139,7 +155,7 @@ void bhv_coin_formation_spawn_loop(void) {
         obj_set_hitbox(o, &sYellowCoinHitbox);
         bhv_init_room();
 
-        if (o->oCoinUnkF8) {
+        if (o->oCoinSnapToGround) {
             o->oPosY += 300.0f;
             cur_obj_update_floor_height();
 
@@ -157,7 +173,7 @@ void bhv_coin_formation_spawn_loop(void) {
         }
     } else {
         if (bhv_coin_sparkles_init()) {
-            o->parentObj->oCoinUnkF4 |= bit_shift_left(o->oBehParams2ndByte);
+            o->parentObj->oCoinRespawnBits |= bit_shift_left(o->oBehParams2ndByte);
         }
         o->oAnimState++;
     }
@@ -211,12 +227,12 @@ void spawn_coin_in_formation(s32 sp50, s32 sp54) {
     if (sp3C) {
         sp4C = spawn_object_relative(sp50, sp40[0], sp40[1], sp40[2], o, MODEL_YELLOW_COIN,
                                      bhvCoinFormationSpawn);
-        sp4C->oCoinUnkF8 = sp38;
+        sp4C->oCoinSnapToGround = sp38;
     }
 }
 
 void bhv_coin_formation_init(void) {
-    o->oCoinUnkF4 = (o->oBehParams >> 8) & 0xFF;
+    o->oCoinRespawnBits = (o->oBehParams >> 8) & 0xFF;
 }
 
 void bhv_coin_formation_loop(void) {
@@ -226,7 +242,7 @@ void bhv_coin_formation_loop(void) {
         case 0:
             if (o->oDistanceToMario < 2000.0f) {
                 for (bitIndex = 0; bitIndex < 8; bitIndex++) {
-                    if (!(o->oCoinUnkF4 & (1 << bitIndex))) {
+                    if (!(o->oCoinRespawnBits & (1 << bitIndex))) {
                         spawn_coin_in_formation(bitIndex, o->oBehParams2ndByte);
                     }
                 }
@@ -244,7 +260,7 @@ void bhv_coin_formation_loop(void) {
     }
 
     // Casting to u8 doesn't seem to match
-    set_object_respawn_info_bits(o, o->oCoinUnkF4 & 0xFF);
+    set_object_respawn_info_bits(o, o->oCoinRespawnBits & 0xFF);
 }
 
 void coin_inside_boo_act_1(void) {

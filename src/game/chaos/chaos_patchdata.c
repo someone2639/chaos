@@ -22,7 +22,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc   = NULL,
         .deactivationFunc  = NULL,
 
-        .name              = "-",
+        .name              = "---",
         .shortDescription  = "@BFBFBF--No positive effect.@--------",
         .longDescription   = NULL,
     },
@@ -40,7 +40,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc   = NULL,
         .deactivationFunc  = NULL,
 
-        .name              = "-",
+        .name              = "---",
         .shortDescription  = "@BFBFBF--No negative effect.@--------",
         .longDescription   = NULL,
     },
@@ -125,7 +125,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_STARS_INCREASE_LV2] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_POSITIVE,
-        .severity          = 1,
+        .severity          = 2,
         .isStackable       = TRUE,
 
         .activatedInitFunc = chs_act_stars_increase_lv2,
@@ -136,7 +136,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_STARS_INCREASE_LV3] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_POSITIVE,
-        .severity          = 2,
+        .severity          = 3,
         .isStackable       = TRUE,
 
         .activatedInitFunc = chs_act_stars_increase_lv3,
@@ -159,7 +159,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_STARS_DECREASE_LV2] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 1,
+        .severity          = 2,
         .isStackable       = TRUE,
 
         .activatedInitFunc = chs_act_stars_decrease_lv2,
@@ -170,7 +170,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_STARS_DECREASE_LV3] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 2,
+        .severity          = 3,
         .isStackable       = TRUE,
 
         .activatedInitFunc = chs_act_stars_decrease_lv3,
@@ -275,5 +275,322 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Ultra Gravity",
         .shortDescription  = "Increase Mario's gravity by 50%.",
+    },
+
+// Healing Blockers
+    [CHAOS_PATCH_NOHEAL_HEARTS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .name              = "Heartbreak",
+        .shortDescription  = "Spinning hearts no longer heal Mario.",
+    },
+    [CHAOS_PATCH_NOHEAL_WATER] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .name              = "Health Drown",
+        .shortDescription  = "Water no longer heals Mario.",
+    },
+    [CHAOS_PATCH_NOHEAL_COINS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .name              = "Unaffordable Health Care",
+        .shortDescription  = "Coins no longer heal Mario.",
+    },
+
+// Coin Modifiers
+    [CHAOS_PATCH_DOUBLE_COINS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 10,
+
+        .levelInitFunc     = chs_lvlinit_double_coins,
+
+        .name              = "Coin Rush",
+        .shortDescription  = "Coin values will be doubled for 30 seconds upon entering a new level.",
+    },
+    [CHAOS_PATCH_100C_DECREASE_LV2] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = TRUE,
+        .duration          = 10,
+
+        .conditionalFunc   = chs_cond_100c_decrease_lv2,
+        .activatedInitFunc = chs_act_100c_decrease_lv2,
+        .deactivationFunc  = chs_deact_100c_decrease_lv2,
+
+        .name              = "Coin Star Sale",
+        .shortDescription  = "Reduce the price of the 100 coin star by 10 coins.",
+    },
+    [CHAOS_PATCH_100C_DECREASE_LV3] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 3,
+        .isStackable       = TRUE,
+        .duration          = 10,
+
+        .conditionalFunc   = chs_cond_100c_decrease_lv3,
+        .activatedInitFunc = chs_act_100c_decrease_lv3,
+        .deactivationFunc  = chs_deact_100c_decrease_lv3,
+
+        .name              = "Coin Star Bargain",
+        .shortDescription  = "Reduce the price of the 100 coin star by 25 coins.",
+    },
+    [CHAOS_PATCH_PAY2WIN] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 10,
+
+        .name              = "Pay To Win",
+        .shortDescription  = "Stars are only collectible when Mario has at least 40 coins.",
+    },
+    [CHAOS_PATCH_6_RED_COINS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .name              = "Ready for Redsies",
+        .shortDescription  = "Red coin stars only require 6 red coins.",
+    },
+    [CHAOS_PATCH_SONIC_SIMULATOR] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .name              = "Sonic Simulator",
+        .shortDescription  = "Coins represent Mario's health. Just like in Sonic, Mario will drop all of his coins upon taking damage.",
+    },
+
+// Random Griefing
+    [CHAOS_PATCH_RANDOM_SLEEP] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 1,
+        .isStackable        = FALSE,
+        .duration           = 20,
+
+        .activatedInitFunc  = chs_act_random_sleep,
+        .frameUpdateFunc    = chs_update_random_sleep,
+
+        .name               = "Narcolepsy",
+        .shortDescription   = "Mario is feeling a little tired today. He may decide on his own to go to sleep."
+    },
+    [CHAOS_PATCH_RANDOM_SHOCK] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 2,
+        .isStackable        = FALSE,
+        .duration           = 15,
+
+        .activatedInitFunc  = chs_act_random_shock,
+        .frameUpdateFunc    = chs_update_random_shock,
+
+        .name               = "Shocked to My Core",
+        .shortDescription   = "Get shocked at random intervals."
+    },
+    [CHAOS_PATCH_RANDOM_BURN] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 3,
+        .isStackable        = FALSE,
+        .duration           = 15,
+
+        .activatedInitFunc  = chs_act_random_burn,
+        .frameUpdateFunc    = chs_update_random_burn,
+
+        .name               = "Sick Burn",
+        .shortDescription   = "Get burned at random intervals."
+    },
+
+// Movement Modifiers
+    [CHAOS_PATCH_LOSEMOVE_BREAKDANCE] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 20,
+
+        .name              = "Dance Break",
+        .shortDescription  = "Mario can no longer breakdance.",
+    },
+    [CHAOS_PATCH_LOSEMOVE_LEDGE_GRAB] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .name              = "Sore Arms",
+        .shortDescription  = "Mario can no longer ledge grab.",
+    },
+    [CHAOS_PATCH_LOSEMOVE_KICK] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .name              = "Leg Pain",
+        .shortDescription  = "Mario can no longer kick.",
+    },
+    [CHAOS_PATCH_LOSEMOVE_SIDEFLIP] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .name              = "Unsimple Flips",
+        .shortDescription  = "Mario can no longer sideflip.",
+    },
+    [CHAOS_PATCH_LOSEMOVE_LONG_JUMP] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .name              = "Lazy Leaper",
+        .shortDescription  = "Mario can no longer long jump.",
+    },
+    [CHAOS_PATCH_LOSEMOVE_BACKFLIP] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .name              = "Flipped Off",
+        .shortDescription  = "Mario can no longer backflip.",
+    },
+    [CHAOS_PATCH_LOSEMOVE_WALL_KICK] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .name              = "Wall Kicks Won't Work",
+        .shortDescription  = "Mario can no longer wall kick.",
+    },
+    [CHAOS_PATCH_LOSEMOVE_DOUBLE_JUMP] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .name              = "Double Trouble",
+        .shortDescription  = "Mario can no longer double jump (and by extension, triple jump).",
+    },
+    [CHAOS_PATCH_BRAWL_TRIPPING] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .frameUpdateFunc   = chs_update_brawl_tripping,
+
+        .name              = "Brawl Mode",
+        .shortDescription  = "Mario trips randomly sometimes.",
+    },
+    [CHAOS_PATCH_GALAXY_SPIN] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 20,
+
+        .frameUpdateFunc   = chs_update_galaxy_twirl,
+
+        .name              = "First Introduced in Galaxy 2",
+        .shortDescription  = "Press A while in midair to do a spin jump!",
+    },
+    [CHAOS_PATCH_GROUND_POUND_DIVE] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 20,
+
+        .name              = "Do the Odyssey",
+        .shortDescription  = "Press B while ground pounding to do a dive jump!",
+    },
+    [CHAOS_PATCH_GROUND_POUND_JUMP] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 20,
+
+        .name              = "Bounce Back",
+        .shortDescription  = "Press A shortly after landing from a ground pound to do a bigger jump!",
+    },
+
+// Object Spawners
+    [CHAOS_PATCH_GREEN_DEMON] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 3,
+
+        .areaInitFunc      = chs_area_init_green_demon,
+
+        .name              = "Green Demon",
+        .shortDescription  = "Of course this one's in the game. Spawn a poison 1-UP mushroom that chases Mario.",
+    },
+
+// Miscellaneous Modifiers
+    [CHAOS_PATCH_MARIO_INVISIBLE] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .name              = "Potion of Invisibility",
+        .shortDescription  = "Mario is now invisible. His shadow is the only visible part of him that remains.",
+    },
+    [CHAOS_PATCH_SIGNREAD_FAR] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .name              = "Tutorial Mode",
+        .shortDescription  = "New to SM64? We'll make extra sure you don't miss any tutorial signs by increasing their range!",
+    },
+    [CHAOS_PATCH_ONE_HIT_WONDER] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .name              = "One-Hit Wonder",
+        .shortDescription  = "Mario will die instantly upon taking any form of damage (other than from swimming or poison).",
     },
 };

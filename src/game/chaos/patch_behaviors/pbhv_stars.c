@@ -127,36 +127,36 @@ static void update_any_star(u8 shouldRemove) {
     }
 }
 
-u8 chs_cond_stars_increase_guarantee(UNUSED const struct ChaosPatch *patch) {
+u8 chs_cond_stars_increase_guarantee(void) {
     return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) <= (NUM_STARS - 1);
 }
-u8 chs_cond_stars_decrease_guarantee(UNUSED const struct ChaosPatch *patch) {
+u8 chs_cond_stars_decrease_guarantee(void) {
     return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 2;
 }
 
-void chs_act_stars_increase_lv2(UNUSED const struct ChaosPatch *patch) {
+void chs_act_stars_increase_lv2(void) {
     update_any_star(FALSE);
     play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 }
-void chs_act_stars_increase_lv3(UNUSED const struct ChaosPatch *patch) {
+void chs_act_stars_increase_lv3(void) {
     update_any_star(FALSE);
     update_any_star(FALSE);
     play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 }
-void chs_act_stars_increase_guarantee(UNUSED const struct ChaosPatch *patch) {
+void chs_act_stars_increase_guarantee(void) {
     add_uncollected_star();
     play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 }
-void chs_act_stars_decrease_lv2(UNUSED const struct ChaosPatch *patch) {
+void chs_act_stars_decrease_lv2(void) {
     update_any_star(TRUE);
     update_any_star(TRUE);
 }
-void chs_act_stars_decrease_lv3(UNUSED const struct ChaosPatch *patch) {
+void chs_act_stars_decrease_lv3(void) {
     update_any_star(TRUE);
     update_any_star(TRUE);
     update_any_star(TRUE);
 }
-void chs_act_stars_decrease_guarantee(UNUSED const struct ChaosPatch *patch) {
+void chs_act_stars_decrease_guarantee(void) {
     remove_collected_star();
     remove_collected_star();
 }

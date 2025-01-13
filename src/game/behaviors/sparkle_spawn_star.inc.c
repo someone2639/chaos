@@ -25,9 +25,21 @@ void bhv_spawned_star_init(void) {
     }
 
     cur_obj_play_sound_2(SOUND_GENERAL2_STAR_APPEARS);
+
+    if (chs_pay2win_can_collect_star()) {
+        cur_obj_become_tangible();
+    } else {
+        cur_obj_become_intangible();
+    }
 }
 
 void set_sparkle_spawn_star_hitbox(void) {
+    if (chs_pay2win_can_collect_star()) {
+        cur_obj_become_tangible();
+    } else {
+        cur_obj_become_intangible();
+    }
+
     obj_set_hitbox(o, &sSparkleSpawnStarHitbox);
     if (o->oInteractStatus & INT_STATUS_INTERACTED) {
         mark_obj_for_deletion(o);

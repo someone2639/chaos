@@ -189,10 +189,6 @@ s32 act_start_sleeping(struct MarioState *m) {
     s32 animFrame = 0;
 #endif
 
-    if (check_common_idle_cancels(m)) {
-        return TRUE;
-    }
-
     if (m->quicksandDepth > 30.0f) {
         return set_mario_action(m, ACT_IN_QUICKSAND, 0);
     }
@@ -254,6 +250,14 @@ s32 act_start_sleeping(struct MarioState *m) {
         play_sound_if_no_flag(m, SOUND_MARIO_YAWNING, MARIO_MARIO_SOUND_PLAYED);
     }
 #endif
+
+    if(chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_SLEEP)) {
+        return FALSE;
+    }
+    
+    if (check_common_idle_cancels(m)) {
+        return TRUE;
+    }
 
     stationary_ground_step(m);
     return FALSE;
@@ -537,7 +541,11 @@ s32 act_crouching(struct MarioState *m) {
     }
 
     if (m->input & INPUT_A_PRESSED) {
-        return set_jumping_action(m, ACT_BACKFLIP, 0);
+        if (!chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_BACKFLIP)) {
+            return set_jumping_action(m, ACT_BACKFLIP, 0);
+        } else {
+            return set_jumping_action(m, ACT_JUMP, 0);
+        }
     }
 
     if (m->input & INPUT_OFF_FLOOR) {
@@ -561,7 +569,11 @@ s32 act_crouching(struct MarioState *m) {
     }
 
     if (m->input & INPUT_B_PRESSED) {
-        return set_mario_action(m, ACT_PUNCHING, 9);
+        if (!chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_BREAKDANCE)) {
+            return set_mario_action(m, ACT_PUNCHING, 9);
+        }
+
+        return set_mario_action(m, ACT_PUNCHING, 0);
     }
 
     stationary_ground_step(m);
@@ -706,7 +718,11 @@ s32 act_start_crouching(struct MarioState *m) {
     }
 
     if (m->input & INPUT_A_PRESSED) {
-        return set_jumping_action(m, ACT_BACKFLIP, 0);
+        if (!chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_BACKFLIP)) {
+            return set_jumping_action(m, ACT_BACKFLIP, 0);
+        } else {
+            return set_jumping_action(m, ACT_JUMP, 0);
+        }
     }
 
     if (m->input & INPUT_ABOVE_SLIDE) {
@@ -731,7 +747,11 @@ s32 act_stop_crouching(struct MarioState *m) {
     }
 
     if (m->input & INPUT_A_PRESSED) {
-        return set_jumping_action(m, ACT_BACKFLIP, 0);
+        if (!chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_BACKFLIP)) {
+            return set_jumping_action(m, ACT_BACKFLIP, 0);
+        } else {
+            return set_jumping_action(m, ACT_JUMP, 0);
+        }
     }
 
     if (m->input & INPUT_ABOVE_SLIDE) {
@@ -922,6 +942,9 @@ s32 act_backflip_land_stop(struct MarioState *m) {
     }
 
     if (check_common_landing_cancels(m, ACT_BACKFLIP)) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_BACKFLIP) && m->action == ACT_BACKFLIP) {
+            return set_mario_action(m, ACT_JUMP, 0);
+        }
         return TRUE;
     }
 
@@ -1052,6 +1075,11 @@ s32 act_ground_pound_land(struct MarioState *m) {
 
     if (m->input & INPUT_ABOVE_SLIDE) {
         return set_mario_action(m, ACT_BUTT_SLIDE, 0);
+    }
+
+    if (m->input & INPUT_A_PRESSED && chaos_check_if_patch_active(CHAOS_PATCH_GROUND_POUND_JUMP)) {
+        m->vel[1] = 70;
+        return set_mario_action(m, ACT_GROUND_POUND_JUMP, 0);
     }
 
     landing_step(m, MARIO_ANIM_GROUND_POUND_LANDING, ACT_BUTT_SLIDE_STOP);

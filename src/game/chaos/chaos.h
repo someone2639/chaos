@@ -40,6 +40,46 @@ enum ChaosPatchID {
     CHAOS_PATCH_GRAVITY_INCREASE_LV2,
     CHAOS_PATCH_GRAVITY_INCREASE_LV3,
 
+// Healing Blockers
+    CHAOS_PATCH_NOHEAL_HEARTS,
+    CHAOS_PATCH_NOHEAL_WATER,
+    CHAOS_PATCH_NOHEAL_COINS,
+
+// Coin Modifiers
+    CHAOS_PATCH_DOUBLE_COINS,
+    CHAOS_PATCH_100C_DECREASE_LV2,
+    CHAOS_PATCH_100C_DECREASE_LV3,
+    CHAOS_PATCH_PAY2WIN,
+    CHAOS_PATCH_6_RED_COINS,
+    CHAOS_PATCH_SONIC_SIMULATOR,
+
+// Random Griefing
+    CHAOS_PATCH_RANDOM_SLEEP,
+    CHAOS_PATCH_RANDOM_SHOCK,
+    CHAOS_PATCH_RANDOM_BURN,
+
+// Movement Modifiers
+    CHAOS_PATCH_LOSEMOVE_BREAKDANCE,
+    CHAOS_PATCH_LOSEMOVE_LEDGE_GRAB,
+    CHAOS_PATCH_LOSEMOVE_KICK,
+    CHAOS_PATCH_LOSEMOVE_SIDEFLIP,
+    CHAOS_PATCH_LOSEMOVE_LONG_JUMP,
+    CHAOS_PATCH_LOSEMOVE_BACKFLIP,
+    CHAOS_PATCH_LOSEMOVE_WALL_KICK,
+    CHAOS_PATCH_LOSEMOVE_DOUBLE_JUMP,
+    CHAOS_PATCH_BRAWL_TRIPPING,
+    CHAOS_PATCH_GALAXY_SPIN,
+    CHAOS_PATCH_GROUND_POUND_DIVE,
+    CHAOS_PATCH_GROUND_POUND_JUMP,
+
+// Object Spawners
+    CHAOS_PATCH_GREEN_DEMON,
+
+// Miscellaneous Modifiers
+    CHAOS_PATCH_MARIO_INVISIBLE,
+    CHAOS_PATCH_SIGNREAD_FAR,
+    CHAOS_PATCH_ONE_HIT_WONDER,
+
 // Patch Count
     CHAOS_PATCH_COUNT,
 };
@@ -53,9 +93,9 @@ enum ChaosPatchEffectType {
 };
 
 enum ChaosDifficulty {
-    CHAOS_DIFFICULTY_EASY   = -1, // Offsets negative patches such that top severities shouldn't ever show up
-    CHAOS_DIFFICULTY_NORMAL =  0, // Standard difficulty
-    CHAOS_DIFFICULTY_HARD   =  1, // Offsets positive patches such that top severities shouldn't ever show up
+    CHAOS_DIFFICULTY_EASY   =  0, // Offsets negative patches such that top severities shouldn't ever show up
+    CHAOS_DIFFICULTY_NORMAL =  1, // Standard difficulty
+    CHAOS_DIFFICULTY_HARD   =  2, // Offsets positive patches such that top severities shouldn't ever show up
 };
 
 enum ChaosPatchDurationType {
@@ -75,11 +115,12 @@ struct ChaosPatch {
     const u8 isStackable; // Can this patch be active more than once at a time?
     const u8 duration;    // Ignored for CHAOS_DURATION_ONCE and CHAOS_DURATION_INFINITE
 
-    u8   (*conditionalFunc  )(const struct ChaosPatch *); // Check specific scenarios for whether this patch type is allowed to show up (Optional)
-    void (*activatedInitFunc)(const struct ChaosPatch *); // Invoked the moment this patch takes effect (Optional)
-    void (*areaInitFunc     )(const struct ChaosPatch *); // Invoked once immediately after warping into a new level/area that isn't COURSE_NONE (Optional)
-    void (*frameUpdateFunc  )(const struct ChaosPatch *); // Invoked once at the start of each frame while active (Optional)
-    void (*deactivationFunc )(const struct ChaosPatch *); // Invoked once the patch is deactivated (Optional)
+    u8   (*conditionalFunc  )(void); // Check specific scenarios for whether this patch type is allowed to show up (Optional)
+    void (*activatedInitFunc)(void); // Invoked the moment this patch takes effect (Optional)
+    void (*levelInitFunc    )(void); // Invoked once immediately after warping into a new level that isn't COURSE_NONE (Optional)
+    void (*areaInitFunc     )(void); // Invoked once immediately after warping into a new level and/or area that isn't COURSE_NONE (Optional)
+    void (*frameUpdateFunc  )(void); // Invoked once at the start of each frame while active (Optional)
+    void (*deactivationFunc )(void); // Invoked once the patch is deactivated (Optional)
 
     const char *name;             // Display name for the patch
     const char *shortDescription; // Short description for the patch
@@ -110,11 +151,15 @@ struct ChaosActiveEntry {
 extern const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT];
 extern s32 *gChaosActiveEntryCount;
 extern struct ChaosActiveEntry *gChaosActiveEntries;
+extern u8 gChaosLevelWarped;
 extern enum ChaosDifficulty gChaosDifficulty;
 extern u8 gChaosLivesEnabled;
 
-// Check whether a particular patch is currently active. Optionally retrieve the active patch data.
-u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId, struct ChaosActiveEntry **firstFoundMatch);
+// Check whether a particular chaos patch is active. Overall cheaper operation than the function below this one.
+u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId);
+
+// Get patch data for an active patch (if active at all). Return TRUE if a match is found.
+u8 chaos_find_first_active_patch(const enum ChaosPatchID patchId, struct ChaosActiveEntry **firstFoundMatch);
 
 // Deactivate an old chaos patch, based on its current index.
 // Be careful when invoking this with stackable patches, as it may cause undesirable behavior if used incorrectly.

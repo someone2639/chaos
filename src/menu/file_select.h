@@ -20,7 +20,10 @@ enum MainMenuButtonStates {
     MENU_BUTTON_STATE_SHRINKING,
     MENU_BUTTON_STATE_ZOOM_IN_OUT,
     MENU_BUTTON_STATE_ZOOM_IN,
-    MENU_BUTTON_STATE_ZOOM_OUT
+    MENU_BUTTON_STATE_ZOOM_OUT,
+    MENU_BUTTON_STATE_NEW_GAME_ANIM,
+    MENU_BUTTON_STATE_NEW_GAME_CREATE,
+    MENU_BUTTON_STATE_RETURN_NEW_GAME_ANIM,
 };
 
 enum MenuButtonTypes {
@@ -143,6 +146,8 @@ Gfx *geo_file_select_strings_and_menu_cursor(s32 callContext, UNUSED struct Grap
 s32 lvl_init_menu_values_and_cursor_pos(UNUSED s32 arg, UNUSED s32 unused);
 s32 lvl_update_obj_and_load_file_selected(UNUSED s32 arg, UNUSED s32 unused);
 
+Gfx *geo_file_select_change_difficulty_color(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx);
+Gfx *geo_file_select_change_challenge_texture(s32 callContext, struct GraphNode *node, UNUSED Mat4 mtx);
 Gfx *geo_invert(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx);
 Gfx *geo_invert_off(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx);
 

@@ -15,20 +15,23 @@
 */
 
 #define USE_EXT_RAM
+
+// Starting address of RAM
+#define RAM_START   0x80000000
+// 1MB of RAM
+#define RAM_1MB     0x00100000
+#define USE_EXT_RAM
+// Calculate total amount of RAM
 #ifndef USE_EXT_RAM
-#define RAM_END          0x80400000
+#define TOTAL_RAM_SIZE  (RAM_1MB * 4)
 #else
-#define RAM_END          0x80800000
+#define TOTAL_RAM_SIZE  (RAM_1MB * 8)
 #endif
 
-/*
- * Workaround for running out of pool space due to
- * importing large custom content.
- */
+// Ending address of RAM
+#define RAM_END (RAM_START + TOTAL_RAM_SIZE)
 
 #define SEG_POOL_START   _framebuffersSegmentBssEnd // 0x0165000 in size
-#define SEG_GODDARD      SEG_POOL_START + 0x113000
-
 #define POOL_SIZE        RAM_END - SEG_POOL_START
 
 #endif // SEGMENTS_H
