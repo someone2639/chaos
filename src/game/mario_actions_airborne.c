@@ -499,6 +499,25 @@ s32 act_double_jump(struct MarioState *m) {
     return FALSE;
 }
 
+s32 act_ground_pound_jump(struct MarioState *m) {
+    s32 animation = (m->vel[1] >= 0.0f)
+        ? MARIO_ANIM_DOUBLE_JUMP_RISE
+        : MARIO_ANIM_DOUBLE_JUMP_FALL;
+
+    if (check_kick_or_dive_in_air(m)) {
+        return TRUE;
+    }
+
+    if(check_galaxy_spin(m)) {
+        return TRUE;
+    }
+
+    play_mario_sound(m, SOUND_ACTION_TERRAIN_JUMP, SOUND_MARIO_HOOHOO);
+    common_air_action_step(m, ACT_DOUBLE_JUMP_LAND, animation,
+                           AIR_STEP_CHECK_LEDGE_GRAB | AIR_STEP_CHECK_HANG);
+    return FALSE;
+}
+
 s32 act_triple_jump(struct MarioState *m) {
     if (gSpecialTripleJump) {
         return set_mario_action(m, ACT_SPECIAL_TRIPLE_JUMP, 0);
@@ -2223,6 +2242,7 @@ s32 mario_execute_airborne_action(struct MarioState *m) {
         case ACT_TOP_OF_POLE_JUMP:     cancel = act_top_of_pole_jump(m);     break;
         case ACT_VERTICAL_WIND:        cancel = act_vertical_wind(m);        break;
         case ACT_GALAXY_SPIN:          cancel = act_galaxy_spin(m);          break;
+        case ACT_GROUND_POUND_JUMP:    cancel = act_ground_pound_jump(m);    break;
     }
     /* clang-format on */
 

@@ -537,6 +537,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Do the Odyssey",
         .shortDescription  = "Press B while ground pounding to do a dive jump!",
     },
+    [CHAOS_PATCH_GROUND_POUND_JUMP] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 20,
+
+        .name              = "Bounce Back",
+        .shortDescription  = "Press A shortly after landing from a ground pound to do a bigger jump!",
+    },
 
 // Object Spawners
     [CHAOS_PATCH_GREEN_DEMON] = {

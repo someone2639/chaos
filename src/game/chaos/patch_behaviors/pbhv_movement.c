@@ -60,7 +60,9 @@ void chs_update_brawl_tripping(void) {
 
 void chs_update_galaxy_twirl(void) {
     if((gMarioState->action & ACT_GROUP_MASK) == ACT_GROUP_AIRBORNE) {
-        if(gMarioState->spinTimer++ <= 2);
+        if(gMarioState->spinTimer <= 2) {
+            gMarioState->spinTimer++;
+        }
     } else {
         gMarioState->spinTimer = 0;
         gMarioState->usedSpin = FALSE;
