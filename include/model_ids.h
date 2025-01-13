@@ -538,8 +538,8 @@
 #define MODEL_AMP                         0xC2        // dAmpGeo
 #define MODEL_BOBOMB_BUDDY                0xC3        // bobomb_buddy_geo
 // find me
-// find me
-// find me
+#define MODEL_SILVER_COIN                 0xC5        // silver_coin_geo
+#define MODEL_SILVER_COIN_NO_SHADOW       0xC6        // silver_coin_no_shadow_geo
 #define MODEL_SSL_TOX_BOX                 0xC7        // ssl_geo_000630
 #define MODEL_BOWSER_KEY_CUTSCENE         0xC8        // bowser_key_cutscene_geo
 #define MODEL_DL_CANNON_LID               0xC9        // cannon_closed_seg8_dl_080048E0

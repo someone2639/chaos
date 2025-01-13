@@ -1117,10 +1117,39 @@ s32 drop_and_set_mario_action(struct MarioState *m, u32 action, u32 actionArg) {
 }
 
 /**
+ * Hurt Mario
+ */
+void set_hurt_counter(struct MarioState *m, u8 additionalDamage) {
+    m->hurtCounter += additionalDamage;
+
+    if (m->hurtCounter == 0) {
+        return;
+    }
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) && gCurrCourseNum != COURSE_NONE) {
+        if (m->numCoins > 0 && m->marioObj) {
+            m->hurtCounter = 0;
+            s32 coins = MIN(m->numCoins, 32);
+
+            while (coins > 0) {
+                obj_spawn_loot_coins(m->marioObj, 1, 0, bhvBounceyCoinGetsSpawned, 20, MODEL_SILVER_COIN);
+                coins--;
+            }
+
+            m->numCoins = 0;
+            gHudDisplay.coins = m->numCoins;
+            play_sound(SOUND_MENU_SONIC_LOSE_RINGS, gGlobalSoundSource);
+        } else {
+            m->hurtCounter = 255;
+        }
+    }
+}
+
+/**
  * Increment Mario's hurt counter and set a new action.
  */
 s32 hurt_and_set_mario_action(struct MarioState *m, u32 action, u32 actionArg, s16 hurtCounter) {
-    m->hurtCounter = hurtCounter;
+    set_hurt_counter(m, hurtCounter);
 
     return set_mario_action(m, action, actionArg);
 }

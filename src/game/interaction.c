@@ -698,7 +698,7 @@ u32 take_damage_from_interact_object(struct MarioState *m) {
         damage = 0;
     }
 
-    m->hurtCounter += 4 * damage;
+    set_hurt_counter(m, 4 * damage);
 
 #if ENABLE_RUMBLE
     queue_rumble_data(5, 80);
@@ -751,7 +751,9 @@ u32 interact_coin(struct MarioState *m, UNUSED u32 interactType, struct Object *
     m->numCoins += coinCount;
 
     if (!chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_COINS)) {
-        m->healCounter += 4 * coinCount;
+        if (!(obj_has_behavior(o, bhvYellowCoin) && o->oDroppedCoinBounce)) {
+            m->healCounter += 4 * coinCount;
+        }
     }
 
     o->oInteractStatus = INT_STATUS_INTERACTED;
@@ -1201,6 +1203,9 @@ u32 interact_flame(struct MarioState *m, UNUSED u32 interactType, struct Object 
             m->marioObj->oMarioBurnTimer = 0;
             update_mario_sound_and_camera(m);
             play_sound(SOUND_MARIO_ON_FIRE, m->marioObj->header.gfx.cameraToObject);
+            if (chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) && gCurrCourseNum != COURSE_NONE) {
+                set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+            }
 
             if ((m->action & ACT_FLAG_AIR) && m->vel[1] <= 0.0f) {
                 burningAction = ACT_BURNING_FALL;
@@ -1864,7 +1869,7 @@ void check_death_barrier(struct MarioState *m) {
 void check_lava_boost(struct MarioState *m) {
     if (!(m->action & ACT_FLAG_RIDING_SHELL) && m->pos[1] < m->floorHeight + 10.0f) {
         if (!(m->flags & MARIO_METAL_CAP)) {
-            m->hurtCounter += (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18;
+            set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
         }
 
         update_mario_sound_and_camera(m);

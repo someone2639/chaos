@@ -50,7 +50,7 @@ s32 lava_boost_on_wall(struct MarioState *m) {
     }
 
     if (!(m->flags & MARIO_METAL_CAP)) {
-        m->hurtCounter += (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18;
+        set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
     }
 
     play_sound(SOUND_MARIO_ON_FIRE, m->marioObj->header.gfx.cameraToObject);
@@ -79,7 +79,7 @@ s32 check_fall_damage(struct MarioState *m, u32 hardFallAction) {
     if (m->action != ACT_TWIRLING && m->floor->type != SURFACE_BURNING) {
         if (m->vel[1] < (-55.0f * gravity)) {
             if (fallHeight > (3000.0f / gravity)) {
-                m->hurtCounter += (m->flags & MARIO_CAP_ON_HEAD) ? 16 : 24;
+                set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 16 : 24);
 #if ENABLE_RUMBLE
                 queue_rumble_data(5, 80);
 #endif
@@ -87,7 +87,7 @@ s32 check_fall_damage(struct MarioState *m, u32 hardFallAction) {
                 play_sound(SOUND_MARIO_ATTACKED, m->marioObj->header.gfx.cameraToObject);
                 return drop_and_set_mario_action(m, hardFallAction, 4);
             } else if (fallHeight > (1150.0f / gravity) && !mario_floor_is_slippery(m)) {
-                m->hurtCounter += (m->flags & MARIO_CAP_ON_HEAD) ? 8 : 12;
+                set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 8 : 12);
                 m->squishTimer = 30;
 #if ENABLE_RUMBLE
                 queue_rumble_data(5, 80);
@@ -999,8 +999,10 @@ s32 act_burning_jump(struct MarioState *m) {
     play_sound(SOUND_MOVING_LAVA_BURN, m->marioObj->header.gfx.cameraToObject);
 
     m->marioObj->oMarioBurnTimer += 3;
+    if (!chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) || gCurrCourseNum == COURSE_NONE) {
+        m->health -= 10;
+    }
 
-    m->health -= 10;
     if (m->health < 0x100) {
         m->health = 0xFF;
     }
@@ -1021,8 +1023,10 @@ s32 act_burning_fall(struct MarioState *m) {
     set_mario_animation(m, MARIO_ANIM_GENERAL_FALL);
     m->particleFlags |= PARTICLE_FIRE;
     m->marioObj->oMarioBurnTimer += 3;
+    if (!chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) || gCurrCourseNum == COURSE_NONE) {
+        m->health -= 10;
+    }
 
-    m->health -= 10;
     if (m->health < 0x100) {
         m->health = 0xFF;
     }
@@ -1535,7 +1539,7 @@ s32 act_lava_boost(struct MarioState *m) {
             if (m->floor->type == SURFACE_BURNING) {
                 m->actionState = 0;
                 if (!(m->flags & MARIO_METAL_CAP)) {
-                    m->hurtCounter += (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18;
+                    set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
                 }
                 m->vel[1] = 84.0f;
                 play_sound(SOUND_MARIO_ON_FIRE, m->marioObj->header.gfx.cameraToObject);

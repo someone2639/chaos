@@ -24,6 +24,13 @@ static const Vtx coin_seg3_vertex_03005740[] = {
     {{{   -35,     70,      0}, 0, {     0,      0}, {0xff, 0x00, 0x00, 0xff}}},
 };
 
+static const Vtx coin_seg3_vertex_silver[] = {
+    {{{   -32,      0,      0}, 0, {     0,   1984}, {0xcf, 0xcf, 0xcf, 0xff}}},
+    {{{    32,      0,      0}, 0, {  1984,   1984}, {0xcf, 0xcf, 0xcf, 0xff}}},
+    {{{    32,     64,      0}, 0, {  1984,      0}, {0xcf, 0xcf, 0xcf, 0xff}}},
+    {{{   -32,     64,      0}, 0, {     0,      0}, {0xcf, 0xcf, 0xcf, 0xff}}},
+};
+
 // 0x03005780
 ALIGNED8 static const Texture coin_seg3_texture_03005780[] = {
 #include "actors/coin/coin_front.ia16.inc.c"
@@ -172,5 +179,41 @@ const Gfx coin_seg3_dl_030079B8[] = {
     gsDPSetTextureImage(G_IM_FMT_IA, G_IM_SIZ_16b, 1, coin_seg3_texture_03006F80),
     gsSPDisplayList(coin_seg3_dl_03007780),
     gsSPVertex(coin_seg3_vertex_03005740, 4, 0),
+    gsSPBranchList(coin_seg3_dl_030077D0),
+};
+
+// 0x03007800 - 0x03007828
+const Gfx coin_seg3_dl_silver0[] = {
+    gsDPPipeSync(),
+    gsDPSetTextureImage(G_IM_FMT_IA, G_IM_SIZ_16b, 1, coin_seg3_texture_03005780),
+    gsSPDisplayList(coin_seg3_dl_03007780),
+    gsSPVertex(coin_seg3_vertex_silver, 4, 0),
+    gsSPBranchList(coin_seg3_dl_030077D0),
+};
+
+// 0x03007828 - 0x03007850
+const Gfx coin_seg3_dl_silver1[] = {
+    gsDPPipeSync(),
+    gsDPSetTextureImage(G_IM_FMT_IA, G_IM_SIZ_16b, 1, coin_seg3_texture_03005F80),
+    gsSPDisplayList(coin_seg3_dl_03007780),
+    gsSPVertex(coin_seg3_vertex_silver, 4, 0),
+    gsSPBranchList(coin_seg3_dl_030077D0),
+};
+
+// 0x03007850 - 0x03007878
+const Gfx coin_seg3_dl_silver2[] = {
+    gsDPPipeSync(),
+    gsDPSetTextureImage(G_IM_FMT_IA, G_IM_SIZ_16b, 1, coin_seg3_texture_03006780),
+    gsSPDisplayList(coin_seg3_dl_03007780),
+    gsSPVertex(coin_seg3_vertex_silver, 4, 0),
+    gsSPBranchList(coin_seg3_dl_030077D0),
+};
+
+// 0x03007878 - 0x030078A0
+const Gfx coin_seg3_dl_silver3[] = {
+    gsDPPipeSync(),
+    gsDPSetTextureImage(G_IM_FMT_IA, G_IM_SIZ_16b, 1, coin_seg3_texture_03006F80),
+    gsSPDisplayList(coin_seg3_dl_03007780),
+    gsSPVertex(coin_seg3_vertex_silver, 4, 0),
     gsSPBranchList(coin_seg3_dl_030077D0),
 };

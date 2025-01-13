@@ -1,10 +1,11 @@
 #include <PR/ultratypes.h>
 #include <PR/gbi.h>
 #include "types.h"
-#include "game/mario.h"
+#include "course_table.h"
 #include "sm64.h"
+#include "game/area.h"
 #include "game/level_update.h"
-#include "game/print.h"
+#include "game/mario.h"
 
 #include "game/chaos/chaos.h"
 
@@ -75,7 +76,7 @@ void chs_act_random_burn(void) {
 }
 
 void chs_update_random_burn(void) {
-    if(sRandomBurnTimer == 0) {
+    if (sRandomBurnTimer == 0) {
         sRandomBurnTimer = -1;
     } else if (sRandomBurnTimer == -1) {
         s32 actGroup = (gMarioState->action & ACT_GROUP_MASK);
@@ -84,6 +85,9 @@ void chs_update_random_burn(void) {
             u32 burningAction = ACT_BURNING_JUMP;
 
             play_mario_sound(gMarioState, SOUND_MARIO_ON_FIRE, 0);
+            if (chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) && gCurrCourseNum != COURSE_NONE) {
+                set_hurt_counter(gMarioState, (gMarioState->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+            }
 
             if ((gMarioState->action & ACT_FLAG_AIR) && gMarioState->vel[1] <= 0.0f) {
                 burningAction = ACT_BURNING_FALL;

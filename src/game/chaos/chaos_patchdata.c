@@ -370,6 +370,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Ready for Redsies",
         .shortDescription  = "Red coin stars only require 6 red coins.",
     },
+    [CHAOS_PATCH_SONIC_SIMULATOR] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .name              = "Sonic Simulator",
+        .shortDescription  = "Coins represent Mario's health. Just like in Sonic, Mario will drop all of his coins upon taking damage.",
+    },
 
 // Random Griefing
     [CHAOS_PATCH_RANDOM_SLEEP] = {
