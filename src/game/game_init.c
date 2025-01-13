@@ -592,6 +592,10 @@ void adjust_analog_stick(struct Controller *controller) {
         controller->stickY *= 64 / controller->stickMag;
         controller->stickMag = 64;
     }
+
+    if (isGameFlipped) {
+        controller->stickX *= -1;
+    }
 }
 
 /**
