@@ -1811,14 +1811,7 @@ const GeoLayout mario_geo[] = {
    GEO_OPEN_NODE(),
       GEO_SCALE(0x00, 16384),
       GEO_OPEN_NODE(),
-<<<<<<< HEAD
-         GEO_ASM(0, geo_mirror_mario_backface_culling),
-         GEO_ASM(0, geo_mirror_mario_set_alpha),
-         GEO_ASM(0, geo_flip_mario),
-         GEO_SWITCH_CASE(0, geo_switch_mario_stand_run),
-=======
          GEO_SWITCH_CASE(0, geo_switch_chaos_mario_invisible),
->>>>>>> 39fdd1814d2e6ecfd8b108cc3551fa4440bf296d
          GEO_OPEN_NODE(),
             GEO_NODE_START(),
             GEO_OPEN_NODE(),
@@ -1865,11 +1858,6 @@ const GeoLayout mario_geo[] = {
                GEO_ASM(1, geo_mirror_mario_backface_culling),
             GEO_CLOSE_NODE(),
          GEO_CLOSE_NODE(),
-<<<<<<< HEAD
-         GEO_ASM(1, geo_mirror_mario_backface_culling),
-         GEO_ASM(0, geo_unflip_mario),
-=======
->>>>>>> 39fdd1814d2e6ecfd8b108cc3551fa4440bf296d
       GEO_CLOSE_NODE(),
    GEO_CLOSE_NODE(),
    GEO_END(),
