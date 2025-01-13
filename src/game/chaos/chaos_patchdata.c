@@ -506,6 +506,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Potion of Invisibility",
         .shortDescription  = "Mario is now invisible. His shadow is the only visible part of him that remains.",
     },
+    [CHAOS_PATCH_SIGNREAD_FAR] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .name              = "Tutorial Mode",
+        .shortDescription  = "New to SM64? We'll make extra sure you don't miss any dialogs by increasing their range!",
+    },
 
 // Object Spawners
     [CHAOS_PATCH_GREEN_DEMON] = {
