@@ -360,6 +360,17 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Pay To Win",
         .shortDescription  = "Stars are only collectible when Mario has at least 40 coins.",
     },
+    [CHAOS_PATCH_6_RED_COINS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .name              = "Ready for Redsies",
+        .shortDescription  = "Red coin stars only require 6 red coins.",
+    },
+
 // Random Griefing
     [CHAOS_PATCH_RANDOM_SLEEP] = {
         .durationType       = CHAOS_DURATION_STARS,
@@ -514,7 +525,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration          = 15,
 
         .name              = "Tutorial Mode",
-        .shortDescription  = "New to SM64? We'll make extra sure you don't miss any dialogs by increasing their range!",
+        .shortDescription  = "New to SM64? We'll make extra sure you don't miss any tutorial signs by increasing their range!",
     },
 
 // Object Spawners
@@ -528,6 +539,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .areaInitFunc      = chs_area_init_green_demon,
 
         .name              = "Green Demon",
-        .shortDescription  = "Of course this one's in the game. Spawns a poison 1-UP mushroom that chases Mario.",
+        .shortDescription  = "Of course this one's in the game. Spawn a poison 1-UP mushroom that chases Mario.",
     },
 };
