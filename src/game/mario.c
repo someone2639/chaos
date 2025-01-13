@@ -1126,6 +1126,10 @@ void set_hurt_counter(struct MarioState *m, u8 additionalDamage) {
         return;
     }
 
+    if (chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER)) {
+        m->hurtCounter = 255;
+    }
+
     if (chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) && gCurrCourseNum != COURSE_NONE) {
         if (m->numCoins > 0 && m->marioObj) {
             // For insta-kill patches (which shouldn't be using 32 to begin with due to health modifiers)

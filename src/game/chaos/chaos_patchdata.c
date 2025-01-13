@@ -516,6 +516,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription  = "Mario trips randomly sometimes.",
     },
 
+// Object Spawners
+    [CHAOS_PATCH_GREEN_DEMON] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 3,
+
+        .areaInitFunc      = chs_area_init_green_demon,
+
+        .name              = "Green Demon",
+        .shortDescription  = "Of course this one's in the game. Spawn a poison 1-UP mushroom that chases Mario.",
+    },
+
 // Miscellaneous Modifiers
     [CHAOS_PATCH_MARIO_INVISIBLE] = {
         .durationType      = CHAOS_DURATION_STARS,
@@ -537,18 +551,14 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Tutorial Mode",
         .shortDescription  = "New to SM64? We'll make extra sure you don't miss any tutorial signs by increasing their range!",
     },
-
-// Object Spawners
-    [CHAOS_PATCH_GREEN_DEMON] = {
+    [CHAOS_PATCH_ONE_HIT_WONDER] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
         .duration          = 6,
 
-        .areaInitFunc      = chs_area_init_green_demon,
-
-        .name              = "Green Demon",
-        .shortDescription  = "Of course this one's in the game. Spawn a poison 1-UP mushroom that chases Mario.",
+        .name              = "One-Hit Wonder",
+        .shortDescription  = "Mario will die instantly upon taking any form of damage (other than from swimming or poison).",
     },
 };

@@ -69,12 +69,13 @@ enum ChaosPatchID {
     CHAOS_PATCH_LOSEMOVE_DOUBLE_JUMP,
     CHAOS_PATCH_BRAWL_TRIPPING,
 
+// Object Spawners
+    CHAOS_PATCH_GREEN_DEMON,
+
 // Miscellaneous Modifiers
     CHAOS_PATCH_MARIO_INVISIBLE,
     CHAOS_PATCH_SIGNREAD_FAR,
-
-// Object Spawners
-    CHAOS_PATCH_GREEN_DEMON,
+    CHAOS_PATCH_ONE_HIT_WONDER,
 
 // Patch Count
     CHAOS_PATCH_COUNT,

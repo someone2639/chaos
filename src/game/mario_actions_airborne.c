@@ -1002,6 +1002,9 @@ s32 act_burning_jump(struct MarioState *m) {
     if (!chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) || gCurrCourseNum == COURSE_NONE) {
         m->health -= 10;
     }
+    if (chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER)) {
+        m->hurtCounter = 255;
+    }
 
     if (m->health < 0x100) {
         m->health = 0xFF;
@@ -1025,6 +1028,9 @@ s32 act_burning_fall(struct MarioState *m) {
     m->marioObj->oMarioBurnTimer += 3;
     if (!chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) || gCurrCourseNum == COURSE_NONE) {
         m->health -= 10;
+    }
+    if (chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER)) {
+        m->hurtCounter = 255;
     }
 
     if (m->health < 0x100) {

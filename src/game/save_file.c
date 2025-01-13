@@ -332,8 +332,8 @@ static void calculate_unique_save_magic(void) {
         checksum += (u16) INTERNAL_ROM_NAME[i] << (i & 0x07);
     }
 
-    MENU_DATA_MAGIC += checksum;
-    SAVE_FILE_MAGIC += checksum;
+    MENU_DATA_MAGIC += (checksum + CHAOS_PATCH_COUNT);
+    SAVE_FILE_MAGIC += (checksum + CHAOS_PATCH_COUNT);
 
     computed = TRUE;
 }
