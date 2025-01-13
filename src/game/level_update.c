@@ -458,9 +458,9 @@ void init_mario_after_warp(void) {
 
         if (sWarpDest.levelNum == LEVEL_CASTLE && sWarpDest.areaIdx == 1
 #ifndef VERSION_JP
-            && (sWarpDest.nodeId == 31 || sWarpDest.nodeId == 32)
+            && (sWarpDest.nodeId == 0x1F || sWarpDest.nodeId == 0x20 || sWarpDest.nodeId == 0x29)
 #else
-            && sWarpDest.nodeId == 31
+            && sWarpDest.nodeId == 0x1F
 #endif
         ) {
             play_sound(SOUND_MENU_MARIO_CASTLE_WARP, gGlobalSoundSource);
@@ -468,8 +468,8 @@ void init_mario_after_warp(void) {
 
 #ifndef VERSION_JP
         if (sWarpDest.levelNum == LEVEL_CASTLE_GROUNDS && sWarpDest.areaIdx == 1
-            && (sWarpDest.nodeId == 7 || sWarpDest.nodeId == 10 || sWarpDest.nodeId == 20
-                || sWarpDest.nodeId == 30)) {
+            && (sWarpDest.nodeId == 0x07 || sWarpDest.nodeId == 0x10 || sWarpDest.nodeId == 0x14
+                || sWarpDest.nodeId == 0x1E)) {
             play_sound(SOUND_MENU_MARIO_CASTLE_WARP, gGlobalSoundSource);
         }
 #endif
@@ -854,8 +854,6 @@ void initiate_delayed_warp(void) {
         } else {
             switch (sDelayedWarpOp) {
                 case WARP_OP_GAME_OVER:
-                    save_file_erase(gCurrSaveFileNum - 1);
-                    save_file_load_all();
                     warp_special(-3);
                     break;
 
@@ -1047,9 +1045,18 @@ s32 play_mode_paused(void) {
         if (gDebugLevelSelect) {
             fade_into_special_warp(-9, 1);
         } else {
-            initiate_warp(LEVEL_CASTLE, 1, 0x1F, 0);
-            fade_into_special_warp(0, 0);
             gSavedCourseNum = COURSE_NONE;
+            if (gChaosLivesEnabled) {
+                if (gMarioState->numLives > 0) {
+                    initiate_warp(LEVEL_CASTLE, 1, 0x29, 0);
+                    fade_into_special_warp(0, 0);
+                } else {
+                    fade_into_special_warp(-3, 0);
+                }
+            } else {
+                initiate_warp(LEVEL_CASTLE, 1, 0x1F, 0);
+                fade_into_special_warp(0, 0);
+            }
         }
 
         gCameraMovementFlags &= ~CAM_MOVE_PAUSE_SCREEN;
@@ -1081,7 +1088,7 @@ s32 play_mode_select_patch(void) {
     if(gPatchSelectionMenu->menu.menuState != PATCH_SELECT_STATE_CLOSED) {
         if (!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_ACTIVE)) {
             chaos_decrement_star_timers();
-            load_new_patches();
+            load_new_patches(4);
             gPatchSelectionMenu->menu.flags |= PATCH_SELECT_FLAG_ACTIVE;
         }
         update_patch_selection_menu();
@@ -1139,6 +1146,7 @@ s32 play_mode_change_level(void) {
         gHudDisplay.flags = HUD_DISPLAY_NONE;
         sTransitionTimer = 0;
         sTransitionUpdate = NULL;
+        gChaosLevelWarped = TRUE;
 
         if (sWarpDest.type != WARP_TYPE_NOT_WARPING) {
             return sWarpDest.levelNum;

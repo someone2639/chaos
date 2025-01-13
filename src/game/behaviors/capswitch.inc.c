@@ -41,14 +41,13 @@ void cap_switch_act_2(void) {
 #endif
         }
     } else {
-        //! Neither of these flags are defined in this function so they do nothing.
-        //  On an extra note, there's a specific check for this cutscene and 
-        //  there's no dialog defined since the cutscene itself calls the dialog.
-        s32 dialogResponse = cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_FRONT, 
-            (DIALOG_FLAG_TEXT_RESPONSE | DIALOG_FLAG_UNK_CAPSWITCH), CUTSCENE_CAP_SWITCH_PRESS, 0);
-        if (dialogResponse) {
-            o->oAction = 3;
+        if (gChaosLivesEnabled) {
+            play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
+            gMarioState->numLives++;
+            // Do not save here, handle that later after spplying new patch!
         }
+        set_play_mode(PLAY_MODE_SELECT_PATCH);
+        o->oAction = 3;
     }
 }
 

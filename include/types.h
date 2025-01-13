@@ -27,6 +27,7 @@ struct Config {
 #ifdef WIDE
     s16 widescreen;
 #endif
+    u8 disableBGMusic;
     u8 tvType;
 };
 
@@ -323,6 +324,9 @@ struct MarioState {
 
     // CUSTOM
     /*0xC8*/ f32 gravity;
+    /*0xCC*/ s8 hundredCoinOffset;
+             u8 usedSpin;
+             u8 spinTimer;
 };
 
 #endif // TYPES_H

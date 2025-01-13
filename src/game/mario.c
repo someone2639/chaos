@@ -1036,15 +1036,27 @@ s32 set_jump_from_landing(struct MarioState *m) {
         } else {
             switch (m->prevAction) {
                 case ACT_JUMP_LAND:
-                    set_mario_action(m, ACT_DOUBLE_JUMP, 0);
+                    if (chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_DOUBLE_JUMP)) {
+                        set_mario_action(m, ACT_JUMP, 0);
+                    } else {
+                        set_mario_action(m, ACT_DOUBLE_JUMP, 0);
+                    }
                     break;
 
                 case ACT_FREEFALL_LAND:
-                    set_mario_action(m, ACT_DOUBLE_JUMP, 0);
+                    if (chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_DOUBLE_JUMP)) {
+                        set_mario_action(m, ACT_JUMP, 0);
+                    } else {
+                        set_mario_action(m, ACT_DOUBLE_JUMP, 0);
+                    }
                     break;
 
                 case ACT_SIDE_FLIP_LAND_STOP:
-                    set_mario_action(m, ACT_DOUBLE_JUMP, 0);
+                    if (chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_DOUBLE_JUMP)) {
+                        set_mario_action(m, ACT_JUMP, 0);
+                    } else {
+                        set_mario_action(m, ACT_DOUBLE_JUMP, 0);
+                    }
                     break;
 
                 case ACT_DOUBLE_JUMP_LAND:
@@ -1106,10 +1118,46 @@ s32 drop_and_set_mario_action(struct MarioState *m, u32 action, u32 actionArg) {
 }
 
 /**
+ * Hurt Mario
+ */
+void set_hurt_counter(struct MarioState *m, u8 additionalDamage) {
+    m->hurtCounter += additionalDamage;
+
+    if (m->hurtCounter == 0) {
+        return;
+    }
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER)) {
+        m->hurtCounter = 255;
+    }
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) && gCurrCourseNum != COURSE_NONE) {
+        if (m->numCoins > 0 && m->marioObj) {
+            // For insta-kill patches (which shouldn't be using 32 to begin with due to health modifiers)
+            if (m->hurtCounter < (8 * 4)) {
+                m->hurtCounter = 0;
+            }
+            s32 coins = MIN(m->numCoins, 32);
+
+            while (coins > 0) {
+                obj_spawn_loot_coins(m->marioObj, 1, 0, bhvBounceyCoinGetsSpawned, 20, MODEL_YELLOW_COIN);
+                coins--;
+            }
+
+            m->numCoins = 0;
+            gHudDisplay.coins = m->numCoins;
+            play_sound(SOUND_MENU_SONIC_LOSE_RINGS, gGlobalSoundSource);
+        } else {
+            m->hurtCounter = 255;
+        }
+    }
+}
+
+/**
  * Increment Mario's hurt counter and set a new action.
  */
 s32 hurt_and_set_mario_action(struct MarioState *m, u32 action, u32 actionArg, s16 hurtCounter) {
-    m->hurtCounter = hurtCounter;
+    set_hurt_counter(m, hurtCounter);
 
     return set_mario_action(m, action, actionArg);
 }
@@ -1473,7 +1521,9 @@ void update_mario_health(struct MarioState *m) {
                     // when in snow terrains lose 3 health.
                     // If using the debug level select, do not lose any HP to water.
                     if ((m->pos[1] >= (m->waterLevel - 140)) && !terrainIsSnow) {
-                        m->health += 0x1A;
+                        if (!(chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_WATER))) {
+                            m->health += 0x1A;
+                        }
                     } else if (!gDebugLevelSelect) {
                         m->health -= (terrainIsSnow ? 3 : 1);
                     }
@@ -1895,11 +1945,7 @@ void init_mario_from_save_file(void) {
         save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
     gMarioState->numKeys = 0;
 
-    if (save_file_exists(gCurrSaveFileNum - 1)) {
-        gMarioState->numLives = save_file_get_life_count(gCurrSaveFileNum - 1);
-    } else {
-        gMarioState->numLives = 4;
-    }
+    gMarioState->numLives = save_file_get_life_count(gCurrSaveFileNum - 1);
     gMarioState->health = 0x880;
 
     gMarioState->prevNumStarsForDialog = gMarioState->numStars;
@@ -1909,4 +1955,5 @@ void init_mario_from_save_file(void) {
     gHudDisplay.wedges = 8;
 
     gMarioState->gravity = 1.0f;
+    gMarioState->hundredCoinOffset = 0;
 }

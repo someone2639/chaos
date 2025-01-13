@@ -49,6 +49,11 @@ void bhv_red_coin_init(void) {
  * the orange number counter.
  */
 void bhv_red_coin_loop(void) {
+    s32 coinRequirement = 8;
+    if (chaos_check_if_patch_active(CHAOS_PATCH_6_RED_COINS)) {
+        coinRequirement = 6;
+    }
+
     // If Mario interacted with the object...
     if (o->oInteractStatus & INT_STATUS_INTERACTED) {
         // ...and there is a red coin star in the level...
@@ -61,7 +66,7 @@ void bhv_red_coin_loop(void) {
             create_sound_spawner(SOUND_GENERAL_RED_COIN);
 #endif
             // Spawn the orange number counter, as long as it isn't the last coin.
-            if (o->parentObj->oHiddenStarTriggerCounter != 8) {
+            if (o->parentObj->oHiddenStarTriggerCounter != coinRequirement) {
                 spawn_orange_number(o->parentObj->oHiddenStarTriggerCounter, 0, 0, 0);
             }
 

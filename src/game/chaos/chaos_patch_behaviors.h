@@ -7,50 +7,75 @@
 #include "chaos.h"
 
 // Lives Modifiers
-u8 chs_cond_lives_increase_lv1(const struct ChaosPatch *patch);
-u8 chs_cond_lives_increase_lv2(const struct ChaosPatch *patch);
-u8 chs_cond_lives_increase_lv3(const struct ChaosPatch *patch);
-u8 chs_cond_lives_decrease_lv1(const struct ChaosPatch *patch);
-u8 chs_cond_lives_decrease_lv2(const struct ChaosPatch *patch);
-u8 chs_cond_lives_decrease_lv3(const struct ChaosPatch *patch);
-void chs_act_lives_increase_lv1(const struct ChaosPatch *patch);
-void chs_act_lives_increase_lv2(const struct ChaosPatch *patch);
-void chs_act_lives_increase_lv3(const struct ChaosPatch *patch);
-void chs_act_lives_decrease_lv1(const struct ChaosPatch *patch);
-void chs_act_lives_decrease_lv2(const struct ChaosPatch *patch);
-void chs_act_lives_decrease_lv3(const struct ChaosPatch *patch);
+u8 chs_cond_lives_increase_lv1(void);
+u8 chs_cond_lives_increase_lv2(void);
+u8 chs_cond_lives_increase_lv3(void);
+u8 chs_cond_lives_decrease_lv1(void);
+u8 chs_cond_lives_decrease_lv2(void);
+u8 chs_cond_lives_decrease_lv3(void);
+void chs_act_lives_increase_lv1(void);
+void chs_act_lives_increase_lv2(void);
+void chs_act_lives_increase_lv3(void);
+void chs_act_lives_decrease_lv1(void);
+void chs_act_lives_decrease_lv2(void);
+void chs_act_lives_decrease_lv3(void);
 
 // Star Modifiers
-u8 chs_cond_stars_increase_guarantee(UNUSED const struct ChaosPatch *patch);
-u8 chs_cond_stars_decrease_guarantee(UNUSED const struct ChaosPatch *patch);
-void chs_act_stars_increase_lv2(const struct ChaosPatch *patch);
-void chs_act_stars_increase_lv3(const struct ChaosPatch *patch);
-void chs_act_stars_increase_guarantee(const struct ChaosPatch *patch);
-void chs_act_stars_decrease_lv2(const struct ChaosPatch *patch);
-void chs_act_stars_decrease_lv3(const struct ChaosPatch *patch);
-void chs_act_stars_decrease_guarantee(const struct ChaosPatch *patch);
+u8 chs_cond_stars_increase_guarantee(void);
+u8 chs_cond_stars_decrease_guarantee(void);
+void chs_act_stars_increase_lv2(void);
+void chs_act_stars_increase_lv3(void);
+void chs_act_stars_increase_guarantee(void);
+void chs_act_stars_decrease_lv2(void);
+void chs_act_stars_decrease_lv3(void);
+void chs_act_stars_decrease_guarantee(void);
 
 // Gravity Modifiers
-u8 chs_cond_gravity_decrease_lv1(const struct ChaosPatch *patch);
-u8 chs_cond_gravity_decrease_lv2(const struct ChaosPatch *patch);
-u8 chs_cond_gravity_decrease_lv3(const struct ChaosPatch *patch);
-u8 chs_cond_gravity_increase_lv1(const struct ChaosPatch *patch);
-u8 chs_cond_gravity_increase_lv2(const struct ChaosPatch *patch);
-u8 chs_cond_gravity_increase_lv3(const struct ChaosPatch *patch);
-void chs_act_gravity_decrease_lv1(const struct ChaosPatch *patch);
-void chs_act_gravity_decrease_lv2(const struct ChaosPatch *patch);
-void chs_act_gravity_decrease_lv3(const struct ChaosPatch *patch);
-void chs_act_gravity_increase_lv1(const struct ChaosPatch *patch);
-void chs_act_gravity_increase_lv2(const struct ChaosPatch *patch);
-void chs_act_gravity_increase_lv3(const struct ChaosPatch *patch);
-void chs_deact_gravity_decrease_lv1(const struct ChaosPatch *patch);
-void chs_deact_gravity_decrease_lv2(const struct ChaosPatch *patch);
-void chs_deact_gravity_decrease_lv3(const struct ChaosPatch *patch);
-void chs_deact_gravity_increase_lv1(const struct ChaosPatch *patch);
-void chs_deact_gravity_increase_lv2(const struct ChaosPatch *patch);
-void chs_deact_gravity_increase_lv3(const struct ChaosPatch *patch);
+u8 chs_cond_gravity_decrease_lv1(void);
+u8 chs_cond_gravity_decrease_lv2(void);
+u8 chs_cond_gravity_decrease_lv3(void);
+u8 chs_cond_gravity_increase_lv1(void);
+u8 chs_cond_gravity_increase_lv2(void);
+u8 chs_cond_gravity_increase_lv3(void);
+void chs_act_gravity_decrease_lv1(void);
+void chs_act_gravity_decrease_lv2(void);
+void chs_act_gravity_decrease_lv3(void);
+void chs_act_gravity_increase_lv1(void);
+void chs_act_gravity_increase_lv2(void);
+void chs_act_gravity_increase_lv3(void);
+void chs_deact_gravity_decrease_lv1(void);
+void chs_deact_gravity_decrease_lv2(void);
+void chs_deact_gravity_decrease_lv3(void);
+void chs_deact_gravity_increase_lv1(void);
+void chs_deact_gravity_increase_lv2(void);
+void chs_deact_gravity_increase_lv3(void);
 
-/* GFX Modifiers */
-u8 chs_mq_check(const struct ChaosPatch *patch);
-void chs_mq_init(const struct ChaosPatch *patch);
-void chs_mq_deinit(const struct ChaosPatch *patch);
+// Coin Modifiers
+u8 chs_double_coins_under_30s(void); // Check whether double coins should remain in effect
+void chs_lvlinit_double_coins(void);
+u8 chs_cond_100c_decrease_lv2(void);
+u8 chs_cond_100c_decrease_lv3(void);
+void chs_act_100c_decrease_lv2(void);
+void chs_act_100c_decrease_lv3(void);
+void chs_deact_100c_decrease_lv2(void);
+void chs_deact_100c_decrease_lv3(void);
+u8 chs_pay2win_can_collect_star(void);
+
+// Movement Modifiers
+void chs_update_brawl_tripping(void);
+void chs_update_galaxy_twirl(void);
+
+// Random Griefing
+void chs_act_random_sleep(void);
+void chs_update_random_sleep(void);
+void chs_act_random_shock(void);
+void chs_update_random_shock(void);
+void chs_act_random_burn(void);
+void chs_update_random_burn(void);
+
+// Object Spawners
+void chs_area_init_green_demon(void);
+
+u8 chs_mq_check(void);
+void chs_mq_init(void);
+void chs_mq_deinit(void);

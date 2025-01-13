@@ -10,15 +10,15 @@
 
 extern u32 flipstate;
 
-u8 chs_mq_check(UNUSED const struct ChaosPatch *patch) {
+u8 chs_mq_check(void) {
     return TRUE;
 }
 
-void chs_mq_init(UNUSED const struct ChaosPatch *patch) {
+void chs_mq_init(void) {
     flipstate = 0;
 }
 
-void chs_mq_deinit(UNUSED const struct ChaosPatch *patch) {
+void chs_mq_deinit(void) {
     flipstate = 0;
 }
 

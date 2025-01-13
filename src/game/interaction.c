@@ -45,6 +45,7 @@
     (INT_GROUND_POUND_OR_TWIRL | INT_PUNCH | INT_KICK | INT_TRIP | INT_HIT_FROM_BELOW)
 
 u8 sDelayInvincTimer;
+s32 gShouldGive1UP = FALSE;
 s16 sInvulnerable;
 u32 interact_coin(struct MarioState *, u32, struct Object *);
 u32 interact_water_ring(struct MarioState *, u32, struct Object *);
@@ -697,7 +698,7 @@ u32 take_damage_from_interact_object(struct MarioState *m) {
         damage = 0;
     }
 
-    m->hurtCounter += 4 * damage;
+    set_hurt_counter(m, 4 * damage);
 
 #if ENABLE_RUMBLE
     queue_rumble_data(5, 80);
@@ -741,13 +742,24 @@ void reset_mario_pitch(struct MarioState *m) {
 }
 
 u32 interact_coin(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
-    m->numCoins += o->oDamageOrCoinValue;
-    m->healCounter += 4 * o->oDamageOrCoinValue;
+    s32 coinCount = o->oDamageOrCoinValue;
+
+    if (chs_double_coins_under_30s()) {
+        coinCount *= 2;
+    }
+
+    m->numCoins += coinCount;
+
+    if (!chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_COINS)) {
+        if (!(obj_has_behavior(o, bhvYellowCoin) && o->oDroppedCoinBounce)) {
+            m->healCounter += 4 * coinCount;
+        }
+    }
 
     o->oInteractStatus = INT_STATUS_INTERACTED;
 
-    if (COURSE_IS_MAIN_COURSE(gCurrCourseNum) && m->numCoins - o->oDamageOrCoinValue < 100
-        && m->numCoins >= 100) {
+    if (COURSE_IS_MAIN_COURSE(gCurrCourseNum) && m->numCoins - coinCount < (100 + m->hundredCoinOffset)
+        && m->numCoins >= (100 + m->hundredCoinOffset)) {
         bhv_spawn_star_no_level_exit(6);
     }
 #if ENABLE_RUMBLE
@@ -770,6 +782,9 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
     u32 starGrabAction = ACT_STAR_DANCE_EXIT;
     u32 noExit = (o->oInteractionSubtype & INT_SUBTYPE_NO_EXIT) != 0;
     u32 grandStar = (o->oInteractionSubtype & INT_SUBTYPE_GRAND_STAR) != 0;
+    s32 previousStarCount;
+    u32 previousSaveFlags;
+    u32 newSaveFlags;
 
     if (m->health >= 0x100) {
         mario_stop_riding_and_holding(m);
@@ -807,11 +822,18 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
         m->interactObj = o;
         m->usedObj = o;
 
+        previousStarCount = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
+        previousSaveFlags = save_file_get_flags();
         starIndex = (o->oBehParams >> 24) & 0x1F;
         save_file_collect_star_or_key(m->numCoins, starIndex);
+        m->numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
+        newSaveFlags = save_file_get_flags();
 
-        m->numStars =
-            save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
+        if (gChaosLivesEnabled && (m->numStars > previousStarCount || (newSaveFlags & ~previousSaveFlags))) {
+            gShouldGive1UP = TRUE;
+        } else {
+            gShouldGive1UP = FALSE;
+        }
 
         if (!noExit) {
             drop_queued_background_music();
@@ -1181,6 +1203,9 @@ u32 interact_flame(struct MarioState *m, UNUSED u32 interactType, struct Object 
             m->marioObj->oMarioBurnTimer = 0;
             update_mario_sound_and_camera(m);
             play_sound(SOUND_MARIO_ON_FIRE, m->marioObj->header.gfx.cameraToObject);
+            if (chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) && gCurrCourseNum != COURSE_NONE) {
+                set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+            }
 
             if ((m->action & ACT_FLAG_AIR) && m->vel[1] <= 0.0f) {
                 burningAction = ACT_BURNING_FALL;
@@ -1709,9 +1734,18 @@ u32 mario_can_talk(struct MarioState *m, u32 arg) {
 #endif
 
 u32 check_read_sign(struct MarioState *m, struct Object *o) {
-    if ((m->input & READ_MASK) && mario_can_talk(m, 0) && object_facing_mario(m, o, SIGN_RANGE)) {
+    u32 chaosActive = chaos_check_if_patch_active(CHAOS_PATCH_SIGNREAD_FAR);
+    u32 conditions;
+
+    if (chaosActive) {
+        conditions = TRUE;
+    } else {
+        conditions = (mario_can_talk(m, chaosActive) && object_facing_mario(m, o, SIGN_RANGE));
+    }
+
+    if ((m->input & READ_MASK) && conditions) {
         s16 facingDYaw = (s16)(o->oMoveAngleYaw + 0x8000) - m->faceAngle[1];
-        if (facingDYaw >= -SIGN_RANGE && facingDYaw <= SIGN_RANGE) {
+        if (chaosActive || (facingDYaw >= -SIGN_RANGE && facingDYaw <= SIGN_RANGE)) {
             f32 targetX = o->oPosX + 105.0f * sins(o->oMoveAngleYaw);
             f32 targetZ = o->oPosZ + 105.0f * coss(o->oMoveAngleYaw);
 
@@ -1729,7 +1763,7 @@ u32 check_read_sign(struct MarioState *m, struct Object *o) {
 }
 
 u32 check_npc_talk(struct MarioState *m, struct Object *o) {
-    if ((m->input & READ_MASK) && mario_can_talk(m, 1)) {
+    if ((m->input & READ_MASK) && mario_can_talk(m, TRUE)) {
         s16 facingDYaw = mario_obj_angle_to_object(m, o) - m->faceAngle[1];
         if (facingDYaw >= -0x4000 && facingDYaw <= 0x4000) {
             o->oInteractStatus = INT_STATUS_INTERACTED;
@@ -1835,7 +1869,7 @@ void check_death_barrier(struct MarioState *m) {
 void check_lava_boost(struct MarioState *m) {
     if (!(m->action & ACT_FLAG_RIDING_SHELL) && m->pos[1] < m->floorHeight + 10.0f) {
         if (!(m->flags & MARIO_METAL_CAP)) {
-            m->hurtCounter += (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18;
+            set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
         }
 
         update_mario_sound_and_camera(m);

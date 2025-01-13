@@ -258,6 +258,7 @@ s32 set_obj_anim_with_accel_and_sound(s16 a0, s16 a1, s32 a2) {
 #endif
 #include "behaviors/castle_floor_trap.inc.c"
 #include "behaviors/pole_base.inc.c"
+#include "behaviors/sign.inc.c"
 #include "behaviors/sparkle_spawn.inc.c"
 #include "behaviors/scuttlebug.inc.c" // :scuttleeyes:
 #include "behaviors/whomp.inc.c"

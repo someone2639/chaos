@@ -23,10 +23,23 @@ void bhv_collect_star_init(void) {
     }
 
     obj_set_hitbox(o, &sCollectStarHitbox);
+
+    if (chs_pay2win_can_collect_star()) {
+        cur_obj_become_tangible();
+    } else {
+        cur_obj_become_intangible();
+    }
 }
 
 void bhv_collect_star_loop(void) {
     o->oFaceAngleYaw += 0x800;
+
+    if (chs_pay2win_can_collect_star()) {
+        cur_obj_become_tangible();
+    } else {
+        cur_obj_become_intangible();
+    }
+
 
     if (o->oInteractStatus & INT_STATUS_INTERACTED) {
         mark_obj_for_deletion(o);
@@ -89,13 +102,20 @@ void bhv_star_spawn_loop(void) {
 
             if (o->oPosY < o->oHomeY) {
                 cur_obj_play_sound_2(SOUND_GENERAL_STAR_APPEARS);
-                cur_obj_become_tangible();
+                if (chs_pay2win_can_collect_star()) {
+                    cur_obj_become_tangible();
+                }
                 o->oPosY = o->oHomeY;
                 o->oAction = 3;
             }
             break;
 
         case 3:
+            if (chs_pay2win_can_collect_star()) {
+                cur_obj_become_tangible();
+            } else {
+                cur_obj_become_intangible();
+            }
             o->oFaceAngleYaw += 0x800;
             if (o->oTimer == 20) {
                 gObjCutsceneDone = TRUE;
@@ -161,11 +181,16 @@ void bhv_hidden_red_coin_star_init(void) {
 }
 
 void bhv_hidden_red_coin_star_loop(void) {
+    s32 coinRequirement = 8;
+    if (chaos_check_if_patch_active(CHAOS_PATCH_6_RED_COINS)) {
+        coinRequirement = 6;
+    }
+
     gRedCoinsCollected = o->oHiddenStarTriggerCounter;
 
     switch (o->oAction) {
         case 0:
-            if (o->oHiddenStarTriggerCounter == 8) {
+            if (o->oHiddenStarTriggerCounter == coinRequirement) {
                 o->oAction = 1;
             }
             break;
@@ -174,8 +199,11 @@ void bhv_hidden_red_coin_star_loop(void) {
             if (o->oTimer > 2) {
                 spawn_red_coin_cutscene_star(o->oPosX, o->oPosY, o->oPosZ);
                 spawn_mist_particles();
-                o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
+                o->oAction = 2;
             }
+            break;
+
+        case 2:
             break;
     }
 }

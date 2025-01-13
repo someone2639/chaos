@@ -6,3 +6,11 @@ const GeoLayout mushroom_1up_geo[] = {
    GEO_CLOSE_NODE(),
    GEO_END(),
 };
+
+const GeoLayout green_demon_geo[] = {
+   GEO_SHADOW(SHADOW_CIRCLE_4_VERTS, 0xB4, 80),
+   GEO_OPEN_NODE(),
+      GEO_DISPLAY_LIST(LAYER_ALPHA, greem_demon_dl_main),
+   GEO_CLOSE_NODE(),
+   GEO_END(),
+};

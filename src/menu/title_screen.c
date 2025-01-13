@@ -203,7 +203,8 @@ s32 intro_regular(void) {
         sPlayMarioGreeting = TRUE;
 #endif
     }
-    return run_level_id_or_demo(level);
+    // return run_level_id_or_demo(level); // Demos break stuff currently
+    return level;
 }
 
 /**
@@ -214,6 +215,10 @@ s32 intro_game_over(void) {
 
 #ifndef VERSION_JP
     if (sPlayMarioGameOver == TRUE) {
+        // Wipe save file
+        save_file_erase(gCurrSaveFileNum - 1);
+        save_file_load_all();
+
         play_sound(SOUND_MARIO_GAME_OVER, gGlobalSoundSource);
         sPlayMarioGameOver = FALSE;
     }
@@ -232,7 +237,8 @@ s32 intro_game_over(void) {
         sPlayMarioGameOver = TRUE;
 #endif
     }
-    return run_level_id_or_demo(level);
+    // return run_level_id_or_demo(level); // Demos break stuff currently
+    return level;
 }
 
 /**
