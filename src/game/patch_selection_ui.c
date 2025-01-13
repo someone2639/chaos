@@ -136,6 +136,11 @@ void handle_inputs_patch_select_state_select(s32 stickDir) {
     s32 previousSelection = gPatchSelectionMenu->selectedPatch;
     s32 selection = previousSelection;
     s32 numPatches = gPatchSelectionMenu->numPatches;
+    s32 pressedUpDown = ((gPlayer1Controller->buttonPressed & D_JPAD) || (stickDir == MENU_JOYSTICK_DIR_DOWN) || 
+        (gPlayer1Controller->buttonPressed & U_JPAD) || (stickDir == MENU_JOYSTICK_DIR_UP));
+    s32 pressedLeftRight = ((gPlayer1Controller->buttonPressed & L_JPAD) || (stickDir == MENU_JOYSTICK_DIR_LEFT) || 
+        (gPlayer1Controller->buttonPressed & R_JPAD) || (stickDir == MENU_JOYSTICK_DIR_RIGHT));
+
 
     if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
         menu_play_anim(&gPatchSelectionMenu->menu, PATCH_SELECT_ANIM_CONFIRMATION);
@@ -156,29 +161,22 @@ void handle_inputs_patch_select_state_select(s32 stickDir) {
         } else {
             play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
         }
-    } else if(gPlayer1Controller->buttonPressed & D_JPAD || (stickDir == MENU_JOYSTICK_DIR_DOWN)) {
+    } else if(pressedUpDown) {
         if(numPatches > 2) {
             selection += 2;
             if(selection > numPatches - 1) {
                 selection = previousSelection - 2;
             }
         }
-    } else if (gPlayer1Controller->buttonPressed & U_JPAD || (stickDir == MENU_JOYSTICK_DIR_UP)) {
-        if(numPatches > 2) {
-            selection -= 2;
-            if(selection < 0) {
-                selection = previousSelection + 2;
-            }
-        }
-    } else if(gPlayer1Controller->buttonPressed & R_JPAD || (stickDir == MENU_JOYSTICK_DIR_RIGHT)) {
+    } else if(pressedLeftRight) {
         selection++;
         if(selection > numPatches - 1 || !(selection % 2)) {
-            selection = previousSelection - 1;
-        }
-    } else if(gPlayer1Controller->buttonPressed & L_JPAD || (stickDir == MENU_JOYSTICK_DIR_LEFT)) {
-        selection--;
-        if(selection < 0 || (selection % 2)) {
-            selection = previousSelection + 1;
+            //Hard coded check to make menu navigation feel more natural with 3 patches
+            if(numPatches == 3 && previousSelection == 2) {
+                selection = previousSelection;
+            } else {
+                selection = previousSelection - 1;
+            }
         }
     }
 
