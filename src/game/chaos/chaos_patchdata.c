@@ -515,6 +515,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Brawl Mode",
         .shortDescription  = "Mario trips randomly sometimes.",
     },
+    [CHAOS_PATCH_GALAXY_SPIN] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 20,
+
+        .frameUpdateFunc   = chs_update_galaxy_twirl,
+
+        .name              = "First Introduced in Galaxy 2",
+        .shortDescription  = "Press A while in midair to do a spin jump!",
+    },
 
 // Object Spawners
     [CHAOS_PATCH_GREEN_DEMON] = {

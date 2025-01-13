@@ -57,3 +57,12 @@ void chs_update_brawl_tripping(void) {
         play_sound(SOUND_MARIO_OOOF2, gMarioState->marioObj->header.gfx.cameraToObject);
     }
 }
+
+void chs_update_galaxy_twirl(void) {
+    if((gMarioState->action & ACT_GROUP_MASK) == ACT_GROUP_AIRBORNE) {
+        if(gMarioState->spinTimer++ <= 2);
+    } else {
+        gMarioState->spinTimer = 0;
+        gMarioState->usedSpin = FALSE;
+    }
+}

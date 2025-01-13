@@ -135,6 +135,7 @@ s32 act_holding_pole(struct MarioState *m) {
     if (m->input & INPUT_A_PRESSED) {
         add_tree_leaf_particles(m);
         m->faceAngle[1] += 0x8000;
+        m->spinTimer = 0;
         return set_mario_action(m, ACT_WALL_KICK_AIR, 0);
     }
 #endif
@@ -201,6 +202,7 @@ s32 act_climbing_pole(struct MarioState *m) {
     if (m->input & INPUT_A_PRESSED) {
         add_tree_leaf_particles(m);
         m->faceAngle[1] += 0x8000;
+        m->spinTimer = 0;
         return set_mario_action(m, ACT_WALL_KICK_AIR, 0);
     }
 
