@@ -1128,11 +1128,14 @@ void set_hurt_counter(struct MarioState *m, u8 additionalDamage) {
 
     if (chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) && gCurrCourseNum != COURSE_NONE) {
         if (m->numCoins > 0 && m->marioObj) {
-            m->hurtCounter = 0;
+            // For insta-kill patches (which shouldn't be using 32 to begin with due to health modifiers)
+            if (m->hurtCounter < (8 * 4)) {
+                m->hurtCounter = 0;
+            }
             s32 coins = MIN(m->numCoins, 32);
 
             while (coins > 0) {
-                obj_spawn_loot_coins(m->marioObj, 1, 0, bhvBounceyCoinGetsSpawned, 20, MODEL_SILVER_COIN);
+                obj_spawn_loot_coins(m->marioObj, 1, 0, bhvBounceyCoinGetsSpawned, 20, MODEL_YELLOW_COIN);
                 coins--;
             }
 
