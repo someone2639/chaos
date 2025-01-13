@@ -527,6 +527,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "First Introduced in Galaxy 2",
         .shortDescription  = "Press A while in midair to do a spin jump!",
     },
+    [CHAOS_PATCH_GROUND_POUND_DIVE] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 20,
+
+        .name              = "Do the Odyssey",
+        .shortDescription  = "Press B while ground pounding to do a dive jump!",
+    },
 
 // Object Spawners
     [CHAOS_PATCH_GREEN_DEMON] = {
