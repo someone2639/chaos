@@ -49,3 +49,8 @@ void chs_deact_gravity_decrease_lv3(const struct ChaosPatch *patch);
 void chs_deact_gravity_increase_lv1(const struct ChaosPatch *patch);
 void chs_deact_gravity_increase_lv2(const struct ChaosPatch *patch);
 void chs_deact_gravity_increase_lv3(const struct ChaosPatch *patch);
+
+/* GFX Modifiers */
+u8 chs_mq_check(const struct ChaosPatch *patch);
+void chs_mq_init(const struct ChaosPatch *patch);
+void chs_mq_deinit(const struct ChaosPatch *patch);

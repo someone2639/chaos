@@ -35,6 +35,7 @@
 #include "rumble_init.h"
 #include "debug.h"
 #include "patch_selection_ui.h"
+#include "rendering_graph_node.h"
 
 u32 unused80339F10;
 u8 unused80339F1C[20];
@@ -1296,6 +1297,10 @@ void update_mario_button_inputs(struct MarioState *m) {
 void update_mario_joystick_inputs(struct MarioState *m) {
     struct Controller *controller = m->controller;
     f32 mag = ((controller->stickMag / 64.0f) * (controller->stickMag / 64.0f)) * 64.0f;
+    s8 stickX = controller->stickX;
+    if (isGameFlipped) {
+        stickX *= -1;
+    }
 
     if (m->squishTimer == 0) {
         m->intendedMag = mag / 2.0f;
@@ -1304,7 +1309,7 @@ void update_mario_joystick_inputs(struct MarioState *m) {
     }
 
     if (m->intendedMag > 0.0f) {
-        m->intendedYaw = atan2s(-controller->stickY, controller->stickX) + m->area->camera->yaw;
+        m->intendedYaw = atan2s(-controller->stickY, stickX) + m->area->camera->yaw;
         m->input |= INPUT_NONZERO_ANALOG;
     } else {
         m->intendedYaw = m->faceAngle[1];

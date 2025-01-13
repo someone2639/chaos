@@ -40,6 +40,9 @@ enum ChaosPatchID {
     CHAOS_PATCH_GRAVITY_INCREASE_LV2,
     CHAOS_PATCH_GRAVITY_INCREASE_LV3,
 
+// GFX Modifiers
+    CHAOS_PATCH_MIRROR_MODE,
+
 // Patch Count
     CHAOS_PATCH_COUNT,
 };
@@ -67,7 +70,7 @@ enum ChaosPatchDurationType {
 
 // Remaining Duration and Patch ID will be tracked within a separate array of active patch data (to be defined later). Memory behind said array should also be copied to the save file.
 // Any uses of activatedInitFunc should also consider save file reloads appropriately and never touch duration directly.
-struct ChaosPatch {
+typedef struct ChaosPatch {
     const enum ChaosPatchDurationType durationType; // How/when should this patch be consumed or deactivated?
     const enum ChaosPatchEffectType effectType;     // Is this patch beneficial or punishing?
     const enum ChaosPatchID negationId;             // This is the exact opposite of what effect (if any)? This is useful for deactivating an infinite, opposite effect rather than creating a useless stack, which helps oppose theoretically infinite memory requirements.
@@ -84,7 +87,7 @@ struct ChaosPatch {
     const char *name;             // Display name for the patch
     const char *shortDescription; // Short description for the patch
     const char *longDescription;  // Long description for the patch (if any)
-};
+} ChaosPatch;
 
 struct ChaosPatchSelection {
     enum ChaosPatchID positiveId;           // ID of positive generated patch

@@ -276,4 +276,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Ultra Gravity",
         .shortDescription  = "Increase Mario's gravity by 50%.",
     },
+
+/* GFX Modifiers */
+    [CHAOS_PATCH_MIRROR_MODE] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = TRUE,
+        .duration          = 6,
+
+        .conditionalFunc   = chs_mq_check,
+        .activatedInitFunc = chs_mq_init,
+        .deactivationFunc  = chs_mq_deinit,
+
+        .name              = "Mirror Mode",
+        .shortDescription  = "Flip the game.",
+    },
 };
