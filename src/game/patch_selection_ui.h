@@ -13,8 +13,10 @@
 
 #define CARD_X_LEFT         ((SCREEN_WIDTH / 3) - 25)
 #define CARD_X_RIGHT        (((SCREEN_WIDTH / 3) * 2) + 25)
+#define CARD_X_MID          (CARD_X_LEFT + ((CARD_X_RIGHT - CARD_X_LEFT) / 2))
 #define CARD_Y_TOP          (SCREEN_HEIGHT - 44)
 #define CARD_Y_BOTTOM       ((SCREEN_HEIGHT / 2) + 9)
+#define CARD_Y_MID          (CARD_Y_BOTTOM + ((CARD_Y_TOP - CARD_Y_BOTTOM) / 2))
 #define PATCH_DESC_X        (SCREEN_WIDTH / 2)
 #define PATCH_DESC_Y        56
 
@@ -42,10 +44,9 @@
 
 struct PatchCard {
     struct ChaosPatchSelection *sel;
-
     Vec2f pos;
+    Vec2f layoutPos;
     f32 scale;
-    //TODO: Add an id or reference of some sort to an actual patch so it can be applied after selection
 };
 
 enum PatchSelectMenuAnim {
@@ -78,6 +79,7 @@ enum PatchSelectionMenuFlags {
 
 struct PatchSelectionMenu {
     struct ChaosMenu menu;
+    s8 numPatches;
     s8 selectedPatch;
     Vec2f descPos;
     Vec2f curtainPos;
@@ -92,4 +94,4 @@ extern struct PatchSelectionMenu *gPatchSelectionMenu;
 void display_patch_selection_ui();
 void update_patch_selection_menu();
 void reset_patch_selection_menu();
-void load_new_patches();
+void load_new_patches(s32 numPatches);
