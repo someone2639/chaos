@@ -42,10 +42,8 @@
 
 struct PatchCard {
     struct ChaosPatchSelection *sel;
-
     Vec2f pos;
     f32 scale;
-    //TODO: Add an id or reference of some sort to an actual patch so it can be applied after selection
 };
 
 enum PatchSelectMenuAnim {
@@ -78,6 +76,7 @@ enum PatchSelectionMenuFlags {
 
 struct PatchSelectionMenu {
     struct ChaosMenu menu;
+    s8 numPatches;
     s8 selectedPatch;
     Vec2f descPos;
     Vec2f curtainPos;
@@ -92,4 +91,4 @@ extern struct PatchSelectionMenu *gPatchSelectionMenu;
 void display_patch_selection_ui();
 void update_patch_selection_menu();
 void reset_patch_selection_menu();
-void load_new_patches();
+void load_new_patches(s32 numPatches);

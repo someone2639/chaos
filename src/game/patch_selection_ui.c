@@ -31,18 +31,22 @@ u8 sEffectColors[CHAOS_EFFECT_COUNT][3] = {
     {0xFF, 0x15, 0x25}, //Bad
 };
 
-struct PatchSelectionMenu patchMenu[1];
-struct PatchSelectionMenu *gPatchSelectionMenu = patchMenu;
+struct PatchSelectionMenu patchMenu;
+struct PatchSelectionMenu *gPatchSelectionMenu = &patchMenu;
 
 /*
     Loads a fresh batch of patches to select from
 */
-void load_new_patches() {
+void load_new_patches(s32 numPatches) {
     // Generate new patches
+    assert(numPatches > 0 && numPatches < (MAX_CARDS + 1), "Tried to load an invalid number of patch cards!");
+
     struct ChaosPatchSelection *patches = chaos_roll_for_new_patches();
-    for (s32 i = 0; i < MAX_CARDS; i++) {
+    for (s32 i = 0; i < numPatches; i++) {
         gPatchSelectionMenu->patchCards[i].sel = &patches[i];
     }
+
+    gPatchSelectionMenu->numPatches = numPatches;
 }
 
 /*
@@ -90,6 +94,7 @@ void reset_patch_selection_menu() {
 void handle_inputs_patch_select_state_select(s32 stickDir) {
     s32 previousSelection = gPatchSelectionMenu->selectedPatch;
     s32 selection = previousSelection;
+    s32 numPatches = gPatchSelectionMenu->numPatches;
 
     if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
         menu_play_anim(&gPatchSelectionMenu->menu, PATCH_SELECT_ANIM_CONFIRMATION);
@@ -111,25 +116,33 @@ void handle_inputs_patch_select_state_select(s32 stickDir) {
             play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
         }
     } else if(gPlayer1Controller->buttonPressed & D_JPAD || (stickDir == MENU_JOYSTICK_DIR_DOWN)) {
-        selection += 2;
-        if(selection > MAX_CARDS - 1) {
-            selection = previousSelection;
+        if(numPatches > 2) {
+            selection += 2;
+            if(selection > numPatches - 1) {
+                selection = previousSelection - 2;
+            }
         }
     } else if (gPlayer1Controller->buttonPressed & U_JPAD || (stickDir == MENU_JOYSTICK_DIR_UP)) {
-        selection -= 2;
-        if(selection < 0) {
-            selection = previousSelection;
+        if(numPatches > 2) {
+            selection -= 2;
+            if(selection < 0) {
+                selection = previousSelection + 2;
+            }
         }
     } else if(gPlayer1Controller->buttonPressed & R_JPAD || (stickDir == MENU_JOYSTICK_DIR_RIGHT)) {
         selection++;
-        if(selection > MAX_CARDS - 1 || !(selection % 2)) {
-            selection = previousSelection;
+        if(selection > numPatches - 1 || !(selection % 2)) {
+            selection = previousSelection - 1;
         }
     } else if(gPlayer1Controller->buttonPressed & L_JPAD || (stickDir == MENU_JOYSTICK_DIR_LEFT)) {
         selection--;
         if(selection < 0 || (selection % 2)) {
-            selection = previousSelection;
+            selection = previousSelection + 1;
         }
+    }
+
+    if(selection >= numPatches || selection < 0) {
+        selection = numPatches - 1;
     }
 
     if(selection != previousSelection) {
@@ -964,6 +977,7 @@ void render_patch_select_button_prompts() {
 */
 void display_patch_selection_ui() {
     s32 selectedPatch = gPatchSelectionMenu->selectedPatch;
+    s32 numPatches = gPatchSelectionMenu->numPatches;
     f32 cursorX, cursorY;
 
     switch(selectedPatch) {
@@ -992,10 +1006,21 @@ void display_patch_selection_ui() {
         create_dl_ortho_matrix(&gDisplayListHead);
 
         render_curtain_bg();
-        render_patch_card(&gPatchSelectionMenu->patchCards[0], FALSE);
-        render_patch_card(&gPatchSelectionMenu->patchCards[1], TRUE);
-        render_patch_card(&gPatchSelectionMenu->patchCards[2], FALSE);
-        render_patch_card(&gPatchSelectionMenu->patchCards[3], TRUE);
+        switch(numPatches) {
+            case 4:
+                render_patch_card(&gPatchSelectionMenu->patchCards[3], TRUE);
+                FALL_THROUGH;
+            case 3:
+                render_patch_card(&gPatchSelectionMenu->patchCards[2], FALSE);
+                FALL_THROUGH;
+            case 2:
+                render_patch_card(&gPatchSelectionMenu->patchCards[1], TRUE);
+                FALL_THROUGH;
+            default:
+                render_patch_card(&gPatchSelectionMenu->patchCards[0], FALSE);
+                break;
+        }
+
         render_lower_box(gPatchSelectionMenu->descPos[0], gPatchSelectionMenu->descPos[1]);
 
         if(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_DRAW_START_TEXT) {
