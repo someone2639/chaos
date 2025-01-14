@@ -655,4 +655,14 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Cinematic Mode",
         .shortDescription  = "Gets rid of that pesky HUD so you can appreciate the beauty of Super Mario 64.",
     },
+    [CHAOS_PATCH_FORCED_MARIO_CAM] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 8,
+
+        .name              = "Up Close and Personal",
+        .shortDescription  = "Forces Mario cam.",
+    },
 };
