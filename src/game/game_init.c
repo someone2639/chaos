@@ -818,7 +818,9 @@ void thread5_game_loop(UNUSED void *arg) {
     gConfig.widescreen = save_file_get_widescreen_mode();
 #endif
     render_init();
+    gSPGeometryMode(gDisplayListHead++, G_CULL_BACK, G_CULL_FRONT);
     reset_patch_selection_menu();
+    gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
 
     while (TRUE) {
         profiler_frame_setup();

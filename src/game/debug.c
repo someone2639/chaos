@@ -429,6 +429,7 @@ void try_print_debug_mario_object_info(void) {
                 break;
             default:
                 break;
+        }
     }
 
     print_debug_top_down_mapinfo("obj  %d", gObjectCounter);
