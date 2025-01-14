@@ -316,6 +316,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration          = 10,
         .conditionalFunc   = chs_cond_health_drain,
         .frameUpdateFunc   = chs_update_health_drain,
+        .negationId        = CHAOS_PATCH_HEALTH_GAIN,
 
         .name              = "Bleeding Out",
         .shortDescription  = "Mario will slowly lose health over time",
@@ -328,6 +329,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration          = 10,
         .conditionalFunc   = chs_cond_health_gain,
         .frameUpdateFunc   = chs_update_health_gain,
+        .negationId        = CHAOS_PATCH_HEALTH_DRAIN,
 
         .name              = "Bleeding In",
         .shortDescription  = "Mario will slowly gain health over time",
