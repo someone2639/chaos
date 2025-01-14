@@ -407,7 +407,9 @@ void render_game(void) {
                       SCREEN_HEIGHT - gBorderHeight);
                        
         if(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_ACTIVE) {
+            gSPGeometryMode(gDisplayListHead++, G_CULL_BACK, G_CULL_FRONT);
             display_patch_selection_ui();
+            gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
         } else {
             render_hud();
         }
