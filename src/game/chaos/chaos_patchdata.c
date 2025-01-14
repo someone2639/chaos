@@ -643,4 +643,14 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "One-Hit Wonder",
         .shortDescription  = "Mario will die instantly upon taking any form of damage (other than from swimming or poison).",
     },
+    [CHAOS_PATCH_NO_HUD] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .name              = "Cinematic Mode",
+        .shortDescription  = "Gets rid of that pesky HUD so you can appreciate the beauty of Super Mario 64.",
+    },
 };
