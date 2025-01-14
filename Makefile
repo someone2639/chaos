@@ -163,8 +163,6 @@ GCC_GRAPH_NODE_OPT_FLAGS = \
   -falign-functions=32
 #==============================================================================#
 
-DEBUG_MODE ?= 0
-
 ifeq ($(COMPILER),gcc)
   NON_MATCHING := 1
   MIPSISET     := -mips3
@@ -604,10 +602,6 @@ ifeq ($(VERSION),sh)
 endif
 
 $(CRASH_TEXTURE_C_FILES): TEXTURE_ENCODING := u32
-
-ifeq ($(DEBUG_MODE),true)
-    CFLAGS += -DDEBUG
-endif
 
 ifeq ($(COMPILER),gcc)
 $(BUILD_DIR)/src/libz/%.o: OPT_FLAGS := -Os
