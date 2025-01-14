@@ -277,7 +277,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription  = "Increase Mario's gravity by 50%.",
     },
 
-// Healing Blockers
+// Health Modifiers
     [CHAOS_PATCH_NOHEAL_HEARTS] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
@@ -307,6 +307,30 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Unaffordable Health Care",
         .shortDescription  = "Coins no longer heal Mario.",
+    },
+    [CHAOS_PATCH_HEALTH_DRAIN] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 10,
+        .conditionalFunc   = chs_cond_health_drain,
+        .frameUpdateFunc   = chs_update_health_drain,
+
+        .name              = "Bleeding Out",
+        .shortDescription  = "Mario will slowly lose health over time",
+    },
+    [CHAOS_PATCH_HEALTH_GAIN] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 10,
+        .conditionalFunc   = chs_cond_health_gain,
+        .frameUpdateFunc   = chs_update_health_gain,
+
+        .name              = "Bleeding In",
+        .shortDescription  = "Mario will slowly gain health over time",
     },
 
 // Coin Modifiers
