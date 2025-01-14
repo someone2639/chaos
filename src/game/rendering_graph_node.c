@@ -175,11 +175,11 @@ void geo_process_master_list_sub(struct GraphNodeMasterList *node) {
             while (currList != NULL) {
                 gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(currList->transform),
                           G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
-                if (!isGameFlipped) {
+                if (isGameFlipped) {
                     gSPGeometryMode(gDisplayListHead++, G_CULL_BACK, G_CULL_FRONT);
                 }
                 gSPDisplayList(gDisplayListHead++, currList->displayList);
-                if (!isGameFlipped) {
+                if (isGameFlipped) {
                     gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
                 }
                 currList = currList->next;

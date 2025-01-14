@@ -367,6 +367,8 @@ void process_master_quest_transition(struct GraphNodeRoot *node) {
     #define FS_SWAPSPEED 5
     #define FS_SNAPLEFT -156
     #define FS_SNAPRIGHT 156
+    if (node == NULL) return;
+
     node->width = approach_s16_asymptotic(node->width, fliptarget, FS_SWAPSPEED);
     if (node->width >= FS_SNAPRIGHT) {
         node->width = fliptarget;
@@ -379,16 +381,17 @@ void process_master_quest_transition(struct GraphNodeRoot *node) {
     } else {
         isGameFlipped = 0;
     }
+
+    node->perspWidth = ABS(node->width);
+    if (node->perspWidth != (SCREEN_WIDTH / 2)) {
+        clear_framebuffer(gWarpTransFBSetColor);
+    }
+    osSyncPrintf("%d", isGameFlipped);
 }
 
 void render_game(void) {
     if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
         process_master_quest_transition(gCurrentArea->unk04);
-        if (gCurrentArea->unk04) {
-            if (ABS(gCurrentArea->unk04->width) != (SCREEN_WIDTH / 2)) {
-                clear_framebuffer(gWarpTransFBSetColor);
-            }
-        }
         if (gPlayer1Controller->buttonPressed & L_TRIG) {
             fliptarget *= -1;
         }
@@ -402,9 +405,7 @@ void render_game(void) {
                       SCREEN_HEIGHT - gBorderHeight);
                        
         if(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_ACTIVE) {
-            gSPGeometryMode(gDisplayListHead++, G_CULL_BACK, G_CULL_FRONT);
             display_patch_selection_ui();
-            gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
         } else {
             render_hud();
         }
