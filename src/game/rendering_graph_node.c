@@ -132,6 +132,20 @@ u16 gAreaUpdateCounter = 0;
 LookAt lookAt;
 #endif
 
+Gfx *geo_invert(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx) {
+    if (callContext == GEO_CONTEXT_RENDER) {
+        gSPGeometryMode(gDisplayListHead++, G_CULL_BACK, G_CULL_FRONT);
+    }
+    return NULL;
+}
+
+Gfx *geo_invert_off(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx) {
+    if (callContext == GEO_CONTEXT_RENDER) {
+        gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
+    }
+    return NULL;
+}
+
 Gfx *geo_invert_cond(s32 callContext, UNUSED struct GraphNode *node, UNUSED f32 mtx[4][4]) {
     if (callContext == GEO_CONTEXT_RENDER && !isGameFlipped) {
         gSPGeometryMode(gDisplayListHead++, G_CULL_BACK, G_CULL_FRONT);

@@ -3022,20 +3022,6 @@ Gfx *geo_file_select_strings_and_menu_cursor(s32 callContext, UNUSED struct Grap
     return NULL;
 }
 
-Gfx *geo_invert(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx) {
-    if (callContext == GEO_CONTEXT_RENDER) {
-        gSPGeometryMode(gDisplayListHead++, G_CULL_BACK, G_CULL_FRONT);
-    }
-    return NULL;
-}
-
-Gfx *geo_invert_off(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx) {
-    if (callContext == GEO_CONTEXT_RENDER) {
-        gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
-    }
-    return NULL;
-}
-
 /**
  * Initiates file select values after Mario Screen.
  * Relocates cursor position of the last save if the game goes back to the Mario Screen
