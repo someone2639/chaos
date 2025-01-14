@@ -47,7 +47,7 @@ struct SaveFile {
     u8 courseCoinScores[COURSE_STAGES_COUNT];
 
     s8 lives;
-    s8 chaosDifficulty;
+    u8 chaosDifficulty;
     u8 chaosChallengeMode;
 
     s32 chaosEntryCount;

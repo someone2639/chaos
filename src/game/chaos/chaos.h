@@ -75,6 +75,10 @@ enum ChaosPatchID {
 // Object Spawners
     CHAOS_PATCH_GREEN_DEMON,
 
+// Visual Modifiers
+    CHAOS_PATCH_NO_Z_BUFFER,
+    CHAOS_PATCH_INVERTED_Z_BUFFER,
+
 // Miscellaneous Modifiers
     CHAOS_PATCH_MARIO_INVISIBLE,
     CHAOS_PATCH_SIGNREAD_FAR,
@@ -93,9 +97,9 @@ enum ChaosPatchEffectType {
 };
 
 enum ChaosDifficulty {
-    CHAOS_DIFFICULTY_EASY   =  0, // Offsets negative patches such that top severities shouldn't ever show up
-    CHAOS_DIFFICULTY_NORMAL =  1, // Standard difficulty
-    CHAOS_DIFFICULTY_HARD   =  2, // Offsets positive patches such that top severities shouldn't ever show up
+    CHAOS_DIFFICULTY_EASY,   // Offsets negative patches such that top severities should (almost) never show up
+    CHAOS_DIFFICULTY_NORMAL, // Standard difficulty
+    CHAOS_DIFFICULTY_HARD,   // Offsets positive patches such that top severities should (almost) never show up
 };
 
 enum ChaosPatchDurationType {

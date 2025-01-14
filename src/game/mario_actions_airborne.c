@@ -2153,7 +2153,7 @@ s32 act_galaxy_spin(struct MarioState *m) {
 
     update_air_without_turn(m);
 
-    switch (perform_air_step(m, 0)) {
+    switch (perform_air_step(m, AIR_STEP_CHECK_LEDGE_GRAB)) {
         case AIR_STEP_LANDED:
             if (!check_fall_damage_or_get_stuck(m, ACT_HARD_BACKWARD_GROUND_KB)) {
                 set_mario_action(m, ACT_FREEFALL_LAND, 0);
@@ -2162,6 +2162,11 @@ s32 act_galaxy_spin(struct MarioState *m) {
 
         case AIR_STEP_HIT_WALL:
             mario_set_forward_vel(m, 0.0f);
+            break;
+        
+        case AIR_STEP_GRABBED_LEDGE:
+            set_mario_animation(m, MARIO_ANIM_IDLE_ON_LEDGE);
+            drop_and_set_mario_action(m, ACT_LEDGE_GRAB, 0);
             break;
     }
 

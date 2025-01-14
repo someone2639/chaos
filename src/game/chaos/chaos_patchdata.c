@@ -562,6 +562,32 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription  = "Of course this one's in the game. Spawn a poison 1-UP mushroom that chases Mario.",
     },
 
+// Visual Modifiers
+    [CHAOS_PATCH_NO_Z_BUFFER] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 3,
+
+        .conditionalFunc   = chs_cond_no_zbuffer,
+
+        .name              = "Geometry Freakout",
+        .shortDescription  = "Geometry can now render itself in whatever order it wants (sensory warning for most setups!)",
+    },
+    [CHAOS_PATCH_INVERTED_Z_BUFFER] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 2,
+
+        .conditionalFunc   = chs_cond_inverted_zbuffer,
+
+        .name              = "Inside-Out",
+        .shortDescription  = "Geometry that is further from the camera will render on top of closer geometry. Quite the perspective!",
+    },
+
 // Miscellaneous Modifiers
     [CHAOS_PATCH_MARIO_INVISIBLE] = {
         .durationType      = CHAOS_DURATION_STARS,

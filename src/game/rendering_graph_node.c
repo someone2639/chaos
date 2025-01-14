@@ -10,6 +10,7 @@
 #include "rendering_graph_node.h"
 #include "shadow.h"
 #include "sm64.h"
+#include "chaos/chaos.h"
 
 /**
  * This file contains the code that processes the scene graph for rendering.
@@ -1058,8 +1059,16 @@ void geo_process_root(struct GraphNodeRoot *node, Vp *b, Vp *c, s32 clearColor) 
         initialMatrix = alloc_display_list(sizeof(*initialMatrix));
         gMatStackIndex = 0;
         gCurrAnimType = 0;
-        vec3s_set(viewport->vp.vtrans, node->x * 4, node->y * 4, 511);
-        vec3s_set(viewport->vp.vscale, node->width * 4, node->height * 4, 511);
+        if (chaos_check_if_patch_active(CHAOS_PATCH_NO_Z_BUFFER)) {
+            vec3s_set(viewport->vp.vtrans, node->x * 4, node->y * 4, -511);
+            vec3s_set(viewport->vp.vscale, node->width * 4, node->height * 4, 511);
+        } else if (chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_Z_BUFFER)) {
+            vec3s_set(viewport->vp.vtrans, node->x * 4, node->y * 4, 511);
+            vec3s_set(viewport->vp.vscale, node->width * 4, node->height * 4, -511);
+        } else {
+            vec3s_set(viewport->vp.vtrans, node->x * 4, node->y * 4, 511);
+            vec3s_set(viewport->vp.vscale, node->width * 4, node->height * 4, 511);
+        }
         if (b != NULL) {
             clear_framebuffer(clearColor);
             make_viewport_clip_rect(b);
