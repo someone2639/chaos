@@ -3016,9 +3016,7 @@ Gfx *geo_file_select_strings_and_menu_cursor(s32 callContext, UNUSED struct Grap
             render_gamemode_select();
         } else {
             print_file_select_strings();
-            gSPGeometryMode(gDisplayListHead++, G_CULL_BACK, G_CULL_FRONT);
             print_menu_cursor();
-            gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
         }
     }
     return NULL;
