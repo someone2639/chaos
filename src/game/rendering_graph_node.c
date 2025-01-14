@@ -1081,12 +1081,7 @@ void geo_process_root(struct GraphNodeRoot *node, Vp *b, Vp *c, s32 clearColor) 
         gMatStackIndex = 0;
         gCurrAnimType = 0;
         vec3s_set(viewport->vp.vtrans, node->x * 4, node->y * 4, 511);
-
-        if (isGameFlipped) {
-            vec3s_set(viewport->vp.vscale, node->width * 4 * -1, node->height * 4, 511);
-        } else {
-            vec3s_set(viewport->vp.vscale, node->width * 4, node->height * 4, 511);
-        }
+        vec3s_set(viewport->vp.vscale, node->width * 4, node->height * 4, 511);
 
         if (b != NULL) {
             clear_framebuffer(clearColor);

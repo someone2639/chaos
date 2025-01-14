@@ -361,41 +361,36 @@ void play_transition_after_delay(s16 transType, s16 time, u8 red, u8 green, u8 b
     play_transition(transType, time, red, green, blue);
 }
 
-u32 flipstate = 2;
+s32 fliptarget = SCREEN_WIDTH / 2;
 
 void process_master_quest_transition(struct GraphNodeRoot *node) {
-    #define FS_SWAPSPEED 3
-    switch (flipstate) {
-        case 0:
-            node->width = approach_s16_asymptotic(node->width, 0, FS_SWAPSPEED);
-
-            if (node->width == 2) {
-                isGameFlipped ^= 1;
-                flipstate++;
-            }
-            break;
-        case 1:
-            node->width = approach_s16_asymptotic(node->width, SCREEN_WIDTH / 2, FS_SWAPSPEED);
-
-            if (node->width >= 140) {
-                flipstate++;
-                node->width = (SCREEN_WIDTH / 2);
-            }
-            break;
-        case 2:
-            node->width = (SCREEN_WIDTH / 2);
-            break;
+    #define FS_SWAPSPEED 5
+    #define FS_SNAPLEFT -156
+    #define FS_SNAPRIGHT 156
+    node->width = approach_s16_asymptotic(node->width, fliptarget, FS_SWAPSPEED);
+    if (node->width >= FS_SNAPRIGHT) {
+        node->width = fliptarget;
+    }
+    if (node->width <= FS_SNAPLEFT) {
+        node->width = fliptarget;
+    }
+    if (node->width < 0) {
+        isGameFlipped = 1;
+    } else {
+        isGameFlipped = 0;
     }
 }
 
 void render_game(void) {
     if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
         process_master_quest_transition(gCurrentArea->unk04);
-        if (flipstate != 2) {
-            clear_framebuffer(gWarpTransFBSetColor);
+        if (gCurrentArea->unk04) {
+            if (ABS(gCurrentArea->unk04->width) != (SCREEN_WIDTH / 2)) {
+                clear_framebuffer(gWarpTransFBSetColor);
+            }
         }
         if (gPlayer1Controller->buttonPressed & L_TRIG) {
-            flipstate = 0;
+            fliptarget *= -1;
         }
         if(!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_STOP_GAME_RENDER)) {
             geo_process_root(gCurrentArea->unk04, D_8032CE74, D_8032CE78, gFBSetColor);
