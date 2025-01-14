@@ -350,8 +350,8 @@
 #ifdef	F3DEX_GBI_2
 # define G_TEXTURE_ENABLE	0x00000000	/* Ignored               */
 # define G_SHADING_SMOOTH	0x00200000	/* flat or smooth shaded */
-# define G_CULL_FRONT		0x00000400
-# define G_CULL_BACK		0x00000200
+# define G_CULL_FRONT		0x00000200
+# define G_CULL_BACK		0x00000400
 # define G_CULL_BOTH		0x00000600	/* To make code cleaner */
 #else
 # define G_TEXTURE_ENABLE	0x00000002	/* Microcode use only */
