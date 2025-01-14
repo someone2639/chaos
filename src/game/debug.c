@@ -416,11 +416,20 @@ void stub_debug_5(void) {
  * count, floor misses, and an unknown wall counter) is also printed.
  */
 void try_print_debug_mario_object_info(void) {
-    // if (gMarioObject != NULL) {
-    //     if (isGameFlipped) {
-    //         gMarioObject->header.gfx.scale[0] *= -1;
-    //     }
-    // }
+    if (gMarioObject != NULL) {
+        switch (sDebugPage) {
+            case DEBUG_PAGE_CHECKSURFACEINFO:
+                print_surfaceinfo();
+                break;
+            case DEBUG_PAGE_EFFECTINFO:
+                print_effectinfo();
+                break;
+            case DEBUG_PAGE_ENEMYINFO:
+                print_enemyinfo();
+                break;
+            default:
+                break;
+    }
 
     print_debug_top_down_mapinfo("obj  %d", gObjectCounter);
 
