@@ -605,7 +605,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .activatedInitFunc = chs_mq_init,
         .deactivationFunc  = chs_mq_deinit,
 
-        .name              = "Mirror Mode",
-        .shortDescription  = "Flip the game.",
+        .name              = "Master Quest",
+        .shortDescription  = "Flip the game. It's always looked like this, I swear!",
     },
 };
