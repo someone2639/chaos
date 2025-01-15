@@ -374,7 +374,7 @@ void render_game(void) {
                        
         if(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_ACTIVE) {
             display_patch_selection_ui();
-        } else if(!chaos_check_if_patch_active(CHAOS_PATCH_NO_HUD)) {
+        } else {
             render_hud();
         }
 

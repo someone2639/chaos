@@ -85,3 +85,11 @@ void chs_area_init_green_demon(void);
 // Visual Modifiers
 u8 chs_cond_no_zbuffer(void);
 u8 chs_cond_inverted_zbuffer(void);
+
+// Time Limit
+void chs_level_init_time_limit(void);
+void chs_update_time_limit(void);
+void chs_deact_time_limit(void);
+u8 chs_cond_lower_time_limit(void);
+void chs_act_lower_time_limit(void);
+void chs_deact_lower_time_limit(void);

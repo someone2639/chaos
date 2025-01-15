@@ -80,7 +80,9 @@ enum ChaosPatchID {
 // Visual Modifiers
     CHAOS_PATCH_NO_Z_BUFFER,
     CHAOS_PATCH_INVERTED_Z_BUFFER,
-
+// Time Limit
+    CHAOS_PATCH_TIME_LIMIT,
+    CHAOS_PATCH_LOWER_TIME_LIMIT,
 // Miscellaneous Modifiers
     CHAOS_PATCH_MARIO_INVISIBLE,
     CHAOS_PATCH_SIGNREAD_FAR,

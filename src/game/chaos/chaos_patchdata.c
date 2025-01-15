@@ -613,7 +613,35 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Inside-Out",
         .shortDescription  = "Geometry that is further from the camera will render on top of closer geometry. Quite the perspective!",
     },
+//  Time Limit
+    [CHAOS_PATCH_TIME_LIMIT] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 15,
 
+        .levelInitFunc      = chs_level_init_time_limit,
+        .frameUpdateFunc    = chs_update_time_limit,
+        .deactivationFunc   = chs_deact_time_limit,
+
+        .name              = "Speedy Comet",
+        .shortDescription  = "Better hurry up! You now have 3 minutes to collect each star.",
+    },
+    [CHAOS_PATCH_LOWER_TIME_LIMIT] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = TRUE,
+        .duration          = 15,
+
+        .conditionalFunc   = chs_cond_lower_time_limit,
+        .activatedInitFunc = chs_act_lower_time_limit,
+        .deactivationFunc  = chs_deact_lower_time_limit,
+
+        .name              = "Speedy Comet++",
+        .shortDescription  = "Resets the duration for the speedy comet and lowers the time limit by 15 seconds",
+    },
 // Miscellaneous Modifiers
     [CHAOS_PATCH_MARIO_INVISIBLE] = {
         .durationType      = CHAOS_DURATION_STARS,
