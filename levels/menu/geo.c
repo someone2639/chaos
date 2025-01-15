@@ -172,6 +172,7 @@ const GeoLayout geo_menu_file_select_strings_and_menu_cursor[] = {
 const GeoLayout geo_menu_act_selector_strings[] = {
    GEO_NODE_SCREEN_AREA(10, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, SCREEN_WIDTH/2, SCREEN_HEIGHT/2),
    GEO_OPEN_NODE(),
+      GEO_ASM(0, geo_invert_off),
       GEO_ZBUFFER(0),
       GEO_OPEN_NODE(),
          GEO_NODE_ORTHO(100),

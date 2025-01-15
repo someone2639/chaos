@@ -242,6 +242,8 @@ void print_course_number(void) {
     isGameFlipped = FALSE;
     create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_PUSH, 158.0f, 81.0f, 0.0f);
 
+    gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
+
     // Full wood texture in JP & US, lower part of it on EU
     gSPDisplayList(gDisplayListHead++, dl_menu_rgba16_wood_course);
 
