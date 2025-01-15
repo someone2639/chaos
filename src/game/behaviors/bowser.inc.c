@@ -994,6 +994,10 @@ s32 bowser_check_hit_mine(void) {
 void bowser_act_thrown(void) {
     UNUSED u8 filler[4];
 
+    if(chaos_check_if_patch_active(CHAOS_PATCH_BOWSER_THROWS) && o->oTimer == 1) {
+        o->oMoveAngleYaw += (-0x2000 + RAND(0x4000));
+    }
+
     // Keep Bowser's timer at 0 unless he lands
     if (o->oTimer < 2) {
         o->oBowserTimer = 0;

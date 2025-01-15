@@ -703,4 +703,14 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Up Close and Personal",
         .shortDescription  = "Forces Mario cam.",
     },
+    [CHAOS_PATCH_BOWSER_THROWS] = {
+        .durationType      = CHAOS_DURATION_INFINITE,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 1,
+
+        .name              = "Code That Makes You Miss Bowser Throws",
+        .shortDescription  = "They have that in this game, I swear.",
+    }
 };
