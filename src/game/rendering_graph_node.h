@@ -33,5 +33,7 @@ void geo_process_root(struct GraphNodeRoot *node, Vp *b, Vp *c, s32 clearColor);
 
 Gfx *geo_invert_cond(s32 callContext, UNUSED struct GraphNode *node, UNUSED f32 mtx[4][4]);
 Gfx *geo_invert_cond_off(s32 callContext, UNUSED struct GraphNode *node, UNUSED f32 mtx[4][4]);
+Gfx *geo_invert(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx);
+Gfx *geo_invert_off(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx);
 
 #endif // RENDERING_GRAPH_NODE_H

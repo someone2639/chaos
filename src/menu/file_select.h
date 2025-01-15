@@ -148,7 +148,5 @@ s32 lvl_update_obj_and_load_file_selected(UNUSED s32 arg, UNUSED s32 unused);
 
 Gfx *geo_file_select_change_difficulty_color(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx);
 Gfx *geo_file_select_change_challenge_texture(s32 callContext, struct GraphNode *node, UNUSED Mat4 mtx);
-Gfx *geo_invert(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx);
-Gfx *geo_invert_off(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx);
 
 #endif // FILE_SELECT_H
