@@ -362,8 +362,15 @@ void play_transition_after_delay(s16 transType, s16 time, u8 red, u8 green, u8 b
 }
 
 s32 fliptarget = SCREEN_WIDTH / 2;
+u8 isInMenu = FALSE;
 
 void process_master_quest_transition(struct GraphNodeRoot *node) {
+    if (isInMenu) {
+        isGameFlipped = 0;
+        node->width = SCREEN_WIDTH / 2;
+        return;
+    }
+
     #define FS_SWAPSPEED 5
     #define FS_SNAPLEFT -156
     #define FS_SNAPRIGHT 156
@@ -386,6 +393,7 @@ void process_master_quest_transition(struct GraphNodeRoot *node) {
     if (node->perspWidth != (SCREEN_WIDTH / 2)) {
         clear_framebuffer(gWarpTransFBSetColor);
     }
+
 }
 
 void render_game(void) {
