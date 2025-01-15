@@ -447,6 +447,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Sick Burn",
         .shortDescription   = "Get burned at random intervals."
     },
+    [CHAOS_PATCH_RANDOM_BLIND] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 3,
+        .isStackable        = FALSE,
+        .duration           = 9,
+
+        .activatedInitFunc  = chs_act_random_blind,
+        .frameUpdateFunc    = chs_update_random_blind,
+
+        .name               = "Blindfolded Speedrun",
+        .shortDescription   = "Get blinded for 15 seconds periodically."
+    },
 
 // Movement Modifiers
     [CHAOS_PATCH_LOSEMOVE_BREAKDANCE] = {
