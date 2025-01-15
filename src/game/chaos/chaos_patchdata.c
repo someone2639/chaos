@@ -613,6 +613,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Inside-Out",
         .shortDescription  = "Geometry that is further from the camera will render on top of closer geometry. Quite the perspective!",
     },
+    [CHAOS_PATCH_UPSIDE_DOWN_CAMERA] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 2,
+
+        .name              = "Australia Mode",
+        .shortDescription  = "Flips the camera upside-down so you can experience what it's like to be from the land down under.",
+    },
 //  Time Limit
     [CHAOS_PATCH_TIME_LIMIT] = {
         .durationType      = CHAOS_DURATION_STARS,

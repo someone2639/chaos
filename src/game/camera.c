@@ -2968,7 +2968,11 @@ void update_lakitu(struct Camera *c) {
         vec3f_get_dist_and_angle(gLakituState.pos, gLakituState.focus, &gLakituState.focusDistance,
                                  &gLakituState.oldPitch, &gLakituState.oldYaw);
 
-        gLakituState.roll = 0;
+        if(chaos_check_if_patch_active(CHAOS_PATCH_UPSIDE_DOWN_CAMERA)) {
+            gLakituState.roll = 0x7FFF;
+        } else {
+            gLakituState.roll = 0;
+        }
 
         // Apply camera shakes
         shake_camera_pitch(gLakituState.pos, gLakituState.focus);

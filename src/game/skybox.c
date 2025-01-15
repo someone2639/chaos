@@ -240,10 +240,24 @@ void draw_skybox_tile_grid(Gfx **dlist, s8 background, s8 player, s8 colorIndex)
 }
 
 void *create_skybox_ortho_matrix(s8 player) {
-    f32 left = sSkyBoxInfo[player].scaledX;
-    f32 right = sSkyBoxInfo[player].scaledX + SCREEN_WIDTH;
-    f32 bottom = sSkyBoxInfo[player].scaledY - SCREEN_HEIGHT;
-    f32 top = sSkyBoxInfo[player].scaledY;
+    f32 left;
+    f32 right;
+    f32 bottom;
+    f32 top;
+
+    //We have to draw the skybox upside-down because it doesn't normally account for the camera's roll
+    if(chaos_check_if_patch_active(CHAOS_PATCH_UPSIDE_DOWN_CAMERA)) {
+        left = sSkyBoxInfo[player].scaledX + SCREEN_WIDTH;
+        right = sSkyBoxInfo[player].scaledX;
+        bottom = sSkyBoxInfo[player].scaledY;
+        top = sSkyBoxInfo[player].scaledY - SCREEN_HEIGHT;
+    } else {
+        left = sSkyBoxInfo[player].scaledX;
+        right = sSkyBoxInfo[player].scaledX + SCREEN_WIDTH;
+        bottom = sSkyBoxInfo[player].scaledY - SCREEN_HEIGHT;
+        top = sSkyBoxInfo[player].scaledY;
+    }
+
     Mtx *mtx = alloc_display_list(sizeof(*mtx));
 
 #ifdef WIDESCREEN
