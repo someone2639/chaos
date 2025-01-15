@@ -854,6 +854,7 @@ void initiate_delayed_warp(void) {
         } else {
             switch (sDelayedWarpOp) {
                 case WARP_OP_GAME_OVER:
+                    isInMenu = TRUE;
                     warp_special(-3);
                     break;
 

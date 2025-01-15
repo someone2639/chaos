@@ -393,7 +393,6 @@ void process_master_quest_transition(struct GraphNodeRoot *node) {
     if (node->perspWidth != (SCREEN_WIDTH / 2)) {
         clear_framebuffer(gWarpTransFBSetColor);
     }
-
 }
 
 void render_game(void) {
