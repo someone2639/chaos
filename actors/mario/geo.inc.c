@@ -1,5 +1,5 @@
 // Normal Mario Geo
-#include "menu/file_select.h"
+#include "game/rendering_graph_node.h"
 
 // 0x170002E0
 const GeoLayout mario_geo_face_and_wings[] = {
