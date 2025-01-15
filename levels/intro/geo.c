@@ -10,7 +10,6 @@
 #include "game/paintings.h"
 #include "menu/debug_level_select.h"
 #include "menu/intro_geo.h"
-#include "game/rendering_graph_node.h"
 
 #include "make_const_nonconst.h"
 

@@ -356,9 +356,9 @@
 #else
 # define G_TEXTURE_ENABLE	0x00000002	/* Microcode use only */
 # define G_SHADING_SMOOTH	0x00000200	/* flat or smooth shaded */
-# define G_CULL_FRONT		0x00000000
-# define G_CULL_BACK		0x00000000
-# define G_CULL_BOTH		0x00000000	/* To make code cleaner */
+# define G_CULL_FRONT		0x00001000
+# define G_CULL_BACK		0x00002000
+# define G_CULL_BOTH		0x00003000	/* To make code cleaner */
 #endif
 #define G_FOG			0x00010000
 #define G_LIGHTING		0x00020000

@@ -13,7 +13,6 @@
 #include "print.h"
 #include "sm64.h"
 #include "types.h"
-#include "rendering_graph_node.h"
 
 #define DEBUG_INFO_NOFLAGS (0 << 0)
 #define DEBUG_INFO_FLAG_DPRINT (1 << 0)
