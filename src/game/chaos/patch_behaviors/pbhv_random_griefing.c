@@ -10,14 +10,14 @@
 
 #include "game/chaos/chaos.h"
 
-#define SLEEP_TIME_MIN  10800
-#define SLEEP_TIME_RAND 10800
+#define SLEEP_TIME_MIN   1800
+#define SLEEP_TIME_RAND  10800
 
-#define SHOCK_TIME_MIN  5400
-#define SHOCK_TIME_RAND 3600
+#define SHOCK_TIME_MIN   900
+#define SHOCK_TIME_RAND  3600
 
-#define BURN_TIME_MIN  5400
-#define BURN_TIME_RAND 3600
+#define BURN_TIME_MIN   900
+#define BURN_TIME_RAND  3600
 
 s16 sRandomSleepTimer = -1;
 s16 sRandomShockTimer = -1;
