@@ -399,7 +399,16 @@ void render_game(void) {
     if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
         process_master_quest_transition(gCurrentArea->unk04);
         if(!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_STOP_GAME_RENDER)) {
-            geo_process_root(gCurrentArea->unk04, D_8032CE74, D_8032CE78, gFBSetColor);
+            geo_process_root(gCurrentArea->unk04, D_8032CE74, D_8032CE78, gFBSetColor);             
+        }
+
+        //Random blind patch
+        if(chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_BLIND)) {
+            struct ChaosActiveEntry *chaosBlind;
+            chaos_find_first_active_patch(CHAOS_PATCH_RANDOM_BLIND, &chaosBlind);    
+            if(chaosBlind->frameTimer > 18000) {
+                clear_framebuffer(0);
+            }
         }
 
         gSPViewport(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(&D_8032CF00));

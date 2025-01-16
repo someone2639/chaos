@@ -276,7 +276,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Ultra Gravity",
         .shortDescription  = "Increase Mario's gravity by 50%.",
     },
-// Healing Blockers
+
+// Health Modifiers
     [CHAOS_PATCH_NOHEAL_HEARTS] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
@@ -306,6 +307,32 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Unaffordable Health Care",
         .shortDescription  = "Coins no longer heal Mario.",
+    },
+    [CHAOS_PATCH_HEALTH_DRAIN] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 10,
+        .conditionalFunc   = chs_cond_health_drain,
+        .frameUpdateFunc   = chs_update_health_drain,
+        .negationId        = CHAOS_PATCH_HEALTH_GAIN,
+
+        .name              = "Bleeding Out",
+        .shortDescription  = "Mario will slowly lose health over time",
+    },
+    [CHAOS_PATCH_HEALTH_GAIN] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 10,
+        .conditionalFunc   = chs_cond_health_gain,
+        .frameUpdateFunc   = chs_update_health_gain,
+        .negationId        = CHAOS_PATCH_HEALTH_DRAIN,
+
+        .name              = "Bleeding In",
+        .shortDescription  = "Mario will slowly gain health over time",
     },
 
 // Coin Modifiers
@@ -419,6 +446,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Sick Burn",
         .shortDescription   = "Get burned at random intervals."
+    },
+    [CHAOS_PATCH_RANDOM_BLIND] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 3,
+        .isStackable        = FALSE,
+        .duration           = 9,
+
+        .activatedInitFunc  = chs_act_random_blind,
+        .frameUpdateFunc    = chs_update_random_blind,
+
+        .name               = "Blindfolded Speedrun",
+        .shortDescription   = "Get blinded for 15 seconds periodically."
     },
 
 // Movement Modifiers
@@ -561,6 +601,84 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription  = "Of course this one's in the game. Spawn a poison 1-UP mushroom that chases Mario.",
     },
 
+// Visual Modifiers
+    [CHAOS_PATCH_NO_Z_BUFFER] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 3,
+
+        .conditionalFunc   = chs_cond_no_zbuffer,
+
+        .name              = "Geometry Freakout",
+        .shortDescription  = "Geometry can now render itself in whatever order it wants (sensory warning for most setups!)",
+    },
+    [CHAOS_PATCH_INVERTED_Z_BUFFER] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 2,
+
+        .conditionalFunc   = chs_cond_inverted_zbuffer,
+
+        .name              = "Inside-Out",
+        .shortDescription  = "Geometry that is further from the camera will render on top of closer geometry. Quite the perspective!",
+    },
+    [CHAOS_PATCH_UPSIDE_DOWN_CAMERA] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 2,
+
+        .name              = "Australia Mode",
+        .shortDescription  = "Flips the camera upside-down so you can experience what it's like to be from the land down under.",
+    },
+    [CHAOS_PATCH_MIRROR_MODE] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .conditionalFunc   = chs_mq_check,
+        .activatedInitFunc = chs_mq_init,
+        .deactivationFunc  = chs_mq_deinit,
+
+        .name              = "Master Quest",
+        .shortDescription  = "Flips the game horizontally so your reflection in the mirror gets a turn to play!",
+    },
+//  Time Limit
+    [CHAOS_PATCH_TIME_LIMIT] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .levelInitFunc      = chs_level_init_time_limit,
+        .frameUpdateFunc    = chs_update_time_limit,
+        .deactivationFunc   = chs_deact_time_limit,
+
+        .name              = "Speedy Comet",
+        .shortDescription  = "Better hurry up! You now have 3 minutes to collect each star.",
+    },
+    [CHAOS_PATCH_LOWER_TIME_LIMIT] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = TRUE,
+        .duration          = 15,
+
+        .conditionalFunc   = chs_cond_lower_time_limit,
+        .activatedInitFunc = chs_act_lower_time_limit,
+        .deactivationFunc  = chs_deact_lower_time_limit,
+
+        .name              = "Speedy Comet++",
+        .shortDescription  = "Resets the duration for the speedy comet and lowers the time limit by 15 seconds",
+    },
 // Miscellaneous Modifiers
     [CHAOS_PATCH_MARIO_INVISIBLE] = {
         .durationType      = CHAOS_DURATION_STARS,
@@ -592,20 +710,34 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "One-Hit Wonder",
         .shortDescription  = "Mario will die instantly upon taking any form of damage (other than from swimming or poison).",
     },
+    [CHAOS_PATCH_NO_HUD] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 15,
 
-    /* GFX Modifiers */
-    [CHAOS_PATCH_MIRROR_MODE] = {
+        .name              = "Cinematic Mode",
+        .shortDescription  = "Gets rid of that pesky HUD so you can appreciate the beauty of Super Mario 64.",
+    },
+    [CHAOS_PATCH_FORCED_MARIO_CAM] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 2,
-        .isStackable       = TRUE,
-        .duration          = 6,
+        .isStackable       = FALSE,
+        .duration          = 8,
 
-        .conditionalFunc   = chs_mq_check,
-        .activatedInitFunc = chs_mq_init,
-        .deactivationFunc  = chs_mq_deinit,
-
-        .name              = "Master Quest",
-        .shortDescription  = "Flip the game. It's always looked like this, I swear!",
+        .name              = "Up Close and Personal",
+        .shortDescription  = "Forces Mario cam.",
     },
+    [CHAOS_PATCH_BOWSER_THROWS] = {
+        .durationType      = CHAOS_DURATION_INFINITE,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 1,
+
+        .name              = "Code That Makes You Miss Bowser Throws",
+        .shortDescription  = "They have that in this game, I swear.",
+    }
 };

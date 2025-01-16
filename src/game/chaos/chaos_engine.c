@@ -376,6 +376,7 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
     }
 
     offsetSeverityWeight = random_float();
+    s32 forcedValue = -1;
 
     // Determine available severity combinations that may be used for selections
     for (s32 i = 1; i < ARRAY_COUNT(posNegPairings); i++) {
@@ -387,13 +388,27 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
         allowedSeverities[i] = FALSE;
 
         // Determine whether to offset pairings of positive and negative effects
-        if (offsetSeverityWeight < 0.10f) {
-            pos++;
-        } else if (offsetSeverityWeight < 0.30f) {
+        if (offsetSeverityWeight < 0.20f) {
+            // 20% chance
             neg++;
+        } else if (offsetSeverityWeight < 0.30f) {
+            // 10% chance
+            pos++;
         } else if (offsetSeverityWeight < 0.40f) {
+            // 10% chance
             pos = 0;
+        } else if (offsetSeverityWeight < 0.50f) {
+            // 10% chance
+            pos = CHAOS_PATCH_SEVERITY_MAX;
+            neg = CHAOS_PATCH_SEVERITY_MAX;
+            forcedValue = CHAOS_PATCH_SEVERITY_MAX;
+        } else if (offsetSeverityWeight < 0.55f) {
+            // 5% chance
+            pos = CHAOS_PATCH_SEVERITY_MAX - 1;
+            neg = CHAOS_PATCH_SEVERITY_MAX - 1;
+            forcedValue = CHAOS_PATCH_SEVERITY_MAX - 1;
         }
+
         if (gChaosDifficulty == CHAOS_DIFFICULTY_EASY) {
             neg--;
         } else if (gChaosDifficulty == CHAOS_DIFFICULTY_HARD) {
@@ -490,6 +505,13 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
     }
 
     chaos_generate_patches(severityCounts, posNegPairings, severityWeights);
+
+    if (forcedValue >= 0) {
+        for (s32 index = 0; index < CHAOS_PATCH_MAX_GENERATABLE; index++) {
+            generatedPatches[index].severityLevel = forcedValue;
+        }
+    }
+
     return generatedPatches;
 }
 

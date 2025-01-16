@@ -40,10 +40,12 @@ enum ChaosPatchID {
     CHAOS_PATCH_GRAVITY_INCREASE_LV2,
     CHAOS_PATCH_GRAVITY_INCREASE_LV3,
 
-// Healing Blockers
+// Health Modifiers
     CHAOS_PATCH_NOHEAL_HEARTS,
     CHAOS_PATCH_NOHEAL_WATER,
     CHAOS_PATCH_NOHEAL_COINS,
+    CHAOS_PATCH_HEALTH_DRAIN,
+    CHAOS_PATCH_HEALTH_GAIN,
 
 // Coin Modifiers
     CHAOS_PATCH_DOUBLE_COINS,
@@ -57,6 +59,7 @@ enum ChaosPatchID {
     CHAOS_PATCH_RANDOM_SLEEP,
     CHAOS_PATCH_RANDOM_SHOCK,
     CHAOS_PATCH_RANDOM_BURN,
+    CHAOS_PATCH_RANDOM_BLIND,
 
 // Movement Modifiers
     CHAOS_PATCH_LOSEMOVE_BREAKDANCE,
@@ -75,10 +78,20 @@ enum ChaosPatchID {
 // Object Spawners
     CHAOS_PATCH_GREEN_DEMON,
 
+// Visual Modifiers
+    CHAOS_PATCH_NO_Z_BUFFER,
+    CHAOS_PATCH_INVERTED_Z_BUFFER,
+    CHAOS_PATCH_UPSIDE_DOWN_CAMERA,
+// Time Limit
+    CHAOS_PATCH_TIME_LIMIT,
+    CHAOS_PATCH_LOWER_TIME_LIMIT,
 // Miscellaneous Modifiers
     CHAOS_PATCH_MARIO_INVISIBLE,
     CHAOS_PATCH_SIGNREAD_FAR,
     CHAOS_PATCH_ONE_HIT_WONDER,
+    CHAOS_PATCH_NO_HUD,
+    CHAOS_PATCH_FORCED_MARIO_CAM,
+    CHAOS_PATCH_BOWSER_THROWS,
 
 // GFX Modifiers
     CHAOS_PATCH_MIRROR_MODE,
@@ -96,9 +109,9 @@ enum ChaosPatchEffectType {
 };
 
 enum ChaosDifficulty {
-    CHAOS_DIFFICULTY_EASY   =  0, // Offsets negative patches such that top severities shouldn't ever show up
-    CHAOS_DIFFICULTY_NORMAL =  1, // Standard difficulty
-    CHAOS_DIFFICULTY_HARD   =  2, // Offsets positive patches such that top severities shouldn't ever show up
+    CHAOS_DIFFICULTY_EASY,   // Offsets negative patches such that top severities should (almost) never show up
+    CHAOS_DIFFICULTY_NORMAL, // Standard difficulty
+    CHAOS_DIFFICULTY_HARD,   // Offsets positive patches such that top severities should (almost) never show up
 };
 
 enum ChaosPatchDurationType {

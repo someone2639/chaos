@@ -6,17 +6,18 @@
 #include "game/area.h"
 #include "game/level_update.h"
 #include "game/mario.h"
+#include "game/print.h"
 
 #include "game/chaos/chaos.h"
 
-#define SLEEP_TIME_MIN  10800
-#define SLEEP_TIME_RAND 10800
+#define SLEEP_TIME_MIN   1800
+#define SLEEP_TIME_RAND  10800
 
-#define SHOCK_TIME_MIN  5400
-#define SHOCK_TIME_RAND 3600
+#define SHOCK_TIME_MIN   900
+#define SHOCK_TIME_RAND  3600
 
-#define BURN_TIME_MIN  5400
-#define BURN_TIME_RAND 3600
+#define BURN_TIME_MIN   900
+#define BURN_TIME_RAND  3600
 
 s16 sRandomSleepTimer = -1;
 s16 sRandomShockTimer = -1;
@@ -99,5 +100,26 @@ void chs_update_random_burn(void) {
         }
     } else {
         sRandomBurnTimer--;
+    }
+}
+
+/*
+    Blinding
+*/
+
+#define BLIND_TIME_MAX      18000
+#define BLIND_TIME_END      18450
+
+void chs_act_random_blind(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_RANDOM_BLIND, &this);
+    this->frameTimer = RAND(BLIND_TIME_MAX); //Get a random offset to start the timer at
+}
+
+void chs_update_random_blind(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_RANDOM_BLIND, &this);
+    if(this->frameTimer > BLIND_TIME_END) {
+        this->frameTimer = RAND(BLIND_TIME_MAX); //Get a random offset to restart the timer at
     }
 }
