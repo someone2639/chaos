@@ -6915,6 +6915,8 @@ sound_ref .sound_menu_camera_buzz
 sound_ref .sound_menu_camera_turn
 sound_ref .sound_menu_curtain_lower
 sound_ref .sound_menu_curtain_raise
+sound_ref .sound_menu_timer_ring
+sound_ref .sound_menu_timer_up
 
 .sound_menu_change_select:
 chan_setbank 9
@@ -7249,6 +7251,26 @@ chan_end
 
 .layer_curtain_raise:
 layer_note1 39, 0x40, 127
+layer_end
+
+.sound_menu_timer_ring:
+chan_setbank 9
+chan_setinstr 9
+chan_setlayer 0, .layer_timer_ring
+chan_end
+
+.layer_timer_ring:
+layer_note1 39, 0x48, 127
+layer_end
+
+.sound_menu_timer_up:
+chan_setbank 9
+chan_setinstr 10
+chan_setlayer 0, .layer_timer_up
+chan_end
+
+.layer_timer_up:
+layer_note1 39, 0x13B, 127
 layer_end
 
 .sound_menu_click_file_select:

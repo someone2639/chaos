@@ -660,7 +660,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .conditionalFunc   = chs_cond_lower_time_limit,
         .activatedInitFunc = chs_act_lower_time_limit,
-        .deactivationFunc  = chs_deact_lower_time_limit,
 
         .name              = "Speedy Comet++",
         .shortDescription  = "Resets the duration for the speedy comet and lowers the time limit by 15 seconds",
