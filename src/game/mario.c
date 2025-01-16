@@ -35,7 +35,6 @@
 #include "rumble_init.h"
 #include "debug.h"
 #include "patch_selection_ui.h"
-#include "rendering_graph_node.h"
 
 u32 unused80339F10;
 u8 unused80339F1C[20];
