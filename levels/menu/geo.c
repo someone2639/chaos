@@ -8,7 +8,6 @@
 #include "game/moving_texture.h"
 #include "game/screen_transition.h"
 #include "game/paintings.h"
-#include "game/rendering_graph_node.h"
 #include "menu/file_select.h"
 #include "menu/star_select.h"
 
@@ -173,7 +172,6 @@ const GeoLayout geo_menu_file_select_strings_and_menu_cursor[] = {
 const GeoLayout geo_menu_act_selector_strings[] = {
    GEO_NODE_SCREEN_AREA(10, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, SCREEN_WIDTH/2, SCREEN_HEIGHT/2),
    GEO_OPEN_NODE(),
-      GEO_ASM(0, geo_invert_off),
       GEO_ZBUFFER(0),
       GEO_OPEN_NODE(),
          GEO_NODE_ORTHO(100),
