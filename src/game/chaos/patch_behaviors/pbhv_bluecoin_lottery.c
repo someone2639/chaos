@@ -21,13 +21,15 @@ u32 slot_semaphore = 0;
 static f32 chanceroll = 0;
 #define CHANCE 0.01f
 
-static f32 globalY = -30;
+#define OFFSCREEN_POS -50.0f
+static f32 globalY = OFFSCREEN_POS;
 u32 timers[NUM_SLOTS] = {
     15,
     23,
     31
 };
 u16 rotations[NUM_SLOTS];
+
 
 enum SlotStates {
     S_STANDBY = 0,
@@ -41,7 +43,7 @@ enum SlotStates {
 
 
 void init_slots(struct Object *oo, f32 chance) {
-    globalY = -30.0f;
+    globalY = OFFSCREEN_POS;
     currCoin = oo;
     chanceroll = chance;
     slot_nextstate = S_GO;
@@ -130,7 +132,7 @@ void drawslots() {
             }
             break;
         case S_SHOWDOWN:
-            globalY = approach_f32_asymptotic(globalY, -30.0f, 0.25f);
+            globalY = approach_f32_asymptotic(globalY, OFFSCREEN_POS, 0.25f);
             if (slot_timer > 10) {
                 slot_nextstate = S_FINISH;
             }
