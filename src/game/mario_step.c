@@ -5,9 +5,11 @@
 #include "engine/surface_collision.h"
 #include "mario.h"
 #include "audio/external.h"
+#include "chaos/chaos.h"
 #include "game_init.h"
 #include "interaction.h"
 #include "mario_step.h"
+#include "obj_behaviors.h"
 
 static s16 sMovingSandSpeeds[] = { 12, 8, 4, 0 };
 
@@ -351,6 +353,10 @@ u32 check_ledge_grab(struct MarioState *m, struct Surface *wall, Vec3f intendedP
     f32 displacementX;
     f32 displacementZ;
 
+    if (chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_LEDGE_GRAB)) {
+        return FALSE;
+    }
+
     if (m->vel[1] > 0) {
         return FALSE;
     }
@@ -536,46 +542,46 @@ void apply_gravity(struct MarioState *m) {
     if (m->action == ACT_TWIRLING && m->vel[1] < 0.0f) {
         apply_twirl_gravity(m);
     } else if (m->action == ACT_SHOT_FROM_CANNON) {
-        m->vel[1] -= 1.0f;
-        if (m->vel[1] < -75.0f) {
-            m->vel[1] = -75.0f;
+        m->vel[1] -= (1.0f * m->gravity);
+        if (m->vel[1] < TERM_VEL(m, -75.0f)) {
+            m->vel[1] = TERM_VEL(m, -75.0f);
         }
     } else if (m->action == ACT_LONG_JUMP || m->action == ACT_SLIDE_KICK
                || m->action == ACT_BBH_ENTER_SPIN) {
-        m->vel[1] -= 2.0f;
-        if (m->vel[1] < -75.0f) {
-            m->vel[1] = -75.0f;
+        m->vel[1] -= (2.0f * m->gravity);
+        if (m->vel[1] < TERM_VEL(m, -75.0f)) {
+            m->vel[1] = TERM_VEL(m, -75.0f);
         }
     } else if (m->action == ACT_LAVA_BOOST || m->action == ACT_FALL_AFTER_STAR_GRAB) {
-        m->vel[1] -= 3.2f;
-        if (m->vel[1] < -65.0f) {
-            m->vel[1] = -65.0f;
+        m->vel[1] -= (3.2f * m->gravity);
+        if (m->vel[1] < TERM_VEL(m, -65.0f)) {
+            m->vel[1] = TERM_VEL(m, -65.0f);
         }
     } else if (m->action == ACT_GETTING_BLOWN) {
-        m->vel[1] -= m->unkC4;
-        if (m->vel[1] < -75.0f) {
-            m->vel[1] = -75.0f;
+        m->vel[1] -= (m->unkC4 * m->gravity);
+        if (m->vel[1] < TERM_VEL(m, -75.0f)) {
+            m->vel[1] = TERM_VEL(m, -75.0f);
         }
     } else if (should_strengthen_gravity_for_jump_ascent(m)) {
-        m->vel[1] /= 4.0f;
+        m->vel[1] /= MAX((4.0f * m->gravity), 1.25f);
     } else if (m->action & ACT_FLAG_METAL_WATER) {
-        m->vel[1] -= 1.6f;
-        if (m->vel[1] < -16.0f) {
-            m->vel[1] = -16.0f;
+        m->vel[1] -= (1.6f * m->gravity);
+        if (m->vel[1] < TERM_VEL(m, -16.0f)) {
+            m->vel[1] = TERM_VEL(m, -16.0f);
         }
     } else if ((m->flags & MARIO_WING_CAP) && m->vel[1] < 0.0f && (m->input & INPUT_A_DOWN)) {
         m->marioBodyState->wingFlutter = TRUE;
 
-        m->vel[1] -= 2.0f;
-        if (m->vel[1] < -37.5f) {
-            if ((m->vel[1] += 4.0f) > -37.5f) {
-                m->vel[1] = -37.5f;
+        m->vel[1] -= (2.0f * m->gravity);
+        if (m->vel[1] < TERM_VEL(m, -37.5f)) {
+            if ((m->vel[1] += (4.0f * m->gravity)) > TERM_VEL(m, -37.5f)) {
+                m->vel[1] = TERM_VEL(m, -37.5f);
             }
         }
     } else {
-        m->vel[1] -= 4.0f;
-        if (m->vel[1] < -75.0f) {
-            m->vel[1] = -75.0f;
+        m->vel[1] -= (4.0f * m->gravity);
+        if (m->vel[1] < TERM_VEL(m, -75.0f)) {
+            m->vel[1] = TERM_VEL(m, -75.0f);
         }
     }
 }

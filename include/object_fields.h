@@ -398,12 +398,11 @@
 #define /*0x1AC*/ oCloudFwooshMovementRadius OBJECT_FIELD_S16(0x49, 0)
 
 /* Coin */
-#define /*0x0F4*/ oCoinUnkF4  OBJECT_FIELD_S32(0x1B)
-#define /*0x0F8*/ oCoinUnkF8  OBJECT_FIELD_S32(0x1C)
-#define /*0x110*/ oCoinUnk110 OBJECT_FIELD_F32(0x22)
-#ifndef VERSION_JP
-#define /*0x1B0*/ oCoinUnk1B0 OBJECT_FIELD_S32(0x4A)
-#endif
+#define /*0x0F4*/ oCoinRespawnBits   OBJECT_FIELD_S32(0x1B)
+#define /*0x0F8*/ oCoinSnapToGround  OBJECT_FIELD_S32(0x1C)
+#define /*0x110*/ oCoinBaseYVel      OBJECT_FIELD_F32(0x22)
+#define /*0x1AC*/ oDroppedCoinBounce OBJECT_FIELD_S32(0x49)
+#define /*0x1B0*/ oCoinBounceTimer   OBJECT_FIELD_S32(0x4A)
 
 /* Collision Particle */
 #define /*0x0F4*/ oCollisionParticleUnkF4 OBJECT_FIELD_F32(0x1B)
@@ -668,6 +667,8 @@
 #define /*0x104*/ oMenuButtonOrigPosZ    OBJECT_FIELD_F32(0x1F)
 #define /*0x108*/ oMenuButtonScale       OBJECT_FIELD_F32(0x20)
 #define /*0x10C*/ oMenuButtonActionPhase OBJECT_FIELD_S32(0x21)
+#define /*0x110*/ oMenuButtonDiffCol     OBJECT_FIELD_S32(0x22)
+#define /*0x1AC*/ oMenuButtonChalCol     OBJECT_FIELD_S32(0x49)
 
 /* Manta Ray */
 #define /*0x0F4*/ oMantaTargetPitch OBJECT_FIELD_S32(0x1B)

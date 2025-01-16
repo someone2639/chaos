@@ -15,7 +15,9 @@
 #include "print.h"
 #include "hud.h"
 #include "audio/external.h"
+#include "chaos/chaos.h"
 #include "area.h"
+#include "fasttext.h"
 #include "rendering_graph_node.h"
 #include "level_update.h"
 #include "engine/geo_layout.h"
@@ -363,7 +365,16 @@ void drawslots();
 void render_game(void) {
     if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
         if(!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_STOP_GAME_RENDER)) {
-            geo_process_root(gCurrentArea->unk04, D_8032CE74, D_8032CE78, gFBSetColor);
+            geo_process_root(gCurrentArea->unk04, D_8032CE74, D_8032CE78, gFBSetColor);             
+        }
+
+        //Random blind patch
+        if(chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_BLIND)) {
+            struct ChaosActiveEntry *chaosBlind;
+            chaos_find_first_active_patch(CHAOS_PATCH_RANDOM_BLIND, &chaosBlind);    
+            if(chaosBlind->frameTimer > 18000) {
+                clear_framebuffer(0);
+            }
         }
 
         gSPViewport(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(&D_8032CF00));
@@ -388,6 +399,27 @@ void render_game(void) {
         if (gMenuOptSelectIndex != 0) {
             gSaveOptSelectIndex = gMenuOptSelectIndex;
         }
+
+#ifdef CHAOS_ENGINE_DEBUG
+        static u8 chaosDebugRender = FALSE;
+        if (gPlayer1Controller->buttonPressed & R_JPAD) {
+            chaosDebugRender ^= TRUE;
+        }
+
+        if (chaosDebugRender && gChaosActiveEntryCount) {
+            gFasttextTmpBuffer[0] = '\0';
+            s32 length = 0;
+            for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+                struct ChaosActiveEntry *entry = &gChaosActiveEntries[i];
+
+                length += sprintf(&gFasttextTmpBuffer[length], "%d, 0x%06X, %s\n", entry->remainingDuration, entry->frameTimer, gChaosPatches[entry->id].name);
+            }
+
+            fasttext_setup_textrect_rendering(FT_FONT_SMALL_BOLD);
+            fasttext_draw_texrect(16, 32, gFasttextTmpBuffer, FT_FLAG_ALIGN_LEFT, 255, 255, 255, 255);
+            fasttext_finished_rendering();
+        }
+#endif
 
         if (D_8032CE78 != NULL) {
             make_viewport_clip_rect(D_8032CE78);

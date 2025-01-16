@@ -55,11 +55,16 @@ void bhv_hidden_star_trigger_loop(void) {
 }
 
 void bhv_bowser_course_red_coin_star_loop(void) {
+    s32 coinRequirement = 8;
+    if (chaos_check_if_patch_active(CHAOS_PATCH_6_RED_COINS)) {
+        coinRequirement = 6;
+    }
+
     gRedCoinsCollected = o->oHiddenStarTriggerCounter;
 
     switch (o->oAction) {
         case 0:
-            if (o->oHiddenStarTriggerCounter == 8) {
+            if (o->oHiddenStarTriggerCounter == coinRequirement) {
                 o->oAction = 1;
             }
             break;
@@ -68,8 +73,11 @@ void bhv_bowser_course_red_coin_star_loop(void) {
             if (o->oTimer > 2) {
                 spawn_no_exit_star(o->oPosX, o->oPosY, o->oPosZ);
                 spawn_mist_particles();
-                o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
+                o->oAction = 2;
             }
+            break;
+
+        case 2:
             break;
     }
 }

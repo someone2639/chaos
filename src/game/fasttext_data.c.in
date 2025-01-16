@@ -1033,7 +1033,7 @@ const struct FastTextProps gFasttextFonts[FT_FONT_COUNT] = {
         .subFromLength = 1,
         .textureWidth = 608,
         .textureHeight = 12,
-        .lineHeight = 14,
+        .lineHeight = 13,
         .averageCharHeight = 8,
     },
     [FT_FONT_SMALL_BOLD] = {
@@ -1046,7 +1046,7 @@ const struct FastTextProps gFasttextFonts[FT_FONT_COUNT] = {
         .subFromLength = 1,
         .textureWidth = 560,
         .textureHeight = 12,
-        .lineHeight = 13,
+        .lineHeight = 12,
         .averageCharHeight = 7,
     },
     [FT_FONT_SMALL_THIN] = {
@@ -1059,7 +1059,7 @@ const struct FastTextProps gFasttextFonts[FT_FONT_COUNT] = {
         .subFromLength = 1,
         .textureWidth = 480,
         .textureHeight = 12,
-        .lineHeight = 13,
+        .lineHeight = 12,
         .averageCharHeight = 7,
     },
     [FT_FONT_VANILLA_SHADOW] = {
@@ -1072,7 +1072,7 @@ const struct FastTextProps gFasttextFonts[FT_FONT_COUNT] = {
         .subFromLength = 1,
         .textureWidth = 528,
         .textureHeight = 14,
-        .lineHeight = 14,
+        .lineHeight = 13,
         .averageCharHeight = 10,
     },
     [FT_FONT_LARGE] = {
@@ -1085,7 +1085,7 @@ const struct FastTextProps gFasttextFonts[FT_FONT_COUNT] = {
         .subFromLength = 1,
         .textureWidth = 496,
         .textureHeight = 16,
-        .lineHeight = 19,
+        .lineHeight = 18,
         .averageCharHeight = 10,
     },
     [FT_FONT_HEADING] = {
@@ -1098,7 +1098,7 @@ const struct FastTextProps gFasttextFonts[FT_FONT_COUNT] = {
         .subFromLength = 1,
         .textureWidth = 400,
         .textureHeight = 16,
-        .lineHeight = 20,
+        .lineHeight = 19,
         .averageCharHeight = 12,
     },
     [FT_FONT_SMALLHEX] = {

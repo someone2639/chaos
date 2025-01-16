@@ -8,6 +8,7 @@
 
 #include "game/area.h"
 #include "game/level_update.h"
+#include "game/chaos/chaos.h"
 #include "menu/file_select.h"
 #include "menu/star_select.h"
 
@@ -17,6 +18,12 @@
 
 #include "make_const_nonconst.h"
 #include "levels/menu/header.h"
+
+const LevelScript fast64_menu_loads[] = {
+	LOAD_MODEL_FROM_GEO(MODEL_CHAOS_SAVE_BUTTON, chaos_save_button_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_CHAOS_SCORE_BUTTON, chaos_save_button_score_geo),
+	RETURN(),
+};
 
 const LevelScript level_main_menu_entry_1[] = {
     INIT_LEVEL(),
@@ -34,6 +41,7 @@ const LevelScript level_main_menu_entry_1[] = {
     LOAD_MODEL_FROM_GEO(MODEL_MAIN_MENU_MARIO_NEW_BUTTON_FADE,  geo_menu_mario_new_button_fade),
     LOAD_MODEL_FROM_GEO(MODEL_MAIN_MENU_PURPLE_SOUND_BUTTON,    geo_menu_sound_button),
     LOAD_MODEL_FROM_GEO(MODEL_MAIN_MENU_GENERIC_BUTTON,         geo_menu_generic_button),
+	JUMP_LINK(fast64_menu_loads),
 
     AREA(/*index*/ 1, geo_menu_file_select_strings_and_menu_cursor),
         OBJECT(/*model*/ MODEL_NONE,         /*pos*/ 0, 0, -19000, /*angle*/ 0, 0, 0, /*behParam*/ 0x04000000, /*beh*/ bhvMenuButtonManager),

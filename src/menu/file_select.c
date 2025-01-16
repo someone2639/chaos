@@ -21,8 +21,11 @@
 #include "game/rumble_init.h"
 #include "sm64.h"
 #include "text_strings.h"
-
+#include "gamemode_select.h"
 #include "eu_translation.h"
+#include "game/rendering_graph_node.h"
+#include "game/debug.h"
+#include "levels/menu/chaos_save_button/geo_header.h"
 #ifdef VERSION_EU
 #undef LANGUAGE_FUNCTION
 #define LANGUAGE_FUNCTION sLanguageMode
@@ -325,6 +328,98 @@ s32 check_clicked_button(s16 x, s16 y, f32 depth) {
     return FALSE;
 }
 
+/*
+    Sets the colors for a menu button based on the gamemode of the save file in saveIndex
+*/
+void menu_button_update_gamemode_colors_from_save(struct Object *button, s32 saveIndex) {
+    button->oMenuButtonDiffCol = save_file_get_difficulty(saveIndex);
+    button->oMenuButtonChalCol = save_file_get_challenge_mode(saveIndex);
+}
+
+/**
+ * Loads a save file selected after it goes into a full screen state
+ * retuning sSelectedFileNum to a save value defined in fileNum.
+ */
+void load_main_menu_save_file(struct Object *fileButton, s32 fileNum) {
+    if (fileButton->oMenuButtonState == MENU_BUTTON_STATE_FULLSCREEN) {
+        sSelectedFileNum = fileNum;
+    }
+}
+
+/*
+    Updates the new game creation menu
+*/
+static void bhv_menu_button_new_game_create(struct Object *button) {
+    s32 fileNum = 0;
+    s32 difficulty = sGamemodeSelectMenu.selectedDifficulty;
+    s32 challenge = sGamemodeSelectMenu.selectedChallenge;
+    s32 complete = 0;
+    button->oMenuButtonDiffCol = difficulty;
+    button->oMenuButtonChalCol = challenge;
+    switch(sSelectedButtonID) {
+        case MENU_BUTTON_PLAY_FILE_A:
+            fileNum = 1;
+            break;
+        case MENU_BUTTON_PLAY_FILE_B:
+            fileNum = 2;
+            break;
+        case MENU_BUTTON_PLAY_FILE_C:
+            fileNum = 3;
+            break;
+        case MENU_BUTTON_PLAY_FILE_D:
+            fileNum = 4;
+            break;
+    }
+    sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_ACTIVE;
+    complete = update_gamemode_select();
+    if(complete == 1) {
+        save_file_set_gamemode((fileNum - 1), difficulty, challenge);
+        sSelectedFileNum = fileNum;
+    } else if (complete == -1) {
+        sGamemodeSelectMenu.menu.flags  &= ~GAMEMODE_SELECT_FLAG_ACTIVE;
+        button->oMenuButtonState = MENU_BUTTON_STATE_RETURN_NEW_GAME_ANIM;
+        button->oMenuButtonTimer = 0;
+        button->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MAIN_MENU_MARIO_NEW_BUTTON_FADE];
+    }
+}
+
+/*
+    Grows and moves to the top corner of the screen
+*/
+static void bhv_menu_button_new_game_anim(struct Object *button) {
+    button->oParentRelativePosX -= (button->oMenuButtonOrigPosX + 600) / 14.0;
+    button->oParentRelativePosY -= (button->oMenuButtonOrigPosY - 600) / 14.0;
+    if (button->oPosZ < button->oMenuButtonOrigPosZ + 17800.0) {
+        button->oParentRelativePosZ += 1112.5;
+    }
+    button->oMenuButtonTimer++;
+    if (button->oMenuButtonTimer == 14) {
+        button->oParentRelativePosX = -600.0f;
+        button->oParentRelativePosY = 600.0f;
+        button->oMenuButtonState = MENU_BUTTON_STATE_NEW_GAME_CREATE;
+        button->oMenuButtonTimer = 0;
+    }
+}
+
+/*
+    Shrinks and moves back to its original position
+*/
+static void bhv_menu_button_return_new_game_anim(struct Object *button) {
+    button->oParentRelativePosX += (button->oMenuButtonOrigPosX + 600) / 14.0;
+    button->oParentRelativePosY += (button->oMenuButtonOrigPosY - 600) / 14.0;
+    if (button->oPosZ > button->oMenuButtonOrigPosZ) {
+        button->oParentRelativePosZ -= 1112.5;
+    }
+    button->oMenuButtonTimer++;
+    if (button->oMenuButtonTimer == 14) {
+        button->oParentRelativePosX = button->oMenuButtonOrigPosX;
+        button->oParentRelativePosY = button->oMenuButtonOrigPosY;
+        button->oMenuButtonState = MENU_BUTTON_STATE_DEFAULT;
+        button->oMenuButtonTimer = 0;
+        sSelectedButtonID = MENU_BUTTON_NONE;
+    }
+}
+
 /**
  * Grow from main menu, used by selecting files and menus.
  */
@@ -539,6 +634,21 @@ void bhv_menu_button_loop(void) {
             bhv_menu_button_zoom_out(gCurrentObject);
             sCursorClickingTimer = 4;
             break;
+        case MENU_BUTTON_STATE_NEW_GAME_ANIM:
+            bhv_menu_button_new_game_anim(gCurrentObject);
+            sTextBaseAlpha = 0;
+            sCursorClickingTimer = 4;
+            break;
+        case MENU_BUTTON_STATE_NEW_GAME_CREATE:
+            bhv_menu_button_new_game_create(gCurrentObject);
+            sTextBaseAlpha = 0;
+            break;
+        case MENU_BUTTON_STATE_RETURN_NEW_GAME_ANIM:
+            bhv_menu_button_return_new_game_anim(gCurrentObject);
+            sTextBaseAlpha = 0;
+            sCursorClickingTimer = 4;
+            break;
+
     }
     cur_obj_scale(gCurrentObject->oMenuButtonScale);
 }
@@ -573,8 +683,9 @@ void render_score_menu_buttons(struct Object *scoreButton) {
     // File A
     if (save_file_exists(SAVE_FILE_A) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_A] =
-            spawn_object_rel_with_rot(scoreButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton,
+            spawn_object_rel_with_rot(scoreButton, MODEL_CHAOS_SCORE_BUTTON, bhvMenuButton,
                                       711, 311, -100, 0, -0x8000, 0);
+        menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_SCORE_FILE_A], 0);
     } else {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_A] =
             spawn_object_rel_with_rot(scoreButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, 711,
@@ -584,8 +695,9 @@ void render_score_menu_buttons(struct Object *scoreButton) {
     // File B
     if (save_file_exists(SAVE_FILE_B) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_B] =
-            spawn_object_rel_with_rot(scoreButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton,
+            spawn_object_rel_with_rot(scoreButton, MODEL_CHAOS_SCORE_BUTTON, bhvMenuButton,
                                       -166, 311, -100, 0, -0x8000, 0);
+        menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_SCORE_FILE_B], 1);
     } else {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_B] =
             spawn_object_rel_with_rot(scoreButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton,
@@ -595,7 +707,8 @@ void render_score_menu_buttons(struct Object *scoreButton) {
     // File C
     if (save_file_exists(SAVE_FILE_C) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_C] = spawn_object_rel_with_rot(
-            scoreButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
+            scoreButton, MODEL_CHAOS_SCORE_BUTTON, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
+        menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_SCORE_FILE_C], 2);
     } else {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_C] = spawn_object_rel_with_rot(
             scoreButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
@@ -604,8 +717,9 @@ void render_score_menu_buttons(struct Object *scoreButton) {
     // File D
     if (save_file_exists(SAVE_FILE_D) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_D] =
-            spawn_object_rel_with_rot(scoreButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton,
+            spawn_object_rel_with_rot(scoreButton, MODEL_CHAOS_SCORE_BUTTON, bhvMenuButton,
                                       -166, 0, -100, 0, -0x8000, 0);
+        menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_SCORE_FILE_D], 3);
     } else {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_D] = spawn_object_rel_with_rot(
             scoreButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, -166, 0, -100, 0, -0x8000, 0);
@@ -696,8 +810,9 @@ void render_copy_menu_buttons(struct Object *copyButton) {
     // File A
     if (save_file_exists(SAVE_FILE_A) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_COPY_FILE_A] =
-            spawn_object_rel_with_rot(copyButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton, 711,
+            spawn_object_rel_with_rot(copyButton, MODEL_CHAOS_SAVE_BUTTON, bhvMenuButton, 711,
                                       311, -100, 0, -0x8000, 0);
+        menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_COPY_FILE_A], 0);
     } else {
         sMainMenuButtons[MENU_BUTTON_COPY_FILE_A] = spawn_object_rel_with_rot(
             copyButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, 711, 311, -100, 0, -0x8000, 0);
@@ -706,8 +821,9 @@ void render_copy_menu_buttons(struct Object *copyButton) {
     // File B
     if (save_file_exists(SAVE_FILE_B) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_COPY_FILE_B] =
-            spawn_object_rel_with_rot(copyButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton,
+            spawn_object_rel_with_rot(copyButton, MODEL_CHAOS_SAVE_BUTTON, bhvMenuButton,
                                       -166, 311, -100, 0, -0x8000, 0);
+        menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_COPY_FILE_B], 1);
     } else {
         sMainMenuButtons[MENU_BUTTON_COPY_FILE_B] =
             spawn_object_rel_with_rot(copyButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, -166,
@@ -717,7 +833,8 @@ void render_copy_menu_buttons(struct Object *copyButton) {
     // File C
     if (save_file_exists(SAVE_FILE_C) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_COPY_FILE_C] = spawn_object_rel_with_rot(
-            copyButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
+            copyButton, MODEL_CHAOS_SAVE_BUTTON, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
+        menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_COPY_FILE_C], 2);
     } else {
         sMainMenuButtons[MENU_BUTTON_COPY_FILE_C] = spawn_object_rel_with_rot(
             copyButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
@@ -726,7 +843,8 @@ void render_copy_menu_buttons(struct Object *copyButton) {
     // File D
     if (save_file_exists(SAVE_FILE_D) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_COPY_FILE_D] = spawn_object_rel_with_rot(
-            copyButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton, -166, 0, -100, 0, -0x8000, 0);
+            copyButton, MODEL_CHAOS_SAVE_BUTTON, bhvMenuButton, -166, 0, -100, 0, -0x8000, 0);
+        menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_COPY_FILE_D], 3);
     } else {
         sMainMenuButtons[MENU_BUTTON_COPY_FILE_D] = spawn_object_rel_with_rot(
             copyButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, -166, 0, -100, 0, -0x8000, 0);
@@ -798,9 +916,12 @@ void copy_action_file_button(struct Object *copyButton, s32 copyFileButtonID) {
                 sMainMenuTimer = 0;
                 save_file_copy(sSelectedFileIndex, copyFileButtonID - MENU_BUTTON_COPY_MIN);
                 sMainMenuButtons[copyFileButtonID]->header.gfx.sharedChild =
-                    gLoadedGraphNodes[MODEL_MAIN_MENU_MARIO_SAVE_BUTTON_FADE];
+                    gLoadedGraphNodes[MODEL_CHAOS_SAVE_BUTTON];
                 sMainMenuButtons[copyFileButtonID - MENU_BUTTON_COPY_MIN]->header.gfx.sharedChild =
-                    gLoadedGraphNodes[MODEL_MAIN_MENU_MARIO_SAVE_BUTTON_FADE];
+                    gLoadedGraphNodes[MODEL_CHAOS_SAVE_BUTTON];
+                s32 saveIndex = copyFileButtonID - MENU_BUTTON_COPY_MIN;
+                menu_button_update_gamemode_colors_from_save(sMainMenuButtons[copyFileButtonID], saveIndex);
+                menu_button_update_gamemode_colors_from_save(sMainMenuButtons[copyFileButtonID - MENU_BUTTON_COPY_MIN], saveIndex);
             } else {
                 // If clicked in a existing save file, play buzz sound
                 if (MENU_BUTTON_COPY_FILE_A + sSelectedFileIndex == copyFileButtonID) {
@@ -885,8 +1006,9 @@ void render_erase_menu_buttons(struct Object *eraseButton) {
     // File A
     if (save_file_exists(SAVE_FILE_A) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_ERASE_FILE_A] =
-            spawn_object_rel_with_rot(eraseButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton,
+            spawn_object_rel_with_rot(eraseButton, MODEL_CHAOS_SAVE_BUTTON, bhvMenuButton,
                                       711, 311, -100, 0, -0x8000, 0);
+            menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_ERASE_FILE_A], 0);
     } else {
         sMainMenuButtons[MENU_BUTTON_ERASE_FILE_A] =
             spawn_object_rel_with_rot(eraseButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, 711,
@@ -896,8 +1018,9 @@ void render_erase_menu_buttons(struct Object *eraseButton) {
     // File B
     if (save_file_exists(SAVE_FILE_B) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_ERASE_FILE_B] =
-            spawn_object_rel_with_rot(eraseButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton,
+            spawn_object_rel_with_rot(eraseButton, MODEL_CHAOS_SAVE_BUTTON, bhvMenuButton,
                                       -166, 311, -100, 0, -0x8000, 0);
+            menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_ERASE_FILE_B], 1);
     } else {
         sMainMenuButtons[MENU_BUTTON_ERASE_FILE_B] =
             spawn_object_rel_with_rot(eraseButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton,
@@ -907,7 +1030,8 @@ void render_erase_menu_buttons(struct Object *eraseButton) {
     // File C
     if (save_file_exists(SAVE_FILE_C) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_ERASE_FILE_C] = spawn_object_rel_with_rot(
-            eraseButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
+            eraseButton, MODEL_CHAOS_SAVE_BUTTON, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
+            menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_ERASE_FILE_C], 2);
     } else {
         sMainMenuButtons[MENU_BUTTON_ERASE_FILE_C] = spawn_object_rel_with_rot(
             eraseButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
@@ -916,8 +1040,9 @@ void render_erase_menu_buttons(struct Object *eraseButton) {
     // File D
     if (save_file_exists(SAVE_FILE_D) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_ERASE_FILE_D] =
-            spawn_object_rel_with_rot(eraseButton, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, bhvMenuButton,
+            spawn_object_rel_with_rot(eraseButton, MODEL_CHAOS_SAVE_BUTTON, bhvMenuButton,
                                       -166, 0, -100, 0, -0x8000, 0);
+            menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_ERASE_FILE_D], 3);
     } else {
         sMainMenuButtons[MENU_BUTTON_ERASE_FILE_D] = spawn_object_rel_with_rot(
             eraseButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, -166, 0, -100, 0, -0x8000, 0);
@@ -1152,16 +1277,6 @@ void check_sound_mode_menu_clicked_buttons(struct Object *soundModeButton) {
 }
 
 /**
- * Loads a save file selected after it goes into a full screen state
- * retuning sSelectedFileNum to a save value defined in fileNum.
- */
-void load_main_menu_save_file(struct Object *fileButton, s32 fileNum) {
-    if (fileButton->oMenuButtonState == MENU_BUTTON_STATE_FULLSCREEN) {
-        sSelectedFileNum = fileNum;
-    }
-}
-
-/**
  * Returns from the previous menu back to the main menu using
  * the return button (or sound mode) as source button.
  */
@@ -1333,8 +1448,9 @@ void bhv_menu_button_manager_init(void) {
     // File A
     if (save_file_exists(SAVE_FILE_A) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_A] =
-            spawn_object_rel_with_rot(gCurrentObject, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON_FADE,
+            spawn_object_rel_with_rot(gCurrentObject, MODEL_CHAOS_SAVE_BUTTON,
                                       bhvMenuButton, -6400, 2800, 0, 0, 0, 0);
+        menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_PLAY_FILE_A], 0);
     } else {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_A] =
             spawn_object_rel_with_rot(gCurrentObject, MODEL_MAIN_MENU_MARIO_NEW_BUTTON_FADE,
@@ -1344,8 +1460,9 @@ void bhv_menu_button_manager_init(void) {
     // File B
     if (save_file_exists(SAVE_FILE_B) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_B] =
-            spawn_object_rel_with_rot(gCurrentObject, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON_FADE,
+            spawn_object_rel_with_rot(gCurrentObject, MODEL_CHAOS_SAVE_BUTTON,
                                       bhvMenuButton, 1500, 2800, 0, 0, 0, 0);
+        menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_PLAY_FILE_B], 1);
     } else {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_B] =
             spawn_object_rel_with_rot(gCurrentObject, MODEL_MAIN_MENU_MARIO_NEW_BUTTON_FADE,
@@ -1355,8 +1472,9 @@ void bhv_menu_button_manager_init(void) {
     // File C
     if (save_file_exists(SAVE_FILE_C) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_C] =
-            spawn_object_rel_with_rot(gCurrentObject, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON_FADE,
+            spawn_object_rel_with_rot(gCurrentObject, MODEL_CHAOS_SAVE_BUTTON,
                                       bhvMenuButton, -6400, 0, 0, 0, 0, 0);
+        menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_PLAY_FILE_C], 2);
     } else {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_C] = spawn_object_rel_with_rot(
             gCurrentObject, MODEL_MAIN_MENU_MARIO_NEW_BUTTON_FADE, bhvMenuButton, -6400, 0, 0, 0, 0, 0);
@@ -1365,7 +1483,8 @@ void bhv_menu_button_manager_init(void) {
     // File D
     if (save_file_exists(SAVE_FILE_D) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_D] = spawn_object_rel_with_rot(
-            gCurrentObject, MODEL_MAIN_MENU_MARIO_SAVE_BUTTON_FADE, bhvMenuButton, 1500, 0, 0, 0, 0, 0);
+            gCurrentObject, MODEL_CHAOS_SAVE_BUTTON, bhvMenuButton, 1500, 0, 0, 0, 0, 0);
+        menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_PLAY_FILE_D], 3);
     } else {
         sMainMenuButtons[MENU_BUTTON_PLAY_FILE_D] = spawn_object_rel_with_rot(
             gCurrentObject, MODEL_MAIN_MENU_MARIO_NEW_BUTTON_FADE, bhvMenuButton, 1500, 0, 0, 0, 0, 0);
@@ -1389,6 +1508,8 @@ void bhv_menu_button_manager_init(void) {
     sMainMenuButtons[MENU_BUTTON_SOUND_MODE]->oMenuButtonScale = 1.0f;
 
     sTextBaseAlpha = 0;
+
+    init_gamemode_select();
 }
 
 #ifdef VERSION_JP
@@ -1420,6 +1541,35 @@ void check_main_menu_clicked_buttons(void) {
                 s16 buttonY = sMainMenuButtons[buttonID]->oPosY;
 
                 if (check_clicked_button(buttonX, buttonY, 200.0f) == TRUE) {
+                    s32 checkFile = -1;
+                    //Check if the button clicked was a new save file, and if so go to new game creation
+                    switch(buttonID) {
+                        case MENU_BUTTON_PLAY_FILE_A:
+                            checkFile = SAVE_FILE_A;
+                            break;
+                        case MENU_BUTTON_PLAY_FILE_B:
+                            checkFile = SAVE_FILE_B;
+                            break;
+                        case MENU_BUTTON_PLAY_FILE_C:
+                            checkFile = SAVE_FILE_C;
+                            break;
+                        case MENU_BUTTON_PLAY_FILE_D:
+                            checkFile = SAVE_FILE_D;
+                            break;
+                    }
+                    if(checkFile > -1) {
+                        if(!save_file_exists(checkFile)) {
+                            sMainMenuButtons[buttonID]->header.gfx.sharedChild =
+                                gLoadedGraphNodes[MODEL_CHAOS_SAVE_BUTTON];
+                            sMainMenuButtons[buttonID]->oMenuButtonDiffCol = 1;
+                            sMainMenuButtons[buttonID]->oMenuButtonChalCol = 0;
+                            sMainMenuButtons[buttonID]->oMenuButtonState = MENU_BUTTON_STATE_NEW_GAME_ANIM;
+                            sSelectedButtonID = buttonID;
+                            play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
+                            return; //Return early to skip playing the regular sound effect
+                        }
+                    }
+                
                     // If menu button clicked, select it
                     sMainMenuButtons[buttonID]->oMenuButtonState = MENU_BUTTON_STATE_GROWING;
                     sSelectedButtonID = buttonID;
@@ -1510,6 +1660,9 @@ void check_main_menu_clicked_buttons(void) {
  * is loaded, and that checks what buttonID is clicked in the main menu.
  */
 void bhv_menu_button_manager_loop(void) {
+    if(sGamemodeSelectMenu.menu.flags & GAMEMODE_SELECT_FLAG_ACTIVE) {
+        return;
+    }
     switch (sSelectedButtonID) {
         case MENU_BUTTON_NONE:
             check_main_menu_clicked_buttons();
@@ -1634,6 +1787,9 @@ void bhv_menu_button_manager_loop(void) {
  * If the cursor is clicked, sClickPos uses the same value as sCursorPos.
  */
 void handle_cursor_button_input(void) {
+    if(sGamemodeSelectMenu.menu.flags & GAMEMODE_SELECT_FLAG_ACTIVE) {
+        return;
+    }
     // If scoring a file, pressing A just changes the coin score mode.
     if (sSelectedButtonID == MENU_BUTTON_SCORE_FILE_A || sSelectedButtonID == MENU_BUTTON_SCORE_FILE_B
         || sSelectedButtonID == MENU_BUTTON_SCORE_FILE_C
@@ -2854,8 +3010,12 @@ static void print_file_select_strings(void) {
  */
 Gfx *geo_file_select_strings_and_menu_cursor(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx) {
     if (callContext == GEO_CONTEXT_RENDER) {
-        print_file_select_strings();
-        print_menu_cursor();
+        if(sGamemodeSelectMenu.menu.flags & GAMEMODE_SELECT_FLAG_ACTIVE) {
+            render_gamemode_select();
+        } else {
+            print_file_select_strings();
+            print_menu_cursor();
+        }
     }
     return NULL;
 }
@@ -2930,6 +3090,60 @@ s32 lvl_init_menu_values_and_cursor_pos(UNUSED s32 arg, UNUSED s32 unused) {
 s32 lvl_update_obj_and_load_file_selected(UNUSED s32 arg, UNUSED s32 unused) {
     area_update_objects();
     return sSelectedFileNum;
+}
+
+static u8 sDifficultyColors[][3] = {
+    {0x10, 0xF0, 0x20},         //Easy
+    {0xFF, 0xFF, 0xFF},         //Normal
+    {0xF0, 0x20, 0x10},         //Hard
+};
+
+Gfx *geo_file_select_change_difficulty_color(s32 callContext, struct GraphNode *node, UNUSED Mat4 mtx) {
+    if(callContext == GEO_CONTEXT_RENDER) {
+        struct GraphNodeGenerated *this = (struct GraphNodeGenerated *)node;
+        struct Object *nodeObj = (struct Object *) gCurGraphNodeObject;
+        u8 difficulty = nodeObj->oMenuButtonDiffCol;
+        u8 r = sDifficultyColors[difficulty][0];
+        u8 g = sDifficultyColors[difficulty][1];
+        u8 b = sDifficultyColors[difficulty][2];
+        Gfx* dl = alloc_display_list(sizeof(Gfx) * 3);
+        Gfx* head = dl;
+
+        this->fnNode.node.flags = 0x100 | (this->fnNode.node.flags & 0xFF);
+        gDPPipeSync(head++);
+        gDPSetPrimColor(head++, 0, 0, r, g, b, 0xFF);
+        gSPEndDisplayList(head++);
+
+        return dl;
+    }
+
+    return NULL;
+}
+
+Gfx *geo_file_select_change_challenge_texture(s32 callContext, struct GraphNode *node, UNUSED Mat4 mtx) {
+    if(callContext == GEO_CONTEXT_RENDER) {
+        struct GraphNodeGenerated *this = (struct GraphNodeGenerated *)node;
+        struct Object *nodeObj = (struct Object *) gCurGraphNodeObject;
+        u8 challenge = nodeObj->oMenuButtonChalCol;
+        u8 *texture;
+        if(challenge) {
+            texture = chaos_save_button_save_icon_mario_face_challenge_rgba16;
+        } else {
+            texture = chaos_save_button_save_icon_mario_face_rgba16;
+        }
+        Gfx* dl = alloc_display_list(sizeof(Gfx) * 3);
+        Gfx* head = dl;
+
+        ((this->fnNode.node.flags) = ((this->fnNode.node.flags) & 0x00FF) | (((LAYER_TRANSPARENT_DECAL) << 8) & 0xFF00));
+
+        gDPPipeSync(head++);
+        gDPSetTextureImage(head++, G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 1, texture);
+        gSPEndDisplayList(head++);
+
+        return dl;
+    }
+
+    return NULL;
 }
 
 STATIC_ASSERT(SOUND_MODE_COUNT == MENU_BUTTON_SOUND_OPTION_MAX - MENU_BUTTON_SOUND_OPTION_MIN, "Mismatch between number of sound modes in audio code and file select!");

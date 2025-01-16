@@ -25,6 +25,9 @@
 #define TEXT_PAUSE _("PAUSE") // Pause text, Castle Courses
 #define TEXT_HUD_CONGRATULATIONS _("CONGRATULATIONS") // Course Complete Text, Bowser Courses
 
+#define TEXT_HUD_BGM_ON _("MUSIC: ON")
+#define TEXT_HUD_BGM_OFF _("MUSIC: OFF")
+#define TEXT_HUD_PRESS_R _("PRESS R TO SWITCH")
 #ifdef WIDE
 #define TEXT_HUD_CURRENT_RATIO_43 _("ASPECT RATIO: 4:3")
 #define TEXT_HUD_CURRENT_RATIO_169 _("ASPECT RATIO: 16:9")
@@ -195,6 +198,7 @@
 #define TEXT_MYSCORE _("MYSCORE")
 #define TEXT_CONTINUE _("CONTINUE")
 #define TEXT_EXIT_COURSE _("EXIT COURSE")
+#define TEXT_EXIT_COURSE_WITH_DEATH _("EXIT COURSE WITH DEATH")
 #ifndef VERSION_EU // "R" text is different in EU
 #define TEXT_CAMERA_ANGLE_R _("SET CAMERA ANGLE WITH R")
 #endif

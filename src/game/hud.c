@@ -13,6 +13,7 @@
 #include "area.h"
 #include "save_file.h"
 #include "print.h"
+#include "fasttext.h"
 
 /* @file hud.c
  * This file implements HUD rendering and power meter animations.
@@ -408,7 +409,7 @@ void render_hud_camera_status(void) {
 void render_hud(void) {
     s16 hudDisplayFlags = gHudDisplay.flags;
 
-    if (hudDisplayFlags == HUD_DISPLAY_NONE) {
+    if (hudDisplayFlags == HUD_DISPLAY_NONE || chaos_check_if_patch_active(CHAOS_PATCH_NO_HUD)) {
         sPowerMeterHUD.animation = POWER_METER_HIDDEN;
         sPowerMeterStoredHealth = 8;
         sPowerMeterVisibleTimer = 0;
@@ -434,11 +435,9 @@ void render_hud(void) {
             render_hud_cannon_reticle();
         }
 
-#ifndef DISABLE_LIVES
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES) {
+        if (gChaosLivesEnabled && (hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES)) {
             render_hud_mario_lives();
         }
-#endif
 
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_COIN_COUNT) {
             render_hud_coins();
@@ -459,6 +458,33 @@ void render_hud(void) {
 
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_TIMER) {
             render_hud_timer();
+        }
+    }
+
+    //CHAOS_PATCH_TIME_LIMIT timer display
+    if(chaos_check_if_patch_active(CHAOS_PATCH_TIME_LIMIT)) {
+        struct ChaosActiveEntry *chaosTimer;
+        chaos_find_first_active_patch(CHAOS_PATCH_TIME_LIMIT, &chaosTimer);
+        char limitText[16];
+        s32 timeLeft = (5400 - chaosTimer->frameTimer);
+        u32 mins = (timeLeft / (30 * 60));
+        u32 secs = ((timeLeft - (mins * (30 * 60))) / 30);
+
+        //Color timer red at 1 minute left
+        u8 g, b;
+        if(timeLeft > 1800) {
+            g = 0xFF;
+            b = 0xFF;
+        } else {
+            g = 0x00;
+            b = 0x00;
+        }
+
+        if(timeLeft >= 0) {
+            sprintf(limitText, "Time: %d:%02d", mins, secs);
+            fasttext_setup_textrect_rendering(FT_FONT_OUTLINE);
+            fasttext_draw_texrect(SCREEN_CENTER_X, SCREEN_HEIGHT - 40, limitText, FT_FLAG_ALIGN_CENTER, 0xFF, g, b, 0xFF);
+            fasttext_finished_rendering();
         }
     }
 }

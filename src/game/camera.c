@@ -2968,7 +2968,11 @@ void update_lakitu(struct Camera *c) {
         vec3f_get_dist_and_angle(gLakituState.pos, gLakituState.focus, &gLakituState.focusDistance,
                                  &gLakituState.oldPitch, &gLakituState.oldYaw);
 
-        gLakituState.roll = 0;
+        if(chaos_check_if_patch_active(CHAOS_PATCH_UPSIDE_DOWN_CAMERA)) {
+            gLakituState.roll = 0x7FFF;
+        } else {
+            gLakituState.roll = 0;
+        }
 
         // Apply camera shakes
         shake_camera_pitch(gLakituState.pos, gLakituState.focus);
@@ -3016,9 +3020,10 @@ void update_camera(struct Camera *c) {
     update_camera_hud_status(c);
     if (c->cutscene == 0) {
         // Only process R_TRIG if 'fixed' is not selected in the menu
-        if (cam_select_alt_mode(0) == CAM_SELECTION_MARIO) {
-            if (gPlayer1Controller->buttonPressed & R_TRIG) {
-                if (set_cam_angle(0) == CAM_ANGLE_LAKITU) {
+        s32 forceMarioCam = chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM);
+        if (cam_select_alt_mode(0) == CAM_SELECTION_MARIO || forceMarioCam) {
+            if (gPlayer1Controller->buttonPressed & R_TRIG || forceMarioCam) {
+                if (set_cam_angle(0) == CAM_ANGLE_LAKITU || forceMarioCam) {
                     set_cam_angle(CAM_ANGLE_MARIO);
                 } else {
                     set_cam_angle(CAM_ANGLE_LAKITU);
@@ -3694,6 +3699,9 @@ s32 move_point_along_spline(Vec3f p, struct CutsceneSplinePoint spline[], s16 *s
  */
 s32 cam_select_alt_mode(s32 selection) {
     s32 mode = CAM_SELECTION_FIXED;
+    if(chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM)) {
+        return 1;
+    }
 
     if (selection == CAM_SELECTION_MARIO) {
         if (!(sSelectionFlags & CAM_MODE_MARIO_SELECTED)) {

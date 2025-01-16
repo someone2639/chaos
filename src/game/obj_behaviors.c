@@ -255,18 +255,19 @@ void calc_obj_friction(f32 *objFriction, f32 floor_nY) {
  * Updates an objects speed for gravity and updates Y position.
  */
 void calc_new_obj_vel_and_pos_y(struct Surface *objFloor, f32 objFloorY, f32 objVelX, f32 objVelZ) {
+    struct MarioState *m = gMarioState;
     f32 floor_nX = objFloor->normal.x;
     f32 floor_nY = objFloor->normal.y;
     f32 floor_nZ = objFloor->normal.z;
     f32 objFriction;
 
     // Caps vertical speed with a "terminal velocity".
-    o->oVelY -= o->oGravity;
-    if (o->oVelY > 75.0) {
-        o->oVelY = 75.0;
+    o->oVelY -= (o->oGravity * m->gravity);
+    if (o->oVelY > TERM_VEL(m, 75.0f)) {
+        o->oVelY = TERM_VEL(m, 75.0f);
     }
-    if (o->oVelY < -75.0) {
-        o->oVelY = -75.0;
+    if (o->oVelY < TERM_VEL(m, -75.0f)) {
+        o->oVelY = TERM_VEL(m, -75.0f);
     }
 
     o->oPosY += o->oVelY;
@@ -276,7 +277,7 @@ void calc_new_obj_vel_and_pos_y(struct Surface *objFloor, f32 objFloorY, f32 obj
         o->oPosY = objFloorY;
 
         // Bounces an object if the ground is hit fast enough.
-        if (o->oVelY < -17.5) {
+        if (o->oVelY < -17.5f * m->gravity) {
             o->oVelY = -(o->oVelY / 2);
         } else {
             o->oVelY = 0;
@@ -313,19 +314,20 @@ void calc_new_obj_vel_and_pos_y(struct Surface *objFloor, f32 objFloorY, f32 obj
 
 void calc_new_obj_vel_and_pos_y_underwater(struct Surface *objFloor, f32 floorY, f32 objVelX, f32 objVelZ,
                                     f32 waterY) {
+    struct MarioState *m = gMarioState;
     f32 floor_nX = objFloor->normal.x;
     f32 floor_nY = objFloor->normal.y;
     f32 floor_nZ = objFloor->normal.z;
 
-    f32 netYAccel = (1.0f - o->oBuoyancy) * (-1.0f * o->oGravity);
+    f32 netYAccel = (1.0f - o->oBuoyancy) * (-1.0f * o->oGravity) * m->gravity;
     o->oVelY -= netYAccel;
 
     // Caps vertical speed with a "terminal velocity".
-    if (o->oVelY > 75.0) {
-        o->oVelY = 75.0;
+    if (o->oVelY > TERM_VEL(m, 75.0f)) {
+        o->oVelY = TERM_VEL(m, 75.0f);
     }
-    if (o->oVelY < -75.0) {
-        o->oVelY = -75.0;
+    if (o->oVelY < TERM_VEL(m, -75.0f)) {
+        o->oVelY = TERM_VEL(m, -75.0f);
     }
 
     o->oPosY += o->oVelY;
@@ -335,7 +337,7 @@ void calc_new_obj_vel_and_pos_y_underwater(struct Surface *objFloor, f32 floorY,
         o->oPosY = floorY;
 
         // Bounces an object if the ground is hit fast enough.
-        if (o->oVelY < -17.5) {
+        if (o->oVelY < (-17.5f * m->gravity)) {
             o->oVelY = -(o->oVelY / 2);
         } else {
             o->oVelY = 0;

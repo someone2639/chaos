@@ -30,6 +30,8 @@ extern u32   __n64Assert_LineNum;
 extern char *__n64Assert_Message;
 extern void __n64Assert(char *fileName, u32 lineNum, char *message);
 
+extern char gAssertionStr[512];
+
 /**
  * Will always cause a crash with your message of choice
  */
@@ -44,17 +46,34 @@ extern void __n64Assert(char *fileName, u32 lineNum, char *message);
     } \
 } while (0);
 
+#define aggress_args(cond, ...) do {\
+    if ((cond) == FALSE) { \
+        sprintf(gAssertionStr, __VA_ARGS__); \
+        error(gAssertionStr); \
+    } \
+} while (0);
+
 /**
  * Will cause a crash if cond is not true, and DEBUG is defined (allows for quick removal of littered asserts)
  */
 #if defined(DEBUG) || defined(DEBUG_ASSERTIONS)
+
 #define assert(cond, message) do {\
     if ((cond) == FALSE) { \
         error(message); \
     } \
 } while (0);
+
+#define assert_args(cond, ...) do {\
+    if ((cond) == FALSE) { \
+        sprintf(gAssertionStr, __VA_ARGS__); \
+        error(gAssertionStr); \
+    } \
+} while (0);
+
 #else
 #define assert(cond, message)
+#define assert_args(cond, ...)
 #endif
 
 #endif // DEBUG_H

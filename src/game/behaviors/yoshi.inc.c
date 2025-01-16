@@ -147,26 +147,27 @@ void yoshi_finish_jumping_and_despawn_loop(void) {
 }
 
 void yoshi_give_present_loop(void) {
-#ifndef DISABLE_LIVES
-    s32 globalTimer = gGlobalTimer;
+    // if (gChaosLivesEnabled) {
+    //     s32 globalTimer = gGlobalTimer;
 
-    if (gHudDisplay.lives == 100) {
-        play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
+    //     if (gHudDisplay.lives == 100) {
+    //         play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
+    //         gSpecialTripleJump = TRUE;
+    //         o->oAction = YOSHI_ACT_WALK_JUMP_OFF_ROOF;
+    //         return;
+    //     }
+
+    //     if (!(globalTimer & 3)) {
+    //         play_sound(SOUND_MENU_YOSHI_GAIN_LIVES, gGlobalSoundSource);
+    //         gMarioState->numLives++;
+    //     }
+    // } else {
+    //     play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
         gSpecialTripleJump = TRUE;
         o->oAction = YOSHI_ACT_WALK_JUMP_OFF_ROOF;
-        return;
-    }
+    // }
 
-    if (!(globalTimer & 3)) {
-        play_sound(SOUND_MENU_YOSHI_GAIN_LIVES, gGlobalSoundSource);
-        gMarioState->numLives++;
-    }
-#else
-    play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
-    gSpecialTripleJump = TRUE;
-    o->oAction = YOSHI_ACT_WALK_JUMP_OFF_ROOF;
-    return;
-#endif
+    // save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives);
 }
 
 void bhv_yoshi_loop(void) {

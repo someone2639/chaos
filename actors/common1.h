@@ -31,6 +31,8 @@ extern const GeoLayout blue_coin_geo[];
 extern const GeoLayout blue_coin_no_shadow_geo[];
 extern const GeoLayout red_coin_geo[];
 extern const GeoLayout red_coin_no_shadow_geo[];
+extern const GeoLayout silver_coin_geo[];
+extern const GeoLayout silver_coin_no_shadow_geo[];
 extern const Gfx coin_seg3_dl_03007780[];
 extern const Gfx coin_seg3_dl_030077D0[];
 extern const Gfx coin_seg3_dl_03007800[];
@@ -45,6 +47,10 @@ extern const Gfx coin_seg3_dl_03007940[];
 extern const Gfx coin_seg3_dl_03007968[];
 extern const Gfx coin_seg3_dl_03007990[];
 extern const Gfx coin_seg3_dl_030079B8[];
+extern const Gfx coin_seg3_dl_silver0[];
+extern const Gfx coin_seg3_dl_silver1[];
+extern const Gfx coin_seg3_dl_silver2[];
+extern const Gfx coin_seg3_dl_silver3[];
 
 // dirt
 extern const GeoLayout dirt_animation_geo[];
@@ -180,8 +186,10 @@ extern const Gfx mist_seg3_dl_03000920[];
 
 // mushroom_1up
 extern const GeoLayout mushroom_1up_geo[];
+extern const GeoLayout green_demon_geo[];
 extern const Gfx mushroom_1up_seg3_dl_0302A628[];
 extern const Gfx mushroom_1up_seg3_dl_0302A660[];
+extern const Gfx greem_demon_dl_main[];
 
 // number
 extern const GeoLayout number_geo[];
