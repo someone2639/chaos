@@ -236,7 +236,6 @@ void print_course_number(void) {
 #endif
     u8 courseNum[4];
 
-    isGameFlipped = FALSE;
     create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_PUSH, 158.0f, 81.0f, 0.0f);
 
     gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
