@@ -83,9 +83,9 @@ struct GraphNodeRoot {
     /*0x18*/ s16 y;
     /*0x1A*/ s16 width; // half width, 160
     s16 perspWidth;
-    s16 height; // half height
-    s16 numViews; // number of entries in mystery array
-    struct GraphNode **views;
+    /*0x1C*/ s16 height; // half height
+    /*0x1E*/ s16 numViews; // number of entries in mystery array
+    /*0x20*/ struct GraphNode **views;
 };
 
 /** A node that sets up an orthographic projection based on the global
