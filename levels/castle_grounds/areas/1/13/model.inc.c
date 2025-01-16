@@ -16,7 +16,7 @@ const Gfx castle_grounds_seg7_us_dl_0700F2E8[] = {
     gsDPSetTextureImage(G_IM_FMT_IA, G_IM_SIZ_8b, 1, castle_grounds_seg7_us_texture_0700EAE8),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 64 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
-   gsSPTextureRectangle(116 << 2, 166 << 2, (116 + 64) << 2, (166 + 32) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10),
+    gsSPTextureRectangle(116 << 2, 166 << 2, (116 + 64) << 2, (166 + 32) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10),
     gsDPPipeSync(),
     gsDPSetTexturePersp(G_TP_PERSP),
     gsDPSetRenderMode(G_RM_AA_ZB_OPA_SURF, G_RM_AA_ZB_OPA_SURF2),
