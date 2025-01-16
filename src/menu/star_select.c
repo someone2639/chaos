@@ -122,7 +122,6 @@ void bhv_act_selector_init(void) {
     s32 selectorModelIDs[10];
     u8 stars = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum));
 
-    isGameFlipped = FALSE;
     sVisibleStars = 0;
     while (i != sObtainedStars) {
         if (stars & (1 << sVisibleStars)) { // Star has been collected
@@ -194,8 +193,6 @@ void bhv_act_selector_loop(void) {
     s8 i;
     u8 starIndexCounter;
     u8 stars = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum));
-
-    isGameFlipped = FALSE;
 
     if (sObtainedStars != 6) {
         // Sometimes, stars are not selectable even if they appear on the screen.
