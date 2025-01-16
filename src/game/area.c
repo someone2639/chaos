@@ -398,9 +398,6 @@ void process_master_quest_transition(struct GraphNodeRoot *node) {
 void render_game(void) {
     if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
         process_master_quest_transition(gCurrentArea->unk04);
-        if (gPlayer1Controller->buttonPressed & L_TRIG) {
-            fliptarget *= -1;
-        }
         if(!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_STOP_GAME_RENDER)) {
             geo_process_root(gCurrentArea->unk04, D_8032CE74, D_8032CE78, gFBSetColor);
         }
