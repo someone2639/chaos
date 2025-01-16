@@ -443,7 +443,7 @@ void render_game(void) {
             }
         }
 
-        if (gMarioObject) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_BLUECOIN_LOTTERY)) {
             drawslots();
         }
     } else {

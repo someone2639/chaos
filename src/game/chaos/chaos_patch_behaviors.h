@@ -95,7 +95,3 @@ void chs_deact_time_limit(void);
 u8 chs_cond_lower_time_limit(void);
 void chs_act_lower_time_limit(void);
 void chs_deact_lower_time_limit(void);
-
-u8 chs_cond_bluecoin_lottery(void);
-void chs_bluecoin_lottery_init(void);
-void chs_bluecoin_lottery_deinit(void);

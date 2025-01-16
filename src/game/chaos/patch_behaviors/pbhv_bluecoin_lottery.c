@@ -15,7 +15,6 @@ u32 slot_state = 0;
 u32 slot_nextstate = 0;
 u32 slot_timer = 0;
 struct Object *currCoin = NULL;
-
 u32 slot_semaphore = 0;
 
 static f32 chanceroll = 0;
@@ -23,13 +22,8 @@ static f32 chanceroll = 0;
 
 #define OFFSCREEN_POS -50.0f
 static f32 globalY = OFFSCREEN_POS;
-u32 timers[NUM_SLOTS] = {
-    15,
-    23,
-    31
-};
+u32 timers[NUM_SLOTS] = {15, 23, 31};
 u16 rotations[NUM_SLOTS];
-
 
 enum SlotStates {
     S_STANDBY = 0,
@@ -40,7 +34,6 @@ enum SlotStates {
     S_SHOWDOWN,
     S_FINISH
 };
-
 
 void init_slots(struct Object *oo, f32 chance) {
     globalY = OFFSCREEN_POS;
@@ -145,12 +138,11 @@ void drawslots() {
             break;
     }
 
-
-
-    for (int i = 0; i < NUM_SLOTS; i++) {
-        slot_draw(rotations[i], 30 + (60 * i), globalY);
+    if (slot_state != S_STANDBY) {
+        for (int i = 0; i < NUM_SLOTS; i++) {
+            slot_draw(rotations[i], 30 + (60 * i), globalY);
+        }
     }
-
 
     slot_timer++;
     if (slot_nextstate != slot_state) {
