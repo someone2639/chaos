@@ -247,10 +247,10 @@ s32 render_screen_transition(s8 fadeTimer, s8 transType, u8 transTime, struct Wa
 Gfx *render_cannon_circle_base(void) {
 #ifdef WIDESCREEN
     Vtx *verts = alloc_display_list(8 * sizeof(*verts));
-    Gfx *dlist = alloc_display_list(21 * sizeof(*dlist));
+    Gfx *dlist = alloc_display_list(20 * sizeof(*dlist));
 #else
     Vtx *verts = alloc_display_list(4 * sizeof(*verts));
-    Gfx *dlist = alloc_display_list(17 * sizeof(*dlist));
+    Gfx *dlist = alloc_display_list(16 * sizeof(*dlist));
 #endif
     Gfx *g = dlist;
 
@@ -267,7 +267,6 @@ Gfx *render_cannon_circle_base(void) {
         make_vertex(verts, 6, GFX_DIMENSIONS_FROM_RIGHT_EDGE(0), SCREEN_HEIGHT, -1, 0, 0, 0, 0, 0, 255);
         make_vertex(verts, 7, GFX_DIMENSIONS_FROM_LEFT_EDGE(0), SCREEN_HEIGHT, -1, 0, 0, 0, 0, 0, 255);
 #endif
-
 
         gSPDisplayList(g++, dl_proj_mtx_fullscreen);
         gDPSetCombineMode(g++, G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA);
