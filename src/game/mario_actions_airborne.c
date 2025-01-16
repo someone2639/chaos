@@ -2136,6 +2136,7 @@ s32 act_galaxy_spin(struct MarioState *m) {
 
     if (m->actionState == 0) {
         play_sound_if_no_flag(m, SOUND_MARIO_YAHOO_WAHA_YIPPEE + ((gAudioRandom % 5) << 16), MARIO_ACTION_SOUND_PLAYED);
+        play_sound(SOUND_ACTION_GALAXY_SPIN, m->marioObj->header.gfx.cameraToObject);
         m->marioObj->header.gfx.animInfo.animID = -1;
         set_mario_animation(m, MARIO_ANIM_GALAXY_SPIN);
         m->actionState = 1;
@@ -2147,9 +2148,9 @@ s32 act_galaxy_spin(struct MarioState *m) {
         m->flags |= MARIO_KICKING;
         m->vel[1] = (33 - (animFrame * 3));
         m->intendedMag *= 1.5f;
+    } else {
+        m->actionState = 2;
     }
-
-    
 
     update_air_without_turn(m);
 

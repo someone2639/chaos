@@ -218,6 +218,8 @@ u32 determine_interaction(struct MarioState *m, struct Object *o) {
             if (m->vel[1] < 0.0f && m->actionState == 0) {
                 interaction = INT_GROUND_POUND_OR_TWIRL;
             }
+        } else if (action == ACT_GALAXY_SPIN && m->actionState == 1) {
+            interaction = INT_GROUND_POUND_OR_TWIRL;
         } else if (action == ACT_SLIDE_KICK || action == ACT_SLIDE_KICK_SLIDE) {
             interaction = INT_SLIDE_KICK;
         } else if (action & ACT_FLAG_RIDING_SHELL) {

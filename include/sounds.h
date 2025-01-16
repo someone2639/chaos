@@ -165,6 +165,9 @@ enum SoundBank {
 #define SOUND_ACTION_INTRO_UNK45E                /* 0x045E8081 */ SOUND_ARG_LOAD(SOUND_BANK_ACTION,   0x5E, 0x80, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE) // unverified
 #define SOUND_ACTION_INTRO_UNK45F                /* 0x045F8081 */ SOUND_ARG_LOAD(SOUND_BANK_ACTION,   0x5F, 0x80, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE) // unverified
 
+#define SOUND_ACTION_GALAXY_SPIN                                  SOUND_ARG_LOAD(SOUND_BANK_ACTION,   0x70, 0x80, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE) // unverified
+
+
 /* Moving Sound Effects */
 
 // Terrain-dependent moving sounds; a value 0-7 is added to the sound ID before
