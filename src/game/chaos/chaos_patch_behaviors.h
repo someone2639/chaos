@@ -76,8 +76,10 @@ void chs_act_random_sleep(void);
 void chs_update_random_sleep(void);
 void chs_act_random_shock(void);
 void chs_update_random_shock(void);
+u8 chs_cond_random_shock(void);
 void chs_act_random_burn(void);
 void chs_update_random_burn(void);
+u8 chs_cond_random_burn(void);
 void chs_act_random_blind(void);
 void chs_update_random_blind(void);
 
@@ -94,3 +96,6 @@ void chs_update_time_limit(void);
 void chs_deact_time_limit(void);
 u8 chs_cond_lower_time_limit(void);
 void chs_act_lower_time_limit(void);
+
+// Misc
+u8 chs_cond_one_hit_wonder(void);

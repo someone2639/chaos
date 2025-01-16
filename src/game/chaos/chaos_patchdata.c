@@ -430,6 +430,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .activatedInitFunc  = chs_act_random_shock,
         .frameUpdateFunc    = chs_update_random_shock,
+        .conditionalFunc    = chs_cond_random_shock,
 
         .name               = "Shocked to My Core",
         .shortDescription   = "Get shocked at random intervals."
@@ -443,6 +444,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .activatedInitFunc  = chs_act_random_burn,
         .frameUpdateFunc    = chs_update_random_burn,
+        .conditionalFunc    = chs_cond_random_burn,
 
         .name               = "Sick Burn",
         .shortDescription   = "Get burned at random intervals."
@@ -691,6 +693,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity          = 3,
         .isStackable       = FALSE,
         .duration          = 6,
+
+        .conditionalFunc   = chs_cond_one_hit_wonder,
 
         .name              = "One-Hit Wonder",
         .shortDescription  = "Mario will die instantly upon taking any form of damage (other than from swimming or poison).",

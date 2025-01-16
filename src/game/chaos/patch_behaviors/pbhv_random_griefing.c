@@ -68,6 +68,10 @@ void chs_update_random_shock(void) {
     }
 }
 
+u8 chs_cond_random_shock(void) {
+    return(!chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER));
+}
+
 /*
     Burning
 */
@@ -101,6 +105,10 @@ void chs_update_random_burn(void) {
     } else {
         sRandomBurnTimer--;
     }
+}
+
+u8 chs_cond_random_burn(void) {
+    return(!chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER));
 }
 
 /*
