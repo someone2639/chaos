@@ -66,6 +66,7 @@ struct CreditsEntry {
     /*0x0C*/ const char **unk0C;
 };
 
+extern u8 chaosSeqVolSubtractable;
 extern struct CreditsEntry *gCurrCreditsEntry;
 
 extern struct MarioState gMarioStates[];

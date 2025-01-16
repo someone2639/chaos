@@ -12,6 +12,7 @@
 #include "segment2.h"
 #include "shadow.h"
 #include "sm64.h"
+#include "chaos/chaos.h"
 
 /**
  * @file shadow.c
@@ -881,7 +882,9 @@ Gfx *create_shadow_below_xyz(f32 xPos, f32 yPos, f32 zPos, s16 shadowScale, u8 s
                 create_shadow_square(xPos, yPos, zPos, floorHeight, shadowScale, shadowSolidity, shadowType);
             break;
         case SHADOW_CIRCLE_PLAYER:
-            displayList = create_shadow_player(pfloor, xPos, yPos, zPos, floorHeight, /* isLuigi */ FALSE, shadowScale, shadowSolidity);
+            if (!chaos_check_if_patch_active(CHAOS_PATCH_MARIO_INVISIBLE)) {
+                displayList = create_shadow_player(pfloor, xPos, yPos, zPos, floorHeight, /* isLuigi */ FALSE, shadowScale, shadowSolidity);
+            }
             break;
         default:
             displayList = create_shadow_hardcoded_rectangle(xPos, yPos, zPos, floorHeight, shadowScale, shadowSolidity, shadowType);

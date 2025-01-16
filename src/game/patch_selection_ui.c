@@ -9,6 +9,7 @@
 #include "ingame_menu.h"
 #include "object_helpers.h"
 #include "fasttext.h"
+#include "level_update.h"
 #include "debug.h"
 #include "src/engine/math_util.h"
 #include "audio/external.h"
@@ -321,6 +322,7 @@ s32 patch_select_anim_startup() {
             break;
         case 3:
             //Text goes off screen
+            chaosSeqVolSubtractable = TRUE;
             gPatchSelectionMenu->menu.animFrames = PATCH_SELECT_STARTUP_TEXT_SLIDE_FRAMES;
             animPercent = 1.0f - coss((0x3FFF / gPatchSelectionMenu->menu.animFrames) * animTimer);
             gPatchSelectionMenu->selectPatchTextPos[0] = menu_translate_percentage(SCREEN_CENTER_X, SELECT_PATCH_TEXT_END, animPercent);

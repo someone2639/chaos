@@ -45,6 +45,8 @@ enum SeqId {
     SEQ_EVENT_CUTSCENE_ENDING,        // 0x20
     SEQ_MENU_FILE_SELECT,             // 0x21
     SEQ_EVENT_CUTSCENE_LAKITU,        // 0x22 (not in JP)
+    SEQ_CHAOSEVENT_MP1_CHANCE_TIME,   // 0x23
+    SEQ_CHAOSEVENT_RSE_GAME_CORNER,   // 0x24
     SEQ_COUNT
 };
 

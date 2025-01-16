@@ -638,7 +638,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Australia Mode",
         .shortDescription  = "Flips the camera upside-down so you can experience what it's like to be from the land down under.",
     },
-//  Time Limit
+
+// Time Limit
     [CHAOS_PATCH_TIME_LIMIT] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
@@ -664,8 +665,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .activatedInitFunc = chs_act_lower_time_limit,
 
         .name              = "Speedy Comet++",
-        .shortDescription  = "Resets the duration for the speedy comet and lowers the time limit by 15 seconds",
+        .shortDescription  = "Reset the active duration for the Speedy Comet patch, and lower the time limit by 15 seconds.",
     },
+
 // Miscellaneous Modifiers
     [CHAOS_PATCH_MARIO_INVISIBLE] = {
         .durationType      = CHAOS_DURATION_STARS,
@@ -675,7 +677,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration          = 12,
 
         .name              = "Potion of Invisibility",
-        .shortDescription  = "Mario is now invisible. His shadow is the only visible part of him that remains.",
+        .shortDescription  = "Mario is now invisible. Not even his shadow can be seen anymore.",
     },
     [CHAOS_PATCH_SIGNREAD_FAR] = {
         .durationType      = CHAOS_DURATION_STARS,

@@ -202,7 +202,8 @@ void chaos_select_patches(struct ChaosPatchSelection *patchSelection);
 void chaos_init(void);
 
 // Invokes the area callback for each chaos patch as soon as Mario enters a new area.
-// Is not invoked if the current course is COURSE_NONE.
+// This function also executes the callback for level changes.
+// Neither are invoked if the current course is COURSE_NONE.
 void chaos_area_update(void);
 
 // Invokes a frame update for each active and applicable chaos patch.
