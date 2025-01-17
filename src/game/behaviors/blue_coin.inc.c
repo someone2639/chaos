@@ -5,14 +5,14 @@
  * you press a blue coin switch (a.k.a. bhvBlueCoinSwitch).
  */
 
+// quick n dirty either lose or get 100 coins
 u32 interact_coin_delayed(struct MarioState *m) {
     m->numCoins += o->oDamageOrCoinValue;
     m->healCounter += 4 * o->oDamageOrCoinValue;
 
     o->oInteractStatus = INT_STATUS_INTERACTED;
 
-    if (COURSE_IS_MAIN_COURSE(gCurrCourseNum) && m->numCoins - o->oDamageOrCoinValue < 100
-        && m->numCoins >= 100) {
+    if (o->oDamageOrCoinValue == 100) {
         bhv_spawn_star_no_level_exit(6);
     }
 #if ENABLE_RUMBLE
@@ -61,11 +61,12 @@ void bhv_hidden_blue_coin_loop(void) {
             cur_obj_enable_rendering();
             cur_obj_become_tangible();
 
-            // Delete the coin once collected
             if (o->oInteractStatus & INT_STATUS_INTERACTED) {
-                void init_slots(struct Object *, f32);
-                init_slots(o, random_float());
-                enable_time_stop_including_mario();
+                if (chaos_check_if_patch_active(CHAOS_PATCH_BLUECOIN_LOTTERY)) {
+                    void init_slots(struct Object *, f32);
+                    init_slots(o, random_float());
+                    enable_time_stop_including_mario();
+                }
                 o->oAction++;
             }
 
@@ -76,14 +77,21 @@ void bhv_hidden_blue_coin_loop(void) {
             }
             break;
         case HIDDEN_BLUE_COIN_ACT_GAMBLE:
-            extern u32 slot_semaphore;
-            if (slot_semaphore == 0) {
-                interact_coin_delayed(gMarioState);
-                spawn_object(o, MODEL_SPARKLES, bhvGoldenCoinSparkles);
-                obj_mark_for_deletion(o);
+            if (chaos_check_if_patch_active(CHAOS_PATCH_BLUECOIN_LOTTERY)) {
+                extern u32 slot_semaphore;
+                if (slot_semaphore == 0) {
+                    o->oAction++;
+                    interact_coin_delayed(gMarioState);
+                } else {
+                    o->oAnimState--;
+                }
             } else {
-                o->oAnimState--;
+                o->oAction++;
             }
+            break;
+        case HIDDEN_BLUE_COIN_ACT_GONE:
+            spawn_object(o, MODEL_SPARKLES, bhvGoldenCoinSparkles);
+            obj_mark_for_deletion(o);
             break;
     }
 

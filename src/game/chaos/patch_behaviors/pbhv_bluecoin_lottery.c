@@ -5,6 +5,7 @@
 #include "game/camera.h"
 #include "game/object_helpers.h"
 #include "game/level_update.h"
+#include "game/object_list_processor.h"
 #include "engine/behavior_script.h"
 
 #define NUM_SLOTS 3
@@ -18,7 +19,7 @@ struct Object *currCoin = NULL;
 u32 slot_semaphore = 0;
 
 static f32 chanceroll = 0;
-#define CHANCE 0.01f
+#define CHANCE 0.5f
 
 #define OFFSCREEN_POS -50.0f
 static f32 globalY = OFFSCREEN_POS;
@@ -70,7 +71,7 @@ void slot_draw(int timer, int x, int y) {
 
 
     gDPPipeSync(gDisplayListHead++);
-    gDPSetRenderMode(gDisplayListHead++, G_RM_ZB_OPA_SURF,G_RM_ZB_OPA_SURF2);
+    gDPSetRenderMode(gDisplayListHead++, G_RM_OPA_SURF,G_RM_OPA_SURF2);
     gSPSetGeometryMode(gDisplayListHead++, G_ZBUFFER);
     gSPDisplayList(gDisplayListHead++, &slotwheel_slotwheel_mesh_layer_1);
 
@@ -110,7 +111,8 @@ void drawslots() {
         case S_STOP:
             if (rotations[NUM_SLOTS - 1] == 90) {
                 currCoin->oDamageOrCoinValue = 100;
-                disable_time_stop_including_mario();
+                disable_time_stop();
+                gTimeStopState |= TIME_STOP_MARIO_AND_DOORS;
                 slot_semaphore = 0;
                 // success sound, relish the victory longer
                 if (slot_timer > 40) {

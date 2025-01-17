@@ -743,7 +743,7 @@ void reset_mario_pitch(struct MarioState *m) {
 
 u32 interact_coin(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
     s32 coinCount = o->oDamageOrCoinValue;
-    if (coinCount >= 5 && o->oInteractStatus == 0) {
+    if (coinCount >= 5 && chaos_check_if_patch_active(CHAOS_PATCH_BLUECOIN_LOTTERY)) {
         o->oInteractStatus = INT_STATUS_INTERACTED;
         return FALSE;
     }
