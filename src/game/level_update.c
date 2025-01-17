@@ -56,8 +56,9 @@ u8 chaosSeqVolSubtractable = FALSE;
 static f32 chaosSeqVolMult = 1.0f;
 static u8 chaosSeqSelected = 0;
 static const struct ChaosPatchSeq chaosSeqArray[] = {
-    {SEQ_CHAOSEVENT_MP1_CHANCE_TIME, 0x58},
-    {SEQ_CHAOSEVENT_RSE_GAME_CORNER, 0x4C},
+    {SEQ_CHAOSEVENT_MP1_CHANCE_TIME,    0x58},
+    {SEQ_CHAOSEVENT_RSE_GAME_CORNER,    0x4C},
+    {SEQ_CHAOSEVENT_SMS_CASINO_DELFINO, 0x7F},
 };
 
 // TODO: Make these ifdefs better

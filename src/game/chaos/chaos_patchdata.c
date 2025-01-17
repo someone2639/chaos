@@ -319,7 +319,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .negationId        = CHAOS_PATCH_HEALTH_GAIN,
 
         .name              = "Bleeding Out",
-        .shortDescription  = "Mario will slowly lose health over time",
+        .shortDescription  = "Mario will slowly lose health over time.",
     },
     [CHAOS_PATCH_HEALTH_GAIN] = {
         .durationType      = CHAOS_DURATION_STARS,
@@ -332,7 +332,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .negationId        = CHAOS_PATCH_HEALTH_DRAIN,
 
         .name              = "Bleeding In",
-        .shortDescription  = "Mario will slowly gain health over time",
+        .shortDescription  = "Mario will slowly gain health over time.",
     },
 
 // Coin Modifiers
