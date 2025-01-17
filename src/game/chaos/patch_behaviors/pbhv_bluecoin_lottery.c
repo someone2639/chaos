@@ -69,10 +69,8 @@ void slot_draw(int timer, int x, int y) {
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(final++),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
 
-
     gDPPipeSync(gDisplayListHead++);
     gDPSetRenderMode(gDisplayListHead++, G_RM_OPA_SURF,G_RM_OPA_SURF2);
-    gSPSetGeometryMode(gDisplayListHead++, G_ZBUFFER);
     gSPDisplayList(gDisplayListHead++, &slotwheel_slotwheel_mesh_layer_1);
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
@@ -111,16 +109,12 @@ void drawslots() {
         case S_STOP:
             if (rotations[NUM_SLOTS - 1] == 90) {
                 currCoin->oDamageOrCoinValue = 100;
-                disable_time_stop();
-                gTimeStopState |= TIME_STOP_MARIO_AND_DOORS;
                 slot_semaphore = 0;
-                // success sound, relish the victory longer
-                if (slot_timer > 40) {
-                    slot_nextstate = S_SHOWDOWN;
-                }
+                // TODO: success sound
+                slot_nextstate = S_SHOWDOWN;
             } else {
                 currCoin->oDamageOrCoinValue = 5;
-                // failure sound
+                // TODO: failure sound
                 if (slot_timer > 10) {
                     slot_nextstate = S_SHOWDOWN;
                 }
