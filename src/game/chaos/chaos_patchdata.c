@@ -537,9 +537,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_LOSEMOVE_DOUBLE_JUMP] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 3,
+        .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 12,
+        .duration          = 10,
 
         .name              = "Double Trouble",
         .shortDescription  = "Mario can no longer double jump (and by extension, triple jump).",
@@ -726,9 +726,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 1,
         .isStackable       = FALSE,
-        .duration          = 1,
+        .duration          = 0,
 
         .name              = "Code That Makes You Miss Bowser Throws",
         .shortDescription  = "They have that in this game, I swear.",
+    },
+    [CHAOS_PATCH_INVERTED_MUSIC] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .name              = "Inverted Sound",
+        .shortDescription  = "The game will sound upside-down!",
     }
 };

@@ -8,8 +8,9 @@
 #include "seqplayer.h"
 #include "internal.h"
 #include "external.h"
-#include "game/game_init.h"
+#include "game/chaos/chaos.h"
 #include "game/debug.h"
+#include "game/game_init.h"
 #include "engine/math_util.h"
 
 #define DMEM_ADDR_TEMP 0x0
@@ -1107,7 +1108,11 @@ void note_set_vel_pan_reverb(struct Note *note, f32 velocity, f32 pan, u8 reverb
 }
 
 void note_set_frequency(struct Note *note, f32 frequency) {
-    note->frequency = frequency;
+    if (chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_MUSIC) && note->frequency > 0.01f) {
+        note->frequency = 1.0f / frequency;
+    } else {
+        note->frequency = frequency;
+    }
 }
 
 void note_enable(struct Note *note) {

@@ -174,7 +174,7 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
     // Set values for new entry appropriately
     newEntry->id = patchId;
     newEntry->frameTimer = 0;
-    if (patch->durationType == CHAOS_DURATION_ONCE || patch->durationType == CHAOS_DURATION_USE_COUNT) {
+    if (patch->durationType == CHAOS_DURATION_ONCE || patch->durationType == CHAOS_DURATION_INFINITE) {
         newEntry->remainingDuration = 0;
     } else {
         newEntry->remainingDuration = patch->duration;
