@@ -83,12 +83,15 @@ enum ChaosPatchID {
     CHAOS_PATCH_NO_Z_BUFFER,
     CHAOS_PATCH_INVERTED_Z_BUFFER,
     CHAOS_PATCH_UPSIDE_DOWN_CAMERA,
+
 // Time Limit
     CHAOS_PATCH_TIME_LIMIT,
     CHAOS_PATCH_LOWER_TIME_LIMIT,
+
 // Cheats
     CHAOS_PATCH_L_TO_LEVITATE,
     CHAOS_PATCH_DEBUG_FREE_MOVE,
+
 // Miscellaneous Modifiers
     CHAOS_PATCH_MARIO_INVISIBLE,
     CHAOS_PATCH_SIGNREAD_FAR,
@@ -101,6 +104,9 @@ enum ChaosPatchID {
 
 // Patch Count
     CHAOS_PATCH_COUNT,
+
+// NOTE: Only to be used for comparisons, there are not indexing safeguards in place here!
+    CHAOS_PATCH_NONE = 0xFFFFFFFF,
 };
 
 enum ChaosPatchEffectType {

@@ -20,6 +20,8 @@ s32 *gChaosActiveEntryCount = NULL;
 struct ChaosActiveEntry *gChaosActiveEntries = NULL;
 u8 gChaosLevelWarped = FALSE;
 
+static enum ChaosPatchID negativePatchCompare = CHAOS_PATCH_NONE;
+
 // TODO: These are written to by the save file, but are never actually saved to the save file!
 // This essentially means that they will always be 0 and are unconfigurable at compile time!
 // Implement save file options to allow difficulty selection and lives!
@@ -34,7 +36,7 @@ static void chaos_recompute_active_patch_counts(void) {
 }
 
 u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId) {
-    return (activePatchCounts[patchId] > 0);
+    return (activePatchCounts[patchId] > 0 || patchId == negativePatchCompare);
 }
 
 u8 chaos_find_first_active_patch(const enum ChaosPatchID patchId, struct ChaosActiveEntry **firstFoundMatch) {
@@ -302,25 +304,10 @@ void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_
             }
         }
 
-        s32 positiveSeverity = posNegPairings[generatedSeverity][CHAOS_EFFECT_POSITIVE];
         s32 negativeSeverity = posNegPairings[generatedSeverity][CHAOS_EFFECT_NEGATIVE];
-        s32 positiveWeight = (s32) (random_float() * (f32) severityCounts[positiveSeverity][CHAOS_EFFECT_POSITIVE]);
+        s32 positiveSeverity = posNegPairings[generatedSeverity][CHAOS_EFFECT_POSITIVE];
+
         s32 negativeWeight = (s32) (random_float() * (f32) severityCounts[negativeSeverity][CHAOS_EFFECT_NEGATIVE]);
-
-        for (enum ChaosPatchID patchId = 0; patchId < CHAOS_PATCH_COUNT; patchId++) {
-            const struct ChaosPatch *patch = &gChaosPatches[patchId];
-            if (!availablePatches[patchId] || patch->effectType != CHAOS_EFFECT_POSITIVE || patch->severity != positiveSeverity) {
-                continue;
-            }
-
-            if (positiveWeight <= 0) {
-                positivePatchId = patchId;
-                break;
-            }
-
-            positiveWeight--;
-        }
-
         for (enum ChaosPatchID patchId = 0; patchId < CHAOS_PATCH_COUNT; patchId++) {
             const struct ChaosPatch *patch = &gChaosPatches[patchId];
             if (!availablePatches[patchId] || patch->effectType != CHAOS_EFFECT_NEGATIVE || patch->severity != negativeSeverity) {
@@ -334,6 +321,43 @@ void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_
 
             negativeWeight--;
         }
+
+        negativePatchCompare = negativePatchId;
+
+        s32 applicablePositiveCount = 0;
+        for (enum ChaosPatchID patchId = 0; patchId < CHAOS_PATCH_COUNT; patchId++) {
+            const struct ChaosPatch *patch = &gChaosPatches[patchId];
+            if (!availablePatches[patchId] || patch->effectType != CHAOS_EFFECT_POSITIVE || patch->severity != positiveSeverity) {
+                continue;
+            }
+
+            if (!(gChaosPatches[patchId].conditionalFunc && !gChaosPatches[patchId].conditionalFunc())) {
+                applicablePositiveCount++;
+            }
+        }
+
+        s32 positiveWeight = (s32) (random_float() * applicablePositiveCount);
+        if (applicablePositiveCount > 0) {
+            for (enum ChaosPatchID patchId = 0; patchId < CHAOS_PATCH_COUNT; patchId++) {
+                const struct ChaosPatch *patch = &gChaosPatches[patchId];
+                if (!availablePatches[patchId] || patch->effectType != CHAOS_EFFECT_POSITIVE || patch->severity != positiveSeverity) {
+                    continue;
+                }
+
+                if (gChaosPatches[patchId].conditionalFunc && !gChaosPatches[patchId].conditionalFunc()) {
+                    continue;
+                }
+
+                if (positiveWeight <= 0) {
+                    positivePatchId = patchId;
+                    break;
+                }
+
+                positiveWeight--;
+            }
+        }
+
+        negativePatchCompare = CHAOS_PATCH_NONE;
 
         generatedPatches[index].positiveId = positivePatchId;
         generatedPatches[index].negativeId = negativePatchId;
