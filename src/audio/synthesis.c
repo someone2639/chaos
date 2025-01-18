@@ -1108,7 +1108,7 @@ void note_set_vel_pan_reverb(struct Note *note, f32 velocity, f32 pan, u8 reverb
 }
 
 void note_set_frequency(struct Note *note, f32 frequency) {
-    if (chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_MUSIC) && note->frequency > 0.01f) {
+    if (chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_SOUND) && note->frequency > 0.01f) {
         note->frequency = 1.0f / frequency;
     } else {
         note->frequency = frequency;

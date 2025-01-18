@@ -59,6 +59,7 @@ static const struct ChaosPatchSeq chaosSeqArray[] = {
     {SEQ_CHAOSEVENT_MP1_CHANCE_TIME,    0x58},
     {SEQ_CHAOSEVENT_RSE_GAME_CORNER,    0x4C},
     {SEQ_CHAOSEVENT_SMS_CASINO_DELFINO, 0x7F},
+    {SEQ_CHAOSEVENT_YI_BONUS_MINIGAME,  0x68},
 };
 
 // TODO: Make these ifdefs better
