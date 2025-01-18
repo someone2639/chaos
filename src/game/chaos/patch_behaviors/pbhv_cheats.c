@@ -7,6 +7,10 @@
 #include "game/chaos/chaos.h"
 #include "game/game_init.h"
 
+/*
+    L to Levitate
+*/
+
 s8 sChsLevitating = FALSE;
 
 void chs_update_l_to_levitate(void) {
@@ -22,5 +26,16 @@ void chs_update_l_to_levitate(void) {
             chaos_decrement_patch_usage(CHAOS_PATCH_L_TO_LEVITATE);
             sChsLevitating = FALSE;
         }
+    }
+}
+
+/*
+    Debug free move
+*/
+
+void chs_update_debug_free_move(void) {
+    if(gPlayer1Controller->buttonDown & U_JPAD) {
+        set_mario_action(gMarioState, ACT_DEBUG_FREE_MOVE, 0);
+        chaos_decrement_patch_usage(CHAOS_PATCH_DEBUG_FREE_MOVE);
     }
 }

@@ -693,6 +693,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "L to Levitate",
         .shortDescription  = "Press L to levitate! Each L press counts as a separate use.",
     },
+    [CHAOS_PATCH_DEBUG_FREE_MOVE] = {
+        .durationType      = CHAOS_DURATION_USE_COUNT,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 1,
+
+        .frameUpdateFunc    = chs_update_debug_free_move,
+
+        .name              = "Debug Free Move",
+        .shortDescription  = "Enables the use of debug free move. Press dpad up to activate, and A to exit.",
+    },
 // Miscellaneous Modifiers
     [CHAOS_PATCH_MARIO_INVISIBLE] = {
         .durationType      = CHAOS_DURATION_STARS,
