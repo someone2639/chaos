@@ -159,6 +159,8 @@
     /* oAction */
     #define MOV_BCOIN_ACT_STILL  0
     #define MOV_BCOIN_ACT_MOVING 1
+    #define MOV_BCOIN_ACT_GAMBLE 2
+    #define MOV_BCOIN_ACT_GONE 3
 
 /* Moving Yellow Coin */
     /* oAction */
