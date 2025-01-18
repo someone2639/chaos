@@ -753,5 +753,15 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Inverted Sound",
         .shortDescription  = "The game will sound upside-down!",
-    }
+    },
+    [CHAOS_PATCH_AD_BREAK] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 24,
+
+        .name              = "Ad Breaks",
+        .shortDescription  = "As if the cash for making this romhack wasn't enough, have some ads too!",
+    },
 };

@@ -1050,6 +1050,11 @@ s32 play_mode_normal(void) {
 #endif
     }
 
+    if (chaos_check_if_patch_active(CHAOS_PATCH_AD_BREAK)) {
+        extern void chs_serve_ads(void);
+        chs_serve_ads();
+    }
+
     return 0;
 }
 
