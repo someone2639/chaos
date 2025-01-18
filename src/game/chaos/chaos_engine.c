@@ -220,7 +220,7 @@ void chaos_decrement_patch_usage(const enum ChaosPatchID patchId) {
 
     gSaveFileModified = TRUE;
 
-    if (gChaosPatches[patchId].duration != CHAOS_DURATION_USE_COUNT) {
+    if (gChaosPatches[patchId].durationType != CHAOS_DURATION_USE_COUNT) {
         assert_args(FALSE, "%s%08X", "chaos_decrement_patch_usage:\nIncorrect patch type: 0x", patchId);
         return;
     }
