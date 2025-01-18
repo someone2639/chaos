@@ -7,6 +7,7 @@
 #include "game/level_update.h"
 #include "game/object_list_processor.h"
 #include "engine/behavior_script.h"
+#include "game/patch_selection_ui.h"
 
 #define NUM_SLOTS 3
 
@@ -80,6 +81,7 @@ void drawslots() {
     switch (slot_state) {
         case S_STANDBY: break;
         case S_GO:
+            enable_time_stop_including_mario();
             slot_nextstate = S_SHOWUP;
             break;
         case S_SHOWUP:

@@ -10,6 +10,7 @@
 #include "dialog_ids.h"
 #include "engine/math_util.h"
 #include "engine/surface_collision.h"
+#include "engine/behavior_script.h"
 #include "game_init.h"
 #include "interaction.h"
 #include "level_update.h"
@@ -745,7 +746,8 @@ u32 interact_coin(struct MarioState *m, UNUSED u32 interactType, struct Object *
     s32 coinCount = o->oDamageOrCoinValue;
     if (coinCount >= 5 && chaos_check_if_patch_active(CHAOS_PATCH_BLUECOIN_LOTTERY)) {
         o->oInteractStatus = INT_STATUS_INTERACTED;
-        return FALSE;
+        void init_slots(struct Object *, f32);
+        init_slots(o, random_float());
     }
 
     if (chs_double_coins_under_30s()) {
