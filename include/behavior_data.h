@@ -3,6 +3,9 @@
 
 #include "types.h"
 
+/* fast64 object exports get inserted here */
+extern const BehaviorScript bhvChaosBulletBill[];
+
 extern const BehaviorScript bhvStarDoor[];
 extern const BehaviorScript bhvMrI[];
 extern const BehaviorScript bhvMrIBody[];

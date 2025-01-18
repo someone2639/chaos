@@ -342,4 +342,6 @@ extern const Gfx white_particle_small_dl_end[];
 extern const Gfx white_particle_small_dl[];
 extern const Gfx white_particle_small_unused_dl[];
 
+#include "chaos_bullet_bill/geo_header.h"
+
 #endif

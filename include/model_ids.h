@@ -22,6 +22,7 @@
 #define MODEL_NONE                        0x00
 
 /* fast64 object exports get inserted here */
+#define MODEL_CHAOS_BULLET_BILL           226
 #define MODEL_CHAOS_SAVE_BUTTON           13
 #define MODEL_CHAOS_SCORE_BUTTON          14
 

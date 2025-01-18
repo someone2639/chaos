@@ -145,6 +145,7 @@ void bhv_beta_boo_key_loop(void);
 void bhv_alpha_boo_key_loop(void);
 void bhv_bullet_bill_init(void);
 void bhv_bullet_bill_loop(void);
+void bhv_chaos_bullet_bill_loop(void);
 void bhv_white_puff_smoke_init(void);
 void bhv_bowser_tail_anchor_loop(void);
 void bhv_bowser_init(void);

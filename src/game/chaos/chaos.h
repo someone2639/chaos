@@ -77,6 +77,7 @@ enum ChaosPatchID {
 
 // Object Spawners
     CHAOS_PATCH_GREEN_DEMON,
+    CHAOS_PATCH_BULLET_HELL,
 
 // Visual Modifiers
     CHAOS_PATCH_NO_Z_BUFFER,

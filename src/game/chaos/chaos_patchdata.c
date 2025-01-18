@@ -602,6 +602,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Green Demon",
         .shortDescription  = "Of course this one's in the game. Spawn a poison 1-UP mushroom that chases Mario.",
     },
+    [CHAOS_PATCH_BULLET_HELL] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .areaInitFunc      = chs_area_init_bullet_hell,
+        .frameUpdateFunc   = chs_update_bullet_hell,
+
+        .name              = "Bullet Hell",
+        .shortDescription  = "Every 30 seconds, spawns a number of Bullet Bills around Mario. Pay attention to hear the warning sound!",
+    },
 
 // Visual Modifiers
     [CHAOS_PATCH_NO_Z_BUFFER] = {
