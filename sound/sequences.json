@@ -38,5 +38,6 @@
     "23_custom_mp1_chance_time": ["26_custom_mp1_chance_time"],
     "24_custom_rse_game_corner": ["27_custom_rse_game_corner"],
     "25_custom_sms_casino_delfino": ["28_custom_sms_casino_delfino"],
-    "26_custom_yi_bonus_minigame": ["29_custom_yi_bonus_minigame"]
+    "26_custom_yi_bonus_minigame": ["29_custom_yi_bonus_minigame"],
+    "27_custom_hgss_game_corner": ["2A_custom_hgss_game_corner"]
 }

@@ -52,6 +52,8 @@ struct ChaosPatchSeq {
     const u8 vol;
 };
 
+#define CHAOS_SEQ_VOL_LOWER 0.6f
+
 u8 chaosSeqVolSubtractable = FALSE;
 static f32 chaosSeqVolMult = 1.0f;
 static u8 chaosSeqSelected = 0;
@@ -60,6 +62,7 @@ static const struct ChaosPatchSeq chaosSeqArray[] = {
     {SEQ_CHAOSEVENT_RSE_GAME_CORNER,    0x4C},
     {SEQ_CHAOSEVENT_SMS_CASINO_DELFINO, 0x7F},
     {SEQ_CHAOSEVENT_YI_BONUS_MINIGAME,  0x68},
+    {SEQ_CHAOSEVENT_HGSS_GAME_CORNER,   0x58},
 };
 
 // TODO: Make these ifdefs better
@@ -1110,7 +1113,7 @@ s32 play_mode_select_patch(void) {
             chaosSeqVolMult = 1.0f;
             chaosSeqSelected = random_float() * ARRAY_COUNT(chaosSeqArray);
         }
-        if (chaosSeqVolSubtractable && chaosSeqVolMult > 0.5f) {
+        if (chaosSeqVolSubtractable && chaosSeqVolMult > CHAOS_SEQ_VOL_LOWER) {
             chaosSeqVolMult -= 0.01f;
         }
         play_secondary_music(chaosSeqArray[chaosSeqSelected].seq, 0, chaosSeqArray[chaosSeqSelected].vol * chaosSeqVolMult + 0.5f, 1);
