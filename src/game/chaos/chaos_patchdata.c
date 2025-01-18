@@ -643,7 +643,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 6,
 
-        .conditionalFunc   = chs_mq_check,
         .activatedInitFunc = chs_mq_init,
         .deactivationFunc  = chs_mq_deinit,
 
