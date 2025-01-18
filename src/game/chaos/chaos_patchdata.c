@@ -680,7 +680,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Speedy Comet++",
         .shortDescription  = "Reset the active duration for the Speedy Comet patch, and lower the time limit by 15 seconds.",
     },
+// Cheats
+    [CHAOS_PATCH_L_TO_LEVITATE] = {
+        .durationType      = CHAOS_DURATION_USE_COUNT,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 3,
 
+        .frameUpdateFunc    = chs_update_l_to_levitate,
+
+        .name              = "L to Levitate",
+        .shortDescription  = "Press L to levitate! Each L press counts as a separate use.",
+    },
 // Miscellaneous Modifiers
     [CHAOS_PATCH_MARIO_INVISIBLE] = {
         .durationType      = CHAOS_DURATION_STARS,

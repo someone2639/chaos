@@ -99,5 +99,8 @@ void chs_deact_time_limit(void);
 u8 chs_cond_lower_time_limit(void);
 void chs_act_lower_time_limit(void);
 
+//Cheats
+void chs_update_l_to_levitate(void);
+
 // Misc
 u8 chs_cond_one_hit_wonder(void);

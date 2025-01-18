@@ -86,6 +86,8 @@ enum ChaosPatchID {
 // Time Limit
     CHAOS_PATCH_TIME_LIMIT,
     CHAOS_PATCH_LOWER_TIME_LIMIT,
+// Cheats
+    CHAOS_PATCH_L_TO_LEVITATE,
 // Miscellaneous Modifiers
     CHAOS_PATCH_MARIO_INVISIBLE,
     CHAOS_PATCH_SIGNREAD_FAR,
