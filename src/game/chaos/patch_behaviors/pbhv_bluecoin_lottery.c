@@ -8,6 +8,9 @@
 #include "game/object_list_processor.h"
 #include "engine/behavior_script.h"
 #include "game/patch_selection_ui.h"
+#include "game/interaction.h"
+#include "game/behavior_actions.h"
+#include "game/rumble_init.h"
 
 #define NUM_SLOTS 3
 
@@ -36,6 +39,24 @@ enum SlotStates {
     S_SHOWDOWN,
     S_FINISH
 };
+
+u32 interact_coin_delayed(struct Object *o, struct MarioState *m) {
+    m->numCoins += o->oDamageOrCoinValue;
+    m->healCounter += 4 * o->oDamageOrCoinValue;
+
+    o->oInteractStatus = INT_STATUS_INTERACTED;
+
+    if (o->oDamageOrCoinValue == 100) {
+        bhv_spawn_star_no_level_exit(6);
+    }
+#if ENABLE_RUMBLE
+    if (o->oDamageOrCoinValue >= 2) {
+        queue_rumble_data(5, 80);
+    }
+#endif
+
+    return FALSE;
+}
 
 void init_slots(struct Object *oo, f32 chance) {
     globalY = OFFSCREEN_POS;
@@ -113,6 +134,7 @@ void drawslots() {
                 currCoin->oDamageOrCoinValue = 100;
                 slot_semaphore = 0;
                 // TODO: success sound
+                interact_coin_delayed(currCoin, gMarioState);
                 slot_nextstate = S_SHOWDOWN;
             } else {
                 currCoin->oDamageOrCoinValue = 5;

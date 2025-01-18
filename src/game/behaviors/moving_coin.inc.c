@@ -24,8 +24,6 @@ static struct ObjectHitbox sMovingBlueCoinHitbox = {
     /* hurtboxHeight:     */ 0,
 };
 
-extern u32 interact_coin_delayed(struct MarioState *m);
-
 s32 coin_step(s16 *collisionFlagsPtr) {
     *collisionFlagsPtr = object_step();
 
@@ -131,34 +129,13 @@ void bhv_moving_blue_coin_loop(void) {
                 o->oForwardVel = 75.0f;
             }
 
-            if (o->oInteractStatus & INT_STATUS_INTERACTED) {
-                if (chaos_check_if_patch_active(CHAOS_PATCH_BLUECOIN_LOTTERY)) {
-                    void init_slots(struct Object *, f32);
-                    init_slots(o, random_float());
-                    enable_time_stop_including_mario();
-                }
-                o->oAction++;
-            }
-
             obj_flicker_and_disappear(o, 600);
             break;
-        case MOV_BCOIN_ACT_GAMBLE:
-            if (chaos_check_if_patch_active(CHAOS_PATCH_BLUECOIN_LOTTERY)) {
-                extern u32 slot_semaphore;
-                if (slot_semaphore == 0) {
-                    o->oAction++;
-                    interact_coin_delayed(gMarioState);
-                } else {
-                    o->oAnimState--;
-                }
-            } else {
-                o->oAction++;
-            }
-            break;
-        case MOV_BCOIN_ACT_GONE:
-            coin_collected();
-            o->oInteractStatus = 0;
-            break;
+    }
+
+    if (o->oInteractStatus & INT_STATUS_INTERACTED) {
+        coin_collected();
+        o->oInteractStatus = 0;
     }
 }
 
