@@ -107,3 +107,4 @@ u8 chs_cond_debug_free_move(void);
 
 // Misc
 u8 chs_cond_one_hit_wonder(void);
+void chs_update_serve_ads(void);

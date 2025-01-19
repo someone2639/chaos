@@ -787,6 +787,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 24,
 
+        .frameUpdateFunc   = chs_update_serve_ads,
+
         .name              = "Ad Breaks",
         .shortDescription  = "As if the cash for making this romhack wasn't enough, have some ads too!",
     },

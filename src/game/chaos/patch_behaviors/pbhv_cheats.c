@@ -11,26 +11,6 @@
     L to Levitate
 */
 
-s8 sChsLevitating = FALSE;
-
-void chs_update_l_to_levitate(void) {
-    s32 actGroup = (gMarioState->action & ACT_GROUP_MASK);
-
-    if(gPlayer1Controller->buttonDown & L_TRIG && !(actGroup == ACT_GROUP_CUTSCENE)) {
-        sChsLevitating = TRUE;
-        gMarioState->vel[0] = 0.0f;
-        gMarioState->vel[1] = 25.0f;
-        gMarioState->vel[2] = 0.0f;
-        gMarioState->forwardVel = 0;
-        set_mario_action(gMarioState, ACT_JUMP, 0);
-    } else {
-        if(sChsLevitating) {
-            chaos_decrement_patch_usage(CHAOS_PATCH_L_TO_LEVITATE);
-            sChsLevitating = FALSE;
-        }
-    }
-}
-
 u8 chs_cond_l_to_levitate(void) {
     struct ChaosActiveEntry *match;
     chaos_find_first_active_patch(CHAOS_PATCH_L_TO_LEVITATE, &match);
@@ -41,11 +21,30 @@ u8 chs_cond_l_to_levitate(void) {
     }
 }
 
+s8 sChsLevitating = FALSE;
+
+void chs_update_l_to_levitate(void) {
+    if(gPlayer1Controller->buttonDown & L_TRIG 
+            && !(gMarioState->action & (ACT_FLAG_INTANGIBLE | ACT_GROUP_CUTSCENE))) {
+        sChsLevitating = TRUE;
+        gMarioState->vel[0] = 0.0f;
+        gMarioState->vel[1] = 25.0f;
+        gMarioState->vel[2] = 0.0f;
+        gMarioState->forwardVel = 0;
+        if (gMarioState->action != ACT_JUMP) {
+            set_mario_action(gMarioState, ACT_JUMP, 0);
+        }
+    } else {
+        if(sChsLevitating) {
+            chaos_decrement_patch_usage(CHAOS_PATCH_L_TO_LEVITATE);
+            sChsLevitating = FALSE;
+        }
+    }
+}
+
 /*
     Debug free move
 */
-
-u8 sChsDebug = FALSE;
 
 u8 chs_cond_debug_free_move(void) {
     struct ChaosActiveEntry *match;
@@ -58,13 +57,14 @@ u8 chs_cond_debug_free_move(void) {
 }
 
 void chs_update_debug_free_move(void) {
-    if(gPlayer1Controller->buttonDown & U_JPAD) {
-        set_mario_action(gMarioState, ACT_DEBUG_FREE_MOVE, 0);
-        sChsDebug = TRUE;
+    if(gMarioState->action == ACT_DEBUG_FREE_MOVE || !(gPlayer1Controller->buttonPressed & U_JPAD)) {
+        return;
+    }
+    
+    if (gMarioState->action & (ACT_FLAG_INTANGIBLE | ACT_GROUP_CUTSCENE)) {
+        return;
     }
 
-    if(sChsDebug && gMarioState->action != ACT_DEBUG_FREE_MOVE) {
-        chaos_decrement_patch_usage(CHAOS_PATCH_DEBUG_FREE_MOVE);
-        sChsDebug = FALSE;
-    }
+    set_mario_action(gMarioState, ACT_DEBUG_FREE_MOVE, 0);
+    chaos_decrement_patch_usage(CHAOS_PATCH_DEBUG_FREE_MOVE);
 }
