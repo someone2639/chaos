@@ -10,12 +10,12 @@
 #define HVQM_PTR(ptr) &HVQM_FILE(ptr)
 #define HVQM_EXTERN(ptr) extern void *HVQM_FILE(ptr)
 
-#define AD_MINUTES 1
+#define AD_MINUTES 2
 
 HVQM_EXTERN(spoon32);
 HVQM_EXTERN(krabs);
 void *chsHVQMTable[] = {
-    HVQM_PTR(spoon32),
+    // HVQM_PTR(spoon32),
     HVQM_PTR(krabs),
 };
 u32 chsCurrentAd = 0;
