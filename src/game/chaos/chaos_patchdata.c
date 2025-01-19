@@ -22,7 +22,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc   = NULL,
         .deactivationFunc  = NULL,
 
-        .name              = "---",
+        .name              = "@BFBFBF--" "---" "@--------",
         .shortDescription  = "@BFBFBF--No positive effect.@--------",
         .longDescription   = NULL,
     },
@@ -40,7 +40,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc   = NULL,
         .deactivationFunc  = NULL,
 
-        .name              = "---",
+        .name              = "@BFBFBF--" "---" "@--------",
         .shortDescription  = "@BFBFBF--No negative effect.@--------",
         .longDescription   = NULL,
     },
@@ -51,6 +51,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_LIVES_INCREASE_LV1] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_POSITIVE,
+        .negationId        = CHAOS_PATCH_LIVES_DECREASE_LV1,
         .severity          = 1,
         .isStackable       = TRUE,
 
@@ -63,6 +64,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_LIVES_INCREASE_LV2] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_POSITIVE,
+        .negationId        = CHAOS_PATCH_LIVES_DECREASE_LV1,
         .severity          = 2,
         .isStackable       = TRUE,
 
@@ -75,6 +77,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_LIVES_INCREASE_LV3] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_POSITIVE,
+        .negationId        = CHAOS_PATCH_LIVES_DECREASE_LV1,
         .severity          = 3,
         .isStackable       = TRUE,
 
@@ -87,6 +90,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_LIVES_DECREASE_LV1] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_LIVES_INCREASE_LV1,
         .severity          = 1,
         .isStackable       = TRUE,
     
@@ -99,6 +103,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_LIVES_DECREASE_LV2] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_LIVES_INCREASE_LV1,
         .severity          = 2,
         .isStackable       = TRUE,
 
@@ -111,6 +116,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_LIVES_DECREASE_LV3] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_LIVES_INCREASE_LV1,
         .severity          = 3,
         .isStackable       = TRUE,
 
@@ -121,10 +127,11 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription  = "Decrease Mario's remaining lives by 10.",
     },
 
-// Star Modifiers
+// Star/Save Modifiers
     [CHAOS_PATCH_STARS_INCREASE_LV2] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_POSITIVE,
+        .negationId        = CHAOS_PATCH_STARS_DECREASE_LV2,
         .severity          = 2,
         .isStackable       = TRUE,
 
@@ -136,6 +143,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_STARS_INCREASE_LV3] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_POSITIVE,
+        .negationId        = CHAOS_PATCH_STARS_DECREASE_LV3,
         .severity          = 3,
         .isStackable       = TRUE,
 
@@ -147,6 +155,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_STARS_INCREASE_GUARANTEE] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_POSITIVE,
+        .negationId        = CHAOS_PATCH_STARS_DECREASE_GUARANTEE,
         .severity          = 3,
         .isStackable       = TRUE,
 
@@ -159,42 +168,46 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_STARS_DECREASE_LV2] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_STARS_INCREASE_LV2,
         .severity          = 2,
         .isStackable       = TRUE,
 
         .activatedInitFunc = chs_act_stars_decrease_lv2,
 
-        .name              = "Two-Star Trick",
-        .shortDescription  = "Mark two random stars as uncollected. These are NOT guaranteed to be stars you have.",
+        .name              = "One-Star Risk",
+        .shortDescription  = "Mark a random star as uncollected. This is NOT guaranteed to be a star you have.",
     },
     [CHAOS_PATCH_STARS_DECREASE_LV3] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_STARS_INCREASE_LV3,
         .severity          = 3,
         .isStackable       = TRUE,
 
         .activatedInitFunc = chs_act_stars_decrease_lv3,
 
-        .name              = "Three-Star Threat",
-        .shortDescription  = "Mark three random stars as uncollected. These are NOT guaranteed to be stars you have.",
+        .name              = "Two-Star Trick",
+        .shortDescription  = "Mark two random stars as uncollected. These are NOT guaranteed to be stars you have.",
     },
     [CHAOS_PATCH_STARS_DECREASE_GUARANTEE] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_STARS_INCREASE_GUARANTEE,
         .severity          = 3,
         .isStackable       = TRUE,
 
         .conditionalFunc   = chs_cond_stars_decrease_guarantee,
         .activatedInitFunc = chs_act_stars_decrease_guarantee,
 
-        .name              = "Two-Star Tradeoff",
-        .shortDescription  = "Lose two random stars currently in your possession.",
+        .name              = "One-Star Giveaway",
+        .shortDescription  = "Lose one random star currently in your possession.",
     },
 
 // Gravity Modifiers
     [CHAOS_PATCH_GRAVITY_DECREASE_LV1] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_POSITIVE,
+        .negationId        = CHAOS_PATCH_GRAVITY_INCREASE_LV1,
         .severity          = 1,
         .isStackable       = TRUE,
         .duration          = 10,
@@ -209,6 +222,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_GRAVITY_DECREASE_LV2] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_POSITIVE,
+        .negationId        = CHAOS_PATCH_GRAVITY_INCREASE_LV2,
         .severity          = 2,
         .isStackable       = TRUE,
         .duration          = 10,
@@ -223,6 +237,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_GRAVITY_DECREASE_LV3] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_POSITIVE,
+        .negationId        = CHAOS_PATCH_GRAVITY_INCREASE_LV3,
         .severity          = 3,
         .isStackable       = TRUE,
         .duration          = 10,
@@ -237,6 +252,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_GRAVITY_INCREASE_LV1] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_GRAVITY_DECREASE_LV1,
         .severity          = 1,
         .isStackable       = TRUE,
         .duration          = 10,
@@ -251,6 +267,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_GRAVITY_INCREASE_LV2] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_GRAVITY_DECREASE_LV2,
         .severity          = 2,
         .isStackable       = TRUE,
         .duration          = 10,
@@ -265,6 +282,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_GRAVITY_INCREASE_LV3] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_GRAVITY_DECREASE_LV3,
         .severity          = 3,
         .isStackable       = TRUE,
         .duration          = 10,
@@ -311,12 +329,13 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_HEALTH_DRAIN] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_HEALTH_GAIN,
         .severity          = 3,
         .isStackable       = FALSE,
         .duration          = 10,
+
         .conditionalFunc   = chs_cond_health_drain,
         .frameUpdateFunc   = chs_update_health_drain,
-        .negationId        = CHAOS_PATCH_HEALTH_GAIN,
 
         .name              = "Bleeding Out",
         .shortDescription  = "Mario will slowly lose health over time.",
@@ -324,12 +343,13 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_HEALTH_GAIN] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_POSITIVE,
+        .negationId        = CHAOS_PATCH_HEALTH_DRAIN,
         .severity          = 2,
         .isStackable       = FALSE,
         .duration          = 10,
+
         .conditionalFunc   = chs_cond_health_gain,
         .frameUpdateFunc   = chs_update_health_gain,
-        .negationId        = CHAOS_PATCH_HEALTH_DRAIN,
 
         .name              = "Bleeding In",
         .shortDescription  = "Mario will slowly gain health over time.",
@@ -720,8 +740,34 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc   = chs_cond_remove_negative_patch,
         .activatedInitFunc = chs_act_remove_negative_patch,
 
-        .name              = "Remove a Negative Patch",
+        .name              = "Show Me Mercy",
         .shortDescription  = "Deactivate one of the currently active negative patches at random.",
+    },
+    [CHAOS_PATCH_ADD_SELECTABLE_PATCH] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .negationId        = CHAOS_PATCH_REMOVE_SELECTABLE_PATCH,
+        .severity          = 3,
+        .isStackable       = TRUE,
+        .duration          = 18,
+        
+        .conditionalFunc   = chs_cond_add_selectable_patch,
+
+        .name              = "The More, The Merrier",
+        .shortDescription  = "Add one more option to the patch selection menu.",
+    },
+    [CHAOS_PATCH_REMOVE_SELECTABLE_PATCH] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_ADD_SELECTABLE_PATCH,
+        .severity          = 3,
+        .isStackable       = TRUE,
+        .duration          = 18,
+        
+        .conditionalFunc   = chs_cond_remove_selectable_patch,
+
+        .name              = "Little Choice",
+        .shortDescription  = "Remove an option from the patch selection menu.",
     },
 
 // Miscellaneous Modifiers

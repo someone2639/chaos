@@ -7,6 +7,13 @@
 #define CHAOS_PATCH_SEVERITY_MAX 3
 #define CHAOS_PATCH_SEVERITY_COUNT (CHAOS_PATCH_SEVERITY_MAX + 1)
 
+#ifndef DISPLAY_MAX_PATCHES
+#define DEFAULT_PATCH_DISPLAY_QUANTITY 2
+#else
+#define DEFAULT_PATCH_DISPLAY_QUANTITY 4
+#endif
+
+
 #define CHAOS_PATCH_MAX_GENERATABLE 4
 
 #define CHAOS_PATCH_ENTRIES 0x100
@@ -24,7 +31,7 @@ enum ChaosPatchID {
     CHAOS_PATCH_LIVES_DECREASE_LV2,
     CHAOS_PATCH_LIVES_DECREASE_LV3,
 
-// Star Modifiers
+// Star/Save Modifiers
     CHAOS_PATCH_STARS_INCREASE_LV2,
     CHAOS_PATCH_STARS_INCREASE_LV3,
     CHAOS_PATCH_STARS_INCREASE_GUARANTEE,
@@ -94,6 +101,8 @@ enum ChaosPatchID {
 
 // Chaos Modifiers
     CHAOS_PATCH_REMOVE_NEGATIVE_PATCH,
+    CHAOS_PATCH_ADD_SELECTABLE_PATCH,
+    CHAOS_PATCH_REMOVE_SELECTABLE_PATCH,
 
 // Miscellaneous Modifiers
     CHAOS_PATCH_MARIO_INVISIBLE,
@@ -189,6 +198,9 @@ u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId);
 
 // Get patch data for an active patch (if active at all). Return TRUE if a match is found.
 u8 chaos_find_first_active_patch(const enum ChaosPatchID patchId, struct ChaosActiveEntry **firstFoundMatch);
+
+// Get the number of active instances for a particular patch.
+u32 chaos_count_active_instances(const enum ChaosPatchID patchId);
 
 // Deactivate an old chaos patch, based on its current index.
 // Be careful when invoking this with stackable patches, as it may cause undesirable behavior if used incorrectly.

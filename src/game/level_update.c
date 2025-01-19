@@ -1116,7 +1116,7 @@ s32 play_mode_select_patch(void) {
     if (gPatchSelectionMenu->menu.menuState != PATCH_SELECT_STATE_CLOSED) {
         if (!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_ACTIVE)) {
             chaos_decrement_star_timers();
-            load_new_patches(4);
+            load_new_patches();
             gPatchSelectionMenu->menu.flags |= PATCH_SELECT_FLAG_ACTIVE;
             chaosSeqVolSubtractable = FALSE;
             chaosSeqVolMult = 1.0f;

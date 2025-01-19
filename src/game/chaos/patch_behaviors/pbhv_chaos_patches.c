@@ -12,7 +12,7 @@
 #include "game/level_update.h"
 #include "game/save_file.h"
 
-const enum ChaosPatchID patchBlacklist[] = {
+static const enum ChaosPatchID patchBlacklist[] = {
     CHAOS_PATCH_LOWER_TIME_LIMIT,
 };
 
@@ -106,4 +106,12 @@ void chs_act_remove_negative_patch(void) {
         chaos_remove_expired_entry(i);
         return;
     }
+}
+
+u8 chs_cond_add_selectable_patch(void) {
+    return (DEFAULT_PATCH_DISPLAY_QUANTITY + chaos_count_active_instances(CHAOS_PATCH_ADD_SELECTABLE_PATCH) < CHAOS_PATCH_MAX_GENERATABLE);
+}
+
+u8 chs_cond_remove_selectable_patch(void) {
+    return (DEFAULT_PATCH_DISPLAY_QUANTITY - chaos_count_active_instances(CHAOS_PATCH_REMOVE_SELECTABLE_PATCH) > 1);
 }

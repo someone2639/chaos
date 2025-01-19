@@ -29,6 +29,10 @@ enum ChaosDifficulty gChaosDifficulty = CHAOS_DIFFICULTY_NORMAL;
 u8 gChaosLivesEnabled = FALSE;
 
 static void chaos_recompute_active_patch_counts(void) {
+    if (!gChaosActiveEntryCount) {
+        return;
+    }
+
     bzero(activePatchCounts, sizeof(activePatchCounts));
     for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
         activePatchCounts[gChaosActiveEntries[i].id]++;
@@ -41,6 +45,10 @@ u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId) {
 
 u8 chaos_find_first_active_patch(const enum ChaosPatchID patchId, struct ChaosActiveEntry **firstFoundMatch) {
     if (!gChaosActiveEntryCount) {
+        if (firstFoundMatch) {
+            *firstFoundMatch = NULL;
+        }
+
         return FALSE;
     }
 
@@ -58,6 +66,22 @@ u8 chaos_find_first_active_patch(const enum ChaosPatchID patchId, struct ChaosAc
         *firstFoundMatch = NULL;
     }
     return FALSE;
+}
+
+u32 chaos_count_active_instances(const enum ChaosPatchID patchId) {
+    u32 count = 0;
+
+    if (!gChaosActiveEntryCount) {
+        return 0;
+    }
+
+    for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+        if (gChaosActiveEntries[i].id == patchId) {
+            count++;
+        }
+    }
+
+    return count;
 }
 
 void chaos_remove_expired_entry(const s32 patchIndex) {
@@ -330,10 +354,14 @@ void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_
             if (!availablePatches[patchId] || patch->effectType != CHAOS_EFFECT_POSITIVE || patch->severity != positiveSeverity) {
                 continue;
             }
-
-            if (!(gChaosPatches[patchId].conditionalFunc && !gChaosPatches[patchId].conditionalFunc())) {
-                applicablePositiveCount++;
+            if (gChaosPatches[negativePatchId].negationId && gChaosPatches[negativePatchId].negationId == patchId) {
+                continue;
             }
+            if (gChaosPatches[patchId].conditionalFunc && !gChaosPatches[patchId].conditionalFunc()) {
+                continue;
+            }
+
+            applicablePositiveCount++;
         }
 
         s32 positiveWeight = (s32) (random_float() * applicablePositiveCount);
@@ -343,7 +371,9 @@ void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_
                 if (!availablePatches[patchId] || patch->effectType != CHAOS_EFFECT_POSITIVE || patch->severity != positiveSeverity) {
                     continue;
                 }
-
+                if (gChaosPatches[negativePatchId].negationId && gChaosPatches[negativePatchId].negationId == patchId) {
+                    continue;
+                }
                 if (gChaosPatches[patchId].conditionalFunc && !gChaosPatches[patchId].conditionalFunc()) {
                     continue;
                 }
