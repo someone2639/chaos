@@ -99,11 +99,15 @@ void chs_deact_time_limit(void);
 u8 chs_cond_lower_time_limit(void);
 void chs_act_lower_time_limit(void);
 
-//Cheats
+// Cheats
 void chs_update_l_to_levitate(void);
 u8 chs_cond_l_to_levitate(void);
 void chs_update_debug_free_move(void);
 u8 chs_cond_debug_free_move(void);
+
+// Patches
+u8 chs_cond_remove_negative_patch(void);
+void chs_act_remove_negative_patch(void);
 
 // Misc
 u8 chs_cond_one_hit_wonder(void);

@@ -709,6 +709,21 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription  = "Enables the use of debug free move. Press dpad up to activate, and A to exit.",
     },
 
+// Chaos Modifiers
+    [CHAOS_PATCH_REMOVE_NEGATIVE_PATCH] = {
+        .durationType      = CHAOS_DURATION_ONCE,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = TRUE,
+        .duration          = 0,
+        
+        .conditionalFunc   = chs_cond_remove_negative_patch,
+        .activatedInitFunc = chs_act_remove_negative_patch,
+
+        .name              = "Remove a Negative Patch",
+        .shortDescription  = "Deactivate one of the currently active negative patches at random.",
+    },
+
 // Miscellaneous Modifiers
     [CHAOS_PATCH_MARIO_INVISIBLE] = {
         .durationType      = CHAOS_DURATION_STARS,
