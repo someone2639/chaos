@@ -101,7 +101,9 @@ void chs_act_lower_time_limit(void);
 
 //Cheats
 void chs_update_l_to_levitate(void);
+u8 chs_cond_l_to_levitate(void);
 void chs_update_debug_free_move(void);
+u8 chs_cond_debug_free_move(void);
 
 // Misc
 u8 chs_cond_one_hit_wonder(void);

@@ -685,10 +685,11 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType      = CHAOS_DURATION_USE_COUNT,
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 2,
-        .isStackable       = FALSE,
+        .isStackable       = TRUE,
         .duration          = 3,
 
-        .frameUpdateFunc    = chs_update_l_to_levitate,
+        .conditionalFunc   = chs_cond_l_to_levitate,
+        .frameUpdateFunc   = chs_update_l_to_levitate,
 
         .name              = "L to Levitate",
         .shortDescription  = "Press L to levitate! Each L press counts as a separate use.",
@@ -697,10 +698,11 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType      = CHAOS_DURATION_USE_COUNT,
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 3,
-        .isStackable       = FALSE,
+        .isStackable       = TRUE,
         .duration          = 1,
-
-        .frameUpdateFunc    = chs_update_debug_free_move,
+        
+        .conditionalFunc   = chs_cond_debug_free_move,
+        .frameUpdateFunc   = chs_update_debug_free_move,
 
         .name              = "Debug Free Move",
         .shortDescription  = "Enables the use of debug free move. Press dpad up to activate, and A to exit.",
