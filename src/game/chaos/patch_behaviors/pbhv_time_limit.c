@@ -11,6 +11,7 @@
 #include "game/area.h"
 #include "course_table.h"
 #include "audio/external.h"
+#include "game/object_list_processor.h"
 
 #define CHS_TIME_LIMIT          5400
 s32 sTimeLimitOffset = 0;
@@ -35,13 +36,13 @@ void chs_update_time_limit(void) {
 
         //Play ringing sfx at level start, 1 minute, and 30 second marks
         if(timeLeft == 900 || timeLeft == 1800 || this->frameTimer == sTimeLimitOffset) {
-            play_sound(SOUND_MENU_TIMER_RING, gGlobalSoundSource);
+            if(!(gTimeStopState & TIME_STOP_ENABLED)) {
+                play_sound(SOUND_MENU_TIMER_RING, gGlobalSoundSource);
+            }
         }
 
         if(timeLeft == 0) {
-            play_sound(SOUND_MENU_TIMER_UP, gGlobalSoundSource);
-            level_trigger_warp(gMarioState, WARP_OP_WARP_FLOOR);
-            sDelayedWarpTimer = 60; //Lets the whole timer up sfx play
+            level_trigger_warp(gMarioState, WARP_OP_TIME_UP);
         }
     }
 }

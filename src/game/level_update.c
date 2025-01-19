@@ -842,6 +842,15 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 }
                 val04 = FALSE;
                 break;
+            case WARP_OP_TIME_UP:
+                if (gChaosLivesEnabled && m->numLives <= 0) {
+                    sDelayedWarpOp = WARP_OP_GAME_OVER;
+                }
+                sDelayedWarpTimer = 60;
+                sSourceWarpNodeId = WARP_NODE_DEATH;
+                play_transition(WARP_TRANSITION_FADE_INTO_CIRCLE, 0x14, 0x00, 0x00, 0x00);
+                play_sound(SOUND_MENU_TIMER_UP, gGlobalSoundSource);
+                break;
         }
 
         if (val04 && gCurrDemoInput == NULL) {
