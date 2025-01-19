@@ -865,4 +865,17 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Sequence Break",
         .shortDescription  = "All course acts are now selectable, and may be completed in any order.",
     },
+    [CHAOS_PATCH_MIRACLE] = {
+        .durationType      = CHAOS_DURATION_USE_COUNT,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 3,
+        .isStackable       = TRUE,
+        .duration          = 1,
+
+        .frameUpdateFunc   = chs_update_miracle,
+        .conditionalFunc   = chs_cond_miracle,
+
+        .name              = "The Miracle Happened",
+        .shortDescription  = "The next time Mario dies, he is revived.",
+    },
 };
