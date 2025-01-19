@@ -65,6 +65,7 @@ void bhv_warp_loop(void);
 void bhv_white_puff_exploding_loop(void);
 void bhv_spawned_star_init(void);
 void bhv_spawned_star_loop(void);
+void bhv_coin_scale(void);
 void bhv_coin_init(void);
 void bhv_bouncey_coin_init(void);
 void bhv_coin_loop(void);

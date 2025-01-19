@@ -426,6 +426,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Sonic Simulator",
         .shortDescription  = "Coins represent Mario's health. Just like in Sonic, Mario will drop all of his coins upon taking damage.",
     },
+    [CHAOS_PATCH_COIN_SIZE] = {
+        .durationType      = CHAOS_DURATION_INFINITE,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = TRUE,
+        .duration          = 1,
+
+        .conditionalFunc   = chs_cond_coin_size,
+
+        .name              = "Coins That Double in Size",
+        .shortDescription  = "Doubles the size of yellow coins.",
+    },
 
 // Random Griefing
     [CHAOS_PATCH_RANDOM_SLEEP] = {

@@ -66,6 +66,7 @@ void chs_act_100c_decrease_lv3(void);
 void chs_deact_100c_decrease_lv2(void);
 void chs_deact_100c_decrease_lv3(void);
 u8 chs_pay2win_can_collect_star(void);
+u8 chs_cond_coin_size(void);
 
 // Movement Modifiers
 void chs_update_brawl_tripping(void);

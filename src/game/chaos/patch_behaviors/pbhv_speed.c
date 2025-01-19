@@ -44,7 +44,7 @@ void chs_update_speed_limit(void) {
 }
 
 /*
-    School Zone
+    Walkies
 */
 
 u8 chs_cond_walkies(void) {
