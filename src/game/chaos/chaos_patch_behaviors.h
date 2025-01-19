@@ -111,6 +111,10 @@ void chs_act_remove_negative_patch(void);
 u8 chs_cond_add_selectable_patch(void);
 u8 chs_cond_remove_selectable_patch(void);
 
+// Speed Modifiers
+u8 chs_cond_push_back(void);
+void chs_update_push_back(void);
+
 // Misc
 u8 chs_cond_one_hit_wonder(void);
 void chs_update_serve_ads(void);

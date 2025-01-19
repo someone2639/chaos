@@ -770,6 +770,21 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription  = "Remove an option from the patch selection menu.",
     },
 
+// Speed Modifiers
+    [CHAOS_PATCH_PUSH_BACK] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = TRUE,
+        .duration          = 5,
+
+        .frameUpdateFunc   = chs_update_push_back,
+        .conditionalFunc   = chs_cond_push_back,
+
+        .name              = "A Little Push in the Wrong Direction",
+        .shortDescription  = "Mario will constantly get pushed backwards a little.",
+    },
+
 // Miscellaneous Modifiers
     [CHAOS_PATCH_MARIO_INVISIBLE] = {
         .durationType      = CHAOS_DURATION_STARS,
