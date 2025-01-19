@@ -120,9 +120,16 @@ void bhv_act_selector_init(void) {
     s16 i = 0;
     s32 selectorModelIDs[10];
     u8 stars = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum));
+    s32 starsToShow = sObtainedStars;
+    if (chaos_check_if_patch_active(CHAOS_PATCH_ALL_STARS_SELECTABLE)) {
+        starsToShow = 6;
+    }
+
+    // This may not be necessary, but clear it out just to be certain.
+    bzero(sStarSelectorModels, sizeof(sStarSelectorModels));
 
     sVisibleStars = 0;
-    while (i != sObtainedStars) {
+    while (i != starsToShow) {
         if (stars & (1 << sVisibleStars)) { // Star has been collected
             selectorModelIDs[sVisibleStars] = MODEL_STAR;
             i++;
@@ -133,6 +140,9 @@ void bhv_act_selector_init(void) {
             if (sInitSelectedActNum == 0) {
                 sInitSelectedActNum = sVisibleStars + 1;
                 sSelectableStarIndex = sVisibleStars;
+            }
+            if (chaos_check_if_patch_active(CHAOS_PATCH_ALL_STARS_SELECTABLE)) {
+                i++;
             }
         }
         sVisibleStars++;
@@ -193,7 +203,7 @@ void bhv_act_selector_loop(void) {
     u8 starIndexCounter;
     u8 stars = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum));
 
-    if (sObtainedStars != 6) {
+    if (sObtainedStars != 6 && !chaos_check_if_patch_active(CHAOS_PATCH_ALL_STARS_SELECTABLE)) {
         // Sometimes, stars are not selectable even if they appear on the screen.
         // This code filters selectable and non-selectable stars.
         sSelectedActIndex = 0;
@@ -440,7 +450,7 @@ s32 lvl_update_obj_and_load_act_button_actions(UNUSED s32 arg, UNUSED s32 unused
             queue_rumble_data(60, 70);
             func_sh_8024C89C(1);
 #endif
-            if (sInitSelectedActNum >= sSelectedActIndex + 1) {
+            if (sInitSelectedActNum >= sSelectedActIndex + 1 || chaos_check_if_patch_active(CHAOS_PATCH_ALL_STARS_SELECTABLE)) {
                 sLoadedActNum = sSelectedActIndex + 1;
             } else {
                 sLoadedActNum = sInitSelectedActNum;

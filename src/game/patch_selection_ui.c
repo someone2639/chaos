@@ -34,6 +34,25 @@ u8 sEffectColors[CHAOS_EFFECT_COUNT][3] = {
 
 struct PatchSelectionMenu patchMenu;
 struct PatchSelectionMenu *gPatchSelectionMenu = &patchMenu;
+/*
+    Return number of patches that should be displayed
+*/
+static s32 get_num_patches() {
+    s32 patchCount = DEFAULT_PATCH_DISPLAY_QUANTITY;
+    patchCount += chaos_count_active_instances(CHAOS_PATCH_ADD_SELECTABLE_PATCH);
+    patchCount -= chaos_count_active_instances(CHAOS_PATCH_REMOVE_SELECTABLE_PATCH);
+
+    if (patchCount > MAX_CARDS) {
+        assert_args(FALSE, "get_num_patches:\nPatch display count exceeds maximum!\nActive patch count: %d", patchCount);
+        patchCount = MAX_CARDS;
+    }
+    if (patchCount < 1) {
+        assert_args(FALSE, "get_num_patches:\nPatch display count falls below minimum!\nActive patch count: %d", patchCount);
+        patchCount = 1;
+    }
+
+    return patchCount;
+}
 
 /*
     Sets the layout positions and starting positions for the cards in the patch select menu
@@ -92,9 +111,11 @@ void init_patch_selection_layout() {
 /*
     Loads a fresh batch of patches to select from
 */
-void load_new_patches(s32 numPatches) {
+void load_new_patches() {
+    s32 numPatches = get_num_patches();
+
     // Generate new patches
-    assert(numPatches > 0 && numPatches < (MAX_CARDS + 1), "Tried to load an invalid number of patch cards!");
+    assert(numPatches > 0 && numPatches <= MAX_CARDS, "Tried to load an invalid number of patch cards!");
 
     struct ChaosPatchSelection *patches = chaos_roll_for_new_patches();
     for (s32 i = 0; i < numPatches; i++) {
@@ -730,7 +751,7 @@ void draw_patch_type(f32 x, f32 y, enum ChaosPatchDurationType type) {
     guTranslate(transMtx, x, y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
           G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    if(type == CHAOS_DURATION_STARS) {
+    if(type == CHAOS_DURATION_STARS || type == CHAOS_DURATION_INFINITE) {
         gSPDisplayList(gDisplayListHead++, star_timer);
     } else if (type == CHAOS_DURATION_USE_COUNT) {
         gSPDisplayList(gDisplayListHead++, uses_counter);
@@ -781,15 +802,25 @@ void render_patch_card(struct PatchCard *card, s32 reverse) {
 
     //Draw patch type(s)
     gSPDisplayList(gDisplayListHead++, patch_use_type_start);
-    if(pos->durationType == CHAOS_DURATION_STARS || pos->durationType == CHAOS_DURATION_USE_COUNT) {
+    if (pos->durationType == CHAOS_DURATION_STARS || pos->durationType == CHAOS_DURATION_USE_COUNT) {
         draw_patch_type(42, 14, pos->durationType);
         assert(pos->duration < 1000, "render_patch_card:\nduration out of range!");
         sprintf(timer1Text, "%d", pos->duration);
+    } else if (pos->durationType == CHAOS_DURATION_INFINITE) {
+        draw_patch_type(42, 14, pos->durationType);
+        sprintf(timer1Text, "`"); // Infinity symbol
+    } else {
+        timer1Text[0] = '\0';
     }
-    if(neg->durationType == CHAOS_DURATION_STARS || neg->durationType == CHAOS_DURATION_USE_COUNT) {
+    if (neg->durationType == CHAOS_DURATION_STARS || neg->durationType == CHAOS_DURATION_USE_COUNT) {
         draw_patch_type(42, -10, neg->durationType);
         assert(neg->duration < 1000, "render_patch_card:\nduration out of range!");
         sprintf(timer2Text, "%d", neg->duration);
+    } else if (neg->durationType == CHAOS_DURATION_INFINITE) {
+        draw_patch_type(42, -10, neg->durationType);
+        sprintf(timer2Text, "`"); // Infinity symbol
+    } else {
+        timer2Text[0] = '\0';
     }
     gSPDisplayList(gDisplayListHead++, patch_use_type_end);
 
@@ -800,10 +831,10 @@ void render_patch_card(struct PatchCard *card, s32 reverse) {
     slowtext_draw_ortho_text_linebreaks(-63, -20, CARD_STRING_WIDTH, neg->name, FT_FLAG_ALIGN_LEFT, 
         sEffectColors[EFFECT_COLOR_BAD][0], sEffectColors[EFFECT_COLOR_BAD][1], sEffectColors[EFFECT_COLOR_BAD][2], 0xFF);
     slowtext_setup_ortho_rendering(FT_FONT_OUTLINE);
-    if(pos->durationType == CHAOS_DURATION_STARS || pos->durationType == CHAOS_DURATION_USE_COUNT) {
+    if (timer1Text[0] != '\0') {
         slowtext_draw_ortho_text(51, 4, timer1Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
     }
-    if(neg->durationType == CHAOS_DURATION_STARS || neg->durationType == CHAOS_DURATION_USE_COUNT) {
+    if (timer2Text[0] != '\0') {
         slowtext_draw_ortho_text(51, -20, timer2Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
     }
     slowtext_finished_rendering();

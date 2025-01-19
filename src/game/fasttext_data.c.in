@@ -42,7 +42,7 @@ static const u8 kerning_fnt_outline[FASTTEXT_CHAR_COUNT] = {
     /*0*/ 7, /*1*/ 7, /*2*/ 7, /*3*/ 7, /*4*/ 7, /*5*/ 7, /*6*/ 7, /*7*/ 7, /*8*/ 7, /*9*/ 7, /*:*/ 3, /*;*/ 3, /*<*/ 0, /*=*/ 0, /*>*/ 0, /*?*/ 7,
     /*@*/ 0, /*A*/ 7, /*B*/ 7, /*C*/ 7, /*D*/ 7, /*E*/ 7, /*F*/ 7, /*G*/ 7, /*H*/ 7, /*I*/ 6, /*J*/ 7, /*K*/ 7, /*L*/ 7, /*M*/ 7, /*N*/ 7, /*O*/ 7,
     /*P*/ 7, /*Q*/ 7, /*R*/ 7, /*S*/ 7, /*T*/ 7, /*U*/ 7, /*V*/ 7, /*W*/ 7, /*X*/ 7, /*Y*/ 7, /*Z*/ 7, /*[*/ 0, /*\*/ 0, /*]*/ 0, /*^*/ 6, /*_*/ 0,
-    /*`*/ 0, /*a*/ 6, /*b*/ 6, /*c*/ 6, /*d*/ 6, /*e*/ 6, /*f*/ 6, /*g*/ 6, /*h*/ 6, /*i*/ 2, /*j*/ 6, /*k*/ 5, /*l*/ 3, /*m*/ 6, /*n*/ 6, /*o*/ 6,
+    /*`*/ 8, /*a*/ 6, /*b*/ 6, /*c*/ 6, /*d*/ 6, /*e*/ 6, /*f*/ 6, /*g*/ 6, /*h*/ 6, /*i*/ 2, /*j*/ 6, /*k*/ 5, /*l*/ 3, /*m*/ 6, /*n*/ 6, /*o*/ 6,
     /*p*/ 6, /*q*/ 6, /*r*/ 6, /*s*/ 6, /*t*/ 6, /*u*/ 6, /*v*/ 6, /*w*/ 6, /*x*/ 6, /*y*/ 6, /*z*/ 6, /*{*/ 0, /*|*/ 0, /*}*/ 0, /*~*/ 7, /*DEL*/ 0,
 };
 
@@ -183,7 +183,7 @@ static const struct OffsetProps offset_table_fnt_outline[FASTTEXT_CHAR_COUNT] = 
     /*]*/ {.horizontalOffset =   0, .renderWidth = 0},
     /*^*/ {.horizontalOffset = 445, .renderWidth = 7},
     /*_*/ {.horizontalOffset =   0, .renderWidth = 0},
-    /*`*/ {.horizontalOffset =   0, .renderWidth = 0},
+    /*`*/ {.horizontalOffset = 663, .renderWidth = 9}, // Infinity symbol
     /*a*/ {.horizontalOffset = 453, .renderWidth = 7},
     /*b*/ {.horizontalOffset = 461, .renderWidth = 7},
     /*c*/ {.horizontalOffset = 469, .renderWidth = 7},

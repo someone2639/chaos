@@ -61,6 +61,8 @@
     #undef ENABLE_DEBUG_FREE_MOVE
     #undef UNLOCK_ALL
     #undef DEBUG_ASSERTIONS
+    #undef DEBUG_PATCH_SELECT_MENU
+    #undef DISPLAY_MAX_PATCHES
 #endif // DISABLE_ALL
 
 #ifdef USE_PROFILER

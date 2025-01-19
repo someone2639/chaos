@@ -768,7 +768,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 break;
 
             case WARP_OP_DEATH:
-                if (gChaosLivesEnabled && m->numLives <= 0) {
+                if (gChaosLivesEnabled && m->numLives <= 0 && !chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE)) {
                     sDelayedWarpOp = WARP_OP_GAME_OVER;
                 }
                 sDelayedWarpTimer = 48;
@@ -780,7 +780,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
             case WARP_OP_WARP_FLOOR:
                 sSourceWarpNodeId = WARP_NODE_WARP_FLOOR;
                 if (area_get_warp_node(sSourceWarpNodeId) == NULL) {
-                    if (gChaosLivesEnabled && m->numLives <= 0) {
+                    if (gChaosLivesEnabled && m->numLives <= 0 && !chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE)) {
                         sDelayedWarpOp = WARP_OP_GAME_OVER;
                     } else {
                         sSourceWarpNodeId = WARP_NODE_DEATH;
@@ -842,8 +842,24 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 }
                 val04 = FALSE;
                 break;
+            case WARP_OP_TIME_UP:
+                if (gChaosLivesEnabled && m->numLives <= 0 && !chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE)) {
+                    sDelayedWarpOp = WARP_OP_GAME_OVER;
+                }
+                sDelayedWarpTimer = 60;
+                sSourceWarpNodeId = WARP_NODE_DEATH;
+                play_transition(WARP_TRANSITION_FADE_INTO_CIRCLE, 0x14, 0x00, 0x00, 0x00);
+                play_sound(SOUND_MENU_TIMER_UP, gGlobalSoundSource);
+                break;
         }
 
+        if(chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE) && gCurrCourseNum != COURSE_NONE) {
+            if(sSourceWarpNodeId == WARP_NODE_DEATH) {
+                sSourceWarpNodeId = 0x0A;
+            }
+            chaos_decrement_patch_usage(CHAOS_PATCH_MIRACLE);
+        }
+    
         if (val04 && gCurrDemoInput == NULL) {
             fadeout_music((3 * sDelayedWarpTimer / 2) * 8 - 2);
         }
@@ -1050,11 +1066,6 @@ s32 play_mode_normal(void) {
 #endif
     }
 
-    if (chaos_check_if_patch_active(CHAOS_PATCH_AD_BREAK)) {
-        extern void chs_serve_ads(void);
-        chs_serve_ads();
-    }
-
     return 0;
 }
 
@@ -1071,7 +1082,11 @@ s32 play_mode_paused(void) {
         } else {
             gSavedCourseNum = COURSE_NONE;
             if (gChaosLivesEnabled) {
-                if (gMarioState->numLives > 0) {
+                if(chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE)) {
+                    initiate_warp(LEVEL_CASTLE, 1, 0x1F, 0);
+                    fade_into_special_warp(0, 0);
+                    chaos_decrement_patch_usage(CHAOS_PATCH_MIRACLE);
+                } else if (gMarioState->numLives > 0) {
                     initiate_warp(LEVEL_CASTLE, 1, 0x29, 0);
                     fade_into_special_warp(0, 0);
                 } else {
@@ -1112,7 +1127,7 @@ s32 play_mode_select_patch(void) {
     if (gPatchSelectionMenu->menu.menuState != PATCH_SELECT_STATE_CLOSED) {
         if (!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_ACTIVE)) {
             chaos_decrement_star_timers();
-            load_new_patches(4);
+            load_new_patches();
             gPatchSelectionMenu->menu.flags |= PATCH_SELECT_FLAG_ACTIVE;
             chaosSeqVolSubtractable = FALSE;
             chaosSeqVolMult = 1.0f;

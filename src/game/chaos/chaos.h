@@ -7,6 +7,13 @@
 #define CHAOS_PATCH_SEVERITY_MAX 3
 #define CHAOS_PATCH_SEVERITY_COUNT (CHAOS_PATCH_SEVERITY_MAX + 1)
 
+#ifndef DISPLAY_MAX_PATCHES
+#define DEFAULT_PATCH_DISPLAY_QUANTITY 2
+#else
+#define DEFAULT_PATCH_DISPLAY_QUANTITY 4
+#endif
+
+
 #define CHAOS_PATCH_MAX_GENERATABLE 4
 
 #define CHAOS_PATCH_ENTRIES 0x100
@@ -24,7 +31,7 @@ enum ChaosPatchID {
     CHAOS_PATCH_LIVES_DECREASE_LV2,
     CHAOS_PATCH_LIVES_DECREASE_LV3,
 
-// Star Modifiers
+// Star/Save Modifiers
     CHAOS_PATCH_STARS_INCREASE_LV2,
     CHAOS_PATCH_STARS_INCREASE_LV3,
     CHAOS_PATCH_STARS_INCREASE_GUARANTEE,
@@ -83,9 +90,20 @@ enum ChaosPatchID {
     CHAOS_PATCH_NO_Z_BUFFER,
     CHAOS_PATCH_INVERTED_Z_BUFFER,
     CHAOS_PATCH_UPSIDE_DOWN_CAMERA,
+
 // Time Limit
     CHAOS_PATCH_TIME_LIMIT,
     CHAOS_PATCH_LOWER_TIME_LIMIT,
+
+// Cheats
+    CHAOS_PATCH_L_TO_LEVITATE,
+    CHAOS_PATCH_DEBUG_FREE_MOVE,
+
+// Chaos Modifiers
+    CHAOS_PATCH_REMOVE_NEGATIVE_PATCH,
+    CHAOS_PATCH_ADD_SELECTABLE_PATCH,
+    CHAOS_PATCH_REMOVE_SELECTABLE_PATCH,
+
 // Miscellaneous Modifiers
     CHAOS_PATCH_MARIO_INVISIBLE,
     CHAOS_PATCH_SIGNREAD_FAR,
@@ -95,9 +113,14 @@ enum ChaosPatchID {
     CHAOS_PATCH_BOWSER_THROWS,
     CHAOS_PATCH_INVERTED_SOUND,
     CHAOS_PATCH_AD_BREAK,
+    CHAOS_PATCH_ALL_STARS_SELECTABLE,
+    CHAOS_PATCH_MIRACLE,
 
 // Patch Count
     CHAOS_PATCH_COUNT,
+
+// NOTE: Only to be used for comparisons, there are not indexing safeguards in place here!
+    CHAOS_PATCH_NONE = 0xFFFFFFFF,
 };
 
 enum ChaosPatchEffectType {
@@ -176,6 +199,9 @@ u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId);
 
 // Get patch data for an active patch (if active at all). Return TRUE if a match is found.
 u8 chaos_find_first_active_patch(const enum ChaosPatchID patchId, struct ChaosActiveEntry **firstFoundMatch);
+
+// Get the number of active instances for a particular patch.
+u32 chaos_count_active_instances(const enum ChaosPatchID patchId);
 
 // Deactivate an old chaos patch, based on its current index.
 // Be careful when invoking this with stackable patches, as it may cause undesirable behavior if used incorrectly.
