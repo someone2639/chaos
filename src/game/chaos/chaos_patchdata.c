@@ -618,6 +618,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration          = 3,
 
         .areaInitFunc      = chs_area_init_green_demon,
+        .conditionalFunc   = chs_cond_green_demon,
 
         .name              = "Green Demon",
         .shortDescription  = "Of course this one's in the game. Spawn a poison 1-UP mushroom that chases Mario.",
@@ -783,6 +784,45 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "A Little Push in the Wrong Direction",
         .shortDescription  = "Mario will constantly get pushed backwards a little.",
+    },
+    [CHAOS_PATCH_SPEED_LIMIT] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 4,
+
+        .frameUpdateFunc   = chs_update_speed_limit,
+        .conditionalFunc   = chs_cond_speed_limit,
+
+        .name              = "Speed Limit",
+        .shortDescription  = "Lowers Mario's maximum movement speed by a bit.",
+    },
+    [CHAOS_PATCH_WALKIES] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 1,
+
+        .frameUpdateFunc   = chs_update_walkies,
+        .conditionalFunc   = chs_cond_walkies,
+
+        .name              = "Walkies",
+        .shortDescription  = "Lowers Mario's maximum movement speed to a crawl.",
+    },
+    [CHAOS_PATCH_SPEED_TAX] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 5,
+
+        .frameUpdateFunc   = chs_update_speed_tax,
+        .conditionalFunc   = chs_cond_speed_tax,
+
+        .name              = "Speed Tax",
+        .shortDescription  = "If Mario goes too fast he will start needing to pay coins. If he can't pay then he will take damage!",
     },
 
 // Miscellaneous Modifiers

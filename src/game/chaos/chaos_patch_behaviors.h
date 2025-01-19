@@ -84,6 +84,7 @@ void chs_act_random_blind(void);
 void chs_update_random_blind(void);
 
 // Object Spawners
+u8 chs_cond_green_demon(void);
 void chs_area_init_green_demon(void);
 void chs_area_init_bullet_hell(void);
 void chs_update_bullet_hell(void);
@@ -114,6 +115,12 @@ u8 chs_cond_remove_selectable_patch(void);
 // Speed Modifiers
 u8 chs_cond_push_back(void);
 void chs_update_push_back(void);
+u8 chs_cond_speed_limit(void);
+void chs_update_speed_limit(void);
+u8 chs_cond_walkies(void);
+void chs_update_walkies(void);
+u8 chs_cond_speed_tax(void);
+void chs_update_speed_tax(void);
 
 // Misc
 u8 chs_cond_one_hit_wonder(void);
