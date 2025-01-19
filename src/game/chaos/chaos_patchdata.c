@@ -680,6 +680,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Speedy Comet++",
         .shortDescription  = "Reset the active duration for the Speedy Comet patch, and lower the time limit by 15 seconds.",
     },
+
 // Cheats
     [CHAOS_PATCH_L_TO_LEVITATE] = {
         .durationType      = CHAOS_DURATION_USE_COUNT,
@@ -707,6 +708,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Debug Free Move",
         .shortDescription  = "Enables the use of debug free move. Press dpad up to activate, and A to exit.",
     },
+
 // Miscellaneous Modifiers
     [CHAOS_PATCH_MARIO_INVISIBLE] = {
         .durationType      = CHAOS_DURATION_STARS,
@@ -791,5 +793,15 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Ad Breaks",
         .shortDescription  = "As if the cash for making this romhack wasn't enough, have some ads too!",
+    },
+    [CHAOS_PATCH_ALL_STARS_SELECTABLE] = {
+        .durationType      = CHAOS_DURATION_INFINITE,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 0,
+
+        .name              = "Sequence Break",
+        .shortDescription  = "All course acts are now selectable, and may be completed in any order.",
     },
 };
