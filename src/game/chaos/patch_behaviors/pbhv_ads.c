@@ -14,8 +14,10 @@
 #define AD_MINUTES 5
 
 HVQM_EXTERN(krabs);
+HVQM_EXTERN(chaos);
 u32 *chsHVQMTable[] = {
     HVQM_PTR(krabs),
+    HVQM_PTR(chaos),
 };
 u32 chsCurrentAd = 0;
 

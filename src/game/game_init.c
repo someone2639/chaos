@@ -871,7 +871,7 @@ void thread5_game_loop(UNUSED void *arg) {
 
 #ifdef SOMEONE2639_CRAZY_EXPERIMENTS
         if ((gPlayer1Controller->buttonPressed & (A_BUTTON|L_TRIG)) == (A_BUTTON | L_TRIG)) {
-            HVQM_PLAY(krabs);
+            HVQM_PLAY(chaos);
         }
 #endif // SOMEONE2639_CRAZY_EXPERIMENTS
         display_and_vsync();
