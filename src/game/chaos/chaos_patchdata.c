@@ -226,6 +226,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Free Key 2",
         .shortDescription  = "Gain the upstairs key",
     },
+    [CHAOS_PATCH_UNLOCK_CANNONS] = {
+        .durationType      = CHAOS_DURATION_ONCE,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+
+        .activatedInitFunc = chs_act_unlock_cannons,
+        .conditionalFunc   = chs_cond_unlock_cannons,
+
+        .name              = "1812 Overture",
+        .shortDescription  = "Unlock all cannons in the game!",
+    },
 
 // Gravity Modifiers
     [CHAOS_PATCH_GRAVITY_DECREASE_LV1] = {
