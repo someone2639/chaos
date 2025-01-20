@@ -1137,6 +1137,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 12,
 
+        .conditionalFunc   = chs_cond_invisible,
+
         .name              = "Potion of Invisibility",
         .shortDescription  = "Mario is now invisible. Not even his shadow can be seen anymore.",
     },
@@ -1254,6 +1256,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 10,
 
+        .conditionalFunc   = chs_cond_luigi,
         .frameUpdateFunc   = chs_update_luigi,
         .deactivationFunc  = chs_deact_luigi,
 

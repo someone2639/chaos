@@ -29,6 +29,14 @@ void chs_update_miracle(void) {
     }
 }
 
+u8 chs_cond_invisible(void) {
+    return(!chaos_check_if_patch_active(CHAOS_PATCH_LUIGI));
+}
+
+u8 chs_cond_luigi(void) {
+    return (!chaos_check_if_patch_active(CHAOS_PATCH_MARIO_INVISIBLE));
+}
+
 void chs_update_luigi(void) {
     gMarioState->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_LUIGI];
 }
