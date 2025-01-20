@@ -36,3 +36,35 @@ void chs_update_health_gain(void) {
         gMarioState->healCounter++;
     }
 }
+
+/*
+    Health Up
+*/
+
+u8 chs_cond_health_up(void) {
+    return (gMarioState->maxHealth < 0x1000);
+}
+
+void chs_act_health_up(void) {
+    gMarioState->maxHealth += 0x100;
+}
+
+void chs_deact_health_up(void) {
+    gMarioState->maxHealth -= 0x100;
+}
+
+/*
+    Health Down
+*/
+
+u8 chs_cond_health_down(void) {
+    return (gMarioState->maxHealth > 0x200);
+}
+
+void chs_act_health_down(void) {
+    gMarioState->maxHealth -= 0x100;
+}
+
+void chs_deact_health_down(void) {
+    gMarioState->maxHealth += 0x100;
+}

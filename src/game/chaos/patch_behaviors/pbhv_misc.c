@@ -21,7 +21,7 @@ u8 chs_cond_miracle(void) {
 
 void chs_update_miracle(void) {
     if(gMarioState->health == 0xFF) {
-        gMarioState->health = 0x880;
+        gMarioState->health = gMarioState->maxHealth;
         gMarioState->hurtCounter = 0;
         chaos_decrement_patch_usage(CHAOS_PATCH_MIRACLE);
     }

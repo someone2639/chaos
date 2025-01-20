@@ -188,19 +188,20 @@ static void animate_power_meter_hiding(void) {
  */
 void handle_power_meter_actions(s16 numHealthWedges) {
     // Show power meter if health is not full, less than 8
-    if (numHealthWedges < 8 && sPowerMeterStoredHealth == 8
+    s32 maxWedges = (gMarioState->maxHealth >> 8);
+    if (numHealthWedges < maxWedges && sPowerMeterStoredHealth == maxWedges
         && sPowerMeterHUD.animation == POWER_METER_HIDDEN) {
         sPowerMeterHUD.animation = POWER_METER_EMPHASIZED;
         sPowerMeterHUD.y = 166;
     }
 
     // Show power meter if health is full, has 8
-    if (numHealthWedges == 8 && sPowerMeterStoredHealth == 7) {
+    if (numHealthWedges == maxWedges && sPowerMeterStoredHealth == (maxWedges - 1)) {
         sPowerMeterVisibleTimer = 0;
     }
 
     // After health is full, hide power meter
-    if (numHealthWedges == 8 && sPowerMeterVisibleTimer > 45.0) {
+    if (numHealthWedges == maxWedges && sPowerMeterVisibleTimer > 45.0) {
         sPowerMeterHUD.animation = POWER_METER_HIDING;
     }
 

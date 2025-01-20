@@ -354,6 +354,34 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Bleeding In",
         .shortDescription  = "Mario will slowly gain health over time.",
     },
+    [CHAOS_PATCH_HEALTH_UP] = {
+        .durationType      = CHAOS_DURATION_INFINITE,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .negationId        = CHAOS_PATCH_HEALTH_DOWN,
+        .severity          = 1,
+        .isStackable       = TRUE,
+        .duration          = 1,
+
+        .conditionalFunc   = chs_cond_health_up,
+        .activatedInitFunc = chs_act_health_up,
+
+        .name              = "Health Up",
+        .shortDescription  = "Health maximum increases by one.",
+    },
+    [CHAOS_PATCH_HEALTH_DOWN] = {
+        .durationType      = CHAOS_DURATION_INFINITE,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_HEALTH_UP,
+        .severity          = 1,
+        .isStackable       = TRUE,
+        .duration          = 1,
+
+        .conditionalFunc   = chs_cond_health_down,
+        .activatedInitFunc = chs_act_health_down,
+
+        .name              = "Health Down",
+        .shortDescription  = "Health maximum decreases by one.",
+    },
 
 // Coin Modifiers
     [CHAOS_PATCH_DOUBLE_COINS] = {

@@ -52,6 +52,40 @@ ALIGNED8 static const Texture texture_power_meter_one_segments[] = {
 #include "actors/power_meter/power_meter_one_segment.rgba16.inc.c"
 };
 
+ALIGNED8 static const Texture texture_power_meter_one_segments_bonus[] = {
+#include "actors/power_meter/power_meter_bonus_1_custom.rgba16.inc.c"
+};
+
+ALIGNED8 static const Texture texture_power_meter_two_segments_bonus[] = {
+#include "actors/power_meter/power_meter_bonus_2_custom.rgba16.inc.c"
+};
+
+ALIGNED8 static const Texture texture_power_meter_three_segments_bonus[] = {
+#include "actors/power_meter/power_meter_bonus_3_custom.rgba16.inc.c"
+};
+
+ALIGNED8 static const Texture texture_power_meter_four_segments_bonus[] = {
+#include "actors/power_meter/power_meter_bonus_4_custom.rgba16.inc.c"
+};
+
+ALIGNED8 static const Texture texture_power_meter_five_segments_bonus[] = {
+#include "actors/power_meter/power_meter_bonus_5_custom.rgba16.inc.c"
+};
+
+ALIGNED8 static const Texture texture_power_meter_six_segments_bonus[] = {
+#include "actors/power_meter/power_meter_bonus_6_custom.rgba16.inc.c"
+};
+
+ALIGNED8 static const Texture texture_power_meter_seven_segments_bonus[] = {
+#include "actors/power_meter/power_meter_bonus_7_custom.rgba16.inc.c"
+};
+
+ALIGNED8 static const Texture texture_power_meter_eight_segments_bonus[] = {
+#include "actors/power_meter/power_meter_bonus_8_custom.rgba16.inc.c"
+};
+
+
+
 // 0x030293E0
 const Texture *const power_meter_health_segments_lut[] = {
     texture_power_meter_one_segments,
@@ -62,6 +96,14 @@ const Texture *const power_meter_health_segments_lut[] = {
     texture_power_meter_six_segments,
     texture_power_meter_seven_segments,
     texture_power_meter_full,
+    texture_power_meter_one_segments_bonus,
+    texture_power_meter_two_segments_bonus,
+    texture_power_meter_three_segments_bonus,
+    texture_power_meter_four_segments_bonus,
+    texture_power_meter_five_segments_bonus,
+    texture_power_meter_six_segments_bonus,
+    texture_power_meter_seven_segments_bonus,
+    texture_power_meter_eight_segments_bonus,
 };
 
 // 0x03029400

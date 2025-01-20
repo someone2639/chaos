@@ -55,6 +55,12 @@ u8 chs_cond_health_drain(void);
 void chs_update_health_drain(void);
 u8 chs_cond_health_gain(void);
 void chs_update_health_gain(void);
+u8 chs_cond_health_up(void);
+void chs_act_health_up(void);
+void chs_deact_health_up(void);
+u8 chs_cond_health_down(void);
+void chs_act_health_down(void);
+void chs_deact_health_down(void);
 
 // Coin Modifiers
 u8 chs_double_coins_under_30s(void); // Check whether double coins should remain in effect

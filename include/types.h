@@ -327,6 +327,7 @@ struct MarioState {
     /*0xCC*/ s8 hundredCoinOffset;
              u8 usedSpin;
              u8 spinTimer;
+             s16 maxHealth;
 };
 
 #endif // TYPES_H
