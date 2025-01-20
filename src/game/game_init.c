@@ -639,6 +639,36 @@ void read_controller_inputs(void) {
                 }
                 controller->controllerData->button = newButton;
             }
+
+            if (chaos_check_if_patch_active(CHAOS_PATCH_SWAPPED_ZR_AB)) {
+                s32 newButtons = 0;
+                if (controller->controllerData->button & A_BUTTON) {
+                    newButtons |= Z_TRIG;
+                }
+                if (controller->controllerData->button & B_BUTTON) {
+                    newButtons |= R_TRIG;
+                }
+                if (controller->controllerData->button & Z_TRIG) {
+                    newButtons |= A_BUTTON;
+                }
+                if (controller->controllerData->button & R_TRIG) {
+                    newButtons |= B_BUTTON;
+                }
+
+                controller->controllerData->button &= ~(Z_TRIG | R_TRIG | A_BUTTON | B_BUTTON);
+                controller->controllerData->button |= newButtons;
+            }
+
+            if (chaos_check_if_patch_active(CHAOS_PATCH_BUTTON_BROKEN_B)) {
+                controller->controllerData->button &= ~B_BUTTON;
+            }
+            if (chaos_check_if_patch_active(CHAOS_PATCH_BUTTON_BROKEN_Z)) {
+                controller->controllerData->button &= ~Z_TRIG;
+            }
+            if (chaos_check_if_patch_active(CHAOS_PATCH_BUTTON_BROKEN_C)) {
+                controller->controllerData->button &= ~C_BUTTONS;
+            }
+
             controller->rawStickX = controller->controllerData->stick_x;
             controller->rawStickY = controller->controllerData->stick_y;
             controller->buttonPressed = controller->controllerData->button

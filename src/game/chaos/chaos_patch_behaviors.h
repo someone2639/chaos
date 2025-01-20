@@ -131,6 +131,11 @@ void chs_update_walkies(void);
 u8 chs_cond_speed_tax(void);
 void chs_update_speed_tax(void);
 
+// Input Modifiers
+u8 chs_cond_button_broken_b(void);
+u8 chs_cond_button_broken_z(void);
+u8 chs_cond_swapped_zr_ab(void);
+
 // Misc
 u8 chs_cond_one_hit_wonder(void);
 void chs_update_serve_ads(void);

@@ -3016,6 +3016,27 @@ void update_lakitu(struct Camera *c) {
 void update_camera(struct Camera *c) {
     UNUSED u8 filler[24];
 
+    u16 temporaryButtonDown = gPlayer1Controller->buttonDown;
+    u16 temporaryButtonPressed = gPlayer1Controller->buttonPressed;
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_CAMERA_X)) {
+        gPlayer1Controller->buttonDown &= ~(R_CBUTTONS | L_CBUTTONS);
+        gPlayer1Controller->buttonPressed &= ~(R_CBUTTONS | L_CBUTTONS);
+
+        if (temporaryButtonDown & R_CBUTTONS) {
+            gPlayer1Controller->buttonDown |= L_CBUTTONS;
+        }
+        if (temporaryButtonDown & L_CBUTTONS) {
+            gPlayer1Controller->buttonDown |= R_CBUTTONS;
+        }
+        if (temporaryButtonPressed & L_CBUTTONS) {
+            gPlayer1Controller->buttonPressed |= R_CBUTTONS;
+        }
+        if (temporaryButtonPressed & L_CBUTTONS) {
+            gPlayer1Controller->buttonPressed |= R_CBUTTONS;
+        }
+    }
+
     gCamera = c;
     update_camera_hud_status(c);
     if (c->cutscene == 0) {
@@ -3205,6 +3226,9 @@ void update_camera(struct Camera *c) {
     update_lakitu(c);
 
     gLakituState.lastFrameAction = sMarioCamState->action;
+
+    gPlayer1Controller->buttonDown = temporaryButtonDown;
+    gPlayer1Controller->buttonPressed = temporaryButtonPressed;
 }
 
 /**

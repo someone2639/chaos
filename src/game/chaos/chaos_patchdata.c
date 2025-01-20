@@ -655,7 +655,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 3,
+        .duration          = 2,
 
         .areaInitFunc      = chs_area_init_green_demon,
         .conditionalFunc   = chs_cond_green_demon,
@@ -899,6 +899,84 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Speed Tax",
         .shortDescription  = "If Mario goes too fast he will start needing to pay coins. If he can't pay then he will take damage!",
+    },
+
+// Input Modifiers
+    [CHAOS_PATCH_BUTTON_BROKEN_B] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 4,
+        
+        .conditionalFunc   = chs_cond_button_broken_b,
+
+        .name              = "The Busted B",
+        .shortDescription  = "The B button is completely nonfunctional (even for menus!)",
+    },
+    [CHAOS_PATCH_BUTTON_BROKEN_Z] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 4,
+        
+        .conditionalFunc   = chs_cond_button_broken_z,
+
+        .name              = "The Zonked Z",
+        .shortDescription  = "The Z button is completely nonfunctional (even for menus!)",
+    },
+    [CHAOS_PATCH_BUTTON_BROKEN_C] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 5,
+
+        .name              = "Camera Malfunction",
+        .shortDescription  = "All C buttons are completely nonfunctional (even for menus!)",
+    },
+    [CHAOS_PATCH_SWAPPED_ZR_AB] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 5,
+        
+        .conditionalFunc   = chs_cond_swapped_zr_ab,
+
+        .name              = "Bizarro Buttons",
+        .shortDescription  = "The Z and R buttons will be swapped with A and B respectively (including for menus!)",
+    },
+    [CHAOS_PATCH_INVERTED_CAMERA_X] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .name              = "Camera Reversal",
+        .shortDescription  = "Invert the X axis of the camera (i.e. C-Left and C-Right).",
+    },
+    [CHAOS_PATCH_INVERTED_STICK_X] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 3,
+
+        .name              = "UNO Reverse Card",
+        .shortDescription  = "Invert the X axis of the joystick when controlling Mario (i.e. left and right).",
+    },
+    [CHAOS_PATCH_INVERTED_STICK_Y] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 3,
+
+        .name              = "Stick Shift",
+        .shortDescription  = "Invert the Y axis of the joystick when controlling Mario (i.e. forward and backward).",
     },
 
 // Miscellaneous Modifiers

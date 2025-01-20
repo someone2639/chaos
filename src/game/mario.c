@@ -1753,6 +1753,19 @@ s32 execute_mario_action(UNUSED struct Object *o) {
     s32 inLoop = TRUE;
 
     if (gMarioState->action) {
+        s32 tmpStickX = gMarioState->controller->stickX;
+        s32 tmpStickY = gMarioState->controller->stickY;
+
+        if (chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_STICK_X)) {
+            gMarioState->controller->stickX *= -1.0f;
+        }
+        if (chaos_check_if_patch_active(CHAOS_PATCH_UPSIDE_DOWN_CAMERA)) {
+            gMarioState->controller->stickX *= -1.0f;
+        }
+        if (chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_STICK_Y)) {
+            gMarioState->controller->stickY *= -1.0f;
+        }
+
 #ifdef ENABLE_DEBUG_FREE_MOVE
         if (gPlayer1Controller->buttonDown & U_JPAD && !(gPlayer1Controller->buttonDown & L_TRIG)) {
             // set_camera_mode(gMarioState->area->camera, CAMERA_MODE_8_DIRECTIONS, 1);
@@ -1767,6 +1780,8 @@ s32 execute_mario_action(UNUSED struct Object *o) {
 
         // If Mario is OOB, stop executing actions.
         if (gMarioState->floor == NULL) {
+            gMarioState->controller->stickX = tmpStickX;
+            gMarioState->controller->stickY = tmpStickY;
             return 0;
         }
 
@@ -1834,6 +1849,8 @@ s32 execute_mario_action(UNUSED struct Object *o) {
         func_sh_8025574C();
 #endif
 
+        gMarioState->controller->stickX = tmpStickX;
+        gMarioState->controller->stickY = tmpStickY;
         return gMarioState->particleFlags;
     }
 
