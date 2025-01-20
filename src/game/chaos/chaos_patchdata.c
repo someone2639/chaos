@@ -585,58 +585,58 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
 // Random Griefing
     [CHAOS_PATCH_RANDOM_SLEEP] = {
-        .durationType       = CHAOS_DURATION_STARS,
-        .effectType         = CHAOS_EFFECT_NEGATIVE,
-        .severity           = 1,
-        .isStackable        = FALSE,
-        .duration           = 20,
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 20,
 
-        .activatedInitFunc  = chs_act_random_sleep,
-        .frameUpdateFunc    = chs_update_random_sleep,
+        .activatedInitFunc = chs_act_random_sleep,
+        .frameUpdateFunc   = chs_update_random_sleep,
 
-        .name               = "Narcolepsy",
-        .shortDescription   = "Mario is feeling a little tired today. He may decide on his own to go to sleep."
+        .name              = "Narcolepsy",
+        .shortDescription  = "Mario is feeling a little tired today. He may decide on his own to go to sleep."
     },
     [CHAOS_PATCH_RANDOM_SHOCK] = {
-        .durationType       = CHAOS_DURATION_STARS,
-        .effectType         = CHAOS_EFFECT_NEGATIVE,
-        .severity           = 2,
-        .isStackable        = FALSE,
-        .duration           = 15,
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 15,
 
-        .activatedInitFunc  = chs_act_random_shock,
-        .frameUpdateFunc    = chs_update_random_shock,
-        .conditionalFunc    = chs_cond_random_shock,
+        .activatedInitFunc = chs_act_random_shock,
+        .frameUpdateFunc   = chs_update_random_shock,
+        .conditionalFunc   = chs_cond_random_shock,
 
-        .name               = "Shocked to My Core",
-        .shortDescription   = "Get shocked at random intervals."
+        .name              = "Shocked to My Core",
+        .shortDescription  = "Get shocked at random intervals."
     },
     [CHAOS_PATCH_RANDOM_BURN] = {
-        .durationType       = CHAOS_DURATION_STARS,
-        .effectType         = CHAOS_EFFECT_NEGATIVE,
-        .severity           = 3,
-        .isStackable        = FALSE,
-        .duration           = 15,
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 15,
 
-        .activatedInitFunc  = chs_act_random_burn,
-        .frameUpdateFunc    = chs_update_random_burn,
-        .conditionalFunc    = chs_cond_random_burn,
+        .activatedInitFunc = chs_act_random_burn,
+        .frameUpdateFunc   = chs_update_random_burn,
+        .conditionalFunc   = chs_cond_random_burn,
 
-        .name               = "Sick Burn",
-        .shortDescription   = "Get burned at random intervals."
+        .name              = "Sick Burn",
+        .shortDescription  = "Get burned at random intervals."
     },
     [CHAOS_PATCH_RANDOM_BLIND] = {
-        .durationType       = CHAOS_DURATION_STARS,
-        .effectType         = CHAOS_EFFECT_NEGATIVE,
-        .severity           = 3,
-        .isStackable        = FALSE,
-        .duration           = 9,
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 9,
 
-        .activatedInitFunc  = chs_act_random_blind,
-        .frameUpdateFunc    = chs_update_random_blind,
+        .activatedInitFunc = chs_act_random_blind,
+        .frameUpdateFunc   = chs_update_random_blind,
 
-        .name               = "Blindfolded Speedrun",
-        .shortDescription   = "Get blinded for 15 seconds periodically."
+        .name              = "Blindfolded Speedrun",
+        .shortDescription  = "Get blinded for 15 seconds periodically."
     },
 
 // Movement Modifiers
