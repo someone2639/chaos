@@ -53,7 +53,7 @@ s32 lava_boost_on_wall(struct MarioState *m) {
         if (chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_LAVA)) {
             set_hurt_counter(m, -1);
         } else {
-            set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+            set_hurt_counter(m, ((m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18) + m->extraDamageLava);
         }
     }
 
@@ -1632,7 +1632,7 @@ s32 act_lava_boost(struct MarioState *m) {
                     if (chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_LAVA)) {
                         set_hurt_counter(m, -1);
                     } else {
-                        set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+                        set_hurt_counter(m, ((m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18) + m->extraDamageLava);
                     }
                 }
                 m->vel[1] = 84.0f;

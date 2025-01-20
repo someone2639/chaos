@@ -703,7 +703,9 @@ u32 take_damage_from_interact_object(struct MarioState *m) {
     if (obj_has_behavior(m->interactObj, bhvGoomba) && chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_GOOMBA)) {
         set_hurt_counter(m, -1);
     } else {
-        set_hurt_counter(m, 4 * damage);
+        if (damage > 0) {
+            set_hurt_counter(m, MIN((4 * damage) + m->extraDamageEnemy, (u8) -1));
+        }
     }
 
 #if ENABLE_RUMBLE
@@ -1210,7 +1212,7 @@ u32 interact_flame(struct MarioState *m, UNUSED u32 interactType, struct Object 
             update_mario_sound_and_camera(m);
             play_sound(SOUND_MARIO_ON_FIRE, m->marioObj->header.gfx.cameraToObject);
             if (chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) && gCurrCourseNum != COURSE_NONE) {
-                set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+                set_hurt_counter(m, ((m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18) + m->extraDamageLava);
             }
 
             if ((m->action & ACT_FLAG_AIR) && m->vel[1] <= 0.0f) {
@@ -1879,7 +1881,7 @@ void check_lava_boost(struct MarioState *m) {
             if (chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_LAVA)) {
                 set_hurt_counter(m, -1);
             } else {
-                set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+                set_hurt_counter(m, ((m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18) + m->extraDamageLava);
             }
         }
 

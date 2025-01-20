@@ -70,6 +70,12 @@ void chs_act_health_down(void);
 void chs_deact_health_down(void);
 u8 chs_check_temporary_invincibility(void);
 void chs_lvlinit_temporary_invincibility(void);
+u8 chs_cond_extradamage_enemies(void);
+void chs_act_extradamage_enemies(void);
+void chs_deact_extradamage_enemies(void);
+u8 chs_cond_extradamage_lava(void);
+void chs_act_extradamage_lava(void);
+void chs_deact_extradamage_lava(void);
 
 // Coin Modifiers
 u8 chs_double_coins_under_30s(void); // Check whether double coins should remain in effect

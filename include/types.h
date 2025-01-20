@@ -325,9 +325,11 @@ struct MarioState {
     // CUSTOM
     /*0xC8*/ f32 gravity;
     /*0xCC*/ s8 hundredCoinOffset;
-             u8 usedSpin;
-             u8 spinTimer;
-             s16 maxHealth;
+    /*0xCD*/ u8 usedSpin;
+    /*0xCE*/ u8 spinTimer;
+    /*0xCF*/ s8 extraDamageEnemy;
+    /*0xF0*/ s8 extraDamageLava;
+    /*0xF2*/ s16 maxHealth;
 };
 
 #endif // TYPES_H

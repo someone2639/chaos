@@ -1978,4 +1978,8 @@ void init_mario_from_save_file(void) {
 
     gMarioState->gravity = 1.0f;
     gMarioState->hundredCoinOffset = 0;
+    gMarioState->usedSpin = 0;
+    gMarioState->spinTimer = 0;
+    gMarioState->extraDamageEnemy = 0;
+    gMarioState->extraDamageLava = 0;
 }

@@ -470,6 +470,34 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "The Lavas of Hell",
         .shortDescription  = "Mario will instantly die upon touching lava or freezing water.",
     },
+    [CHAOS_PATCH_EXTRADAMAGE_ENEMIES] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = TRUE,
+        .duration          = 20,
+
+        .conditionalFunc   = chs_cond_extradamage_enemies,
+        .activatedInitFunc = chs_act_extradamage_enemies,
+        .deactivationFunc  = chs_deact_extradamage_enemies,
+
+        .name              = "Defense Drop",
+        .shortDescription  = "Mario takes +1 damage from all standard enemies.",
+    },
+    [CHAOS_PATCH_EXTRADAMAGE_LAVA] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = TRUE,
+        .duration          = 20,
+
+        .conditionalFunc   = chs_cond_extradamage_lava,
+        .activatedInitFunc = chs_act_extradamage_lava,
+        .deactivationFunc  = chs_deact_extradamage_lava,
+
+        .name              = "Can't Beat the Heat",
+        .shortDescription  = "Mario takes +1 damage from lava and fire.",
+    },
 
 // Coin Modifiers
     [CHAOS_PATCH_DOUBLE_COINS] = {

@@ -108,3 +108,31 @@ void chs_lvlinit_temporary_invincibility(void) {
 
     this->frameTimer = 0;
 }
+
+/*
+    Extra damage patches
+*/
+
+u8 chs_cond_extradamage_enemies(void) {
+    return (gMarioState->extraDamageEnemy < (4 * 4));
+}
+
+void chs_act_extradamage_enemies(void) {
+    gMarioState->extraDamageEnemy += 4;
+}
+
+void chs_deact_extradamage_enemies(void) {
+    gMarioState->extraDamageEnemy -= 4;
+}
+
+u8 chs_cond_extradamage_lava(void) {
+    return (gMarioState->extraDamageLava < (4 * 4));
+}
+
+void chs_act_extradamage_lava(void) {
+    gMarioState->extraDamageLava += 4;
+}
+
+void chs_deact_extradamage_lava(void) {
+    gMarioState->extraDamageLava -= 4;
+}
