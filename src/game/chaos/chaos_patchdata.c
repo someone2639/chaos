@@ -431,7 +431,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 1,
         .isStackable       = TRUE,
-        .duration          = 1,
+        .duration          = 0,
 
         .conditionalFunc   = chs_cond_coin_size,
 
@@ -683,6 +683,42 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Australia Mode",
         .shortDescription  = "Flips the camera upside-down so you can experience what it's like to be from the land down under.",
+    },
+    [CHAOS_PATCH_DECREASED_FOV] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_INCREASED_FOV,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 3,
+
+        .conditionalFunc   = chs_cond_decreased_fov,
+
+        .name              = "Narrow Focus",
+        .shortDescription  = "Dramatically decrease Mario's field of view.",
+    },
+    [CHAOS_PATCH_INCREASED_FOV] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_DECREASED_FOV,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 3,
+
+        .conditionalFunc   = chs_cond_increased_fov,
+
+        .name              = "Fish Eyes",
+        .shortDescription  = "Dramatically increase Mario's field of view.",
+    },
+    [CHAOS_PATCH_CONFUSED_OBJECTS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .name              = "Confused Entities",
+        .shortDescription  = "Most objects are facing the wrong way!",
     },
 
 // Time Limit

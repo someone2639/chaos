@@ -1,6 +1,7 @@
 #include <PR/ultratypes.h>
 
 #include "area.h"
+#include "chaos/chaos.h"
 #include "engine/math_util.h"
 #include "game_init.h"
 #include "gfx_dimensions.h"
@@ -242,6 +243,7 @@ void geo_process_perspective(struct GraphNodePerspective *node) {
         node->fnNode.func(GEO_CONTEXT_RENDER, &node->fnNode.node, gMatStack[gMatStackIndex]);
     }
     if (node->fnNode.node.children != NULL) {
+        f32 fov = node->fov;
         u16 perspNorm;
         Mtx *mtx = alloc_display_list(sizeof(*mtx));
 
@@ -253,7 +255,14 @@ void geo_process_perspective(struct GraphNodePerspective *node) {
         }
 #endif
 
-        guPerspective(mtx, &perspNorm, node->fov, sAspectRatio, node->near, node->far, 1.0f);
+        if (chaos_check_if_patch_active(CHAOS_PATCH_DECREASED_FOV)) {
+            fov *= 0.5f;
+        }
+        if (chaos_check_if_patch_active(CHAOS_PATCH_INCREASED_FOV)) {
+            fov *= 3.0f;
+        }
+
+        guPerspective(mtx, &perspNorm, fov, sAspectRatio, node->near, node->far, 1.0f);
         gSPPerspNormalize(gDisplayListHead++, perspNorm);
 
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx), G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
@@ -814,6 +823,11 @@ void geo_process_object(struct Object *node) {
     s32 hasAnimation = (node->header.gfx.node.flags & GRAPH_RENDER_HAS_ANIMATION) != 0;
 
     if (node->header.gfx.areaIndex == gCurGraphNodeRoot->areaIndex) {
+        s16 angleTmp = node->header.gfx.angle[1];
+        if (chaos_check_if_patch_active(CHAOS_PATCH_CONFUSED_OBJECTS)) {
+            node->header.gfx.angle[1] += 0x8000;
+        }
+
         if (node->header.gfx.throwMatrix != NULL) {
             mtxf_mul(gMatStack[gMatStackIndex + 1], *node->header.gfx.throwMatrix,
                      gMatStack[gMatStackIndex]);
@@ -852,6 +866,8 @@ void geo_process_object(struct Object *node) {
                 geo_process_node_and_siblings(node->header.gfx.node.children);
             }
         }
+
+        node->header.gfx.angle[1] = angleTmp;
 
         gMatStackIndex--;
         gCurrAnimType = ANIM_TYPE_NONE;
