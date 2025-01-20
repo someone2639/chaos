@@ -160,3 +160,19 @@ void chs_act_stars_decrease_guarantee(void) {
     remove_collected_star();
     remove_collected_star();
 }
+
+void chs_act_get_key_1(void) {
+    save_file_set_flags(SAVE_FLAG_HAVE_KEY_1);
+}
+
+void chs_cond_get_key_1(void) {
+    return (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_1 | SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)));
+}
+
+void chs_act_get_key_2(void) {
+    save_file_set_flags(SAVE_FLAG_HAVE_KEY_2);
+}
+
+void chs_cond_get_key_2(void) {
+    return (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_2 | SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR)));
+}

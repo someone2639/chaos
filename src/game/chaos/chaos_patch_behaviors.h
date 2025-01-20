@@ -29,6 +29,10 @@ void chs_act_stars_increase_guarantee(void);
 void chs_act_stars_decrease_lv2(void);
 void chs_act_stars_decrease_lv3(void);
 void chs_act_stars_decrease_guarantee(void);
+void chs_act_get_key_1(void);
+void chs_cond_get_key_1(void);
+void chs_act_get_key_2(void);
+void chs_cond_get_key_2(void);
 
 // Gravity Modifiers
 u8 chs_cond_gravity_decrease_lv1(void);

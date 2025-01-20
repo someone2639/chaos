@@ -202,6 +202,30 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "One-Star Giveaway",
         .shortDescription  = "Lose one random star currently in your possession.",
     },
+    [CHAOS_PATCH_GET_KEY_1] = {
+        .durationType      = CHAOS_DURATION_ONCE,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+
+        .activatedInitFunc = chs_act_get_key_1,
+        .conditionalFunc   = chs_cond_get_key_1,
+
+        .name              = "Free Key 1",
+        .shortDescription  = "Gain the basement key",
+    },
+    [CHAOS_PATCH_GET_KEY_2] = {
+        .durationType      = CHAOS_DURATION_ONCE,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+
+        .activatedInitFunc = chs_act_get_key_2,
+        .conditionalFunc   = chs_cond_get_key_2,
+
+        .name              = "Free Key 2",
+        .shortDescription  = "Gain the upstairs key",
+    },
 
 // Gravity Modifiers
     [CHAOS_PATCH_GRAVITY_DECREASE_LV1] = {
