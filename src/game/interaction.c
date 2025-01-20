@@ -700,7 +700,11 @@ u32 take_damage_from_interact_object(struct MarioState *m) {
         damage = 0;
     }
 
-    set_hurt_counter(m, 4 * damage);
+    if (obj_has_behavior(m->interactObj, bhvGoomba) && chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_GOOMBA)) {
+        set_hurt_counter(m, -1);
+    } else {
+        set_hurt_counter(m, 4 * damage);
+    }
 
 #if ENABLE_RUMBLE
     queue_rumble_data(5, 80);
@@ -1872,7 +1876,11 @@ void check_death_barrier(struct MarioState *m) {
 void check_lava_boost(struct MarioState *m) {
     if (!(m->action & ACT_FLAG_RIDING_SHELL) && m->pos[1] < m->floorHeight + 10.0f) {
         if (!(m->flags & MARIO_METAL_CAP)) {
-            set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+            if (chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_LAVA)) {
+                set_hurt_counter(m, -1);
+            } else {
+                set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+            }
         }
 
         update_mario_sound_and_camera(m);

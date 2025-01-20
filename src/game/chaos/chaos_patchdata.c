@@ -420,7 +420,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     },
     [CHAOS_PATCH_NO_FALL_DAMAGE] = {
         .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 2,
         .isStackable       = FALSE,
         .duration          = 12,
@@ -439,6 +439,36 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Temporary Invincibility",
         .shortDescription  = "Mario cannot take damage for 30 seconds upon entering a new level.",
+    },
+    [CHAOS_PATCH_INSTAKILL_SQUISH] = {
+        .durationType      = CHAOS_DURATION_INFINITE,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 0,
+
+        .name              = "Squishma",
+        .shortDescription  = "Mario will instantly die upon taking squish damage.",
+    },
+    [CHAOS_PATCH_INSTAKILL_GOOMBA] = {
+        .durationType      = CHAOS_DURATION_INFINITE,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 0,
+
+        .name              = "Gamer Goombas",
+        .shortDescription  = "Goombas can now insta-kill Mario.",
+    },
+    [CHAOS_PATCH_INSTAKILL_LAVA] = {
+        .durationType      = CHAOS_DURATION_INFINITE,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 0,
+
+        .name              = "The Lavas of Hell",
+        .shortDescription  = "Mario will instantly die upon touching lava or freezing water.",
     },
 
 // Coin Modifiers
