@@ -748,6 +748,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Confused Entities",
         .shortDescription  = "Most objects are facing the wrong way!",
     },
+    [CHAOS_PATCH_NO_SKYBOX] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 5,
+
+        .name              = "The Sky is Gone?",
+        .shortDescription  = "Meh, who needs it anyway...",
+    },
 
 // Time Limit
     [CHAOS_PATCH_TIME_LIMIT] = {

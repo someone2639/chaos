@@ -517,31 +517,34 @@ void geo_process_generated_list(struct GraphNodeGenerated *node) {
 void geo_process_background(struct GraphNodeBackground *node) {
     Gfx *list = NULL;
 
-    if (node->fnNode.func != NULL) {
-        list = node->fnNode.func(GEO_CONTEXT_RENDER, &node->fnNode.node,
-                                 (struct AllocOnlyPool *) gMatStack[gMatStackIndex]);
-    }
-    if (list != NULL) {
-        geo_append_display_list((void *) VIRTUAL_TO_PHYSICAL(list), node->fnNode.node.flags >> 8);
-    } else if (gCurGraphNodeMasterList != NULL) {
+    if (!chaos_check_if_patch_active(CHAOS_PATCH_NO_SKYBOX)) {
+        if (node->fnNode.func != NULL) {
+            list = node->fnNode.func(GEO_CONTEXT_RENDER, &node->fnNode.node,
+                                    (struct AllocOnlyPool *) gMatStack[gMatStackIndex]);
+        }
+        if (list != NULL) {
+            geo_append_display_list((void *) VIRTUAL_TO_PHYSICAL(list), node->fnNode.node.flags >> 8);
+        } else if (gCurGraphNodeMasterList != NULL) {
 #ifndef F3DEX_GBI_2E
-        Gfx *gfxStart = alloc_display_list(sizeof(Gfx) * 7);
+            Gfx *gfxStart = alloc_display_list(sizeof(Gfx) * 7);
 #else
-        Gfx *gfxStart = alloc_display_list(sizeof(Gfx) * 8);
+            Gfx *gfxStart = alloc_display_list(sizeof(Gfx) * 8);
 #endif
-        Gfx *gfx = gfxStart;
+            Gfx *gfx = gfxStart;
 
-        gDPPipeSync(gfx++);
-        gDPSetCycleType(gfx++, G_CYC_FILL);
-        gDPSetFillColor(gfx++, node->background);
-        gDPFillRectangle(gfx++, GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(0), gBorderHeight,
-        GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(0) - 1, SCREEN_HEIGHT - gBorderHeight - 1);
-        gDPPipeSync(gfx++);
-        gDPSetCycleType(gfx++, G_CYC_1CYCLE);
-        gSPEndDisplayList(gfx++);
+            gDPPipeSync(gfx++);
+            gDPSetCycleType(gfx++, G_CYC_FILL);
+            gDPSetFillColor(gfx++, node->background);
+            gDPFillRectangle(gfx++, GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(0), gBorderHeight,
+            GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(0) - 1, SCREEN_HEIGHT - gBorderHeight - 1);
+            gDPPipeSync(gfx++);
+            gDPSetCycleType(gfx++, G_CYC_1CYCLE);
+            gSPEndDisplayList(gfx++);
 
-        geo_append_display_list((void *) VIRTUAL_TO_PHYSICAL(gfxStart), 0);
+            geo_append_display_list((void *) VIRTUAL_TO_PHYSICAL(gfxStart), 0);
+        }
     }
+
     if (node->fnNode.node.children != NULL) {
         geo_process_node_and_siblings(node->fnNode.node.children);
     }
