@@ -18,3 +18,4 @@
 #include "mario/geo.inc.c"
 
 #include "chaos_bullet_bill/geo.inc.c"
+#include "luigi/geo.inc.c"

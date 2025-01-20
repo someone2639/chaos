@@ -1247,4 +1247,17 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Fading Fantacy",
         .shortDescription  = "Fading teleports are all deactivated.",
     },
+    [CHAOS_PATCH_LUIGI] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 10,
+
+        .frameUpdateFunc   = chs_update_luigi,
+        .deactivationFunc  = chs_deact_luigi,
+
+        .name              = "L is Real 2401",
+        .shortDescription  = "You can now play as Luigi.",
+    },
 };
