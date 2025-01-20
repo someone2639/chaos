@@ -1260,4 +1260,24 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "L is Real 2401",
         .shortDescription  = "You can now play as Luigi.",
     },
+    [CHAOS_PATCH_45_FPS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 3,
+
+        .name              = "45 FPS",
+        .shortDescription  = "Alright, who set it to OBS View?",
+    },
+    [CHAOS_PATCH_20_FPS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 3,
+
+        .name              = "20 FPS",
+        .shortDescription  = "Alright, who plugged in the $5 capture card?",
+    },
 };
