@@ -4,6 +4,7 @@
 #include "sm64.h"
 #include "game/chaos/chaos.h"
 #include "game/level_update.h"
+#include "game/area.h"
 
 u8 chs_cond_one_hit_wonder(void) {
     return(!chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_SHOCK) && !chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_BURN));
@@ -26,4 +27,12 @@ void chs_update_miracle(void) {
         gMarioState->healCounter = chs_calculate_max_heal_counter();
         chaos_decrement_patch_usage(CHAOS_PATCH_MIRACLE);
     }
+}
+
+void chs_update_luigi(void) {
+    gMarioState->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_LUIGI];
+}
+
+void chs_deact_luigi(void) {
+    gMarioState->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO];
 }
