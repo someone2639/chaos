@@ -3029,8 +3029,8 @@ void update_camera(struct Camera *c) {
         if (temporaryButtonDown & L_CBUTTONS) {
             gPlayer1Controller->buttonDown |= R_CBUTTONS;
         }
-        if (temporaryButtonPressed & L_CBUTTONS) {
-            gPlayer1Controller->buttonPressed |= R_CBUTTONS;
+        if (temporaryButtonPressed & R_CBUTTONS) {
+            gPlayer1Controller->buttonPressed |= L_CBUTTONS;
         }
         if (temporaryButtonPressed & L_CBUTTONS) {
             gPlayer1Controller->buttonPressed |= R_CBUTTONS;
