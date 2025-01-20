@@ -885,6 +885,10 @@ u32 interact_warp(struct MarioState *m, UNUSED u32 interactType, struct Object *
     u32 action;
 
     if (o->oInteractionSubtype & INT_SUBTYPE_FADING_WARP) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_DISABLE_FADE_WARPS)) {
+            return FALSE;
+        }
+
         action = m->action;
 
         if (action == ACT_TELEPORT_FADE_IN) {

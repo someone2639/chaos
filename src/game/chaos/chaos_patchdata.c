@@ -1237,4 +1237,14 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "The Miracle Happened",
         .shortDescription  = "The next time Mario dies, he is revived.",
     },
+    [CHAOS_PATCH_DISABLE_FADE_WARPS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .name              = "Fading Fantacy",
+        .shortDescription  = "Fading teleports are all deactivated.",
+    },
 };
