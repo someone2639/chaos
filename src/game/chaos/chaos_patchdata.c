@@ -901,6 +901,30 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription  = "If Mario goes too fast he will start needing to pay coins. If he can't pay then he will take damage!",
     },
 
+// Cap Effects
+    [CHAOS_PATCH_WING_CAP] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 5,
+
+        .frameUpdateFunc   = chs_update_wing_cap,
+
+        .name              = "I Believe I Can Fly",
+        .shortDescription  = "Mario gains an infinite wing cap effect!",
+    },
+    [CHAOS_PATCH_VANISH_CAP] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 20,
+
+        .name              = "Wall Hacks",
+        .shortDescription  = "Mario can now walk through all vanish cap walls, even without wearing the cap!",
+    },
+
 // Input Modifiers
     [CHAOS_PATCH_BUTTON_BROKEN_B] = {
         .durationType      = CHAOS_DURATION_STARS,

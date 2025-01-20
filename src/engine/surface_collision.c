@@ -7,6 +7,7 @@
 #include "game/object_list_processor.h"
 #include "surface_collision.h"
 #include "surface_load.h"
+#include "game/chaos/chaos.h"
 
 /**************************************************
  *                      WALLS                     *
@@ -129,7 +130,7 @@ static s32 find_wall_collisions_from_list(struct SurfaceNode *surfaceNode,
 
                 // If Mario has a vanish cap, pass through the vanish cap wall.
                 if (gCurrentObject != NULL && gCurrentObject == gMarioObject
-                    && (gMarioState->flags & MARIO_VANISH_CAP)) {
+                    && (gMarioState->flags & MARIO_VANISH_CAP || chaos_check_if_patch_active(CHAOS_PATCH_VANISH_CAP))) {
                     continue;
                 }
             }
