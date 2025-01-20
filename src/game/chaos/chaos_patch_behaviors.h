@@ -159,5 +159,7 @@ u8 chs_cond_one_hit_wonder(void);
 void chs_update_serve_ads(void);
 u8 chs_cond_miracle(void);
 void chs_update_miracle(void);
+u8 chs_cond_invisible(void);
+u8 chs_cond_luigi(void);
 void chs_update_luigi(void);
 void chs_deact_luigi(void);
