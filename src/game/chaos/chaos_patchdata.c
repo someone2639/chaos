@@ -382,6 +382,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Health Down",
         .shortDescription  = "Health maximum decreases by one.",
     },
+    [CHAOS_PATCH_NO_FALL_DAMAGE] = {
+        .durationType      = CHAOS_DURATION_INFINITE,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .name              = "Long Fall Boots",
+        .shortDescription  = "Mario is immune to fall damage.",
+    },
 
 // Coin Modifiers
     [CHAOS_PATCH_DOUBLE_COINS] = {

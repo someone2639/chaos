@@ -59,6 +59,10 @@ s32 lava_boost_on_wall(struct MarioState *m) {
 }
 
 s32 check_fall_damage(struct MarioState *m, u32 hardFallAction) {
+    if (chaos_check_if_patch_active(CHAOS_PATCH_NO_FALL_DAMAGE)) {
+        return FALSE;
+    }
+
     f32 fallHeight;
     f32 gravity = m->gravity;
     if (gravity <= 0.05f) {
