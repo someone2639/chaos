@@ -212,7 +212,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc   = chs_cond_get_key_1,
 
         .name              = "Free Key 1",
-        .shortDescription  = "Gain the basement key",
+        .shortDescription  = "Gain the basement key.",
     },
     [CHAOS_PATCH_GET_KEY_2] = {
         .durationType      = CHAOS_DURATION_ONCE,
@@ -224,12 +224,12 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc   = chs_cond_get_key_2,
 
         .name              = "Free Key 2",
-        .shortDescription  = "Gain the upstairs key",
+        .shortDescription  = "Gain the upstairs key.",
     },
     [CHAOS_PATCH_UNLOCK_CANNONS] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_POSITIVE,
-        .severity          = 3,
+        .severity          = 2,
         .isStackable       = FALSE,
 
         .activatedInitFunc = chs_act_unlock_cannons,
@@ -380,7 +380,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .negationId        = CHAOS_PATCH_HEALTH_DRAIN,
-        .severity          = 2,
+        .severity          = 3,
         .isStackable       = FALSE,
         .duration          = 10,
 
@@ -1207,7 +1207,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 1,
         .isStackable       = FALSE,
-        .duration          = 24,
+        .duration          = 10,
 
         .frameUpdateFunc   = chs_update_serve_ads,
 
