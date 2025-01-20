@@ -51,6 +51,7 @@ void chs_deact_gravity_increase_lv2(void);
 void chs_deact_gravity_increase_lv3(void);
 
 // Health Modifiers
+u8 chs_calculate_max_heal_counter(void);
 u8 chs_cond_health_drain(void);
 void chs_update_health_drain(void);
 u8 chs_cond_health_gain(void);
@@ -61,6 +62,8 @@ void chs_deact_health_up(void);
 u8 chs_cond_health_down(void);
 void chs_act_health_down(void);
 void chs_deact_health_down(void);
+u8 chs_check_temporary_invincibility(void);
+void chs_lvlinit_temporary_invincibility(void);
 
 // Coin Modifiers
 u8 chs_double_coins_under_30s(void); // Check whether double coins should remain in effect

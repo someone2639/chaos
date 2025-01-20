@@ -1073,15 +1073,17 @@ s32 act_burning_jump(struct MarioState *m) {
     play_sound(SOUND_MOVING_LAVA_BURN, m->marioObj->header.gfx.cameraToObject);
 
     m->marioObj->oMarioBurnTimer += 3;
-    if (!chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) || gCurrCourseNum == COURSE_NONE) {
-        m->health -= 10;
-    }
-    if (chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER)) {
-        m->hurtCounter = 255;
-    }
+    if (!chs_check_temporary_invincibility()) {
+        if (!chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) || gCurrCourseNum == COURSE_NONE) {
+            m->health -= 10;
+        }
+        if (chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER)) {
+            m->hurtCounter = 255;
+        }
 
-    if (m->health < 0x100) {
-        m->health = 0xFF;
+        if (m->health < 0x100) {
+            m->health = 0xFF;
+        }
     }
 #if ENABLE_RUMBLE
     reset_rumble_timers();
@@ -1100,15 +1102,17 @@ s32 act_burning_fall(struct MarioState *m) {
     set_mario_animation(m, MARIO_ANIM_GENERAL_FALL);
     m->particleFlags |= PARTICLE_FIRE;
     m->marioObj->oMarioBurnTimer += 3;
-    if (!chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) || gCurrCourseNum == COURSE_NONE) {
-        m->health -= 10;
-    }
-    if (chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER)) {
-        m->hurtCounter = 255;
-    }
+    if (!chs_check_temporary_invincibility()) {
+        if (!chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) || gCurrCourseNum == COURSE_NONE) {
+            m->health -= 10;
+        }
+        if (chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER)) {
+            m->hurtCounter = 255;
+        }
 
-    if (m->health < 0x100) {
-        m->health = 0xFF;
+        if (m->health < 0x100) {
+            m->health = 0xFF;
+        }
     }
 #if ENABLE_RUMBLE
     reset_rumble_timers();

@@ -383,7 +383,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription  = "Health maximum decreases by one.",
     },
     [CHAOS_PATCH_NO_FALL_DAMAGE] = {
-        .durationType      = CHAOS_DURATION_INFINITE,
+        .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 2,
         .isStackable       = FALSE,
@@ -391,6 +391,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Long Fall Boots",
         .shortDescription  = "Mario is immune to fall damage.",
+    },
+    [CHAOS_PATCH_TEMPORARY_INVINCIBILITY] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .levelInitFunc     = chs_lvlinit_temporary_invincibility,
+
+        .name              = "Temporary Invincibility",
+        .shortDescription  = "Mario cannot take damage for 30 seconds upon entering a new level.",
     },
 
 // Coin Modifiers

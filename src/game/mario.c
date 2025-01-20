@@ -1121,6 +1121,9 @@ s32 drop_and_set_mario_action(struct MarioState *m, u32 action, u32 actionArg) {
  */
 void set_hurt_counter(struct MarioState *m, u8 additionalDamage) {
     m->hurtCounter += additionalDamage;
+    if (chs_check_temporary_invincibility()) {
+        m->hurtCounter = 0;
+    }
 
     if (m->hurtCounter == 0) {
         return;
@@ -1507,24 +1510,26 @@ void update_mario_health(struct MarioState *m) {
 
     if (m->health >= 0x100) {
         // When already healing or hurting Mario, Mario's HP is not changed any more here.
-        if (((u32) m->healCounter | (u32) m->hurtCounter) == 0) {
-            if ((m->input & INPUT_IN_POISON_GAS) && !(m->action & ACT_FLAG_INTANGIBLE)) {
-                if (!(m->flags & MARIO_METAL_CAP) && !gDebugLevelSelect) {
-                    m->health -= 4;
-                }
-            } else {
-                if ((m->action & ACT_FLAG_SWIMMING) && !(m->action & ACT_FLAG_INTANGIBLE)) {
-                    terrainIsSnow = (m->area->terrainType & TERRAIN_MASK) == TERRAIN_SNOW;
+        if (!chs_check_temporary_invincibility()) {
+            if (((u32) m->healCounter | (u32) m->hurtCounter) == 0) {
+                if ((m->input & INPUT_IN_POISON_GAS) && !(m->action & ACT_FLAG_INTANGIBLE)) {
+                    if (!(m->flags & MARIO_METAL_CAP) && !gDebugLevelSelect) {
+                        m->health -= 4;
+                    }
+                } else {
+                    if ((m->action & ACT_FLAG_SWIMMING) && !(m->action & ACT_FLAG_INTANGIBLE)) {
+                        terrainIsSnow = (m->area->terrainType & TERRAIN_MASK) == TERRAIN_SNOW;
 
-                    // When Mario is near the water surface, recover health (unless in snow),
-                    // when in snow terrains lose 3 health.
-                    // If using the debug level select, do not lose any HP to water.
-                    if ((m->pos[1] >= (m->waterLevel - 140)) && !terrainIsSnow) {
-                        if (!(chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_WATER))) {
-                            m->health += 0x1A;
+                        // When Mario is near the water surface, recover health (unless in snow),
+                        // when in snow terrains lose 3 health.
+                        // If using the debug level select, do not lose any HP to water.
+                        if ((m->pos[1] >= (m->waterLevel - 140)) && !terrainIsSnow) {
+                            if (!(chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_WATER))) {
+                                m->health += 0x1A;
+                            }
+                        } else if (!gDebugLevelSelect) {
+                            m->health -= (terrainIsSnow ? 3 : 1);
                         }
-                    } else if (!gDebugLevelSelect) {
-                        m->health -= (terrainIsSnow ? 3 : 1);
                     }
                 }
             }

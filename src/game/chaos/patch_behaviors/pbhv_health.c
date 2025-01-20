@@ -1,11 +1,15 @@
 #include <PR/ultratypes.h>
 #include <PR/gbi.h>
 #include "types.h"
-#include "game/mario.h"
 #include "sm64.h"
-#include "game/level_update.h"
 #include "behavior_data.h"
+#include "course_table.h"
+#include "game/area.h"
+#include "game/level_update.h"
+#include "game/mario.h"
 #include "game/chaos/chaos.h"
+
+#define TEMPORARY_INVINCIBILITY_DURATION (30 * 30)
 
 /*
     Health Drain
@@ -41,6 +45,10 @@ void chs_update_health_gain(void) {
     Health Up
 */
 
+u8 chs_calculate_max_heal_counter(void) {
+    return 31 + ((gMarioState->maxHealth - 0x880) / 0x40);
+}
+
 u8 chs_cond_health_up(void) {
     return (gMarioState->maxHealth < 0x1000);
 }
@@ -52,6 +60,9 @@ void chs_act_health_up(void) {
 
 void chs_deact_health_up(void) {
     gMarioState->maxHealth -= 0x100;
+    if (gMarioState->health > gMarioState->maxHealth) {
+        gMarioState->health = gMarioState->maxHealth;
+    }
 }
 
 /*
@@ -64,8 +75,36 @@ u8 chs_cond_health_down(void) {
 
 void chs_act_health_down(void) {
     gMarioState->maxHealth -= 0x100;
+    if (gMarioState->health > gMarioState->maxHealth) {
+        gMarioState->health = gMarioState->maxHealth;
+    }
 }
 
 void chs_deact_health_down(void) {
     gMarioState->maxHealth += 0x100;
+}
+
+/*
+    Temporary Invincibility
+*/
+
+u8 chs_check_temporary_invincibility(void) {
+    if (!chaos_check_if_patch_active(CHAOS_PATCH_TEMPORARY_INVINCIBILITY)) {
+        return FALSE;
+    }
+
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_TEMPORARY_INVINCIBILITY, &this);
+    if (this->frameTimer >= TEMPORARY_INVINCIBILITY_DURATION || gCurrCourseNum == COURSE_NONE) {
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+void chs_lvlinit_temporary_invincibility(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_TEMPORARY_INVINCIBILITY, &this);
+
+    this->frameTimer = 0;
 }

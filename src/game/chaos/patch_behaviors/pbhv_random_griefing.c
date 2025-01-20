@@ -90,8 +90,10 @@ void chs_update_random_burn(void) {
             u32 burningAction = ACT_BURNING_JUMP;
 
             play_mario_sound(gMarioState, SOUND_MARIO_ON_FIRE, 0);
-            if (chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) && gCurrCourseNum != COURSE_NONE) {
-                set_hurt_counter(gMarioState, (gMarioState->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+            if (!chs_check_temporary_invincibility()) {
+                if (chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) && gCurrCourseNum != COURSE_NONE) {
+                    set_hurt_counter(gMarioState, (gMarioState->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+                }
             }
 
             if ((gMarioState->action & ACT_FLAG_AIR) && gMarioState->vel[1] <= 0.0f) {

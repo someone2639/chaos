@@ -1360,15 +1360,17 @@ s32 act_burning_ground(struct MarioState *m) {
 
     m->particleFlags |= PARTICLE_FIRE;
     play_sound(SOUND_MOVING_LAVA_BURN, m->marioObj->header.gfx.cameraToObject);
-    if (!chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) || gCurrCourseNum == COURSE_NONE) {
-        m->health -= 10;
-    }
-    if (chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER)) {
-        m->hurtCounter = 255;
-    }
+    if (!chs_check_temporary_invincibility()) {
+        if (!chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) || gCurrCourseNum == COURSE_NONE) {
+            m->health -= 10;
+        }
+        if (chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER)) {
+            m->hurtCounter = 255;
+        }
 
-    if (m->health < 0x100) {
-        set_mario_action(m, ACT_STANDING_DEATH, 0);
+        if (m->health < 0x100) {
+            set_mario_action(m, ACT_STANDING_DEATH, 0);
+        }
     }
 
     m->marioBodyState->eyeState = MARIO_EYES_DEAD;
