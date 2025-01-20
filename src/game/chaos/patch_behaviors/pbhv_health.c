@@ -47,6 +47,7 @@ u8 chs_cond_health_up(void) {
 
 void chs_act_health_up(void) {
     gMarioState->maxHealth += 0x100;
+    gMarioState->health += 0x100;
 }
 
 void chs_deact_health_up(void) {
