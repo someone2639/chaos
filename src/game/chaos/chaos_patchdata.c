@@ -498,6 +498,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Can't Beat the Heat",
         .shortDescription  = "Mario takes +1 damage from lava and fire.",
     },
+    [CHAOS_PATCH_BREATH_BOOST] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 10,
+
+        .name              = "Breath Boost",
+        .shortDescription  = "Mario loses health more slowly underwater.",
+    },
 
 // Coin Modifiers
     [CHAOS_PATCH_DOUBLE_COINS] = {
