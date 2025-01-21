@@ -102,11 +102,6 @@ void chaos_remove_expired_entry(const s32 patchIndex) {
         return;
     }
 
-    // Activate init func and return immediately, do not add to patch array
-    if (patch->deactivationFunc) {
-        patch->deactivationFunc();
-    }
-
     // Decrease number of active patches and move the last active patch in the array to the index of the removed patch.
     // This means of moving stuff around implies we cannot make use of sorting order!
     (*gChaosActiveEntryCount)--;
@@ -115,6 +110,11 @@ void chaos_remove_expired_entry(const s32 patchIndex) {
         activePatchCounts[patchId]--;
     }
     gChaosActiveEntries[patchIndex] = gChaosActiveEntries[*gChaosActiveEntryCount];
+
+    // Invoke deactivation function, now that the entry has been removed
+    if (patch->deactivationFunc) {
+        patch->deactivationFunc();
+    }
 }
 
 void chaos_add_new_entry(const enum ChaosPatchID patchId) {

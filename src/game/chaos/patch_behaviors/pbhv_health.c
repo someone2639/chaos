@@ -36,7 +36,7 @@ void chs_update_health_gain(void) {
     struct ChaosActiveEntry *this;
     chaos_find_first_active_patch(CHAOS_PATCH_HEALTH_GAIN, &this);
     
-    if(!(this->frameTimer % 45)) {
+    if(!(this->frameTimer % 60)) {
         gMarioState->healCounter++;
     }
 }
