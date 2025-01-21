@@ -69,6 +69,8 @@ extern Gfx patch_bg_mesh_mesh[];
 extern Vtx patch_bg_mesh_mesh_vtx_0[];
 extern Gfx patch_bg_r_mesh_r_mesh[];
 extern Vtx patch_bg_r_mesh_r_mesh_vtx_0[];
+extern Vtx patch_bg_s_mesh_s_mesh_vtx_0[];
+extern Gfx patch_bg_s_mesh_s_mesh[];
 extern Gfx patch_quality_bead_begin[];
 extern Gfx patch_quality_bead[];
 extern Gfx patch_quality_bead_end[];

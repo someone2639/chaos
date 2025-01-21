@@ -95,3 +95,4 @@ void display_patch_selection_ui();
 void update_patch_selection_menu();
 void reset_patch_selection_menu();
 void load_new_patches();
+void draw_patch_type(f32 x, f32 y, enum ChaosPatchDurationType type);

@@ -10,10 +10,11 @@ enum ChaosSettingsFlags {
 
 struct ChaosPauseMenu {
     struct ChaosMenu settingsMenu;
-    //struct ChaosMenu activePatchesMenu;
+    struct ChaosMenu activePatchesMenu;
 };
 
 extern struct ChaosPauseMenu *gChaosPauseMenu;
 
 void render_settings_panel();
 void handle_settings_inputs();
+void render_active_patches();

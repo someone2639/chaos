@@ -17,9 +17,42 @@
 #include "chaos_menus.h"
 #include "chaos_pause_menu.h"
 #include "main.h"
+#include "chaos/chaos.h"
+#include "patch_selection_ui.h"
 
 struct ChaosPauseMenu sChaosPauseMenu;
 struct ChaosPauseMenu *gChaosPauseMenu = &sChaosPauseMenu;
+
+#define MINI_CARD_STRING_WIDTH 94
+
+void scroll_mini_patch_cards() {
+    int i = 0;
+	int count = 4;
+	int width = 128 * 0x20;
+	int height = 64 * 0x20;
+
+	static int currentX = 0;
+	int deltaX;
+	static int currentY = 0;
+	int deltaY;
+	Vtx *vertices = segmented_to_virtual(patch_bg_s_mesh_s_mesh_vtx_0);
+
+	deltaX = (int)(-0.25f * 0x20) % width;
+	deltaY = (int)(-0.25f * 0x20) % height;
+
+	if (absi(currentX) > width) {
+		deltaX -= (int)(absi(currentX) / width) * width * signum_positive(deltaX);
+	}
+	if (absi(currentY) > height) {
+		deltaY -= (int)(absi(currentY) / height) * height * signum_positive(deltaY);
+	}
+
+	for (i = 0; i < count; i++) {
+		vertices[i].n.tc[0] += deltaX;
+		vertices[i].n.tc[1] += deltaY;
+	}
+	currentX += deltaX;	currentY += deltaY;
+}
 
 void scroll_settings_panel() {
     int i = 0;
@@ -48,6 +81,42 @@ void scroll_settings_panel() {
 		vertices[i].n.tc[1] += deltaY;
 	}
 	currentX += deltaX;	currentY += deltaY;
+}
+
+void draw_mini_patch_card(f32 x, f32 y, struct ChaosActiveEntry *patch) {
+    const struct ChaosPatch *patchInfo = &gChaosPatches[patch->id];
+    const char* patchName = patchInfo->name;
+    char drawName[48];
+    char timerText[4];
+    f32 nameY;
+    s32 lines, length;
+    sprintf(timerText, "%d", patch->remainingDuration);
+
+    //Center name if it's only one line long
+    fasttext_compute_print_text_with_line_breaks(FT_FONT_SMALL_THIN, MINI_CARD_STRING_WIDTH, &lines, &length, drawName, patchName);
+    nameY = (lines == 1) ? -10 : -3;
+    Mtx *transMtx = alloc_display_list(sizeof(Mtx));
+
+    guTranslate(transMtx, x, y, 0);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    gSPDisplayList(gDisplayListHead++, patch_bg_s_mesh_s_mesh);
+
+    gSPDisplayList(gDisplayListHead++, patch_use_type_start);
+    draw_patch_type(38, 0, patchInfo->durationType);
+    gSPDisplayList(gDisplayListHead++, patch_use_type_end);
+
+    slowtext_setup_ortho_rendering(FT_FONT_SMALL_THIN);
+    slowtext_draw_ortho_text(-62, nameY, drawName, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_setup_ortho_rendering(FT_FONT_OUTLINE);
+    slowtext_draw_ortho_text(46, -10, timerText, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
+    slowtext_finished_rendering();
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+}
+
+void render_active_patches() {
+    scroll_mini_patch_cards();
+    draw_mini_patch_card(SCREEN_CENTER_X, SCREEN_CENTER_Y, &gChaosActiveEntries[0]);
 }
 
 void render_settings_panel() {

@@ -2323,8 +2323,8 @@ void render_view_patches_prompt(void) {
     print_generic_string((SCREEN_WIDTH - 96) - 10, 20, textPatchesPrompt);
     print_generic_string((SCREEN_WIDTH - 96) - 10,  7, textPatchesR);
     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
-    if (gPlayer1Controller->buttonPressed & R_TRIG){
-        
+    if (gPlayer1Controller->buttonDown & R_TRIG){
+        render_active_patches();
     }
 }
 
