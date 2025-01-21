@@ -163,3 +163,5 @@ u8 chs_cond_invisible(void);
 u8 chs_cond_luigi(void);
 void chs_update_luigi(void);
 void chs_deact_luigi(void);
+void chs_act_reverb(void);
+void chs_deact_reverb(void);

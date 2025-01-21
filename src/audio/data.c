@@ -114,8 +114,8 @@ struct BetterReverbSettings gBetterReverbSettings[] = {
         .isMono = FALSE,
         .filterCount = (NUM_ALLPASS - 9),   // Ignored with lightweight settings
 
-        .windowSize = 0x0E00,
-        .gain = 0x2FFF,
+        .windowSize = -1,
+        .gain = -1,
         .gainIndex = 0xA0,                  // Ignored with lightweight settings
         .reverbIndex = 0x30,                // Ignored with lightweight settings
 

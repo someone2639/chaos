@@ -952,7 +952,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .negationId        = CHAOS_PATCH_REMOVE_SELECTABLE_PATCH,
         .severity          = 3,
         .isStackable       = TRUE,
-        .duration          = 18,
+        .duration          = 10,
         
         .conditionalFunc   = chs_cond_add_selectable_patch,
 
@@ -965,7 +965,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .negationId        = CHAOS_PATCH_ADD_SELECTABLE_PATCH,
         .severity          = 3,
         .isStackable       = TRUE,
-        .duration          = 18,
+        .duration          = 10,
         
         .conditionalFunc   = chs_cond_remove_selectable_patch,
 
@@ -1282,5 +1282,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "20 FPS",
         .shortDescription  = "Alright, who plugged in the $5 capture card?",
+    },
+    [CHAOS_PATCH_REVERB] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 8,
+
+        .activatedInitFunc = chs_act_reverb,
+        .deactivationFunc  = chs_deact_reverb,
+
+        .name              = "High-Fidelity Reverb",
+        .shortDescription  = "For that more immersive experience (works best in caves!)",
     },
 };
