@@ -399,10 +399,6 @@ void render_game(void) {
             gSaveOptSelectIndex = gMenuOptSelectIndex;
         }
 
-        if (gPlayer1Controller->buttonPressed & L_TRIG) {
-            chaos_add_new_entry(CHAOS_PATCH_45_FPS);
-        }
-
 #ifdef CHAOS_ENGINE_DEBUG
         static u8 chaosDebugRender = FALSE;
         if (gPlayer1Controller->buttonPressed & R_JPAD) {
