@@ -43,13 +43,13 @@ u32 menu_update_joystick_dir(struct ChaosMenu *menu) {
     u32 stickDir = MENU_JOYSTICK_DIR_NONE;
 
     if(stickY > 60) {
-        stickDir = MENU_JOYSTICK_DIR_UP;
+        stickDir |= MENU_JOYSTICK_DIR_UP;
     } else if(stickY < -60) {
-        stickDir = MENU_JOYSTICK_DIR_DOWN;
+        stickDir |= MENU_JOYSTICK_DIR_DOWN;
     } else if (stickX > 60) {
-        stickDir = MENU_JOYSTICK_DIR_RIGHT;
+        stickDir |= MENU_JOYSTICK_DIR_RIGHT;
     } else if (stickX < -60) {
-        stickDir = MENU_JOYSTICK_DIR_LEFT;
+        stickDir |= MENU_JOYSTICK_DIR_LEFT;
     }
 
     if(menu->framesSinceLastStickInput >= MENU_JOYSTICK_HOLD_FRAMES 

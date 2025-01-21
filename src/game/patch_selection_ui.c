@@ -160,8 +160,7 @@ void handle_inputs_patch_select_state_select(s32 stickDir) {
     s32 numPatches = gPatchSelectionMenu->numPatches;
     s32 pressedUpDown = ((gPlayer1Controller->buttonPressed & D_JPAD) || (stickDir == MENU_JOYSTICK_DIR_DOWN) || 
         (gPlayer1Controller->buttonPressed & U_JPAD) || (stickDir == MENU_JOYSTICK_DIR_UP));
-    s32 pressedLeftRight = ((gPlayer1Controller->buttonPressed & L_JPAD) || (stickDir == MENU_JOYSTICK_DIR_LEFT) || 
-        (gPlayer1Controller->buttonPressed & R_JPAD) || (stickDir == MENU_JOYSTICK_DIR_RIGHT));
+    s32 pressedLeftRight = ((gPlayer1Controller->buttonPressed & (L_JPAD | R_JPAD)) || stickDir & (MENU_JOYSTICK_DIR_LEFT | MENU_JOYSTICK_DIR_RIGHT));
 
 
     if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
@@ -261,13 +260,13 @@ void handle_inputs_patch_select_state_confirmation(s32 stickDir) {
         play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
         gPatchSelectionMenu->menu.selectedMenuIndex = 0;
     }
-    else if(gPlayer1Controller->buttonPressed & R_JPAD || (stickDir == MENU_JOYSTICK_DIR_RIGHT)) {
+    else if(gPlayer1Controller->buttonPressed & R_JPAD || (stickDir & MENU_JOYSTICK_DIR_RIGHT)) {
         gPatchSelectionMenu->menu.selectedMenuIndex++;
         if(gPatchSelectionMenu->menu.selectedMenuIndex > 1) {
             gPatchSelectionMenu->menu.selectedMenuIndex = 0;
         }
         play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
-    } else if(gPlayer1Controller->buttonPressed & L_JPAD || (stickDir == MENU_JOYSTICK_DIR_LEFT)) {
+    } else if(gPlayer1Controller->buttonPressed & L_JPAD || (stickDir & MENU_JOYSTICK_DIR_LEFT)) {
         gPatchSelectionMenu->menu.selectedMenuIndex--;
         if(gPatchSelectionMenu->menu.selectedMenuIndex < 0) {
             gPatchSelectionMenu->menu.selectedMenuIndex = 1;

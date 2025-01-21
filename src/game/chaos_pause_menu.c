@@ -53,7 +53,7 @@ void scroll_settings_panel() {
 void render_settings_panel() {
     scroll_settings_panel();
 
-    Mtx *transMtx = alloc_display_list(sizeof(Mtx) * 3);
+    Mtx *transMtx = alloc_display_list(sizeof(Mtx) * 2);
     Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
     f32 x = 42;
     f32 y = 52;
@@ -62,18 +62,8 @@ void render_settings_panel() {
     u8 aspRatCol169;
     u8 musColOn;
     u8 musColOff;
-    u8 aspRatCursorCol;
-    u8 musCursorCol;
-    s32 aspRatCursorX = (gChaosPauseMenu->selectedAspectRatio) ? 0 : -30;
-    s32 musCursorX = (gChaosPauseMenu->selectedMusic) ? 0 : -30;
-
-    if(gChaosPauseMenu->settingsMenu.selectedMenuIndex == 0) {
-        aspRatCursorCol = 0xFF;
-        musCursorCol = 0x7F;
-    } else {
-        aspRatCursorCol = 0x7F;
-        musCursorCol = 0xFF;
-    }
+    s32 cursorX = (gChaosPauseMenu->settingsMenu.selectedMenuIndex % 2) ? 0 : -30;
+    s32 cursorY = (gChaosPauseMenu->settingsMenu.selectedMenuIndex < 2) ? 5 : -35;
 
     if(gConfig.widescreen) {
         aspRatCol43 = 0x7F;
@@ -106,25 +96,14 @@ void render_settings_panel() {
     slowtext_draw_ortho_text(15, -40, "Off", FT_FLAG_ALIGN_CENTER, musColOff, musColOff, musColOff, 0xFF);
     slowtext_finished_rendering();
 
-    //Aspect Ratio Cursor
-    guTranslate(transMtx, aspRatCursorX, 5, 0);
+    //Cursor
+    guTranslate(transMtx, cursorX, cursorY, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
             G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     guScale(scaleMtx, 0.5f, 0.5f, 1.0f);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx),
             G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-    gDPSetEnvColor(gDisplayListHead++, aspRatCursorCol, aspRatCursorCol, aspRatCursorCol, 255);
-    gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
-    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
-
-    //Music Cursor
-    guTranslate(transMtx, musCursorX, -35, 0);
-    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
-            G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    guScale(scaleMtx, 0.5f, 0.5f, 1.0f);
-    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx),
-            G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-    gDPSetEnvColor(gDisplayListHead++, musCursorCol, musCursorCol, musCursorCol, 255);
+    gDPSetEnvColor(gDisplayListHead++, 0xFF, 0xFF, 0xFF, 0xFF);
     gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
@@ -134,33 +113,46 @@ void render_settings_panel() {
 
 void handle_settings_inputs() {
     u32 stickDir = menu_update_joystick_dir(&gChaosPauseMenu->settingsMenu);
+    s32 prevSelection = gChaosPauseMenu->settingsMenu.selectedMenuIndex;
+    s32 selection = prevSelection;
     s32 pressedUpDown = ((gPlayer1Controller->buttonPressed & D_JPAD) || (stickDir == MENU_JOYSTICK_DIR_DOWN) || 
         (gPlayer1Controller->buttonPressed & U_JPAD) || (stickDir == MENU_JOYSTICK_DIR_UP));
-    s32 pressedLeftRight = ((gPlayer1Controller->buttonPressed & L_JPAD) || (stickDir == MENU_JOYSTICK_DIR_LEFT) || 
-        (gPlayer1Controller->buttonPressed & R_JPAD) || (stickDir == MENU_JOYSTICK_DIR_RIGHT));
+    s32 pressedLeftRight = ((gPlayer1Controller->buttonPressed & (L_JPAD | R_JPAD)) || stickDir & (MENU_JOYSTICK_DIR_LEFT | MENU_JOYSTICK_DIR_RIGHT));
 
     if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
-        gConfig.widescreen = gChaosPauseMenu->selectedAspectRatio;
+        switch(selection) {
+            case 0:
+                gConfig.widescreen = 0;
+                break;
+            case 1:
+                gConfig.widescreen = 1;
+                break;
+            case 2:
+                gConfig.disableBGMusic = 0;
+                break;
+            case 3:
+                gConfig.disableBGMusic = 1;
+                break;
+        }
         save_file_set_widescreen_mode(gConfig.widescreen);
-        gConfig.disableBGMusic = gChaosPauseMenu->selectedMusic;
         save_file_set_bg_music(gConfig.disableBGMusic);
-
-        //gChaosPauseMenu->settingsMenu.flags &= ~CHAOS_SETTINGS_ACTIVE;
     } else if (gPlayer1Controller->buttonPressed & (B_BUTTON | L_TRIG)) {
         gChaosPauseMenu->settingsMenu.flags &= ~CHAOS_SETTINGS_ACTIVE;
         gPlayer1Controller->buttonPressed &= ~(B_BUTTON | L_TRIG);
     } else if(pressedUpDown) {
-        gChaosPauseMenu->settingsMenu.selectedMenuIndex ^= 1;
-        play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
-    } else if (pressedLeftRight) {
-        switch(gChaosPauseMenu->settingsMenu.selectedMenuIndex) {
-            case 0:
-                gChaosPauseMenu->selectedAspectRatio ^= 1;
-                break;
-            case 1:
-                gChaosPauseMenu->selectedMusic ^= 1;
-                break;
+        selection += 2;
+        if(selection > 3) {
+            selection = prevSelection - 2;
         }
+    } else if (pressedLeftRight) {
+        selection++;
+        if(selection > 3 || !(selection % 2)) {
+            selection = prevSelection - 1;
+        }
+    }
+
+    if(selection != prevSelection) {
         play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
+        gChaosPauseMenu->settingsMenu.selectedMenuIndex = selection;
     }
 }

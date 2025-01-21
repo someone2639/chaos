@@ -17,11 +17,11 @@ enum MenuButtonPrompt {
 };
 
 enum MenuJoystickDir {
-    MENU_JOYSTICK_DIR_NONE,
-    MENU_JOYSTICK_DIR_UP,
-    MENU_JOYSTICK_DIR_DOWN,
-    MENU_JOYSTICK_DIR_RIGHT,
-    MENU_JOYSTICK_DIR_LEFT,
+    MENU_JOYSTICK_DIR_NONE  =  0,
+    MENU_JOYSTICK_DIR_UP    = (1 << 0),
+    MENU_JOYSTICK_DIR_DOWN  = (1 << 1),
+    MENU_JOYSTICK_DIR_RIGHT = (1 << 2),
+    MENU_JOYSTICK_DIR_LEFT  = (1 << 3),
 };
 
 //Generic menu handler

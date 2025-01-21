@@ -11,8 +11,6 @@ enum ChaosSettingsFlags {
 struct ChaosPauseMenu {
     struct ChaosMenu settingsMenu;
     //struct ChaosMenu activePatchesMenu;
-    u8 selectedAspectRatio;
-    u8 selectedMusic;
 };
 
 extern struct ChaosPauseMenu *gChaosPauseMenu;
