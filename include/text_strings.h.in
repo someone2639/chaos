@@ -25,6 +25,10 @@
 #define TEXT_PAUSE _("PAUSE") // Pause text, Castle Courses
 #define TEXT_HUD_CONGRATULATIONS _("CONGRATULATIONS") // Course Complete Text, Bowser Courses
 
+#define TEXT_HUD_PATCHES_PROMPT _("ACTIVE PATCHES:")
+#define TEXT_HUD_PATCHES_R _("PRESS R TO VIEW")
+#define TEXT_HUD_OPTIONS_PROMPT _("SETTINGS:")
+#define TEXT_HUD_OPTIONS_L _("PRESS L TO CHANGE")
 #define TEXT_HUD_BGM_ON _("MUSIC: ON")
 #define TEXT_HUD_BGM_OFF _("MUSIC: OFF")
 #define TEXT_HUD_PRESS_R _("PRESS R TO SWITCH")
