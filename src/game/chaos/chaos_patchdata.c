@@ -128,6 +128,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     },
 
 // Star/Save Modifiers
+    [CHAOS_PATCH_STARS_SHUFFLE_STARS] = {
+        .durationType      = CHAOS_DURATION_ONCE,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = TRUE,
+
+        .conditionalFunc   = chs_cond_star_shuffle,
+        .activatedInitFunc = chs_act_star_shuffle,
+
+        .name              = "Star Shuffle",
+        .shortDescription  = "Take two stars in your possession and randomly reassign them to new courses/acts.",
+    },
     [CHAOS_PATCH_STARS_INCREASE_LV2] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_POSITIVE,
@@ -396,7 +408,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .negationId        = CHAOS_PATCH_HEALTH_DOWN,
         .severity          = 1,
         .isStackable       = TRUE,
-        .duration          = 1,
 
         .conditionalFunc   = chs_cond_health_up,
         .activatedInitFunc = chs_act_health_up,
@@ -410,7 +421,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .negationId        = CHAOS_PATCH_HEALTH_UP,
         .severity          = 1,
         .isStackable       = TRUE,
-        .duration          = 1,
 
         .conditionalFunc   = chs_cond_health_down,
         .activatedInitFunc = chs_act_health_down,
@@ -445,7 +455,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 1,
         .isStackable       = FALSE,
-        .duration          = 0,
 
         .name              = "Squishma",
         .shortDescription  = "Mario will instantly die upon taking squish damage.",
@@ -455,7 +464,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 0,
 
         .name              = "Gamer Goombas",
         .shortDescription  = "Goombas can now insta-kill Mario.",
@@ -465,7 +473,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 0,
 
         .name              = "The Lavas of Hell",
         .shortDescription  = "Mario will instantly die upon touching lava or freezing water.",
@@ -496,7 +503,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .deactivationFunc  = chs_deact_extradamage_lava,
 
         .name              = "Can't Beat the Heat",
-        .shortDescription  = "Mario takes +1 damage from lava and fire.",
+        .shortDescription  = "Mario takes +1 additional damage from lava and fire.",
     },
     [CHAOS_PATCH_BREATH_BOOST] = {
         .durationType      = CHAOS_DURATION_STARS,
@@ -585,7 +592,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 1,
         .isStackable       = TRUE,
-        .duration          = 0,
 
         .conditionalFunc   = chs_cond_coin_size,
 
@@ -781,10 +787,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 2,
+        .duration          = 1,
 
-        .areaInitFunc      = chs_area_init_green_demon,
         .conditionalFunc   = chs_cond_green_demon,
+        .frameUpdateFunc   = chs_lvlupdate_green_demon,
 
         .name              = "Green Demon",
         .shortDescription  = "Of course this one's in the game. Spawn a poison 1-UP mushroom that chases Mario.",
@@ -948,7 +954,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 2,
         .isStackable       = TRUE,
-        .duration          = 0,
         
         .conditionalFunc   = chs_cond_remove_negative_patch,
         .activatedInitFunc = chs_act_remove_negative_patch,
@@ -1123,7 +1128,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 3,
+        .duration          = 2,
 
         .name              = "UNO Reverse Card",
         .shortDescription  = "Invert the X axis of the joystick when controlling Mario (i.e. left and right).",
@@ -1199,7 +1204,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 1,
         .isStackable       = FALSE,
-        .duration          = 0,
 
         .name              = "Code That Makes You Miss Bowser Throws",
         .shortDescription  = "They have that in this game, I swear.",
@@ -1231,7 +1235,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 0,
 
         .name              = "Sequence Break",
         .shortDescription  = "All course acts are now selectable, and may be completed in any order.",
@@ -1276,19 +1279,25 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_45_FPS] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 3,
+        .negationId        = CHAOS_PATCH_20_FPS,
+        .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 3,
+        .duration          = 2,
+
+        .conditionalFunc   = chs_cond_45_fps,
 
         .name              = "45 FPS",
-        .shortDescription  = "My internet's living, I'm adding frames, Grandma's living, she's adding frames",
+        .shortDescription  = "My internet's living, I'm adding frames, Grandma's living, she's adding frames...",
     },
     [CHAOS_PATCH_20_FPS] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_45_FPS,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 3,
+        .duration          = 2,
+
+        .conditionalFunc   = chs_cond_20_fps,
 
         .name              = "20 FPS",
         .shortDescription  = "Alright, who plugged in the 5 dollar capture card?",

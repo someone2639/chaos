@@ -21,8 +21,10 @@ void chs_act_lives_decrease_lv2(void);
 void chs_act_lives_decrease_lv3(void);
 
 // Star/Save Modifiers
+u8 chs_cond_star_shuffle(void);
 u8 chs_cond_stars_increase_guarantee(void);
 u8 chs_cond_stars_decrease_guarantee(void);
+void chs_act_star_shuffle(void);
 void chs_act_stars_increase_lv2(void);
 void chs_act_stars_increase_lv3(void);
 void chs_act_stars_increase_guarantee(void);
@@ -107,7 +109,7 @@ void chs_update_random_blind(void);
 
 // Object Spawners
 u8 chs_cond_green_demon(void);
-void chs_area_init_green_demon(void);
+void chs_lvlupdate_green_demon(void);
 void chs_area_init_bullet_hell(void);
 void chs_update_bullet_hell(void);
 
@@ -163,5 +165,7 @@ u8 chs_cond_invisible(void);
 u8 chs_cond_luigi(void);
 void chs_update_luigi(void);
 void chs_deact_luigi(void);
+u8 chs_cond_45_fps(void);
+u8 chs_cond_20_fps(void);
 void chs_act_reverb(void);
 void chs_deact_reverb(void);

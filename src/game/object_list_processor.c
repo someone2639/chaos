@@ -23,6 +23,8 @@
 #include "profiling.h"
 
 
+u32 chaosShouldProcessFrameUpdate = FALSE;
+
 /**
  * Flags controlling what debug info is displayed.
  */
@@ -638,7 +640,9 @@ void update_objects(UNUSED s32 unused) {
 
     cycleCounts[0] = get_current_clock();
 
-    chaos_frame_update();
+    if (chaosShouldProcessFrameUpdate) {
+        chaos_frame_update();
+    }
 
     gTimeStopState &= ~TIME_STOP_MARIO_OPENED_DOOR;
 

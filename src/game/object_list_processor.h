@@ -60,6 +60,7 @@ enum ObjectList {
 
 extern struct ObjectNode gObjectListArray[];
 
+extern u32 chaosShouldProcessFrameUpdate;
 extern s32 gDebugInfoFlags;
 extern s32 gNumFindFloorMisses;
 extern UNUSED s32 unused_8033BEF8;

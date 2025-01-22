@@ -477,7 +477,7 @@ void vsync() {
 void display_and_vsync(void) {
     display();
     if (chaos_check_if_patch_active(CHAOS_PATCH_45_FPS)) {
-        if ((gGlobalTimer % 3 != 0)) {
+        if ((gGlobalTimer % 3 == 0)) {
             vsync();
         }
     } else {
