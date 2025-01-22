@@ -21,13 +21,12 @@
 #include "patch_selection_ui.h"
 
 #define PATCH_LIST_SIZE     6
+#define ACT_DESC_WIDTH      126
 struct ChaosPauseMenu sChaosPauseMenu = {.chaosListStart = 0};
 struct ChaosPauseMenu *gChaosPauseMenu = &sChaosPauseMenu;
 
-#define MINI_CARD_STRING_WIDTH 94
-
 void scroll_mini_patch_cards() {
-    int i = 0;
+	int i = 0;
 	int count = 4;
 	int width = 128 * 0x20;
 	int height = 64 * 0x20;
@@ -84,6 +83,80 @@ void scroll_settings_panel() {
 	currentX += deltaX;	currentY += deltaY;
 }
 
+void scroll_act_desc_bg() {
+    int i = 0;
+	int count = 4;
+	int width = 64 * 0x20;
+	int height = 32 * 0x20;
+
+	static int currentX = 0;
+	int deltaX;
+	static int currentY = 0;
+	int deltaY;
+	Vtx *vertices = segmented_to_virtual(act_desc_bg_act_desc_mesh_mesh_vtx_0);
+
+	deltaX = (int)(0.1 * 0x20) % width;
+	deltaY = (int)(0.1 * 0x20) % height;
+
+	if (absi(currentX) > width) {
+		deltaX -= (int)(absi(currentX) / width) * width * signum_positive(deltaX);
+	}
+	if (absi(currentY) > height) {
+		deltaY -= (int)(absi(currentY) / height) * height * signum_positive(deltaY);
+	}
+
+	for (i = 0; i < count; i++) {
+		vertices[i].n.tc[0] += deltaX;
+		vertices[i].n.tc[1] += deltaY;
+	}
+	currentX += deltaX;	currentY += deltaY;
+}
+
+void draw_active_patch_desc(f32 x, f32 y, struct ChaosActiveEntry *patch) {
+    const struct ChaosPatch *patchInfo = &gChaosPatches[patch->id];
+    const char *patchName = patchInfo->name;
+    const char *patchDesc = patchInfo->shortDescription;
+    char durationString[16];
+
+    u8 effectR = sEffectColors[patchInfo->effectType][0];
+    u8 effectG = sEffectColors[patchInfo->effectType][1];
+    u8 effectB = sEffectColors[patchInfo->effectType][2];
+
+    switch(patchInfo->durationType) {
+        case CHAOS_DURATION_STARS:
+            sprintf(durationString, "Time Left: %d", patch->remainingDuration);
+            break;
+        case CHAOS_DURATION_USE_COUNT:
+            sprintf(durationString, "Uses Left: %d", patch->remainingDuration);
+            break;
+        case CHAOS_DURATION_INFINITE:
+            sprintf(durationString, "Time Left: `");
+            break;
+        default:
+            durationString[0] = '\0';
+            break;
+    }
+
+
+    Mtx *transMtx = alloc_display_list(sizeof(Mtx));
+    guTranslate(transMtx, x, y, 0);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    gSPDisplayList(gDisplayListHead++, act_desc_bg_act_desc_mesh_mesh);
+
+    slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
+    slowtext_draw_ortho_text_linebreaks(-62, 55, ACT_DESC_WIDTH, patchDesc, FT_FLAG_ALIGN_LEFT, 
+        effectR, effectG, effectB, 0xFF);
+    slowtext_setup_ortho_rendering(FT_FONT_OUTLINE);
+    slowtext_draw_ortho_text_linebreaks(-62, 110, CARD_STRING_WIDTH, patchName, FT_FLAG_ALIGN_LEFT, 
+        0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text_linebreaks(-62, 75, CARD_STRING_WIDTH, durationString, FT_FLAG_ALIGN_LEFT, 
+        0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_finished_rendering();
+
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+}
+
 void draw_mini_patch_card(f32 x, f32 y, struct ChaosActiveEntry *patch) {
     const struct ChaosPatch *patchInfo = &gChaosPatches[patch->id];
     const char* patchName = patchInfo->name;
@@ -97,7 +170,7 @@ void draw_mini_patch_card(f32 x, f32 y, struct ChaosActiveEntry *patch) {
     u8 effectB = sEffectColors[patchInfo->effectType][2];
 
     //Center name if it's only one line long
-    fasttext_compute_print_text_with_line_breaks(FT_FONT_SMALL_THIN, MINI_CARD_STRING_WIDTH, &lines, &length, drawName, patchName);
+    fasttext_compute_print_text_with_line_breaks(FT_FONT_SMALL_THIN, CARD_STRING_WIDTH, &lines, &length, drawName, patchName);
     nameY = (lines == 1) ? -10 : -3;
     Mtx *transMtx = alloc_display_list(sizeof(Mtx));
 
@@ -110,21 +183,21 @@ void draw_mini_patch_card(f32 x, f32 y, struct ChaosActiveEntry *patch) {
     if(patchInfo->durationType == CHAOS_DURATION_STARS || patchInfo->durationType == CHAOS_DURATION_USE_COUNT) {
         sprintf(timerText, "%d", patch->remainingDuration);
         gSPDisplayList(gDisplayListHead++, patch_use_type_start);
-        draw_patch_type(38, 0, patchInfo->durationType);
+        draw_patch_type(42, 0, patchInfo->durationType);
         gSPDisplayList(gDisplayListHead++, patch_use_type_end);
     } else if (patchInfo->durationType == CHAOS_DURATION_INFINITE) {
         sprintf(timerText, "`"); // Infinity symbol
         gSPDisplayList(gDisplayListHead++, patch_use_type_start);
-        draw_patch_type(38, 0, patchInfo->durationType);
+        draw_patch_type(42, 0, patchInfo->durationType);
         gSPDisplayList(gDisplayListHead++, patch_use_type_end);
     } else {
-        sprintf(timerText, '\0');
+        timerText[0] = '\0';
     }
 
     slowtext_setup_ortho_rendering(FT_FONT_SMALL_THIN);
-    slowtext_draw_ortho_text(-62, nameY, drawName, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(-58, nameY, drawName, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
     slowtext_setup_ortho_rendering(FT_FONT_OUTLINE);
-    slowtext_draw_ortho_text(46, -10, timerText, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
+    slowtext_draw_ortho_text(50, -10, timerText, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
     slowtext_finished_rendering();
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
@@ -133,17 +206,21 @@ void render_active_patches() {
     if (gChaosActiveEntryCount == NULL) {
         return;
     }
-    scroll_mini_patch_cards();
 
-    f32 cardX = SCREEN_WIDTH - 74;
+    scroll_mini_patch_cards();
+    scroll_act_desc_bg();
+
+    f32 cardX = 74;
     s32 selection = gChaosPauseMenu->activePatchesMenu.selectedMenuIndex;
     s32 numPatches = *gChaosActiveEntryCount;
     s32 listStart = gChaosPauseMenu->chaosListStart;
     s32 listEnd = (numPatches > PATCH_LIST_SIZE) ? (listStart + PATCH_LIST_SIZE) : numPatches;
 
     for(int i = listStart; i < listEnd; i++) {
-        draw_mini_patch_card(cardX - (20 * (i == selection)), SCREEN_HEIGHT - 35 - (35 * (i - listStart)), &gChaosActiveEntries[i]);
+        draw_mini_patch_card(cardX + (20 * (i == selection)), SCREEN_HEIGHT - 35 - (35 * (i - listStart)), &gChaosActiveEntries[i]);
     }
+
+    draw_active_patch_desc(SCREEN_WIDTH - 74, (SCREEN_HEIGHT / 3), &gChaosActiveEntries[selection]);
 }
 
 void update_active_patch_list_bounds() {

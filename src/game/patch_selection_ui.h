@@ -42,6 +42,9 @@
 
 #define SELECT_PATCH_TEXT_END   -80
 
+#define CARD_STRING_WIDTH 94
+#define DESC_STRING_WIDTH 284
+
 struct PatchCard {
     struct ChaosPatchSelection *sel;
     Vec2f pos;

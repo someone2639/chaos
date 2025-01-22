@@ -90,6 +90,8 @@ extern Vtx desc_bg_start_start_mesh_mesh_vtx_0[];
 extern Gfx desc_bg_start_start_mesh_mesh[];
 extern Vtx opt_bg_opt_mesh_mesh_vtx_0[];
 extern Gfx opt_bg_opt_mesh_mesh[];
+extern Vtx act_desc_bg_act_desc_mesh_mesh_vtx_0[];
+extern Gfx act_desc_bg_act_desc_mesh_mesh[];
 extern u8 hand_hand_open_ia8[];
 extern u8 hand_closed_hand_closed_ia8[];
 extern Gfx hand_cursor_start[];

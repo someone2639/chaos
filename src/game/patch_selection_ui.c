@@ -17,9 +17,6 @@
 #include "save_file.h"
 #include "chaos_menus.h"
 
-#define CARD_STRING_WIDTH 94
-#define DESC_STRING_WIDTH 284
-
 u8 sQualityColors[CHAOS_PATCH_SEVERITY_COUNT][3] = {
     {0x9F, 0x9F, 0x9F},
     {0x40, 0xFB, 0x3D},

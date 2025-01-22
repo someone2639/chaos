@@ -4,7 +4,6 @@
 #include "types.h"
 #include "src/engine/math_util.h"
 
-#define MENU_JOYSTICK_HOLD_FRAMES   10
 #define MENU_ANIM_LOOP              -1
 
 enum MenuButtonPrompt {
