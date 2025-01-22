@@ -9,7 +9,9 @@ enum ChaosSettingsFlags {
 };
 
 enum ActivePatchesMenuFlags {
-    ACTIVE_PATCHES_MENU_ACTIVE      = (1 << 0),
+    ACTIVE_PATCHES_MENU_ACTIVE              = (1 << 0),
+    ACTIVE_PATCHES_MENU_STARTING            = (1 << 1),
+    ACTIVE_PATCHES_MENU_STOP_GAME_RENDER    = (1 << 2),
 };
 
 struct ChaosPauseMenu {

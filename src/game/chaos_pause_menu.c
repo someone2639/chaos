@@ -19,11 +19,117 @@
 #include "main.h"
 #include "chaos/chaos.h"
 #include "patch_selection_ui.h"
+#include "buffers/framebuffers.h"
+#include "emutest.h"
 
 #define PATCH_LIST_SIZE     6
 #define ACT_DESC_WIDTH      126
 struct ChaosPauseMenu sChaosPauseMenu = {.chaosListStart = 0};
 struct ChaosPauseMenu *gChaosPauseMenu = &sChaosPauseMenu;
+u16 sPauseScreenBuffer[SCREEN_WIDTH * SCREEN_HEIGHT];
+
+/*
+    Draws a copy of the pause screen as the background. Improves performance on console.
+    Mostly copied from the crash screen lol
+*/
+void draw_pause_screen_framebuffer_bg() {
+    Texture *image = (Texture * )sPauseScreenBuffer;
+    s32 width = SCREEN_WIDTH;
+    s32 height = SCREEN_HEIGHT;
+    s32 posW, posH, imW, imH;
+    s32 i     = 0;
+    s32 num   = 256;
+    s32 maskW = 1;
+    s32 maskH = 1;
+
+    gDPPipeSync(gDisplayListHead++);
+    gDPSetTexturePersp(gDisplayListHead++, G_TP_NONE);
+
+    gDPSetCycleType( gDisplayListHead++, G_CYC_COPY);
+    gDPSetRenderMode(gDisplayListHead++, G_RM_NOOP, G_RM_NOOP2);
+
+    // Find how best to seperate the horizontal. Keep going until it finds a whole value.
+    while (TRUE) {
+        f32 val = (f32)width / (f32)num;
+
+        if ((s32)val == val && (s32) val >= 1) {
+            imW = num;
+            break;
+        }
+        num /= 2;
+        if (num == 1) {
+            return;
+        }
+    }
+    // Find the tile height
+    imH = 64 / (imW / 32); // This gets the vertical amount.
+
+    num = 2;
+    // Find the width mask
+    while (TRUE) {
+        if ((s32) num == imW) {
+            break;
+        }
+        num *= 2;
+        maskW++;
+        if (maskW == 9) {
+            return;
+        }
+    }
+    num = 2;
+    // Find the height mask
+    while (TRUE) {
+        if ((s32) num == imH) {
+            break;
+        }
+        num *= 2;
+        maskH++;
+        if (maskH == 9) {
+            return;
+        }
+    }
+    num = height;
+    // Find the height remainder
+    s32 peakH  = height - (height % imH);
+    s32 cycles = (width * peakH) / (imW * imH);
+
+    // Pass 1
+    for (i = 0; i < cycles; i++) {
+        posW = 0;
+        posH = i * imH;
+        while (posH >= peakH) {
+            posW += imW;
+            posH -= peakH;
+        }
+
+        gDPLoadSync(gDisplayListHead++);
+        gDPLoadTextureTile(gDisplayListHead++,
+            image, G_IM_FMT_RGBA, G_IM_SIZ_16b, width, height, posW, posH, ((posW + imW) - 1), ((posH + imH) - 1), 0, (G_TX_NOMIRROR | G_TX_WRAP), (G_TX_NOMIRROR | G_TX_WRAP), maskW, maskH, 0, 0);
+        gSPScisTextureRectangle(gDisplayListHead++,
+            ((posW) << 2),
+            ((posH) << 2),
+            (((posW + imW) - 1) << 2),
+            (((posH + imH) - 1) << 2),
+            G_TX_RENDERTILE, 0, 0, (4 << 10), (1 << 10));
+    }
+    // If there's a remainder on the vertical side, then it will cycle through that too.
+    if (height-peakH != 0) {
+        posW = 0;
+        posH = peakH;
+        for (i = 0; i < (width / imW); i++) {
+            posW = i * imW;
+            gDPLoadSync(gDisplayListHead++);
+            gDPLoadTextureTile(gDisplayListHead++,
+                image, G_IM_FMT_RGBA, G_IM_SIZ_16b, width, height, posW, posH, ((posW + imW) - 1), (height - 1), 0, (G_TX_NOMIRROR | G_TX_WRAP), (G_TX_NOMIRROR | G_TX_WRAP), maskW, maskH, 0, 0);
+            gSPScisTextureRectangle(gDisplayListHead++,
+                (posW) << 2,
+                (posH) << 2,
+                ((posW + imW) - 1) << 2,
+                ((posH + imH) - 1) << 2,
+                G_TX_RENDERTILE, 0, 0, (4 << 10), (1 << 10));
+        }
+    }
+}
 
 void scroll_mini_patch_cards() {
 	int i = 0;
@@ -203,6 +309,20 @@ void draw_mini_patch_card(f32 x, f32 y, struct ChaosActiveEntry *patch) {
 }
 
 void render_active_patches() {
+    if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_STARTING) {
+        gChaosPauseMenu->activePatchesMenu.flags &= ~ACTIVE_PATCHES_MENU_STARTING;
+        if(gIsConsole) {
+            gChaosPauseMenu->activePatchesMenu.flags |= ACTIVE_PATCHES_MENU_STOP_GAME_RENDER;
+            bcopy(gFramebuffers[sRenderingFramebuffer], sPauseScreenBuffer, sizeof(gFramebuffers[0]));
+        }
+    }
+
+    if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_STOP_GAME_RENDER) {
+        draw_pause_screen_framebuffer_bg();
+    } else {
+        shade_screen();
+    }
+
     if (gChaosActiveEntryCount == NULL || *gChaosActiveEntryCount == 0) {
         return;
     }
@@ -321,6 +441,7 @@ void handle_active_patches_inputs() {
 
     if(gPlayer1Controller->buttonPressed & (R_TRIG | B_BUTTON | A_BUTTON | START_BUTTON)) {
         gChaosPauseMenu->activePatchesMenu.flags &= ~ACTIVE_PATCHES_MENU_ACTIVE;
+        gChaosPauseMenu->activePatchesMenu.flags &= ~ACTIVE_PATCHES_MENU_STOP_GAME_RENDER;
         gPlayer1Controller->buttonPressed &= ~R_TRIG;
     } else if(gPlayer1Controller->buttonPressed & U_JPAD || stickDir & MENU_JOYSTICK_DIR_UP) {
         selection--;

@@ -2325,6 +2325,7 @@ void render_view_patches_prompt(void) {
     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
     if (gPlayer1Controller->buttonPressed & R_TRIG){
         gChaosPauseMenu->activePatchesMenu.flags |= ACTIVE_PATCHES_MENU_ACTIVE;
+        gChaosPauseMenu->activePatchesMenu.flags |= ACTIVE_PATCHES_MENU_STARTING;
     }
 }
 
