@@ -9,6 +9,7 @@
 #include "game/chaos/chaos.h"
 
 s16 prevMode = CAMERA_MODE_NONE;
+u32 topdown_semaphore = 0;
 
 extern void transition_to_camera_mode(struct Camera *c, s16 newMode, s16 numFrames);
 
@@ -17,5 +18,5 @@ void chs_init_top_down(void) {
 }
 
 void chs_deinit_top_down(void) {
-    transition_to_camera_mode(gCamera, prevMode, 30);
+    topdown_semaphore = 1;
 }

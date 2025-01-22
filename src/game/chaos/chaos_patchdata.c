@@ -1348,8 +1348,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 6,
 
-        // .activatedInitFunc = chs_init_top_down,
-        // .deactivationFunc  = chs_deinit_top_down,
+        .activatedInitFunc = chs_init_top_down,
+        .deactivationFunc  = chs_deinit_top_down,
 
         .name              = "Top-Down Camera",
         .shortDescription  = "Now you're playing Zelda! (without the items) (without the story) (without the combat) (without the",

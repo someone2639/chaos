@@ -891,6 +891,9 @@ void thread5_game_loop(UNUSED void *arg) {
         if (gPlayer1Controller->buttonPressed & L_TRIG) {
             chaos_add_new_entry(CHAOS_PATCH_TOP_DOWN_CAMERA);
         }
+        if (gPlayer1Controller->buttonPressed & R_TRIG) {
+            chaos_remove_expired_entry(0);
+        }
         if ((gPlayer1Controller->buttonPressed & (A_BUTTON|L_TRIG)) == (A_BUTTON | L_TRIG)) {
             HVQM_PLAY(chaos);
         }

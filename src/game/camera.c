@@ -6755,8 +6755,18 @@ s16 camera_course_processing(struct Camera *c) {
     }
 
     if (chaos_check_if_patch_active(CHAOS_PATCH_TOP_DOWN_CAMERA)) {
-        sModeInfo.lastMode = c->mode;
-        set_camera_mode_top_down(c, 30);
+        if (c->mode != CAMERA_MODE_TOP_DOWN) {
+            osSyncPrintf("PATCH ON");
+            sModeInfo.lastMode = c->mode;
+            set_camera_mode_top_down(c, 30);
+        }
+    } else {
+        extern u32 topdown_semaphore;
+        if (topdown_semaphore == 1) {
+            osSyncPrintf("PATCH OFF");
+            transition_to_camera_mode(c, sModeInfo.lastMode, 30);
+            topdown_semaphore = 0;
+        }
     }
 
     mode = c->mode;
