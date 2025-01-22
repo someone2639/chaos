@@ -6761,11 +6761,9 @@ s16 camera_course_processing(struct Camera *c) {
             set_camera_mode_top_down(c, 30);
         }
     } else {
-        extern u32 topdown_semaphore;
-        if (topdown_semaphore == 1) {
+        if (c->mode == CAMERA_MODE_TOP_DOWN) {
             osSyncPrintf("PATCH OFF");
             transition_to_camera_mode(c, sModeInfo.lastMode, 30);
-            topdown_semaphore = 0;
         }
     }
 
