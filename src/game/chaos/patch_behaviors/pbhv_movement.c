@@ -51,7 +51,7 @@ void chs_update_brawl_tripping(void) {
         return;
     }
 
-    set_mario_action(gMarioState, ACT_STOMACH_SLIDE, 0);
+    set_mario_action(gMarioState, ACT_HARD_FORWARD_GROUND_KB, 0);
     match->frameTimer = 0;
     if (gMarioState->marioObj) {
         play_sound(SOUND_MARIO_OOOF2, gMarioState->marioObj->header.gfx.cameraToObject);

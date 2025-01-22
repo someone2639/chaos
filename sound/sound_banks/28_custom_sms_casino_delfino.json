@@ -1,0 +1,110 @@
+{
+    "date": "1996-03-19",
+    "sample_bank": "instruments",
+    "envelopes": {
+        "envelope0": [
+            [8, 32700],
+            "hang"
+        ],
+        "envelope1": [
+            [2, 32700],
+            "hang"
+        ],
+        "envelope2": [
+            [1, 32700],
+            "hang"
+        ],
+        "envelope3": [
+            [1, 32700],
+            [300, 0],
+            "hang"
+        ],
+        "envelope4": [
+            [1, 32700],
+            [450, 0],
+            "hang"
+        ],
+        "envelope5": [
+            [6, 32700],
+            "hang"
+        ],
+        "envelope6": [
+            [1, 32700],
+            [90, 0],
+            "hang"
+        ],
+        "envelope7": [
+            [2, 32700],
+            [250, 0],
+            "hang"
+        ],
+        "envelope8": [
+            [2, 32700],
+            "hang"
+        ]
+    },
+    "instruments": {
+        "SINE_WAVE": {
+            "release_rate": 35,
+            "envelope": "envelope0",
+            "sound": "44_grand_piano"
+        },
+        "inst1": {
+            "release_rate": 15,
+            "envelope": "envelope1",
+            "sound": "44_grand_piano"
+        },
+        "inst2": {
+            "release_rate": 140,
+            "envelope": "envelope2",
+            "sound": "35_gospel_organ"
+        },
+        "inst3": {
+            "release_rate": 19,
+            "normal_range_lo": 29,
+            "normal_range_hi": 63,
+            "envelope": "envelope3",
+            "sound_lo": "3B_banjo_2",
+            "sound": "3C_acoustic_guitar",
+            "sound_hi": "3D"
+        },
+        "inst4": {
+            "release_rate": 12,
+            "envelope": "envelope4",
+            "sound": "05_acoustic_bass"
+        },
+        "inst5": {
+            "release_rate": 45,
+            "envelope": "envelope5",
+            "sound": "39_sitar_2"
+        },
+        "inst6": {
+            "release_rate": 45,
+            "envelope": "envelope6",
+            "sound": "13_snare_drum_2"
+        },
+        "inst7": {
+            "release_rate": 20,
+            "envelope": "envelope7",
+            "sound": "10_cymbal_bell"
+        },
+        "inst8": {
+            "release_rate": 22,
+            "normal_range_lo": 24,
+            "envelope": "envelope8",
+            "sound_lo": "0E_hihat_closed",
+            "sound": "0F_hihat_open"
+        }
+    },
+    "instrument_list": [
+        "SINE_WAVE",
+        "inst1",
+        "inst2",
+        "inst3",
+        "inst4",
+        "inst5",
+        "inst6",
+        "inst7",
+        "inst8"
+    ]
+}

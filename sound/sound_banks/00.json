@@ -44,6 +44,11 @@
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "06_custom_sonic_lose_rings"
+        },
+        "inst7": {
+            "release_rate": 208,
+            "envelope": "envelope0",
+            "sound": "07_galaxy_spin_custom"
         }
     },
     "instrument_list": [
@@ -53,6 +58,7 @@
         "inst3",
         "inst4",
         "inst5",
-        "inst6"
+        "inst6",
+        "inst7"
     ]
 }

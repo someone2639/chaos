@@ -6,6 +6,7 @@
 #include "synthesis.h"
 #include "seqplayer.h"
 #include "effects.h"
+#include "game/chaos/chaos.h"
 #include "game/emutest.h"
 #include "game/debug.h"
 #include "string.h"
@@ -1046,11 +1047,32 @@ void init_reverb_eu(void) {
 }
 #else
 void init_reverb_us(s32 presetId) {
+    static s32 lastPresetId = 0;
     s16 *mem;
     s32 i;
+    s32 reinitBetterReverbBuffers = TRUE;
 
-    s32 reverbWindowSize = gReverbSettings[presetId].windowSize;
-    gReverbDownsampleRate = gReverbSettings[presetId].downsampleRate;
+    if ((u32) (presetId >> 31) & 1) {
+        if (sAudioIsInitialized) {
+            reinitBetterReverbBuffers = FALSE;
+        }
+        presetId = (s32) ((u32) presetId & ~(1 << 31));
+    }
+    if (!((u32) presetId & (1 << 31))) {
+        lastPresetId = presetId;
+    }
+
+#ifdef BETTER_REVERB
+    if (chaos_check_if_patch_active(CHAOS_PATCH_REVERB)) {
+        gBetterReverbPresetValue = 1;
+    } else {
+        gBetterReverbPresetValue = 0;
+    }
+#endif
+
+
+    s32 reverbWindowSize = gReverbSettings[lastPresetId].windowSize;
+    gReverbDownsampleRate = gReverbSettings[lastPresetId].downsampleRate;
 #ifdef BETTER_REVERB
     struct BetterReverbSettings *betterReverbPreset = &gBetterReverbSettings[gBetterReverbPresetValue];
 
@@ -1065,6 +1087,15 @@ void init_reverb_us(s32 presetId) {
 
         assert(gBetterReverbPresetValue < gBetterReverbPresetCount, "BETTER_REVERB preset value exceeds total number of available presets!");
         betterReverbPreset = &gBetterReverbSettings[0];
+    }
+
+    if (
+       betterReverbDownsampleRate != betterReverbPreset->downsampleRate || // This one is somewhat debatable, but it IS used somewhere reliant on this boolean...
+       betterReverbLightweight != betterReverbPreset->useLightweightSettings ||
+       monoReverb != betterReverbPreset->isMono ||
+       (!betterReverbPreset->useLightweightSettings && reverbFilterCount != betterReverbPreset->filterCount)
+    ) {
+        reinitBetterReverbBuffers = TRUE;
     }
 
     betterReverbLightweight = betterReverbPreset->useLightweightSettings;
@@ -1089,9 +1120,9 @@ void init_reverb_us(s32 presetId) {
             reverbWindowSize = betterReverbWindowsSize;
             if (reverbWindowSize < (DEFAULT_LEN_2CH * 2) && betterReverbWindowsSize != 0) // Minimum window size to not overflow
                 reverbWindowSize = (DEFAULT_LEN_2CH * 2);
-            reverbWindowSize /= gReverbDownsampleRate;
-            reverbWindowSize = ALIGN16(reverbWindowSize);
         }
+        reverbWindowSize /= gReverbDownsampleRate;
+        reverbWindowSize = ALIGN16(reverbWindowSize);
     }
 
     reverbFilterCount -= reverbFilterCount % 3;
@@ -1126,8 +1157,19 @@ void init_reverb_us(s32 presetId) {
             gSynthesisReverb.items[1][i].toDownsampleLeft  = mem;
             gSynthesisReverb.items[1][i].toDownsampleRight = (mem + (DEFAULT_LEN_1CH / sizeof(s16)));
         }
-    } else {
-        bzero(gSynthesisReverb.ringBuffer.left, (REVERB_WINDOW_SIZE_MAX * 2 * sizeof(s16)));
+    } else { 
+        if (reinitBetterReverbBuffers) {
+            bzero(gSynthesisReverb.ringBuffer.left, (REVERB_WINDOW_SIZE_MAX * SYNTH_CHANNEL_STEREO_COUNT * sizeof(s16)));
+        } else if (reverbWindowSize < REVERB_WINDOW_SIZE_MAX) {
+            // This does and always will sound bad if the window size changes
+            for (s32 i = 0; i < reverbWindowSize; i++) {
+                gSynthesisReverb.ringBuffer.left[reverbWindowSize + i] = gSynthesisReverb.ringBuffer.right[i];
+            }
+
+            if (reverbWindowSize < REVERB_WINDOW_SIZE_MAX) {
+                bzero(gSynthesisReverb.ringBuffer.left + SYNTH_CHANNEL_STEREO_COUNT * (reverbWindowSize * sizeof(s16)), SYNTH_CHANNEL_STEREO_COUNT * ((REVERB_WINDOW_SIZE_MAX - reverbWindowSize) * sizeof(s16)));
+            }
+        }
     }
 
     gSynthesisReverb.ringBuffer.right  = &gSynthesisReverb.ringBuffer.left[reverbWindowSize];
@@ -1155,8 +1197,11 @@ void init_reverb_us(s32 presetId) {
     if (!gSynthesisReverb.useReverb)
         toggleBetterReverb = FALSE;
 
-    if (betterReverbPreset->gain >= 0)
+    if (betterReverbPreset->gain >= 0) {
         gSynthesisReverb.reverbGain = (u16) betterReverbPreset->gain;
+    } else if (toggleBetterReverb) {
+        gSynthesisReverb.reverbGain = gReverbSettings[presetId].gain * 0.875f;
+    }
 
     if (!sAudioIsInitialized)
         initialize_better_reverb_buffers();

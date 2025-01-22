@@ -55,6 +55,7 @@
 
 #include "make_const_nonconst.h"
 #include "behavior_data.h"
+#include "actors/group0.h"
 
 #define BC_B(a) _SHIFTL(a, 24, 8)
 #define BC_BB(a, b) (_SHIFTL(a, 24, 8) | _SHIFTL(b, 16, 8))
@@ -328,6 +329,21 @@
     BC_B(0x37), \
     BC_PTR(dropletParams)
 
+/* fast64 object exports get inserted here */
+const BehaviorScript bhvChaosBulletBill[] = {
+	BEGIN(OBJ_LIST_GENACTOR),
+    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_MOVE_XZ_USING_FVEL | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_MOVE_Y_WITH_TERMINAL_VEL)),
+    SET_HOME(),
+    SET_HITBOX_WITH_OFFSET(/*Radius*/ 50, /*Height*/ 50, /*Downwards offset*/ 50),
+    SET_INTERACT_TYPE(INTERACT_DAMAGE),
+    SET_INT(oDamageOrCoinValue, 3),
+    SCALE(/*Unused*/ 0, /*Field*/ 40),
+    SET_INT(oIntangibleTimer, 0),
+    SET_OBJ_PHYSICS(/*Wall hitbox radius*/ 30, /*Gravity*/ 0, /*Bounciness*/ 0, /*Drag strength*/ 0, /*Friction*/ 0, /*Buoyancy*/ 0, /*Unused*/ 0, 0),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_chaos_bullet_bill_loop),
+    END_LOOP(),
+};
 
 const BehaviorScript bhvStarDoor[] = {
     BEGIN(OBJ_LIST_SURFACE),
@@ -904,6 +920,7 @@ const BehaviorScript bhvCoinFormationSpawn[] = {
     BEGIN(OBJ_LIST_LEVEL),
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
     BILLBOARD(),
+    CALL_NATIVE(bhv_coin_scale),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_coin_formation_spawn_loop),
     END_LOOP(),
@@ -912,6 +929,7 @@ const BehaviorScript bhvCoinFormationSpawn[] = {
 const BehaviorScript bhvCoinFormation[] = {
     BEGIN(OBJ_LIST_SPAWNER),
     OR_INT(oFlags, (OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    CALL_NATIVE(bhv_coin_scale),
     CALL_NATIVE(bhv_coin_formation_init),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_coin_formation_loop),
@@ -929,6 +947,7 @@ const BehaviorScript bhvYellowCoin[] = {
     // Yellow coin - common:
     BILLBOARD(),
     OR_INT(oFlags, (OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    CALL_NATIVE(bhv_coin_scale),
     CALL_NATIVE(bhv_yellow_coin_init),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_yellow_coin_loop),
@@ -939,6 +958,7 @@ const BehaviorScript bhvTemporaryYellowCoin[] = {
     BEGIN(OBJ_LIST_LEVEL),
     BILLBOARD(),
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    CALL_NATIVE(bhv_coin_scale),
     CALL_NATIVE(bhv_yellow_coin_init),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_temp_coin_loop),
@@ -967,6 +987,7 @@ const BehaviorScript bhvSingleCoinGetsSpawned[] = {
     BEGIN(OBJ_LIST_LEVEL),
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
     BILLBOARD(),
+    CALL_NATIVE(bhv_coin_scale),
     CALL_NATIVE(bhv_coin_init),
     SET_OBJ_PHYSICS(/*Wall hitbox radius*/ 30, /*Gravity*/ -400, /*Bounciness*/ -70, /*Drag strength*/ 1000, /*Friction*/ 1000, /*Buoyancy*/ 200, /*Unused*/ 0, 0),
     BEGIN_LOOP(),
@@ -979,6 +1000,7 @@ const BehaviorScript bhvBounceyCoinGetsSpawned[] = {
     BEGIN(OBJ_LIST_LEVEL),
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
     BILLBOARD(),
+    CALL_NATIVE(bhv_coin_scale),
     CALL_NATIVE(bhv_bouncey_coin_init),
     SET_OBJ_PHYSICS(/*Wall hitbox radius*/ 30, /*Gravity*/ -200, /*Bounciness*/ -88, /*Drag strength*/ 100, /*Friction*/ 0, /*Buoyancy*/ 200, /*Unused*/ 0, 0),
     BEGIN_LOOP(),
@@ -3680,6 +3702,7 @@ const BehaviorScript bhvMovingYellowCoin[] = {
     SET_INT(oInteractType, INTERACT_COIN),
     SET_INT(oIntangibleTimer, 0),
     SET_INT(oAnimState, -1),
+    CALL_NATIVE(bhv_coin_scale),
     CALL_NATIVE(bhv_moving_yellow_coin_init),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_moving_yellow_coin_loop),

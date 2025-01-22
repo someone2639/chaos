@@ -92,3 +92,86 @@ void bhv_bullet_bill_loop(void) {
         o->oAction = 4;
     }
 }
+
+//Straight line
+void chaos_bullet_hell_type_1(){
+    if(o->oTimer > o->oChaosBillTTL) {
+        obj_mark_for_deletion(o);
+    }
+}
+
+//Spiral
+void chaos_bullet_hell_type_2(){
+    o->oMoveAngleYaw += 0x400;
+    o->oForwardVel *= 1.01f;
+    if(o->oTimer > o->oChaosBillTTL) {
+        obj_mark_for_deletion(o);
+    }
+}
+
+//Homing
+void chaos_bullet_hell_type_3(){
+    f32 dist;
+    s16 pitch;
+    s16 yaw;
+    Vec3f oPos;
+    oPos[0] = o->oPosX;
+    oPos[1] = o->oPosY;
+    oPos[2] = o->oPosZ;
+    vec3f_get_dist_and_angle(oPos, gMarioState->pos, &dist, &pitch, &yaw);
+    o->oMoveAngleYaw = approach_s16_symmetric(o->oMoveAngleYaw, yaw, 0x400);
+    o->oFaceAnglePitch = approach_s16_symmetric(o->oFaceAnglePitch, -pitch, 0x400);
+    o->oVelY = -sins(o->oFaceAnglePitch) * o->oForwardVel;
+
+    if(o->oTimer > o->oChaosBillTTL) {
+        obj_mark_for_deletion(o);
+    }
+}
+
+//Sine
+void chaos_bullet_hell_type_4(){
+    if(o->oTimer == 0) {
+        o->oBulletBillInitialMoveYaw = o->oMoveAngleYaw;
+    }
+    o->oMoveAngleYaw = o->oBulletBillInitialMoveYaw + (0x4000 * (sins(((0xFFFF / 60) * o->oTimer))));
+    if(o->oTimer > o->oChaosBillTTL) {
+        obj_mark_for_deletion(o);
+    }
+}
+
+//Inverse sine
+void chaos_bullet_hell_type_5(){
+    if(o->oTimer == 0) {
+        o->oBulletBillInitialMoveYaw = o->oMoveAngleYaw;
+    }
+    o->oMoveAngleYaw = o->oBulletBillInitialMoveYaw + (0x4000 * (sins(((0xFFFF / 60) * o->oTimer) + 0x8000)));
+    if(o->oTimer > o->oChaosBillTTL) {
+        obj_mark_for_deletion(o);
+    }
+}
+
+//Falling
+void chaos_bullet_hell_type_6() {
+    o->oFaceAnglePitch = 0x4000;
+    if(o->oTimer > o->oChaosBillTTL) {
+        obj_mark_for_deletion(o);
+    }
+}
+
+void (*sChaosBulletActions[])(void) = {
+    &chaos_bullet_hell_type_1,
+    &chaos_bullet_hell_type_2,
+    &chaos_bullet_hell_type_3,
+    &chaos_bullet_hell_type_4,
+    &chaos_bullet_hell_type_5,
+    &chaos_bullet_hell_type_6,
+};
+
+void bhv_chaos_bullet_bill_loop(void) {
+    if(o->oTimer == 0) {
+        cur_obj_play_sound_2(SOUND_OBJ_POUNDING_CANNON);
+        cur_obj_shake_screen(SHAKE_POS_SMALL);
+    }
+    void (*action)(void) = sChaosBulletActions[o->oBehParams2ndByte];
+    action();
+}

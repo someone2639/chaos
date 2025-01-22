@@ -1,0 +1,40 @@
+{
+    "date": "1996-03-19",
+    "sample_bank": "instruments",
+    "envelopes": {
+        "envelope0": [
+            [4, 32700],
+            "hang"
+        ],
+        "envelope1": [
+            [2, 32700],
+            "hang"
+        ],
+        "envelope2": [
+            [1, 32700],
+            "hang"
+        ]
+    },
+    "instruments": {
+        "inst0": {
+            "release_rate": 25,
+            "envelope": "envelope0",
+            "sound": "26_crystal_rhodes"
+        },
+        "inst1": {
+            "release_rate": 35,
+            "envelope": "envelope1",
+            "sound": "43_harmonica"
+        },
+        "inst2": {
+            "release_rate": 25,
+            "envelope": "envelope2",
+            "sound": "0C_conga_stick"
+        }
+	},
+    "instrument_list": [
+        "inst0",
+        "inst1",
+        "inst2"
+    ]
+}

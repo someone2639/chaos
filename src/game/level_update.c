@@ -5,6 +5,7 @@
 #include "dialog_ids.h"
 #include "audio/external.h"
 #include "audio/synthesis.h"
+#include "engine/behavior_script.h"
 #include "level_update.h"
 #include "game_init.h"
 #include "level_update.h"
@@ -45,6 +46,24 @@
 #define WARP_NODE_CREDITS_END 0xFA
 
 #define WARP_NODE_CREDITS_MIN 0xF8
+
+struct ChaosPatchSeq {
+    const enum SeqId seq;
+    const u8 vol;
+};
+
+#define CHAOS_SEQ_VOL_LOWER 0.6f
+
+u8 chaosSeqVolSubtractable = FALSE;
+static f32 chaosSeqVolMult = 1.0f;
+static u8 chaosSeqSelected = 0;
+static const struct ChaosPatchSeq chaosSeqArray[] = {
+    {SEQ_CHAOSEVENT_MP1_CHANCE_TIME,    0x58},
+    {SEQ_CHAOSEVENT_RSE_GAME_CORNER,    0x4C},
+    {SEQ_CHAOSEVENT_SMS_CASINO_DELFINO, 0x7F},
+    {SEQ_CHAOSEVENT_YI_BONUS_MINIGAME,  0x68},
+    {SEQ_CHAOSEVENT_HGSS_GAME_CORNER,   0x58},
+};
 
 // TODO: Make these ifdefs better
 const char *credits01[] = { "1GAME DIRECTOR", "SHIGERU MIYAMOTO" };
@@ -749,7 +768,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 break;
 
             case WARP_OP_DEATH:
-                if (gChaosLivesEnabled && m->numLives <= 0) {
+                if (gChaosLivesEnabled && m->numLives <= 0 && !chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE)) {
                     sDelayedWarpOp = WARP_OP_GAME_OVER;
                 }
                 sDelayedWarpTimer = 48;
@@ -761,7 +780,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
             case WARP_OP_WARP_FLOOR:
                 sSourceWarpNodeId = WARP_NODE_WARP_FLOOR;
                 if (area_get_warp_node(sSourceWarpNodeId) == NULL) {
-                    if (gChaosLivesEnabled && m->numLives <= 0) {
+                    if (gChaosLivesEnabled && m->numLives <= 0 && !chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE)) {
                         sDelayedWarpOp = WARP_OP_GAME_OVER;
                     } else {
                         sSourceWarpNodeId = WARP_NODE_DEATH;
@@ -823,8 +842,24 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 }
                 val04 = FALSE;
                 break;
+            case WARP_OP_TIME_UP:
+                if (gChaosLivesEnabled && m->numLives <= 0 && !chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE)) {
+                    sDelayedWarpOp = WARP_OP_GAME_OVER;
+                }
+                sDelayedWarpTimer = 60;
+                sSourceWarpNodeId = WARP_NODE_DEATH;
+                play_transition(WARP_TRANSITION_FADE_INTO_CIRCLE, 0x14, 0x00, 0x00, 0x00);
+                play_sound(SOUND_MENU_TIMER_UP, gGlobalSoundSource);
+                break;
         }
 
+        if(chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE) && gCurrCourseNum != COURSE_NONE) {
+            if(sSourceWarpNodeId == WARP_NODE_DEATH) {
+                sSourceWarpNodeId = 0x0A;
+            }
+            chaos_decrement_patch_usage(CHAOS_PATCH_MIRACLE);
+        }
+    
         if (val04 && gCurrDemoInput == NULL) {
             fadeout_music((3 * sDelayedWarpTimer / 2) * 8 - 2);
         }
@@ -1049,7 +1084,11 @@ s32 play_mode_paused(void) {
         } else {
             gSavedCourseNum = COURSE_NONE;
             if (gChaosLivesEnabled) {
-                if (gMarioState->numLives > 0) {
+                if(chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE)) {
+                    initiate_warp(LEVEL_CASTLE, 1, 0x1F, 0);
+                    fade_into_special_warp(0, 0);
+                    chaos_decrement_patch_usage(CHAOS_PATCH_MIRACLE);
+                } else if (gMarioState->numLives > 0) {
                     initiate_warp(LEVEL_CASTLE, 1, 0x29, 0);
                     fade_into_special_warp(0, 0);
                 } else {
@@ -1087,14 +1126,22 @@ s32 play_mode_frame_advance(void) {
 }
 
 s32 play_mode_select_patch(void) {
-    if(gPatchSelectionMenu->menu.menuState != PATCH_SELECT_STATE_CLOSED) {
+    if (gPatchSelectionMenu->menu.menuState != PATCH_SELECT_STATE_CLOSED) {
         if (!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_ACTIVE)) {
             chaos_decrement_star_timers();
-            load_new_patches(4);
+            load_new_patches();
             gPatchSelectionMenu->menu.flags |= PATCH_SELECT_FLAG_ACTIVE;
+            chaosSeqVolSubtractable = FALSE;
+            chaosSeqVolMult = 1.0f;
+            chaosSeqSelected = random_float() * ARRAY_COUNT(chaosSeqArray);
         }
+        if (chaosSeqVolSubtractable && chaosSeqVolMult > CHAOS_SEQ_VOL_LOWER) {
+            chaosSeqVolMult -= 0.01f;
+        }
+        play_secondary_music(chaosSeqArray[chaosSeqSelected].seq, 0, chaosSeqArray[chaosSeqSelected].vol * chaosSeqVolMult + 0.5f, 1);
         update_patch_selection_menu();
-    }else {
+    } else {
+        stop_secondary_music(75);
         reset_patch_selection_menu();
         set_play_mode(PLAY_MODE_NORMAL);
     }
@@ -1179,6 +1226,7 @@ UNUSED static s32 play_mode_unused(void) {
 
 s32 update_level(void) {
     s32 changeLevel = 0;
+    chaosShouldProcessFrameUpdate = TRUE;
 
     switch (sCurrPlayMode) {
         case PLAY_MODE_NORMAL:
@@ -1206,6 +1254,7 @@ s32 update_level(void) {
         enable_background_sound();
     }
 
+    chaosShouldProcessFrameUpdate = FALSE;
     return changeLevel;
 }
 

@@ -1121,6 +1121,9 @@ s32 drop_and_set_mario_action(struct MarioState *m, u32 action, u32 actionArg) {
  */
 void set_hurt_counter(struct MarioState *m, u8 additionalDamage) {
     m->hurtCounter += additionalDamage;
+    if (chs_check_temporary_invincibility()) {
+        m->hurtCounter = 0;
+    }
 
     if (m->hurtCounter == 0) {
         return;
@@ -1507,24 +1510,32 @@ void update_mario_health(struct MarioState *m) {
 
     if (m->health >= 0x100) {
         // When already healing or hurting Mario, Mario's HP is not changed any more here.
-        if (((u32) m->healCounter | (u32) m->hurtCounter) == 0) {
-            if ((m->input & INPUT_IN_POISON_GAS) && !(m->action & ACT_FLAG_INTANGIBLE)) {
-                if (!(m->flags & MARIO_METAL_CAP) && !gDebugLevelSelect) {
-                    m->health -= 4;
-                }
-            } else {
-                if ((m->action & ACT_FLAG_SWIMMING) && !(m->action & ACT_FLAG_INTANGIBLE)) {
-                    terrainIsSnow = (m->area->terrainType & TERRAIN_MASK) == TERRAIN_SNOW;
+        if (!chs_check_temporary_invincibility()) {
+            if (((u32) m->healCounter | (u32) m->hurtCounter) == 0) {
+                if ((m->input & INPUT_IN_POISON_GAS) && !(m->action & ACT_FLAG_INTANGIBLE)) {
+                    if (!(m->flags & MARIO_METAL_CAP) && !gDebugLevelSelect) {
+                        m->health -= 4;
+                    }
+                } else {
+                    if ((m->action & ACT_FLAG_SWIMMING) && !(m->action & ACT_FLAG_INTANGIBLE)) {
+                        terrainIsSnow = (m->area->terrainType & TERRAIN_MASK) == TERRAIN_SNOW;
 
-                    // When Mario is near the water surface, recover health (unless in snow),
-                    // when in snow terrains lose 3 health.
-                    // If using the debug level select, do not lose any HP to water.
-                    if ((m->pos[1] >= (m->waterLevel - 140)) && !terrainIsSnow) {
-                        if (!(chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_WATER))) {
-                            m->health += 0x1A;
+                        // When Mario is near the water surface, recover health (unless in snow),
+                        // when in snow terrains lose 3 health.
+                        // If using the debug level select, do not lose any HP to water.
+                        if ((m->pos[1] >= (m->waterLevel - 140)) && !terrainIsSnow) {
+                            if (!(chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_WATER))) {
+                                m->health += 0x1A;
+                            }
+                        } else if (!gDebugLevelSelect) {
+                            if (terrainIsSnow) {
+                                m->health -= 3;
+                            } else {
+                                if (!((gGlobalTimer % 2) == 0 && chaos_check_if_patch_active(CHAOS_PATCH_BREATH_BOOST))) {
+                                    m->health -= 1;
+                                }
+                            }
                         }
-                    } else if (!gDebugLevelSelect) {
-                        m->health -= (terrainIsSnow ? 3 : 1);
                     }
                 }
             }
@@ -1539,8 +1550,8 @@ void update_mario_health(struct MarioState *m) {
             m->hurtCounter--;
         }
 
-        if (m->health > 0x880) {
-            m->health = 0x880;
+        if (m->health > m->maxHealth) {
+            m->health = m->maxHealth;
         }
         if (m->health < 0x100) {
             m->health = 0xFF;
@@ -1753,6 +1764,19 @@ s32 execute_mario_action(UNUSED struct Object *o) {
     s32 inLoop = TRUE;
 
     if (gMarioState->action) {
+        s32 tmpStickX = gMarioState->controller->stickX;
+        s32 tmpStickY = gMarioState->controller->stickY;
+
+        if (chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_STICK_X)) {
+            gMarioState->controller->stickX *= -1.0f;
+        }
+        if (chaos_check_if_patch_active(CHAOS_PATCH_UPSIDE_DOWN_CAMERA)) {
+            gMarioState->controller->stickX *= -1.0f;
+        }
+        if (chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_STICK_Y)) {
+            gMarioState->controller->stickY *= -1.0f;
+        }
+
 #ifdef ENABLE_DEBUG_FREE_MOVE
         if (gPlayer1Controller->buttonDown & U_JPAD && !(gPlayer1Controller->buttonDown & L_TRIG)) {
             // set_camera_mode(gMarioState->area->camera, CAMERA_MODE_8_DIRECTIONS, 1);
@@ -1767,6 +1791,8 @@ s32 execute_mario_action(UNUSED struct Object *o) {
 
         // If Mario is OOB, stop executing actions.
         if (gMarioState->floor == NULL) {
+            gMarioState->controller->stickX = tmpStickX;
+            gMarioState->controller->stickY = tmpStickY;
             return 0;
         }
 
@@ -1834,6 +1860,8 @@ s32 execute_mario_action(UNUSED struct Object *o) {
         func_sh_8025574C();
 #endif
 
+        gMarioState->controller->stickX = tmpStickX;
+        gMarioState->controller->stickY = tmpStickY;
         return gMarioState->particleFlags;
     }
 
@@ -1946,6 +1974,7 @@ void init_mario_from_save_file(void) {
 
     gMarioState->numLives = save_file_get_life_count(gCurrSaveFileNum - 1);
     gMarioState->health = 0x880;
+    gMarioState->maxHealth = 0x880;
 
     gMarioState->prevNumStarsForDialog = gMarioState->numStars;
     gMarioState->unkB0 = 0xBD;
@@ -1955,4 +1984,8 @@ void init_mario_from_save_file(void) {
 
     gMarioState->gravity = 1.0f;
     gMarioState->hundredCoinOffset = 0;
+    gMarioState->usedSpin = 0;
+    gMarioState->spinTimer = 0;
+    gMarioState->extraDamageEnemy = 0;
+    gMarioState->extraDamageLava = 0;
 }

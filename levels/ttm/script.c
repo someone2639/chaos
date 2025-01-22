@@ -157,6 +157,7 @@ const LevelScript level_ttm_entry[] = {
     END_AREA(),
 
     AREA(/*index*/ 3, ttm_geo_000BEC),
+        WARP_NODE(/*id*/ 0x0A, /*destLevel*/ LEVEL_TTM, /*destArea*/ 0x02, /*destNode*/ 0x0A, /*flags*/ WARP_NO_CHECKPOINT),
         WARP_NODE(/*id*/ 0xF0, /*destLevel*/ LEVEL_CASTLE, /*destArea*/ 0x02, /*destNode*/ 0x34, /*flags*/ WARP_NO_CHECKPOINT),
         WARP_NODE(/*id*/ 0xF1, /*destLevel*/ LEVEL_CASTLE, /*destArea*/ 0x02, /*destNode*/ 0x66, /*flags*/ WARP_NO_CHECKPOINT),
         JUMP_LINK(script_func_local_5),

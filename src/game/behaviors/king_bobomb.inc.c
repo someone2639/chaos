@@ -231,7 +231,11 @@ void king_bobomb_act_8(void) {
 void king_bobomb_act_4(void) { // bobomb been thrown
     if (o->oPosY - o->oHomeY > -100.0f) { // not thrown off hill
         if (o->oMoveFlags & OBJ_MOVE_LANDED) {
-            o->oHealth--;
+            if (chaos_check_if_patch_active(CHAOS_PATCH_WEAK_BOSSES)) {
+                o->oHealth = 0;
+            } else {
+                o->oHealth--;
+            }
 
             o->oForwardVel = 0.0f;
             o->oVelY = 0.0f;

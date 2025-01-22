@@ -1,6 +1,7 @@
 #include <PR/ultratypes.h>
 
 #include "area.h"
+#include "chaos/chaos.h"
 #include "engine/math_util.h"
 #include "game_init.h"
 #include "gfx_dimensions.h"
@@ -278,6 +279,7 @@ void geo_process_perspective(struct GraphNodePerspective *node) {
         node->fnNode.func(GEO_CONTEXT_RENDER, &node->fnNode.node, gMatStack[gMatStackIndex]);
     }
     if (node->fnNode.node.children != NULL) {
+        f32 fov = node->fov;
         u16 perspNorm;
         Mtx *mtx = alloc_display_list(sizeof(*mtx));
 
@@ -289,7 +291,14 @@ void geo_process_perspective(struct GraphNodePerspective *node) {
         }
 #endif
 
-        guPerspective(mtx, &perspNorm, node->fov, sAspectRatio, node->near, node->far, 1.0f);
+        if (chaos_check_if_patch_active(CHAOS_PATCH_DECREASED_FOV)) {
+            fov *= 0.5f;
+        }
+        if (chaos_check_if_patch_active(CHAOS_PATCH_INCREASED_FOV)) {
+            fov *= 3.0f;
+        }
+
+        guPerspective(mtx, &perspNorm, fov, sAspectRatio, node->near, node->far, 1.0f);
         gSPPerspNormalize(gDisplayListHead++, perspNorm);
 
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx), G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
@@ -544,31 +553,34 @@ void geo_process_generated_list(struct GraphNodeGenerated *node) {
 void geo_process_background(struct GraphNodeBackground *node) {
     Gfx *list = NULL;
 
-    if (node->fnNode.func != NULL) {
-        list = node->fnNode.func(GEO_CONTEXT_RENDER, &node->fnNode.node,
-                                 (struct AllocOnlyPool *) gMatStack[gMatStackIndex]);
-    }
-    if (list != NULL) {
-        geo_append_display_list((void *) VIRTUAL_TO_PHYSICAL(list), node->fnNode.node.flags >> 8);
-    } else if (gCurGraphNodeMasterList != NULL) {
+    if (!chaos_check_if_patch_active(CHAOS_PATCH_NO_SKYBOX)) {
+        if (node->fnNode.func != NULL) {
+            list = node->fnNode.func(GEO_CONTEXT_RENDER, &node->fnNode.node,
+                                    (struct AllocOnlyPool *) gMatStack[gMatStackIndex]);
+        }
+        if (list != NULL) {
+            geo_append_display_list((void *) VIRTUAL_TO_PHYSICAL(list), node->fnNode.node.flags >> 8);
+        } else if (gCurGraphNodeMasterList != NULL) {
 #ifndef F3DEX_GBI_2E
-        Gfx *gfxStart = alloc_display_list(sizeof(Gfx) * 7);
+            Gfx *gfxStart = alloc_display_list(sizeof(Gfx) * 7);
 #else
-        Gfx *gfxStart = alloc_display_list(sizeof(Gfx) * 8);
+            Gfx *gfxStart = alloc_display_list(sizeof(Gfx) * 8);
 #endif
-        Gfx *gfx = gfxStart;
+            Gfx *gfx = gfxStart;
 
-        gDPPipeSync(gfx++);
-        gDPSetCycleType(gfx++, G_CYC_FILL);
-        gDPSetFillColor(gfx++, node->background);
-        gDPFillRectangle(gfx++, GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(0), gBorderHeight,
-        GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(0) - 1, SCREEN_HEIGHT - gBorderHeight - 1);
-        gDPPipeSync(gfx++);
-        gDPSetCycleType(gfx++, G_CYC_1CYCLE);
-        gSPEndDisplayList(gfx++);
+            gDPPipeSync(gfx++);
+            gDPSetCycleType(gfx++, G_CYC_FILL);
+            gDPSetFillColor(gfx++, node->background);
+            gDPFillRectangle(gfx++, GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(0), gBorderHeight,
+            GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(0) - 1, SCREEN_HEIGHT - gBorderHeight - 1);
+            gDPPipeSync(gfx++);
+            gDPSetCycleType(gfx++, G_CYC_1CYCLE);
+            gSPEndDisplayList(gfx++);
 
-        geo_append_display_list((void *) VIRTUAL_TO_PHYSICAL(gfxStart), 0);
+            geo_append_display_list((void *) VIRTUAL_TO_PHYSICAL(gfxStart), 0);
+        }
     }
+
     if (node->fnNode.node.children != NULL) {
         geo_process_node_and_siblings(node->fnNode.node.children);
     }
@@ -850,6 +862,11 @@ void geo_process_object(struct Object *node) {
     s32 hasAnimation = (node->header.gfx.node.flags & GRAPH_RENDER_HAS_ANIMATION) != 0;
 
     if (node->header.gfx.areaIndex == gCurGraphNodeRoot->areaIndex) {
+        s16 angleTmp = node->header.gfx.angle[1];
+        if (chaos_check_if_patch_active(CHAOS_PATCH_CONFUSED_OBJECTS)) {
+            node->header.gfx.angle[1] += 0x8000;
+        }
+
         if (node->header.gfx.throwMatrix != NULL) {
             mtxf_mul(gMatStack[gMatStackIndex + 1], *node->header.gfx.throwMatrix,
                      gMatStack[gMatStackIndex]);
@@ -888,6 +905,8 @@ void geo_process_object(struct Object *node) {
                 geo_process_node_and_siblings(node->header.gfx.node.children);
             }
         }
+
+        node->header.gfx.angle[1] = angleTmp;
 
         gMatStackIndex--;
         gCurrAnimType = ANIM_TYPE_NONE;
