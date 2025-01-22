@@ -1328,4 +1328,14 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "High-Fidelity Reverb",
         .shortDescription  = "For that more immersive experience (works best in caves!)",
     },
+    [CHAOS_PATCH_WEAK_BOSSES] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .name              = "Not So Bossy",
+        .shortDescription  = "All bosses have one HP (except for during the final Bowser fight).",
+    },
 };

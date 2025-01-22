@@ -153,7 +153,13 @@ static s32 eyerok_hand_check_attacked(void) {
     if (o->oEyerokReceivedAttack != 0 && abs_angle_diff(o->oAngleToMario, o->oFaceAngleYaw) < 0x3000) {
         cur_obj_play_sound_2(SOUND_OBJ2_EYEROK_SOUND_SHORT);
 
-        if (--o->oHealth >= 2) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_WEAK_BOSSES)) {
+            o->oHealth = 1;
+        } else {
+            o->oHealth--;
+        }
+
+        if (o->oHealth >= 2) {
             o->oAction = EYEROK_HAND_ACT_ATTACKED;
             o->oVelY = 30.0f;
         } else {
