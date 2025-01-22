@@ -218,6 +218,16 @@ void scroll_act_desc_bg() {
 	currentX += deltaX;	currentY += deltaY;
 }
 
+void init_active_patches_menu() {
+    gChaosPauseMenu->activePatchesMenu.flags = (ACTIVE_PATCHES_MENU_ACTIVE | ACTIVE_PATCHES_MENU_HALT_INPUT);
+    gChaosPauseMenu->activePatchesMenu.animTimer = 0;
+    gChaosPauseMenu->activePatchesMenu.animFrames = MENU_ANIM_LOOP;
+    gChaosPauseMenu->activePatchesMenu.animId = ACTIVE_PATCHES_MENU_ANIM_STARTUP;
+    gChaosPauseMenu->activePatchesMenu.animPhase = 0;
+    gChaosPauseMenu->descX = ACTIVE_PATCH_DESC_X_START;
+    gChaosPauseMenu->cardX = MINI_CARD_X_START;
+}
+
 void draw_active_patch_desc(f32 x, f32 y, struct ChaosActiveEntry *patch) {
     const struct ChaosPatch *patchInfo = &gChaosPatches[patch->id];
     const char *patchName = patchInfo->name;
@@ -308,15 +318,14 @@ void draw_mini_patch_card(f32 x, f32 y, struct ChaosActiveEntry *patch) {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
-void render_active_patches() {
-    if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_STARTING) {
-        gChaosPauseMenu->activePatchesMenu.flags &= ~ACTIVE_PATCHES_MENU_STARTING;
-        if(gIsConsole) {
-            gChaosPauseMenu->activePatchesMenu.flags |= ACTIVE_PATCHES_MENU_STOP_GAME_RENDER;
-            bcopy(gFramebuffers[sRenderingFramebuffer], sPauseScreenBuffer, sizeof(gFramebuffers[0]));
-        }
+void copy_pause_screen_framebuffer() {
+    if(gIsConsole) {
+        gChaosPauseMenu->activePatchesMenu.flags |= ACTIVE_PATCHES_MENU_STOP_GAME_RENDER;
+        bcopy(gFramebuffers[sRenderingFramebuffer], sPauseScreenBuffer, sizeof(gFramebuffers[0]));
     }
+}
 
+void render_active_patches() {
     if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_STOP_GAME_RENDER) {
         draw_pause_screen_framebuffer_bg();
     } else {
@@ -330,7 +339,8 @@ void render_active_patches() {
     scroll_mini_patch_cards();
     scroll_act_desc_bg();
 
-    f32 cardX = 74;
+    f32 cardX = gChaosPauseMenu->cardX;
+    f32 descX = gChaosPauseMenu->descX;
     s32 selection = gChaosPauseMenu->activePatchesMenu.selectedMenuIndex;
     s32 numPatches = *gChaosActiveEntryCount;
     s32 listStart = gChaosPauseMenu->chaosListStart;
@@ -340,7 +350,7 @@ void render_active_patches() {
         draw_mini_patch_card(cardX + (20 * (i == selection)), SCREEN_HEIGHT - 35 - (35 * (i - listStart)), &gChaosActiveEntries[i]);
     }
 
-    draw_active_patch_desc(SCREEN_WIDTH - 74, (SCREEN_HEIGHT / 3), &gChaosActiveEntries[selection]);
+    draw_active_patch_desc(descX, ACTIVE_PATCH_DESC_Y, &gChaosActiveEntries[selection]);
 }
 
 void update_active_patch_list_bounds() {
@@ -440,7 +450,7 @@ void handle_active_patches_inputs() {
     s32 selection = prevSelection;
 
     if(gPlayer1Controller->buttonPressed & (R_TRIG | B_BUTTON | A_BUTTON | START_BUTTON)) {
-        gChaosPauseMenu->activePatchesMenu.flags &= ~ACTIVE_PATCHES_MENU_ACTIVE;
+        menu_play_anim(&gChaosPauseMenu->activePatchesMenu, ACTIVE_PATCHES_MENU_ANIM_ENDING);
         gChaosPauseMenu->activePatchesMenu.flags &= ~ACTIVE_PATCHES_MENU_STOP_GAME_RENDER;
         gPlayer1Controller->buttonPressed &= ~R_TRIG;
     } else if(gPlayer1Controller->buttonPressed & U_JPAD || stickDir & MENU_JOYSTICK_DIR_UP) {
@@ -460,6 +470,66 @@ void handle_active_patches_inputs() {
         gChaosPauseMenu->activePatchesMenu.selectedMenuIndex = selection;
         update_active_patch_list_bounds();
     }
+}
+
+#define ACTIVE_PATCH_MENU_WAIT_FB_FRAMES    3
+#define ACTIVE_PATCH_MENU_START_FRAMES      10
+s32 active_patches_menu_anim_startup() {
+    s32 phase = gChaosPauseMenu->activePatchesMenu.animPhase;
+    s32 animTimer = gChaosPauseMenu->activePatchesMenu.animTimer;
+    f32 animPercent;
+    switch(phase) {
+        case 0:
+            gChaosPauseMenu->activePatchesMenu.animFrames = ACTIVE_PATCH_MENU_WAIT_FB_FRAMES;
+            if(animTimer == ACTIVE_PATCH_MENU_WAIT_FB_FRAMES) {
+                copy_pause_screen_framebuffer();
+            }
+            break;
+        case 1:
+            gChaosPauseMenu->activePatchesMenu.flags |= ACTIVE_PATCHES_MENU_HALT_INPUT;
+            gChaosPauseMenu->activePatchesMenu.animFrames = ACTIVE_PATCH_MENU_START_FRAMES;
+            animPercent = sins((0x3FFF / gChaosPauseMenu->activePatchesMenu.animFrames) * animTimer);
+            gChaosPauseMenu->descX = menu_translate_percentage(ACTIVE_PATCH_DESC_X_START, ACTIVE_PATCH_DESC_X, animPercent);
+            gChaosPauseMenu->cardX = menu_translate_percentage(MINI_CARD_X_START, MINI_CARD_X, animPercent);
+            break;
+        default:
+            gChaosPauseMenu->activePatchesMenu.flags &= ~ACTIVE_PATCHES_MENU_HALT_INPUT;
+            gChaosPauseMenu->activePatchesMenu.animFrames = MENU_ANIM_LOOP;
+            break;
+    }
+    
+    return FALSE;
+}
+
+#define ACTIVE_PATCH_MENU_END_FRAMES  10
+s32 active_patches_menu_anim_ending() {
+    s32 phase = gChaosPauseMenu->activePatchesMenu.animPhase;
+    s32 animTimer = gChaosPauseMenu->activePatchesMenu.animTimer;
+    f32 animPercent;
+    if(!phase) {
+        gChaosPauseMenu->activePatchesMenu.flags |= ACTIVE_PATCHES_MENU_HALT_INPUT;
+        gChaosPauseMenu->activePatchesMenu.animFrames = ACTIVE_PATCH_MENU_END_FRAMES;
+        animPercent = 1.0f - coss((0x3FFF / gChaosPauseMenu->activePatchesMenu.animFrames) * animTimer);
+        gChaosPauseMenu->descX = menu_translate_percentage(ACTIVE_PATCH_DESC_X, ACTIVE_PATCH_DESC_X_START, animPercent);
+        gChaosPauseMenu->cardX = menu_translate_percentage(MINI_CARD_X, MINI_CARD_X_START, animPercent);
+    } else {
+        gChaosPauseMenu->activePatchesMenu.flags &= ~ACTIVE_PATCHES_MENU_ACTIVE;
+        gChaosPauseMenu->activePatchesMenu.animFrames = MENU_ANIM_LOOP;
+    }
+    return FALSE;
+}
+
+s32 (*sActivePatchesMenuAnims[])(void) = {
+    &active_patches_menu_anim_startup,
+    &active_patches_menu_anim_ending,
+};
+
+void update_active_patches_menu() {
+    if(!(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_HALT_INPUT)) {
+        handle_active_patches_inputs();
+    }
+
+    menu_update_anims(&gChaosPauseMenu->activePatchesMenu, sActivePatchesMenuAnims);
 }
 
 void handle_settings_inputs() {

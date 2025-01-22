@@ -1077,7 +1077,7 @@ s32 play_mode_paused(void) {
     }
 
     if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) {
-        handle_active_patches_inputs();
+        update_active_patches_menu();
         return 0;
     }
 
