@@ -1135,6 +1135,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 6,
 
+        .conditionalFunc   = chs_cam_invert_x_check,
+
         .name              = "Camera Reversal",
         .shortDescription  = "Invert the X axis of the camera (i.e. C-Left and C-Right).",
     },
@@ -1347,6 +1349,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity          = 3,
         .isStackable       = FALSE,
         .duration          = 6,
+
+        .conditionalFunc   = chs_topdown_check,
 
         .name              = "Top-Down Camera",
         .shortDescription  = "Now you're playing Zelda! (without the items) (without the story) (without the combat) (without the",
