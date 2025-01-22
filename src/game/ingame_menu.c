@@ -2782,6 +2782,11 @@ s8 gHudFlash = 0;
 s16 render_pause_courses_and_castle(void) {
     s16 index;
 
+    if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) {
+        render_active_patches();
+        return 0;
+    }
+
 #ifdef VERSION_EU
     gInGameLanguage = eu_get_language();
 #endif
@@ -2866,12 +2871,7 @@ s16 render_pause_courses_and_castle(void) {
         } else {
             render_settings_prompt();
         }
-        
-        if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) {
-            render_active_patches();
-        } else {
-            render_view_patches_prompt();
-        }
+        render_view_patches_prompt();
         //render_bgmusic_setting();
 #ifdef WIDE
         //render_widescreen_setting();

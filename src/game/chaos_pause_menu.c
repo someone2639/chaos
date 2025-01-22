@@ -203,7 +203,7 @@ void draw_mini_patch_card(f32 x, f32 y, struct ChaosActiveEntry *patch) {
 }
 
 void render_active_patches() {
-    if (gChaosActiveEntryCount == NULL) {
+    if (gChaosActiveEntryCount == NULL || *gChaosActiveEntryCount == 0) {
         return;
     }
 
