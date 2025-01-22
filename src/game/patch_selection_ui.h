@@ -90,6 +90,8 @@ struct PatchSelectionMenu {
 };
 
 extern struct PatchSelectionMenu *gPatchSelectionMenu;
+extern u8 sEffectColors[CHAOS_EFFECT_COUNT][3];
+extern u8 sQualityColors[CHAOS_PATCH_SEVERITY_COUNT][3];
 
 void display_patch_selection_ui();
 void update_patch_selection_menu();

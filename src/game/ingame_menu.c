@@ -2323,8 +2323,8 @@ void render_view_patches_prompt(void) {
     print_generic_string((SCREEN_WIDTH - 96) - 10, 20, textPatchesPrompt);
     print_generic_string((SCREEN_WIDTH - 96) - 10,  7, textPatchesR);
     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
-    if (gPlayer1Controller->buttonDown & R_TRIG){
-        render_active_patches();
+    if (gPlayer1Controller->buttonPressed & R_TRIG){
+        gChaosPauseMenu->activePatchesMenu.flags |= ACTIVE_PATCHES_MENU_ACTIVE;
     }
 }
 
@@ -2554,7 +2554,7 @@ void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) {
     u8 textCameraAngleR[] = { TEXT_CAMERA_ANGLE_R };
 #endif
 
-    if(!(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE)) {
+    if(!(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE) && !(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE)) {
         handle_menu_scrolling(MENU_SCROLL_VERTICAL, index, 1, 3);
     }
 
@@ -2709,7 +2709,7 @@ void render_pause_castle_main_strings(s16 x, s16 y) {
     }
 #endif
 
-    if(!(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE)) {
+    if(!(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE) && !(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE)) {
         handle_menu_scrolling(
             MENU_SCROLL_VERTICAL, &gDialogLineNum,
             COURSE_NUM_TO_INDEX(COURSE_MIN) - 1, COURSE_NUM_TO_INDEX(COURSE_BONUS_STAGES) + 1
@@ -2821,7 +2821,7 @@ s16 render_pause_courses_and_castle(void) {
             if (gPlayer3Controller->buttonPressed & (A_BUTTON | Z_TRIG | START_BUTTON))
 #else
             if ((gPlayer3Controller->buttonPressed & A_BUTTON
-                || gPlayer3Controller->buttonPressed & START_BUTTON) && !(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE))
+                || gPlayer3Controller->buttonPressed & START_BUTTON) && !(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE) && !(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE))
 #endif
             {
                 level_set_transition(0, NULL);
@@ -2849,7 +2849,7 @@ s16 render_pause_courses_and_castle(void) {
             if (gPlayer3Controller->buttonPressed & (A_BUTTON | Z_TRIG | START_BUTTON))
 #else
             if ((gPlayer3Controller->buttonPressed & A_BUTTON
-                || gPlayer3Controller->buttonPressed & START_BUTTON) && !(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE))
+                || gPlayer3Controller->buttonPressed & START_BUTTON) && !(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE) && !(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE))
 #endif
             {
                 level_set_transition(0, NULL);
@@ -2866,7 +2866,12 @@ s16 render_pause_courses_and_castle(void) {
         } else {
             render_settings_prompt();
         }
-        render_view_patches_prompt();
+        
+        if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) {
+            render_active_patches();
+        } else {
+            render_view_patches_prompt();
+        }
         //render_bgmusic_setting();
 #ifdef WIDE
         //render_widescreen_setting();

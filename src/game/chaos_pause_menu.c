@@ -20,7 +20,8 @@
 #include "chaos/chaos.h"
 #include "patch_selection_ui.h"
 
-struct ChaosPauseMenu sChaosPauseMenu;
+#define PATCH_LIST_SIZE     6
+struct ChaosPauseMenu sChaosPauseMenu = {.chaosListStart = 0};
 struct ChaosPauseMenu *gChaosPauseMenu = &sChaosPauseMenu;
 
 #define MINI_CARD_STRING_WIDTH 94
@@ -90,21 +91,35 @@ void draw_mini_patch_card(f32 x, f32 y, struct ChaosActiveEntry *patch) {
     char timerText[4];
     f32 nameY;
     s32 lines, length;
-    sprintf(timerText, "%d", patch->remainingDuration);
+    
+    u8 effectR = sEffectColors[patchInfo->effectType][0];
+    u8 effectG = sEffectColors[patchInfo->effectType][1];
+    u8 effectB = sEffectColors[patchInfo->effectType][2];
 
     //Center name if it's only one line long
     fasttext_compute_print_text_with_line_breaks(FT_FONT_SMALL_THIN, MINI_CARD_STRING_WIDTH, &lines, &length, drawName, patchName);
     nameY = (lines == 1) ? -10 : -3;
     Mtx *transMtx = alloc_display_list(sizeof(Mtx));
 
+    gDPSetPrimColor(gDisplayListHead++, 0, 0, effectR, effectG, effectB, 0xFF);
     guTranslate(transMtx, x, y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     gSPDisplayList(gDisplayListHead++, patch_bg_s_mesh_s_mesh);
 
-    gSPDisplayList(gDisplayListHead++, patch_use_type_start);
-    draw_patch_type(38, 0, patchInfo->durationType);
-    gSPDisplayList(gDisplayListHead++, patch_use_type_end);
+    if(patchInfo->durationType == CHAOS_DURATION_STARS || patchInfo->durationType == CHAOS_DURATION_USE_COUNT) {
+        sprintf(timerText, "%d", patch->remainingDuration);
+        gSPDisplayList(gDisplayListHead++, patch_use_type_start);
+        draw_patch_type(38, 0, patchInfo->durationType);
+        gSPDisplayList(gDisplayListHead++, patch_use_type_end);
+    } else if (patchInfo->durationType == CHAOS_DURATION_INFINITE) {
+        sprintf(timerText, "`"); // Infinity symbol
+        gSPDisplayList(gDisplayListHead++, patch_use_type_start);
+        draw_patch_type(38, 0, patchInfo->durationType);
+        gSPDisplayList(gDisplayListHead++, patch_use_type_end);
+    } else {
+        sprintf(timerText, '\0');
+    }
 
     slowtext_setup_ortho_rendering(FT_FONT_SMALL_THIN);
     slowtext_draw_ortho_text(-62, nameY, drawName, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -115,8 +130,47 @@ void draw_mini_patch_card(f32 x, f32 y, struct ChaosActiveEntry *patch) {
 }
 
 void render_active_patches() {
+    if (gChaosActiveEntryCount == NULL) {
+        return;
+    }
     scroll_mini_patch_cards();
-    draw_mini_patch_card(SCREEN_CENTER_X, SCREEN_CENTER_Y, &gChaosActiveEntries[0]);
+
+    f32 cardX = SCREEN_WIDTH - 74;
+    s32 selection = gChaosPauseMenu->activePatchesMenu.selectedMenuIndex;
+    s32 numPatches = *gChaosActiveEntryCount;
+    s32 listStart = gChaosPauseMenu->chaosListStart;
+    s32 listEnd = (numPatches > PATCH_LIST_SIZE) ? (listStart + PATCH_LIST_SIZE) : numPatches;
+
+    for(int i = listStart; i < listEnd; i++) {
+        draw_mini_patch_card(cardX - (20 * (i == selection)), SCREEN_HEIGHT - 35 - (35 * (i - listStart)), &gChaosActiveEntries[i]);
+    }
+}
+
+void update_active_patch_list_bounds() {
+    s32 selection = gChaosPauseMenu->activePatchesMenu.selectedMenuIndex;
+    s32 start = gChaosPauseMenu->chaosListStart;
+    s32 numPatches = *gChaosActiveEntryCount;
+    s32 end = start + PATCH_LIST_SIZE;
+    if(PATCH_LIST_SIZE >= numPatches) {
+        return;
+    }
+
+    if(selection > end - 2) {
+        start = selection - PATCH_LIST_SIZE + 2;
+    } else if (selection < start + 1) {
+        start = selection - 1;
+    }
+
+    end = start + PATCH_LIST_SIZE;
+
+    if(end > numPatches) {
+        start = numPatches - PATCH_LIST_SIZE;
+    } else if (start < 0) {
+        start = 0;
+    }
+
+    gChaosPauseMenu->chaosListStart = start;
+
 }
 
 void render_settings_panel() {
@@ -176,16 +230,45 @@ void render_settings_panel() {
     gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
-
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+}
+
+void handle_active_patches_inputs() {
+    if(!gChaosActiveEntryCount) {
+        return;
+    }
+
+    u32 stickDir = menu_update_joystick_dir(&gChaosPauseMenu->activePatchesMenu);
+    s32 prevSelection = gChaosPauseMenu->activePatchesMenu.selectedMenuIndex;
+    s32 selection = prevSelection;
+
+    if(gPlayer1Controller->buttonPressed & (R_TRIG | B_BUTTON | A_BUTTON | START_BUTTON)) {
+        gChaosPauseMenu->activePatchesMenu.flags &= ~ACTIVE_PATCHES_MENU_ACTIVE;
+        gPlayer1Controller->buttonPressed &= ~R_TRIG;
+    } else if(gPlayer1Controller->buttonPressed & U_JPAD || stickDir & MENU_JOYSTICK_DIR_UP) {
+        selection--;
+    } else if (gPlayer1Controller->buttonPressed & D_JPAD || stickDir & MENU_JOYSTICK_DIR_DOWN) {
+        selection++;
+    }
+
+    if(selection < 0) {
+        selection = *gChaosActiveEntryCount - 1;
+    } else if (selection >= *gChaosActiveEntryCount) {
+        selection = 0;
+    }
+
+    if(selection != prevSelection) {
+        play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
+        gChaosPauseMenu->activePatchesMenu.selectedMenuIndex = selection;
+        update_active_patch_list_bounds();
+    }
 }
 
 void handle_settings_inputs() {
     u32 stickDir = menu_update_joystick_dir(&gChaosPauseMenu->settingsMenu);
     s32 prevSelection = gChaosPauseMenu->settingsMenu.selectedMenuIndex;
     s32 selection = prevSelection;
-    s32 pressedUpDown = ((gPlayer1Controller->buttonPressed & D_JPAD) || (stickDir == MENU_JOYSTICK_DIR_DOWN) || 
-        (gPlayer1Controller->buttonPressed & U_JPAD) || (stickDir == MENU_JOYSTICK_DIR_UP));
+    s32 pressedUpDown = ((gPlayer1Controller->buttonPressed & (D_JPAD | U_JPAD)) || stickDir & (MENU_JOYSTICK_DIR_DOWN | MENU_JOYSTICK_DIR_UP));
     s32 pressedLeftRight = ((gPlayer1Controller->buttonPressed & (L_JPAD | R_JPAD)) || stickDir & (MENU_JOYSTICK_DIR_LEFT | MENU_JOYSTICK_DIR_RIGHT));
 
     if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {

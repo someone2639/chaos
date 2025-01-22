@@ -8,9 +8,14 @@ enum ChaosSettingsFlags {
     CHAOS_SETTINGS_ACTIVE           = (1 << 0),
 };
 
+enum ActivePatchesMenuFlags {
+    ACTIVE_PATCHES_MENU_ACTIVE      = (1 << 0),
+};
+
 struct ChaosPauseMenu {
     struct ChaosMenu settingsMenu;
     struct ChaosMenu activePatchesMenu;
+    u16 chaosListStart;
 };
 
 extern struct ChaosPauseMenu *gChaosPauseMenu;
@@ -18,3 +23,4 @@ extern struct ChaosPauseMenu *gChaosPauseMenu;
 void render_settings_panel();
 void handle_settings_inputs();
 void render_active_patches();
+void handle_active_patches_inputs();

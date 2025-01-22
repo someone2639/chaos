@@ -1076,6 +1076,11 @@ s32 play_mode_paused(void) {
         return 0;
     }
 
+    if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) {
+        handle_active_patches_inputs();
+        return 0;
+    }
+
     if (gMenuOptSelectIndex == MENU_OPT_NONE) {
         set_menu_mode(MENU_MODE_RENDER_PAUSE_SCREEN);
     } else if (gMenuOptSelectIndex == MENU_OPT_DEFAULT) {
@@ -1147,6 +1152,8 @@ s32 play_mode_select_patch(void) {
     } else {
         stop_secondary_music(75);
         reset_patch_selection_menu();
+        gChaosPauseMenu->activePatchesMenu.selectedMenuIndex = 0;
+        gChaosPauseMenu->chaosListStart = 0;
         set_play_mode(PLAY_MODE_NORMAL);
     }
 
