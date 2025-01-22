@@ -128,13 +128,22 @@ static void update_any_star(u8 shouldRemove) {
     }
 }
 
+u8 chs_cond_star_shuffle(void) {
+    return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 2;
+}
 u8 chs_cond_stars_increase_guarantee(void) {
     return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) <= (NUM_STARS - 1);
 }
 u8 chs_cond_stars_decrease_guarantee(void) {
-    return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 2;
+    return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 1;
 }
 
+void chs_act_star_shuffle(void) {
+    remove_collected_star();
+    remove_collected_star();
+    add_uncollected_star();
+    add_uncollected_star();
+}
 void chs_act_stars_increase_lv2(void) {
     update_any_star(FALSE);
     play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
@@ -150,15 +159,12 @@ void chs_act_stars_increase_guarantee(void) {
 }
 void chs_act_stars_decrease_lv2(void) {
     update_any_star(TRUE);
-    update_any_star(TRUE);
 }
 void chs_act_stars_decrease_lv3(void) {
     update_any_star(TRUE);
     update_any_star(TRUE);
-    update_any_star(TRUE);
 }
 void chs_act_stars_decrease_guarantee(void) {
-    remove_collected_star();
     remove_collected_star();
 }
 

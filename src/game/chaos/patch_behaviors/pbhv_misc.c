@@ -46,10 +46,8 @@ void chs_deact_luigi(void) {
     gMarioState->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO];
 }
 
-void chs_act_reverb(void) {
-    init_reverb_us(1 << 31);
-}
+u8 chs_cond_45_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_20_FPS)); }
+u8 chs_cond_20_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_45_FPS)); }
 
-void chs_deact_reverb(void) {
-    init_reverb_us(1 << 31);
-}
+void chs_act_reverb(void) { init_reverb_us(1 << 31); }
+void chs_deact_reverb(void) { init_reverb_us(1 << 31); }

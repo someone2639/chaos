@@ -1224,6 +1224,7 @@ UNUSED static s32 play_mode_unused(void) {
 
 s32 update_level(void) {
     s32 changeLevel = 0;
+    chaosShouldProcessFrameUpdate = TRUE;
 
     switch (sCurrPlayMode) {
         case PLAY_MODE_NORMAL:
@@ -1251,6 +1252,7 @@ s32 update_level(void) {
         enable_background_sound();
     }
 
+    chaosShouldProcessFrameUpdate = FALSE;
     return changeLevel;
 }
 
