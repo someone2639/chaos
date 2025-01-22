@@ -5,9 +5,11 @@
 #include "sm64.h"
 #include "game/level_update.h"
 #include "behavior_data.h"
+#include "game/interaction.h"
 #include "game/object_helpers.h"
 #include "game/print.h"
 #include "game/game_init.h"
+#include "game/sound_init.h"
 #include "engine/math_util.h"
 #include "game/chaos/chaos.h"
 #include "game/area.h"
@@ -307,5 +309,36 @@ void chs_update_bullet_hell(void) {
     if (sBulletCooldown > 0) {
         this->frameTimer = 0;
         sBulletCooldown--;
+    }
+}
+
+void chs_lvlinit_spawn_on_shell(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_SPAWN_ON_SHELL, &this);
+
+    this->frameTimer = 0;
+}
+
+void chs_lvlupdate_spawn_on_shell(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_SPAWN_ON_SHELL, &this);
+
+    if (gCurrCourseNum == COURSE_NONE) {
+        this->frameTimer = 0xFFFFFF;
+        return;
+    }
+
+    if (this->frameTimer < 0xFFFFFF && !(gMarioState->action & ACT_FLAG_RIDING_SHELL) && gMarioState->marioObj) {
+        struct Object *obj = spawn_object(gMarioState->marioObj, MODEL_KOOPA_SHELL, bhvKoopaShell);
+        gMarioState->interactObj = obj;
+        gMarioState->usedObj = obj;
+        gMarioState->riddenObj = obj;
+        obj->oInteractStatus = ATTACK_FAST_ATTACK + (INT_STATUS_INTERACTED | INT_STATUS_WAS_ATTACKED);
+        update_mario_sound_and_camera(gMarioState);
+        play_shell_music();
+        mario_drop_held_object(gMarioState);
+
+        set_mario_action(gMarioState, ACT_RIDING_SHELL_FALL, 0);
+        this->frameTimer = 0xFFFFFF;
     }
 }

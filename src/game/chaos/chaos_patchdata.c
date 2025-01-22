@@ -808,6 +808,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Bullet Hell",
         .shortDescription  = "Every 30 seconds, spawns a number of Bullet Bills around Mario. Pay attention to hear the warning sound!",
     },
+    [CHAOS_PATCH_SPAWN_ON_SHELL] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 4,
+
+        .levelInitFunc     = chs_lvlinit_spawn_on_shell,
+        .frameUpdateFunc   = chs_lvlupdate_spawn_on_shell,
+
+        .name              = "Shell Spawn",
+        .shortDescription  = "Start riding on a shell upon entering a new course.",
+    },
 
 // Visual Modifiers
     [CHAOS_PATCH_NO_Z_BUFFER] = {
