@@ -1306,4 +1306,17 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "High-Fidelity Reverb",
         .shortDescription  = "For that more immersive experience (works best in caves!)",
     },
+    [CHAOS_PATCH_TOP_DOWN_CAMERA] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        // .activatedInitFunc = chs_init_top_down,
+        // .deactivationFunc  = chs_deinit_top_down,
+
+        .name              = "Top-Down Camera",
+        .shortDescription  = "Now you're playing Zelda! (without the items) (without the story) (without the combat) (without the",
+    },
 };

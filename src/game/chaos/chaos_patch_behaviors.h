@@ -165,3 +165,5 @@ void chs_update_luigi(void);
 void chs_deact_luigi(void);
 void chs_act_reverb(void);
 void chs_deact_reverb(void);
+void chs_init_top_down(void);
+void chs_deinit_top_down(void);
