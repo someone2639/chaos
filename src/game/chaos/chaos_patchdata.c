@@ -914,7 +914,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .deactivationFunc  = chs_mq_deinit,
 
         .name              = "Master Quest",
-        .shortDescription  = "Flips the game horizontally so your reflection in the mirror gets a turn to play!",
+        .shortDescription  = "Flips the game horizontally.",
     },
 
 // Time Limit
