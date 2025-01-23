@@ -6164,12 +6164,3 @@ const BehaviorScript bhvIntroScene[] = {
         CALL_NATIVE(bhv_intro_scene_loop),
     END_LOOP(),
 };
-
-extern void bhv_SlotMachine_init(); extern void bhv_SlotMachine_loop();
-const BehaviorScript bhvSlotMachine[] = {
-	BEGIN(OBJ_LIST_DEFAULT),
-	CALL_NATIVE(bhv_SlotMachine_init),
-	BEGIN_LOOP(),
-		CALL_NATIVE(bhv_SlotMachine_loop),
-	END_LOOP(),
-};
