@@ -362,6 +362,7 @@ void play_transition_after_delay(s16 transType, s16 time, u8 red, u8 green, u8 b
     play_transition(transType, time, red, green, blue);
 }
 
+void drawslots();
 void render_game(void) {
     if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
         if(!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_STOP_GAME_RENDER) && !(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_STOP_GAME_RENDER)) {
@@ -441,6 +442,10 @@ void render_game(void) {
             } else {
                 gWarpTransDelay--;
             }
+        }
+
+        if (chaos_check_if_patch_active(CHAOS_PATCH_BLUECOIN_LOTTERY)) {
+            drawslots();
         }
     } else {
         render_text_labels();

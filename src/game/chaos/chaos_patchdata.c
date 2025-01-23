@@ -1225,6 +1225,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Code That Makes You Miss Bowser Throws",
         .shortDescription  = "They have that in this game, I swear!",
     },
+    [CHAOS_PATCH_BLUECOIN_LOTTERY] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .name              = "Blue Coin Lottery",
+        .shortDescription  = R"(Test your luck! Every blue coin is a 1% chance to win big!)",
+    },
     [CHAOS_PATCH_INVERTED_SOUND] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
