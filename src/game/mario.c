@@ -1528,7 +1528,13 @@ void update_mario_health(struct MarioState *m) {
                                 m->health += 0x1A;
                             }
                         } else if (!gDebugLevelSelect) {
-                            m->health -= (terrainIsSnow ? 3 : 1);
+                            if (terrainIsSnow) {
+                                m->health -= 3;
+                            } else {
+                                if (!((gGlobalTimer % 2) == 0 && chaos_check_if_patch_active(CHAOS_PATCH_BREATH_BOOST))) {
+                                    m->health -= 1;
+                                }
+                            }
                         }
                     }
                 }

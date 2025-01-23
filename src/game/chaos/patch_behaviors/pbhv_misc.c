@@ -2,6 +2,7 @@
 #include <PR/gbi.h>
 #include "types.h"
 #include "sm64.h"
+#include "audio/heap.h"
 #include "game/chaos/chaos.h"
 #include "game/level_update.h"
 #include "game/area.h"
@@ -44,3 +45,9 @@ void chs_update_luigi(void) {
 void chs_deact_luigi(void) {
     gMarioState->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO];
 }
+
+u8 chs_cond_45_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_20_FPS)); }
+u8 chs_cond_20_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_45_FPS)); }
+
+void chs_act_reverb(void) { init_reverb_us(1 << 31); }
+void chs_deact_reverb(void) { init_reverb_us(1 << 31); }

@@ -5,9 +5,11 @@
 #include "sm64.h"
 #include "game/level_update.h"
 #include "behavior_data.h"
+#include "game/interaction.h"
 #include "game/object_helpers.h"
 #include "game/print.h"
 #include "game/game_init.h"
+#include "game/sound_init.h"
 #include "engine/math_util.h"
 #include "game/chaos/chaos.h"
 #include "game/area.h"
@@ -21,9 +23,15 @@ u8 chs_cond_green_demon(void) {
     return (!chaos_check_if_patch_active(CHAOS_PATCH_SPEED_LIMIT) && !chaos_check_if_patch_active(CHAOS_PATCH_WALKIES));
 }
 
-void chs_area_init_green_demon(void) {
-    spawn_object_abs_with_rot(gMarioState->marioObj, 0, MODEL_GREEN_DEMON, bhvGreenDemon,
-                            gMarioState->pos[0], gMarioState->pos[1], gMarioState->pos[2], 0, 0, 0);
+void chs_lvlupdate_green_demon(void) {
+    if (gCurrCourseNum == COURSE_NONE) {
+        return;
+    }
+
+    if (gMarioState->health > 0xFF && count_objects_with_behavior(bhvGreenDemon) <= 0 && gMarioState->marioObj) {
+        spawn_object_abs_with_rot(gMarioState->marioObj, 0, MODEL_GREEN_DEMON, bhvGreenDemon,
+                                gMarioState->pos[0], gMarioState->pos[1], gMarioState->pos[2], 0, 0, 0);
+    }
 }
 
 /*
@@ -301,5 +309,36 @@ void chs_update_bullet_hell(void) {
     if (sBulletCooldown > 0) {
         this->frameTimer = 0;
         sBulletCooldown--;
+    }
+}
+
+void chs_lvlinit_spawn_on_shell(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_SPAWN_ON_SHELL, &this);
+
+    this->frameTimer = 0;
+}
+
+void chs_lvlupdate_spawn_on_shell(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_SPAWN_ON_SHELL, &this);
+
+    if (gCurrCourseNum == COURSE_NONE) {
+        this->frameTimer = 0xFFFFFF;
+        return;
+    }
+
+    if (this->frameTimer < 0xFFFFFF && !(gMarioState->action & ACT_FLAG_RIDING_SHELL) && gMarioState->marioObj) {
+        struct Object *obj = spawn_object(gMarioState->marioObj, MODEL_KOOPA_SHELL, bhvKoopaShell);
+        gMarioState->interactObj = obj;
+        gMarioState->usedObj = obj;
+        gMarioState->riddenObj = obj;
+        obj->oInteractStatus = ATTACK_FAST_ATTACK + (INT_STATUS_INTERACTED | INT_STATUS_WAS_ATTACKED);
+        update_mario_sound_and_camera(gMarioState);
+        play_shell_music();
+        mario_drop_held_object(gMarioState);
+
+        set_mario_action(gMarioState, ACT_RIDING_SHELL_FALL, 0);
+        this->frameTimer = 0xFFFFFF;
     }
 }

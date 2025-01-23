@@ -128,6 +128,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     },
 
 // Star/Save Modifiers
+    [CHAOS_PATCH_STARS_SHUFFLE_STARS] = {
+        .durationType      = CHAOS_DURATION_ONCE,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = TRUE,
+
+        .conditionalFunc   = chs_cond_star_shuffle,
+        .activatedInitFunc = chs_act_star_shuffle,
+
+        .name              = "Star Shuffle",
+        .shortDescription  = "Take two stars in your possession and randomly reassign them to new courses/acts.",
+    },
     [CHAOS_PATCH_STARS_INCREASE_LV2] = {
         .durationType      = CHAOS_DURATION_ONCE,
         .effectType        = CHAOS_EFFECT_POSITIVE,
@@ -212,7 +224,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc   = chs_cond_get_key_1,
 
         .name              = "Free Key 1",
-        .shortDescription  = "Gain the basement key.",
+        .shortDescription  = "Unlock the basement key for free!",
     },
     [CHAOS_PATCH_GET_KEY_2] = {
         .durationType      = CHAOS_DURATION_ONCE,
@@ -224,7 +236,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc   = chs_cond_get_key_2,
 
         .name              = "Free Key 2",
-        .shortDescription  = "Gain the upstairs key.",
+        .shortDescription  = "Unlock the upstairs key for free!",
     },
     [CHAOS_PATCH_UNLOCK_CANNONS] = {
         .durationType      = CHAOS_DURATION_ONCE,
@@ -349,7 +361,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 15,
 
-        .name              = "Health Drown",
+        .name              = "Watered Down",
         .shortDescription  = "Water no longer heals Mario.",
     },
     [CHAOS_PATCH_NOHEAL_COINS] = {
@@ -396,7 +408,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .negationId        = CHAOS_PATCH_HEALTH_DOWN,
         .severity          = 1,
         .isStackable       = TRUE,
-        .duration          = 1,
 
         .conditionalFunc   = chs_cond_health_up,
         .activatedInitFunc = chs_act_health_up,
@@ -410,7 +421,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .negationId        = CHAOS_PATCH_HEALTH_UP,
         .severity          = 1,
         .isStackable       = TRUE,
-        .duration          = 1,
 
         .conditionalFunc   = chs_cond_health_down,
         .activatedInitFunc = chs_act_health_down,
@@ -445,7 +455,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 1,
         .isStackable       = FALSE,
-        .duration          = 0,
 
         .name              = "Squishma",
         .shortDescription  = "Mario will instantly die upon taking squish damage.",
@@ -455,7 +464,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 0,
 
         .name              = "Gamer Goombas",
         .shortDescription  = "Goombas can now insta-kill Mario.",
@@ -465,7 +473,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 0,
 
         .name              = "The Lavas of Hell",
         .shortDescription  = "Mario will instantly die upon touching lava or freezing water.",
@@ -496,7 +503,17 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .deactivationFunc  = chs_deact_extradamage_lava,
 
         .name              = "Can't Beat the Heat",
-        .shortDescription  = "Mario takes +1 damage from lava and fire.",
+        .shortDescription  = "Mario takes +1 additional damage from lava and fire.",
+    },
+    [CHAOS_PATCH_BREATH_BOOST] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 10,
+
+        .name              = "Breath Boost",
+        .shortDescription  = "Mario loses health more slowly underwater.",
     },
 
 // Coin Modifiers
@@ -547,7 +564,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 10,
 
-        .name              = "Pay To Win",
+        .name              = "Pay to Win",
         .shortDescription  = "Stars are only collectible when Mario has at least 40 coins.",
     },
     [CHAOS_PATCH_6_RED_COINS] = {
@@ -575,7 +592,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 1,
         .isStackable       = TRUE,
-        .duration          = 0,
 
         .conditionalFunc   = chs_cond_coin_size,
 
@@ -730,7 +746,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc   = chs_update_brawl_tripping,
 
         .name              = "Brawl Mode",
-        .shortDescription  = "Mario trips randomly sometimes.",
+        .shortDescription  = "Mario trips randomly sometimes. What a clumsy guy!",
     },
     [CHAOS_PATCH_GALAXY_SPIN] = {
         .durationType      = CHAOS_DURATION_STARS,
@@ -771,10 +787,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 2,
+        .duration          = 1,
 
-        .areaInitFunc      = chs_area_init_green_demon,
         .conditionalFunc   = chs_cond_green_demon,
+        .frameUpdateFunc   = chs_lvlupdate_green_demon,
 
         .name              = "Green Demon",
         .shortDescription  = "Of course this one's in the game. Spawn a poison 1-UP mushroom that chases Mario.",
@@ -790,7 +806,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc   = chs_update_bullet_hell,
 
         .name              = "Bullet Hell",
-        .shortDescription  = "Every 30 seconds, spawns a number of Bullet Bills around Mario. Pay attention to hear the warning sound!",
+        .shortDescription  = "Every 30 seconds, spawn a number of Bullet Bills around Mario. Pay attention to hear the warning sound!",
+    },
+    [CHAOS_PATCH_SPAWN_ON_SHELL] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 4,
+
+        .levelInitFunc     = chs_lvlinit_spawn_on_shell,
+        .frameUpdateFunc   = chs_lvlupdate_spawn_on_shell,
+
+        .name              = "Shell Spawn",
+        .shortDescription  = "Start riding on a shell upon entering a new course.",
     },
 
 // Visual Modifiers
@@ -862,7 +891,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration          = 6,
 
         .name              = "Confused Entities",
-        .shortDescription  = "Most objects are facing the wrong way!",
+        .shortDescription  = "Most objects are (sometimes) facing the wrong way!",
     },
     [CHAOS_PATCH_NO_SKYBOX] = {
         .durationType      = CHAOS_DURATION_STARS,
@@ -871,8 +900,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 5,
 
-        .name              = "The Sky is Gone?",
-        .shortDescription  = "Meh, who needs it anyway...",
+        .name              = "The Sky is...Gone?",
+        .shortDescription  = "Meh, who needed it anyway...",
     },
 
 // Time Limit
@@ -917,6 +946,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "L to Levitate",
         .shortDescription  = "Press L to levitate! Each L press counts as a separate use.",
+        .longDescription   = "While levitating, Mario may not move horizontally until the L button has been released. Make sure to line Mario up before carelessly wasting an L press!"
     },
     [CHAOS_PATCH_DEBUG_FREE_MOVE] = {
         .durationType      = CHAOS_DURATION_USE_COUNT,
@@ -929,7 +959,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc   = chs_update_debug_free_move,
 
         .name              = "Debug Free Move",
-        .shortDescription  = "Enables the use of debug free move. Press dpad up to activate, and A to exit.",
+        .shortDescription  = "Enables one use of debug free move. Press D-Pad Up to activate, and A to exit.",
+        .longDescription   = "While using debug free move, D-Pad Up and D-Pad Down may be used to move up or down. Hold B to increase your movement speed, or Z to decrease it. Mario is (mostly) invulnerable while this mode is active!"
     },
 
 // Chaos Modifiers
@@ -938,7 +969,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 2,
         .isStackable       = TRUE,
-        .duration          = 0,
         
         .conditionalFunc   = chs_cond_remove_negative_patch,
         .activatedInitFunc = chs_act_remove_negative_patch,
@@ -952,7 +982,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .negationId        = CHAOS_PATCH_REMOVE_SELECTABLE_PATCH,
         .severity          = 3,
         .isStackable       = TRUE,
-        .duration          = 18,
+        .duration          = 10,
         
         .conditionalFunc   = chs_cond_add_selectable_patch,
 
@@ -965,7 +995,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .negationId        = CHAOS_PATCH_ADD_SELECTABLE_PATCH,
         .severity          = 3,
         .isStackable       = TRUE,
-        .duration          = 18,
+        .duration          = 10,
         
         .conditionalFunc   = chs_cond_remove_selectable_patch,
 
@@ -1024,7 +1054,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc   = chs_cond_speed_tax,
 
         .name              = "Speed Tax",
-        .shortDescription  = "If Mario goes too fast he will start needing to pay coins. If he can't pay then he will take damage!",
+        .shortDescription  = "If Mario goes too fast he will start needing to pay coins. If he can't pay, he will take damage!",
     },
 
 // Cap Effects
@@ -1045,7 +1075,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 1,
         .isStackable       = FALSE,
-        .duration          = 20,
+        .duration          = 18,
 
         .name              = "Wall Hacks",
         .shortDescription  = "Mario can now walk through all vanish cap walls, even without wearing the cap!",
@@ -1105,6 +1135,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 6,
 
+        .conditionalFunc   = chs_cam_invert_x_check,
+
         .name              = "Camera Reversal",
         .shortDescription  = "Invert the X axis of the camera (i.e. C-Left and C-Right).",
     },
@@ -1113,7 +1145,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 3,
+        .duration          = 2,
 
         .name              = "UNO Reverse Card",
         .shortDescription  = "Invert the X axis of the joystick when controlling Mario (i.e. left and right).",
@@ -1135,19 +1167,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 12,
+        .duration          = 10,
 
         .conditionalFunc   = chs_cond_invisible,
 
         .name              = "Potion of Invisibility",
-        .shortDescription  = "Mario is now invisible. Not even his shadow can be seen anymore.",
+        .shortDescription  = "Mario is now invisible. Not even his shadow can be seen anymore!",
     },
     [CHAOS_PATCH_SIGNREAD_FAR] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 1,
         .isStackable       = FALSE,
-        .duration          = 15,
+        .duration          = 12,
 
         .name              = "Tutorial Mode",
         .shortDescription  = "New to SM64? We'll make extra sure you don't miss any tutorial signs by increasing their range!",
@@ -1182,17 +1214,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration          = 8,
 
         .name              = "Up Close and Personal",
-        .shortDescription  = "Forces Mario cam.",
+        .shortDescription  = "Forces Mario Cam.",
     },
     [CHAOS_PATCH_BOWSER_THROWS] = {
         .durationType      = CHAOS_DURATION_INFINITE,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 1,
         .isStackable       = FALSE,
-        .duration          = 0,
 
         .name              = "Code That Makes You Miss Bowser Throws",
-        .shortDescription  = "They have that in this game, I swear.",
+        .shortDescription  = "They have that in this game, I swear!",
     },
     [CHAOS_PATCH_INVERTED_SOUND] = {
         .durationType      = CHAOS_DURATION_STARS,
@@ -1221,7 +1252,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 0,
 
         .name              = "Sequence Break",
         .shortDescription  = "All course acts are now selectable, and may be completed in any order.",
@@ -1266,21 +1296,63 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_45_FPS] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_20_FPS,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 3,
+        .duration          = 2,
+
+        .conditionalFunc   = chs_cond_45_fps,
 
         .name              = "45 FPS",
-        .shortDescription  = "Alright, who set it to OBS View?",
+        .shortDescription  = "My internet's living, I'm adding frames, Grandma's living, she's adding frames...",
+        .longDescription   = "This maaaaaaay not run at a consistent 45 FPS while running on hardware. Whether that makes the game easier or harder is for the player to decide.",
     },
     [CHAOS_PATCH_20_FPS] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 3,
+        .negationId        = CHAOS_PATCH_45_FPS,
+        .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 3,
+        .duration          = 2,
+
+        .conditionalFunc   = chs_cond_20_fps,
 
         .name              = "20 FPS",
-        .shortDescription  = "Alright, who plugged in the $5 capture card?",
+        .shortDescription  = "Alright, who plugged in the 5 dollar capture card?",
+    },
+    [CHAOS_PATCH_REVERB] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 8,
+
+        .activatedInitFunc = chs_act_reverb,
+        .deactivationFunc  = chs_deact_reverb,
+
+        .name              = "High-Fidelity Reverb",
+        .shortDescription  = "For that more immersive experience (even more epic in caves!)",
+    },
+    [CHAOS_PATCH_WEAK_BOSSES] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .name              = "Not So Bossy",
+        .shortDescription  = "All bosses die in one hit (except for during the final Bowser fight).",
+    },
+    [CHAOS_PATCH_TOP_DOWN_CAMERA] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .conditionalFunc   = chs_topdown_check,
+
+        .name              = "Top-Down Camera",
+        .shortDescription  = "Now you're playing Zelda! (without the items) (without the story) (without the combat) (without the",
     },
 };

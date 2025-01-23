@@ -1,11 +1,13 @@
 #include <PR/ultratypes.h>
 
+#include "sounds.h"
 #include "data.h"
 #include "effects.h"
 #include "external.h"
 #include "heap.h"
 #include "load.h"
 #include "seqplayer.h"
+#include "game/chaos/chaos.h"
 #include "game/main.h"
 
 #ifdef VERSION_SH
@@ -1780,6 +1782,15 @@ void sequence_channel_process_script(struct SequenceChannel *seqChannel) {
 
                     case 0xd4: // chan_setreverb
                         seqChannel->reverbVol = m64_read_u8(state);
+                        if (
+                          toggleBetterReverb
+                          && seqChannel->seqPlayer == &gSequencePlayers[SEQ_PLAYER_SFX] 
+                          && seqChannel == gSequencePlayers[SEQ_PLAYER_SFX].channels[SOUND_BANK_MENU]) {
+                            seqChannel->reverbVol += 0x10;
+                            if (seqChannel->reverbVol > 0x7F) {
+                                seqChannel->reverbVol = 0x7F;
+                            }
+                        }
                         break;
 
                     case 0xc6: // chan_setbank; switch bank within set

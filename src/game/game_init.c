@@ -455,7 +455,8 @@ void select_gfx_pool(void) {
  * - Yields to the VI framerate twice, locking the game at 30 FPS.
  * - Selects which framebuffer will be rendered and displayed to next time.
  */
-void display_and_vsync(void) {
+
+void display() {
     profiler_log_thread5_time(BEFORE_DISPLAY_LISTS);
     osRecvMesg(&gGfxVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
     if (gGoddardVblankCallback != NULL) {
@@ -467,13 +468,23 @@ void display_and_vsync(void) {
     osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
     osViSwapBuffer((void *) PHYSICAL_TO_VIRTUAL(gPhysicalFramebuffers[sRenderedFramebuffer]));
     profiler_log_thread5_time(THREAD5_END);
+}
+
+void vsync() {
     osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
-    if (chaos_check_if_patch_active(CHAOS_PATCH_45_FPS) && (gGlobalTimer % 2 == 0)) {
-        osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
+}
+
+void display_and_vsync(void) {
+    display();
+    if (chaos_check_if_patch_active(CHAOS_PATCH_45_FPS)) {
+        if ((gGlobalTimer % 3 == 0)) {
+            vsync();
+        }
+    } else {
+        vsync();
     }
     if (chaos_check_if_patch_active(CHAOS_PATCH_20_FPS)) {
-        osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
-        osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
+        vsync();
     }
     // Skip swapping buffers on inaccurate emulators other than VC so that they display immediately as the Gfx task finishes
     if (gEmulator & INSTANT_INPUT_BLACKLIST) {
@@ -877,6 +888,12 @@ void thread5_game_loop(UNUSED void *arg) {
         addr = level_script_execute(addr);
 
 #ifdef SOMEONE2639_CRAZY_EXPERIMENTS
+        if (gPlayer1Controller->buttonPressed & L_TRIG) {
+            chaos_add_new_entry(CHAOS_PATCH_TOP_DOWN_CAMERA);
+        }
+        if (gPlayer1Controller->buttonPressed & R_TRIG) {
+            chaos_remove_expired_entry(0);
+        }
         if ((gPlayer1Controller->buttonPressed & (A_BUTTON|L_TRIG)) == (A_BUTTON | L_TRIG)) {
             HVQM_PLAY(chaos);
         }
