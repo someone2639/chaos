@@ -606,7 +606,7 @@ void handle_active_patches_inputs_state_default(u32 stickDir) {
     }
 
     if(selection != prevSelection) {
-        play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
+        play_sound(SOUND_MENU_MESSAGE_NEXT_PAGE, gGlobalSoundSource);
         gChaosPauseMenu->activePatchesMenu.selectedMenuIndex = selection;
         update_active_patch_list_bounds();
     }
@@ -651,6 +651,9 @@ s32 active_patches_menu_anim_startup() {
             }
             break;
         case 1:
+            if(animTimer == 0) {
+                play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
+            }
             gChaosPauseMenu->activePatchesMenu.flags |= ACTIVE_PATCHES_MENU_HALT_INPUT;
             gChaosPauseMenu->activePatchesMenu.animFrames = ACTIVE_PATCH_MENU_START_FRAMES;
             animPercent = sins((0x3FFF / gChaosPauseMenu->activePatchesMenu.animFrames) * animTimer);
@@ -672,6 +675,9 @@ s32 active_patches_menu_anim_ending() {
     s32 animTimer = gChaosPauseMenu->activePatchesMenu.animTimer;
     f32 animPercent;
     if(!phase) {
+        if(animTimer == 0) {
+            play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
+        }
         gChaosPauseMenu->activePatchesMenu.flags |= ACTIVE_PATCHES_MENU_HALT_INPUT;
         gChaosPauseMenu->activePatchesMenu.animFrames = ACTIVE_PATCH_MENU_END_FRAMES;
         animPercent = 1.0f - coss((0x3FFF / gChaosPauseMenu->activePatchesMenu.animFrames) * animTimer);
@@ -721,6 +727,10 @@ s32 active_patches_menu_anim_ext_desc_disappear() {
         gChaosPauseMenu->activePatchesMenu.flags &= ~ACTIVE_PATCHES_MENU_DRAW_EXT_DESC;
         gChaosPauseMenu->activePatchesMenu.flags &= ~ACTIVE_PATCHES_MENU_HALT_INPUT;
         return TRUE;
+    }
+
+    if(animTimer == 0) {
+        play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
     }
 
     gChaosPauseMenu->activePatchesMenu.animFrames = ACTIVE_PATCHES_MENU_EXT_DESC_DISAPPEAR_ANIM_FRAMES;
@@ -798,6 +808,9 @@ s32 chaos_settings_anim_appear() {
     s32 animTimer = gChaosPauseMenu->settingsMenu.animTimer;
     f32 animPercent;
     if(!phase) {
+        if(animTimer == 0) {
+            play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
+        }
         gChaosPauseMenu->settingsMenu.flags |= CHAOS_SETTINGS_HALT_INPUT;
         gChaosPauseMenu->settingsMenu.animFrames = SETTINGS_PANEL_START_FRAMES;
         animPercent = sins((0x3FFF / gChaosPauseMenu->settingsMenu.animFrames) * animTimer);
@@ -815,6 +828,9 @@ s32 chaos_settings_anim_disappear() {
     s32 animTimer = gChaosPauseMenu->settingsMenu.animTimer;
     f32 animPercent;
     if(!phase) {
+        if(animTimer == 0) {
+            play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
+        }
         gChaosPauseMenu->settingsMenu.flags |= CHAOS_SETTINGS_HALT_INPUT;
         gChaosPauseMenu->settingsMenu.animFrames = SETTINGS_PANEL_END_FRAMES;
         animPercent = 1.0f - coss((0x3FFF / gChaosPauseMenu->settingsMenu.animFrames) * animTimer);
