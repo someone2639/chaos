@@ -169,5 +169,3 @@ void bhv_rr_cruiser_wing_loop(void);
 void spawn_default_star(f32 sp20, f32 sp24, f32 sp28);
 
 #endif // OBJ_BEHAVIORS_H
-
-void bhv_SlotMachine_init(void); void bhv_SlotMachine_loop(void);
