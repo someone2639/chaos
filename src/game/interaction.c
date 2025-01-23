@@ -219,6 +219,8 @@ u32 determine_interaction(struct MarioState *m, struct Object *o) {
             if (m->vel[1] < 0.0f && m->actionState == 0) {
                 interaction = INT_GROUND_POUND_OR_TWIRL;
             }
+        } else if (action == ACT_GALAXY_SPIN && m->actionState == 1) {
+            interaction = INT_GROUND_POUND_OR_TWIRL;
         } else if (action == ACT_SLIDE_KICK || action == ACT_SLIDE_KICK_SLIDE) {
             interaction = INT_SLIDE_KICK;
         } else if (action & ACT_FLAG_RIDING_SHELL) {
@@ -699,7 +701,13 @@ u32 take_damage_from_interact_object(struct MarioState *m) {
         damage = 0;
     }
 
-    set_hurt_counter(m, 4 * damage);
+    if (obj_has_behavior(m->interactObj, bhvGoomba) && chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_GOOMBA)) {
+        set_hurt_counter(m, -1);
+    } else {
+        if (damage > 0) {
+            set_hurt_counter(m, MIN((4 * damage) + m->extraDamageEnemy, (u8) -1));
+        }
+    }
 
 #if ENABLE_RUMBLE
     queue_rumble_data(5, 80);
@@ -883,6 +891,10 @@ u32 interact_warp(struct MarioState *m, UNUSED u32 interactType, struct Object *
     u32 action;
 
     if (o->oInteractionSubtype & INT_SUBTYPE_FADING_WARP) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_DISABLE_FADE_WARPS)) {
+            return FALSE;
+        }
+
         action = m->action;
 
         if (action == ACT_TELEPORT_FADE_IN) {
@@ -1210,7 +1222,7 @@ u32 interact_flame(struct MarioState *m, UNUSED u32 interactType, struct Object 
             update_mario_sound_and_camera(m);
             play_sound(SOUND_MARIO_ON_FIRE, m->marioObj->header.gfx.cameraToObject);
             if (chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) && gCurrCourseNum != COURSE_NONE) {
-                set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+                set_hurt_counter(m, ((m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18) + m->extraDamageLava);
             }
 
             if ((m->action & ACT_FLAG_AIR) && m->vel[1] <= 0.0f) {
@@ -1744,7 +1756,8 @@ u32 check_read_sign(struct MarioState *m, struct Object *o) {
     u32 conditions;
 
     if (chaosActive) {
-        conditions = TRUE;
+        conditions = !((gCameraMovementFlags & CAM_MOVE_C_UP_MODE) ||
+            (gMarioState->action & (ACT_FLAG_INTANGIBLE | ACT_FLAG_THROWING | ACT_FLAG_SWIMMING | ACT_FLAG_RIDING_SHELL)));
     } else {
         conditions = (mario_can_talk(m, chaosActive) && object_facing_mario(m, o, SIGN_RANGE));
     }
@@ -1875,7 +1888,11 @@ void check_death_barrier(struct MarioState *m) {
 void check_lava_boost(struct MarioState *m) {
     if (!(m->action & ACT_FLAG_RIDING_SHELL) && m->pos[1] < m->floorHeight + 10.0f) {
         if (!(m->flags & MARIO_METAL_CAP)) {
-            set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+            if (chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_LAVA)) {
+                set_hurt_counter(m, -1);
+            } else {
+                set_hurt_counter(m, ((m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18) + m->extraDamageLava);
+            }
         }
 
         update_mario_sound_and_camera(m);

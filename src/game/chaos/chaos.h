@@ -7,6 +7,13 @@
 #define CHAOS_PATCH_SEVERITY_MAX 3
 #define CHAOS_PATCH_SEVERITY_COUNT (CHAOS_PATCH_SEVERITY_MAX + 1)
 
+#ifndef DISPLAY_MAX_PATCHES
+#define DEFAULT_PATCH_DISPLAY_QUANTITY 2
+#else
+#define DEFAULT_PATCH_DISPLAY_QUANTITY 4
+#endif
+
+
 #define CHAOS_PATCH_MAX_GENERATABLE 4
 
 #define CHAOS_PATCH_ENTRIES 0x100
@@ -24,13 +31,17 @@ enum ChaosPatchID {
     CHAOS_PATCH_LIVES_DECREASE_LV2,
     CHAOS_PATCH_LIVES_DECREASE_LV3,
 
-// Star Modifiers
+// Star/Save Modifiers
+    CHAOS_PATCH_STARS_SHUFFLE_STARS,
     CHAOS_PATCH_STARS_INCREASE_LV2,
     CHAOS_PATCH_STARS_INCREASE_LV3,
     CHAOS_PATCH_STARS_INCREASE_GUARANTEE,
     CHAOS_PATCH_STARS_DECREASE_LV2,
     CHAOS_PATCH_STARS_DECREASE_LV3,
     CHAOS_PATCH_STARS_DECREASE_GUARANTEE,
+    CHAOS_PATCH_GET_KEY_1,
+    CHAOS_PATCH_GET_KEY_2,
+    CHAOS_PATCH_UNLOCK_CANNONS,
 
 // Gravity Modifiers
     CHAOS_PATCH_GRAVITY_DECREASE_LV1,
@@ -46,6 +57,16 @@ enum ChaosPatchID {
     CHAOS_PATCH_NOHEAL_COINS,
     CHAOS_PATCH_HEALTH_DRAIN,
     CHAOS_PATCH_HEALTH_GAIN,
+    CHAOS_PATCH_HEALTH_UP,
+    CHAOS_PATCH_HEALTH_DOWN,
+    CHAOS_PATCH_NO_FALL_DAMAGE,
+    CHAOS_PATCH_TEMPORARY_INVINCIBILITY,
+    CHAOS_PATCH_INSTAKILL_SQUISH,
+    CHAOS_PATCH_INSTAKILL_GOOMBA,
+    CHAOS_PATCH_INSTAKILL_LAVA,
+    CHAOS_PATCH_EXTRADAMAGE_ENEMIES,
+    CHAOS_PATCH_EXTRADAMAGE_LAVA,
+    CHAOS_PATCH_BREATH_BOOST,
 
 // Coin Modifiers
     CHAOS_PATCH_DOUBLE_COINS,
@@ -55,6 +76,7 @@ enum ChaosPatchID {
     CHAOS_PATCH_6_RED_COINS,
     CHAOS_PATCH_SONIC_SIMULATOR,
     CHAOS_PATCH_BLUECOIN_LOTTERY,
+    CHAOS_PATCH_COIN_SIZE,
 
 // Random Griefing
     CHAOS_PATCH_RANDOM_SLEEP,
@@ -78,14 +100,53 @@ enum ChaosPatchID {
 
 // Object Spawners
     CHAOS_PATCH_GREEN_DEMON,
+    CHAOS_PATCH_BULLET_HELL,
+    CHAOS_PATCH_SPAWN_ON_SHELL,
 
 // Visual Modifiers
     CHAOS_PATCH_NO_Z_BUFFER,
     CHAOS_PATCH_INVERTED_Z_BUFFER,
     CHAOS_PATCH_UPSIDE_DOWN_CAMERA,
+    CHAOS_PATCH_DECREASED_FOV,
+    CHAOS_PATCH_INCREASED_FOV,
+    CHAOS_PATCH_CONFUSED_OBJECTS,
+    CHAOS_PATCH_NO_SKYBOX,
+    CHAOS_PATCH_45_FPS,
+    CHAOS_PATCH_20_FPS,
+    CHAOS_PATCH_TOP_DOWN_CAMERA,
+
 // Time Limit
     CHAOS_PATCH_TIME_LIMIT,
     CHAOS_PATCH_LOWER_TIME_LIMIT,
+
+// Cheats
+    CHAOS_PATCH_L_TO_LEVITATE,
+    CHAOS_PATCH_DEBUG_FREE_MOVE,
+
+// Chaos Modifiers
+    CHAOS_PATCH_REMOVE_NEGATIVE_PATCH,
+    CHAOS_PATCH_ADD_SELECTABLE_PATCH,
+    CHAOS_PATCH_REMOVE_SELECTABLE_PATCH,
+
+// Speed Modifiers
+    CHAOS_PATCH_PUSH_BACK,
+    CHAOS_PATCH_SPEED_LIMIT,
+    CHAOS_PATCH_WALKIES,
+    CHAOS_PATCH_SPEED_TAX,
+
+// Cap Effects
+    CHAOS_PATCH_WING_CAP,
+    CHAOS_PATCH_VANISH_CAP,
+
+// Input Modifiers
+    CHAOS_PATCH_BUTTON_BROKEN_B,
+    CHAOS_PATCH_BUTTON_BROKEN_Z,
+    CHAOS_PATCH_BUTTON_BROKEN_C,
+    CHAOS_PATCH_SWAPPED_ZR_AB,
+    CHAOS_PATCH_INVERTED_CAMERA_X,
+    CHAOS_PATCH_INVERTED_STICK_X,
+    CHAOS_PATCH_INVERTED_STICK_Y,
+
 // Miscellaneous Modifiers
     CHAOS_PATCH_MARIO_INVISIBLE,
     CHAOS_PATCH_SIGNREAD_FAR,
@@ -93,9 +154,20 @@ enum ChaosPatchID {
     CHAOS_PATCH_NO_HUD,
     CHAOS_PATCH_FORCED_MARIO_CAM,
     CHAOS_PATCH_BOWSER_THROWS,
+    CHAOS_PATCH_INVERTED_SOUND,
+    CHAOS_PATCH_AD_BREAK,
+    CHAOS_PATCH_ALL_STARS_SELECTABLE,
+    CHAOS_PATCH_MIRACLE,
+    CHAOS_PATCH_DISABLE_FADE_WARPS,
+    CHAOS_PATCH_LUIGI,
+    CHAOS_PATCH_REVERB,
+    CHAOS_PATCH_WEAK_BOSSES,
 
 // Patch Count
     CHAOS_PATCH_COUNT,
+
+// NOTE: Only to be used for comparisons, there are not indexing safeguards in place here!
+    CHAOS_PATCH_NONE = 0xFFFFFFFF,
 };
 
 enum ChaosPatchEffectType {
@@ -175,6 +247,9 @@ u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId);
 // Get patch data for an active patch (if active at all). Return TRUE if a match is found.
 u8 chaos_find_first_active_patch(const enum ChaosPatchID patchId, struct ChaosActiveEntry **firstFoundMatch);
 
+// Get the number of active instances for a particular patch.
+u32 chaos_count_active_instances(const enum ChaosPatchID patchId);
+
 // Deactivate an old chaos patch, based on its current index.
 // Be careful when invoking this with stackable patches, as it may cause undesirable behavior if used incorrectly.
 // In general it is not recommended to invoke this (externally) with stackable patches that use CHAOS_DURATION_USE_COUNT (since they get combined).
@@ -203,7 +278,8 @@ void chaos_select_patches(struct ChaosPatchSelection *patchSelection);
 void chaos_init(void);
 
 // Invokes the area callback for each chaos patch as soon as Mario enters a new area.
-// Is not invoked if the current course is COURSE_NONE.
+// This function also executes the callback for level changes.
+// Neither are invoked if the current course is COURSE_NONE.
 void chaos_area_update(void);
 
 // Invokes a frame update for each active and applicable chaos patch.

@@ -544,7 +544,7 @@ s32 act_debug_free_move(struct MarioState *m) {
 
 #if defined(ENABLE_DEBUG_FREE_MOVE) && !defined(DISABLE_ALL)
     if (gPlayer1Controller->buttonPressed & L_TRIG) {
-        m->health = 0x880;
+        m->health = m->maxHealth;
     }
 #endif
 
@@ -1081,7 +1081,7 @@ s32 act_exit_airborne(struct MarioState *m) {
     if (15 < m->actionTimer++
         && launch_mario_until_land(m, ACT_EXIT_LAND_SAVE_DIALOG, MARIO_ANIM_GENERAL_FALL, -32.0f)) {
         // heal Mario
-        m->healCounter = 31;
+        m->healCounter = chs_calculate_max_heal_counter();
         if (gChaosLivesEnabled && gShouldGive1UP) {
             play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
             m->numLives++;
@@ -1102,7 +1102,7 @@ s32 act_exit_airborne(struct MarioState *m) {
 s32 act_falling_exit_airborne(struct MarioState *m) {
     if (launch_mario_until_land(m, ACT_EXIT_LAND_SAVE_DIALOG, MARIO_ANIM_GENERAL_FALL, 0.0f)) {
         // heal Mario
-        m->healCounter = 31;
+        m->healCounter = chs_calculate_max_heal_counter();
         if (gChaosLivesEnabled && gShouldGive1UP) {
             play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
             m->numLives++;
@@ -1220,8 +1220,7 @@ s32 act_death_exit(struct MarioState *m) {
         }
         save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives);
 
-        // restore 7.75 units of health
-        m->healCounter = 31;
+        m->healCounter = chs_calculate_max_heal_counter();
     }
     // one unit of health
     m->health = 0x0100;
@@ -1240,8 +1239,7 @@ s32 act_unused_death_exit(struct MarioState *m) {
         }
         save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives);
 
-        // restore 7.75 units of health
-        m->healCounter = 31;
+        m->healCounter = chs_calculate_max_heal_counter();
     }
     // one unit of health
     m->health = 0x0100;
@@ -1263,8 +1261,7 @@ s32 act_falling_death_exit(struct MarioState *m) {
         }
         save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives);
 
-        // restore 7.75 units of health
-        m->healCounter = 31;
+        m->healCounter = chs_calculate_max_heal_counter();
     }
     // one unit of health
     m->health = 0x0100;
@@ -1284,7 +1281,7 @@ s32 act_special_exit_airborne(struct MarioState *m) {
 
     if (launch_mario_until_land(m, ACT_EXIT_LAND_SAVE_DIALOG, MARIO_ANIM_SINGLE_JUMP, -24.0f)) {
         // heal Mario
-        m->healCounter = 31;
+        m->healCounter = chs_calculate_max_heal_counter();
         m->actionArg = 1;
         if (gChaosLivesEnabled && gShouldGive1UP) {
             play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
@@ -1324,7 +1321,7 @@ s32 act_special_death_exit(struct MarioState *m) {
         }
         save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives);
 
-        m->healCounter = 31;
+        m->healCounter = chs_calculate_max_heal_counter();
     }
     // show Mario
     marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
@@ -1586,7 +1583,11 @@ s32 act_squished(struct MarioState *m) {
             } else {
                 if (!(m->flags & MARIO_METAL_CAP) && m->invincTimer == 0) {
                     // cap on: 3 units; cap off: 4.5 units
-                    set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+                    if (chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_SQUISH)) {
+                        set_hurt_counter(m, -1);
+                    } else {
+                        set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+                    }
                     play_sound_if_no_flag(m, SOUND_MARIO_ATTACKED, MARIO_MARIO_SOUND_PLAYED);
                 }
 

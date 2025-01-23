@@ -1,0 +1,9 @@
+extern const GeoLayout chaos_bullet_bill_geo[];
+extern Lights1 chaos_bullet_bill_Bullet_bill_eye_lights;
+extern Lights1 chaos_bullet_bill_Bullet_bill_mouth_lights;
+extern u8 chaos_bullet_bill_bullet_bill_eye_rgba16_ia8[];
+extern u8 chaos_bullet_bill_bullet_bill_mouth_rgba16_ci8[];
+extern u8 chaos_bullet_bill_bullet_bill_mouth_rgba16_pal_rgba16[];
+extern Vtx chaos_bullet_bill_000_displaylist_mesh_layer_1_vtx_0[12];
+extern Vtx chaos_bullet_bill_000_displaylist_mesh_layer_1_vtx_1[49];
+extern Gfx chaos_bullet_bill_000_displaylist_mesh_layer_1[];

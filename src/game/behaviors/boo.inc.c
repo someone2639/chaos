@@ -595,7 +595,11 @@ static void big_boo_spawn_merry_go_round_star(void) {
 
 static void big_boo_act_3(void) {
     if (o->oTimer == 0) {
-        o->oHealth--;
+        if (chaos_check_if_patch_active(CHAOS_PATCH_WEAK_BOSSES)) {
+            o->oHealth = 0;
+        } else {
+            o->oHealth--;
+        }
     }
 
     if (o->oHealth == 0) {

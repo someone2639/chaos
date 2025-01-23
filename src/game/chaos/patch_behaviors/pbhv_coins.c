@@ -9,6 +9,7 @@
 #include "audio/external.h"
 #include "game/area.h"
 #include "game/debug.h"
+#include "game/emutest.h"
 #include "game/level_update.h"
 
 #define TIMELIMIT (30 * 30)
@@ -76,4 +77,8 @@ u8 chs_pay2win_can_collect_star(void) {
         && gCurrCourseNum != COURSE_NONE
         && gMarioState->numCoins < PAY2WIN_REQ
     );
+}
+
+u8 chs_cond_coin_size(void) {
+    return (!(gEmulator & EMU_CONSOLE) && chaos_count_active_instances(CHAOS_PATCH_COIN_SIZE) < 3);
 }

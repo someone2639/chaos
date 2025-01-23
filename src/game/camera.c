@@ -3008,6 +3008,42 @@ void update_lakitu(struct Camera *c) {
     gLakituState.defMode = c->defMode;
 }
 
+void set_camera_mode_top_down(struct Camera *c, s16 transitionTime) {
+    Vec3f focus;
+    s16 yaw;
+
+    focus[0] = sMarioCamState->pos[0];
+    focus[1] = sMarioCamState->pos[1];
+    focus[2] = sMarioCamState->pos[2];
+    if (c->mode != CAMERA_MODE_TOP_DOWN) {
+        yaw = calculate_yaw(focus, sMarioCamState->pos) - calculate_yaw(c->focus, c->pos) + DEGREES(90);
+        if (yaw > 0) {
+            transition_to_camera_mode(c, CAMERA_MODE_TOP_DOWN, transitionTime);
+        } else {
+            c->mode = CAMERA_MODE_TOP_DOWN;
+            sStatusFlags &= ~CAM_FLAG_SMOOTH_MOVEMENT;
+        }
+        sModeOffsetYaw = 0;
+    }
+}
+
+void mode_top_down_cam(struct Camera *c) {
+    struct Surface *surface;
+    f32 camCeilHeight = find_ceil(c->pos[0], gMarioState->pos[1] - 50.f, c->pos[2], &surface);
+    if (surface) {
+        c->pos[1] = camCeilHeight;
+    } else {
+        c->pos[1] = gMarioState->pos[1] + 5000.0f;
+    }
+
+    c->pos[0] = gMarioState->pos[0] + 100;
+    c->pos[2] = gMarioState->pos[2];
+
+    c->yaw = 0x4000;
+    c->focus[0] = gMarioState->pos[0];
+    c->focus[2] = gMarioState->pos[2];
+}
+
 
 /**
  * The main camera update function.
@@ -3015,6 +3051,27 @@ void update_lakitu(struct Camera *c) {
  */
 void update_camera(struct Camera *c) {
     UNUSED u8 filler[24];
+
+    u16 temporaryButtonDown = gPlayer1Controller->buttonDown;
+    u16 temporaryButtonPressed = gPlayer1Controller->buttonPressed;
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_CAMERA_X)) {
+        gPlayer1Controller->buttonDown &= ~(R_CBUTTONS | L_CBUTTONS);
+        gPlayer1Controller->buttonPressed &= ~(R_CBUTTONS | L_CBUTTONS);
+
+        if (temporaryButtonDown & R_CBUTTONS) {
+            gPlayer1Controller->buttonDown |= L_CBUTTONS;
+        }
+        if (temporaryButtonDown & L_CBUTTONS) {
+            gPlayer1Controller->buttonDown |= R_CBUTTONS;
+        }
+        if (temporaryButtonPressed & R_CBUTTONS) {
+            gPlayer1Controller->buttonPressed |= L_CBUTTONS;
+        }
+        if (temporaryButtonPressed & L_CBUTTONS) {
+            gPlayer1Controller->buttonPressed |= R_CBUTTONS;
+        }
+    }
 
     gCamera = c;
     update_camera_hud_status(c);
@@ -3100,6 +3157,10 @@ void update_camera(struct Camera *c) {
                     mode_cannon_camera(c);
                     break;
 
+                case CAMERA_MODE_TOP_DOWN:
+                    mode_top_down_cam(c);
+                    break;
+
                 default:
                     mode_mario_camera(c);
             }
@@ -3159,6 +3220,9 @@ void update_camera(struct Camera *c) {
                 case CAMERA_MODE_SPIRAL_STAIRS:
                     mode_spiral_stairs_camera(c);
                     break;
+                case CAMERA_MODE_TOP_DOWN:
+                    mode_top_down_cam(c);
+                    break;
             }
         }
     }
@@ -3205,6 +3269,9 @@ void update_camera(struct Camera *c) {
     update_lakitu(c);
 
     gLakituState.lastFrameAction = sMarioCamState->action;
+
+    gPlayer1Controller->buttonDown = temporaryButtonDown;
+    gPlayer1Controller->buttonPressed = temporaryButtonPressed;
 }
 
 /**
@@ -6686,6 +6753,20 @@ s16 camera_course_processing(struct Camera *c) {
         sModeInfo.lastMode = c->mode;
         c->mode = oldMode;
     }
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_TOP_DOWN_CAMERA)) {
+        if (c->mode != CAMERA_MODE_TOP_DOWN) {
+            osSyncPrintf("PATCH ON");
+            sModeInfo.lastMode = c->mode;
+            set_camera_mode_top_down(c, 30);
+        }
+    } else {
+        if (c->mode == CAMERA_MODE_TOP_DOWN) {
+            osSyncPrintf("PATCH OFF");
+            transition_to_camera_mode(c, sModeInfo.lastMode, 30);
+        }
+    }
+
     mode = c->mode;
     return mode;
 }

@@ -71,6 +71,16 @@
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "08_curtain_raise_custom"
+        },
+        "inst9": {
+            "release_rate": 208,
+            "envelope": "envelope0",
+            "sound": "09_timer_ring_custom"
+        },
+        "inst10": {
+            "release_rate": 208,
+            "envelope": "envelope0",
+            "sound": "0A_timer_up_custom"
         }
     },
     "instrument_list": [
@@ -82,6 +92,8 @@
         "inst5",
         "inst6",
         "inst7",
-        "inst8"
+        "inst8",
+        "inst9",
+        "inst10"
     ]
 }

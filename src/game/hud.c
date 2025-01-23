@@ -188,19 +188,20 @@ static void animate_power_meter_hiding(void) {
  */
 void handle_power_meter_actions(s16 numHealthWedges) {
     // Show power meter if health is not full, less than 8
-    if (numHealthWedges < 8 && sPowerMeterStoredHealth == 8
+    s32 maxWedges = (gMarioState->maxHealth >> 8);
+    if (numHealthWedges < maxWedges && sPowerMeterStoredHealth == maxWedges
         && sPowerMeterHUD.animation == POWER_METER_HIDDEN) {
         sPowerMeterHUD.animation = POWER_METER_EMPHASIZED;
         sPowerMeterHUD.y = 166;
     }
 
     // Show power meter if health is full, has 8
-    if (numHealthWedges == 8 && sPowerMeterStoredHealth == 7) {
+    if (numHealthWedges == maxWedges && sPowerMeterStoredHealth == (maxWedges - 1)) {
         sPowerMeterVisibleTimer = 0;
     }
 
     // After health is full, hide power meter
-    if (numHealthWedges == 8 && sPowerMeterVisibleTimer > 45.0) {
+    if (numHealthWedges == maxWedges && sPowerMeterVisibleTimer > 45.0) {
         sPowerMeterHUD.animation = POWER_METER_HIDING;
     }
 
@@ -402,6 +403,52 @@ void render_hud_camera_status(void) {
     gSPDisplayList(gDisplayListHead++, dl_hud_img_end);
 }
 
+/*
+    Renders the time limit display for the "Speedy Comet" patch
+*/
+void render_chaos_time_limit() {
+    if(gCurrCourseNum == COURSE_NONE) {
+        return;
+    }
+
+    struct ChaosActiveEntry *chaosTimer;
+    chaos_find_first_active_patch(CHAOS_PATCH_TIME_LIMIT, &chaosTimer);
+    char limitText[16];
+    s32 timeLeft = (5400 - chaosTimer->frameTimer);
+    u32 mins = (timeLeft / (30 * 60));
+    u32 secs = ((timeLeft - (mins * (30 * 60))) / 30);
+
+    u8 r;
+    u8 g;
+    u8 b;
+    u8 a = 0xFF;
+
+    //Color timer red at 30 seconds left, yellow otherwise
+    if(timeLeft > 900) {
+        r = 0xFC;
+        g = 0xDD;
+        b = 0x03;
+    } else {
+        r = 0xFF;
+        g = 0x00;
+        b = 0x00;
+    }
+
+    //Flicker when time gets low
+    if((timeLeft < 1800 && timeLeft >= 1740) || (timeLeft < 900 && timeLeft >= 840) || (timeLeft < 300)) {
+        if(timeLeft % 10 < 5) {
+            a = 0;
+        }
+    }
+
+    if(timeLeft >= 0) {
+        sprintf(limitText, "Time: %d:%02d", mins, secs);
+        fasttext_setup_textrect_rendering(FT_FONT_MEDIUM);
+        fasttext_draw_texrect(SCREEN_CENTER_X, SCREEN_HEIGHT - 40, limitText, FT_FLAG_ALIGN_CENTER, r, g, b, a);
+        fasttext_finished_rendering();
+    }
+}
+
 /**
  * Render HUD strings using hudDisplayFlags with it's render functions,
  * excluding the cannon reticle which detects a camera preset for it.
@@ -461,30 +508,7 @@ void render_hud(void) {
         }
     }
 
-    //CHAOS_PATCH_TIME_LIMIT timer display
     if(chaos_check_if_patch_active(CHAOS_PATCH_TIME_LIMIT)) {
-        struct ChaosActiveEntry *chaosTimer;
-        chaos_find_first_active_patch(CHAOS_PATCH_TIME_LIMIT, &chaosTimer);
-        char limitText[16];
-        s32 timeLeft = (5400 - chaosTimer->frameTimer);
-        u32 mins = (timeLeft / (30 * 60));
-        u32 secs = ((timeLeft - (mins * (30 * 60))) / 30);
-
-        //Color timer red at 1 minute left
-        u8 g, b;
-        if(timeLeft > 1800) {
-            g = 0xFF;
-            b = 0xFF;
-        } else {
-            g = 0x00;
-            b = 0x00;
-        }
-
-        if(timeLeft >= 0) {
-            sprintf(limitText, "Time: %d:%02d", mins, secs);
-            fasttext_setup_textrect_rendering(FT_FONT_OUTLINE);
-            fasttext_draw_texrect(SCREEN_CENTER_X, SCREEN_HEIGHT - 40, limitText, FT_FLAG_ALIGN_CENTER, 0xFF, g, b, 0xFF);
-            fasttext_finished_rendering();
-        }
+        render_chaos_time_limit();
     }
 }

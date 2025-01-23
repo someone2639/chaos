@@ -10,14 +10,14 @@
 
 #include "game/chaos/chaos.h"
 
-#define SLEEP_TIME_MIN   1800
-#define SLEEP_TIME_RAND  10800
+#define SLEEP_TIME_MIN  (1 * 60 * 30)
+#define SLEEP_TIME_RAND (6 * 60 * 30)
 
-#define SHOCK_TIME_MIN   900
-#define SHOCK_TIME_RAND  3600
+#define SHOCK_TIME_MIN  (45 * 30)
+#define SHOCK_TIME_RAND (210 * 30)
 
-#define BURN_TIME_MIN   900
-#define BURN_TIME_RAND  3600
+#define BURN_TIME_MIN  (60 * 30)
+#define BURN_TIME_RAND (240 * 30)
 
 s16 sRandomSleepTimer = -1;
 s16 sRandomShockTimer = -1;
@@ -68,6 +68,10 @@ void chs_update_random_shock(void) {
     }
 }
 
+u8 chs_cond_random_shock(void) {
+    return(!chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER));
+}
+
 /*
     Burning
 */
@@ -86,8 +90,10 @@ void chs_update_random_burn(void) {
             u32 burningAction = ACT_BURNING_JUMP;
 
             play_mario_sound(gMarioState, SOUND_MARIO_ON_FIRE, 0);
-            if (chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) && gCurrCourseNum != COURSE_NONE) {
-                set_hurt_counter(gMarioState, (gMarioState->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+            if (!chs_check_temporary_invincibility()) {
+                if (chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) && gCurrCourseNum != COURSE_NONE) {
+                    set_hurt_counter(gMarioState, (gMarioState->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+                }
             }
 
             if ((gMarioState->action & ACT_FLAG_AIR) && gMarioState->vel[1] <= 0.0f) {
@@ -101,6 +107,10 @@ void chs_update_random_burn(void) {
     } else {
         sRandomBurnTimer--;
     }
+}
+
+u8 chs_cond_random_burn(void) {
+    return(!chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER));
 }
 
 /*

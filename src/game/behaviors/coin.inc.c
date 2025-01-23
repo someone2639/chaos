@@ -23,6 +23,15 @@ s16 sCoinArrowPositions[][2] = {
     { 100, 50 },
 };
 
+void bhv_coin_scale() {
+    f32 scale = 1.0f;
+    s32 patches = chaos_count_active_instances(CHAOS_PATCH_COIN_SIZE);
+    for(int i = 0; i < patches; i++) {
+        scale *= 2.0f;
+    }
+    cur_obj_scale(scale);
+}
+
 s32 bhv_coin_sparkles_init(void) {
     if (o->oInteractStatus & INT_STATUS_INTERACTED
         && !(o->oInteractStatus & INT_STATUS_TOUCHED_BOB_OMB)) {

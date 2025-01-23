@@ -283,6 +283,9 @@ static void update_swimming_yaw(struct MarioState *m) {
 
 static void update_swimming_pitch(struct MarioState *m) {
     s16 targetPitch = -(s16)(252.0f * m->controller->stickY);
+    if (chaos_check_if_patch_active(CHAOS_PATCH_UPSIDE_DOWN_CAMERA)) {
+        targetPitch *= -1;
+    }
 
     s16 pitchVel;
     if (m->faceAngle[0] < 0) {
@@ -491,9 +494,13 @@ static void play_swimming_noise(struct MarioState *m) {
 
 static s32 check_water_jump(struct MarioState *m) {
     s32 probe = (s32)(m->pos[1] + 1.5f);
+    f32 stickY = m->controller->stickY;
+    if (chaos_check_if_patch_active(CHAOS_PATCH_UPSIDE_DOWN_CAMERA)) {
+        stickY *= -1;
+    }
 
     if (m->input & INPUT_A_PRESSED) {
-        if (probe >= m->waterLevel - 80 && m->faceAngle[0] >= 0 && m->controller->stickY < -60.0f) {
+        if (probe >= m->waterLevel - 80 && m->faceAngle[0] >= 0 && stickY < -60.0f) {
             vec3s_set(m->angleVel, 0, 0, 0);
 
             m->vel[1] = 62.0f;

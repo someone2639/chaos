@@ -50,7 +50,11 @@ s32 lava_boost_on_wall(struct MarioState *m) {
     }
 
     if (!(m->flags & MARIO_METAL_CAP)) {
-        set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+        if (chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_LAVA)) {
+            set_hurt_counter(m, -1);
+        } else {
+            set_hurt_counter(m, ((m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18) + m->extraDamageLava);
+        }
     }
 
     play_sound(SOUND_MARIO_ON_FIRE, m->marioObj->header.gfx.cameraToObject);
@@ -59,6 +63,10 @@ s32 lava_boost_on_wall(struct MarioState *m) {
 }
 
 s32 check_fall_damage(struct MarioState *m, u32 hardFallAction) {
+    if (chaos_check_if_patch_active(CHAOS_PATCH_NO_FALL_DAMAGE)) {
+        return FALSE;
+    }
+
     f32 fallHeight;
     f32 gravity = m->gravity;
     if (gravity <= 0.05f) {
@@ -1069,15 +1077,17 @@ s32 act_burning_jump(struct MarioState *m) {
     play_sound(SOUND_MOVING_LAVA_BURN, m->marioObj->header.gfx.cameraToObject);
 
     m->marioObj->oMarioBurnTimer += 3;
-    if (!chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) || gCurrCourseNum == COURSE_NONE) {
-        m->health -= 10;
-    }
-    if (chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER)) {
-        m->hurtCounter = 255;
-    }
+    if (!chs_check_temporary_invincibility()) {
+        if (!chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) || gCurrCourseNum == COURSE_NONE) {
+            m->health -= 10;
+        }
+        if (chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER)) {
+            m->hurtCounter = 255;
+        }
 
-    if (m->health < 0x100) {
-        m->health = 0xFF;
+        if (m->health < 0x100) {
+            m->health = 0xFF;
+        }
     }
 #if ENABLE_RUMBLE
     reset_rumble_timers();
@@ -1096,15 +1106,17 @@ s32 act_burning_fall(struct MarioState *m) {
     set_mario_animation(m, MARIO_ANIM_GENERAL_FALL);
     m->particleFlags |= PARTICLE_FIRE;
     m->marioObj->oMarioBurnTimer += 3;
-    if (!chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) || gCurrCourseNum == COURSE_NONE) {
-        m->health -= 10;
-    }
-    if (chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER)) {
-        m->hurtCounter = 255;
-    }
+    if (!chs_check_temporary_invincibility()) {
+        if (!chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) || gCurrCourseNum == COURSE_NONE) {
+            m->health -= 10;
+        }
+        if (chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER)) {
+            m->hurtCounter = 255;
+        }
 
-    if (m->health < 0x100) {
-        m->health = 0xFF;
+        if (m->health < 0x100) {
+            m->health = 0xFF;
+        }
     }
 #if ENABLE_RUMBLE
     reset_rumble_timers();
@@ -1617,7 +1629,11 @@ s32 act_lava_boost(struct MarioState *m) {
             if (m->floor->type == SURFACE_BURNING) {
                 m->actionState = 0;
                 if (!(m->flags & MARIO_METAL_CAP)) {
-                    set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+                    if (chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_LAVA)) {
+                        set_hurt_counter(m, -1);
+                    } else {
+                        set_hurt_counter(m, ((m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18) + m->extraDamageLava);
+                    }
                 }
                 m->vel[1] = 84.0f;
                 play_sound(SOUND_MARIO_ON_FIRE, m->marioObj->header.gfx.cameraToObject);
@@ -2136,6 +2152,7 @@ s32 act_galaxy_spin(struct MarioState *m) {
 
     if (m->actionState == 0) {
         play_sound_if_no_flag(m, SOUND_MARIO_YAHOO_WAHA_YIPPEE + ((gAudioRandom % 5) << 16), MARIO_ACTION_SOUND_PLAYED);
+        play_sound(SOUND_ACTION_GALAXY_SPIN, m->marioObj->header.gfx.cameraToObject);
         m->marioObj->header.gfx.animInfo.animID = -1;
         set_mario_animation(m, MARIO_ANIM_GALAXY_SPIN);
         m->actionState = 1;
@@ -2147,9 +2164,9 @@ s32 act_galaxy_spin(struct MarioState *m) {
         m->flags |= MARIO_KICKING;
         m->vel[1] = (33 - (animFrame * 3));
         m->intendedMag *= 1.5f;
+    } else {
+        m->actionState = 2;
     }
-
-    
 
     update_air_without_turn(m);
 

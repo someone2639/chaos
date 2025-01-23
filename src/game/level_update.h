@@ -26,6 +26,7 @@
 #define WARP_OP_CREDITS_START 0x17
 #define WARP_OP_CREDITS_NEXT  0x18
 #define WARP_OP_DEMO_END      0x19
+#define WARP_OP_TIME_UP       0x20
 
 #define WARP_OP_TRIGGERS_LEVEL_SELECT 0x10
 
@@ -66,6 +67,7 @@ struct CreditsEntry {
     /*0x0C*/ const char **unk0C;
 };
 
+extern u8 chaosSeqVolSubtractable;
 extern struct CreditsEntry *gCurrCreditsEntry;
 
 extern struct MarioState gMarioStates[];

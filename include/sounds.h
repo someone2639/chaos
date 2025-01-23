@@ -165,6 +165,9 @@ enum SoundBank {
 #define SOUND_ACTION_INTRO_UNK45E                /* 0x045E8081 */ SOUND_ARG_LOAD(SOUND_BANK_ACTION,   0x5E, 0x80, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE) // unverified
 #define SOUND_ACTION_INTRO_UNK45F                /* 0x045F8081 */ SOUND_ARG_LOAD(SOUND_BANK_ACTION,   0x5F, 0x80, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE) // unverified
 
+#define SOUND_ACTION_GALAXY_SPIN                                  SOUND_ARG_LOAD(SOUND_BANK_ACTION,   0x70, 0x80, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE) // unverified
+
+
 /* Moving Sound Effects */
 
 // Terrain-dependent moving sounds; a value 0-7 is added to the sound ID before
@@ -551,6 +554,8 @@ enum SoundBank {
 #define SOUND_MENU_COLLECT_SECRET                /* 0x70302081 */ SOUND_ARG_LOAD(SOUND_BANK_MENU,     0x30, 0x20, SOUND_DISCRETE)
 #define SOUND_MENU_CURTAIN_RAISE                                  SOUND_ARG_LOAD(SOUND_BANK_MENU,     0x40, 0xFF, SOUND_DISCRETE)
 #define SOUND_MENU_CURTAIN_LOWER                                  SOUND_ARG_LOAD(SOUND_BANK_MENU,     0x41, 0xFF, SOUND_DISCRETE)
+#define SOUND_MENU_TIMER_RING                                     SOUND_ARG_LOAD(SOUND_BANK_MENU,     0x42, 0xFF, SOUND_DISCRETE)
+#define SOUND_MENU_TIMER_UP                                       SOUND_ARG_LOAD(SOUND_BANK_MENU,     0x43, 0xFF, SOUND_DISCRETE)
 
 // Channel 8 loads sounds from the same place as channel 3, making it possible
 // to play two channel 3 sounds at once (since just one sound from each channel

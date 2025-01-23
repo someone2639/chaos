@@ -50,3 +50,9 @@
  * Also fills the menu with dummy data for testing
 */
 #define DEBUG_PATCH_SELECT_MENU
+
+/**
+ * Start with all 4 chaos patches to display by default.
+ * NOTE: Toggling this on an existing save file may trigger an assertion if patch counts have been meddled with already!
+ */
+// #define DISPLAY_MAX_PATCHES

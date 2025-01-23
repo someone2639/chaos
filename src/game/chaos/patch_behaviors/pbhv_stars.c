@@ -11,6 +11,7 @@
 #include "game/debug.h"
 #include "game/level_update.h"
 #include "game/save_file.h"
+#include "buffers/buffers.h"
 
 #define NUM_STARS 120
 
@@ -127,13 +128,22 @@ static void update_any_star(u8 shouldRemove) {
     }
 }
 
+u8 chs_cond_star_shuffle(void) {
+    return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 2;
+}
 u8 chs_cond_stars_increase_guarantee(void) {
     return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) <= (NUM_STARS - 1);
 }
 u8 chs_cond_stars_decrease_guarantee(void) {
-    return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 2;
+    return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 1;
 }
 
+void chs_act_star_shuffle(void) {
+    remove_collected_star();
+    remove_collected_star();
+    add_uncollected_star();
+    add_uncollected_star();
+}
 void chs_act_stars_increase_lv2(void) {
     update_any_star(FALSE);
     play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
@@ -149,14 +159,44 @@ void chs_act_stars_increase_guarantee(void) {
 }
 void chs_act_stars_decrease_lv2(void) {
     update_any_star(TRUE);
-    update_any_star(TRUE);
 }
 void chs_act_stars_decrease_lv3(void) {
-    update_any_star(TRUE);
     update_any_star(TRUE);
     update_any_star(TRUE);
 }
 void chs_act_stars_decrease_guarantee(void) {
     remove_collected_star();
-    remove_collected_star();
+}
+
+void chs_act_get_key_1(void) {
+    save_file_set_flags(SAVE_FLAG_HAVE_KEY_1);
+}
+
+u8 chs_cond_get_key_1(void) {
+    return (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_1 | SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)));
+}
+
+void chs_act_get_key_2(void) {
+    save_file_set_flags(SAVE_FLAG_HAVE_KEY_2);
+}
+
+u8 chs_cond_get_key_2(void) {
+    return (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_2 | SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR)));
+}
+
+void chs_act_unlock_cannons(void) {
+    for(int i = 0; i < COURSE_COUNT; i++) {
+        gSaveBuffer.files[gCurrSaveFileNum - 1].courseStars[i] |= (1 << 7);
+    }
+    gSaveFileModified = TRUE;
+}
+
+u8 chs_cond_unlock_cannons(void) {
+    for(int i = 0; i < COURSE_COUNT; i++) {
+        if((gSaveBuffer.files[gCurrSaveFileNum - 1].courseStars[i] & (1 << 7)) == 0){
+            return TRUE;
+        }
+    }
+
+    return FALSE;
 }

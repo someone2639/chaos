@@ -94,4 +94,4 @@ extern struct PatchSelectionMenu *gPatchSelectionMenu;
 void display_patch_selection_ui();
 void update_patch_selection_menu();
 void reset_patch_selection_menu();
-void load_new_patches(s32 numPatches);
+void load_new_patches();

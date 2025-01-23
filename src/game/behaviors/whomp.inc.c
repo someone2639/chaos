@@ -159,7 +159,11 @@ void king_whomp_on_ground(void) {
     if (o->oSubAction == 0) {
         if (cur_obj_is_mario_ground_pounding_platform()) {
             Vec3f pos;
-            o->oHealth--;
+            if (chaos_check_if_patch_active(CHAOS_PATCH_WEAK_BOSSES)) {
+                o->oHealth = 0;
+            } else {
+                o->oHealth--;
+            }
             cur_obj_play_sound_2(SOUND_OBJ2_WHOMP_SOUND_SHORT);
             cur_obj_play_sound_2(SOUND_OBJ_KING_WHOMP_DEATH);
             if (o->oHealth == 0) {
