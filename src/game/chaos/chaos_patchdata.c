@@ -1223,7 +1223,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
 
         .name              = "Code That Makes You Miss Bowser Throws",
-        .shortDescription  = "They have that in this game, I swear.",
+        .shortDescription  = "They have that in this game, I swear!",
     },
     [CHAOS_PATCH_BLUECOIN_LOTTERY] = {
         .durationType      = CHAOS_DURATION_STARS,
