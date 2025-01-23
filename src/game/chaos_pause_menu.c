@@ -221,6 +221,15 @@ void scroll_act_desc_bg() {
 	currentX += deltaX;	currentY += deltaY;
 }
 
+void init_setings_panel() {
+    gChaosPauseMenu->settingsMenu.flags |= (CHAOS_SETTINGS_ACTIVE | CHAOS_SETTINGS_HALT_INPUT);
+    gChaosPauseMenu->settingsMenu.animTimer = 0;
+    gChaosPauseMenu->settingsMenu.animFrames = MENU_ANIM_LOOP;
+    gChaosPauseMenu->settingsMenu.animId = CHAOS_SETTINGS_ANIM_APPEAR;
+    gChaosPauseMenu->settingsMenu.animPhase = 0;
+    gChaosPauseMenu->settingsPanelY = SETTINGS_PANEL_Y_START;
+}
+
 void init_active_patches_menu() {
     gChaosPauseMenu->activePatchesMenu.flags = (ACTIVE_PATCHES_MENU_ACTIVE | ACTIVE_PATCHES_MENU_HALT_INPUT);
     gChaosPauseMenu->activePatchesMenu.animTimer = 0;
@@ -422,7 +431,7 @@ void render_settings_panel() {
     Mtx *transMtx = alloc_display_list(sizeof(Mtx) * 2);
     Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
     f32 x = 42;
-    f32 y = 52;
+    f32 y = gChaosPauseMenu->settingsPanelY;
 
     u8 aspRatCol43;
     u8 aspRatCol169;
@@ -667,8 +676,7 @@ void handle_settings_inputs() {
         save_file_set_widescreen_mode(gConfig.widescreen);
         save_file_set_bg_music(gConfig.disableBGMusic);
     } else if (gPlayer1Controller->buttonPressed & (B_BUTTON | L_TRIG)) {
-        gChaosPauseMenu->settingsMenu.flags &= ~CHAOS_SETTINGS_ACTIVE;
-        gPlayer1Controller->buttonPressed &= ~(B_BUTTON | L_TRIG);
+        menu_play_anim(&gChaosPauseMenu->settingsMenu, CHAOS_SETTINGS_ANIM_DISAPPEAR);
     } else if(pressedUpDown) {
         selection += 2;
         if(selection > 3) {
@@ -685,4 +693,51 @@ void handle_settings_inputs() {
         play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
         gChaosPauseMenu->settingsMenu.selectedMenuIndex = selection;
     }
+}
+
+#define SETTINGS_PANEL_START_FRAMES   10
+s32 chaos_settings_anim_appear() {
+    s32 phase = gChaosPauseMenu->settingsMenu.animPhase;
+    s32 animTimer = gChaosPauseMenu->settingsMenu.animTimer;
+    f32 animPercent;
+    if(!phase) {
+        gChaosPauseMenu->settingsMenu.flags |= CHAOS_SETTINGS_HALT_INPUT;
+        gChaosPauseMenu->settingsMenu.animFrames = SETTINGS_PANEL_START_FRAMES;
+        animPercent = sins((0x3FFF / gChaosPauseMenu->settingsMenu.animFrames) * animTimer);
+        gChaosPauseMenu->settingsPanelY = menu_translate_percentage(SETTINGS_PANEL_Y_START, SETTINGS_PANEL_Y, animPercent);
+    } else {
+        gChaosPauseMenu->settingsMenu.flags &= ~CHAOS_SETTINGS_HALT_INPUT;
+        gChaosPauseMenu->settingsMenu.animFrames = MENU_ANIM_LOOP;
+    }
+    return FALSE;
+}
+
+#define SETTINGS_PANEL_END_FRAMES   10
+s32 chaos_settings_anim_disappear() {
+    s32 phase = gChaosPauseMenu->settingsMenu.animPhase;
+    s32 animTimer = gChaosPauseMenu->settingsMenu.animTimer;
+    f32 animPercent;
+    if(!phase) {
+        gChaosPauseMenu->settingsMenu.flags |= CHAOS_SETTINGS_HALT_INPUT;
+        gChaosPauseMenu->settingsMenu.animFrames = SETTINGS_PANEL_END_FRAMES;
+        animPercent = 1.0f - coss((0x3FFF / gChaosPauseMenu->settingsMenu.animFrames) * animTimer);
+        gChaosPauseMenu->settingsPanelY = menu_translate_percentage(SETTINGS_PANEL_Y, SETTINGS_PANEL_Y_START, animPercent);
+    } else {
+        gChaosPauseMenu->settingsMenu.flags &= ~CHAOS_SETTINGS_ACTIVE;
+        gChaosPauseMenu->settingsMenu.animFrames = MENU_ANIM_LOOP;
+    }
+    return FALSE;
+}
+
+s32 (*sSettingsPanelAnims[])(void) = {
+    &chaos_settings_anim_appear,
+    &chaos_settings_anim_disappear,
+};
+
+void update_settings_panel() {
+    if(!(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_HALT_INPUT)) {
+        handle_settings_inputs();
+    }
+
+    menu_update_anims(&gChaosPauseMenu->settingsMenu, sSettingsPanelAnims);
 }

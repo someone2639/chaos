@@ -9,9 +9,17 @@
 #define ACTIVE_PATCH_DESC_X         (SCREEN_WIDTH - 74)
 #define ACTIVE_PATCH_DESC_X_START   (SCREEN_WIDTH + 104)
 #define ACTIVE_PATCH_DESC_Y         (SCREEN_HEIGHT / 3)
+#define SETTINGS_PANEL_Y            52
+#define SETTINGS_PANEL_Y_START      -52
 
 enum ChaosSettingsFlags {
     CHAOS_SETTINGS_ACTIVE           = (1 << 0),
+    CHAOS_SETTINGS_HALT_INPUT       = (1 << 1),
+};
+
+enum ChaosSettingsAnims {
+    CHAOS_SETTINGS_ANIM_APPEAR,
+    CHAOS_SETTINGS_ANIM_DISAPPEAR,
 };
 
 enum ActivePatchesMenuFlags {
@@ -40,12 +48,14 @@ struct ChaosPauseMenu {
     f32 descX;
     f32 cardX;
     f32 extDescScale;
+    f32 settingsPanelY;
 };
 
 extern struct ChaosPauseMenu *gChaosPauseMenu;
 
 void render_settings_panel();
-void handle_settings_inputs();
 void render_active_patches();
 void update_active_patches_menu();
+void update_settings_panel();
 void init_active_patches_menu();
+void init_setings_panel();

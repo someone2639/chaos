@@ -2335,7 +2335,7 @@ void render_settings_prompt(void) {
     print_generic_string(10,  7, textSettingsL);
     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
     if (gPlayer1Controller->buttonPressed & L_TRIG){
-        gChaosPauseMenu->settingsMenu.flags |= CHAOS_SETTINGS_ACTIVE;
+        init_setings_panel();
     }
 }
 

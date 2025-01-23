@@ -1072,7 +1072,7 @@ s32 play_mode_normal(void) {
 
 s32 play_mode_paused(void) {
     if(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE) {
-        handle_settings_inputs();
+        update_settings_panel();
         return 0;
     }
 
