@@ -8,7 +8,7 @@
 #define MINI_CARD_X_START           -104
 #define ACTIVE_PATCH_DESC_X         (SCREEN_WIDTH - 74)
 #define ACTIVE_PATCH_DESC_X_START   (SCREEN_WIDTH + 104)
-#define ACTIVE_PATCH_DESC_Y         (SCREEN_HEIGHT / 3)
+#define ACTIVE_PATCH_DESC_Y         ((SCREEN_HEIGHT / 3) + 18)
 #define SETTINGS_PANEL_Y            52
 #define SETTINGS_PANEL_Y_START      -52
 
@@ -59,3 +59,6 @@ void update_active_patches_menu();
 void update_settings_panel();
 void init_active_patches_menu();
 void init_setings_panel();
+void render_pause_screen_button_prompts();
+void render_active_patches_menu_button_prompts();
+void render_settings_panel_button_prompts();

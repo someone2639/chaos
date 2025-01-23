@@ -2318,24 +2318,15 @@ void render_bgmusic_setting(void) {
 }
 
 void render_view_patches_prompt(void) {
-    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
-    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
-    print_generic_string((SCREEN_WIDTH - 96) - 10, 20, textPatchesPrompt);
-    print_generic_string((SCREEN_WIDTH - 96) - 10,  7, textPatchesR);
-    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
-    if (gPlayer1Controller->buttonPressed & R_TRIG){
-        init_active_patches_menu();
-    }
+
+    
 }
 
-void render_settings_prompt(void) {
-    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
-    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
-    print_generic_string(10,  20, textSettingsPrompt);
-    print_generic_string(10,  7, textSettingsL);
-    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
+void handle_page_switch_inputs(void) {
     if (gPlayer1Controller->buttonPressed & L_TRIG){
         init_setings_panel();
+    } else if (gPlayer1Controller->buttonPressed & R_TRIG){
+        init_active_patches_menu();
     }
 }
 
@@ -2869,9 +2860,9 @@ s16 render_pause_courses_and_castle(void) {
         if (gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE) {
             render_settings_panel();
         } else {
-            render_settings_prompt();
+            handle_page_switch_inputs();
+            render_pause_screen_button_prompts();
         }
-        render_view_patches_prompt();
         //render_bgmusic_setting();
 #ifdef WIDE
         //render_widescreen_setting();

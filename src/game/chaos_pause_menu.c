@@ -305,7 +305,7 @@ void draw_active_patch_desc(f32 x, f32 y, struct ChaosActiveEntry *patch) {
     slowtext_draw_ortho_text_linebreaks(-62, 55, ACT_DESC_WIDTH, patchDesc, FT_FLAG_ALIGN_LEFT, 
         effectR, effectG, effectB, 0xFF);
     slowtext_setup_ortho_rendering(FT_FONT_OUTLINE);
-    slowtext_draw_ortho_text_linebreaks(-62, 110, CARD_STRING_WIDTH, patchName, FT_FLAG_ALIGN_LEFT, 
+    slowtext_draw_ortho_text_linebreaks(-62, 110, ACT_DESC_WIDTH, patchName, FT_FLAG_ALIGN_LEFT, 
         0xFF, 0xFF, 0xFF, 0xFF);
     slowtext_draw_ortho_text_linebreaks(-62, 75, CARD_STRING_WIDTH, durationString, FT_FLAG_ALIGN_LEFT, 
         0xFF, 0xFF, 0xFF, 0xFF);
@@ -396,6 +396,10 @@ void render_active_patches() {
     if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_DRAW_EXT_DESC) {
         draw_active_patch_ext_desc(&gChaosActiveEntries[selection]);
     }
+
+    if(!(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_HALT_INPUT)) {
+        render_active_patches_menu_button_prompts();
+    }
 }
 
 void update_active_patch_list_bounds() {
@@ -483,6 +487,68 @@ void render_settings_panel() {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+
+    if(!(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_HALT_INPUT)) {
+        render_settings_panel_button_prompts();
+    }
+}
+
+void render_pause_screen_button_prompts() {
+    menu_start_button_prompt();
+    menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 21, MENU_PROMPT_R_TRIG);
+    menu_button_prompt(15, SCREEN_HEIGHT - 21, MENU_PROMPT_L_TRIG);
+    menu_end_button_prompt();
+    fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
+    fasttext_draw_texrect(SCREEN_WIDTH - 35, SCREEN_HEIGHT - 21, "Active Patches", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+    fasttext_draw_texrect(33, SCREEN_HEIGHT - 21, "Settings", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    fasttext_finished_rendering();
+}
+
+void render_active_patches_menu_button_prompts() {
+    s32 selection = gChaosPauseMenu->activePatchesMenu.selectedMenuIndex;
+    struct ChaosActiveEntry *patch = &gChaosActiveEntries[selection];
+    const struct ChaosPatch *patchInfo = &gChaosPatches[patch->id];
+
+    switch(gChaosPauseMenu->activePatchesMenu.menuState) {
+        case ACTIVE_PATCHES_MENU_STATE_DEFAULT:
+            if(patchInfo->longDescription){
+                menu_start_button_prompt();
+                menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 21, MENU_PROMPT_B_BUTTON);
+                menu_button_prompt(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 21, MENU_PROMPT_Z_TRIG);
+                menu_end_button_prompt();
+                fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
+                fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 21, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_draw_texrect(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 21, "More Info", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_finished_rendering();
+            } else {
+                menu_start_button_prompt();
+                menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 21, MENU_PROMPT_B_BUTTON);
+                menu_end_button_prompt();
+                fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
+                fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 21, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_finished_rendering();
+            }
+            break;
+        case ACTIVE_PATCHES_MENU_STATE_SHOW_EXT_DESC:
+            menu_start_button_prompt();
+            menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 30, MENU_PROMPT_B_BUTTON);
+            menu_end_button_prompt();
+            fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
+            fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 30, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+            fasttext_finished_rendering();
+            break;
+    }
+}
+
+void render_settings_panel_button_prompts() {
+    menu_start_button_prompt();
+    menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 21, MENU_PROMPT_A_BUTTON);
+    menu_button_prompt(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 21, MENU_PROMPT_B_BUTTON);
+    menu_end_button_prompt();
+    fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
+    fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 21, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+    fasttext_draw_texrect(SCREEN_WIDTH - 83, SCREEN_HEIGHT - 21, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+    fasttext_finished_rendering();
 }
 
 void handle_active_patches_inputs_state_default(u32 stickDir) {
@@ -547,13 +613,14 @@ void handle_active_patches_inputs() {
 }
 
 #define ACTIVE_PATCH_MENU_WAIT_FB_FRAMES    3
-#define ACTIVE_PATCH_MENU_START_FRAMES      10
+#define ACTIVE_PATCH_MENU_START_FRAMES      7
 s32 active_patches_menu_anim_startup() {
     s32 phase = gChaosPauseMenu->activePatchesMenu.animPhase;
     s32 animTimer = gChaosPauseMenu->activePatchesMenu.animTimer;
     f32 animPercent;
     switch(phase) {
         case 0:
+            gHudDisplay.flags = HUD_DISPLAY_NONE;
             gChaosPauseMenu->activePatchesMenu.animFrames = ACTIVE_PATCH_MENU_WAIT_FB_FRAMES;
             if(animTimer == ACTIVE_PATCH_MENU_WAIT_FB_FRAMES) {
                 copy_pause_screen_framebuffer();
@@ -575,7 +642,7 @@ s32 active_patches_menu_anim_startup() {
     return FALSE;
 }
 
-#define ACTIVE_PATCH_MENU_END_FRAMES  10
+#define ACTIVE_PATCH_MENU_END_FRAMES  7
 s32 active_patches_menu_anim_ending() {
     s32 phase = gChaosPauseMenu->activePatchesMenu.animPhase;
     s32 animTimer = gChaosPauseMenu->activePatchesMenu.animTimer;
@@ -589,6 +656,12 @@ s32 active_patches_menu_anim_ending() {
     } else {
         gChaosPauseMenu->activePatchesMenu.flags &= ~ACTIVE_PATCHES_MENU_ACTIVE;
         gChaosPauseMenu->activePatchesMenu.animFrames = MENU_ANIM_LOOP;
+        gHudDisplay.flags = HUD_DISPLAY_DEFAULT;
+        if (gCurrCourseNum >= COURSE_MIN) {
+            gHudDisplay.flags |= HUD_DISPLAY_FLAG_COIN_COUNT;
+        } else {
+            gHudDisplay.flags &= ~HUD_DISPLAY_FLAG_COIN_COUNT;
+        }
     }
     return FALSE;
 }
