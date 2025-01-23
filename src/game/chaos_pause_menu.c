@@ -269,6 +269,24 @@ void draw_active_patch_ext_desc(struct ChaosActiveEntry *patch) {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
+void draw_default_patch_desc(f32 x, f32 y) {
+    Mtx *transMtx = alloc_display_list(sizeof(Mtx));
+    guTranslate(transMtx, x, y, 0);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    gSPDisplayList(gDisplayListHead++, act_desc_bg_act_desc_mesh_mesh);
+
+    slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
+    slowtext_draw_ortho_text_linebreaks(-62, 55, ACT_DESC_WIDTH, "Erm... why don't you play the game first, buddy?", FT_FLAG_ALIGN_LEFT, 
+        0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_setup_ortho_rendering(FT_FONT_OUTLINE);
+    slowtext_draw_ortho_text_linebreaks(-62, 110, ACT_DESC_WIDTH, "No Active Patches!", FT_FLAG_ALIGN_LEFT, 
+        0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_finished_rendering();
+
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+}
+
 void draw_active_patch_desc(f32 x, f32 y, struct ChaosActiveEntry *patch) {
     const struct ChaosPatch *patchInfo = &gChaosPatches[patch->id];
     const char *patchName = patchInfo->name;
@@ -373,12 +391,17 @@ void render_active_patches() {
         shade_screen();
     }
 
-    if (gChaosActiveEntryCount == NULL || *gChaosActiveEntryCount == 0) {
-        return;
-    }
-
     scroll_mini_patch_cards();
     scroll_act_desc_bg();
+
+    if(!(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_HALT_INPUT)) {
+        render_active_patches_menu_button_prompts();
+    }
+
+    if (gChaosActiveEntryCount == NULL || *gChaosActiveEntryCount == 0) {
+        draw_default_patch_desc(gChaosPauseMenu->descX, ACTIVE_PATCH_DESC_Y);
+        return;
+    }
 
     f32 cardX = gChaosPauseMenu->cardX;
     f32 descX = gChaosPauseMenu->descX;
@@ -395,10 +418,6 @@ void render_active_patches() {
 
     if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_DRAW_EXT_DESC) {
         draw_active_patch_ext_desc(&gChaosActiveEntries[selection]);
-    }
-
-    if(!(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_HALT_INPUT)) {
-        render_active_patches_menu_button_prompts();
     }
 }
 
@@ -551,15 +570,20 @@ void render_settings_panel_button_prompts() {
     fasttext_finished_rendering();
 }
 
-void handle_active_patches_inputs_state_default(u32 stickDir) {
+void handle_active_patches_inputs_state_default(u32 stickDir) { 
     s32 prevSelection = gChaosPauseMenu->activePatchesMenu.selectedMenuIndex;
     s32 selection = prevSelection;
+    s32 allowScroll = TRUE;
+
+    if (gChaosActiveEntryCount == NULL || *gChaosActiveEntryCount == 0) {
+        allowScroll = FALSE;
+    }
 
     if(gPlayer1Controller->buttonPressed & (R_TRIG | B_BUTTON | A_BUTTON | START_BUTTON)) {
         menu_play_anim(&gChaosPauseMenu->activePatchesMenu, ACTIVE_PATCHES_MENU_ANIM_ENDING);
         gChaosPauseMenu->activePatchesMenu.flags &= ~ACTIVE_PATCHES_MENU_STOP_GAME_RENDER;
         gPlayer1Controller->buttonPressed &= ~R_TRIG;
-    } else if(gPlayer1Controller->buttonPressed & (L_TRIG | Z_TRIG)) {
+    } else if((gPlayer1Controller->buttonPressed & (L_TRIG | Z_TRIG)) && allowScroll) {
         struct ChaosActiveEntry *patch = &gChaosActiveEntries[selection];
         const struct ChaosPatch *patchInfo = &gChaosPatches[patch->id];
         if(patchInfo->longDescription) {
@@ -569,9 +593,9 @@ void handle_active_patches_inputs_state_default(u32 stickDir) {
         } else {
             play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
         }
-    } else if(gPlayer1Controller->buttonPressed & U_JPAD || stickDir & MENU_JOYSTICK_DIR_UP) {
+    } else if((gPlayer1Controller->buttonPressed & U_JPAD || stickDir & MENU_JOYSTICK_DIR_UP) && allowScroll) {
         selection--;
-    } else if (gPlayer1Controller->buttonPressed & D_JPAD || stickDir & MENU_JOYSTICK_DIR_DOWN) {
+    } else if ((gPlayer1Controller->buttonPressed & D_JPAD || stickDir & MENU_JOYSTICK_DIR_DOWN) && allowScroll) {
         selection++;
     }
 
