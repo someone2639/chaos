@@ -31,6 +31,7 @@
 #include "course_table.h"
 #include "rumble_init.h"
 #include "patch_selection_ui.h"
+#include "chaos_pause_menu.h"
 
 #define WARP_TYPE_NOT_WARPING 0
 #define WARP_TYPE_CHANGE_LEVEL 1
@@ -1070,6 +1071,16 @@ s32 play_mode_normal(void) {
 }
 
 s32 play_mode_paused(void) {
+    if(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE) {
+        update_settings_panel();
+        return 0;
+    }
+
+    if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) {
+        update_active_patches_menu();
+        return 0;
+    }
+
     if (gMenuOptSelectIndex == MENU_OPT_NONE) {
         set_menu_mode(MENU_MODE_RENDER_PAUSE_SCREEN);
     } else if (gMenuOptSelectIndex == MENU_OPT_DEFAULT) {
@@ -1141,6 +1152,8 @@ s32 play_mode_select_patch(void) {
     } else {
         stop_secondary_music(75);
         reset_patch_selection_menu();
+        gChaosPauseMenu->activePatchesMenu.selectedMenuIndex = 0;
+        gChaosPauseMenu->chaosListStart = 0;
         set_play_mode(PLAY_MODE_NORMAL);
     }
 

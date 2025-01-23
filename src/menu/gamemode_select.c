@@ -56,7 +56,7 @@ void init_gamemode_select() {
 /*
     Handles inputs for the main selection menu
 */
-void handle_inputs_gamemode_select_state_default(f32 stickDir) {
+void handle_inputs_gamemode_select_state_default(u32 stickDir) {
     s32 selection = sGamemodeSelectMenu.menu.selectedMenuIndex;
     s32 prevSelection = selection;
     s32 playCursorSound = FALSE;
@@ -112,7 +112,7 @@ void handle_inputs_gamemode_select_state_default(f32 stickDir) {
 /*
     Handles inputs for the difficulty selection submenu
 */
-void handle_inputs_gamemode_select_state_change_diff(f32 stickDir) {
+void handle_inputs_gamemode_select_state_change_diff(u32 stickDir) {
     s32 selection = sGamemodeSelectMenu.selectedDifficulty;
     s32 prevSelection = sGamemodeSelectMenu.prevSelection;
 
@@ -143,7 +143,7 @@ void handle_inputs_gamemode_select_state_change_diff(f32 stickDir) {
 /*
     Handles inputs for the challenge selection menu
 */
-void handle_inputs_gamemode_select_state_change_challenge(f32 stickDir) {
+void handle_inputs_gamemode_select_state_change_challenge(u32 stickDir) {
     s32 selection = sGamemodeSelectMenu.selectedChallenge;
     s32 prevSelection = sGamemodeSelectMenu.prevSelection;
 
@@ -174,8 +174,8 @@ void handle_inputs_gamemode_select_state_change_challenge(f32 stickDir) {
 /*
     Handles inputs for the confirmation dialogue
 */
-void handle_inputs_gamemode_select_state_confirm(f32 stickDir) {
-        if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
+void handle_inputs_gamemode_select_state_confirm(u32 stickDir) {
+    if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
         if(sGamemodeSelectMenu.menu.selectedMenuIndex) {
             //No
             menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_DEFAULT);
@@ -192,13 +192,13 @@ void handle_inputs_gamemode_select_state_confirm(f32 stickDir) {
         sGamemodeSelectMenu.menu.selectedMenuIndex = sGamemodeSelectMenu.prevSelection;
         menu_play_anim(&sGamemodeSelectMenu.menu, GM_SELECT_ANIM_SELECTING);
     }
-    else if(gPlayer1Controller->buttonPressed & R_JPAD || (stickDir == MENU_JOYSTICK_DIR_RIGHT)) {
+    else if(gPlayer1Controller->buttonPressed & R_JPAD || (stickDir & MENU_JOYSTICK_DIR_RIGHT)) {
         sGamemodeSelectMenu.menu.selectedMenuIndex++;
         if(sGamemodeSelectMenu.menu.selectedMenuIndex > 1) {
             sGamemodeSelectMenu.menu.selectedMenuIndex = 0;
         }
         play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
-    } else if(gPlayer1Controller->buttonPressed & L_JPAD || (stickDir == MENU_JOYSTICK_DIR_LEFT)) {
+    } else if(gPlayer1Controller->buttonPressed & L_JPAD || (stickDir & MENU_JOYSTICK_DIR_LEFT)) {
         sGamemodeSelectMenu.menu.selectedMenuIndex--;
         if(sGamemodeSelectMenu.menu.selectedMenuIndex < 0) {
             sGamemodeSelectMenu.menu.selectedMenuIndex = 1;

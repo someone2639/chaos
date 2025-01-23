@@ -23,6 +23,7 @@
 #include "sm64.h"
 #include "text_strings.h"
 #include "types.h"
+#include "chaos_pause_menu.h"
 
 #ifdef VERSION_EU
 #undef LANGUAGE_FUNCTION
@@ -40,6 +41,10 @@ s16 gDialogY;
 s16 gCutsceneMsgXOffset;
 s16 gCutsceneMsgYOffset;
 s8 gRedCoinsCollected;
+u8 textPatchesPrompt[] = {TEXT_HUD_PATCHES_PROMPT};
+u8 textPatchesR[] = {TEXT_HUD_PATCHES_R};
+u8 textSettingsPrompt[] = {TEXT_HUD_OPTIONS_PROMPT};
+u8 textSettingsL[] = {TEXT_HUD_OPTIONS_L};
 u8 textBGMOn[] = { TEXT_HUD_BGM_ON };
 u8 textBGMOff[] = { TEXT_HUD_BGM_OFF };
 u8 textPressR[] = { TEXT_HUD_PRESS_R };
@@ -2312,6 +2317,19 @@ void render_bgmusic_setting(void) {
     }
 }
 
+void render_view_patches_prompt(void) {
+
+    
+}
+
+void handle_page_switch_inputs(void) {
+    if (gPlayer1Controller->buttonPressed & L_TRIG){
+        init_setings_panel();
+    } else if (gPlayer1Controller->buttonPressed & R_TRIG){
+        init_active_patches_menu();
+    }
+}
+
 #ifdef VERSION_EU
 u8 gTextCourse[][7] = {
     { TEXT_COURSE },
@@ -2527,7 +2545,9 @@ void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) {
     u8 textCameraAngleR[] = { TEXT_CAMERA_ANGLE_R };
 #endif
 
-    handle_menu_scrolling(MENU_SCROLL_VERTICAL, index, 1, 3);
+    if(!(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE) && !(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE)) {
+        handle_menu_scrolling(MENU_SCROLL_VERTICAL, index, 1, 3);
+    }
 
     gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
@@ -2680,10 +2700,13 @@ void render_pause_castle_main_strings(s16 x, s16 y) {
     }
 #endif
 
-    handle_menu_scrolling(
-        MENU_SCROLL_VERTICAL, &gDialogLineNum,
-        COURSE_NUM_TO_INDEX(COURSE_MIN) - 1, COURSE_NUM_TO_INDEX(COURSE_BONUS_STAGES) + 1
-    );
+    if(!(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE) && !(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE)) {
+        handle_menu_scrolling(
+            MENU_SCROLL_VERTICAL, &gDialogLineNum,
+            COURSE_NUM_TO_INDEX(COURSE_MIN) - 1, COURSE_NUM_TO_INDEX(COURSE_BONUS_STAGES) + 1
+        );
+    }
+    
 
     if (gDialogLineNum == COURSE_NUM_TO_INDEX(COURSE_BONUS_STAGES) + 1) {
         gDialogLineNum = COURSE_NUM_TO_INDEX(COURSE_MIN); // Exceeded max, set to min
@@ -2750,6 +2773,11 @@ s8 gHudFlash = 0;
 s16 render_pause_courses_and_castle(void) {
     s16 index;
 
+    if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) {
+        render_active_patches();
+        return 0;
+    }
+
 #ifdef VERSION_EU
     gInGameLanguage = eu_get_language();
 #endif
@@ -2788,8 +2816,8 @@ s16 render_pause_courses_and_castle(void) {
 #ifdef VERSION_EU
             if (gPlayer3Controller->buttonPressed & (A_BUTTON | Z_TRIG | START_BUTTON))
 #else
-            if (gPlayer3Controller->buttonPressed & A_BUTTON
-                || gPlayer3Controller->buttonPressed & START_BUTTON)
+            if ((gPlayer3Controller->buttonPressed & A_BUTTON
+                || gPlayer3Controller->buttonPressed & START_BUTTON) && !(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE) && !(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE))
 #endif
             {
                 level_set_transition(0, NULL);
@@ -2816,8 +2844,8 @@ s16 render_pause_courses_and_castle(void) {
 #ifdef VERSION_EU
             if (gPlayer3Controller->buttonPressed & (A_BUTTON | Z_TRIG | START_BUTTON))
 #else
-            if (gPlayer3Controller->buttonPressed & A_BUTTON
-                || gPlayer3Controller->buttonPressed & START_BUTTON)
+            if ((gPlayer3Controller->buttonPressed & A_BUTTON
+                || gPlayer3Controller->buttonPressed & START_BUTTON) && !(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE) && !(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE))
 #endif
             {
                 level_set_transition(0, NULL);
@@ -2829,9 +2857,15 @@ s16 render_pause_courses_and_castle(void) {
             }
             break;
     }
-        render_bgmusic_setting();
+        if (gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE) {
+            render_settings_panel();
+        } else {
+            handle_page_switch_inputs();
+            render_pause_screen_button_prompts();
+        }
+        //render_bgmusic_setting();
 #ifdef WIDE
-        render_widescreen_setting();
+        //render_widescreen_setting();
 #endif
     if (gDialogTextAlpha < 250) {
         gDialogTextAlpha += 25;

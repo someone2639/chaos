@@ -32,6 +32,9 @@ void menu_set_state(struct ChaosMenu *menu, u32 state) {
     menu->menuState = state;
 }
 
+#define MENU_JOYSTICK_IGNORE_FRAMES         15      //Frames to wait before reading the same joystick input again
+#define MENU_JOYSTICK_HOLD_SKIP_FRAMES      3       //Frames to skip reading the same joystick input while it is held
+
 /*
     Handles joystick navigation for menus. Updates the last held stick direction and returns either 
     the stick direction or MENU_JOYSTICK_DIR_NONE if the direction is the same as the 
@@ -43,29 +46,28 @@ u32 menu_update_joystick_dir(struct ChaosMenu *menu) {
     u32 stickDir = MENU_JOYSTICK_DIR_NONE;
 
     if(stickY > 60) {
-        stickDir = MENU_JOYSTICK_DIR_UP;
+        stickDir |= MENU_JOYSTICK_DIR_UP;
     } else if(stickY < -60) {
-        stickDir = MENU_JOYSTICK_DIR_DOWN;
+        stickDir |= MENU_JOYSTICK_DIR_DOWN;
     } else if (stickX > 60) {
-        stickDir = MENU_JOYSTICK_DIR_RIGHT;
+        stickDir |= MENU_JOYSTICK_DIR_RIGHT;
     } else if (stickX < -60) {
-        stickDir = MENU_JOYSTICK_DIR_LEFT;
+        stickDir |= MENU_JOYSTICK_DIR_LEFT;
+    } else {
+        menu->framesSinceLastStickInput = 0;
     }
 
-    if(menu->framesSinceLastStickInput >= MENU_JOYSTICK_HOLD_FRAMES 
+    if(menu->framesSinceLastStickInput >= MENU_JOYSTICK_IGNORE_FRAMES 
         || stickDir != menu->lastStickDir)
     {
         menu->lastStickDir = stickDir;
+        menu->framesSinceLastStickInput -= MENU_JOYSTICK_HOLD_SKIP_FRAMES;
     } else {
         stickDir = MENU_JOYSTICK_DIR_NONE;
     }
     
-    if(stickDir != MENU_JOYSTICK_DIR_NONE){
-        menu->framesSinceLastStickInput = 0;
-    } else {
-        if(menu->framesSinceLastStickInput < MENU_JOYSTICK_HOLD_FRAMES) {
-            menu->framesSinceLastStickInput++;
-        }
+    if(menu->framesSinceLastStickInput < MENU_JOYSTICK_IGNORE_FRAMES) {
+        menu->framesSinceLastStickInput++;
     }
 
     return stickDir;
