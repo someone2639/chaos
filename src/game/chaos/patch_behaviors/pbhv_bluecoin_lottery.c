@@ -23,7 +23,7 @@ struct Object *currCoin = NULL;
 u32 slot_semaphore = 0;
 
 static f32 chanceroll = 0;
-#define CHANCE 0.5f
+#define CHANCE 0.01f
 
 #define OFFSCREEN_POS -50.0f
 static f32 globalY = OFFSCREEN_POS;
