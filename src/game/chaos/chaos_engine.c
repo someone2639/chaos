@@ -43,6 +43,76 @@ u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId) {
     return (activePatchCounts[patchId] > 0 || patchId == negativePatchCompare);
 }
 
+static void chaos_swap_active_entry_indexes(struct ChaosActiveEntry *first, struct ChaosActiveEntry *second) {
+    struct ChaosActiveEntry tmp = *first;
+    *first = *second;
+    *second = tmp;
+}
+
+#define DO_SWAP { \
+    chaos_swap_active_entry_indexes(entry1, entry2); \
+    continue; \
+}
+#define NO_SWAP { \
+    continue; \
+}
+static void chaos_sort_active_patches(void) {
+    s32 count = *gChaosActiveEntryCount;
+    for (s32 i = 0; i < count - 1; i++) {
+        for (s32 j = i + 1; j < count; j++) {
+            struct ChaosActiveEntry *entry1 = &gChaosActiveEntries[i];
+            struct ChaosActiveEntry *entry2 = &gChaosActiveEntries[j];
+            const struct ChaosPatch *patch1 = &gChaosPatches[entry1->id];
+            const struct ChaosPatch *patch2 = &gChaosPatches[entry2->id];
+
+            // Sort first by duration type, favor showing temporary patches in general
+            if (patch1->durationType != patch2->durationType) {
+                if (patch1->durationType < patch2->durationType) {
+                    DO_SWAP;
+                }
+                NO_SWAP;
+            }
+
+            // Sort next by duration remaining, if applicable
+            if ((patch1->durationType == CHAOS_DURATION_STARS 
+                        || patch1->durationType == CHAOS_DURATION_USE_COUNT)
+                        && entry1->remainingDuration != entry2->remainingDuration
+            ) {
+                if (entry1->remainingDuration > entry2->remainingDuration) {
+                    DO_SWAP;
+                }
+                NO_SWAP;
+            }
+
+            // Sort next by effect type, favoring positive over negative here
+            if (patch1->effectType != patch2->effectType) {
+                if (patch2->effectType == CHAOS_EFFECT_POSITIVE) {
+                    DO_SWAP;
+                }
+                NO_SWAP;
+            }
+
+            // Sort next by severity, favoring high severity
+            if (patch1->severity != patch2->severity) {
+                if (patch1->severity < patch2->severity) {
+                    DO_SWAP;
+                }
+                NO_SWAP;
+            }
+
+            // Sort last by patch id, favoring a lower index
+            if (entry1->id > entry2->id) {
+                DO_SWAP;
+            }
+
+            // Lower or equal patch id, do not swap
+            NO_SWAP;
+        }
+    }
+}
+#undef DO_SWAP
+#undef NO_SWAP
+
 u8 chaos_find_first_active_patch(const enum ChaosPatchID patchId, struct ChaosActiveEntry **firstFoundMatch) {
     if (!gChaosActiveEntryCount) {
         if (firstFoundMatch) {
@@ -115,6 +185,9 @@ void chaos_remove_expired_entry(const s32 patchIndex) {
     if (patch->deactivationFunc) {
         patch->deactivationFunc();
     }
+
+    // Sort patch order
+    chaos_sort_active_patches();
 }
 
 void chaos_add_new_entry(const enum ChaosPatchID patchId) {
@@ -211,8 +284,10 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
     if (patch->activatedInitFunc) {
         patch->activatedInitFunc();
     }
-
     assert(patch->deactivationFunc == NULL || patch->durationType != CHAOS_DURATION_ONCE, "chaos_add_new_entry:\nDeactivation func will never run for CHAOS_DURATION_ONCE entries!\nRemove this assert if this becomes desirable.");
+
+    // Sort patch order
+    chaos_sort_active_patches();
 }
 
 void chaos_decrement_star_timers(void) {
