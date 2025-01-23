@@ -49,7 +49,7 @@
  * Hold Z and press R while in PLAY_MODE_NORMAL
  * Also fills the menu with dummy data for testing
 */
-#define DEBUG_PATCH_SELECT_MENU
+// #define DEBUG_PATCH_SELECT_MENU
 
 /**
  * Start with all 4 chaos patches to display by default.
