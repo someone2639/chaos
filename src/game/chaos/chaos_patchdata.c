@@ -1262,7 +1262,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 6,
 
         .name              = "Sequence Break",
         .shortDescription  = "All course acts are now selectable, and may be completed in any order.",
