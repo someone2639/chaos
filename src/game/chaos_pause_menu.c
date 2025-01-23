@@ -409,15 +409,32 @@ void render_active_patches() {
     s32 numPatches = *gChaosActiveEntryCount;
     s32 listStart = gChaosPauseMenu->chaosListStart;
     s32 listEnd = (numPatches > PATCH_LIST_SIZE) ? (listStart + PATCH_LIST_SIZE) : numPatches;
+    s32 triangleAlpha = ((gGlobalTimer % 50) < 25) ? 0xFF : 0x00;
 
     for(int i = listStart; i < listEnd; i++) {
-        draw_mini_patch_card(cardX + (20 * (i == selection)), SCREEN_HEIGHT - 35 - (35 * (i - listStart)), &gChaosActiveEntries[i]);
+        draw_mini_patch_card(cardX + (20 * (i == selection)), SCREEN_HEIGHT - 32 - (35 * (i - listStart)), &gChaosActiveEntries[i]);
     }
 
     draw_active_patch_desc(descX, ACTIVE_PATCH_DESC_Y, &gChaosActiveEntries[selection]);
 
     if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_DRAW_EXT_DESC) {
         draw_active_patch_ext_desc(&gChaosActiveEntries[selection]);
+    }
+
+    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, triangleAlpha);
+
+    if(listStart != 0) {
+        create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_PUSH, cardX + 8, SCREEN_HEIGHT - 12, 0);
+        create_dl_rotation_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, 90.0f, 0, 0, 1.0f);
+        gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
+        gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    }
+    
+    if(listEnd < numPatches) {
+        create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_PUSH, cardX - 8, 12, 0);
+        create_dl_rotation_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, 270.0f, 0, 0, 1.0f);
+        gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
+        gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
     }
 }
 
