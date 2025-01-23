@@ -18,11 +18,19 @@ enum ActivePatchesMenuFlags {
     ACTIVE_PATCHES_MENU_ACTIVE              = (1 << 0),
     ACTIVE_PATCHES_MENU_STOP_GAME_RENDER    = (1 << 1),
     ACTIVE_PATCHES_MENU_HALT_INPUT          = (1 << 2),
+    ACTIVE_PATCHES_MENU_DRAW_EXT_DESC       = (1 << 3),
 };
 
 enum ActivePatchesMenuAnims {
     ACTIVE_PATCHES_MENU_ANIM_STARTUP,
     ACTIVE_PATCHES_MENU_ANIM_ENDING,
+    ACTIVE_PATCHES_MENU_ANIM_EXT_DESC_APPEAR,
+    ACTIVE_PATCHES_MENU_ANIM_EXT_DESC_DISAPPEAR,
+};
+
+enum ActivePatchesMenuState {
+    ACTIVE_PATCHES_MENU_STATE_DEFAULT,
+    ACTIVE_PATCHES_MENU_STATE_SHOW_EXT_DESC,
 };
 
 struct ChaosPauseMenu {
@@ -31,6 +39,7 @@ struct ChaosPauseMenu {
     u16 chaosListStart;
     f32 descX;
     f32 cardX;
+    f32 extDescScale;
 };
 
 extern struct ChaosPauseMenu *gChaosPauseMenu;
