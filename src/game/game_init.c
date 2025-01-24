@@ -832,7 +832,6 @@ void setup_game_memory(void) {
  * Main game loop thread. Runs forever as long as the game continues.
  */
 #include "game/main.h"
-#include "level_update.h"
 #include "hvqm/hvqm.h"
 void thread5_game_loop(UNUSED void *arg) {
     struct LevelCommand *addr;
