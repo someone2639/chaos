@@ -56,6 +56,7 @@
 #define PLAY_MODE_CHANGE_LEVEL 4
 #define PLAY_MODE_FRAME_ADVANCE 5
 #define PLAY_MODE_SELECT_PATCH 6
+#define PLAY_MODE_QUICKTIME     7
 
 
 struct CreditsEntry {
