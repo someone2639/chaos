@@ -1372,6 +1372,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 6,
 
+        .activatedInitFunc = chs_shuffle_objs_init,
+
         .name              = "Shuffle Object Positions",
         .shortDescription  = "Kaze WISHES tornado looked like this!",
     },

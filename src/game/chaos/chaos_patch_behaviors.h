@@ -173,3 +173,4 @@ void chs_act_reverb(void);
 void chs_deact_reverb(void);
 u8 chs_topdown_check(void);
 u8 chs_cam_invert_x_check(void);
+void chs_shuffle_objs_init(void);

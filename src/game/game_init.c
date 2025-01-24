@@ -890,8 +890,7 @@ void thread5_game_loop(UNUSED void *arg) {
 #define SOMEONE2639_CRAZY_EXPERIMENTS
 #ifdef SOMEONE2639_CRAZY_EXPERIMENTS
         if (gPlayer1Controller->buttonPressed & L_TRIG) {
-            // chaos_add_new_entry(CHAOS_PATCH_SHUFFLE_OBJECTS);
-            gMarioState->statusForCamera->cameraEvent = CAM_EVENT_SHUFFLE;
+            chaos_add_new_entry(CHAOS_PATCH_SHUFFLE_OBJECTS);
         }
         // if (gPlayer1Controller->buttonPressed & R_TRIG) {
         //     chaos_remove_expired_entry(0);

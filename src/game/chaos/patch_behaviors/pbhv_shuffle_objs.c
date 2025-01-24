@@ -111,15 +111,16 @@ void cutscene_shuffle(struct Camera *c) {
     cutscene_event(cshuffle_timestart, c, 59, -1);
 
     // set pos (TODO: give a level overview instead of a random angle relative to mario)
-    #define CPOS 1000
+    #define CPOS 0
     c->pos[0] = CPOS;
     c->pos[1] = CPOS;
     c->pos[2] = CPOS;
 
     // set focus
-    c->focus[0] = 0;
-    c->focus[0] = 0;
-    c->focus[0] = 0;
+    vec3f_copy(c->focus, gMarioState->pos);
+    // c->focus[0] = 0;
+    // c->focus[0] = 0;
+    // c->focus[0] = 0;
 }
 
 void cutscene_shuffle_end(struct Camera *c) {
@@ -130,3 +131,8 @@ struct Cutscene sCutsceneShuffleObjs[] = {
     {cutscene_shuffle, 60},
     {cutscene_shuffle_end, 0},
 };
+
+
+void chs_shuffle_objs_init(void) {
+    gMarioState->statusForCamera->cameraEvent = CAM_EVENT_SHUFFLE;
+}
