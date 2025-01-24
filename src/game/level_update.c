@@ -1235,6 +1235,8 @@ UNUSED static s32 play_mode_unused(void) {
     return 0;
 }
 
+void play_mode_quicktime();
+
 s32 update_level(void) {
     s32 changeLevel = 0;
     chaosShouldProcessFrameUpdate = TRUE;
@@ -1257,6 +1259,10 @@ s32 update_level(void) {
             break;
         case PLAY_MODE_SELECT_PATCH:
             changeLevel = play_mode_select_patch();
+            break;
+        case PLAY_MODE_QUICKTIME:
+            play_mode_quicktime();
+            changeLevel = FALSE;
             break;
     }
 

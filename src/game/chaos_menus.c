@@ -146,13 +146,24 @@ void menu_button_prompt(s32 x, s32 y, s32 button) {
             buttonTexture = (sDisplayButtonsDown) ? texture_icon_r_trig_down : texture_icon_r_trig;
             break;
         case MENU_PROMPT_Z_TRIG:
-        default:
             buttonTexture = (sDisplayButtonsDown) ? texture_icon_z_trig_down : texture_icon_z_trig;
+            break;
+        case MENU_PROMPT_C_DOWN:
+            buttonTexture = (sDisplayButtonsDown) ? texture_icon_c_d_button_down : texture_icon_c_d_button;
+            break;
+        case MENU_PROMPT_C_LEFT:
+            buttonTexture = (sDisplayButtonsDown) ? texture_icon_c_l_button_down : texture_icon_c_l_button;
+            break;
+        case MENU_PROMPT_C_UP:
+            buttonTexture = (sDisplayButtonsDown) ? texture_icon_c_u_button_down : texture_icon_c_u_button;
+            break;
+        case MENU_PROMPT_C_RIGHT:
+        default:
+            buttonTexture = (sDisplayButtonsDown) ? texture_icon_c_r_button_down : texture_icon_c_r_button;
             break;
     }
 
     buttonTexture = segmented_to_virtual(buttonTexture);
-
 
     gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, buttonTexture);
 	gDPSetTile(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0);

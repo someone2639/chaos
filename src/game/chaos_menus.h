@@ -13,6 +13,10 @@ enum MenuButtonPrompt {
     MENU_PROMPT_L_TRIG,
     MENU_PROMPT_R_TRIG,
     MENU_PROMPT_Z_TRIG,
+    MENU_PROMPT_C_DOWN,
+    MENU_PROMPT_C_LEFT,
+    MENU_PROMPT_C_UP,
+    MENU_PROMPT_C_RIGHT,
 };
 
 enum MenuJoystickDir {

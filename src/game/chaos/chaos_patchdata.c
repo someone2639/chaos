@@ -1113,6 +1113,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 5,
 
+        .conditionalFunc   = chs_cond_button_broken_c,
+
         .name              = "Camera Malfunction",
         .shortDescription  = "All C buttons are completely nonfunctional (even for menus!)",
     },
@@ -1364,6 +1366,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Top-Down Camera",
         .shortDescription  = "Now you're playing Zelda! (without the items) (without the story) (without the combat) (without the",
+    },
+    [CHAOS_PATCH_QUICKTIME] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .conditionalFunc   = chs_cond_quicktime,
+        .frameUpdateFunc   = chs_update_quicktime,
+        .activatedInitFunc = chs_act_quicktime,
+
+        .name              = "Quicktime Events",
+        .shortDescription  = "Follow the buttons in the order prompted on screen or die. Directed by David Cage.",
     },
     [CHAOS_PATCH_SHUFFLE_OBJECTS] = {
         .durationType      = CHAOS_DURATION_STARS,

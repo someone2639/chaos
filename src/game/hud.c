@@ -403,6 +403,8 @@ void render_hud_camera_status(void) {
     gSPDisplayList(gDisplayListHead++, dl_hud_img_end);
 }
 
+void draw_quicktime_event_prompts(void);
+
 /*
     Renders the time limit display for the "Speedy Comet" patch
 */
@@ -510,5 +512,9 @@ void render_hud(void) {
 
     if(chaos_check_if_patch_active(CHAOS_PATCH_TIME_LIMIT)) {
         render_chaos_time_limit();
+    }
+
+    if(chaos_check_if_patch_active(CHAOS_PATCH_QUICKTIME)) {
+        draw_quicktime_event_prompts();
     }
 }

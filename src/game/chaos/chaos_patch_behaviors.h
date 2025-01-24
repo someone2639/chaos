@@ -153,6 +153,7 @@ void chs_update_speed_tax(void);
 // Input Modifiers
 u8 chs_cond_button_broken_b(void);
 u8 chs_cond_button_broken_z(void);
+u8 chs_cond_button_broken_c(void);
 u8 chs_cond_swapped_zr_ab(void);
 
 // Cap Effects
@@ -174,3 +175,7 @@ void chs_deact_reverb(void);
 u8 chs_topdown_check(void);
 u8 chs_cam_invert_x_check(void);
 void chs_shuffle_objs_init(void);
+u8 chs_cond_quicktime(void);
+void chs_update_quicktime(void);
+void chs_act_quicktime(void);
+
