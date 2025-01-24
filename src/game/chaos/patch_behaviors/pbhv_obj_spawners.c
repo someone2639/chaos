@@ -323,7 +323,10 @@ void chs_lvlupdate_spawn_on_shell(void) {
     struct ChaosActiveEntry *this;
     chaos_find_first_active_patch(CHAOS_PATCH_SPAWN_ON_SHELL, &this);
 
-    if (gCurrCourseNum == COURSE_NONE) {
+    if (gCurrCourseNum == COURSE_NONE 
+        || gCurrLevelNum == LEVEL_BOWSER_1
+        || gCurrLevelNum == LEVEL_BOWSER_2
+        || gCurrLevelNum == LEVEL_BOWSER_3) {
         this->frameTimer = 0xFFFFFF;
         return;
     }
