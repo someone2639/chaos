@@ -4249,3 +4249,35 @@ ALIGNED8 u8 texture_icon_z_trig[] = {
 ALIGNED8 u8 texture_icon_z_trig_down[] = {
 #include "textures/segment2/z_trig_down_custom.rgba16.inc.c"
 };
+
+ALIGNED8 u8 texture_icon_c_d_button[] = {
+#include "textures/segment2/c_d_button_custom.rgba16.inc.c"
+};
+
+ALIGNED8 u8 texture_icon_c_d_button_down[] = {
+#include "textures/segment2/c_d_button_down_custom.rgba16.inc.c"
+};
+
+ALIGNED8 u8 texture_icon_c_l_button[] = {
+#include "textures/segment2/c_l_button_custom.rgba16.inc.c"
+};
+
+ALIGNED8 u8 texture_icon_c_l_button_down[] = {
+#include "textures/segment2/c_l_button_down_custom.rgba16.inc.c"
+};
+
+ALIGNED8 u8 texture_icon_c_u_button[] = {
+#include "textures/segment2/c_u_button_custom.rgba16.inc.c"
+};
+
+ALIGNED8 u8 texture_icon_c_u_button_down[] = {
+#include "textures/segment2/c_u_button_down_custom.rgba16.inc.c"
+};
+
+ALIGNED8 u8 texture_icon_c_r_button[] = {
+#include "textures/segment2/c_r_button_custom.rgba16.inc.c"
+};
+
+ALIGNED8 u8 texture_icon_c_r_button_down[] = {
+#include "textures/segment2/c_r_button_down_custom.rgba16.inc.c"
+};

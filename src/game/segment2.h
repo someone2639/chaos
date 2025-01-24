@@ -110,5 +110,13 @@ extern u8 texture_icon_r_trig[];
 extern u8 texture_icon_r_trig_down[];
 extern u8 texture_icon_z_trig[];
 extern u8 texture_icon_z_trig_down[];
+extern u8 texture_icon_c_d_button[];
+extern u8 texture_icon_c_d_button_down[];
+extern u8 texture_icon_c_l_button[];
+extern u8 texture_icon_c_l_button_down[];
+extern u8 texture_icon_c_u_button[];
+extern u8 texture_icon_c_u_button_down[];
+extern u8 texture_icon_c_r_button[];
+extern u8 texture_icon_c_r_button_down[];
 
 #endif // SEGMENT2_H
