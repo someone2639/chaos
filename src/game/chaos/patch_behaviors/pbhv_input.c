@@ -19,6 +19,9 @@ u8 chs_cond_button_broken_b(void) {
     if (chaos_check_if_patch_active(CHAOS_PATCH_SWAPPED_ZR_AB)) {
         return FALSE;
     }
+    if (chaos_check_if_patch_active(CHAOS_PATCH_QUICKTIME)) {
+        return FALSE;
+    }
 
     return TRUE;
 }
@@ -30,7 +33,18 @@ u8 chs_cond_button_broken_z(void) {
     if (chaos_check_if_patch_active(CHAOS_PATCH_SWAPPED_ZR_AB)) {
         return FALSE;
     }
+    if (chaos_check_if_patch_active(CHAOS_PATCH_QUICKTIME)) {
+        return FALSE;
+    }
 
+    return TRUE;
+}
+
+u8 chs_cond_button_broken_c(void) {
+    if (chaos_check_if_patch_active(CHAOS_PATCH_QUICKTIME)) {
+        return FALSE;
+    }
+    
     return TRUE;
 }
 

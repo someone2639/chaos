@@ -153,6 +153,7 @@ void chs_update_speed_tax(void);
 // Input Modifiers
 u8 chs_cond_button_broken_b(void);
 u8 chs_cond_button_broken_z(void);
+u8 chs_cond_button_broken_c(void);
 u8 chs_cond_swapped_zr_ab(void);
 
 // Cap Effects

@@ -1113,6 +1113,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 5,
 
+        .conditionalFunc   = chs_cond_button_broken_c,
+
         .name              = "Camera Malfunction",
         .shortDescription  = "All C buttons are completely nonfunctional (even for menus!)",
     },
