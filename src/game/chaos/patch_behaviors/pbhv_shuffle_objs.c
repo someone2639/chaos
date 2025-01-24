@@ -1,6 +1,7 @@
 #include <PR/ultratypes.h>
 #include <PR/gbi.h>
 #include "types.h"
+#include "behavior_data.h"
 #include "game/mario.h"
 #include "sm64.h"
 #include "object_fields.h"
@@ -39,6 +40,10 @@ void cshuffle_populate_shuffle_list(UNUSED struct Camera *c) {
 
         u32 i = shuffleCount;
         do {
+            if (o->behavior == segmented_to_virtual(bhvStaticObject)) {
+                o = (struct Object *)o->header.next;
+                continue;
+            }
             shuffleList[i] = o;
 
             posStore[i][0] = o->oPosX;
@@ -89,11 +94,9 @@ void cshuffle_setfloors(UNUSED struct Camera *c) {
 
 void cshuffle_timestop(UNUSED struct Camera *c) {
     enable_time_stop_including_mario();
-    // gTimeStopState |= TIME_STOP_MARIO_AND_DOORS;
 }
 void cshuffle_timestart(UNUSED struct Camera *c) {
     disable_time_stop_including_mario();
-    // gTimeStopState &= ~TIME_STOP_MARIO_AND_DOORS;
 }
 
 extern void cutscene_goto_cvar_pos(struct Camera *c, f32 goalDist, s16 goalPitch, s16 rotPitch, s16 rotYaw);
@@ -103,12 +106,11 @@ void cutscene_shuffle(struct Camera *c) {
     cutscene_event(cshuffle_reset, c, 0, 1);
     cutscene_event(cshuffle_timestop, c, 0, 1);
     cutscene_event(cshuffle_populate_shuffle_list, c, 0, 1);
-    // cutscene_event(cshuffle_secret_santa, c, 29, 30);
     cutscene_event(cshuffle_approach, c, 30, -1);
     cutscene_event(cshuffle_setfloors, c, 59, -1);
     cutscene_event(cshuffle_timestart, c, 59, -1);
 
-    // set pos
+    // set pos (TODO: give a level overview instead of a random angle relative to mario)
     #define CPOS 1000
     c->pos[0] = CPOS;
     c->pos[1] = CPOS;
@@ -118,9 +120,6 @@ void cutscene_shuffle(struct Camera *c) {
     c->focus[0] = 0;
     c->focus[0] = 0;
     c->focus[0] = 0;
-    // vec3f_copy(sCutsceneVars[0].point, c->focus);
-
-    // cutscene_goto_cvar_pos(c, 2000, 0x2000, 0x2000, 0x2000);
 }
 
 void cutscene_shuffle_end(struct Camera *c) {

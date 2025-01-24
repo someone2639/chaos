@@ -660,7 +660,6 @@ extern struct Camera *gCamera;
 extern struct Object *gCutsceneFocus;
 extern struct Object *gSecondCameraFocus;
 extern u8 gRecentCutscene;
-extern struct CutsceneVariable sCutsceneVars[10];
 
 // TODO: sort all of this extremely messy shit out after the split
 
