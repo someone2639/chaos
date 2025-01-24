@@ -14,6 +14,7 @@
 #include "engine/behavior_script.h"
 #include "engine/math_util.h"
 #include "engine/surface_collision.h"
+#include "course_table.h"
 
 f32 posStore[OBJECT_POOL_CAPACITY][3] = { 0 };
 struct Object *shuffleList[OBJECT_POOL_CAPACITY] = {0};
@@ -132,7 +133,18 @@ struct Cutscene sCutsceneShuffleObjs[] = {
     {cutscene_shuffle_end, 0},
 };
 
+u32 chsStartShuffle = 0;
 
-void chs_shuffle_objs_init(void) {
-    gMarioState->statusForCamera->cameraEvent = CAM_EVENT_SHUFFLE;
+void chs_start_shuffle(void) {
+    chsStartShuffle = 1;
+}
+
+void chs_shuffle_objects(void) {
+    if (chsStartShuffle == 1 && gMarioState->action == ACT_IDLE) {
+        if (gCurrCourseNum != COURSE_NONE) {
+            gMarioState->statusForCamera->cameraEvent = CAM_EVENT_SHUFFLE;
+        }
+
+        chsStartShuffle = 0;
+    }
 }
