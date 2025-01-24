@@ -390,6 +390,8 @@ void set_mario_initial_action(struct MarioState *m, u32 spawnType, u32 actionArg
     set_mario_initial_cap_powerup(m);
 }
 
+int sheck = 0;
+
 void init_mario_after_warp(void) {
     struct Object *object = get_destination_warp_object(sWarpDest.nodeId);
 
@@ -428,6 +430,12 @@ void init_mario_after_warp(void) {
     }
 
     reset_camera(gCurrentArea->camera);
+    if (chaos_check_if_patch_active(CHAOS_PATCH_SHUFFLE_OBJECTS)) {
+        // if (sheck == 0) {
+        //     sheck = 1;
+            gCurrentArea->camera->cutscene = CUTSCENE_SHUFFLE_OBJS;
+        // }
+    }
     sWarpDest.type = WARP_TYPE_NOT_WARPING;
     sDelayedWarpOp = WARP_OP_NONE;
 

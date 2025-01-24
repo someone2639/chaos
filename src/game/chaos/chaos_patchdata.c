@@ -1365,4 +1365,14 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Top-Down Camera",
         .shortDescription  = "Now you're playing Zelda! (without the items) (without the story) (without the combat) (without the",
     },
+    [CHAOS_PATCH_SHUFFLE_OBJECTS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .name              = "Shuffle Object Positions",
+        .shortDescription  = "Kaze WISHES tornado looked like this!",
+    },
 };

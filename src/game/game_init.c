@@ -832,6 +832,7 @@ void setup_game_memory(void) {
  * Main game loop thread. Runs forever as long as the game continues.
  */
 #include "game/main.h"
+#include "level_update.h"
 #include "hvqm/hvqm.h"
 void thread5_game_loop(UNUSED void *arg) {
     struct LevelCommand *addr;
@@ -886,17 +887,18 @@ void thread5_game_loop(UNUSED void *arg) {
         read_controller_inputs();
         profiler_update(PROFILER_TIME_CONTROLLERS);
         addr = level_script_execute(addr);
-
+#define SOMEONE2639_CRAZY_EXPERIMENTS
 #ifdef SOMEONE2639_CRAZY_EXPERIMENTS
         if (gPlayer1Controller->buttonPressed & L_TRIG) {
-            chaos_add_new_entry(CHAOS_PATCH_TOP_DOWN_CAMERA);
+            // chaos_add_new_entry(CHAOS_PATCH_SHUFFLE_OBJECTS);
+            gMarioState->statusForCamera->cameraEvent = CAM_EVENT_SHUFFLE;
         }
-        if (gPlayer1Controller->buttonPressed & R_TRIG) {
-            chaos_remove_expired_entry(0);
-        }
-        if ((gPlayer1Controller->buttonPressed & (A_BUTTON|L_TRIG)) == (A_BUTTON | L_TRIG)) {
-            HVQM_PLAY(chaos);
-        }
+        // if (gPlayer1Controller->buttonPressed & R_TRIG) {
+        //     chaos_remove_expired_entry(0);
+        // }
+        // if ((gPlayer1Controller->buttonPressed & (A_BUTTON|L_TRIG)) == (A_BUTTON | L_TRIG)) {
+        //     HVQM_PLAY(chaos);
+        // }
 #endif // SOMEONE2639_CRAZY_EXPERIMENTS
         display_and_vsync();
 
