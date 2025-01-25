@@ -45,6 +45,14 @@ void cshuffle_populate_shuffle_list(UNUSED struct Camera *c) {
                 o = (struct Object *)o->header.next;
                 continue;
             }
+            if (o->behavior == segmented_to_virtual(bhvStar)) {
+                o = (struct Object *)o->header.next;
+                continue;
+            }
+            if (o->parentObj != o) {
+                o = (struct Object *)o->header.next;
+                continue;
+            }
             shuffleList[i] = o;
 
             posStore[i][0] = o->oPosX;
@@ -56,6 +64,52 @@ void cshuffle_populate_shuffle_list(UNUSED struct Camera *c) {
         } while (o != head);
         shuffleCount = i;
     }
+}
+
+const BehaviorScript *surflist[] = {
+    bhvExclamationBox,
+    bhvMessagePanel,
+
+};
+
+u8 isInList(struct Object *o) {
+    for (int i = 0; i < ARRAY_COUNT(surflist); i++) {
+        if (o->behavior == segmented_to_virtual(surflist[i])) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+void cshuffle_populate_surface_list_and_sort(UNUSED struct Camera *c) {
+    // start at 1 to skip mario
+    u32 ol = OBJ_LIST_SURFACE;
+    struct Object *head = (struct Object *)&gObjectLists[ol];
+    if (head == NULL) return;
+
+    struct Object *o = head;
+
+    u32 i = shuffleCount;
+    do {
+        if (!isInList(o)) {
+            o = (struct Object *)o->header.next;
+            continue;
+        }
+        if (o->parentObj != o) {
+            o = (struct Object *)o->header.next;
+            continue;
+        }
+        shuffleList[i] = o;
+
+        posStore[i][0] = o->oPosX;
+        posStore[i][1] = o->oPosY;
+        posStore[i][2] = o->oPosZ;
+
+        o = (struct Object *)o->header.next;
+        i++;
+    } while (o != head);
+    shuffleCount = i;
 
     for (int i = (int)shuffleCount - 1; i >= 0; i--) {
         s32 randIndex = random_float() * (i + 1);
@@ -64,6 +118,7 @@ void cshuffle_populate_shuffle_list(UNUSED struct Camera *c) {
         shuffleList[i] = tmp;
     }
 }
+
 
 void cshuffle_approach(UNUSED struct Camera *c) {
     for (u32 i = 0; i < shuffleCount; i++) {
@@ -81,7 +136,7 @@ void cshuffle_approach(UNUSED struct Camera *c) {
     }
 }
 
-void cshuffle_setfloors(UNUSED struct Camera *c) {
+void cshuffle_setfloors_androoms(UNUSED struct Camera *c) {
     for (u32 i = 0; i < shuffleCount; i++) {
         struct Object *o = shuffleList[i];
         if (gMarioObject == o) continue;
@@ -89,6 +144,13 @@ void cshuffle_setfloors(UNUSED struct Camera *c) {
         if (o->oMoveFlags & OBJ_MOVE_ON_GROUND) {
             f32 floor = find_floor_height(o->oPosX, o->oPosY + 200.0f, o->oPosZ);
             posStore[i][1] = floor;
+        }
+
+        if (o->oRoom != -1) {
+            struct Object *prev = gCurrentObject;
+            gCurrentObject = o;
+            void bhv_init_room(); bhv_init_room();
+            gCurrentObject = prev;
         }
     }
 }
@@ -107,8 +169,9 @@ void cutscene_shuffle(struct Camera *c) {
     cutscene_event(cshuffle_reset, c, 0, 1);
     cutscene_event(cshuffle_timestop, c, 0, 1);
     cutscene_event(cshuffle_populate_shuffle_list, c, 0, 1);
+    cutscene_event(cshuffle_populate_surface_list_and_sort, c, 1, 2);
     cutscene_event(cshuffle_approach, c, 30, -1);
-    cutscene_event(cshuffle_setfloors, c, 59, -1);
+    cutscene_event(cshuffle_setfloors_androoms, c, 59, -1);
     cutscene_event(cshuffle_timestart, c, 59, -1);
 
     // set pos (TODO: give a level overview instead of a random angle relative to mario)
@@ -140,11 +203,13 @@ void chs_start_shuffle(void) {
 }
 
 void chs_shuffle_objects(void) {
-    if (chsStartShuffle == 1 && gMarioState->action == ACT_IDLE) {
-        if (gCurrCourseNum != COURSE_NONE) {
-            gMarioState->statusForCamera->cameraEvent = CAM_EVENT_SHUFFLE;
-        }
+    if (chsStartShuffle == 1) {
+        if ((gMarioState->action == ACT_IDLE) || (gMarioState->action & ACT_FLAG_SWIMMING)) {
+            if (gCurrCourseNum != COURSE_NONE) {
+                gMarioState->statusForCamera->cameraEvent = CAM_EVENT_SHUFFLE;
+            }
 
-        chsStartShuffle = 0;
+            chsStartShuffle = 0;
+        }
     }
 }
