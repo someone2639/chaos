@@ -1163,6 +1163,34 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription  = "Invert the Y axis of the joystick when controlling Mario (i.e. forward and backward).",
     },
 
+// Size Modifiers
+    [CHAOS_PATCH_MARIO_BIG] = {
+        .durationType      = CHAOS_DURATION_INFINITE,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_MARIO_SMALL,
+        .severity          = 1,
+        .isStackable       = TRUE,
+
+        .activatedInitFunc = chs_act_mario_big,
+        .conditionalFunc   = chs_cond_mario_big,
+
+        .name              = "One Makes You Larger",
+        .shortDescription  = "Increase Mario's size by 12.5% (additive)",
+    },
+    [CHAOS_PATCH_MARIO_SMALL] = {
+        .durationType      = CHAOS_DURATION_INFINITE,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .negationId        = CHAOS_PATCH_MARIO_BIG,
+        .severity          = 1,
+        .isStackable       = TRUE,
+
+        .activatedInitFunc = chs_act_mario_small,
+        .conditionalFunc   = chs_cond_mario_small,
+
+        .name              = "One Makes You Smaller",
+        .shortDescription  = "Decrease Mario's size by 12.5% (additive)",
+    },
+
 // Miscellaneous Modifiers
     [CHAOS_PATCH_MARIO_INVISIBLE] = {
         .durationType      = CHAOS_DURATION_STARS,

@@ -78,8 +78,8 @@ s32 set_pole_position(struct MarioState *m, f32 offsetY) {
     collided |= f32_find_wall_collision(&m->pos[0], &m->pos[1], &m->pos[2], 30.0f, 24.0f);
 
     ceilHeight = vec3f_find_ceil(m->pos, m->pos[1], &ceil);
-    if (m->pos[1] > ceilHeight - 160.0f) {
-        m->pos[1] = ceilHeight - 160.0f;
+    if (m->pos[1] > ceilHeight - (160.0f * m->size)) {
+        m->pos[1] = ceilHeight - (160.0f * m->size);
         marioObj->oMarioPolePos = m->pos[1] - m->usedObj->oPosY;
     }
 
@@ -316,14 +316,14 @@ s32 perform_hanging_step(struct MarioState *m, Vec3f nextPos) {
     if (ceil == NULL) {
         return HANG_LEFT_CEIL;
     }
-    if (ceilHeight - floorHeight <= 160.0f) {
+    if (ceilHeight - floorHeight <= (160.0f * m->size)) {
         return HANG_HIT_CEIL_OR_OOB;
     }
     if (ceil->type != SURFACE_HANGABLE) {
         return HANG_LEFT_CEIL;
     }
 
-    ceilOffset = ceilHeight - (nextPos[1] + 160.0f);
+    ceilOffset = ceilHeight - (nextPos[1] + (160.0f * m->size));
     if (ceilOffset < -30.0f) {
         return HANG_HIT_CEIL_OR_OOB;
     }
@@ -331,7 +331,7 @@ s32 perform_hanging_step(struct MarioState *m, Vec3f nextPos) {
         return HANG_LEFT_CEIL;
     }
 
-    nextPos[1] = m->ceilHeight - 160.0f;
+    nextPos[1] = m->ceilHeight - (160.0f * m->size);
     vec3f_copy(m->pos, nextPos);
 
     m->floor = floor;
@@ -379,7 +379,7 @@ void update_hang_stationary(struct MarioState *m) {
     m->slideVelX = 0.0f;
     m->slideVelZ = 0.0f;
 
-    m->pos[1] = m->ceilHeight - 160.0f;
+    m->pos[1] = m->ceilHeight - (160.0f * m->size);
     vec3f_copy(m->vel, gVec3fZero);
     vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
 }
@@ -545,7 +545,7 @@ void update_ledge_climb(struct MarioState *m, s32 animation, u32 endAction) {
 s32 act_ledge_grab(struct MarioState *m) {
     f32 heightAboveFloor;
     s16 intendedDYaw = m->intendedYaw - m->faceAngle[1];
-    s32 hasSpaceForMario = (m->ceilHeight - m->floorHeight >= 160.0f);
+    s32 hasSpaceForMario = (m->ceilHeight - m->floorHeight >= (160.0f * m->size));
 
     if (m->actionTimer < 10) {
         m->actionTimer++;

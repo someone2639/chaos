@@ -600,12 +600,12 @@ s32 act_debug_free_move(struct MarioState *m) {
     if (floor == NULL)
         return FALSE;
 
-    if (ceilHeight - floorHeight >= 160.0f) {
+    if (ceilHeight - floorHeight >= (160.0f * m->size)) {
         if (floor != NULL && pos[1] < floorHeight) {
             pos[1] = floorHeight;
         }
-        if (ceil != NULL && pos[1] + 160.0f > ceilHeight) {
-            pos[1] = ceilHeight - 160.0f;
+        if (ceil != NULL && pos[1] + (160.0f * m->size) > ceilHeight) {
+            pos[1] = ceilHeight - (160.0f * m->size);
         }
         vec3f_copy(m->pos, pos);
     }
@@ -1421,7 +1421,7 @@ s32 act_bbh_enter_spin(struct MarioState *m) {
             if (m->actionTimer >= 11) {
                 m->actionTimer -= 6;
                 scale = m->actionTimer / 100.0f;
-                vec3f_set(m->marioObj->header.gfx.scale, scale, scale, scale);
+                vec3f_set(m->marioObj->header.gfx.scale, scale * m->size, scale * m->size, scale * m->size);
             }
             break;
 
@@ -1568,7 +1568,7 @@ s32 act_squished(struct MarioState *m) {
 
     switch (m->actionState) {
         case 0:
-            if (spaceUnderCeil > 160.0f) {
+            if (spaceUnderCeil > (160.0f * m->size)) {
                 m->squishTimer = 0;
                 return set_mario_action(m, ACT_IDLE, 0);
             }
@@ -1577,9 +1577,12 @@ s32 act_squished(struct MarioState *m) {
 
             if (spaceUnderCeil >= 10.1f) {
                 // Mario becomes a pancake
-                squishAmount = spaceUnderCeil / 160.0f;
+                squishAmount = spaceUnderCeil / (160.0f * m->size);
                 vec3f_set(m->marioObj->header.gfx.scale, 2.0f - squishAmount, squishAmount,
                           2.0f - squishAmount);
+                m->marioObj->header.gfx.scale[0] *= m->size;
+                m->marioObj->header.gfx.scale[1] *= m->size;
+                m->marioObj->header.gfx.scale[2] *= m->size;
             } else {
                 if (!(m->flags & MARIO_METAL_CAP) && m->invincTimer == 0) {
                     // cap on: 3 units; cap off: 4.5 units
@@ -1593,7 +1596,7 @@ s32 act_squished(struct MarioState *m) {
 
                 // Both of the 1.8's are really floats, but one of them has to
                 // be written as a double for this to match on -O2.
-                vec3f_set(m->marioObj->header.gfx.scale, 1.8, 0.05f, 1.8f);
+                vec3f_set(m->marioObj->header.gfx.scale, 1.8 * m->size, 0.05f * m->size, 1.8f * m->size);
 #if ENABLE_RUMBLE
                 queue_rumble_data(10, 80);
 #endif

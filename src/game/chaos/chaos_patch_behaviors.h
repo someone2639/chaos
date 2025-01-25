@@ -159,6 +159,12 @@ u8 chs_cond_swapped_zr_ab(void);
 // Cap Effects
 void chs_update_wing_cap(void);
 
+// Size Modifiers
+void chs_act_mario_big(void);
+u8 chs_cond_mario_big(void);
+void chs_act_mario_small(void);
+u8 chs_cond_mario_small(void);
+
 // Misc
 u8 chs_cond_one_hit_wonder(void);
 void chs_update_serve_ads(void);
