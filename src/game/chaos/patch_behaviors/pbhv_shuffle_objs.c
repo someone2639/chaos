@@ -20,13 +20,24 @@ f32 posStore[OBJECT_POOL_CAPACITY][3] = { 0 };
 struct Object *shuffleList[OBJECT_POOL_CAPACITY] = {0};
 u32 shuffleCount = 0;
 
+#define STARCOUNT 10
+f32 starPos[STARCOUNT][3] = { 0 };
+struct Object *starList[STARCOUNT] = {0};
+u32 starCount = 0;
+
 void cshuffle_reset(UNUSED struct Camera *c) {
-    shuffleCount = 0;
+    shuffleCount = 0; starCount = 0;
     for (int i = 0; i < OBJECT_POOL_CAPACITY; i++) {
         shuffleList[i] = NULL;
         posStore[i][0] = 0;
         posStore[i][1] = 0;
         posStore[i][2] = 0;
+    }
+    for (int i = 0; i < STARCOUNT; i++) {
+        starList[i] = NULL;
+        starPos[i][0] = 0;
+        starPos[i][1] = 0;
+        starPos[i][2] = 0;
     }
 }
 
@@ -66,10 +77,37 @@ void cshuffle_populate_shuffle_list(UNUSED struct Camera *c) {
     }
 }
 
+void cshuffle_populate_star_list(UNUSED struct Camera *c) {
+    // add stars
+    struct Object *head = (struct Object *)&gObjectLists[OBJ_LIST_LEVEL];
+    struct Object *o = head;
+    u32 i = 0;
+    do {
+        if (o->behavior != segmented_to_virtual(bhvStar)) {
+            o = (struct Object *)o->header.next;
+            continue;
+        }
+        starList[i] = o;
+
+        starPos[i][0] = o->oPosX;
+        starPos[i][1] = o->oPosY;
+        starPos[i][2] = o->oPosZ;
+
+        o = (struct Object *)o->header.next;
+        i++;
+    } while (o != head);
+}
+
 const BehaviorScript *surflist[] = {
     bhvExclamationBox,
     bhvMessagePanel,
+    bhvWoodenPost,
+    bhvChainChompGate,
+    bhvSeesawPlatform,
+    bhvCheckerboardPlatformSub,
 
+    // TTC memes
+    bhvTTCRotatingSolid,
 };
 
 u8 isInList(struct Object *o) {
@@ -82,7 +120,7 @@ u8 isInList(struct Object *o) {
     return 0;
 }
 
-void cshuffle_populate_surface_list_and_sort(UNUSED struct Camera *c) {
+void cshuffle_populate_surface_list(UNUSED struct Camera *c) {
     // start at 1 to skip mario
     u32 ol = OBJ_LIST_SURFACE;
     struct Object *head = (struct Object *)&gObjectLists[ol];
@@ -96,10 +134,10 @@ void cshuffle_populate_surface_list_and_sort(UNUSED struct Camera *c) {
             o = (struct Object *)o->header.next;
             continue;
         }
-        if (o->parentObj != o) {
-            o = (struct Object *)o->header.next;
-            continue;
-        }
+        // if (o->parentObj != o) {
+        //     o = (struct Object *)o->header.next;
+        //     continue;
+        // }
         shuffleList[i] = o;
 
         posStore[i][0] = o->oPosX;
@@ -110,12 +148,20 @@ void cshuffle_populate_surface_list_and_sort(UNUSED struct Camera *c) {
         i++;
     } while (o != head);
     shuffleCount = i;
+}
 
+void cshuffle_sort(UNUSED struct Camera *c) {
     for (int i = (int)shuffleCount - 1; i >= 0; i--) {
         s32 randIndex = random_float() * (i + 1);
         struct Object *tmp = shuffleList[randIndex];
         shuffleList[randIndex] = shuffleList[i];
         shuffleList[i] = tmp;
+    }
+    for (int i = (int)starCount - 1; i >= 0; i--) {
+        s32 randIndex = random_float() * (i + 1);
+        struct Object *tmp = starList[randIndex];
+        starList[randIndex] = starList[i];
+        starList[i] = tmp;
     }
 }
 
@@ -133,6 +179,33 @@ void cshuffle_approach(UNUSED struct Camera *c) {
         o->header.gfx.pos[0] = approach_f32_asymptotic(o->header.gfx.pos[0], posStore[i][0], FACTOR);
         o->header.gfx.pos[1] = approach_f32_asymptotic(o->header.gfx.pos[1], posStore[i][1], FACTOR);
         o->header.gfx.pos[2] = approach_f32_asymptotic(o->header.gfx.pos[2], posStore[i][2], FACTOR);
+    }
+}
+
+void cshuffle_finish_approach(UNUSED struct Camera *c) {
+    for (u32 i = 0; i < shuffleCount; i++) {
+        struct Object *o = shuffleList[i];
+        if (gMarioObject == o) continue;
+
+        o->oPosX = posStore[i][0];
+        o->oPosY = posStore[i][1];
+        o->oPosZ = posStore[i][2];
+
+        o->header.gfx.pos[0] = posStore[i][0];
+        o->header.gfx.pos[1] = posStore[i][1];
+        o->header.gfx.pos[2] = posStore[i][2];
+    }
+
+    for (u32 i = 0; i < starCount; i++) {
+        struct Object *o = starList[i];
+
+        o->oPosX = starPos[i][0];
+        o->oPosY = starPos[i][1];
+        o->oPosZ = starPos[i][2];
+
+        o->header.gfx.pos[0] = starPos[i][0];
+        o->header.gfx.pos[1] = starPos[i][1];
+        o->header.gfx.pos[2] = starPos[i][2];
     }
 }
 
@@ -169,8 +242,11 @@ void cutscene_shuffle(struct Camera *c) {
     cutscene_event(cshuffle_reset, c, 0, 1);
     cutscene_event(cshuffle_timestop, c, 0, 1);
     cutscene_event(cshuffle_populate_shuffle_list, c, 0, 1);
-    cutscene_event(cshuffle_populate_surface_list_and_sort, c, 1, 2);
-    cutscene_event(cshuffle_approach, c, 30, -1);
+    cutscene_event(cshuffle_populate_star_list, c, 0, 1);
+    cutscene_event(cshuffle_populate_surface_list, c, 1, 2);
+    cutscene_event(cshuffle_sort, c, 1, 2);
+    cutscene_event(cshuffle_approach, c, 30, 59);
+    cutscene_event(cshuffle_finish_approach, c, 59, -1);
     cutscene_event(cshuffle_setfloors_androoms, c, 59, -1);
     cutscene_event(cshuffle_timestart, c, 59, -1);
 
