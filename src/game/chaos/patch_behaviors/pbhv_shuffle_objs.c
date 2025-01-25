@@ -108,6 +108,7 @@ const BehaviorScript *surflist[] = {
 
     // TTC memes
     bhvTTCRotatingSolid,
+    bhvTTCSpinner,
 };
 
 u8 isInList(struct Object *o) {
@@ -134,10 +135,6 @@ void cshuffle_populate_surface_list(UNUSED struct Camera *c) {
             o = (struct Object *)o->header.next;
             continue;
         }
-        // if (o->parentObj != o) {
-        //     o = (struct Object *)o->header.next;
-        //     continue;
-        // }
         shuffleList[i] = o;
 
         posStore[i][0] = o->oPosX;
