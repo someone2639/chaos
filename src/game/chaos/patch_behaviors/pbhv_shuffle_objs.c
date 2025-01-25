@@ -189,6 +189,7 @@ void cutscene_shuffle(struct Camera *c) {
 
 void cutscene_shuffle_end(struct Camera *c) {
     c->cutscene = 0;
+    sStatusFlags |= CAM_FLAG_SMOOTH_MOVEMENT;
 }
 
 struct Cutscene sCutsceneShuffleObjs[] = {
