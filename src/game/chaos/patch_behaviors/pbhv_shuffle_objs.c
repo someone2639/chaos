@@ -16,6 +16,10 @@
 #include "engine/surface_collision.h"
 #include "course_table.h"
 
+// #define SKIPWARPS
+#define SKIP_LEVELOBJS
+#define SET_HOMES
+
 f32 posStore[OBJECT_POOL_CAPACITY][3] = { 0 };
 struct Object *shuffleList[OBJECT_POOL_CAPACITY] = {0};
 u32 shuffleCount = 0;
@@ -52,14 +56,22 @@ void cshuffle_populate_shuffle_list(UNUSED struct Camera *c) {
 
         u32 i = shuffleCount;
         do {
+#ifdef SKIP_LEVELOBJS
             if (o->behavior == segmented_to_virtual(bhvStaticObject)) {
                 o = (struct Object *)o->header.next;
                 continue;
             }
+#endif // SKIP_LEVELOBJS
             if (o->behavior == segmented_to_virtual(bhvStar)) {
                 o = (struct Object *)o->header.next;
                 continue;
             }
+#ifdef SKIPWARPS
+            if (o->behavior == segmented_to_virtual(bhvWarp)) {
+                o = (struct Object *)o->header.next;
+                continue;
+            }
+#endif // SKIPWARPS
             if (o->parentObj != o) {
                 o = (struct Object *)o->header.next;
                 continue;
@@ -173,6 +185,12 @@ void cshuffle_approach(UNUSED struct Camera *c) {
         o->oPosY = approach_f32_asymptotic(o->oPosY, posStore[i][1], FACTOR);
         o->oPosZ = approach_f32_asymptotic(o->oPosZ, posStore[i][2], FACTOR);
 
+#ifdef SET_HOMES
+        o->oHomeX = approach_f32_asymptotic(o->oHomeX, posStore[i][0], FACTOR);
+        o->oHomeY = approach_f32_asymptotic(o->oHomeY, posStore[i][1], FACTOR);
+        o->oHomeZ = approach_f32_asymptotic(o->oHomeZ, posStore[i][2], FACTOR);
+#endif // SET_HOMES
+
         o->header.gfx.pos[0] = approach_f32_asymptotic(o->header.gfx.pos[0], posStore[i][0], FACTOR);
         o->header.gfx.pos[1] = approach_f32_asymptotic(o->header.gfx.pos[1], posStore[i][1], FACTOR);
         o->header.gfx.pos[2] = approach_f32_asymptotic(o->header.gfx.pos[2], posStore[i][2], FACTOR);
@@ -188,6 +206,12 @@ void cshuffle_finish_approach(UNUSED struct Camera *c) {
         o->oPosY = posStore[i][1];
         o->oPosZ = posStore[i][2];
 
+#ifdef SET_HOMES
+        o->oHomeX = posStore[i][0];
+        o->oHomeY = posStore[i][1];
+        o->oHomeZ = posStore[i][2];
+#endif // SET_HOMES
+
         o->header.gfx.pos[0] = posStore[i][0];
         o->header.gfx.pos[1] = posStore[i][1];
         o->header.gfx.pos[2] = posStore[i][2];
@@ -199,6 +223,12 @@ void cshuffle_finish_approach(UNUSED struct Camera *c) {
         o->oPosX = starPos[i][0];
         o->oPosY = starPos[i][1];
         o->oPosZ = starPos[i][2];
+
+#ifdef SET_HOMES
+        o->oHomeX = posStore[i][0];
+        o->oHomeY = posStore[i][1];
+        o->oHomeZ = posStore[i][2];
+#endif // SET_HOMES
 
         o->header.gfx.pos[0] = starPos[i][0];
         o->header.gfx.pos[1] = starPos[i][1];
