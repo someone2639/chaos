@@ -1257,25 +1257,26 @@ u8 sSquishScaleOverTime[16] = { 0x46, 0x32, 0x32, 0x3C, 0x46, 0x50, 0x50, 0x3C,
  * Applies the squish to Mario's model via scaling.
  */
 void squish_mario_model(struct MarioState *m) {
+    f32 scale = m->size;
     if (m->squishTimer != 0xFF) {
         // If no longer squished, scale back to default.
         if (m->squishTimer == 0) {
-            vec3f_set(m->marioObj->header.gfx.scale, 1.0f, 1.0f, 1.0f);
+            vec3f_set(m->marioObj->header.gfx.scale, scale, scale, scale);
         }
         // If timer is less than 16, rubber-band Mario's size scale up and down.
         else if (m->squishTimer <= 16) {
             m->squishTimer -= 1;
 
             m->marioObj->header.gfx.scale[1] =
-                1.0f - ((sSquishScaleOverTime[15 - m->squishTimer] * 0.6f) / 100.0f);
+                (1.0f - ((sSquishScaleOverTime[15 - m->squishTimer] * 0.6f) / 100.0f)) * scale;
             m->marioObj->header.gfx.scale[0] =
-                ((sSquishScaleOverTime[15 - m->squishTimer] * 0.4f) / 100.0f) + 1.0f;
+                (((sSquishScaleOverTime[15 - m->squishTimer] * 0.4f) / 100.0f) + 1.0f) * scale;
 
             m->marioObj->header.gfx.scale[2] = m->marioObj->header.gfx.scale[0];
         } else {
             m->squishTimer -= 1;
 
-            vec3f_set(m->marioObj->header.gfx.scale, 1.4f, 0.4f, 1.4f);
+            vec3f_set(m->marioObj->header.gfx.scale, 1.4f * scale, 0.4f * scale, 1.4f * scale);
         }
     }
 }
@@ -1399,7 +1400,7 @@ void update_mario_geometry_inputs(struct MarioState *m) {
             || (m->ceil && m->ceil->flags & SURFACE_FLAG_DYNAMIC)) {
             ceilToFloorDist = m->ceilHeight - m->floorHeight;
 
-            if ((0.0f <= ceilToFloorDist) && (ceilToFloorDist <= 150.0f)) {
+            if ((0.0f <= ceilToFloorDist) && (ceilToFloorDist <= (150.0f * m->size))) {
                 m->input |= INPUT_SQUISHED;
             }
         }
@@ -1713,8 +1714,12 @@ void mario_update_hitbox_and_cap_model(struct MarioState *m) {
     if (m->action & ACT_FLAG_SHORT_HITBOX) {
         m->marioObj->hitboxHeight = 100.0f;
     } else {
-        m->marioObj->hitboxHeight = 160.0f;
+        m->marioObj->hitboxHeight = 160.0f * m->size;
     }
+
+    m->marioObj->hitboxRadius  = 37  * m->size;
+    m->marioObj->hurtboxRadius = 37  * m->size;
+    m->marioObj->hurtboxHeight = 160 * m->size;
 
     if ((m->flags & MARIO_TELEPORTING) && (m->fadeWarpOpacity != 0xFF)) {
         bodyState->modelState &= ~0xFF;
@@ -1988,4 +1993,5 @@ void init_mario_from_save_file(void) {
     gMarioState->spinTimer = 0;
     gMarioState->extraDamageEnemy = 0;
     gMarioState->extraDamageLava = 0;
+    gMarioState->size = 1.0f;
 }
