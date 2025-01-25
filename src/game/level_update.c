@@ -603,6 +603,12 @@ void check_instant_warp(void) {
                 warp_camera(warp->displacement[0], warp->displacement[1], warp->displacement[2]);
 
                 gMarioState->area->camera->yaw = cameraAngle;
+
+                if (chaos_check_if_patch_active(CHAOS_PATCH_SHUFFLE_OBJECTS)) {
+                    if (gCurrCourseNum != COURSE_NONE) {
+                        gMarioState->statusForCamera->cameraEvent = CAM_EVENT_SHUFFLE;
+                    }
+                }
             }
         }
     }
