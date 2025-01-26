@@ -1191,6 +1191,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription  = "Decrease Mario's size by 12.5% (additive)",
     },
 
+// Lethal damages
+[CHAOS_PATCH_LETHAL_BONK] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 5,
+
+        .name              = "Realistic Concussions",
+        .shortDescription  = "Careful not to hit your head! Bonking now results in severe brain trauma.",
+},
+
 // Miscellaneous Modifiers
     [CHAOS_PATCH_MARIO_INVISIBLE] = {
         .durationType      = CHAOS_DURATION_STARS,

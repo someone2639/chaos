@@ -151,6 +151,9 @@ enum ChaosPatchID {
     CHAOS_PATCH_MARIO_BIG,
     CHAOS_PATCH_MARIO_SMALL,
 
+// Lethal Damages
+    CHAOS_PATCH_LETHAL_BONK,
+
 // Miscellaneous Modifiers
     CHAOS_PATCH_MARIO_INVISIBLE,
     CHAOS_PATCH_SIGNREAD_FAR,
