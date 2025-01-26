@@ -94,6 +94,7 @@ u8 chs_cond_coin_size(void);
 // Movement Modifiers
 void chs_update_brawl_tripping(void);
 void chs_update_galaxy_twirl(void);
+u8 chs_cond_no_fall_damage(void);
 
 // Random Griefing
 void chs_act_random_sleep(void);
@@ -185,4 +186,4 @@ void chs_start_shuffle(void);
 u8 chs_cond_quicktime(void);
 void chs_update_quicktime(void);
 void chs_act_quicktime(void);
-
+u8 chs_cond_lethal_fall_damage();
