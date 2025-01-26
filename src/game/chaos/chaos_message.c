@@ -31,7 +31,8 @@
 #define FT_FONT FT_FONT_SMALL_BOLD
 
 enum ChaosMessageStatus {
-    CHSMSG_INACTIVE = 0,
+    CHSMSG_UNINITIALIZED = 0,
+    CHSMSG_INACTIVE,
     CHSMSG_WAITING,
     CHSMSG_DISPLAYING,
 };
@@ -119,7 +120,7 @@ void chaosmsg_render(void) {
         index = (index + 1) % MSGBUF_COUNT;
 
         struct ChaosMessageParams *params = &chsStrParams[index];
-        if (params->status == CHSMSG_INACTIVE) {
+        if (params->status == CHSMSG_UNINITIALIZED && params->status == CHSMSG_INACTIVE) {
             continue;
         }
 
