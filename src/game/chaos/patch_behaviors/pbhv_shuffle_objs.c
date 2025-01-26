@@ -65,6 +65,15 @@ u8 isInList(struct Object *o, const BehaviorScript *list[], int count) {
 
 #define IS_INLIST(o, list) isInList(o, list, ARRAY_COUNT(list))
 
+u8 isBeingShuffled(struct Object *o) {
+    for (u32 i = 0; i < shuffleCount; i++) {
+        if (o == shuffleList[i]) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
 
 void cshuffle_reset(UNUSED struct Camera *c) {
     shuffleCount = 0; starCount = 0;
@@ -251,7 +260,7 @@ void cshuffle_finish_approach(UNUSED struct Camera *c) {
     }
 }
 
-void cshuffle_setfloors_androoms(UNUSED struct Camera *c) {\
+void cshuffle_setfloors_androoms(UNUSED struct Camera *c) {
     for (int ol = 1; ol < NUM_OBJ_LISTS; ol++) {
         struct Object *head = (struct Object *)&gObjectLists[ol];
         if (head == NULL) continue;
@@ -263,6 +272,14 @@ void cshuffle_setfloors_androoms(UNUSED struct Camera *c) {\
                 o->oPosY = floor;
                 o->oHomeY = floor;
                 o->header.gfx.pos[1] = floor;
+            }
+
+            if ((o->parentObj != o) && isBeingShuffled(o->parentObj)) {
+                vec3f_copy(&o->oPosX, &o->parentObj->oPosX);
+#ifdef SET_HOMES
+                vec3f_copy(&o->oHomeX, &o->parentObj->oHomeX);
+#endif // SET_HOMES
+                vec3f_copy(o->header.gfx.pos, o->parentObj->header.gfx.pos);
             }
 
             if (o->oRoom != -1) {
