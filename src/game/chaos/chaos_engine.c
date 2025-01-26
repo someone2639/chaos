@@ -218,11 +218,11 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
             // Create message string
             s32 size;
             if (patch->effectType == CHAOS_EFFECT_POSITIVE) {
-                size = sprintf(gChaosInternalBuffer, "%%s: Cancelled out with @05DF15--%s@--------!", patch->name);
+                size = sprintf(gChaosInternalBuffer, "%%s: Cancels out with @05DF15--%s@--------", patch->name);
             } else if (patch->effectType == CHAOS_EFFECT_NEGATIVE) {
-                size = sprintf(gChaosInternalBuffer, "%%s: Cancelled out with @FF1525--%s@--------!", patch->name);
+                size = sprintf(gChaosInternalBuffer, "%%s: Cancels out with @FF1525--%s@--------", patch->name);
             } else {
-                size = sprintf(gChaosInternalBuffer, "%%s: Cancelled out with @9F9F9F--%s@--------!", patch->name);
+                size = sprintf(gChaosInternalBuffer, "%%s: Cancels out with @9F9F9F--%s@--------", patch->name);
             }
             assert_args(size < ARRAY_COUNT(gChaosInternalBuffer), "chaos_add_new_entry:\nString too long:\n 0x%08X", size);
 

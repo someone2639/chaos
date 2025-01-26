@@ -290,11 +290,11 @@ static void print_star_collect_message(u8 shouldRemove, s32 courseNum, s32 starI
         if (possessed) {
             sprintf(gChaosInternalBuffer, "Star revoked: @FFFF00--%s@--------", act);
         } else {
-            sprintf(gChaosInternalBuffer, "Star revoked: @0000FF--%s@--------", act);
+            sprintf(gChaosInternalBuffer, "Star revoked: @1F1FFF--%s@--------", act);
         }
     } else {
         if (possessed) {
-            sprintf(gChaosInternalBuffer, "Star obtained: @0000FF--%s@--------", act);
+            sprintf(gChaosInternalBuffer, "Star obtained: @1F1FFF--%s@--------", act);
         } else {
             sprintf(gChaosInternalBuffer, "Star obtained: @FFFF00--%s@--------", act);
         }

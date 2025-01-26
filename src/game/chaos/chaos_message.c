@@ -110,11 +110,10 @@ static void chaosmsg_draw_bg(s32 x, s32 y, s32 width, s32 height, s32 alpha) {
 
 void chaosmsg_render(void) {
     s32 index = chsStrIter;
+    s32 ftInitialized = FALSE;
     if (waitFrames > 0) {
         waitFrames--;
     }
-
-    fasttext_setup_textrect_rendering(FT_FONT);
 
     do {
         index = (index + 1) % MSGBUF_COUNT;
@@ -151,6 +150,11 @@ void chaosmsg_render(void) {
             }
         }
 
+        if (!ftInitialized) {
+            ftInitialized = TRUE;
+            fasttext_setup_textrect_rendering(FT_FONT);
+        }
+
         chaosmsg_draw_bg(printX - MESSAGE_MARGIN,
                          printY + (gFasttextFonts[FT_FONT].lineHeight - gFasttextFonts[FT_FONT].averageCharHeight) - MESSAGE_MARGIN, 
                          MAX_WIDTH + (MESSAGE_MARGIN * 2),
@@ -161,5 +165,7 @@ void chaosmsg_render(void) {
         params->animFrame++;
     } while (index != chsStrIter);
 
-    fasttext_finished_rendering();
+    if (ftInitialized) {
+        fasttext_finished_rendering();
+    }
 }
