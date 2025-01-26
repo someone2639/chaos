@@ -350,7 +350,7 @@ void chs_start_shuffle(void) {
 
 void chs_shuffle_objects(void) {
     if (chsStartShuffle == 1) {
-        if (GROUNDCOND || SWIMCOND || SHELLCOND) {
+        if (GROUNDCOND || SWIMCOND || SHELLCOND || WINGCOND) {
             if (gCurrCourseNum != COURSE_NONE) {
                 gMarioState->statusForCamera->cameraEvent = CAM_EVENT_SHUFFLE;
             }
