@@ -40,6 +40,7 @@ const BehaviorScript *surflist[] = {
     bhvHorizontalGrindel,
     bhvThwomp2,
     bhvGrindel,
+    bhvCapSwitch,
 
 
     // TTC memes
@@ -315,13 +316,6 @@ void cutscene_shuffle(struct Camera *c) {
     cutscene_event(cshuffle_finish_approach, c, 59, -1);
     cutscene_event(cshuffle_setfloors_androoms, c, 59, -1);
     cutscene_event(cshuffle_timestart, c, 59, -1);
-
-    // set pos (TODO: give a level overview instead of a random angle relative to mario)
-    // #define CPOS 3000
-    // vec3f_set_dist_and_angle(gMarioState->pos, c->pos, CPOS, 0x4000, gMarioState->faceAngle[1]);
-
-    // // set focus
-    // vec3f_copy(c->focus, gMarioState->pos);
 
     void print_text_centered(int, int, char*);
     print_text_centered(160, 10, "SHUFFLING OBJECTS");
