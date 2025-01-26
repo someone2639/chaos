@@ -319,13 +319,14 @@ void chs_start_shuffle(void) {
     chsStartShuffle = 1;
 }
 
-#define IDLECOND (gMarioState->action == ACT_IDLE)
+#define GROUNDCOND (gMarioState->action & (ACT_FLAG_STATIONARY | ACT_FLAG_MOVING))
 #define SWIMCOND (gMarioState->action & ACT_FLAG_SWIMMING)
 #define SHELLCOND (gMarioState->action == ACT_RIDING_SHELL_GROUND)
+#define WINGCOND (gMarioState->action & ACT_FLAG_SWIMMING_OR_FLYING)
 
 void chs_shuffle_objects(void) {
     if (chsStartShuffle == 1) {
-        if (IDLECOND || SWIMCOND || SHELLCOND) {
+        if (GROUNDCOND || SWIMCOND || SHELLCOND) {
             if (gCurrCourseNum != COURSE_NONE) {
                 gMarioState->statusForCamera->cameraEvent = CAM_EVENT_SHUFFLE;
             }
