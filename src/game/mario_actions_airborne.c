@@ -493,6 +493,19 @@ s32 act_jump(struct MarioState *m) {
     play_mario_sound(m, SOUND_ACTION_TERRAIN_JUMP, 0);
     common_air_action_step(m, ACT_JUMP_LAND, MARIO_ANIM_SINGLE_JUMP,
                            AIR_STEP_CHECK_LEDGE_GRAB | AIR_STEP_CHECK_HANG);
+    
+    // L to levitate
+    if (m->actionArg == 1) {
+        if (gPlayer1Controller->buttonDown & L_TRIG) {
+            gMarioState->vel[0] = 0.0f;
+            gMarioState->vel[1] = 25.0f;
+            gMarioState->vel[2] = 0.0f;
+            gMarioState->forwardVel = 0;
+        } else {
+            m->actionArg = 0;
+        }
+    }
+
     return FALSE;
 }
 

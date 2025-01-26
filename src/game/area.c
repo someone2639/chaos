@@ -447,6 +447,8 @@ void render_game(void) {
         if (chaos_check_if_patch_active(CHAOS_PATCH_BLUECOIN_LOTTERY)) {
             drawslots();
         }
+
+        chaosmsg_render();
     } else {
         render_text_labels();
         if (D_8032CE78 != NULL) {

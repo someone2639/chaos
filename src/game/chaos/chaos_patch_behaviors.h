@@ -186,4 +186,4 @@ void chs_start_shuffle(void);
 u8 chs_cond_quicktime(void);
 void chs_update_quicktime(void);
 void chs_act_quicktime(void);
-u8 chs_cond_lethal_fall_damage();
+u8 chs_cond_lethal_fall_damage(void);

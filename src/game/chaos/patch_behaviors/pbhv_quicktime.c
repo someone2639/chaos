@@ -125,10 +125,11 @@ void chs_act_quicktime(void) {
 }
 
 void chs_update_quicktime(void) {
+    s32 group = (gMarioState->action & ACT_GROUP_MASK);
     struct ChaosActiveEntry *this;
     chaos_find_first_active_patch(CHAOS_PATCH_QUICKTIME, &this);
 
-    if(this->frameTimer >= QTE_ACTIVATE_TIME && !(gMarioState->action & (ACT_FLAG_INTANGIBLE | ACT_GROUP_CUTSCENE))) {
+    if(this->frameTimer >= QTE_ACTIVATE_TIME && !(gMarioState->action & ACT_FLAG_INTANGIBLE) && group != ACT_GROUP_CUTSCENE) {
         generate_qte();
     }
 }

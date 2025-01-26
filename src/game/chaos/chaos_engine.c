@@ -16,6 +16,8 @@ static u32 activePatchCounts[CHAOS_PATCH_COUNT];
 static u8 availablePatches[CHAOS_PATCH_COUNT];
 static struct ChaosPatchSelection generatedPatches[CHAOS_PATCH_MAX_GENERATABLE];
 
+char gChaosInternalBuffer[0x1000];
+
 s32 *gChaosActiveEntryCount = NULL;
 struct ChaosActiveEntry *gChaosActiveEntries = NULL;
 u8 gChaosLevelWarped = FALSE;
@@ -154,7 +156,7 @@ u32 chaos_count_active_instances(const enum ChaosPatchID patchId) {
     return count;
 }
 
-void chaos_remove_expired_entry(const s32 patchIndex) {
+void chaos_remove_expired_entry(const s32 patchIndex, const char *msg) {
     if (!gChaosActiveEntryCount) {
         return;
     }
@@ -186,6 +188,11 @@ void chaos_remove_expired_entry(const s32 patchIndex) {
         patch->deactivationFunc();
     }
 
+    // Print chaos message, if it exists
+    if (msg) {
+        chaosmsg_print(patchId, msg);
+    }
+
     // Sort patch order
     chaos_sort_active_patches();
 }
@@ -208,8 +215,19 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
                 continue;
             }
 
+            // Create message string
+            s32 size;
+            if (patch->effectType == CHAOS_EFFECT_POSITIVE) {
+                size = sprintf(gChaosInternalBuffer, "%%s: Cancels out with @05DF15--%s@--------", patch->name);
+            } else if (patch->effectType == CHAOS_EFFECT_NEGATIVE) {
+                size = sprintf(gChaosInternalBuffer, "%%s: Cancels out with @FF1525--%s@--------", patch->name);
+            } else {
+                size = sprintf(gChaosInternalBuffer, "%%s: Cancels out with @9F9F9F--%s@--------", patch->name);
+            }
+            assert_args(size < ARRAY_COUNT(gChaosInternalBuffer), "chaos_add_new_entry:\nString too long:\n 0x%08X", size);
+
             // Deactivate negated action, and also instantly activate and deactivate the new function (deactivate will not ever execute for ONCE entries that aren't stackable)
-            chaos_remove_expired_entry(i--);
+            chaos_remove_expired_entry(i--, gChaosInternalBuffer);
             if (patch->activatedInitFunc) {
                 patch->activatedInitFunc();
             }
@@ -306,7 +324,7 @@ void chaos_decrement_star_timers(void) {
         assert_args(entry->remainingDuration > 0, "%s%08X", "chaos_decrement_star_timers:\nRemaining duration for patch is 0: ", entry->id);
         entry->remainingDuration--;
         if (entry->remainingDuration <= 0) {
-            chaos_remove_expired_entry(i--);
+            chaos_remove_expired_entry(i--, "%s: Expired!");
         }
     }
 }
@@ -341,8 +359,22 @@ void chaos_decrement_patch_usage(const enum ChaosPatchID patchId) {
 
     assert_args(firstFoundMatch->remainingDuration > 0, "%s%08X", "chaos_decrement_patch_usage:\nRemaining duration for patch is 0: ", patchId);
     firstFoundMatch->remainingDuration--;
+
+
+    // Create message string
+    s32 size;
+    if (firstFoundMatch->remainingDuration == 0) {
+        size = sprintf(gChaosInternalBuffer, "%%s: @FFFF00--No more@-------- uses remaining!");
+    } else if (firstFoundMatch->remainingDuration == 1) {
+        size = sprintf(gChaosInternalBuffer, "%%s: @FFFF00--%d@-------- use remaining!", firstFoundMatch->remainingDuration);
+    } else {
+        size = sprintf(gChaosInternalBuffer, "%%s: @FFFF00--%d@-------- uses remaining!", firstFoundMatch->remainingDuration);
+    }
+    assert_args(size < ARRAY_COUNT(gChaosInternalBuffer), "chaos_decrement_patch_usage:\nString too long:\n 0x%08X", size);
+    chaosmsg_print(patchId, gChaosInternalBuffer);
+
     if (firstFoundMatch->remainingDuration <= 0) {
-        chaos_remove_expired_entry(matchIndex--);
+        chaos_remove_expired_entry(matchIndex--, NULL);
     }
 }
 
@@ -366,7 +398,7 @@ static void chaos_update_available_patches(void) {
         }
     }
 
-    for (s32 i = 0; i < CHAOS_PATCH_COUNT; i++) {
+    for (u32 i = 0; i < CHAOS_PATCH_COUNT; i++) {
         const struct ChaosPatch *patch = &gChaosPatches[i];
 
         if (patch->conditionalFunc && !patch->conditionalFunc()) {
