@@ -29,6 +29,43 @@ f32 starPos[STARCOUNT][3] = { 0 };
 struct Object *starList[STARCOUNT] = {0};
 u32 starCount = 0;
 
+const BehaviorScript *surflist[] = {
+    bhvExclamationBox,
+    bhvMessagePanel,
+    bhvWoodenPost,
+    bhvChainChompGate,
+    bhvSeesawPlatform,
+    bhvCheckerboardPlatformSub,
+    bhvThwomp,
+    bhvHorizontalGrindel,
+    bhvThwomp2,
+    bhvGrindel,
+
+
+    // TTC memes
+    bhvTTCRotatingSolid,
+    bhvTTCSpinner,
+};
+
+const BehaviorScript *ignorelist[] = {
+    bhvStar,
+    bhvUkiki,
+};
+
+
+u8 isInList(struct Object *o, const BehaviorScript *list[], int count) {
+    for (int i = 0; i < count; i++) {
+        if (o->behavior == segmented_to_virtual(list[i])) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+#define IS_INLIST(o, list) isInList(o, list, ARRAY_COUNT(list))
+
+
 void cshuffle_reset(UNUSED struct Camera *c) {
     shuffleCount = 0; starCount = 0;
     for (int i = 0; i < OBJECT_POOL_CAPACITY; i++) {
@@ -62,7 +99,7 @@ void cshuffle_populate_shuffle_list(UNUSED struct Camera *c) {
                 continue;
             }
 #endif // SKIP_LEVELOBJS
-            if (o->behavior == segmented_to_virtual(bhvStar)) {
+            if (IS_INLIST(o, ignorelist)) {
                 o = (struct Object *)o->header.next;
                 continue;
             }
@@ -110,33 +147,6 @@ void cshuffle_populate_star_list(UNUSED struct Camera *c) {
     } while (o != head);
 }
 
-const BehaviorScript *surflist[] = {
-    bhvExclamationBox,
-    bhvMessagePanel,
-    bhvWoodenPost,
-    bhvChainChompGate,
-    bhvSeesawPlatform,
-    bhvCheckerboardPlatformSub,
-    bhvThwomp,
-    bhvHorizontalGrindel,
-    bhvThwomp2,
-    bhvGrindel,
-
-
-    // TTC memes
-    bhvTTCRotatingSolid,
-    bhvTTCSpinner,
-};
-
-u8 isInList(struct Object *o) {
-    for (int i = 0; i < ARRAY_COUNT(surflist); i++) {
-        if (o->behavior == segmented_to_virtual(surflist[i])) {
-            return 1;
-        }
-    }
-
-    return 0;
-}
 
 void cshuffle_populate_surface_list(UNUSED struct Camera *c) {
     // start at 1 to skip mario
@@ -148,7 +158,7 @@ void cshuffle_populate_surface_list(UNUSED struct Camera *c) {
 
     u32 i = shuffleCount;
     do {
-        if (!isInList(o)) {
+        if (!IS_INLIST(o, surflist)) {
             o = (struct Object *)o->header.next;
             continue;
         }
