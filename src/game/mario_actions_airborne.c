@@ -89,7 +89,11 @@ s32 check_fall_damage(struct MarioState *m, u32 hardFallAction) {
     if (m->action != ACT_TWIRLING && m->floor->type != SURFACE_BURNING) {
         if (m->vel[1] < (-55.0f * gravity)) {
             if (fallHeight > (3000.0f / gravity)) {
-                set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 16 : 24);
+                if(chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_FALL_DAMAGE)) {
+                    set_hurt_counter(m, 255);
+                } else {
+                    set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 16 : 24);
+                }
 #if ENABLE_RUMBLE
                 queue_rumble_data(5, 80);
 #endif
@@ -97,7 +101,12 @@ s32 check_fall_damage(struct MarioState *m, u32 hardFallAction) {
                 play_sound(SOUND_MARIO_ATTACKED, m->marioObj->header.gfx.cameraToObject);
                 return drop_and_set_mario_action(m, hardFallAction, 4);
             } else if (fallHeight > (1150.0f / gravity) && !mario_floor_is_slippery(m)) {
-                set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 8 : 12);
+                if(chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_FALL_DAMAGE)) {
+                    set_hurt_counter(m, 255);
+                } else {
+                    set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 8 : 12);
+                }
+                
                 m->squishTimer = 30;
 #if ENABLE_RUMBLE
                 queue_rumble_data(5, 80);

@@ -435,6 +435,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 12,
 
+        .conditionalFunc   = chs_cond_no_fall_damage,
+
         .name              = "Long Fall Boots",
         .shortDescription  = "Mario is immune to fall damage.",
     },
@@ -1201,6 +1203,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Realistic Concussions",
         .shortDescription  = "Careful not to hit your head! Bonking now results in severe brain trauma.",
+},
+[CHAOS_PATCH_LETHAL_FALL_DAMAGE] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 5,
+
+        .conditionalFunc   = chs_cond_lethal_fall_damage,
+
+        .name              = "Realistic Fall Damage",
+        .shortDescription  = "Falling will now instantly kill Mario.",
 },
 
 // Miscellaneous Modifiers
