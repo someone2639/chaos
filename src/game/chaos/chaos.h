@@ -244,6 +244,7 @@ struct ChaosActiveEntry {
 };
 
 extern const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT];
+extern char gChaosInternalBuffer[0x1000];
 extern s32 *gChaosActiveEntryCount;
 extern struct ChaosActiveEntry *gChaosActiveEntries;
 extern u8 gChaosLevelWarped;
@@ -262,7 +263,8 @@ u32 chaos_count_active_instances(const enum ChaosPatchID patchId);
 // Deactivate an old chaos patch, based on its current index.
 // Be careful when invoking this with stackable patches, as it may cause undesirable behavior if used incorrectly.
 // In general it is not recommended to invoke this (externally) with stackable patches that use CHAOS_DURATION_USE_COUNT (since they get combined).
-void chaos_remove_expired_entry(const s32 patchIndex);
+// Additionally a message may be printed, abiding by the format of chaosmsg_print.
+void chaos_remove_expired_entry(const s32 patchIndex, const char *msg);
 
 // Activate a new chaos patch.
 void chaos_add_new_entry(const enum ChaosPatchID patchId);
@@ -298,3 +300,4 @@ void chaos_frame_update(void);
 
 
 #include "chaos_patch_behaviors.h"
+#include "chaos_message.h"

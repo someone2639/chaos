@@ -21,23 +21,18 @@ u8 chs_cond_l_to_levitate(void) {
     }
 }
 
-s8 sChsLevitating = FALSE;
-
 void chs_update_l_to_levitate(void) {
-    if(gPlayer1Controller->buttonDown & L_TRIG 
-            && !(gMarioState->action & (ACT_FLAG_INTANGIBLE | ACT_GROUP_CUTSCENE))) {
-        sChsLevitating = TRUE;
-        gMarioState->vel[0] = 0.0f;
-        gMarioState->vel[1] = 25.0f;
-        gMarioState->vel[2] = 0.0f;
-        gMarioState->forwardVel = 0;
+    s32 group = (gMarioState->action & ACT_GROUP_MASK);
+    if (gPlayer1Controller->buttonPressed & L_TRIG 
+            && !(gMarioState->action & ACT_FLAG_INTANGIBLE)
+            && group != ACT_GROUP_CUTSCENE
+            && group != ACT_GROUP_SUBMERGED) {
         if (gMarioState->action != ACT_JUMP) {
-            set_mario_action(gMarioState, ACT_JUMP, 0);
-        }
-    } else {
-        if(sChsLevitating) {
+            set_mario_action(gMarioState, ACT_JUMP, 1);
             chaos_decrement_patch_usage(CHAOS_PATCH_L_TO_LEVITATE);
-            sChsLevitating = FALSE;
+        } else if (gMarioState->actionArg != 1) {
+            gMarioState->actionArg = 1;
+            chaos_decrement_patch_usage(CHAOS_PATCH_L_TO_LEVITATE);
         }
     }
 }
@@ -57,11 +52,13 @@ u8 chs_cond_debug_free_move(void) {
 }
 
 void chs_update_debug_free_move(void) {
+    s32 group = (gMarioState->action & ACT_GROUP_MASK);
+
     if(gMarioState->action == ACT_DEBUG_FREE_MOVE || !(gPlayer1Controller->buttonPressed & U_JPAD)) {
         return;
     }
     
-    if (gMarioState->action & (ACT_FLAG_INTANGIBLE | ACT_GROUP_CUTSCENE)) {
+    if ((gMarioState->action & ACT_FLAG_INTANGIBLE) || group == ACT_GROUP_CUTSCENE) {
         return;
     }
 

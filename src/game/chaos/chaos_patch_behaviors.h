@@ -184,4 +184,4 @@ u8 chs_cam_invert_x_check(void);
 u8 chs_cond_quicktime(void);
 void chs_update_quicktime(void);
 void chs_act_quicktime(void);
-u8 chs_cond_lethal_fall_damage();
+u8 chs_cond_lethal_fall_damage(void);

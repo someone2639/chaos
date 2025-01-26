@@ -318,7 +318,7 @@ void fasttext_draw_texrect(int x, int y, const char* string, enum FastTextFlags 
                 }
 
                 // NOTE: Be careful nothing goes negative with text alignment! (Not using gSPScisTextureRectangle)
-                gSPTextureRectangle(dlHead++, (xPos + 0) << 2, (yPos + 0) << 2, (xPos + fontProps->offsetTable[charIndex].renderWidth) << 2, (yPos + renderHeight) << 2, 0, s, 0, 1 << 10, 1 << 10);
+                gSPScisTextureRectangle(dlHead++, (xPos + 0) << 2, (yPos + 0) << 2, (xPos + fontProps->offsetTable[charIndex].renderWidth) << 2, (yPos + renderHeight) << 2, 0, s, 0, 1 << 10, 1 << 10);
                 xPos += kerningTable[charIndex];
                 break;
         }

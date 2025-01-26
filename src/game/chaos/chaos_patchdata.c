@@ -948,7 +948,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "L to Levitate",
         .shortDescription  = "Press L to levitate! Each L press counts as a separate use.",
-        .longDescription   = "While levitating, Mario may not move horizontally until the L button has been released. Make sure to line Mario up before carelessly wasting an L press!"
+        .longDescription   = "While levitating, Mario may only barely move horizontally until the L button has been released. Make sure to line Mario up before carelessly wasting an L press!"
     },
     [CHAOS_PATCH_DEBUG_FREE_MOVE] = {
         .durationType      = CHAOS_DURATION_USE_COUNT,
