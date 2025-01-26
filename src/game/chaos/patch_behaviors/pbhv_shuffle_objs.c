@@ -267,7 +267,7 @@ void cshuffle_setfloors_androoms(UNUSED struct Camera *c) {
 
         struct Object *o = head;
         do {
-            if (o->oMoveFlags & OBJ_MOVE_ON_GROUND) {
+            if (o->oMoveFlags & OBJ_DROPPED_TO_FLOOR) {
                 f32 floor = find_floor_height(o->oPosX, o->oPosY + 200.0f, o->oPosZ);
                 o->oPosY = floor;
                 o->oHomeY = floor;
