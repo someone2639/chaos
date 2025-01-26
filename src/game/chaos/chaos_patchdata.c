@@ -1177,7 +1177,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc   = chs_cond_mario_big,
 
         .name              = "One Makes You Larger",
-        .shortDescription  = "Increase Mario's size by 12.5% (additive)",
+        .shortDescription  = "Increase Mario's size by 12.5% (additive).",
     },
     [CHAOS_PATCH_MARIO_SMALL] = {
         .durationType      = CHAOS_DURATION_INFINITE,
@@ -1190,7 +1190,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc   = chs_cond_mario_small,
 
         .name              = "One Makes You Smaller",
-        .shortDescription  = "Decrease Mario's size by 12.5% (additive)",
+        .shortDescription  = "Decrease Mario's size by 12.5% (additive).",
     },
 
 // Lethal damages
@@ -1289,7 +1289,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration          = 6,
 
         .name              = "Blue Coin Lottery",
-        .shortDescription  = R"(Test your luck! Every blue coin is a 1% chance to win big!)",
+        .shortDescription  = "Test your luck! Every blue coin is a 1% chance to win big!",
     },
     [CHAOS_PATCH_INVERTED_SOUND] = {
         .durationType      = CHAOS_DURATION_STARS,
