@@ -251,22 +251,29 @@ void cshuffle_finish_approach(UNUSED struct Camera *c) {
     }
 }
 
-void cshuffle_setfloors_androoms(UNUSED struct Camera *c) {
-    for (u32 i = 0; i < shuffleCount; i++) {
-        struct Object *o = shuffleList[i];
-        if (gMarioObject == o) continue;
+void cshuffle_setfloors_androoms(UNUSED struct Camera *c) {\
+    for (int ol = 1; ol < NUM_OBJ_LISTS; ol++) {
+        struct Object *head = (struct Object *)&gObjectLists[ol];
+        if (head == NULL) continue;
 
-        if (o->oMoveFlags & OBJ_MOVE_ON_GROUND) {
-            f32 floor = find_floor_height(o->oPosX, o->oPosY + 200.0f, o->oPosZ);
-            posStore[i][1] = floor;
-        }
+        struct Object *o = head;
+        do {
+            if (o->oMoveFlags & OBJ_MOVE_ON_GROUND) {
+                f32 floor = find_floor_height(o->oPosX, o->oPosY + 200.0f, o->oPosZ);
+                o->oPosY = floor;
+                o->oHomeY = floor;
+                o->header.gfx.pos[1] = floor;
+            }
 
-        if (o->oRoom != -1) {
-            struct Object *prev = gCurrentObject;
-            gCurrentObject = o;
-            void bhv_init_room(); bhv_init_room();
-            gCurrentObject = prev;
-        }
+            if (o->oRoom != -1) {
+                struct Object *prev = gCurrentObject;
+                gCurrentObject = o;
+                void bhv_init_room(); bhv_init_room();
+                gCurrentObject = prev;
+            }
+
+            o = (struct Object*) o->header.next;
+        } while (o != head);
     }
 }
 
