@@ -117,6 +117,11 @@ const BehaviorScript *surflist[] = {
     bhvChainChompGate,
     bhvSeesawPlatform,
     bhvCheckerboardPlatformSub,
+    bhvThwomp,
+    bhvHorizontalGrindel,
+    bhvThwomp2,
+    bhvGrindel,
+
 
     // TTC memes
     bhvTTCRotatingSolid,
