@@ -1420,6 +1420,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc   = chs_shuffle_objects,
 
         .name              = "Shuffle Object Positions",
-        .shortDescription  = "Kaze WISHES tornado looked like this!",
+        .shortDescription  = "Kaze WISHES tornado did this!",
     },
 };
