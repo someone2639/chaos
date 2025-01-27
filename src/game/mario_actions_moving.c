@@ -15,6 +15,8 @@
 #include "behavior_data.h"
 #include "rumble_init.h"
 
+extern u8 sBonkKill;
+
 struct LandingAction {
     s16 numFrames;
     s16 unk02;
@@ -1421,6 +1423,8 @@ void common_slide_action(struct MarioState *m, u32 endAction, u32 airAction, s32
                     m->particleFlags |= PARTICLE_VERTICAL_STAR;
                 }
 #endif
+                
+                sBonkKill = TRUE;
                 slide_bonk(m, ACT_GROUND_BONK, endAction);
             } else if (m->wall != NULL) {
                 s16 wallAngle = atan2s(m->wall->normal.z, m->wall->normal.x);
@@ -1621,6 +1625,11 @@ s32 act_dive_slide(struct MarioState *m) {
 
 s32 common_ground_knockback_action(struct MarioState *m, s32 animation, s32 arg2, s32 arg3, s32 arg4) {
     s32 animFrame;
+
+    if(sBonkKill && chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_BONK)) {
+        m->health = 0;
+    }
+    sBonkKill = FALSE;
 
     if (arg3) {
         play_mario_heavy_landing_sound_once(m, SOUND_ACTION_TERRAIN_BODY_HIT_GROUND);
