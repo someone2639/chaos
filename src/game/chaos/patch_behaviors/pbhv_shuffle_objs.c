@@ -119,7 +119,7 @@ void cshuffle_populate_shuffle_list(UNUSED struct Camera *c) {
                 continue;
             }
 #endif // SKIPWARPS
-            if (o->parentObj != o) {
+            if ((o->parentObj != o) && (o->behavior != segmented_to_virtual(bhvRedCoin))) {
                 o = (struct Object *)o->header.next;
                 continue;
             }
