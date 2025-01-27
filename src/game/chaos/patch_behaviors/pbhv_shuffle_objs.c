@@ -33,7 +33,7 @@ const BehaviorScript *surflist[] = {
     bhvExclamationBox,
     bhvMessagePanel,
     bhvWoodenPost,
-    bhvChainChompGate,
+    // bhvChainChompGate,
     bhvSeesawPlatform,
     bhvCheckerboardPlatformSub,
     bhvThwomp,
@@ -185,12 +185,22 @@ void cshuffle_populate_surface_list(UNUSED struct Camera *c) {
 }
 
 void cshuffle_sort(UNUSED struct Camera *c) {
-    for (int i = (int)shuffleCount - 1; i >= 0; i--) {
-        s32 randIndex = random_float() * (i + 1);
+    struct Object *el0 = shuffleList[0];
+    for (int i = (int)shuffleCount - 1; i > 0; i--) {
+        s32 randIndex;
+        do {
+            randIndex = random_u16() % (i + 1);
+        } while (randIndex == i);
         struct Object *tmp = shuffleList[randIndex];
         shuffleList[randIndex] = shuffleList[i];
         shuffleList[i] = tmp;
     }
+    if (el0 == shuffleList[0]) {
+        struct Object *swap = shuffleList[0];
+        shuffleList[0] = shuffleList[1];
+        shuffleList[1] = swap;
+    }
+
     for (int i = (int)starCount - 1; i >= 0; i--) {
         s32 randIndex = random_float() * (i + 1);
         struct Object *tmp = starList[randIndex];
@@ -275,7 +285,11 @@ void cshuffle_setfloors_androoms(UNUSED struct Camera *c) {
                 o->header.gfx.pos[1] = floor;
             }
 
-            if ((o->parentObj != o) && isBeingShuffled(o->parentObj)) {
+            if ((o->parentObj != o)
+             && isBeingShuffled(o->parentObj)
+             && (IS_INLIST(o, surflist))
+             && (!IS_INLIST(o, ignorelist))
+            ) {
                 vec3f_copy(&o->oPosX, &o->parentObj->oPosX);
 #ifdef SET_HOMES
                 vec3f_copy(&o->oHomeX, &o->parentObj->oHomeX);
