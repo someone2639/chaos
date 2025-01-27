@@ -11,6 +11,7 @@
 #include "debug.h"
 #include "engine/level_script.h"
 #include "game_init.h"
+#include "level_update.h"
 #include "main.h"
 #include "memory.h"
 #include "profiler.h"
@@ -450,6 +451,75 @@ void select_gfx_pool(void) {
     gGfxPoolEnd = (u8 *) (gGfxPool->buffer + GFX_POOL_SIZE);
 }
 
+
+#define DOWNSAMPLE_SHIFT 3
+// // This is too slow to run at speed, but otherwise looks better...
+// static void render_low_resolution_better(void) {
+//     u16 *fb = gFramebuffers[sRenderedFramebuffer];
+
+//     for (s32 fbY = 0; fbY < SCREEN_HEIGHT; fbY += (1 << DOWNSAMPLE_SHIFT)) {
+//         for (s32 fbX = 0; fbX < SCREEN_WIDTH; fbX += (1 << DOWNSAMPLE_SHIFT)) {
+//             u32 fbeDownsampleBuffer[3] = {};
+
+//             s32 fbdsY = fbY * SCREEN_WIDTH;
+//             s32 fbdsYEnd = fbdsY + (SCREEN_WIDTH * (1 << DOWNSAMPLE_SHIFT));
+//             for (; fbdsY < fbdsYEnd; fbdsY += SCREEN_WIDTH) {
+//                 s32 fbdsX = fbdsY + fbX;
+//                 s32 fbdsXEnd = fbdsX + (1 << DOWNSAMPLE_SHIFT);
+//                 for (; fbdsX < fbdsXEnd; fbdsX++) {
+//                     fbeDownsampleBuffer[0] += fb[fbdsX] & (0x0000001F << 11);
+//                     fbeDownsampleBuffer[1] += fb[fbdsX] & (0x0000001F << 6);
+//                     fbeDownsampleBuffer[2] += fb[fbdsX] & (0x0000001F << 1);
+//                 }
+//             }
+
+//             u16 new = (((fbeDownsampleBuffer[0] + (1 << (DOWNSAMPLE_SHIFT + DOWNSAMPLE_SHIFT - 1))) >> (DOWNSAMPLE_SHIFT + DOWNSAMPLE_SHIFT)) & (0x0000001F << 11)) +
+//                       (((fbeDownsampleBuffer[1] + (1 << (DOWNSAMPLE_SHIFT + DOWNSAMPLE_SHIFT - 1))) >> (DOWNSAMPLE_SHIFT + DOWNSAMPLE_SHIFT)) & (0x0000001F <<  6)) +
+//                       (((fbeDownsampleBuffer[2] + (1 << (DOWNSAMPLE_SHIFT + DOWNSAMPLE_SHIFT - 1))) >> (DOWNSAMPLE_SHIFT + DOWNSAMPLE_SHIFT)) & (0x0000001F <<  1)) + 1;
+
+//             s32 fbdsY = fbY * SCREEN_WIDTH;
+//             for (; fbdsY < fbdsYEnd; fbdsY += SCREEN_WIDTH) {
+//                 s32 fbdsX = fbdsY + fbX;
+//                 s32 fbdsXEnd = fbdsX + (1 << DOWNSAMPLE_SHIFT);
+//                 for (; fbdsX < fbdsXEnd; fbdsX++) {
+//                     fb[fbdsX] = new;
+//                 }
+//             }
+//         }
+//     }
+// }
+
+#define OPT_SCREEN_WIDTH (SCREEN_WIDTH >> 1)
+static void render_low_resolution(void) {
+    // 2 pixels at a time!
+    u32 *fb = (u32 *) gFramebuffers[sRenderedFramebuffer];
+
+    if (sCurrPlayMode == PLAY_MODE_PAUSED || sCurrPlayMode == PLAY_MODE_SELECT_PATCH || sCurrPlayMode == PLAY_MODE_QUICKTIME || gInActSelect) {
+        return;
+    }
+
+    for (s32 fbY = 0; fbY < SCREEN_HEIGHT; fbY += (1 << DOWNSAMPLE_SHIFT)) {
+        for (s32 fbX = 0; fbX < OPT_SCREEN_WIDTH; fbX += (1 << (DOWNSAMPLE_SHIFT - 1))) {
+            s32 fbdsY = fbY * OPT_SCREEN_WIDTH;
+            s32 fbdsYEnd = fbdsY + (OPT_SCREEN_WIDTH * (1 << DOWNSAMPLE_SHIFT));
+
+            // 2 pixels at a time!
+            u32 new = fb[fbdsY + fbX + ((OPT_SCREEN_WIDTH * (1 << (DOWNSAMPLE_SHIFT - 1))) + (1 << (DOWNSAMPLE_SHIFT - 2)))];
+            new = (new & 0xFFFF) | (new << 16);
+
+            for (; fbdsY < fbdsYEnd; fbdsY += OPT_SCREEN_WIDTH) {
+                s32 fbdsX = fbdsY + fbX;
+                s32 fbdsXEnd = fbdsX + (1 << (DOWNSAMPLE_SHIFT - 1));
+                for (; fbdsX < fbdsXEnd; fbdsX++) {
+                    fb[fbdsX] = new;
+                }
+            }
+        }
+    }
+}
+#undef OPT_SCREEN_WIDTH
+#undef DOWNSAMPLE_SHIFT
+
 /**
  * This function:
  * - Sends the current master display list out to be rendered.
@@ -467,6 +537,11 @@ void display() {
     }
     exec_display_list(&gGfxPool->spTask);
     profiler_log_thread5_time(AFTER_DISPLAY_LISTS);
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_LOW_RESOLUTION)) {
+        render_low_resolution();
+    }
+
     osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
     osViSwapBuffer((void *) PHYSICAL_TO_VIRTUAL(gPhysicalFramebuffers[sRenderedFramebuffer]));
     profiler_log_thread5_time(THREAD5_END);

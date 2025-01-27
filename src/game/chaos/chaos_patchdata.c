@@ -905,6 +905,57 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "The Sky is...Gone?",
         .shortDescription  = "Meh, who needed it anyway...",
     },
+    [CHAOS_PATCH_45_FPS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_20_FPS,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 2,
+
+        .conditionalFunc   = chs_cond_45_fps,
+
+        .name              = "45 FPS",
+        .shortDescription  = "My internet's living, I'm adding frames, Grandma's living, she's adding frames...",
+        .longDescription   = "This maaaaaaay not run at a consistent 45 FPS while running on hardware. Whether that makes the game easier or harder is for the player to decide.",
+    },
+    [CHAOS_PATCH_20_FPS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_45_FPS,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 2,
+
+        .conditionalFunc   = chs_cond_20_fps,
+
+        .name              = "20 FPS",
+        .shortDescription  = "Alright, who plugged in the 5 dollar capture card?",
+    },
+    [CHAOS_PATCH_TOP_DOWN_CAMERA] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .conditionalFunc   = chs_topdown_check,
+
+        .name              = "Top-Down Camera",
+        .shortDescription  = "Now you're playing Zelda! (without the items) (without the story) (without the combat) (without the",
+    },
+    [CHAOS_PATCH_LOW_RESOLUTION] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 3,
+
+        .conditionalFunc   = chs_cond_low_resolution,
+
+        .name              = "Potato Graphics",
+        .shortDescription  = "Now you're gaming like it's the 70's!",
+    },
 
 // Time Limit
     [CHAOS_PATCH_TIME_LIMIT] = {
@@ -1320,6 +1371,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 10,
 
+        .conditionalFunc   = chs_cond_serve_ads,
         .frameUpdateFunc   = chs_update_serve_ads,
 
         .name              = "Ad Breaks",
@@ -1371,33 +1423,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "L is Real 2401",
         .shortDescription  = "You can now play as Luigi.",
     },
-    [CHAOS_PATCH_45_FPS] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .negationId        = CHAOS_PATCH_20_FPS,
-        .severity          = 2,
-        .isStackable       = FALSE,
-        .duration          = 2,
-
-        .conditionalFunc   = chs_cond_45_fps,
-
-        .name              = "45 FPS",
-        .shortDescription  = "My internet's living, I'm adding frames, Grandma's living, she's adding frames...",
-        .longDescription   = "This maaaaaaay not run at a consistent 45 FPS while running on hardware. Whether that makes the game easier or harder is for the player to decide.",
-    },
-    [CHAOS_PATCH_20_FPS] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .negationId        = CHAOS_PATCH_45_FPS,
-        .severity          = 2,
-        .isStackable       = FALSE,
-        .duration          = 2,
-
-        .conditionalFunc   = chs_cond_20_fps,
-
-        .name              = "20 FPS",
-        .shortDescription  = "Alright, who plugged in the 5 dollar capture card?",
-    },
     [CHAOS_PATCH_REVERB] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_POSITIVE,
@@ -1420,18 +1445,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Not So Bossy",
         .shortDescription  = "All bosses die in one hit (except for during the final Bowser fight).",
-    },
-    [CHAOS_PATCH_TOP_DOWN_CAMERA] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 3,
-        .isStackable       = FALSE,
-        .duration          = 6,
-
-        .conditionalFunc   = chs_topdown_check,
-
-        .name              = "Top-Down Camera",
-        .shortDescription  = "Now you're playing Zelda! (without the items) (without the story) (without the combat) (without the",
     },
     [CHAOS_PATCH_QUICKTIME] = {
         .durationType      = CHAOS_DURATION_STARS,

@@ -103,6 +103,6 @@ const LevelScript level_main_menu_entry_2[] = {
     SLEEP(/*frames*/ 16),
     CLEAR_LEVEL(),
     SLEEP_BEFORE_EXIT(/*frames*/ 1),
-
+    CALL(/*arg*/ 0, /*func*/ lvl_unset_act_select),
     EXIT(),
 };
