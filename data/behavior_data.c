@@ -6168,7 +6168,7 @@ const BehaviorScript bhvIntroScene[] = {
 
 const BehaviorScript bhvMarioClone[] = {
 	BEGIN(OBJ_LIST_GENACTOR),
-    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    OR_INT(oFlags, (OBJ_FLAG_SET_FACE_ANGLE_TO_MOVE_ANGLE | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
     SET_HITBOX(/*Radius*/ 37, /*Height*/ 160),
 	CALL_NATIVE(bhv_MarioClone_init),
 	BEGIN_LOOP(),

@@ -36,23 +36,24 @@ void bhv_MarioClone_init(void) {
 	set_obj_animation(o, MARIO_ANIM_IDLE_HEAD_LEFT);
 }
 void bhv_MarioClone_loop(void) {
-	if (o->oInteractStatus & INT_STATUS_INTERACTED) {
-		// forward this to mario
-		gMarioState->interactObj = obj_get_collider(o);
-		o->oInteractStatus = 0;
-	}
+	struct MarioState *m = gMarioState;
+	update_clone_animation();
+	// if (o->oInteractStatus & INT_STATUS_INTERACTED) {
+	// 	// forward this to mario
+	// 	m->interactObj = obj_get_collider(o);
+	// 	o->oInteractStatus = 0;
+	// }
 
 
-	o->oFaceAnglePitch = gMarioState->faceAngle[0];
-	o->oFaceAngleYaw = gMarioState->faceAngle[1];
-	o->oFaceAngleRoll = gMarioState->faceAngle[2];
+	o->oFaceAnglePitch = m->faceAngle[0];
+	o->oFaceAngleYaw = m->faceAngle[1];
+	o->oFaceAngleRoll = m->faceAngle[2];
 
-	vec3f_copy(&o->oVelX, gMarioState->vel);
-	o->oForwardVel = gMarioState->forwardVel;
+	// o->oVelY = m->vel[2];
+	o->oForwardVel = m->forwardVel;
+	vec3f_copy(&o->oVelX, m->vel);
 
 	u32 collisionFlags = object_step();
 
 	cur_obj_update_floor_and_walls();
-
-	update_clone_animation();
 }
