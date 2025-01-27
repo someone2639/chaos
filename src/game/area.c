@@ -405,7 +405,6 @@ void render_game(void) {
             geo_process_root(gCurrentArea->unk04, D_8032CE74, D_8032CE78, gFBSetColor);             
         }
 
-
         //Random blind patch
         if(chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_BLIND)) {
             struct ChaosActiveEntry *chaosBlind;
