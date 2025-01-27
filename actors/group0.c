@@ -26,5 +26,7 @@
 
 #include "sparkle_animation/model.inc.c"
 
+#include "slotwheel/model.inc.c"
 #include "chaos_bullet_bill/model.inc.c"
 #include "luigi/model.inc.c"
+

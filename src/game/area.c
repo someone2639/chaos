@@ -26,6 +26,7 @@
 #include "dialog_ids.h"
 #include "profiling.h"
 #include "patch_selection_ui.h"
+#include "chaos_pause_menu.h"
 
 struct SpawnInfo gPlayerSpawnInfos[1];
 struct GraphNode *D_8033A160[0x100];
@@ -39,6 +40,7 @@ s16 gCurrAreaIndex;
 s16 gSavedCourseNum;
 s16 gMenuOptSelectIndex;
 s16 gSaveOptSelectIndex;
+s16 gInActSelect = FALSE;
 
 struct SpawnInfo *gMarioSpawnInfo = &gPlayerSpawnInfos[0];
 struct GraphNode **gLoadedGraphNodes = D_8033A160;
@@ -361,6 +363,7 @@ void play_transition_after_delay(s16 transType, s16 time, u8 red, u8 green, u8 b
     play_transition(transType, time, red, green, blue);
 }
 
+<<<<<<< HEAD
 s32 fliptarget = SCREEN_WIDTH / 2;
 u8 isInMenu = FALSE;
 
@@ -399,6 +402,12 @@ void render_game(void) {
     if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
         process_master_quest_transition(gCurrentArea->unk04);
         if(!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_STOP_GAME_RENDER)) {
+=======
+void drawslots();
+void render_game(void) {
+    if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
+        if(!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_STOP_GAME_RENDER) && !(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_STOP_GAME_RENDER)) {
+>>>>>>> master
             geo_process_root(gCurrentArea->unk04, D_8032CE74, D_8032CE78, gFBSetColor);             
         }
 
@@ -476,6 +485,12 @@ void render_game(void) {
                 gWarpTransDelay--;
             }
         }
+
+        if (chaos_check_if_patch_active(CHAOS_PATCH_BLUECOIN_LOTTERY)) {
+            drawslots();
+        }
+
+        chaosmsg_render();
     } else {
         render_text_labels();
         if (D_8032CE78 != NULL) {

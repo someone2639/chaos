@@ -75,6 +75,7 @@ enum ChaosPatchID {
     CHAOS_PATCH_PAY2WIN,
     CHAOS_PATCH_6_RED_COINS,
     CHAOS_PATCH_SONIC_SIMULATOR,
+    CHAOS_PATCH_BLUECOIN_LOTTERY,
     CHAOS_PATCH_COIN_SIZE,
 
 // Random Griefing
@@ -114,6 +115,8 @@ enum ChaosPatchID {
     CHAOS_PATCH_20_FPS,
     CHAOS_PATCH_TOP_DOWN_CAMERA,
     CHAOS_PATCH_MIRROR_MODE,
+    CHAOS_PATCH_LOW_RESOLUTION,
+
 // Time Limit
     CHAOS_PATCH_TIME_LIMIT,
     CHAOS_PATCH_LOWER_TIME_LIMIT,
@@ -145,6 +148,15 @@ enum ChaosPatchID {
     CHAOS_PATCH_INVERTED_CAMERA_X,
     CHAOS_PATCH_INVERTED_STICK_X,
     CHAOS_PATCH_INVERTED_STICK_Y,
+    CHAOS_PATCH_INPUT_LAG,
+
+// Size Modifiers
+    CHAOS_PATCH_MARIO_BIG,
+    CHAOS_PATCH_MARIO_SMALL,
+
+// Lethal Damages
+    CHAOS_PATCH_LETHAL_BONK,
+    CHAOS_PATCH_LETHAL_FALL_DAMAGE,
 
 // Miscellaneous Modifiers
     CHAOS_PATCH_MARIO_INVISIBLE,
@@ -161,6 +173,7 @@ enum ChaosPatchID {
     CHAOS_PATCH_LUIGI,
     CHAOS_PATCH_REVERB,
     CHAOS_PATCH_WEAK_BOSSES,
+    CHAOS_PATCH_QUICKTIME,
 
 // Patch Count
     CHAOS_PATCH_COUNT,
@@ -234,6 +247,7 @@ struct ChaosActiveEntry {
 };
 
 extern const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT];
+extern char gChaosInternalBuffer[0x1000];
 extern s32 *gChaosActiveEntryCount;
 extern struct ChaosActiveEntry *gChaosActiveEntries;
 extern u8 gChaosLevelWarped;
@@ -252,7 +266,8 @@ u32 chaos_count_active_instances(const enum ChaosPatchID patchId);
 // Deactivate an old chaos patch, based on its current index.
 // Be careful when invoking this with stackable patches, as it may cause undesirable behavior if used incorrectly.
 // In general it is not recommended to invoke this (externally) with stackable patches that use CHAOS_DURATION_USE_COUNT (since they get combined).
-void chaos_remove_expired_entry(const s32 patchIndex);
+// Additionally a message may be printed, abiding by the format of chaosmsg_print.
+void chaos_remove_expired_entry(const s32 patchIndex, const char *msg);
 
 // Activate a new chaos patch.
 void chaos_add_new_entry(const enum ChaosPatchID patchId);
@@ -288,3 +303,4 @@ void chaos_frame_update(void);
 
 
 #include "chaos_patch_behaviors.h"
+#include "chaos_message.h"

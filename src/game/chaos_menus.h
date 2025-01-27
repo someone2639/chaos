@@ -4,7 +4,6 @@
 #include "types.h"
 #include "src/engine/math_util.h"
 
-#define MENU_JOYSTICK_HOLD_FRAMES   10
 #define MENU_ANIM_LOOP              -1
 
 enum MenuButtonPrompt {
@@ -14,14 +13,18 @@ enum MenuButtonPrompt {
     MENU_PROMPT_L_TRIG,
     MENU_PROMPT_R_TRIG,
     MENU_PROMPT_Z_TRIG,
+    MENU_PROMPT_C_DOWN,
+    MENU_PROMPT_C_LEFT,
+    MENU_PROMPT_C_UP,
+    MENU_PROMPT_C_RIGHT,
 };
 
 enum MenuJoystickDir {
-    MENU_JOYSTICK_DIR_NONE,
-    MENU_JOYSTICK_DIR_UP,
-    MENU_JOYSTICK_DIR_DOWN,
-    MENU_JOYSTICK_DIR_RIGHT,
-    MENU_JOYSTICK_DIR_LEFT,
+    MENU_JOYSTICK_DIR_NONE  =  0,
+    MENU_JOYSTICK_DIR_UP    = (1 << 0),
+    MENU_JOYSTICK_DIR_DOWN  = (1 << 1),
+    MENU_JOYSTICK_DIR_RIGHT = (1 << 2),
+    MENU_JOYSTICK_DIR_LEFT  = (1 << 3),
 };
 
 //Generic menu handler

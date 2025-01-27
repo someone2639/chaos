@@ -18,7 +18,8 @@ u8 chs_cond_push_back(void) {
 }
 
 void chs_update_push_back(void) {
-    if (gMarioState->action & (ACT_FLAG_INTANGIBLE | ACT_GROUP_CUTSCENE)) {
+    s32 group = (gMarioState->action & ACT_GROUP_MASK);
+    if ((gMarioState->action & ACT_FLAG_INTANGIBLE) || group == ACT_GROUP_CUTSCENE) {
         return;
     }
     

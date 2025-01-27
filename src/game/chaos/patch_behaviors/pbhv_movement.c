@@ -68,3 +68,7 @@ void chs_update_galaxy_twirl(void) {
         gMarioState->usedSpin = FALSE;
     }
 }
+
+u8 chs_cond_no_fall_damage(void) {
+    return(!chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_FALL_DAMAGE));
+}

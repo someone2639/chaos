@@ -94,6 +94,7 @@ u8 chs_cond_coin_size(void);
 // Movement Modifiers
 void chs_update_brawl_tripping(void);
 void chs_update_galaxy_twirl(void);
+u8 chs_cond_no_fall_damage(void);
 
 // Random Griefing
 void chs_act_random_sleep(void);
@@ -120,6 +121,7 @@ u8 chs_cond_no_zbuffer(void);
 u8 chs_cond_inverted_zbuffer(void);
 u8 chs_cond_decreased_fov(void);
 u8 chs_cond_increased_fov(void);
+u8 chs_cond_low_resolution(void);
 
 // Time Limit
 void chs_level_init_time_limit(void);
@@ -153,13 +155,22 @@ void chs_update_speed_tax(void);
 // Input Modifiers
 u8 chs_cond_button_broken_b(void);
 u8 chs_cond_button_broken_z(void);
+u8 chs_cond_button_broken_c(void);
 u8 chs_cond_swapped_zr_ab(void);
+void chs_act_input_lag(void);
 
 // Cap Effects
 void chs_update_wing_cap(void);
 
+// Size Modifiers
+void chs_act_mario_big(void);
+u8 chs_cond_mario_big(void);
+void chs_act_mario_small(void);
+u8 chs_cond_mario_small(void);
+
 // Misc
 u8 chs_cond_one_hit_wonder(void);
+u8 chs_cond_serve_ads(void);
 void chs_update_serve_ads(void);
 u8 chs_cond_miracle(void);
 void chs_update_miracle(void);
@@ -171,7 +182,11 @@ u8 chs_cond_45_fps(void);
 u8 chs_cond_20_fps(void);
 void chs_act_reverb(void);
 void chs_deact_reverb(void);
-
 void chs_mq_init(void);
 void chs_mq_deinit(void);
-
+u8 chs_topdown_check(void);
+u8 chs_cam_invert_x_check(void);
+u8 chs_cond_quicktime(void);
+void chs_update_quicktime(void);
+void chs_act_quicktime(void);
+u8 chs_cond_lethal_fall_damage(void);

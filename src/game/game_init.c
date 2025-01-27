@@ -12,6 +12,7 @@
 #include "engine/level_script.h"
 #include "rendering_graph_node.h"
 #include "game_init.h"
+#include "level_update.h"
 #include "main.h"
 #include "memory.h"
 #include "profiler.h"
@@ -109,6 +110,8 @@ struct DemoInput gRecordedDemoInput = { 0 };
 u8 gFBEEnabled = FALSE;
 static u8 checkingFBE = 0;
 static u8 fbeCheckFinished = FALSE;
+
+struct Controller chaosControllerLag[MAX_NUM_PLAYERS][10];
 
 // Display
 // ----------------------------------------------------------------------------------------------------
@@ -449,6 +452,75 @@ void select_gfx_pool(void) {
     gGfxPoolEnd = (u8 *) (gGfxPool->buffer + GFX_POOL_SIZE);
 }
 
+
+#define DOWNSAMPLE_SHIFT 3
+// // This is too slow to run at speed, but otherwise looks better...
+// static void render_low_resolution_better(void) {
+//     u16 *fb = gFramebuffers[sRenderedFramebuffer];
+
+//     for (s32 fbY = 0; fbY < SCREEN_HEIGHT; fbY += (1 << DOWNSAMPLE_SHIFT)) {
+//         for (s32 fbX = 0; fbX < SCREEN_WIDTH; fbX += (1 << DOWNSAMPLE_SHIFT)) {
+//             u32 fbeDownsampleBuffer[3] = {};
+
+//             s32 fbdsY = fbY * SCREEN_WIDTH;
+//             s32 fbdsYEnd = fbdsY + (SCREEN_WIDTH * (1 << DOWNSAMPLE_SHIFT));
+//             for (; fbdsY < fbdsYEnd; fbdsY += SCREEN_WIDTH) {
+//                 s32 fbdsX = fbdsY + fbX;
+//                 s32 fbdsXEnd = fbdsX + (1 << DOWNSAMPLE_SHIFT);
+//                 for (; fbdsX < fbdsXEnd; fbdsX++) {
+//                     fbeDownsampleBuffer[0] += fb[fbdsX] & (0x0000001F << 11);
+//                     fbeDownsampleBuffer[1] += fb[fbdsX] & (0x0000001F << 6);
+//                     fbeDownsampleBuffer[2] += fb[fbdsX] & (0x0000001F << 1);
+//                 }
+//             }
+
+//             u16 new = (((fbeDownsampleBuffer[0] + (1 << (DOWNSAMPLE_SHIFT + DOWNSAMPLE_SHIFT - 1))) >> (DOWNSAMPLE_SHIFT + DOWNSAMPLE_SHIFT)) & (0x0000001F << 11)) +
+//                       (((fbeDownsampleBuffer[1] + (1 << (DOWNSAMPLE_SHIFT + DOWNSAMPLE_SHIFT - 1))) >> (DOWNSAMPLE_SHIFT + DOWNSAMPLE_SHIFT)) & (0x0000001F <<  6)) +
+//                       (((fbeDownsampleBuffer[2] + (1 << (DOWNSAMPLE_SHIFT + DOWNSAMPLE_SHIFT - 1))) >> (DOWNSAMPLE_SHIFT + DOWNSAMPLE_SHIFT)) & (0x0000001F <<  1)) + 1;
+
+//             s32 fbdsY = fbY * SCREEN_WIDTH;
+//             for (; fbdsY < fbdsYEnd; fbdsY += SCREEN_WIDTH) {
+//                 s32 fbdsX = fbdsY + fbX;
+//                 s32 fbdsXEnd = fbdsX + (1 << DOWNSAMPLE_SHIFT);
+//                 for (; fbdsX < fbdsXEnd; fbdsX++) {
+//                     fb[fbdsX] = new;
+//                 }
+//             }
+//         }
+//     }
+// }
+
+#define OPT_SCREEN_WIDTH (SCREEN_WIDTH >> 1)
+static void render_low_resolution(void) {
+    // 2 pixels at a time!
+    u32 *fb = (u32 *) gFramebuffers[sRenderedFramebuffer];
+
+    if (sCurrPlayMode == PLAY_MODE_PAUSED || sCurrPlayMode == PLAY_MODE_SELECT_PATCH || sCurrPlayMode == PLAY_MODE_QUICKTIME || gInActSelect) {
+        return;
+    }
+
+    for (s32 fbY = 0; fbY < SCREEN_HEIGHT; fbY += (1 << DOWNSAMPLE_SHIFT)) {
+        for (s32 fbX = 0; fbX < OPT_SCREEN_WIDTH; fbX += (1 << (DOWNSAMPLE_SHIFT - 1))) {
+            s32 fbdsY = fbY * OPT_SCREEN_WIDTH;
+            s32 fbdsYEnd = fbdsY + (OPT_SCREEN_WIDTH * (1 << DOWNSAMPLE_SHIFT));
+
+            // 2 pixels at a time!
+            u32 new = fb[fbdsY + fbX + ((OPT_SCREEN_WIDTH * (1 << (DOWNSAMPLE_SHIFT - 1))) + (1 << (DOWNSAMPLE_SHIFT - 2)))];
+            new = (new & 0xFFFF) | (new << 16);
+
+            for (; fbdsY < fbdsYEnd; fbdsY += OPT_SCREEN_WIDTH) {
+                s32 fbdsX = fbdsY + fbX;
+                s32 fbdsXEnd = fbdsX + (1 << (DOWNSAMPLE_SHIFT - 1));
+                for (; fbdsX < fbdsXEnd; fbdsX++) {
+                    fb[fbdsX] = new;
+                }
+            }
+        }
+    }
+}
+#undef OPT_SCREEN_WIDTH
+#undef DOWNSAMPLE_SHIFT
+
 /**
  * This function:
  * - Sends the current master display list out to be rendered.
@@ -466,6 +538,11 @@ void display() {
     }
     exec_display_list(&gGfxPool->spTask);
     profiler_log_thread5_time(AFTER_DISPLAY_LISTS);
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_LOW_RESOLUTION)) {
+        render_low_resolution();
+    }
+
     osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
     osViSwapBuffer((void *) PHYSICAL_TO_VIRTUAL(gPhysicalFramebuffers[sRenderedFramebuffer]));
     profiler_log_thread5_time(THREAD5_END);
@@ -636,6 +713,10 @@ void run_demo_inputs(void) {
  * Update the controller struct with available inputs if present.
  */
 void read_controller_inputs(void) {
+    static s32 chaosControllerLagIter = 0;
+    chaosControllerLagIter = (chaosControllerLagIter + 1) % ARRAY_COUNT(chaosControllerLag[0]);
+    static u16 lastContBtnDown[MAX_NUM_PLAYERS];
+
     // If any controllers are plugged in, update the controller information.
     if (gControllerBits) {
         osRecvMesg(&gSIEventMesgQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
@@ -695,7 +776,7 @@ void read_controller_inputs(void) {
             controller->rawStickX = controller->controllerData->stick_x;
             controller->rawStickY = controller->controllerData->stick_y;
             controller->buttonPressed = controller->controllerData->button
-                                        & (controller->controllerData->button ^ controller->buttonDown);
+                                        & (controller->controllerData->button ^ lastContBtnDown[cont]);
             // 0.5x A presses are a good meme
             controller->buttonDown = controller->controllerData->button;
             adjust_analog_stick(controller);
@@ -707,6 +788,20 @@ void read_controller_inputs(void) {
             controller->stickX = 0;
             controller->stickY = 0;
             controller->stickMag = 0;
+        }
+
+        lastContBtnDown[cont] = controller->buttonDown;
+        if (chaos_check_if_patch_active(CHAOS_PATCH_INPUT_LAG)) {
+            struct Controller tmp = chaosControllerLag[cont][chaosControllerLagIter];
+            chaosControllerLag[cont][chaosControllerLagIter] = *controller;
+
+            controller->rawStickX = tmp.rawStickX;
+            controller->rawStickY = tmp.rawStickY;
+            controller->buttonPressed = tmp.buttonPressed;
+            controller->buttonDown = tmp.buttonDown;
+            controller->stickX = tmp.stickX;
+            controller->stickY = tmp.stickY;
+            controller->stickMag = tmp.stickMag;
         }
     }
 
@@ -895,6 +990,12 @@ void thread5_game_loop(UNUSED void *arg) {
 #ifdef SOMEONE2639_CRAZY_EXPERIMENTS
         if (gPlayer1Controller->buttonPressed & L_TRIG) {
             chaos_add_new_entry(CHAOS_PATCH_MIRROR_MODE);
+        }
+        if (gPlayer1Controller->buttonPressed & R_TRIG) {
+            chaos_remove_expired_entry(0, "%s: Removed patch!");
+        }
+        if ((gPlayer1Controller->buttonPressed & (A_BUTTON|L_TRIG)) == (A_BUTTON | L_TRIG)) {
+            HVQM_PLAY(chaos);
         }
 #endif // SOMEONE2639_CRAZY_EXPERIMENTS
         display_and_vsync();

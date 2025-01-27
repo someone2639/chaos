@@ -51,3 +51,7 @@ u8 chs_cond_20_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_45_F
 
 void chs_act_reverb(void) { init_reverb_us(1 << 31); }
 void chs_deact_reverb(void) { init_reverb_us(1 << 31); }
+
+u8 chs_cond_lethal_fall_damage() {
+    return (!chaos_check_if_patch_active(CHAOS_PATCH_NO_FALL_DAMAGE));
+}

@@ -435,6 +435,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 12,
 
+        .conditionalFunc   = chs_cond_no_fall_damage,
+
         .name              = "Long Fall Boots",
         .shortDescription  = "Mario is immune to fall damage.",
     },
@@ -787,7 +789,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 1,
+        .duration          = 2,
 
         .conditionalFunc   = chs_cond_green_demon,
         .frameUpdateFunc   = chs_lvlupdate_green_demon,
@@ -916,6 +918,57 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Master Quest",
         .shortDescription  = "Flips the game horizontally.",
     },
+    [CHAOS_PATCH_45_FPS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_20_FPS,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 2,
+
+        .conditionalFunc   = chs_cond_45_fps,
+
+        .name              = "45 FPS",
+        .shortDescription  = "My internet's living, I'm adding frames, Grandma's living, she's adding frames...",
+        .longDescription   = "This maaaaaaay not run at a consistent 45 FPS while running on hardware. Whether that makes the game easier or harder is for the player to decide.",
+    },
+    [CHAOS_PATCH_20_FPS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_45_FPS,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 2,
+
+        .conditionalFunc   = chs_cond_20_fps,
+
+        .name              = "20 FPS",
+        .shortDescription  = "Alright, who plugged in the 5 dollar capture card?",
+    },
+    [CHAOS_PATCH_TOP_DOWN_CAMERA] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .conditionalFunc   = chs_topdown_check,
+
+        .name              = "Top-Down Camera",
+        .shortDescription  = "Now you're playing Zelda! (without the items) (without the story) (without the combat) (without the",
+    },
+    [CHAOS_PATCH_LOW_RESOLUTION] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 4,
+
+        .conditionalFunc   = chs_cond_low_resolution,
+
+        .name              = "Potato Graphics",
+        .shortDescription  = "Now you're gaming like it's the 70's!",
+    },
 
 // Time Limit
     [CHAOS_PATCH_TIME_LIMIT] = {
@@ -959,7 +1012,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "L to Levitate",
         .shortDescription  = "Press L to levitate! Each L press counts as a separate use.",
-        .longDescription   = "While levitating, Mario may not move horizontally until the L button has been released. Make sure to line Mario up before carelessly wasting an L press!"
+        .longDescription   = "While levitating, Mario may only barely move horizontally until the L button has been released. Make sure to line Mario up before carelessly wasting an L press!"
     },
     [CHAOS_PATCH_DEBUG_FREE_MOVE] = {
         .durationType      = CHAOS_DURATION_USE_COUNT,
@@ -1126,6 +1179,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 5,
 
+        .conditionalFunc   = chs_cond_button_broken_c,
+
         .name              = "Camera Malfunction",
         .shortDescription  = "All C buttons are completely nonfunctional (even for menus!)",
     },
@@ -1147,6 +1202,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity          = 2,
         .isStackable       = FALSE,
         .duration          = 6,
+
+        .conditionalFunc   = chs_cam_invert_x_check,
 
         .name              = "Camera Reversal",
         .shortDescription  = "Invert the X axis of the camera (i.e. C-Left and C-Right).",
@@ -1171,6 +1228,70 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Stick Shift",
         .shortDescription  = "Invert the Y axis of the joystick when controlling Mario (i.e. forward and backward).",
     },
+    [CHAOS_PATCH_INPUT_LAG] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 4,
+
+        .activatedInitFunc = chs_act_input_lag,
+
+        .name              = "Nintendo Wii Online Mode",
+        .shortDescription  = "Truly the most playable and responsive experience!",
+    },
+
+// Size Modifiers
+    [CHAOS_PATCH_MARIO_BIG] = {
+        .durationType      = CHAOS_DURATION_INFINITE,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .negationId        = CHAOS_PATCH_MARIO_SMALL,
+        .severity          = 1,
+        .isStackable       = TRUE,
+
+        .activatedInitFunc = chs_act_mario_big,
+        .conditionalFunc   = chs_cond_mario_big,
+
+        .name              = "One Makes You Larger",
+        .shortDescription  = "Increase Mario's size by 12.5% (additive).",
+    },
+    [CHAOS_PATCH_MARIO_SMALL] = {
+        .durationType      = CHAOS_DURATION_INFINITE,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .negationId        = CHAOS_PATCH_MARIO_BIG,
+        .severity          = 1,
+        .isStackable       = TRUE,
+
+        .activatedInitFunc = chs_act_mario_small,
+        .conditionalFunc   = chs_cond_mario_small,
+
+        .name              = "One Makes You Smaller",
+        .shortDescription  = "Decrease Mario's size by 12.5% (additive).",
+    },
+
+// Lethal damages
+[CHAOS_PATCH_LETHAL_BONK] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 5,
+
+        .name              = "Realistic Concussions",
+        .shortDescription  = "Careful not to hit your head! Bonking now results in severe brain trauma.",
+},
+[CHAOS_PATCH_LETHAL_FALL_DAMAGE] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 5,
+
+        .conditionalFunc   = chs_cond_lethal_fall_damage,
+
+        .name              = "Realistic Fall Damage",
+        .shortDescription  = "Falling will now instantly kill Mario.",
+},
 
 // Miscellaneous Modifiers
     [CHAOS_PATCH_MARIO_INVISIBLE] = {
@@ -1236,6 +1357,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Code That Makes You Miss Bowser Throws",
         .shortDescription  = "They have that in this game, I swear!",
     },
+    [CHAOS_PATCH_BLUECOIN_LOTTERY] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .name              = "Blue Coin Lottery",
+        .shortDescription  = "Test your luck! Every blue coin is a 1% chance to win big!",
+    },
     [CHAOS_PATCH_INVERTED_SOUND] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
@@ -1253,6 +1384,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 10,
 
+        .conditionalFunc   = chs_cond_serve_ads,
         .frameUpdateFunc   = chs_update_serve_ads,
 
         .name              = "Ad Breaks",
@@ -1304,33 +1436,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "L is Real 2401",
         .shortDescription  = "You can now play as Luigi.",
     },
-    [CHAOS_PATCH_45_FPS] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .negationId        = CHAOS_PATCH_20_FPS,
-        .severity          = 2,
-        .isStackable       = FALSE,
-        .duration          = 2,
-
-        .conditionalFunc   = chs_cond_45_fps,
-
-        .name              = "45 FPS",
-        .shortDescription  = "My internet's living, I'm adding frames, Grandma's living, she's adding frames...",
-        .longDescription   = "This maaaaaaay not run at a consistent 45 FPS while running on hardware. Whether that makes the game easier or harder is for the player to decide.",
-    },
-    [CHAOS_PATCH_20_FPS] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .negationId        = CHAOS_PATCH_45_FPS,
-        .severity          = 2,
-        .isStackable       = FALSE,
-        .duration          = 2,
-
-        .conditionalFunc   = chs_cond_20_fps,
-
-        .name              = "20 FPS",
-        .shortDescription  = "Alright, who plugged in the 5 dollar capture card?",
-    },
     [CHAOS_PATCH_REVERB] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_POSITIVE,
@@ -1354,14 +1459,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Not So Bossy",
         .shortDescription  = "All bosses die in one hit (except for during the final Bowser fight).",
     },
-    [CHAOS_PATCH_TOP_DOWN_CAMERA] = {
+    [CHAOS_PATCH_QUICKTIME] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 6,
+        .duration          = 12,
 
-        .name              = "Top-Down Camera",
-        .shortDescription  = "Now you're playing Zelda! (without the items) (without the story) (without the combat) (without the",
+        .conditionalFunc   = chs_cond_quicktime,
+        .frameUpdateFunc   = chs_update_quicktime,
+        .activatedInitFunc = chs_act_quicktime,
+
+        .name              = "Quicktime Events",
+        .shortDescription  = "Follow the buttons in the order prompted on screen or die. Directed by David Cage.",
     },
 };

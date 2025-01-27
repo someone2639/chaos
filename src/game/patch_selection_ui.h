@@ -42,6 +42,9 @@
 
 #define SELECT_PATCH_TEXT_END   -80
 
+#define CARD_STRING_WIDTH 94
+#define DESC_STRING_WIDTH 284
+
 struct PatchCard {
     struct ChaosPatchSelection *sel;
     Vec2f pos;
@@ -90,8 +93,11 @@ struct PatchSelectionMenu {
 };
 
 extern struct PatchSelectionMenu *gPatchSelectionMenu;
+extern u8 sEffectColors[CHAOS_EFFECT_COUNT][3];
+extern u8 sQualityColors[CHAOS_PATCH_SEVERITY_COUNT][3];
 
 void display_patch_selection_ui();
 void update_patch_selection_menu();
 void reset_patch_selection_menu();
 void load_new_patches();
+void draw_patch_type(f32 x, f32 y, enum ChaosPatchDurationType type);
