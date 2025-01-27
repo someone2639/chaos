@@ -109,6 +109,8 @@ u8 gFBEEnabled = FALSE;
 static u8 checkingFBE = 0;
 static u8 fbeCheckFinished = FALSE;
 
+struct Controller chaosControllerLag[MAX_NUM_PLAYERS][10];
+
 // Display
 // ----------------------------------------------------------------------------------------------------
 
@@ -631,6 +633,10 @@ void run_demo_inputs(void) {
  * Update the controller struct with available inputs if present.
  */
 void read_controller_inputs(void) {
+    static s32 chaosControllerLagIter = 0;
+    chaosControllerLagIter = (chaosControllerLagIter + 1) % ARRAY_COUNT(chaosControllerLag[0]);
+    static u16 lastContBtnDown[MAX_NUM_PLAYERS];
+
     // If any controllers are plugged in, update the controller information.
     if (gControllerBits) {
         osRecvMesg(&gSIEventMesgQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
@@ -690,7 +696,7 @@ void read_controller_inputs(void) {
             controller->rawStickX = controller->controllerData->stick_x;
             controller->rawStickY = controller->controllerData->stick_y;
             controller->buttonPressed = controller->controllerData->button
-                                        & (controller->controllerData->button ^ controller->buttonDown);
+                                        & (controller->controllerData->button ^ lastContBtnDown[cont]);
             // 0.5x A presses are a good meme
             controller->buttonDown = controller->controllerData->button;
             adjust_analog_stick(controller);
@@ -702,6 +708,20 @@ void read_controller_inputs(void) {
             controller->stickX = 0;
             controller->stickY = 0;
             controller->stickMag = 0;
+        }
+
+        lastContBtnDown[cont] = controller->buttonDown;
+        if (chaos_check_if_patch_active(CHAOS_PATCH_INPUT_LAG)) {
+            struct Controller tmp = chaosControllerLag[cont][chaosControllerLagIter];
+            chaosControllerLag[cont][chaosControllerLagIter] = *controller;
+
+            controller->rawStickX = tmp.rawStickX;
+            controller->rawStickY = tmp.rawStickY;
+            controller->buttonPressed = tmp.buttonPressed;
+            controller->buttonDown = tmp.buttonDown;
+            controller->stickX = tmp.stickX;
+            controller->stickY = tmp.stickY;
+            controller->stickMag = tmp.stickMag;
         }
     }
 

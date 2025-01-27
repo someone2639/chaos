@@ -156,6 +156,7 @@ u8 chs_cond_button_broken_b(void);
 u8 chs_cond_button_broken_z(void);
 u8 chs_cond_button_broken_c(void);
 u8 chs_cond_swapped_zr_ab(void);
+void chs_act_input_lag(void);
 
 // Cap Effects
 void chs_update_wing_cap(void);

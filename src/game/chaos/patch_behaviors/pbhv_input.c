@@ -9,6 +9,7 @@
 #include "audio/external.h"
 #include "engine/behavior_script.h"
 #include "game/debug.h"
+#include "game/game_init.h"
 #include "game/level_update.h"
 #include "game/save_file.h"
 
@@ -57,4 +58,8 @@ u8 chs_cond_swapped_zr_ab(void) {
     }
 
     return TRUE;
+}
+
+void chs_act_input_lag(void) {
+    bzero(chaosControllerLag, sizeof(chaosControllerLag));
 }

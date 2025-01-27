@@ -789,7 +789,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 1,
+        .duration          = 2,
 
         .conditionalFunc   = chs_cond_green_demon,
         .frameUpdateFunc   = chs_lvlupdate_green_demon,
@@ -1163,6 +1163,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Stick Shift",
         .shortDescription  = "Invert the Y axis of the joystick when controlling Mario (i.e. forward and backward).",
+    },
+    [CHAOS_PATCH_INPUT_LAG] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 4,
+
+        .activatedInitFunc = chs_act_input_lag,
+
+        .name              = "Nintendo Wii Online Mode",
+        .shortDescription  = "Truly the most playable and responsive experience!",
     },
 
 // Size Modifiers
