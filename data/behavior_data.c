@@ -52,6 +52,7 @@
 #include "levels/wf/header.h"
 #include "levels/bowser_2/header.h"
 #include "levels/ttm/header.h"
+#include "game/obj_behaviors.h"
 
 #include "make_const_nonconst.h"
 #include "behavior_data.h"
@@ -6165,4 +6166,12 @@ const BehaviorScript bhvIntroScene[] = {
     END_LOOP(),
 };
 
-
+const BehaviorScript bhvMarioClone[] = {
+	BEGIN(OBJ_LIST_GENACTOR),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    SET_HITBOX(/*Radius*/ 37, /*Height*/ 160),
+	CALL_NATIVE(bhv_MarioClone_init),
+	BEGIN_LOOP(),
+		CALL_NATIVE(bhv_MarioClone_loop),
+	END_LOOP(),
+};

@@ -852,3 +852,5 @@ UNUSED s8 debug_sequence_tracker(s16 debugInputSequence[]) {
 #include "behaviors/treasure_chest.inc.c"
 #include "behaviors/mips.inc.c"
 #include "behaviors/yoshi.inc.c"
+
+#include "behaviors/MarioClone.inc.c"

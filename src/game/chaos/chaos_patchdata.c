@@ -1460,4 +1460,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Quicktime Events",
         .shortDescription  = "Follow the buttons in the order prompted on screen or die. Directed by David Cage.",
     },
+    [CHAOS_PATCH_DOUBLE_CHERRY] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = TRUE,
+        .duration          = 6,
+
+        .activatedInitFunc = chs_create_clone,
+
+        .name              = "Double Cherry",
+        .shortDescription  = "It's dangerous to go alone! Have a buddy!",
+    },
 };
