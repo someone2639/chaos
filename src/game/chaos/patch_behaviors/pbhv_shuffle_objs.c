@@ -229,6 +229,15 @@ void cshuffle_approach(UNUSED struct Camera *c) {
         o->header.gfx.pos[0] = approach_f32_asymptotic(o->header.gfx.pos[0], posStore[i][0], FACTOR);
         o->header.gfx.pos[1] = approach_f32_asymptotic(o->header.gfx.pos[1], posStore[i][1], FACTOR);
         o->header.gfx.pos[2] = approach_f32_asymptotic(o->header.gfx.pos[2], posStore[i][2], FACTOR);
+
+        // make object visible if close to mario now
+        if (o->oFlags & OBJ_FLAG_COMPUTE_DIST_TO_MARIO) {
+            o->oDistanceToMario = dist_between_objects(o, gMarioObject);
+            if (o->oDistanceToMario < o->oDrawingDistance) {
+                gCurrentObject->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
+                gCurrentObject->activeFlags &= ~ACTIVE_FLAG_FAR_AWAY;
+            }
+        }
     }
 }
 
