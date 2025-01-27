@@ -340,6 +340,9 @@ void cutscene_shuffle(struct Camera *c) {
     cutscene_event(cshuffle_setfloors_androoms, c, 59, -1);
     cutscene_event(cshuffle_timestart, c, 59, -1);
 
+    f32 floor = gMarioState->floorHeight;
+    c->pos[1] = floor + 50.0f;
+
     void print_text_centered(int, int, char*);
     print_text_centered(160, 10, "SHUFFLING OBJECTS");
 }
