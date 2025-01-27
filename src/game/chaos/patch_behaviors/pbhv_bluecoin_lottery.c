@@ -11,6 +11,7 @@
 #include "game/interaction.h"
 #include "game/behavior_actions.h"
 #include "game/rumble_init.h"
+#include "course_table.h"
 
 #define NUM_SLOTS 3
 
@@ -62,6 +63,11 @@ void init_slots(struct Object *oo, f32 chance) {
     globalY = OFFSCREEN_POS;
     currCoin = oo;
     chanceroll = chance;
+
+    if (gCurrCourseNum == COURSE_PSS) {
+        chanceroll = 1;
+    }
+
     slot_nextstate = S_GO;
     for (int i = 0; i < NUM_SLOTS; i++) {
         rotations[i] = 0;
