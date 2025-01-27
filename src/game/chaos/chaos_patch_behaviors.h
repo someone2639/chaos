@@ -121,6 +121,7 @@ u8 chs_cond_no_zbuffer(void);
 u8 chs_cond_inverted_zbuffer(void);
 u8 chs_cond_decreased_fov(void);
 u8 chs_cond_increased_fov(void);
+u8 chs_cond_low_resolution(void);
 
 // Time Limit
 void chs_level_init_time_limit(void);
@@ -156,6 +157,7 @@ u8 chs_cond_button_broken_b(void);
 u8 chs_cond_button_broken_z(void);
 u8 chs_cond_button_broken_c(void);
 u8 chs_cond_swapped_zr_ab(void);
+void chs_act_input_lag(void);
 
 // Cap Effects
 void chs_update_wing_cap(void);
@@ -168,6 +170,7 @@ u8 chs_cond_mario_small(void);
 
 // Misc
 u8 chs_cond_one_hit_wonder(void);
+u8 chs_cond_serve_ads(void);
 void chs_update_serve_ads(void);
 u8 chs_cond_miracle(void);
 void chs_update_miracle(void);

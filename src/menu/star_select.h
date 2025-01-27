@@ -19,5 +19,6 @@ Gfx *geo_act_selector_strings(s16 callContext, UNUSED struct GraphNode *node);
 #endif
 s32 lvl_init_act_selector_values_and_stars(UNUSED s32 arg, UNUSED s32 unused);
 s32 lvl_update_obj_and_load_act_button_actions(UNUSED s32 arg, UNUSED s32 unused);
+s32 lvl_unset_act_select(UNUSED s32 arg, UNUSED s32 unused);
 
 #endif // STAR_SELECT_H

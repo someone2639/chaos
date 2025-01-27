@@ -103,7 +103,7 @@ void chs_act_remove_negative_patch(void) {
             continue;
         }
 
-        chaos_remove_expired_entry(i, "Patch removed: %s");
+        chaos_remove_expired_entry(i, "Patch deactivated: %s");
         return;
     }
 }

@@ -463,3 +463,8 @@ s32 lvl_update_obj_and_load_act_button_actions(UNUSED s32 arg, UNUSED s32 unused
     sActSelectorMenuTimer++;
     return sLoadedActNum;
 }
+
+s32 lvl_unset_act_select(UNUSED s32 arg, UNUSED s32 unused) {
+    gInActSelect = FALSE;
+    return FALSE;
+}
