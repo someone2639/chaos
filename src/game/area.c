@@ -363,7 +363,6 @@ void play_transition_after_delay(s16 transType, s16 time, u8 red, u8 green, u8 b
     play_transition(transType, time, red, green, blue);
 }
 
-<<<<<<< HEAD
 s32 fliptarget = SCREEN_WIDTH / 2;
 u8 isInMenu = FALSE;
 
@@ -398,16 +397,10 @@ void process_master_quest_transition(struct GraphNodeRoot *node) {
     }
 }
 
-void render_game(void) {
-    if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
-        process_master_quest_transition(gCurrentArea->unk04);
-        if(!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_STOP_GAME_RENDER)) {
-=======
 void drawslots();
 void render_game(void) {
     if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
         if(!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_STOP_GAME_RENDER) && !(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_STOP_GAME_RENDER)) {
->>>>>>> master
             geo_process_root(gCurrentArea->unk04, D_8032CE74, D_8032CE78, gFBSetColor);             
         }
 
