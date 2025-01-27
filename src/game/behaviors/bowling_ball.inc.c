@@ -108,7 +108,7 @@ void bhv_bowling_ball_roll_loop(void) {
     }
 
     if (chaos_check_if_patch_active(CHAOS_PATCH_SHUFFLE_OBJECTS)) {
-        if (o->oTimer > 600) {
+        if (o->oTimer > 300) {
             spawn_mist_particles();
             spawn_mist_particles_variable(0, 0, 92.0f);
 
