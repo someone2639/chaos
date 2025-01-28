@@ -65,13 +65,11 @@ void swap(struct MarioState *m, struct Object *obj) {
 
 void bhv_MarioClone_init(void) {
 	set_obj_animation(o, MARIO_ANIM_IDLE_HEAD_LEFT);
-    // o->oMoveFlags |= OBJ_MOVE_ON_GROUND;
 }
 void bhv_MarioClone_loop(void) {
     char debug[220];
 	struct MarioState *m = gMarioState;
     obj_set_hitbox(o, &sCloneHitbox);
-	// if (o->oInteractStatus & INT_STATUS_INTERACTED) {
     if (obj_attack_collided_from_other_object(o)) {
 		// forward this to mario
         struct Object *coll = obj_get_collider(o);
@@ -81,16 +79,14 @@ void bhv_MarioClone_loop(void) {
             swap(m, o);
     		m->interactObj = coll;
             force_mario_interaction(m, m->interactObj);
-            osSyncPrintf("INTERACTED!");
         }
-        // m->marioObj->oInteractStatus = 0;
 		o->oInteractStatus = 0;
 	}
 	update_clone_animation();
 
-	// o->oFaceAnglePitch = m->faceAngle[0];
+	o->oFaceAnglePitch = m->faceAngle[0];
 	o->oFaceAngleYaw = m->faceAngle[1];
-	// o->oFaceAngleRoll = m->faceAngle[2];
+	o->oFaceAngleRoll = m->faceAngle[2];
 
 	vec3f_copy(&o->oVelX, m->vel);
 
