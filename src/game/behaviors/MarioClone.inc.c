@@ -97,6 +97,8 @@ void bhv_MarioClone_loop(void) {
     }
     o->oForwardVel = m->forwardVel;
 
+
+    o->header.gfx.sharedChild = gMarioObject->header.gfx.sharedChild;
     // sprintf(debug, "V %0.2f %0.2f %0.2f P %0.2f %0.2f %0.2f\n", o->oVelX, o->oVelY, o->oVelZ, 
     //     o->oPosX, o->oPosY, o->oPosZ);
     // osSyncPrintf(debug);

@@ -987,7 +987,7 @@ void thread5_game_loop(UNUSED void *arg) {
             chaos_add_new_entry(CHAOS_PATCH_DOUBLE_CHERRY);
         }
         if (gPlayer1Controller->buttonPressed & R_TRIG) {
-            chaos_remove_expired_entry(0, "%s: Removed patch!");
+            chaos_add_new_entry(CHAOS_PATCH_LUIGI);
         }
         if ((gPlayer1Controller->buttonPressed & (A_BUTTON|L_TRIG)) == (A_BUTTON | L_TRIG)) {
             HVQM_PLAY(chaos);

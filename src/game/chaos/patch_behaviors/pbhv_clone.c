@@ -57,6 +57,8 @@ void chs_create_clone(void) {
                                                     gMarioObject, MODEL_MARIO, bhvMarioClone
                                                     );
 
+    newclone->header.gfx.sharedChild = gMarioObject->header.gfx.sharedChild;
+
     struct Object *prev = gCurrentObject;
     gCurrentObject = newclone;
     spawn_mist_particles();
