@@ -70,7 +70,7 @@ struct {
 } gCrashScreen;
 
 // non-FBE only
-void render_multi_image(Texture *image, s32 x, s32 y, s32 width, s32 height) {
+static void render_multi_image(Texture *image, s32 x, s32 y, s32 width, s32 height) {
     s32 posW, posH, imW, imH;
     s32 i     = 0;
     s32 num   = 256;
@@ -255,7 +255,6 @@ void crash_screen_print(s32 x, s32 y, const char *fmt, ...) {
     va_start(args, fmt);
 
     size = _Printf(write_to_buf, crashScreenBuf, fmt, args);
-    osSyncPrintf(crashScreenBuf);
 
     if (size > 0) {
         ptr = crashScreenBuf;
