@@ -54,6 +54,25 @@ void bhv_red_coin_loop(void) {
         coinRequirement = 6;
     }
 
+    if (chaos_check_if_patch_active(CHAOS_PATCH_SCARED_COINS)) {
+        f32 dx = o->oHomeX - gMarioObject->oPosX;
+        f32 dy = o->oHomeY - gMarioObject->oPosY;
+        f32 dz = o->oHomeZ - gMarioObject->oPosZ;
+        f32 marioDistToHome = sqrtf(dx * dx + dy * dy + dz * dz);
+        f32 objDistToHome = cur_obj_lateral_dist_to_home();
+        s16 runAngle;
+
+        if(o->oDistanceToMario < 1000.0f) {
+            runAngle = (s16)o->oAngleToMario + 0x8000;
+            o->oPosX += 20 * sins(runAngle);
+            o->oPosZ += 20 * coss(runAngle);
+        } else if(marioDistToHome > 1000.0f && objDistToHome > 45.0f) {
+            runAngle = cur_obj_angle_to_home();
+            o->oPosX += 30 * sins(runAngle);
+            o->oPosZ += 30 * coss(runAngle);
+        }
+    }
+
     // If Mario interacted with the object...
     if (o->oInteractStatus & INT_STATUS_INTERACTED) {
         // ...and there is a red coin star in the level...

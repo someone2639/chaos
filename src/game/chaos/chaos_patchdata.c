@@ -600,6 +600,17 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Coins That Double in Size",
         .shortDescription  = "Doubles the size of yellow coins.",
     },
+    [CHAOS_PATCH_SCARED_COINS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 10,
+
+        .name              = "Sca-red Coins",
+        .shortDescription  = "Red coins will try to avoid being collected.",
+    },
+
 
 // Random Griefing
     [CHAOS_PATCH_RANDOM_SLEEP] = {
