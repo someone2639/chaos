@@ -823,6 +823,21 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Shell Spawn",
         .shortDescription  = "Start riding on a shell upon entering a new course.",
     },
+    [CHAOS_PATCH_COSMIC_CLONES] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .activatedInitFunc = chs_act_cosmic_clones,
+        .deactivationFunc  = chs_deact_cosmic_clones,
+        .areaInitFunc      = chs_area_init_cosmic_clones,
+        .frameUpdateFunc   = chs_update_cosmic_clones,
+
+        .name              = "Cosmic Clones",
+        .shortDescription  = "Spawns a trail of cosmic Mario's that copy your every move!",
+    },
 
 // Visual Modifiers
     [CHAOS_PATCH_NO_Z_BUFFER] = {

@@ -115,6 +115,10 @@ void chs_area_init_bullet_hell(void);
 void chs_update_bullet_hell(void);
 void chs_lvlinit_spawn_on_shell(void);
 void chs_lvlupdate_spawn_on_shell(void);
+void chs_deact_cosmic_clones(void);
+void chs_act_cosmic_clones(void);
+void chs_area_init_cosmic_clones(void);
+void chs_update_cosmic_clones(void);
 
 // Visual Modifiers
 u8 chs_cond_no_zbuffer(void);

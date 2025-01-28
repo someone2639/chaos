@@ -567,6 +567,8 @@ void warp_credits(void) {
     }
 }
 
+#include "chaos/patch_behaviors/pbhv_cosmic_clones.h"
+
 void check_instant_warp(void) {
     s16 cameraAngle;
     struct Surface *floor;
@@ -603,6 +605,10 @@ void check_instant_warp(void) {
                 warp_camera(warp->displacement[0], warp->displacement[1], warp->displacement[2]);
 
                 gMarioState->area->camera->yaw = cameraAngle;
+
+                if(chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_CLONES) && gCurrCourseNum != COURSE_NONE) {
+                    chs_cosmic_clones_move_instant_warp(warp->displacement);
+                }
             }
         }
     }

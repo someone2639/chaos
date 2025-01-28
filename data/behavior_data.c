@@ -345,6 +345,15 @@ const BehaviorScript bhvChaosBulletBill[] = {
     END_LOOP(),
 };
 
+const BehaviorScript bhvCosmicClone[] = {
+    BEGIN(OBJ_LIST_LEVEL),
+    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    CALL_NATIVE(bhv_cosmic_clones_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_cosmic_clones_loop),
+    END_LOOP(),
+};
+
 const BehaviorScript bhvStarDoor[] = {
     BEGIN(OBJ_LIST_SURFACE),
     SET_INT(oInteractType, INTERACT_DOOR),
