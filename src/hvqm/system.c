@@ -14,10 +14,10 @@
 #include "hvqm.h"
 #include "types.h"
 #include "buffers/framebuffers.h"
+#include "game/game_init.h"
 
 #define GLIST_SIZE 500
-Gfx videogfx[GLIST_SIZE];
-Gfx *video_glistp;
+#define video_glistp gDisplayListHead
 
 extern OSMesgQueue spMesgQ;
 
@@ -114,7 +114,7 @@ void create_gfx_task_structure();
 extern struct SPTask *gGfxSPTask;
 
 void hvqm_drawHLE(void *buf) {
-    video_glistp = &videogfx[0];
+    select_gfx_pool();
     // gDPPipeSync(video_glistp++);
     gDPSetColorImage(video_glistp++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 320, buf);
     gDPSetScissor(video_glistp++, G_SC_NON_INTERLACE, 0, 0, 320, 240);
@@ -124,9 +124,9 @@ void hvqm_drawHLE(void *buf) {
     gDPFullSync(video_glistp++);
     gSPEndDisplayList(video_glistp++);
 
-    osWritebackDCache(videogfx, ((u32) video_glistp) - ((u32) videogfx));
+    osWritebackDCacheAll();
     create_gfx_task_structure();
-    gGfxSPTask->task.t.data_ptr = (u64 *) videogfx;
+    gGfxSPTask->task.t.data_ptr = (u64 *) gGfxPool->buffer;
     gGfxSPTask->task.t.data_size = GLIST_SIZE * sizeof(Gfx);
     osSpTaskStart(&gGfxSPTask->task);
     osRecvMesg(&spMesgQ, NULL, OS_MESG_BLOCK);
