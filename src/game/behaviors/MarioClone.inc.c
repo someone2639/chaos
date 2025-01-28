@@ -67,7 +67,6 @@ void bhv_MarioClone_init(void) {
 	set_obj_animation(o, MARIO_ANIM_IDLE_HEAD_LEFT);
 }
 void bhv_MarioClone_loop(void) {
-    // char debug[220];
 	struct MarioState *m = gMarioState;
     obj_set_hitbox(o, &sCloneHitbox);
     if (obj_attack_collided_from_other_object(o)) {
@@ -96,11 +95,5 @@ void bhv_MarioClone_loop(void) {
         vec3f_add(&o->oPosX, &o->oVelX);
     }
     o->oForwardVel = m->forwardVel;
-
-
     o->header.gfx.sharedChild = gMarioObject->header.gfx.sharedChild;
-    // sprintf(debug, "V %0.2f %0.2f %0.2f P %0.2f %0.2f %0.2f\n", o->oVelX, o->oVelY, o->oVelZ, 
-    //     o->oPosX, o->oPosY, o->oPosZ);
-    // osSyncPrintf(debug);
-
 }
