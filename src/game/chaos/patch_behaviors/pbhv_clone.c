@@ -49,7 +49,8 @@ s16 cloneyaw = 0;
 
 void chs_create_clone(void) {
     Vec3f dest;
-    vec3f_set_dist_and_angle(gMarioState->pos, dest, 100.0f, 0, cloneyaw);
+    Vec3f zero = {0};
+    vec3f_set_dist_and_angle(zero, dest, 100.0f, 0, cloneyaw);
     cloneyaw += 0x2000;
     struct Object *newclone = spawn_object_relative(0,
                                                     dest[0], dest[1], dest[2],

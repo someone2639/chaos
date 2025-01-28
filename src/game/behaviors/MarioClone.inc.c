@@ -1,5 +1,6 @@
 
 #include "game/chaos/chaos_clone.h"
+#include "game/interaction.h"
 
 static struct ObjectHitbox sCloneHitbox = {
     /* interactType:      */ INTERACT_GRABBABLE,
@@ -27,13 +28,18 @@ struct Object *obj_get_collider(struct Object *obj) {
 }
 
 void force_mario_interaction(struct MarioState *m, struct Object *obj) {
-    struct InteractHandler *ih;
+    struct InteractionHandler *ih;
 
     for (int i = 0; i < INTERACT_COUNT; i++) {
-
+        ih = &sInteractionHandlers[i];
+        if (obj->collidedObjInteractTypes & ih->interactType) {
+            m->collidedObjInteractTypes |= ih->interactType;
+            // obj->collidedObjInteractTypes &= ~ih->interactType;
+            // break;
+        }
     }
 
-    ih->handler(m, ih->interactType, o);
+    // ih->handler(m, ih->interactType, o);
 }
 
 void update_clone_animation() {
@@ -68,11 +74,17 @@ void bhv_MarioClone_loop(void) {
 	// if (o->oInteractStatus & INT_STATUS_INTERACTED) {
     if (obj_attack_collided_from_other_object(o)) {
 		// forward this to mario
-        swap(m, o);
-		m->interactObj = obj_get_collider(o);
-        m->marioObj->oInteractStatus = 0;
+        struct Object *coll = obj_get_collider(o);
+        coll->oInteractStatus = 0;
+
+        if ((coll != gMarioObject) && (coll->behavior != segmented_to_virtual(bhvMarioClone))) {
+            swap(m, o);
+    		m->interactObj = coll;
+            force_mario_interaction(m, m->interactObj);
+            osSyncPrintf("INTERACTED!");
+        }
+        // m->marioObj->oInteractStatus = 0;
 		o->oInteractStatus = 0;
-        osSyncPrintf("INTERACTED!");
 	}
 	update_clone_animation();
 
