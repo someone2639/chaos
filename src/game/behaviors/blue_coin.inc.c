@@ -40,6 +40,7 @@ void bhv_hidden_blue_coin_loop(void) {
             // Become tangible
             cur_obj_enable_rendering();
             cur_obj_become_tangible();
+            bhv_coin_magnet();
 
             // Delete the coin once collected
             if (o->oInteractStatus & INT_STATUS_INTERACTED) {
