@@ -10,6 +10,7 @@
 #include "game/object_helpers.h"
 #include "game/level_update.h"
 #include "game/chaos/chaos_clone.h"
+#include "engine/math_util.h"
 
 struct Object *gMarioObjs[100];
 struct MarioState *gMarioClones[100];
@@ -44,9 +45,18 @@ s16 set_obj_animation(struct Object *o, s32 targetAnimID) {
     return o->header.gfx.animInfo.animFrame;
 }
 
+s16 cloneyaw = 0;
+
 void chs_create_clone(void) {
+    Vec3f dest;
+    vec3f_set_dist_and_angle(gMarioState->pos, dest, 100.0f, 0, cloneyaw);
+    cloneyaw += 0x2000;
+    struct Object *newclone = spawn_object_relative(0,
+                                                    dest[0], dest[1], dest[2],
+                                                    gMarioObject, MODEL_MARIO, bhvMarioClone
+                                                    );
+
     struct Object *prev = gCurrentObject;
-    struct Object *newclone = spawn_object_relative(5, 100, 0, 100, gMarioObject, MODEL_MARIO, bhvMarioClone);
     gCurrentObject = newclone;
     spawn_mist_particles();
     gCurrentObject = prev;

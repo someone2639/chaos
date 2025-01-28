@@ -5,6 +5,11 @@
 
 #include "types.h"
 
+struct InteractionHandler {
+    u32 interactType;
+    u32 (*handler)(struct MarioState *, u32, struct Object *);
+};
+
 #define INTERACT_HOOT           /* 0x00000001 */ (1 <<  0)
 #define INTERACT_GRABBABLE      /* 0x00000002 */ (1 <<  1)
 #define INTERACT_DOOR           /* 0x00000004 */ (1 <<  2)
@@ -37,6 +42,7 @@
 #define INTERACT_SHOCK          /* 0x20000000 */ (1 << 29)
 #define INTERACT_IGLOO_BARRIER  /* 0x40000000 */ (1 << 30)
 #define INTERACT_UNKNOWN_31     /* 0x80000000 */ (1 << 31)
+#define INTERACT_COUNT 32
 
 
 // INTERACT_WARP
@@ -105,6 +111,7 @@
 #define INT_STATUS_TOUCHED_BOB_OMB       (1 << 23) /* 0x00800000 */
 
 extern s32 gShouldGive1UP;
+extern struct InteractionHandler sInteractionHandlers[INTERACT_COUNT];
 
 s16 mario_obj_angle_to_object(struct MarioState *m, struct Object *o);
 void mario_stop_riding_object(struct MarioState *m);
