@@ -16,7 +16,6 @@
 #include "buffers/framebuffers.h"
 #include "game/game_init.h"
 
-#define GLIST_SIZE 500
 #define video_glistp gDisplayListHead
 
 extern OSMesgQueue spMesgQ;
@@ -111,7 +110,6 @@ static void render_multi_image(Texture *image, s32 x, s32 y, s32 width, s32 heig
 }
 
 void create_gfx_task_structure();
-extern struct SPTask *gGfxSPTask;
 
 void hvqm_drawHLE(void *buf) {
     select_gfx_pool();
