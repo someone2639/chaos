@@ -255,6 +255,7 @@ void crash_screen_print(s32 x, s32 y, const char *fmt, ...) {
     va_start(args, fmt);
 
     size = _Printf(write_to_buf, crashScreenBuf, fmt, args);
+    osSyncPrintf(crashScreenBuf);
 
     if (size > 0) {
         ptr = crashScreenBuf;

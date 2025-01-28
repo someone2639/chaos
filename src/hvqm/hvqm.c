@@ -26,8 +26,10 @@ static OSMesg videoDmaMessages[VIDEO_DMA_MSG_SIZE];
 /***********************************************************************
  * SP event (SP task end) message queue
  ***********************************************************************/
-static OSMesgQueue spMesgQ;
+OSMesgQueue spMesgQ;
 static OSMesg spMesgBuf;
+OSMesgQueue dpMesgQ;
+static OSMesg dpMesgBuf;
 
 /***********************************************************************
  * RSP task data and parameter for the HVQM2 microcode
@@ -85,6 +87,8 @@ void hvqm_reset_bss(void) {
 
     bzero(&spMesgQ, sizeof(OSMesgQueue));
     bzero(&spMesgBuf, sizeof(OSMesg));
+    bzero(&dpMesgQ, sizeof(OSMesgQueue));
+    bzero(&dpMesgBuf, sizeof(OSMesg));
     gHVQM_VideoPointer = NULL;
     bzero(&hvqtask, sizeof(OSTask));
     bzero(&hvq_sparg, sizeof(HVQM2Arg));
@@ -146,6 +150,7 @@ void hvqm_main_proc(uintptr_t vidPtr) {
 
     osCreateMesgQueue(&spMesgQ, &spMesgBuf, 1);
     osSetEventMesg(OS_EVENT_SP, &spMesgQ, NULL);
+    osSetEventMesg(OS_EVENT_DP, &dpMesgQ, NULL);
 
     osCreateMesgQueue(&audioDmaMessageQ, audioDmaMessages, AUDIO_DMA_MSG_SIZE);
     osCreateMesgQueue(&videoDmaMessageQ, videoDmaMessages, VIDEO_DMA_MSG_SIZE);

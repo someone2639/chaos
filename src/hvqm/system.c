@@ -15,7 +15,7 @@
 #include "types.h"
 #include "buffers/framebuffers.h"
 
-#define GLIST_SIZE 200
+#define GLIST_SIZE 500
 Gfx videogfx[GLIST_SIZE];
 Gfx *video_glistp;
 
@@ -113,7 +113,7 @@ static void render_multi_image(Texture *image, s32 x, s32 y, s32 width, s32 heig
 void create_gfx_task_structure();
 extern struct SPTask *gGfxSPTask;
 
-void drawHLE(void *buf) {
+void hvqm_drawHLE(void *buf) {
     video_glistp = &videogfx[0];
     // gDPPipeSync(video_glistp++);
     gDPSetColorImage(video_glistp++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 320, buf);
@@ -129,7 +129,7 @@ void drawHLE(void *buf) {
     gGfxSPTask->task.t.data_ptr = (u64 *) videogfx;
     gGfxSPTask->task.t.data_size = GLIST_SIZE * sizeof(Gfx);
     osSpTaskStart(&gGfxSPTask->task);
-    // osRecvMesg(&spMesgQ, NULL, OS_MESG_BLOCK);
+    osRecvMesg(&spMesgQ, NULL, OS_MESG_BLOCK);
 }
 
 /***********************************************************************

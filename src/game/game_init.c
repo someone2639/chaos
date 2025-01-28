@@ -988,7 +988,7 @@ void thread5_game_loop(UNUSED void *arg) {
         addr = level_script_execute(addr);
 
         if ((gPlayer1Controller->buttonPressed & (L_TRIG))) {
-            HVQM_PLAY(chaos);
+            HVQM_PLAY(krabs);
         }
 
         display_and_vsync();

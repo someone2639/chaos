@@ -113,10 +113,14 @@ void release_all_cfb(void);
 int get_cfb();
 void hvqm_reset_bss(void);
 void timekeeper_reset_bss(void);
+void hvqm_drawHLE(void*);
 
 extern OSThread daCounterThread;
 extern OSThread hvqmThread;
 extern OSThread tkThread;
+
+extern OSMesgQueue spMesgQ;
+extern OSMesgQueue dpMesgQ;
 
 typedef u32 (*tkAudioProc)(void *pcmbuf);
 typedef tkAudioProc (*tkRewindProc)(void);

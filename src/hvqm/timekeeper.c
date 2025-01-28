@@ -3,6 +3,7 @@
 #include "hvqm.h"
 #include "audio/data.h"
 #include "buffers/framebuffers.h"
+#include "game/game_init.h"
 
 extern s16 pcmbuf[NUM_PCMBUFs][PCMBUF_SIZE];
 
@@ -362,7 +363,11 @@ static void timekeeperProc(void UNUSED *argument) {
                 pushed_cfb = videoRing[videoRingRead].vaddr;
                 pushed_cfb_statP = videoRing[videoRingRead].statP;
                 *pushed_cfb_statP |= CFB_SHOWING;
-                // osViSwapBuffer( pushed_cfb );
+                if (gFBEEnabled == FALSE) {
+                  hvqm_drawHLE(pushed_cfb);
+                } else {
+                  osViSwapBuffer( pushed_cfb );
+                }
                 if (++videoRingRead == VIDEO_RING_SIZE)
                     videoRingRead = 0;
                 --videoRingCount;
