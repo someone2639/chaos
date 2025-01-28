@@ -70,7 +70,7 @@ struct {
 } gCrashScreen;
 
 // non-FBE only
-static void render_multi_image(Texture *image, s32 x, s32 y, s32 width, s32 height) {
+void render_multi_image(Texture *image, s32 x, s32 y, s32 width, s32 height) {
     s32 posW, posH, imW, imH;
     s32 i     = 0;
     s32 num   = 256;

@@ -132,6 +132,23 @@ static OSMesg        hvqmMesgBuf;
 OSThread hvqmThread;
 static u64 hvqmStack[STACKSIZE/sizeof(u64)];
 
+void drawHLE(int bufno) {
+    void render_multi_image(Texture *image, s32 x, s32 y, s32 width, s32 height);
+    select_gfx_pool();
+    init_rcp();
+    // clear_framebuffer(0);
+    render_multi_image((Texture*) gFramebuffers[bufno], 0, 0, 320, 240);
+    end_master_display_list();
+
+    osRecvMesg(&gGfxVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
+    if (gGoddardVblankCallback != NULL) {
+        gGoddardVblankCallback();
+        gGoddardVblankCallback = NULL;
+    }
+    exec_display_list(&gGfxPool->spTask);
+    osRecvMesg(&gGfxVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
+}
+
 void hvqm_main_proc(uintptr_t vidPtr) {
     int h_offset = 0, v_offset = 0;	/* Position of image display */
     int screen_offset = 0;		/* Number of pixels from start of frame buffer to display position */
@@ -163,7 +180,7 @@ void hvqm_main_proc(uintptr_t vidPtr) {
     hvqtask.t.yield_data_size = HVQM2_YIELD_DATA_SIZE;
 
     init_cfb();
-    osViSwapBuffer( gFramebuffers[NUM_CFBs-1] );
+    // osViSwapBuffer( gFramebuffers[NUM_CFBs-1] );
 
     romcpy(hvqm_header, (void *) vidPtr, sizeof(HVQM2Header), OS_MESG_PRI_NORMAL,
            &videoDmaMesgBlock, &videoDmaMessageQ);
@@ -279,6 +296,7 @@ void hvqm_main_proc(uintptr_t vidPtr) {
               release_cfb( prev_bufno );
 
             tkPushVideoframe( gFramebuffers[bufno], &cfb_status[bufno], disptime );
+            drawHLE(bufno);
 
             prev_bufno = bufno;
             disptime += usec_per_frame;

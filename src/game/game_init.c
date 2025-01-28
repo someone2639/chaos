@@ -987,14 +987,15 @@ void thread5_game_loop(UNUSED void *arg) {
         profiler_update(PROFILER_TIME_CONTROLLERS);
         addr = level_script_execute(addr);
 
+#define SOMEONE2639_CRAZY_EXPERIMENTS
 #ifdef SOMEONE2639_CRAZY_EXPERIMENTS
-        if (gPlayer1Controller->buttonPressed & L_TRIG) {
-            chaos_add_new_entry(CHAOS_PATCH_TOP_DOWN_CAMERA);
-        }
-        if (gPlayer1Controller->buttonPressed & R_TRIG) {
-            chaos_remove_expired_entry(0, "%s: Removed patch!");
-        }
-        if ((gPlayer1Controller->buttonPressed & (A_BUTTON|L_TRIG)) == (A_BUTTON | L_TRIG)) {
+        // if (gPlayer1Controller->buttonPressed & L_TRIG) {
+        //     chaos_add_new_entry(CHAOS_PATCH_TOP_DOWN_CAMERA);
+        // }
+        // if (gPlayer1Controller->buttonPressed & R_TRIG) {
+        //     chaos_remove_expired_entry(0, "%s: Removed patch!");
+        // }
+        if ((gPlayer1Controller->buttonPressed & (L_TRIG))) {
             HVQM_PLAY(chaos);
         }
 #endif // SOMEONE2639_CRAZY_EXPERIMENTS
