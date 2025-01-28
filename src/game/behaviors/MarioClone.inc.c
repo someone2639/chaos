@@ -16,7 +16,7 @@ static struct ObjectHitbox sCloneHitbox = {
 
 struct Object *obj_get_collider(struct Object *obj) {
     s32 numCollidedObjs;
-    struct Object *other;
+    struct Object *other = NULL;
     // s32 touchedOtherObject = FALSE;
 
     numCollidedObjs = obj->numCollidedObjs;
@@ -33,19 +33,19 @@ void force_mario_interaction(struct MarioState *m, struct Object *obj) {
     for (int i = 0; i < INTERACT_COUNT; i++) {
         ih = &sInteractionHandlers[i];
         if (obj->collidedObjInteractTypes & ih->interactType) {
+            if (ih->interactType & INTERACT_POLE) {
+                // TODO: figure out how to set an air action here
+                //       instead of editing interaction.c
+            }
             m->collidedObjInteractTypes |= ih->interactType;
-            // obj->collidedObjInteractTypes &= ~ih->interactType;
-            // break;
+            obj->collidedObjInteractTypes &= ~ih->interactType;
         }
     }
-
-    // ih->handler(m, ih->interactType, o);
 }
 
 void update_clone_animation() {
     struct MarioState *m = gMarioState;
     s32 newAnim = m->marioObj->header.gfx.animInfo.animID;
-    struct Animation *targetAnim = m->animList->bufTarget;
 
     if (o->header.gfx.animInfo.animID != newAnim) {
         o->header.gfx.animInfo.animID = newAnim;
@@ -56,7 +56,7 @@ void update_clone_animation() {
 
 void swap(struct MarioState *m, struct Object *obj) {
     Vec3f tempPos;
-    Vec3f tempVel;
+    // Vec3f tempVel;
 
     vec3f_copy(tempPos, m->pos);
     vec3f_copy(m->pos, &obj->oPosX);
@@ -67,7 +67,7 @@ void bhv_MarioClone_init(void) {
 	set_obj_animation(o, MARIO_ANIM_IDLE_HEAD_LEFT);
 }
 void bhv_MarioClone_loop(void) {
-    char debug[220];
+    // char debug[220];
 	struct MarioState *m = gMarioState;
     obj_set_hitbox(o, &sCloneHitbox);
     if (obj_attack_collided_from_other_object(o)) {
@@ -90,7 +90,7 @@ void bhv_MarioClone_loop(void) {
 
 	vec3f_copy(&o->oVelX, m->vel);
 
-	u32 collisionFlags = object_step();
+	UNUSED u32 collisionFlags = object_step();
 
     if (!(m->action & ACT_FLAG_AIR)) {
         vec3f_add(&o->oPosX, &o->oVelX);
