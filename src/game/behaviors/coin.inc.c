@@ -43,8 +43,10 @@ void bhv_coin_magnet() {
         oPos[1] = o->oPosY;
         oPos[2] = o->oPosZ;
 
+        f32 magnetDist = 500.0f * (o->hitboxRadius / 100.0f); //Increase magnet distance if coins size is increased
+
         vec3f_get_dist_and_angle(oPos, gMarioState->pos, &distToMario, &pitchToMario, &yawToMario);
-        if(distToMario < 500.0f) {
+        if(distToMario < magnetDist) {
             o->oPosX += 20 * sins(yawToMario);
             o->oPosZ += 20 * coss(yawToMario);
             o->oPosY += 20 * sins(pitchToMario);

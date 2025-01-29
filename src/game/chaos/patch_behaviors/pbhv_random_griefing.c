@@ -118,7 +118,7 @@ u8 chs_cond_random_burn(void) {
 */
 
 #define BLIND_TIME_MAX      18000
-#define BLIND_TIME_END      18450
+#define BLIND_TIME_END      18300
 
 void chs_act_random_blind(void) {
     struct ChaosActiveEntry *this;

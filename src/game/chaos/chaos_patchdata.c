@@ -613,7 +613,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_COIN_MAGNET] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_POSITIVE,
-        .severity          = 2,
+        .severity          = 1,
         .isStackable       = FALSE,
         .duration          = 10,
 
@@ -639,7 +639,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_RANDOM_SHOCK] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 2,
+        .severity          = 1,
         .isStackable       = FALSE,
         .duration          = 15,
 
@@ -653,7 +653,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_RANDOM_BURN] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 3,
+        .severity          = 2,
         .isStackable       = FALSE,
         .duration          = 15,
 
@@ -675,7 +675,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc   = chs_update_random_blind,
 
         .name              = "Blindfolded Speedrun",
-        .shortDescription  = "Get blinded for 15 seconds periodically."
+        .shortDescription  = "Get blinded for 10 seconds periodically."
     },
 
 // Movement Modifiers
@@ -1366,7 +1366,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 8,
+        .duration          = 6,
+
+        .conditionalFunc   = chs_cond_forced_mario_cam,
 
         .name              = "Up Close and Personal",
         .shortDescription  = "Forces Mario Cam.",

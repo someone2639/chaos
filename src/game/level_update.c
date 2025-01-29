@@ -900,6 +900,8 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 vec3f_copy(gMarioState->pos, gMarioState->safePos);
                 gMarioState->pos[1] += 500.0f;
                 gMarioState->invincTimer = 30;
+                gMarioState->quicksandDepth = 0.0f;
+                gMarioState->marioObj->header.gfx.pos[1] = gMarioState->pos[1];
                 if(m->action & ACT_FLAG_SWIMMING) {
                     set_mario_action(gMarioState, ACT_WATER_IDLE, 0);
                 } else {
