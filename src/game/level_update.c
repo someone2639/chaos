@@ -863,8 +863,8 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
         if(chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE) && gCurrCourseNum != COURSE_NONE) {
             if(sSourceWarpNodeId == WARP_NODE_DEATH) {
                 sSourceWarpNodeId = 0x0A;
+                chaos_decrement_patch_usage(CHAOS_PATCH_MIRACLE);
             }
-            chaos_decrement_patch_usage(CHAOS_PATCH_MIRACLE);
         }
     
         if (val04 && gCurrDemoInput == NULL) {

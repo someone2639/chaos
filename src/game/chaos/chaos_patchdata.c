@@ -857,7 +857,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc   = chs_update_cosmic_clones,
 
         .name              = "Cosmic Clones",
-        .shortDescription  = "Spawns a trail of cosmic Mario's that copy your every move!",
+        .shortDescription  = "Spawns a trail of cosmic Marios that copy your every move!",
     },
 
 // Visual Modifiers
@@ -1442,7 +1442,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 15,
 
-        .name              = "Fading Fantacy",
+        .name              = "Fading Fantasy",
         .shortDescription  = "Fading teleports are all deactivated.",
     },
     [CHAOS_PATCH_LUIGI] = {
