@@ -110,7 +110,7 @@ void chs_update_random_blind(void);
 
 // Object Spawners
 u8 chs_cond_green_demon(void);
-void chs_lvlupdate_green_demon(void);
+void chs_area_init_green_demon(void);
 void chs_area_init_bullet_hell(void);
 void chs_update_bullet_hell(void);
 void chs_lvlinit_spawn_on_shell(void);

@@ -813,7 +813,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration          = 2,
 
         .conditionalFunc   = chs_cond_green_demon,
-        .frameUpdateFunc   = chs_lvlupdate_green_demon,
+        .areaInitFunc      = chs_area_init_green_demon,
 
         .name              = "Green Demon",
         .shortDescription  = "Of course this one's in the game. Spawn a poison 1-UP mushroom that chases Mario.",

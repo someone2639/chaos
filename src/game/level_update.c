@@ -32,6 +32,8 @@
 #include "rumble_init.h"
 #include "patch_selection_ui.h"
 #include "chaos_pause_menu.h"
+#include "object_helpers.h"
+#include "behavior_data.h"
 
 #define WARP_TYPE_NOT_WARPING 0
 #define WARP_TYPE_CHANGE_LEVEL 1
@@ -589,6 +591,26 @@ void check_instant_warp(void) {
             struct InstantWarp *warp = &gCurrentArea->instantWarps[index];
 
             if (warp->id != 0) {
+                Vec3f demonPos;
+                struct ObjectNode *listHead = &gObjectLists[get_object_list_from_behavior(segmented_to_virtual(bhvGreenDemon))];
+                struct Object *obj = (struct Object *) listHead->next;
+                s32 spawnDemon = FALSE;
+
+                if(chaos_check_if_patch_active(CHAOS_PATCH_GREEN_DEMON) && gCurrCourseNum != COURSE_NONE) {
+                    while (obj != (struct Object *) listHead) {
+                        if (obj->behavior == segmented_to_virtual(bhvGreenDemon)) {
+                            if (obj->activeFlags != ACTIVE_FLAG_DEACTIVATED) {
+                                demonPos[0] = obj->oPosX;
+                                demonPos[1] = obj->oPosY;
+                                demonPos[2] = obj->oPosZ;
+                                spawnDemon = TRUE;
+                                break;
+                            }
+                        }
+                        obj = (struct Object *) obj->header.next;
+                    }
+                }
+
                 gMarioState->pos[0] += warp->displacement[0];
                 gMarioState->pos[1] += warp->displacement[1];
                 gMarioState->pos[2] += warp->displacement[2];
@@ -608,6 +630,16 @@ void check_instant_warp(void) {
 
                 if(chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_CLONES) && gCurrCourseNum != COURSE_NONE) {
                     chs_cosmic_clones_move_instant_warp(warp->displacement);
+                }
+
+                if(spawnDemon) {
+                    demonPos[0] += warp->displacement[0];
+                    demonPos[1] += warp->displacement[1];
+                    demonPos[2] += warp->displacement[2];
+
+                    struct Object *demon = spawn_object_abs_with_rot(gMarioState->marioObj, 0, MODEL_GREEN_DEMON, bhvGreenDemon,
+                            demonPos[0], demonPos[1], demonPos[2], 0, 0, 0);
+                    demon->oAction = 1;
                 }
             }
         }
