@@ -27,18 +27,27 @@ struct Object *obj_get_collider(struct Object *obj) {
     return other;
 }
 
+void swap(struct MarioState *m, struct Object *obj) {
+    Vec3f tempPos;
+    // Vec3f tempVel;
+
+    vec3f_copy(tempPos, m->pos);
+    vec3f_copy(m->pos, &obj->oPosX);
+    vec3f_copy(&obj->oPosX, tempPos);
+}
+
 void force_mario_interaction(struct MarioState *m, struct Object *obj) {
     struct InteractionHandler *ih;
 
     for (int i = 0; i < INTERACT_COUNT; i++) {
         ih = &sInteractionHandlers[i];
         if (obj->collidedObjInteractTypes & ih->interactType) {
-            if (ih->interactType & INTERACT_POLE) {
-                // TODO: figure out how to set an air action here
-                //       instead of editing interaction.c
+            if (!(ih->interactType & INTERACT_DAMAGE)) {
+                m->collidedObjInteractTypes |= ih->interactType;
+                obj->collidedObjInteractTypes &= ~ih->interactType;
+            } else {
+                obj->collidedObjInteractTypes |= ih->interactType;
             }
-            m->collidedObjInteractTypes |= ih->interactType;
-            obj->collidedObjInteractTypes &= ~ih->interactType;
         }
     }
 }
@@ -54,31 +63,38 @@ void update_clone_animation() {
     o->header.gfx.animInfo.animFrame = m->marioObj->header.gfx.animInfo.animFrame;
 }
 
-void swap(struct MarioState *m, struct Object *obj) {
-    Vec3f tempPos;
-    // Vec3f tempVel;
-
-    vec3f_copy(tempPos, m->pos);
-    vec3f_copy(m->pos, &obj->oPosX);
-    vec3f_copy(&obj->oPosX, tempPos);
-}
-
 void bhv_MarioClone_init(void) {
 	set_obj_animation(o, MARIO_ANIM_IDLE_HEAD_LEFT);
 }
+
+void delete_clone(struct Object *obj) {
+    obj_mark_for_deletion(obj);
+    spawn_mist_particles();
+}
+
 void bhv_MarioClone_loop(void) {
 	struct MarioState *m = gMarioState;
     obj_set_hitbox(o, &sCloneHitbox);
+
+    if (o->oAction == 50) {
+        delete_clone(o);
+    }
+
     if (obj_attack_collided_from_other_object(o)) {
 		// forward this to mario
         struct Object *coll = obj_get_collider(o);
         coll->oInteractStatus = 0;
 
         if ((coll != gMarioObject) && (coll->behavior != segmented_to_virtual(bhvMarioClone))) {
-            swap(m, o);
-    		m->interactObj = coll;
+            m->interactObj = coll;
             force_mario_interaction(m, m->interactObj);
+            if ((coll->oDamageOrCoinValue > 0) && (coll->oInteractType != INTERACT_COIN)) {
+                delete_clone(o);
+            } else {
+                swap(m, o);
+            }
         }
+
 		o->oInteractStatus = 0;
 	}
 	update_clone_animation();

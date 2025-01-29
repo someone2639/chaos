@@ -12,6 +12,7 @@
 #include "engine/surface_collision.h"
 #include "engine/behavior_script.h"
 #include "game_init.h"
+#include "object_list_processor.h"
 #include "interaction.h"
 #include "level_update.h"
 #include "mario.h"
@@ -679,6 +680,19 @@ u32 should_push_or_pull_door(struct MarioState *m, struct Object *o) {
 u32 take_damage_from_interact_object(struct MarioState *m) {
     s32 shake;
     s32 damage = m->interactObj->oDamageOrCoinValue;
+    struct Object *prev = gCurrentObject;
+
+    f32 dist;
+    gCurrentObject = m->marioObj;
+    struct Object *nearestClone = cur_obj_find_nearest_object_with_behavior(bhvMarioClone, &dist);
+    gCurrentObject = prev;
+
+    if (nearestClone) {
+        extern void swap(struct MarioState *m, struct Object *obj);
+        swap(m, nearestClone);
+        nearestClone->oAction = 50;
+        return 0;
+    }
 
     if (damage >= 4) {
         shake = SHAKE_LARGE_DAMAGE;
