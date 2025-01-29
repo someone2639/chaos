@@ -862,7 +862,18 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
 
         if(chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE) && gCurrCourseNum != COURSE_NONE) {
             if(sSourceWarpNodeId == WARP_NODE_DEATH) {
-                sSourceWarpNodeId = 0x0A;
+                sDelayedWarpOp = WARP_OP_NONE;
+                gWarpTransition.isActive = FALSE;
+                gCamera->cutscene = 0;
+                vec3f_copy(gMarioState->pos, gMarioState->safePos);
+                gMarioState->pos[1] += 500.0f;
+                gMarioState->invincTimer = 30;
+                if(m->action & ACT_FLAG_SWIMMING) {
+                    set_mario_action(gMarioState, ACT_WATER_IDLE, 0);
+                } else {
+                    set_mario_action(gMarioState, ACT_FALLING_DEATH_EXIT, 0);
+                }
+                
                 chaos_decrement_patch_usage(CHAOS_PATCH_MIRACLE);
             }
         }

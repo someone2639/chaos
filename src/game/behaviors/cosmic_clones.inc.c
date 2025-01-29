@@ -72,23 +72,26 @@ void bhv_cosmic_clones_loop(void) {
         return;
     }
 
-    switch(gMarioState->action) {
-        //I think this is all of the death actions
-        case ACT_DEATH_ON_BACK:
-        case ACT_DEATH_ON_STOMACH:
-        case ACT_STANDING_DEATH:
-        case ACT_QUICKSAND_DEATH:
-        case ACT_WATER_DEATH:
-        case ACT_DROWNING:
-        //And star grab
-        case ACT_STAR_DANCE_EXIT:
-        case ACT_STAR_DANCE_WATER:
-        case ACT_FALL_AFTER_STAR_GRAB:
-        case ACT_STAR_DANCE_NO_EXIT:
-            spawn_mist_particles_with_sound(SOUND_OBJ_DEFAULT_DEATH);
-            obj_mark_for_deletion(o);
-            break;
+    if(!chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE)) {
+        switch(gMarioState->action) {
+            //I think this is all of the death actions
+            case ACT_DEATH_ON_BACK:
+            case ACT_DEATH_ON_STOMACH:
+            case ACT_STANDING_DEATH:
+            case ACT_QUICKSAND_DEATH:
+            case ACT_WATER_DEATH:
+            case ACT_DROWNING:
+            //And star grab
+            case ACT_STAR_DANCE_EXIT:
+            case ACT_STAR_DANCE_WATER:
+            case ACT_FALL_AFTER_STAR_GRAB:
+            case ACT_STAR_DANCE_NO_EXIT:
+                spawn_mist_particles_with_sound(SOUND_OBJ_DEFAULT_DEATH);
+                obj_mark_for_deletion(o);
+                break;
+        }
     }
+    
 
     switch(o->oAction) {
         case 0:

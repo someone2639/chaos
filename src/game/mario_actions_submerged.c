@@ -191,6 +191,8 @@ static u32 perform_water_step(struct MarioState *m) {
     vec3f_copy(marioObj->header.gfx.pos, m->pos);
     vec3s_set(marioObj->header.gfx.angle, -m->faceAngle[0], m->faceAngle[1], m->faceAngle[2]);
 
+    update_mario_safe_pos();
+
     return stepResult;
 }
 

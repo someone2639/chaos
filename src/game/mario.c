@@ -1947,6 +1947,8 @@ void init_mario(void) {
     vec3f_copy(gMarioState->marioObj->header.gfx.pos, gMarioState->pos);
     vec3s_set(gMarioState->marioObj->header.gfx.angle, 0, gMarioState->faceAngle[1], 0);
 
+    vec3f_copy(gMarioState->safePos, gMarioState->pos);
+
     if (save_file_get_cap_pos(capPos)) {
         capObject = spawn_object(gMarioState->marioObj, MODEL_MARIOS_CAP, bhvNormalCap);
 
@@ -1994,4 +1996,41 @@ void init_mario_from_save_file(void) {
     gMarioState->extraDamageEnemy = 0;
     gMarioState->extraDamageLava = 0;
     gMarioState->size = 1.0f;
+}
+
+void update_mario_safe_pos(void) {
+    struct MarioState *m = gMarioState;
+    s32 floorType = m->floor->type;
+    s32 actGroup = (m->action & ACT_GROUP_MASK);
+
+    //Check action to make sure it's safe
+    if((actGroup == ACT_GROUP_CUTSCENE) || (actGroup == ACT_GROUP_AUTOMATIC) || (m->action & ACT_FLAG_INTANGIBLE)) {
+        return;
+    }
+
+    //Make sure floor is static collision
+    if(m->floor->object) {
+        return;
+    }
+
+    //Check floor type to make sure it's safe
+    switch(floorType) {
+        case SURFACE_DEATH_PLANE:
+        case SURFACE_DEEP_QUICKSAND:
+        case SURFACE_INSTANT_QUICKSAND:
+        case SURFACE_INSTANT_MOVING_QUICKSAND:
+        case SURFACE_DEEP_MOVING_QUICKSAND:
+        case SURFACE_SHALLOW_MOVING_QUICKSAND:
+        case SURFACE_QUICKSAND:
+        case SURFACE_MOVING_QUICKSAND:
+        case SURFACE_HORIZONTAL_WIND:
+        case SURFACE_VERTICAL_WIND:
+        case SURFACE_TRAPDOOR:
+        case SURFACE_VERY_SLIPPERY:
+        case SURFACE_HARD_VERY_SLIPPERY:
+        case SURFACE_NOISE_VERY_SLIPPERY:
+            return;
+    }
+    
+    vec3f_copy(m->safePos, m->pos);
 }
