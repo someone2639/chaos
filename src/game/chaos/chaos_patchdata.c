@@ -826,6 +826,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration          = 2,
 
         .conditionalFunc   = chs_cond_green_demon,
+        .activatedInitFunc = chs_act_green_demon,
         .areaInitFunc      = chs_area_init_green_demon,
 
         .name              = "Green Demon",

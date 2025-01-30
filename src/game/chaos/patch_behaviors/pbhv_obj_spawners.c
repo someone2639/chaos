@@ -23,6 +23,13 @@ u8 chs_cond_green_demon(void) {
     return (!chaos_check_if_patch_active(CHAOS_PATCH_SPEED_LIMIT) && !chaos_check_if_patch_active(CHAOS_PATCH_WALKIES));
 }
 
+void chs_act_green_demon(void) {
+    if(gCurrCourseNum != COURSE_NONE) {
+        spawn_object_abs_with_rot(gMarioState->marioObj, 0, MODEL_GREEN_DEMON, bhvGreenDemon,
+                            gMarioState->pos[0], gMarioState->pos[1], gMarioState->pos[2], 0, 0, 0);
+    }
+}
+
 void chs_area_init_green_demon(void) {
     spawn_object_abs_with_rot(gMarioState->marioObj, 0, MODEL_GREEN_DEMON, bhvGreenDemon,
                             gMarioState->pos[0], gMarioState->pos[1], gMarioState->pos[2], 0, 0, 0);
