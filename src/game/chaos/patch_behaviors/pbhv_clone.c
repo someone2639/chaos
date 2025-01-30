@@ -3,6 +3,7 @@
 #include "types.h"
 #include "game/mario.h"
 #include "sm64.h"
+#include "object_fields.h"
 #include "game/level_update.h"
 #include "behavior_data.h"
 #include "game/chaos/chaos.h"
