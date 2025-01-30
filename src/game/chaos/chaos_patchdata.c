@@ -1537,6 +1537,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Double Cherry",
         .shortDescription  = "It's dangerous to go alone! Have a buddy!",
-        .longDescription   = "Each cherry clone has 1 health point. If the \"real\" player gets hit, its soul will be transferred to a clone. By the end of this, which Mario will be the real Mario?",
+        .longDescription   = "Each cherry clone has 1 health point, and will take your hits until they run out, after which you will take normal damage. If the \"real\" player gets hit, its soul will be transferred to a clone. By the end of this, which Mario will be the real Mario?",
     },
 };
