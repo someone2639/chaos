@@ -63,6 +63,7 @@
     #undef DEBUG_ASSERTIONS
     #undef DEBUG_PATCH_SELECT_MENU
     #undef DISPLAY_MAX_PATCHES
+    #undef L_TO_ADD_PATCH
 #endif // DISABLE_ALL
 
 #ifdef USE_PROFILER

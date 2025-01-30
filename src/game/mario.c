@@ -1469,6 +1469,12 @@ void update_mario_inputs(struct MarioState *m) {
     if (m->doubleJumpTimer > 0) {
         m->doubleJumpTimer--;
     }
+
+#ifdef L_TO_ADD_PATCH
+    if(gPlayer1Controller->buttonPressed & L_TRIG && !chaos_check_if_patch_active(L_TO_ADD_PATCH)) {
+        chaos_add_new_entry(L_TO_ADD_PATCH);
+    }
+#endif // L_TO_ADD_PATCH
 }
 
 /**
