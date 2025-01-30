@@ -141,6 +141,7 @@ void chs_update_l_to_levitate(void);
 u8 chs_cond_l_to_levitate(void);
 void chs_update_debug_free_move(void);
 u8 chs_cond_debug_free_move(void);
+u8 chs_cond_level_reset(void);
 
 // Patches
 u8 chs_cond_remove_negative_patch(void);

@@ -35,11 +35,6 @@
 #include "object_helpers.h"
 #include "behavior_data.h"
 
-#define WARP_TYPE_NOT_WARPING 0
-#define WARP_TYPE_CHANGE_LEVEL 1
-#define WARP_TYPE_CHANGE_AREA 2
-#define WARP_TYPE_SAME_AREA 3
-
 #define WARP_NODE_F0 0xF0
 #define WARP_NODE_DEATH 0xF1
 #define WARP_NODE_F2 0xF2
@@ -890,6 +885,14 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 play_transition(WARP_TRANSITION_FADE_INTO_CIRCLE, 0x14, 0x00, 0x00, 0x00);
                 play_sound(SOUND_MENU_TIMER_UP, gGlobalSoundSource);
                 break;
+            case WARP_OP_LEVEL_RESET:
+                sDelayedWarpTimer = 1;
+                if(gCurrLevelNum == LEVEL_TTM && gCurrAreaIndex == 4) {
+                    sSourceWarpNodeId = 0x0B;
+                } else {
+                    sSourceWarpNodeId = 0x0A;
+                }
+                break;
         }
 
         if(chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE) && gCurrCourseNum != COURSE_NONE) {
@@ -1135,6 +1138,12 @@ s32 play_mode_paused(void) {
     if (gMenuOptSelectIndex == MENU_OPT_NONE) {
         set_menu_mode(MENU_MODE_RENDER_PAUSE_SCREEN);
     } else if (gMenuOptSelectIndex == MENU_OPT_DEFAULT) {
+        raise_background_noise(1);
+        gCameraMovementFlags &= ~CAM_MOVE_PAUSE_SCREEN;
+        set_play_mode(PLAY_MODE_NORMAL);
+    } else if (gMenuOptSelectIndex == MENU_OPT_RESET) {
+        chaos_decrement_patch_usage(CHAOS_PATCH_LEVEL_RESET);
+        level_trigger_warp(gMarioState, WARP_OP_LEVEL_RESET);
         raise_background_noise(1);
         gCameraMovementFlags &= ~CAM_MOVE_PAUSE_SCREEN;
         set_play_mode(PLAY_MODE_NORMAL);

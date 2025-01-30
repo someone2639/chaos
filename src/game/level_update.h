@@ -26,7 +26,8 @@
 #define WARP_OP_CREDITS_START 0x17
 #define WARP_OP_CREDITS_NEXT  0x18
 #define WARP_OP_DEMO_END      0x19
-#define WARP_OP_TIME_UP       0x20
+#define WARP_OP_TIME_UP       0x1A
+#define WARP_OP_LEVEL_RESET   0x1B
 
 #define WARP_OP_TRIGGERS_LEVEL_SELECT 0x10
 
@@ -58,6 +59,10 @@
 #define PLAY_MODE_SELECT_PATCH 6
 #define PLAY_MODE_QUICKTIME     7
 
+#define WARP_TYPE_NOT_WARPING 0
+#define WARP_TYPE_CHANGE_LEVEL 1
+#define WARP_TYPE_CHANGE_AREA 2
+#define WARP_TYPE_SAME_AREA 3
 
 struct CreditsEntry {
     /*0x00*/ u8 levelNum;
