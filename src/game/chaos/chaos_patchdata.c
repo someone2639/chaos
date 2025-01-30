@@ -863,9 +863,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 15,
+        .duration          = 8,
 
         .activatedInitFunc = chs_act_cosmic_clones,
+        .conditionalFunc   = chs_cond_cosmic_clones,
         .deactivationFunc  = chs_deact_cosmic_clones,
         .areaInitFunc      = chs_area_init_cosmic_clones,
         .frameUpdateFunc   = chs_update_cosmic_clones,

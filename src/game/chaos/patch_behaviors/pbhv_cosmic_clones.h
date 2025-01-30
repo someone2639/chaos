@@ -3,8 +3,8 @@
 #include "types.h"
 #include "game/memory.h"
 
-#define MAX_CLONES          4
-#define CLONE_OFFSET_FRAMES 20
+#define MAX_CLONES          5
+#define CLONE_OFFSET_FRAMES 35
 #define TOTAL_CLONE_FRAMES  (MAX_CLONES * CLONE_OFFSET_FRAMES)
 
 #define oCosmicCloneTargetFrame     OBJECT_FIELD_VPTR(0x1B)
