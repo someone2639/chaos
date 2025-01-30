@@ -113,10 +113,15 @@ void bhv_MarioClone_loop(void) {
 	}
 	update_clone_animation();
 
-	o->oFaceAnglePitch = m->faceAngle[0];
-	o->oMoveAngleYaw = m->intendedYaw;
-    o->oFaceAngleYaw = m->intendedYaw;
-	o->oFaceAngleRoll = m->faceAngle[2];
+    o->oFaceAnglePitch = m->faceAngle[0];
+    if (m->intendedMag == 0) {
+        o->oMoveAngleYaw = m->faceAngle[1];
+        o->oFaceAngleYaw = m->faceAngle[1];
+    } else {
+        o->oMoveAngleYaw = m->intendedYaw;
+        o->oFaceAngleYaw = m->intendedYaw;
+    }
+    o->oFaceAngleRoll = m->faceAngle[2];
 
 	vec3f_copy(&o->oVelX, m->vel);
 

@@ -84,11 +84,9 @@ void chs_init_cherry_clones_after_warp(void) {
         return;
     }
 
-    osSyncPrintf("MAKING CLONES");
     s32 dAngle = 0x10000 / (cloneCount);
 
     for (s32 angle = 0; angle < 0xFFFF; angle += dAngle) {
-        osSyncPrintf("   SPAWN!");
         s16 dx = 300.0f * coss(angle);
         s16 dz = 300.0f * sins(angle);
 
