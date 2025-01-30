@@ -26,17 +26,18 @@ void chs_update_time_limit(void) {
     struct ChaosActiveEntry *this;
     chaos_find_first_active_patch(CHAOS_PATCH_TIME_LIMIT, &this);
     //Should not be active in the castle
-    if (gCurrCourseNum == COURSE_NONE) {
+    if (gCurrCourseNum == COURSE_NONE || gMarioState->action == ACT_JUMBO_STAR_CUTSCENE || gMarioState->action == ACT_CREDITS_CUTSCENE) {
         this->frameTimer = -1;
     } else {
         if(gMarioState->action == ACT_STAR_DANCE_NO_EXIT) {
             this->frameTimer = sTimeLimitOffset;
         }
+        
         s32 timeLeft = (CHS_TIME_LIMIT - this->frameTimer);
 
         //Play ringing sfx at level start, 1 minute, and 30 second marks
         if(timeLeft == 900 || timeLeft == 1800 || this->frameTimer == sTimeLimitOffset) {
-            if(!(gTimeStopState & TIME_STOP_ENABLED)) {
+            if(!(gTimeStopState & (TIME_STOP_ENABLED | TIME_STOP_DIALOG | TIME_STOP_ALL_OBJECTS)) && gMarioState->action != ACT_STAR_DANCE_NO_EXIT) {
                 play_sound(SOUND_MENU_TIMER_RING, gGlobalSoundSource);
             }
         }
