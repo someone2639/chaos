@@ -1530,6 +1530,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = TRUE,
         .duration          = 6,
 
+        .conditionalFunc   = chs_cond_cherry_clone,
         .activatedInitFunc = chs_create_cherry_clone,
         .deactivationFunc  = chs_remove_cherry_clone,
         .areaInitFunc      = chs_init_cherry_clones_after_warp,

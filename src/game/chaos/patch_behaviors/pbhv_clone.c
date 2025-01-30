@@ -51,6 +51,10 @@ s16 cloneyaw = 0;
 
 u32 cloneCount = 0;
 
+u8 chs_cond_cherry_clone(void) {
+    return (cloneCount < 10);
+}
+
 void chs_create_cherry_clone(void) {
     Vec3f dest;
     Vec3f zero = {0};
