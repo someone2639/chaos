@@ -7,6 +7,9 @@
 #include "game/level_update.h"
 #include "game/mario.h"
 #include "game/print.h"
+#include "dialog_ids.h"
+#include "game/ingame_menu.h"
+#include "game/game_init.h"
 
 #include "game/chaos/chaos.h"
 
@@ -118,7 +121,7 @@ u8 chs_cond_random_burn(void) {
 */
 
 #define BLIND_TIME_MAX      18000
-#define BLIND_TIME_END      18450
+#define BLIND_TIME_END      18300
 
 void chs_act_random_blind(void) {
     struct ChaosActiveEntry *this;
@@ -133,3 +136,26 @@ void chs_update_random_blind(void) {
         this->frameTimer = RAND(BLIND_TIME_MAX); //Get a random offset to restart the timer at
     }
 }
+
+/*
+    Dialogue
+*/
+
+#define DIALOGUE_TIME_MAX      9000
+
+void chs_act_random_dialogue(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_RANDOM_DIALOGUE, &this);
+    this->frameTimer = RAND(DIALOGUE_TIME_MAX); //Get a random offset to start the timer at
+}
+
+void chs_update_random_dialogue(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_RANDOM_DIALOGUE, &this);
+    if(this->frameTimer > DIALOGUE_TIME_MAX) {
+        create_dialog_box(RAND(DIALOG_COUNT));
+        gChsTrollDialog = TRUE;
+        this->frameTimer = RAND(DIALOGUE_TIME_MAX); //Get a random offset to restart the timer at
+    }
+}
+

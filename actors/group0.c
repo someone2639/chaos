@@ -30,3 +30,6 @@
 #include "chaos_bullet_bill/model.inc.c"
 #include "luigi/model.inc.c"
 
+
+#include "clone_mario/model.inc.c"
+#include "clone_luigi/model.inc.c"

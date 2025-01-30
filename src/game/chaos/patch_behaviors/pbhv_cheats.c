@@ -65,3 +65,17 @@ void chs_update_debug_free_move(void) {
     set_mario_action(gMarioState, ACT_DEBUG_FREE_MOVE, 0);
     chaos_decrement_patch_usage(CHAOS_PATCH_DEBUG_FREE_MOVE);
 }
+
+/*
+    Level Reset
+*/
+
+u8 chs_cond_level_reset(void) {
+    struct ChaosActiveEntry *match;
+    chaos_find_first_active_patch(CHAOS_PATCH_DEBUG_FREE_MOVE, &match);
+    if(match) {
+        return (match->remainingDuration < 9);
+    } else {
+        return TRUE;
+    }
+}

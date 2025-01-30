@@ -11,12 +11,12 @@
 #include "game/ingame_menu.h"
 #include "audio/external.h"
 
-#define MAX_PROMPTS         8
-#define MIN_PROMPTS         3
-#define NUM_QTE             9
-#define QTE_PADDING         18
-#define QTE_ACTIVATE_TIME   5400
-#define QTE_INPUT_TIME      90
+#define MAX_PROMPTS                 8
+#define MIN_PROMPTS                 3
+#define NUM_QTE                     9
+#define QTE_PADDING                 18
+#define QTE_ACTIVATE_TIME           5400
+#define QTE_INPUT_TIME_PER_INPUT    20
 
 struct QuickTimePrompt {
     u16 button;
@@ -39,11 +39,13 @@ struct QuickTimePrompt sQTEPromptQueue[MAX_PROMPTS];
 u8 sQTEQueueLength = MIN_PROMPTS;
 u8 sQTECurrentIndex = 0;
 s16 sQTETimeLeft = 0;
+s16 sQTETimeTotal = QTE_INPUT_TIME_PER_INPUT;
 
 void generate_qte() {
     sQTECurrentIndex = 0;
-    sQTETimeLeft = QTE_INPUT_TIME;
     sQTEQueueLength = MIN_PROMPTS + RAND((MAX_PROMPTS - MIN_PROMPTS + 1));
+    sQTETimeTotal = QTE_INPUT_TIME_PER_INPUT * sQTEQueueLength;
+    sQTETimeLeft = sQTETimeTotal;
 
     s32 qte = 0;
     for(int i = 0; i < sQTEQueueLength; i++) {
@@ -64,7 +66,7 @@ void draw_quicktime_event_prompts() {
 
     menu_start_button_prompt();
     f32 startX = SCREEN_CENTER_X - ((sQTEQueueLength * QTE_PADDING) / 2);
-    f32 timerBarWidth = (((SCREEN_WIDTH - startX) - startX) / QTE_INPUT_TIME) * sQTETimeLeft;
+    f32 timerBarWidth = (((SCREEN_WIDTH - startX) - startX) / sQTETimeTotal) * sQTETimeLeft;
 
     for(int i = sQTECurrentIndex; i < sQTEQueueLength; i++) {
         menu_button_prompt(startX + (QTE_PADDING * i), SCREEN_CENTER_Y, sQTEPromptQueue[i].prompt);
@@ -91,6 +93,7 @@ void play_mode_quicktime() {
                 sQTECurrentIndex++;
                 play_sound(SOUND_MENU_POWER_METER, gGlobalSoundSource);
             } else {
+                sQTETimeLeft -= QTE_INPUT_TIME_PER_INPUT;
                 play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
             }
         }
@@ -101,6 +104,10 @@ void play_mode_quicktime() {
             set_play_mode(PLAY_MODE_NORMAL);
         } else {
             sQTETimeLeft--;
+        }
+
+        if(sQTETimeLeft < 0) {
+            sQTETimeLeft = 0;
         }
     } else if (sQTETimeLeft == 0) {
         sQTETimeLeft = -1;

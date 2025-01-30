@@ -89,6 +89,8 @@ void bhv_moving_yellow_coin_loop(void) {
             break;
     }
 
+    bhv_coin_magnet();
+
     if (o->oInteractStatus & INT_STATUS_INTERACTED) {
         coin_collected();
         o->oInteractStatus = 0;
@@ -132,6 +134,8 @@ void bhv_moving_blue_coin_loop(void) {
             obj_flicker_and_disappear(o, 600);
             break;
     }
+
+    bhv_coin_magnet();
 
     if (o->oInteractStatus & INT_STATUS_INTERACTED) {
         coin_collected();

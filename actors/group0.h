@@ -2,6 +2,7 @@
 #define GROUP0_H
 
 #include "types.h"
+#include "game/chaos/patch_behaviors/pbhv_cosmic_clones.h"
 
 // bubble
 extern const GeoLayout bubble_geo[];
@@ -347,5 +348,9 @@ extern const Gfx white_particle_small_unused_dl[];
 #include "chaos_bullet_bill/geo_header.h"
 
 #include "luigi/geo_header.h"
+
+#include "clone_mario/geo_header.h"
+
+#include "clone_luigi/geo_header.h"
 
 #endif
