@@ -42,7 +42,7 @@ void force_mario_interaction(struct MarioState *m, struct Object *obj) {
     for (int i = 0; i < INTERACT_COUNT; i++) {
         ih = &sInteractionHandlers[i];
         if (obj->collidedObjInteractTypes & ih->interactType) {
-            if (!(ih->interactType & INTERACT_DAMAGE)) {
+            if (!(ih->interactType & (INTERACT_DAMAGE | INTERACT_FLAME))) {
                 m->collidedObjInteractTypes |= ih->interactType;
                 obj->collidedObjInteractTypes &= ~ih->interactType;
             } else {
@@ -112,4 +112,12 @@ void bhv_MarioClone_loop(void) {
     }
     o->oForwardVel = m->forwardVel;
     o->header.gfx.sharedChild = gMarioObject->header.gfx.sharedChild;
+
+    struct Surface *floor;
+    f32 floorheight = find_floor(o->oPosX, o->oPosY, o->oPosZ, &floor);
+    if (floor->type == SURFACE_BURNING) {
+        if ((ABS(o->oPosY - floorheight) < 10)) {
+            delete_clone(o);
+        }
+    }
 }
