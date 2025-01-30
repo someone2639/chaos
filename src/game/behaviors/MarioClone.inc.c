@@ -136,6 +136,9 @@ void bhv_MarioClone_loop(void) {
     if (!(collisionFlags & OBJ_COL_FLAG_HIT_WALL)) {
     	o->oVelX = m->vel[0];
         o->oVelZ = m->vel[2];
+    } else {
+        o->oVelX = 0;
+        o->oVelZ = 0;
     }
 
     if (!(m->action & ACT_FLAG_AIR)) {
@@ -147,7 +150,7 @@ void bhv_MarioClone_loop(void) {
     struct Surface *floor = NULL;
     f32 floorheight = find_floor(o->oPosX, o->oPosY, o->oPosZ, &floor);
     if (!floor) {
-        floorheight = find_floor(o->oPosX, o->oPosY + 1000.0f, o->oPosZ, &floor);
+        floorheight = find_floor(o->oPosX, o->oPosY + 100.0f, o->oPosZ, &floor);
         if (!floor) {
             delete_clone(o);
         } else {
