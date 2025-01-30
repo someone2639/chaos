@@ -32,11 +32,8 @@
 #include "rumble_init.h"
 #include "patch_selection_ui.h"
 #include "chaos_pause_menu.h"
-
-#define WARP_TYPE_NOT_WARPING 0
-#define WARP_TYPE_CHANGE_LEVEL 1
-#define WARP_TYPE_CHANGE_AREA 2
-#define WARP_TYPE_SAME_AREA 3
+#include "object_helpers.h"
+#include "behavior_data.h"
 
 #define WARP_NODE_F0 0xF0
 #define WARP_NODE_DEATH 0xF1
@@ -567,6 +564,8 @@ void warp_credits(void) {
     }
 }
 
+#include "chaos/patch_behaviors/pbhv_cosmic_clones.h"
+
 void check_instant_warp(void) {
     s16 cameraAngle;
     struct Surface *floor;
@@ -587,6 +586,26 @@ void check_instant_warp(void) {
             struct InstantWarp *warp = &gCurrentArea->instantWarps[index];
 
             if (warp->id != 0) {
+                Vec3f demonPos;
+                struct ObjectNode *listHead = &gObjectLists[get_object_list_from_behavior(segmented_to_virtual(bhvGreenDemon))];
+                struct Object *obj = (struct Object *) listHead->next;
+                s32 spawnDemon = FALSE;
+
+                if(chaos_check_if_patch_active(CHAOS_PATCH_GREEN_DEMON) && gCurrCourseNum != COURSE_NONE) {
+                    while (obj != (struct Object *) listHead) {
+                        if (obj->behavior == segmented_to_virtual(bhvGreenDemon)) {
+                            if (obj->activeFlags != ACTIVE_FLAG_DEACTIVATED) {
+                                demonPos[0] = obj->oPosX;
+                                demonPos[1] = obj->oPosY;
+                                demonPos[2] = obj->oPosZ;
+                                spawnDemon = TRUE;
+                                break;
+                            }
+                        }
+                        obj = (struct Object *) obj->header.next;
+                    }
+                }
+
                 gMarioState->pos[0] += warp->displacement[0];
                 gMarioState->pos[1] += warp->displacement[1];
                 gMarioState->pos[2] += warp->displacement[2];
@@ -603,6 +622,20 @@ void check_instant_warp(void) {
                 warp_camera(warp->displacement[0], warp->displacement[1], warp->displacement[2]);
 
                 gMarioState->area->camera->yaw = cameraAngle;
+
+                if(chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_CLONES) && gCurrCourseNum != COURSE_NONE) {
+                    chs_cosmic_clones_move_instant_warp(warp->displacement);
+                }
+
+                if(spawnDemon) {
+                    demonPos[0] += warp->displacement[0];
+                    demonPos[1] += warp->displacement[1];
+                    demonPos[2] += warp->displacement[2];
+
+                    struct Object *demon = spawn_object_abs_with_rot(gMarioState->marioObj, 0, MODEL_GREEN_DEMON, bhvGreenDemon,
+                            demonPos[0], demonPos[1], demonPos[2], 0, 0, 0);
+                    demon->oAction = 1;
+                }
             }
         }
     }
@@ -852,13 +885,34 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 play_transition(WARP_TRANSITION_FADE_INTO_CIRCLE, 0x14, 0x00, 0x00, 0x00);
                 play_sound(SOUND_MENU_TIMER_UP, gGlobalSoundSource);
                 break;
+            case WARP_OP_LEVEL_RESET:
+                sDelayedWarpTimer = 1;
+                if(gCurrLevelNum == LEVEL_TTM && gCurrAreaIndex == 4) {
+                    sSourceWarpNodeId = 0x0B;
+                } else {
+                    sSourceWarpNodeId = 0x0A;
+                }
+                break;
         }
 
         if(chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE) && gCurrCourseNum != COURSE_NONE) {
             if(sSourceWarpNodeId == WARP_NODE_DEATH) {
-                sSourceWarpNodeId = 0x0A;
+                sDelayedWarpOp = WARP_OP_NONE;
+                gWarpTransition.isActive = FALSE;
+                gCamera->cutscene = 0;
+                vec3f_copy(gMarioState->pos, gMarioState->safePos);
+                gMarioState->pos[1] += 500.0f;
+                gMarioState->invincTimer = 30;
+                gMarioState->quicksandDepth = 0.0f;
+                gMarioState->marioObj->header.gfx.pos[1] = gMarioState->pos[1];
+                if(m->action & ACT_FLAG_SWIMMING) {
+                    set_mario_action(gMarioState, ACT_WATER_IDLE, 0);
+                } else {
+                    set_mario_action(gMarioState, ACT_FALLING_DEATH_EXIT, 0);
+                }
+                
+                chaos_decrement_patch_usage(CHAOS_PATCH_MIRACLE);
             }
-            chaos_decrement_patch_usage(CHAOS_PATCH_MIRACLE);
         }
     
         if (val04 && gCurrDemoInput == NULL) {
@@ -1084,6 +1138,12 @@ s32 play_mode_paused(void) {
     if (gMenuOptSelectIndex == MENU_OPT_NONE) {
         set_menu_mode(MENU_MODE_RENDER_PAUSE_SCREEN);
     } else if (gMenuOptSelectIndex == MENU_OPT_DEFAULT) {
+        raise_background_noise(1);
+        gCameraMovementFlags &= ~CAM_MOVE_PAUSE_SCREEN;
+        set_play_mode(PLAY_MODE_NORMAL);
+    } else if (gMenuOptSelectIndex == MENU_OPT_RESET) {
+        chaos_decrement_patch_usage(CHAOS_PATCH_LEVEL_RESET);
+        level_trigger_warp(gMarioState, WARP_OP_LEVEL_RESET);
         raise_background_noise(1);
         gCameraMovementFlags &= ~CAM_MOVE_PAUSE_SCREEN;
         set_play_mode(PLAY_MODE_NORMAL);

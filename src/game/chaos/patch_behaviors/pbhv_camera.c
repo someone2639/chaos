@@ -12,5 +12,9 @@ u8 chs_cam_invert_x_check(void) {
 }
 
 u8 chs_topdown_check(void) {
-    return (!chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_CAMERA_X));
+    return (!chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_CAMERA_X) && !chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM));
+}
+
+u8 chs_cond_forced_mario_cam(void) {
+    return (!chaos_check_if_patch_active(CHAOS_PATCH_TOP_DOWN_CAMERA));
 }

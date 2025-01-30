@@ -56,6 +56,7 @@ u8 chs_cond_health_up(void) {
 void chs_act_health_up(void) {
     gMarioState->maxHealth += 0x100;
     gMarioState->health += 0x100;
+    gHudDisplay.wedges++;
 }
 
 void chs_deact_health_up(void) {
@@ -75,6 +76,7 @@ u8 chs_cond_health_down(void) {
 
 void chs_act_health_down(void) {
     gMarioState->maxHealth -= 0x100;
+    gHudDisplay.wedges--;
     if (gMarioState->health > gMarioState->maxHealth) {
         gMarioState->health = gMarioState->maxHealth;
     }

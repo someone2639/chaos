@@ -38,6 +38,7 @@ void bhv_mips_init(void) {
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
 #else
         o->oBehParams2ndByte = 1;
+        o->oMipsForwardVelocity = 45.0f;
 #endif
     }
 

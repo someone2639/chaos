@@ -206,6 +206,7 @@
 #ifndef VERSION_EU // "R" text is different in EU
 #define TEXT_CAMERA_ANGLE_R _("SET CAMERA ANGLE WITH R")
 #endif
+#define TEXT_RESET_LEVEL _("RESET LEVEL")
 
 // Camera Options
 #define TEXT_LAKITU_MARIO _("LAKITU + MARIO")

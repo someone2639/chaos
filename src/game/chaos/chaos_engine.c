@@ -9,6 +9,7 @@
 #include "engine/behavior_script.h"
 #include "game/debug.h"
 #include "game/object_list_processor.h"
+#include "game/level_update.h"
 
 #define WEIGHT_OFFSET 1.25f // Must be > 0!
 
@@ -710,6 +711,10 @@ void chaos_area_update(void) {
     }
 
     if (gCurrCourseNum == COURSE_NONE) {
+        return;
+    }
+
+    if (sWarpDest.type == WARP_TYPE_SAME_AREA) {
         return;
     }
 

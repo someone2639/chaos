@@ -32,6 +32,28 @@ void bhv_coin_scale() {
     cur_obj_scale(scale);
 }
 
+void bhv_coin_magnet() {
+    if(chaos_check_if_patch_active(CHAOS_PATCH_COIN_MAGNET)) {
+        Vec3f oPos;
+        s16 yawToMario;
+        s16 pitchToMario;
+        f32 distToMario;
+
+        oPos[0] = o->oPosX;
+        oPos[1] = o->oPosY;
+        oPos[2] = o->oPosZ;
+
+        f32 magnetDist = 500.0f * (o->hitboxRadius / 100.0f); //Increase magnet distance if coins size is increased
+
+        vec3f_get_dist_and_angle(oPos, gMarioState->pos, &distToMario, &pitchToMario, &yawToMario);
+        if(distToMario < magnetDist) {
+            o->oPosX += 20 * sins(yawToMario);
+            o->oPosZ += 20 * coss(yawToMario);
+            o->oPosY += 20 * sins(pitchToMario);
+        }
+    }
+}
+
 s32 bhv_coin_sparkles_init(void) {
     if (o->oInteractStatus & INT_STATUS_INTERACTED
         && !(o->oInteractStatus & INT_STATUS_TOUCHED_BOB_OMB)) {
@@ -62,6 +84,7 @@ void bhv_yellow_coin_init(void) {
 
 void bhv_yellow_coin_loop(void) {
     bhv_coin_sparkles_init();
+    bhv_coin_magnet();
     o->oAnimState++;
 }
 
@@ -71,6 +94,7 @@ void bhv_temp_coin_loop(void) {
     if (cur_obj_wait_then_blink(200, 20)) {
         obj_mark_for_deletion(o);
     }
+    bhv_coin_magnet();
 
     bhv_coin_sparkles_init();
 }
@@ -101,6 +125,7 @@ void bhv_bouncey_coin_init(void) {
 
 void bhv_coin_loop(void) {
     struct Surface *sp1C;
+    bhv_coin_magnet();
 
     cur_obj_update_floor_and_walls();
     cur_obj_if_hit_wall_bounce_away();
@@ -186,7 +211,7 @@ void bhv_coin_formation_spawn_loop(void) {
         }
         o->oAnimState++;
     }
-
+    bhv_coin_magnet();
     if (o->parentObj->oAction == 2) {
         obj_mark_for_deletion(o);
     }
@@ -285,6 +310,8 @@ void coin_inside_boo_act_1(void) {
         cur_obj_become_tangible();
         cur_obj_set_behavior(bhvYellowCoin);
     }
+
+    bhv_coin_magnet();
 
     cur_obj_move_standard(-30);
     bhv_coin_sparkles_init();

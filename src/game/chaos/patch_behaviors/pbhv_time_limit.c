@@ -42,7 +42,12 @@ void chs_update_time_limit(void) {
         }
 
         if(timeLeft == 0) {
-            level_trigger_warp(gMarioState, WARP_OP_TIME_UP);
+            if(chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE)) {
+                this->frameTimer = sTimeLimitOffset;
+                chaos_decrement_patch_usage(CHAOS_PATCH_MIRACLE);
+            } else {
+                level_trigger_warp(gMarioState, WARP_OP_TIME_UP);
+            }
         }
     }
 }

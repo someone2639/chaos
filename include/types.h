@@ -331,6 +331,7 @@ struct MarioState {
     /*0xF0*/ s8 extraDamageLava;
     /*0xF2*/ s16 maxHealth;
     /*0xF6*/ f32 size;
+             Vec3f safePos;
 };
 
 #endif // TYPES_H

@@ -23,6 +23,8 @@
 
 /* fast64 object exports get inserted here */
 #define MODEL_CHAOS_BULLET_BILL           226
+#define MODEL_CLONE_MARIO                 227
+#define MODEL_CLONE_LUIGI                 228
 #define MODEL_CHAOS_SAVE_BUTTON           13
 #define MODEL_CHAOS_SCORE_BUTTON          14
 
