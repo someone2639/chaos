@@ -677,6 +677,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Blindfolded Speedrun",
         .shortDescription  = "Get blinded for 10 seconds periodically."
     },
+    [CHAOS_PATCH_RANDOM_DIALOGUE] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .activatedInitFunc = chs_act_random_dialogue,
+        .frameUpdateFunc   = chs_update_random_dialogue,
+
+        .name              = "Hey! Listen!",
+        .shortDescription  = "Recieve extra dialogue periodically."
+    },
 
 // Movement Modifiers
     [CHAOS_PATCH_LOSEMOVE_BREAKDANCE] = {

@@ -107,6 +107,8 @@ void chs_update_random_burn(void);
 u8 chs_cond_random_burn(void);
 void chs_act_random_blind(void);
 void chs_update_random_blind(void);
+void chs_act_random_dialogue(void);
+void chs_update_random_dialogue(void);
 
 // Object Spawners
 u8 chs_cond_green_demon(void);

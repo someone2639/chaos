@@ -35,6 +35,7 @@
 #include "rumble_init.h"
 #include "debug.h"
 #include "patch_selection_ui.h"
+#include "ingame_menu.h"
 
 u32 unused80339F10;
 u8 unused80339F1C[20];
@@ -1431,8 +1432,10 @@ void update_mario_inputs(struct MarioState *m) {
     m->collidedObjInteractTypes = m->marioObj->collidedObjInteractTypes;
     m->flags &= 0xFFFFFF;
 
-    update_mario_button_inputs(m);
-    update_mario_joystick_inputs(m);
+    if(!gChsTrollDialog) {
+        update_mario_button_inputs(m);
+        update_mario_joystick_inputs(m);
+    }
     update_mario_geometry_inputs(m);
 
     debug_print_speed_action_normal(m);

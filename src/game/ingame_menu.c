@@ -54,6 +54,8 @@ u8 textCurrRatio169[] = { TEXT_HUD_CURRENT_RATIO_169 };
 u8 textPressL[] = { TEXT_HUD_PRESS_L };
 #endif
 
+s8 gChsTrollDialog = FALSE;
+
 extern u8 gLastCompletedCourseNum;
 extern u8 gLastCompletedStarNum;
 
@@ -1858,6 +1860,7 @@ void render_dialog_entries(void) {
                 if (gLastDialogPageStrPos == -1) {
                     handle_special_dialog_text(gDialogID);
                     gDialogBoxState = DIALOG_STATE_CLOSING;
+                    gChsTrollDialog = FALSE;
                 } else {
                     gDialogBoxState = DIALOG_STATE_HORIZONTAL;
                     play_sound(SOUND_MENU_MESSAGE_NEXT_PAGE, gGlobalSoundSource);
