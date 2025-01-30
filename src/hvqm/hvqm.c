@@ -53,12 +53,6 @@ static u32 video_remain;        /* Counter for remaining number of video records
 static u64 disptime;            /* Counter for scheduled display time of next video frame */
 static ADPCMstate adpcm_state;  /* Buffer for state information passed to the ADPCM decoder */
 
-/*
- * Macro for loading multi-byte data from buffer holding data from stream
- */
-#define load32(from) (*(u32 *) &(from))
-#define load16(from) (*(u16 *) &(from))
-
 void *gHVQM_VideoPointer;
 static u64 hvqmStack[STACKSIZE / sizeof(u64)];
 
