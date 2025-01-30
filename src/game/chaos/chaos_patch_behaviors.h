@@ -188,5 +188,7 @@ u8 chs_cond_quicktime(void);
 void chs_update_quicktime(void);
 void chs_act_quicktime(void);
 u8 chs_cond_lethal_fall_damage(void);
-void chs_create_clone(void);
+void chs_create_cherry_clone(void);
+void chs_remove_cherry_clone(void);
+void chs_init_cherry_clones_after_warp(void);
 

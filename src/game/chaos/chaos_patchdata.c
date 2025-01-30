@@ -1467,7 +1467,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = TRUE,
         .duration          = 6,
 
-        .activatedInitFunc = chs_create_clone,
+        .activatedInitFunc = chs_create_cherry_clone,
+        .deactivationFunc  = chs_remove_cherry_clone,
+        .areaInitFunc      = chs_init_cherry_clones_after_warp,
+        .levelInitFunc      = chs_init_cherry_clones_after_warp,
 
         .name              = "Double Cherry",
         .shortDescription  = "It's dangerous to go alone! Have a buddy!",

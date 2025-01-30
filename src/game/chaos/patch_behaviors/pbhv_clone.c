@@ -20,6 +20,7 @@ struct MarioState *gMarioSoul = &gMarioStates[0];
 // struct Object *gMarioSoulObj = gMarioObject;
 
 u32 gMarioCloneCount = 0;
+u32 cspawnlock = 0;
 
 s16 set_obj_animation(struct Object *o, s32 targetAnimID) {
     struct MarioState *m = gMarioSoul;
@@ -48,7 +49,9 @@ s16 set_obj_animation(struct Object *o, s32 targetAnimID) {
 
 s16 cloneyaw = 0;
 
-void chs_create_clone(void) {
+u32 cloneCount = 0;
+
+void chs_create_cherry_clone(void) {
     Vec3f dest;
     Vec3f zero = {0};
     vec3f_set_dist_and_angle(zero, dest, 300.0f, 0, cloneyaw);
@@ -64,4 +67,36 @@ void chs_create_clone(void) {
     gCurrentObject = newclone;
     spawn_mist_particles();
     gCurrentObject = prev;
+
+    cloneCount ++;
+}
+
+void chs_remove_cherry_clone(void) {
+    // TODO: despawn random clone
+    cloneCount --;
+}
+
+void chs_init_cherry_clones_after_warp(void) {
+    osSyncPrintf(__FUNCTION__);
+    if (cspawnlock == 0) {
+        cspawnlock = 1;
+    } else {
+        return;
+    }
+
+    osSyncPrintf("MAKING CLONES");
+    s32 dAngle = 0x10000 / (cloneCount);
+
+    for (s32 angle = 0; angle < 0xFFFF; angle += dAngle) {
+        osSyncPrintf("   SPAWN!");
+        s16 dx = 300.0f * coss(angle);
+        s16 dz = 300.0f * sins(angle);
+
+        struct Object *newclone =
+            spawn_object_relative(0,
+                            dx, gMarioObject->header.gfx.pos[1], dz,
+                            gMarioObject, MODEL_MARIO, bhvMarioClone
+                                );
+        newclone->header.gfx.sharedChild = gMarioObject->header.gfx.sharedChild;
+    }
 }

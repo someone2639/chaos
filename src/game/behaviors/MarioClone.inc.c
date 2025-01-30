@@ -14,6 +14,8 @@ static struct ObjectHitbox sCloneHitbox = {
     /* hurtboxHeight:     */ 0,
 };
 
+extern u32 cspawnlock;
+
 struct Object *obj_get_collider(struct Object *obj) {
     s32 numCollidedObjs;
     struct Object *other = NULL;
@@ -64,6 +66,7 @@ void update_clone_animation() {
 }
 
 void bhv_MarioClone_init(void) {
+    cspawnlock = 0;
 	set_obj_animation(o, MARIO_ANIM_IDLE_HEAD_LEFT);
 }
 
@@ -100,7 +103,7 @@ void bhv_MarioClone_loop(void) {
 	update_clone_animation();
 
 	o->oFaceAnglePitch = m->faceAngle[0];
-	o->oFaceAngleYaw = m->faceAngle[1];
+	o->oFaceAngleYaw = m->intendedYaw;
 	o->oFaceAngleRoll = m->faceAngle[2];
 
 	vec3f_copy(&o->oVelX, m->vel);
@@ -113,11 +116,13 @@ void bhv_MarioClone_loop(void) {
     o->oForwardVel = m->forwardVel;
     o->header.gfx.sharedChild = gMarioObject->header.gfx.sharedChild;
 
-    struct Surface *floor;
+    struct Surface *floor = NULL;
     f32 floorheight = find_floor(o->oPosX, o->oPosY, o->oPosZ, &floor);
-    if (floor->type == SURFACE_BURNING) {
-        if ((ABS(o->oPosY - floorheight) < 10)) {
-            delete_clone(o);
+    if (floor) {
+        if (floor->type == SURFACE_BURNING) {
+            if ((ABS(o->oPosY - floorheight) < 10)) {
+                delete_clone(o);
+            }
         }
     }
 }
