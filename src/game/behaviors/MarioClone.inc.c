@@ -159,10 +159,15 @@ void bhv_MarioClone_loop(void) {
                 delete_clone(o);
             }
         }
+
+        if (floor->type == SURFACE_DEATH_PLANE) {
+            if (o->oPosY < (floorheight + 2048.0f)) {
+                delete_clone(o);
+            }
+        }
     }
 
-
-    char rr[100];
-    sprintf(rr, "VELY %f\n", o->oVelY);
-    osSyncPrintf(rr);
+    // char rr[100];
+    // sprintf(rr, "VELY %f\n", o->oVelY);
+    // osSyncPrintf(rr);
 }
