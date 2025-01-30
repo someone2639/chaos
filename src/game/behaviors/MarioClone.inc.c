@@ -86,6 +86,8 @@ void delete_clone(struct Object *obj) {
     spawn_mist_particles();
 }
 
+struct MarioState fakeMario;
+
 void bhv_MarioClone_loop(void) {
 	struct MarioState *m = gMarioState;
     obj_set_hitbox(o, &sCloneHitbox);
@@ -123,7 +125,13 @@ void bhv_MarioClone_loop(void) {
     }
     o->oFaceAngleRoll = m->faceAngle[2];
 
-	vec3f_copy(&o->oVelX, m->vel);
+	o->oVelX = m->vel[0];
+    if (m->vel[1] != 0) {
+        o->oVelY = m->vel[1];
+    }
+    o->oVelZ = m->vel[2];
+
+    o->oGravity = 1.0f;
 
 	UNUSED u32 collisionFlags = object_step();
 
@@ -135,7 +143,14 @@ void bhv_MarioClone_loop(void) {
 
     struct Surface *floor = NULL;
     f32 floorheight = find_floor(o->oPosX, o->oPosY, o->oPosZ, &floor);
-    if (floor) {
+    if (!floor) {
+        floorheight = find_floor(o->oPosX, o->oPosY + 1000.0f, o->oPosZ, &floor);
+        if (!floor) {
+            delete_clone(o);
+        } else {
+            o->oPosY = floorheight;
+        }
+    } else {
         if (floor->type == SURFACE_BURNING) {
             if ((ABS(o->oPosY - floorheight) < 10)) {
                 delete_clone(o);
