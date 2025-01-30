@@ -22,7 +22,7 @@
  * -- TEST LEVEL --
  * Set a test level in order to boot straight into said level.
  */
-// #define TEST_LEVEL LEVEL_LLL
+// #define TEST_LEVEL LEVEL_WF
 
 /**
  * Enables debug level select. Hold L while the game boots to enter level selection menu.
@@ -37,7 +37,7 @@
 /**
  * Opens all courses and doors. Used for debugging purposes to unlock all content.
  */
-#define UNLOCK_ALL
+// #define UNLOCK_ALL
 
 /**
  * Intentionally crash the game if a certain condition is not met.
