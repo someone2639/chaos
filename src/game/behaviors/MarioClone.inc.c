@@ -125,15 +125,18 @@ void bhv_MarioClone_loop(void) {
     }
     o->oFaceAngleRoll = m->faceAngle[2];
 
-	o->oVelX = m->vel[0];
-    if (m->vel[1] != 0) {
-        o->oVelY = m->vel[1];
-    }
-    o->oVelZ = m->vel[2];
 
     o->oGravity = 1.0f;
 
 	UNUSED u32 collisionFlags = object_step();
+    if (m->vel[1] != 0) {
+        o->oVelY = m->vel[1];
+    }
+
+    if (!(collisionFlags & OBJ_COL_FLAG_HIT_WALL)) {
+    	o->oVelX = m->vel[0];
+        o->oVelZ = m->vel[2];
+    }
 
     if (!(m->action & ACT_FLAG_AIR)) {
         vec3f_add(&o->oPosX, &o->oVelX);
@@ -157,4 +160,9 @@ void bhv_MarioClone_loop(void) {
             }
         }
     }
+
+
+    char rr[100];
+    sprintf(rr, "VELY %f\n", o->oVelY);
+    osSyncPrintf(rr);
 }

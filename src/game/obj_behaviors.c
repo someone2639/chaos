@@ -278,7 +278,9 @@ void calc_new_obj_vel_and_pos_y(struct Surface *objFloor, f32 objFloorY, f32 obj
 
         // Bounces an object if the ground is hit fast enough.
         if (o->oVelY < -17.5f * m->gravity) {
-            o->oVelY = -(o->oVelY / 2);
+            if (o->behavior != segmented_to_virtual(bhvMarioClone)) {
+                o->oVelY = -(o->oVelY / 2);
+            }
         } else {
             o->oVelY = 0;
         }
@@ -338,7 +340,9 @@ void calc_new_obj_vel_and_pos_y_underwater(struct Surface *objFloor, f32 floorY,
 
         // Bounces an object if the ground is hit fast enough.
         if (o->oVelY < (-17.5f * m->gravity)) {
-            o->oVelY = -(o->oVelY / 2);
+            if (o->behavior != segmented_to_virtual(bhvMarioClone)) {
+                o->oVelY = -(o->oVelY / 2);
+            }
         } else {
             o->oVelY = 0;
         }
