@@ -54,6 +54,8 @@ u8 textCurrRatio169[] = { TEXT_HUD_CURRENT_RATIO_169 };
 u8 textPressL[] = { TEXT_HUD_PRESS_L };
 #endif
 
+s8 gChsTrollDialog = FALSE;
+
 extern u8 gLastCompletedCourseNum;
 extern u8 gLastCompletedStarNum;
 
@@ -1858,6 +1860,7 @@ void render_dialog_entries(void) {
                 if (gLastDialogPageStrPos == -1) {
                     handle_special_dialog_text(gDialogID);
                     gDialogBoxState = DIALOG_STATE_CLOSING;
+                    gChsTrollDialog = FALSE;
                 } else {
                     gDialogBoxState = DIALOG_STATE_HORIZONTAL;
                     play_sound(SOUND_MENU_MESSAGE_NEXT_PAGE, gGlobalSoundSource);
@@ -2543,14 +2546,26 @@ void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) {
     u8 textExitCourse[] = { TEXT_EXIT_COURSE };
     u8 textExitCourseWithDeath[] = { TEXT_EXIT_COURSE_WITH_DEATH };
     u8 textCameraAngleR[] = { TEXT_CAMERA_ANGLE_R };
+    u8 textResetLevel[] = { TEXT_RESET_LEVEL };
 #endif
 
-    if(!(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE) && !(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE)) {
-        handle_menu_scrolling(MENU_SCROLL_VERTICAL, index, 1, 3);
-    }
-
+    s32 lvlResetOffset = 0;
+    s32 numPauseOptions = 3;
+    s32 camAngleIndex = MENU_OPT_3;
+    
     gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
+
+    if(chaos_check_if_patch_active(CHAOS_PATCH_LEVEL_RESET)) {
+        lvlResetOffset = 15;
+        numPauseOptions = 4;
+        camAngleIndex = MENU_OPT_4;
+        print_generic_string(x + 10, y - 33, LANGUAGE_ARRAY(textResetLevel));
+    }
+
+    if(!(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE) && !(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE)) {
+        handle_menu_scrolling(MENU_SCROLL_VERTICAL, index, 1, numPauseOptions);
+    }
 
     print_generic_string(x + 10, y - 2, LANGUAGE_ARRAY(textContinue));
     if (gChaosLivesEnabled) {
@@ -2559,8 +2574,8 @@ void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) {
         print_generic_string(x + 10, y - 17, LANGUAGE_ARRAY(textExitCourse));
     }
 
-    if (*index != MENU_OPT_CAMERA_ANGLE_R) {
-        print_generic_string(x + 10, y - 33, LANGUAGE_ARRAY(textCameraAngleR));
+    if (*index != camAngleIndex) {
+        print_generic_string(x + 10, y - 33 - lvlResetOffset, LANGUAGE_ARRAY(textCameraAngleR));
         gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
 
         create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_PUSH, x - X_VAL8, (y - ((*index - 1) * yIndex)) - Y_VAL8, 0);
@@ -2570,8 +2585,8 @@ void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) {
         gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
     }
 
-    if (*index == MENU_OPT_CAMERA_ANGLE_R) {
-        render_pause_camera_options(x - 42, y - 42, &gDialogCameraAngleIndex, 110);
+    if (*index == camAngleIndex) {
+        render_pause_camera_options(x - 42, y - 42 - lvlResetOffset, &gDialogCameraAngleIndex, 110);
     }
 }
 
@@ -2826,6 +2841,8 @@ s16 render_pause_courses_and_castle(void) {
                 gMenuMode = MENU_MODE_NONE;
 
                 if (gDialogLineNum == MENU_OPT_EXIT_COURSE) {
+                    index = gDialogLineNum;
+                } else if (gDialogLineNum == MENU_OPT_RESET && chaos_check_if_patch_active(CHAOS_PATCH_LEVEL_RESET)) {
                     index = gDialogLineNum;
                 } else { // MENU_OPT_CONTINUE or MENU_OPT_CAMERA_ANGLE_R
                     index = MENU_OPT_DEFAULT;

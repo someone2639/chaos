@@ -600,6 +600,27 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Coins That Double in Size",
         .shortDescription  = "Doubles the size of yellow coins.",
     },
+    [CHAOS_PATCH_SCARED_COINS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 10,
+
+        .name              = "Sca-red Coins",
+        .shortDescription  = "Red coins will try to avoid being collected.",
+    },
+    [CHAOS_PATCH_COIN_MAGNET] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 10,
+
+        .name              = "Money Magnet",
+        .shortDescription  = "Yellow and Blue coins will find you more attractive.",
+    },
+
 
 // Random Griefing
     [CHAOS_PATCH_RANDOM_SLEEP] = {
@@ -618,7 +639,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_RANDOM_SHOCK] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 2,
+        .severity          = 1,
         .isStackable       = FALSE,
         .duration          = 15,
 
@@ -632,7 +653,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_RANDOM_BURN] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 3,
+        .severity          = 2,
         .isStackable       = FALSE,
         .duration          = 15,
 
@@ -654,7 +675,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc   = chs_update_random_blind,
 
         .name              = "Blindfolded Speedrun",
-        .shortDescription  = "Get blinded for 15 seconds periodically."
+        .shortDescription  = "Get blinded for 10 seconds periodically."
+    },
+    [CHAOS_PATCH_RANDOM_DIALOGUE] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .activatedInitFunc = chs_act_random_dialogue,
+        .frameUpdateFunc   = chs_update_random_dialogue,
+
+        .name              = "Hey! Listen!",
+        .shortDescription  = "Recieve extra dialogue periodically."
     },
 
 // Movement Modifiers
@@ -792,7 +826,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration          = 2,
 
         .conditionalFunc   = chs_cond_green_demon,
-        .frameUpdateFunc   = chs_lvlupdate_green_demon,
+        .areaInitFunc      = chs_area_init_green_demon,
 
         .name              = "Green Demon",
         .shortDescription  = "Of course this one's in the game. Spawn a poison 1-UP mushroom that chases Mario.",
@@ -822,6 +856,21 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Shell Spawn",
         .shortDescription  = "Start riding on a shell upon entering a new course.",
+    },
+    [CHAOS_PATCH_COSMIC_CLONES] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .activatedInitFunc = chs_act_cosmic_clones,
+        .deactivationFunc  = chs_deact_cosmic_clones,
+        .areaInitFunc      = chs_area_init_cosmic_clones,
+        .frameUpdateFunc   = chs_update_cosmic_clones,
+
+        .name              = "Cosmic Clones",
+        .shortDescription  = "Spawns a trail of cosmic Marios that copy your every move!",
     },
 
 // Visual Modifiers
@@ -1028,6 +1077,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Debug Free Move",
         .shortDescription  = "Enables one use of debug free move. Press D-Pad Up to activate, and A to exit.",
         .longDescription   = "While using debug free move, D-Pad Up and D-Pad Down may be used to move up or down. Hold B to increase your movement speed, or Z to decrease it. Mario is (mostly) invulnerable while this mode is active!"
+    },
+    [CHAOS_PATCH_LEVEL_RESET] = {
+        .durationType      = CHAOS_DURATION_USE_COUNT,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = TRUE,
+        .duration          = 3,
+
+        .conditionalFunc   = chs_cond_level_reset,
+
+        .name              = "Get Out of GBJ Free Card",
+        .shortDescription  = "Gain three on-command level resets. Accessible from the pause menu while in a course.",
     },
 
 // Chaos Modifiers
@@ -1344,7 +1405,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 8,
+        .duration          = 6,
+
+        .conditionalFunc   = chs_cond_forced_mario_cam,
 
         .name              = "Up Close and Personal",
         .shortDescription  = "Forces Mario Cam.",
@@ -1420,7 +1483,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 15,
 
-        .name              = "Fading Fantacy",
+        .name              = "Fading Fantasy",
         .shortDescription  = "Fading teleports are all deactivated.",
     },
     [CHAOS_PATCH_LUIGI] = {

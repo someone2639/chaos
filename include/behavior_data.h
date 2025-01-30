@@ -5,6 +5,7 @@
 
 /* fast64 object exports get inserted here */
 extern const BehaviorScript bhvChaosBulletBill[];
+extern const BehaviorScript bhvCosmicClone[];
 
 extern const BehaviorScript bhvStarDoor[];
 extern const BehaviorScript bhvMrI[];

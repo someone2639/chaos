@@ -20,3 +20,6 @@
 #include "slotwheel/geo.inc.c"
 #include "chaos_bullet_bill/geo.inc.c"
 #include "luigi/geo.inc.c"
+
+#include "clone_mario/geo.inc.c"
+#include "clone_luigi/geo.inc.c"

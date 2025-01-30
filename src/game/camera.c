@@ -3077,6 +3077,7 @@ void update_camera(struct Camera *c) {
 
     u16 temporaryButtonDown = gPlayer1Controller->buttonDown;
     u16 temporaryButtonPressed = gPlayer1Controller->buttonPressed;
+    s32 forceMarioCam = chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM);
 
     if (chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_CAMERA_X)) {
         gPlayer1Controller->buttonDown &= ~(R_CBUTTONS | L_CBUTTONS);
@@ -3100,7 +3101,6 @@ void update_camera(struct Camera *c) {
     update_camera_hud_status(c);
     if (c->cutscene == 0) {
         // Only process R_TRIG if 'fixed' is not selected in the menu
-        s32 forceMarioCam = chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM);
         if (cam_select_alt_mode(0) == CAM_SELECTION_MARIO || forceMarioCam) {
             if (gPlayer1Controller->buttonPressed & R_TRIG || forceMarioCam) {
                 if (set_cam_angle(0) == CAM_ANGLE_LAKITU || forceMarioCam) {
@@ -3110,7 +3110,9 @@ void update_camera(struct Camera *c) {
                 }
             }
         }
-        play_sound_if_cam_switched_to_lakitu_or_mario();
+        if(!forceMarioCam) {
+            play_sound_if_cam_switched_to_lakitu_or_mario();
+        }
     }
 
     // Initialize the camera
@@ -3185,7 +3187,11 @@ void update_camera(struct Camera *c) {
                     break;
 
                 default:
-                    mode_mario_camera(c);
+                    if(forceMarioCam) {
+                        mode_behind_mario_camera(c);
+                    } else {
+                        mode_mario_camera(c);
+                    }
             }
         } else {
             switch (c->mode) {

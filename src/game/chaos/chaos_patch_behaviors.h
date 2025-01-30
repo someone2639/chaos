@@ -107,14 +107,20 @@ void chs_update_random_burn(void);
 u8 chs_cond_random_burn(void);
 void chs_act_random_blind(void);
 void chs_update_random_blind(void);
+void chs_act_random_dialogue(void);
+void chs_update_random_dialogue(void);
 
 // Object Spawners
 u8 chs_cond_green_demon(void);
-void chs_lvlupdate_green_demon(void);
+void chs_area_init_green_demon(void);
 void chs_area_init_bullet_hell(void);
 void chs_update_bullet_hell(void);
 void chs_lvlinit_spawn_on_shell(void);
 void chs_lvlupdate_spawn_on_shell(void);
+void chs_deact_cosmic_clones(void);
+void chs_act_cosmic_clones(void);
+void chs_area_init_cosmic_clones(void);
+void chs_update_cosmic_clones(void);
 
 // Visual Modifiers
 u8 chs_cond_no_zbuffer(void);
@@ -135,6 +141,7 @@ void chs_update_l_to_levitate(void);
 u8 chs_cond_l_to_levitate(void);
 void chs_update_debug_free_move(void);
 u8 chs_cond_debug_free_move(void);
+u8 chs_cond_level_reset(void);
 
 // Patches
 u8 chs_cond_remove_negative_patch(void);
@@ -190,3 +197,4 @@ u8 chs_cond_quicktime(void);
 void chs_update_quicktime(void);
 void chs_act_quicktime(void);
 u8 chs_cond_lethal_fall_damage(void);
+u8 chs_cond_forced_mario_cam(void);

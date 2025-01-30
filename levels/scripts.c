@@ -65,6 +65,8 @@ const LevelScript level_main_scripts_entry[] = {
     LOAD_RAW( /*seg*/ 0x16, _common1_geoSegmentRomStart, _common1_geoSegmentRomEnd),
     LOAD_RAW( /*seg*/ 0x13, _behaviorSegmentRomStart, _behaviorSegmentRomEnd),
     ALLOC_LEVEL_POOL(),
+    LOAD_MODEL_FROM_GEO(MODEL_CLONE_MARIO, clone_mario_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_CLONE_LUIGI, clone_luigi_geo),
     LOAD_MODEL_FROM_GEO(MODEL_LUIGI, luigi_geo),
     LOAD_MODEL_FROM_GEO(MODEL_CHAOS_BULLET_BILL, chaos_bullet_bill_geo),
     LOAD_MODEL_FROM_GEO(MODEL_MARIO,                   mario_geo),

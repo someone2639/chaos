@@ -37,6 +37,7 @@
 #endif
 #include <prevent_bss_reordering.h>
 #include "patch_selection_ui.h"
+#include "game/chaos/patch_behaviors/pbhv_cosmic_clones.h"
 
 // Emulators that the Instant Input patch should not be applied to
 #define INSTANT_INPUT_BLACKLIST (EMU_CONSOLE | EMU_WIIVC | EMU_ARES | EMU_SIMPLE64 | EMU_CEN64)
@@ -82,6 +83,7 @@ void *gMarioAnimsMemAlloc;
 void *gDemoInputsMemAlloc;
 struct DmaHandlerList gMarioAnimsBuf;
 struct DmaHandlerList gDemoInputsBuf;
+struct DmaHandlerList gCosmicClonesAnimsBuffs[MAX_CLONES];
 
 // fillers
 UNUSED static u8 sfillerGameInit[0x90];
@@ -915,9 +917,12 @@ void setup_game_memory(void) {
     gPhysicalFramebuffers[1] = VIRTUAL_TO_PHYSICAL(gFramebuffer1);
     gPhysicalFramebuffers[2] = VIRTUAL_TO_PHYSICAL(gFramebuffer2);
     // Setup Mario Animations
-    gMarioAnimsMemAlloc = main_pool_alloc(0x4000, MEMORY_POOL_LEFT);
+    gMarioAnimsMemAlloc = main_pool_alloc((0x4000 * (MAX_CLONES + 1)), MEMORY_POOL_LEFT);
     set_segment_base_addr(17, (void *) gMarioAnimsMemAlloc);
     setup_dma_table_list(&gMarioAnimsBuf, gMarioAnims, gMarioAnimsMemAlloc);
+    for(int i = 0; i < MAX_CLONES; i++) {
+        setup_dma_table_list(&gCosmicClonesAnimsBuffs[i], gMarioAnims, gMarioAnimsMemAlloc + (0x4000 * (i + 1)));
+    }
     // Setup Demo Inputs List
     gDemoInputsMemAlloc = main_pool_alloc(0x800, MEMORY_POOL_LEFT);
     set_segment_base_addr(24, (void *) gDemoInputsMemAlloc);
