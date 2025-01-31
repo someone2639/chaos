@@ -531,6 +531,19 @@ Vtx clone_luigi_000_offset_mesh_layer_1_vtx_0[13] = {
 	{{ {12, 7, -63}, 0, {-129, -260}, {234, 8, 131, 255} }},
 };
 
+Gfx clone_luigi_000_offset_mesh_layer_1_tri_0[] = {
+	gsSPVertex(clone_luigi_000_offset_mesh_layer_1_vtx_0 + 0, 13, 0),
+	gsSP2Triangles(0, 1, 2, 0, 3, 1, 0, 0),
+	gsSP2Triangles(4, 3, 0, 0, 0, 5, 4, 0),
+	gsSP2Triangles(6, 5, 0, 0, 7, 6, 0, 0),
+	gsSP2Triangles(7, 8, 6, 0, 6, 8, 9, 0),
+	gsSP2Triangles(5, 6, 9, 0, 5, 9, 4, 0),
+	gsSP2Triangles(9, 10, 4, 0, 10, 11, 4, 0),
+	gsSP2Triangles(10, 12, 11, 0, 11, 12, 1, 0),
+	gsSP2Triangles(11, 1, 3, 0, 4, 11, 3, 0),
+	gsSPEndDisplayList(),
+};
+
 Vtx clone_luigi_000_offset_001_skinned_mesh_layer_1_vtx_0[8] = {
 	{{ {9, -33, 54}, 0, {-16, -16}, {241, 186, 105, 255} }},
 	{{ {-20, -44, 24}, 0, {-16, -16}, {170, 169, 35, 255} }},
@@ -540,6 +553,11 @@ Vtx clone_luigi_000_offset_001_skinned_mesh_layer_1_vtx_0[8] = {
 	{{ {12, 7, -63}, 0, {-16, -16}, {234, 8, 131, 255} }},
 	{{ {-1, 45, -37}, 0, {-16, -16}, {205, 101, 198, 255} }},
 	{{ {-2, 46, 35}, 0, {-16, -16}, {205, 102, 55, 255} }},
+};
+
+Gfx clone_luigi_000_offset_001_skinned_mesh_layer_1_tri_0[] = {
+	gsSPVertex(clone_luigi_000_offset_001_skinned_mesh_layer_1_vtx_0 + 0, 8, 0),
+	gsSPEndDisplayList(),
 };
 
 Vtx clone_luigi_000_offset_001_mesh_layer_1_vtx_0[10] = {
@@ -553,6 +571,20 @@ Vtx clone_luigi_000_offset_001_mesh_layer_1_vtx_0[10] = {
 	{{ {35, 40, 50}, 0, {-129, -260}, {27, 79, 95, 255} }},
 	{{ {44, 10, 59}, 0, {-129, -260}, {37, 13, 121, 255} }},
 	{{ {46, -33, 49}, 0, {-129, -260}, {27, 169, 88, 255} }},
+};
+
+Gfx clone_luigi_000_offset_001_mesh_layer_1_tri_0[] = {
+	gsSPVertex(clone_luigi_000_offset_001_mesh_layer_1_vtx_0 + 0, 10, 8),
+	gsSP2Triangles(0, 1, 8, 0, 8, 1, 3, 0),
+	gsSP2Triangles(3, 9, 8, 0, 4, 9, 3, 0),
+	gsSP2Triangles(9, 4, 5, 0, 10, 9, 5, 0),
+	gsSP2Triangles(5, 11, 10, 0, 5, 12, 11, 0),
+	gsSP2Triangles(6, 12, 5, 0, 12, 6, 13, 0),
+	gsSP2Triangles(6, 7, 13, 0, 7, 14, 13, 0),
+	gsSP2Triangles(14, 7, 15, 0, 7, 2, 15, 0),
+	gsSP2Triangles(2, 16, 15, 0, 17, 16, 2, 0),
+	gsSP2Triangles(8, 17, 2, 0, 2, 0, 8, 0),
+	gsSPEndDisplayList(),
 };
 
 Vtx clone_luigi_000_offset_001_mesh_layer_1_vtx_1[20] = {
@@ -576,6 +608,22 @@ Vtx clone_luigi_000_offset_001_mesh_layer_1_vtx_1[20] = {
 	{{ {90, 8, 29}, 0, {-129, -260}, {111, 37, 49, 255} }},
 	{{ {35, 40, 50}, 0, {-129, -260}, {27, 79, 95, 255} }},
 	{{ {44, 10, 59}, 0, {-129, -260}, {37, 13, 121, 255} }},
+};
+
+Gfx clone_luigi_000_offset_001_mesh_layer_1_tri_1[] = {
+	gsSPVertex(clone_luigi_000_offset_001_mesh_layer_1_vtx_1 + 0, 20, 0),
+	gsSP2Triangles(0, 1, 2, 0, 3, 4, 5, 0),
+	gsSP2Triangles(3, 6, 4, 0, 6, 3, 7, 0),
+	gsSP2Triangles(8, 7, 3, 0, 9, 8, 3, 0),
+	gsSP2Triangles(5, 9, 3, 0, 10, 8, 9, 0),
+	gsSP2Triangles(8, 10, 11, 0, 11, 10, 12, 0),
+	gsSP2Triangles(10, 13, 12, 0, 12, 13, 14, 0),
+	gsSP2Triangles(12, 14, 15, 0, 12, 15, 16, 0),
+	gsSP2Triangles(12, 16, 17, 0, 16, 18, 17, 0),
+	gsSP2Triangles(18, 19, 17, 0, 17, 19, 7, 0),
+	gsSP2Triangles(19, 6, 7, 0, 7, 8, 17, 0),
+	gsSP2Triangles(11, 17, 8, 0, 12, 17, 11, 0),
+	gsSPEndDisplayList(),
 };
 
 Vtx clone_luigi_000_displaylist_mesh_layer_1_vtx_0[116] = {
@@ -695,6 +743,71 @@ Vtx clone_luigi_000_displaylist_mesh_layer_1_vtx_0[116] = {
 	{{ {26, 74, 0}, 0, {-129, -260}, {129, 251, 255, 255} }},
 	{{ {35, 74, 23}, 0, {-129, -260}, {188, 214, 98, 255} }},
 	{{ {30, 95, 0}, 0, {-129, -260}, {147, 65, 255, 255} }},
+};
+
+Gfx clone_luigi_000_displaylist_mesh_layer_1_tri_0[] = {
+	gsSPVertex(clone_luigi_000_displaylist_mesh_layer_1_vtx_0 + 0, 30, 0),
+	gsSP2Triangles(0, 1, 2, 0, 3, 4, 5, 0),
+	gsSP2Triangles(6, 7, 8, 0, 9, 10, 11, 0),
+	gsSP2Triangles(12, 13, 14, 0, 13, 15, 16, 0),
+	gsSP2Triangles(17, 18, 19, 0, 20, 19, 21, 0),
+	gsSP2Triangles(22, 23, 24, 0, 24, 23, 25, 0),
+	gsSP2Triangles(26, 27, 28, 0, 29, 27, 26, 0),
+	gsSPVertex(clone_luigi_000_displaylist_mesh_layer_1_vtx_0 + 30, 32, 0),
+	gsSP2Triangles(0, 1, 2, 0, 3, 1, 0, 0),
+	gsSP2Triangles(4, 3, 0, 0, 5, 4, 0, 0),
+	gsSP2Triangles(5, 0, 6, 0, 5, 7, 4, 0),
+	gsSP2Triangles(5, 8, 7, 0, 9, 8, 5, 0),
+	gsSP2Triangles(8, 9, 7, 0, 9, 10, 7, 0),
+	gsSP2Triangles(11, 10, 9, 0, 12, 11, 9, 0),
+	gsSP2Triangles(12, 13, 11, 0, 14, 11, 13, 0),
+	gsSP2Triangles(13, 15, 14, 0, 14, 15, 16, 0),
+	gsSP2Triangles(16, 15, 17, 0, 17, 18, 16, 0),
+	gsSP2Triangles(18, 17, 19, 0, 18, 19, 20, 0),
+	gsSP2Triangles(20, 21, 18, 0, 22, 21, 20, 0),
+	gsSP2Triangles(23, 22, 20, 0, 24, 23, 20, 0),
+	gsSP2Triangles(23, 24, 22, 0, 3, 22, 24, 0),
+	gsSP2Triangles(1, 3, 24, 0, 25, 1, 24, 0),
+	gsSP2Triangles(26, 22, 3, 0, 22, 26, 27, 0),
+	gsSP2Triangles(26, 28, 27, 0, 3, 28, 26, 0),
+	gsSP2Triangles(28, 3, 29, 0, 4, 29, 3, 0),
+	gsSP2Triangles(29, 4, 30, 0, 31, 30, 4, 0),
+	gsSP1Triangle(4, 7, 31, 0),
+	gsSPVertex(clone_luigi_000_displaylist_mesh_layer_1_vtx_0 + 62, 32, 0),
+	gsSP2Triangles(0, 1, 2, 0, 2, 3, 0, 0),
+	gsSP2Triangles(4, 0, 3, 0, 3, 5, 4, 0),
+	gsSP2Triangles(6, 5, 3, 0, 7, 6, 3, 0),
+	gsSP2Triangles(6, 7, 8, 0, 6, 8, 9, 0),
+	gsSP2Triangles(8, 10, 9, 0, 10, 11, 9, 0),
+	gsSP2Triangles(12, 9, 11, 0, 12, 13, 9, 0),
+	gsSP2Triangles(14, 13, 12, 0, 12, 15, 14, 0),
+	gsSP2Triangles(16, 15, 12, 0, 14, 15, 4, 0),
+	gsSP2Triangles(15, 0, 4, 0, 17, 0, 15, 0),
+	gsSP2Triangles(17, 15, 18, 0, 17, 19, 0, 0),
+	gsSP2Triangles(19, 1, 0, 0, 20, 21, 22, 0),
+	gsSP2Triangles(21, 23, 22, 0, 24, 25, 26, 0),
+	gsSP2Triangles(26, 20, 24, 0, 4, 13, 14, 0),
+	gsSP2Triangles(4, 5, 13, 0, 13, 5, 6, 0),
+	gsSP2Triangles(6, 9, 13, 0, 27, 28, 29, 0),
+	gsSP2Triangles(27, 30, 28, 0, 31, 30, 27, 0),
+	gsSPVertex(clone_luigi_000_displaylist_mesh_layer_1_vtx_0 + 94, 22, 0),
+	gsSP2Triangles(0, 1, 2, 0, 3, 1, 0, 0),
+	gsSP2Triangles(3, 4, 1, 0, 5, 4, 3, 0),
+	gsSP2Triangles(5, 3, 6, 0, 7, 8, 9, 0),
+	gsSP2Triangles(10, 8, 7, 0, 10, 7, 11, 0),
+	gsSP2Triangles(12, 11, 7, 0, 9, 12, 7, 0),
+	gsSP2Triangles(12, 9, 13, 0, 13, 9, 14, 0),
+	gsSP2Triangles(8, 14, 9, 0, 15, 14, 8, 0),
+	gsSP2Triangles(15, 8, 16, 0, 16, 8, 10, 0),
+	gsSP2Triangles(11, 16, 10, 0, 16, 11, 17, 0),
+	gsSP2Triangles(17, 11, 12, 0, 18, 17, 12, 0),
+	gsSP2Triangles(18, 12, 13, 0, 19, 18, 13, 0),
+	gsSP2Triangles(13, 20, 19, 0, 14, 20, 13, 0),
+	gsSP2Triangles(15, 20, 14, 0, 20, 15, 21, 0),
+	gsSP2Triangles(21, 15, 16, 0, 21, 16, 17, 0),
+	gsSP2Triangles(21, 17, 19, 0, 17, 18, 19, 0),
+	gsSP1Triangle(19, 20, 21, 0),
+	gsSPEndDisplayList(),
 };
 
 Vtx clone_luigi_002_switch_option_head_000_displaylist_head_mesh_layer_1_vtx_0[182] = {
@@ -882,471 +995,7 @@ Vtx clone_luigi_002_switch_option_head_000_displaylist_head_mesh_layer_1_vtx_0[1
 	{{ {65, 104, 0}, 0, {-129, -260}, {52, 116, 255, 255} }},
 };
 
-Vtx clone_luigi_000_offset_003_mesh_layer_1_vtx_0[12] = {
-	{{ {14, -9, -28}, 0, {-129, -260}, {228, 224, 136, 255} }},
-	{{ {-2, -6, -18}, 0, {-129, -260}, {155, 238, 182, 255} }},
-	{{ {-2, 11, -11}, 0, {-129, -260}, {155, 65, 214, 255} }},
-	{{ {13, -28, -3}, 0, {-129, -260}, {225, 133, 254, 255} }},
-	{{ {-3, -17, -3}, 0, {-129, -260}, {150, 186, 255, 255} }},
-	{{ {14, -11, 21}, 0, {-129, -260}, {228, 215, 117, 255} }},
-	{{ {-2, -7, 12}, 0, {-129, -260}, {156, 233, 74, 255} }},
-	{{ {15, 18, 13}, 0, {-129, -260}, {233, 98, 77, 255} }},
-	{{ {75, 13, 10}, 0, {-129, -260}, {10, 99, 79, 255} }},
-	{{ {-2, 11, 7}, 0, {-129, -260}, {158, 64, 49, 255} }},
-	{{ {15, 19, -17}, 0, {-129, -260}, {232, 104, 187, 255} }},
-	{{ {74, -9, -23}, 0, {-129, -260}, {8, 222, 134, 255} }},
-};
-
-Vtx clone_luigi_000_offset_004_skinned_mesh_layer_1_vtx_0[7] = {
-	{{ {75, 13, 10}, 0, {-16, -16}, {10, 99, 79, 255} }},
-	{{ {13, -28, -3}, 0, {-16, -16}, {225, 133, 254, 255} }},
-	{{ {14, -9, -28}, 0, {-16, -16}, {228, 224, 136, 255} }},
-	{{ {74, -9, -23}, 0, {-16, -16}, {8, 222, 134, 255} }},
-	{{ {15, 18, 13}, 0, {-16, -16}, {233, 98, 77, 255} }},
-	{{ {15, 19, -17}, 0, {-16, -16}, {232, 104, 187, 255} }},
-	{{ {14, -11, 21}, 0, {-16, -16}, {228, 215, 117, 255} }},
-};
-
-Vtx clone_luigi_000_offset_004_mesh_layer_1_vtx_0[7] = {
-	{{ {1, -24, -3}, 0, {-129, -260}, {5, 129, 253, 255} }},
-	{{ {53, -23, -3}, 0, {-129, -260}, {59, 144, 251, 255} }},
-	{{ {54, -9, -20}, 0, {-129, -260}, {63, 225, 150, 255} }},
-	{{ {3, 14, -14}, 0, {-129, -260}, {10, 106, 187, 255} }},
-	{{ {55, 11, -13}, 0, {-129, -260}, {67, 89, 196, 255} }},
-	{{ {55, 9, 9}, 0, {-129, -260}, {67, 82, 70, 255} }},
-	{{ {2, -10, 17}, 0, {-129, -260}, {7, 213, 119, 255} }},
-};
-
-Vtx clone_luigi_000_offset_004_mesh_layer_1_vtx_1[9] = {
-	{{ {3, 14, -14}, 0, {-129, -260}, {10, 106, 187, 255} }},
-	{{ {55, 11, -13}, 0, {-129, -260}, {67, 89, 196, 255} }},
-	{{ {54, -9, -20}, 0, {-129, -260}, {63, 225, 150, 255} }},
-	{{ {61, -5, -2}, 0, {-129, -260}, {127, 249, 1, 255} }},
-	{{ {55, 9, 9}, 0, {-129, -260}, {67, 82, 70, 255} }},
-	{{ {54, -11, 15}, 0, {-129, -260}, {62, 216, 103, 255} }},
-	{{ {2, -10, 17}, 0, {-129, -260}, {7, 213, 119, 255} }},
-	{{ {1, -24, -3}, 0, {-129, -260}, {5, 129, 253, 255} }},
-	{{ {53, -23, -3}, 0, {-129, -260}, {59, 144, 251, 255} }},
-};
-
-Vtx clone_luigi_000_displaylist_003_mesh_layer_1_vtx_0[24] = {
-	{{ {-7, 17, -25}, 0, {-129, -260}, {44, 82, 170, 255} }},
-	{{ {-12, 30, 5}, 0, {-129, -260}, {24, 122, 26, 255} }},
-	{{ {-1, 28, 4}, 0, {-129, -260}, {227, 114, 48, 255} }},
-	{{ {6, -3, 21}, 0, {-129, -260}, {226, 243, 123, 255} }},
-	{{ {24, 4, 28}, 0, {-129, -260}, {239, 244, 125, 255} }},
-	{{ {25, -29, 3}, 0, {-129, -260}, {58, 154, 49, 255} }},
-	{{ {18, -39, 4}, 0, {-129, -260}, {105, 189, 23, 255} }},
-	{{ {11, -25, -26}, 0, {-129, -260}, {90, 238, 168, 255} }},
-	{{ {17, -17, -21}, 0, {-129, -260}, {22, 206, 141, 255} }},
-	{{ {4, 16, -21}, 0, {-129, -260}, {241, 63, 147, 255} }},
-	{{ {28, 44, -22}, 0, {-129, -260}, {235, 97, 177, 255} }},
-	{{ {39, 54, 5}, 0, {-129, -260}, {14, 122, 34, 255} }},
-	{{ {57, 19, 27}, 0, {-129, -260}, {64, 26, 107, 255} }},
-	{{ {71, -17, 3}, 0, {-129, -260}, {98, 186, 42, 255} }},
-	{{ {53, -21, -41}, 0, {-129, -260}, {29, 180, 159, 255} }},
-	{{ {41, 8, -40}, 0, {-129, -260}, {250, 29, 132, 255} }},
-	{{ {67, 0, -31}, 0, {-129, -260}, {102, 13, 181, 255} }},
-	{{ {66, 27, -11}, 0, {-129, -260}, {105, 66, 229, 255} }},
-	{{ {18, -39, 4}, 0, {-129, -260}, {161, 175, 21, 255} }},
-	{{ {-9, -9, -3}, 0, {-129, -260}, {140, 206, 11, 255} }},
-	{{ {11, -25, -26}, 0, {-129, -260}, {157, 185, 220, 255} }},
-	{{ {6, -3, 21}, 0, {-129, -260}, {160, 214, 72, 255} }},
-	{{ {-12, 30, 5}, 0, {-129, -260}, {132, 242, 22, 255} }},
-	{{ {-7, 17, -25}, 0, {-129, -260}, {136, 235, 220, 255} }},
-};
-
-Vtx clone_luigi_002_switch_option_left_hand_002_offset_left_hand_mesh_layer_1_vtx_0[18] = {
-	{{ {47, 25, 18}, 0, {-129, -260}, {9, 37, 121, 255} }},
-	{{ {75, 51, -15}, 0, {-129, -260}, {64, 104, 220, 255} }},
-	{{ {48, 58, -12}, 0, {-129, -260}, {255, 125, 234, 255} }},
-	{{ {88, 21, 0}, 0, {-129, -260}, {114, 247, 56, 255} }},
-	{{ {50, -13, 8}, 0, {-129, -260}, {54, 177, 83, 255} }},
-	{{ {5, 5, 15}, 0, {-129, -260}, {245, 22, 125, 255} }},
-	{{ {-5, 26, -5}, 0, {-129, -260}, {212, 116, 27, 255} }},
-	{{ {6, 21, -31}, 0, {-129, -260}, {223, 48, 143, 255} }},
-	{{ {55, -2, -17}, 0, {-129, -260}, {86, 238, 165, 255} }},
-	{{ {84, 19, -22}, 0, {-129, -260}, {81, 229, 162, 255} }},
-	{{ {56, -27, -29}, 0, {-129, -260}, {77, 180, 190, 255} }},
-	{{ {14, -22, 3}, 0, {-129, -260}, {48, 165, 75, 255} }},
-	{{ {-4, 0, 16}, 0, {-129, -260}, {184, 242, 104, 255} }},
-	{{ {-14, 25, -4}, 0, {-129, -260}, {159, 78, 24, 255} }},
-	{{ {-8, 12, -26}, 0, {-129, -260}, {158, 3, 175, 255} }},
-	{{ {11, -18, -22}, 0, {-129, -260}, {10, 177, 157, 255} }},
-	{{ {4, -24, -22}, 0, {-129, -260}, {224, 158, 182, 255} }},
-	{{ {8, -31, 5}, 0, {-129, -260}, {254, 140, 51, 255} }},
-};
-
-Vtx clone_luigi_000_offset_006_mesh_layer_1_vtx_0[14] = {
-	{{ {13, -29, 3}, 0, {-129, -260}, {227, 133, 247, 255} }},
-	{{ {-3, -19, 4}, 0, {-129, -260}, {155, 179, 251, 255} }},
-	{{ {14, -10, -20}, 0, {-129, -260}, {230, 226, 136, 255} }},
-	{{ {-3, -9, 20}, 0, {-129, -260}, {156, 231, 74, 255} }},
-	{{ {14, -13, 29}, 0, {-129, -260}, {230, 211, 116, 255} }},
-	{{ {73, -26, 4}, 0, {-129, -260}, {6, 129, 249, 255} }},
-	{{ {74, -10, -15}, 0, {-129, -260}, {7, 225, 133, 255} }},
-	{{ {74, 13, -6}, 0, {-129, -260}, {10, 107, 188, 255} }},
-	{{ {15, 18, -9}, 0, {-129, -260}, {232, 104, 188, 255} }},
-	{{ {-3, -7, -10}, 0, {-129, -260}, {154, 241, 181, 255} }},
-	{{ {-2, 10, -3}, 0, {-129, -260}, {157, 69, 216, 255} }},
-	{{ {-2, 9, 15}, 0, {-129, -260}, {158, 63, 50, 255} }},
-	{{ {15, 17, 21}, 0, {-129, -260}, {232, 98, 77, 255} }},
-	{{ {74, -12, 25}, 0, {-129, -260}, {7, 212, 119, 255} }},
-};
-
-Vtx clone_luigi_000_offset_007_skinned_mesh_layer_1_vtx_0[6] = {
-	{{ {74, -12, 25}, 0, {-16, -16}, {7, 212, 119, 255} }},
-	{{ {73, -26, 4}, 0, {-16, -16}, {6, 129, 249, 255} }},
-	{{ {15, 18, -9}, 0, {-16, -16}, {232, 104, 188, 255} }},
-	{{ {15, 17, 21}, 0, {-16, -16}, {232, 98, 77, 255} }},
-	{{ {74, 13, -6}, 0, {-16, -16}, {10, 107, 188, 255} }},
-	{{ {74, -10, -15}, 0, {-16, -16}, {7, 225, 133, 255} }},
-};
-
-Vtx clone_luigi_000_offset_007_mesh_layer_1_vtx_0[6] = {
-	{{ {54, -24, 4}, 0, {-129, -260}, {58, 143, 251, 255} }},
-	{{ {55, -11, 23}, 0, {-129, -260}, {61, 217, 104, 255} }},
-	{{ {2, 12, 18}, 0, {-129, -260}, {9, 99, 80, 255} }},
-	{{ {56, 9, 17}, 0, {-129, -260}, {64, 85, 69, 255} }},
-	{{ {56, 10, -5}, 0, {-129, -260}, {64, 91, 195, 255} }},
-	{{ {55, -10, -13}, 0, {-129, -260}, {61, 226, 149, 255} }},
-};
-
-Vtx clone_luigi_000_offset_007_mesh_layer_1_vtx_1[7] = {
-	{{ {55, -11, 23}, 0, {-129, -260}, {61, 217, 104, 255} }},
-	{{ {56, 9, 17}, 0, {-129, -260}, {64, 85, 69, 255} }},
-	{{ {2, 12, 18}, 0, {-129, -260}, {9, 99, 80, 255} }},
-	{{ {63, -5, 5}, 0, {-129, -260}, {127, 251, 255, 255} }},
-	{{ {54, -24, 4}, 0, {-129, -260}, {58, 143, 251, 255} }},
-	{{ {55, -10, -13}, 0, {-129, -260}, {61, 226, 149, 255} }},
-	{{ {56, 10, -5}, 0, {-129, -260}, {64, 91, 195, 255} }},
-};
-
-Vtx clone_luigi_000_displaylist_004_mesh_layer_1_vtx_0[24] = {
-	{{ {-9, 17, 27}, 0, {-129, -260}, {45, 80, 88, 255} }},
-	{{ {9, -25, 27}, 0, {-129, -260}, {87, 232, 89, 255} }},
-	{{ {15, -17, 23}, 0, {-129, -260}, {14, 199, 113, 255} }},
-	{{ {23, -28, -2}, 0, {-129, -260}, {58, 157, 202, 255} }},
-	{{ {16, -38, -3}, 0, {-129, -260}, {105, 188, 234, 255} }},
-	{{ {6, -1, -18}, 0, {-129, -260}, {228, 245, 133, 255} }},
-	{{ {23, 6, -25}, 0, {-129, -260}, {242, 250, 130, 255} }},
-	{{ {-1, 29, -2}, 0, {-129, -260}, {227, 115, 211, 255} }},
-	{{ {-13, 31, -3}, 0, {-129, -260}, {20, 123, 233, 255} }},
-	{{ {1, 15, 23}, 0, {-129, -260}, {244, 58, 112, 255} }},
-	{{ {50, -22, 44}, 0, {-129, -260}, {26, 176, 95, 255} }},
-	{{ {69, -17, 1}, 0, {-129, -260}, {98, 186, 215, 255} }},
-	{{ {57, 20, -22}, 0, {-129, -260}, {69, 28, 153, 255} }},
-	{{ {39, 54, 0}, 0, {-129, -260}, {18, 123, 228, 255} }},
-	{{ {26, 43, 26}, 0, {-129, -260}, {234, 95, 81, 255} }},
-	{{ {38, 7, 44}, 0, {-129, -260}, {248, 25, 124, 255} }},
-	{{ {64, -1, 35}, 0, {-129, -260}, {100, 9, 78, 255} }},
-	{{ {65, 26, 16}, 0, {-129, -260}, {105, 62, 34, 255} }},
-	{{ {-13, 31, -3}, 0, {-129, -260}, {133, 245, 227, 255} }},
-	{{ {-11, -8, 4}, 0, {-129, -260}, {140, 208, 239, 255} }},
-	{{ {-9, 17, 27}, 0, {-129, -260}, {135, 235, 33, 255} }},
-	{{ {6, -1, -18}, 0, {-129, -260}, {165, 218, 175, 255} }},
-	{{ {16, -38, -3}, 0, {-129, -260}, {161, 177, 229, 255} }},
-	{{ {9, -25, 27}, 0, {-129, -260}, {157, 184, 33, 255} }},
-};
-
-Vtx clone_luigi_002_switch_option_right_hand_holding_002_offset_right_hand_holding_mesh_layer_1_vtx_0[18] = {
-	{{ {54, 25, -19}, 0, {-129, -260}, {9, 37, 135, 255} }},
-	{{ {55, 58, 11}, 0, {-129, -260}, {255, 125, 22, 255} }},
-	{{ {82, 51, 14}, 0, {-129, -260}, {64, 104, 36, 255} }},
-	{{ {12, 5, -16}, 0, {-129, -260}, {245, 22, 131, 255} }},
-	{{ {57, -13, -9}, 0, {-129, -260}, {54, 177, 173, 255} }},
-	{{ {95, 21, -1}, 0, {-129, -260}, {114, 247, 200, 255} }},
-	{{ {91, 19, 21}, 0, {-129, -260}, {81, 229, 94, 255} }},
-	{{ {62, -2, 16}, 0, {-129, -260}, {86, 238, 91, 255} }},
-	{{ {13, 21, 30}, 0, {-129, -260}, {223, 48, 113, 255} }},
-	{{ {2, 26, 4}, 0, {-129, -260}, {212, 116, 229, 255} }},
-	{{ {3, 0, -17}, 0, {-129, -260}, {184, 242, 152, 255} }},
-	{{ {21, -22, -4}, 0, {-129, -260}, {48, 165, 181, 255} }},
-	{{ {63, -27, 28}, 0, {-129, -260}, {77, 180, 66, 255} }},
-	{{ {18, -18, 21}, 0, {-129, -260}, {10, 177, 99, 255} }},
-	{{ {-1, 12, 25}, 0, {-129, -260}, {158, 3, 81, 255} }},
-	{{ {-7, 25, 3}, 0, {-129, -260}, {159, 78, 232, 255} }},
-	{{ {11, -24, 21}, 0, {-129, -260}, {224, 158, 74, 255} }},
-	{{ {15, -31, -6}, 0, {-129, -260}, {254, 140, 205, 255} }},
-};
-
-Vtx clone_luigi_000_offset_009_mesh_layer_1_vtx_0[13] = {
-	{{ {-5, 22, 19}, 0, {-129, -260}, {171, 73, 59, 255} }},
-	{{ {-15, 0, 4}, 0, {-129, -260}, {130, 244, 253, 255} }},
-	{{ {-1, -7, 28}, 0, {-129, -260}, {180, 222, 96, 255} }},
-	{{ {-4, 22, -10}, 0, {-129, -260}, {173, 73, 193, 255} }},
-	{{ {14, 29, -14}, 0, {-129, -260}, {234, 99, 180, 255} }},
-	{{ {13, 29, 23}, 0, {-129, -260}, {233, 101, 74, 255} }},
-	{{ {18, -9, 35}, 0, {-129, -260}, {241, 218, 120, 255} }},
-	{{ {1, -27, 5}, 0, {-129, -260}, {186, 150, 0, 255} }},
-	{{ {0, -8, -19}, 0, {-129, -260}, {186, 219, 157, 255} }},
-	{{ {19, -9, -25}, 0, {-129, -260}, {244, 217, 136, 255} }},
-	{{ {21, -33, 5}, 0, {-129, -260}, {249, 129, 0, 255} }},
-	{{ {95, -22, 5}, 0, {-129, -260}, {1, 129, 255, 255} }},
-	{{ {95, -4, 30}, 0, {-129, -260}, {0, 220, 122, 255} }},
-};
-
-Vtx clone_luigi_000_offset_010_skinned_mesh_layer_1_vtx_0[6] = {
-	{{ {13, 29, 23}, 0, {-16, -16}, {233, 101, 74, 255} }},
-	{{ {18, -9, 35}, 0, {-16, -16}, {241, 218, 120, 255} }},
-	{{ {95, -4, 30}, 0, {-16, -16}, {0, 220, 122, 255} }},
-	{{ {14, 29, -14}, 0, {-16, -16}, {234, 99, 180, 255} }},
-	{{ {19, -9, -25}, 0, {-16, -16}, {244, 217, 136, 255} }},
-	{{ {95, -22, 5}, 0, {-16, -16}, {1, 129, 255, 255} }},
-};
-
-Vtx clone_luigi_000_offset_010_mesh_layer_1_vtx_0[6] = {
-	{{ {5, 27, 19}, 0, {-129, -260}, {1, 104, 73, 255} }},
-	{{ {58, -7, 33}, 0, {-129, -260}, {57, 218, 107, 255} }},
-	{{ {57, -28, 5}, 0, {-129, -260}, {53, 141, 0, 255} }},
-	{{ {59, -7, -22}, 0, {-129, -260}, {59, 218, 150, 255} }},
-	{{ {6, -4, -19}, 0, {-129, -260}, {1, 219, 135, 255} }},
-	{{ {6, 27, -10}, 0, {-129, -260}, {2, 103, 181, 255} }},
-};
-
-Vtx clone_luigi_000_offset_010_mesh_layer_1_vtx_1[9] = {
-	{{ {59, -7, -22}, 0, {-129, -260}, {59, 218, 150, 255} }},
-	{{ {6, -4, -19}, 0, {-129, -260}, {1, 219, 135, 255} }},
-	{{ {6, 27, -10}, 0, {-129, -260}, {2, 103, 181, 255} }},
-	{{ {62, 27, -11}, 0, {-129, -260}, {68, 86, 192, 255} }},
-	{{ {5, 27, 19}, 0, {-129, -260}, {1, 104, 73, 255} }},
-	{{ {61, 27, 22}, 0, {-129, -260}, {65, 86, 67, 255} }},
-	{{ {58, -7, 33}, 0, {-129, -260}, {57, 218, 107, 255} }},
-	{{ {69, 2, 5}, 0, {-129, -260}, {127, 246, 2, 255} }},
-	{{ {57, -28, 5}, 0, {-129, -260}, {53, 141, 0, 255} }},
-};
-
-Vtx clone_luigi_000_offset_011_mesh_layer_1_vtx_0[8] = {
-	{{ {37, -36, 7}, 0, {-129, -260}, {19, 131, 241, 255} }},
-	{{ {60, -3, -26}, 0, {-129, -260}, {82, 7, 159, 255} }},
-	{{ {66, 1, 35}, 0, {-129, -260}, {102, 24, 72, 255} }},
-	{{ {-35, 1, -4}, 0, {-129, -260}, {148, 209, 210, 255} }},
-	{{ {-23, 0, 29}, 0, {-129, -260}, {176, 206, 85, 255} }},
-	{{ {29, -20, 36}, 0, {-129, -260}, {252, 185, 105, 255} }},
-	{{ {-21, 33, 29}, 0, {-129, -260}, {205, 92, 71, 255} }},
-	{{ {-20, 32, -16}, 0, {-129, -260}, {211, 86, 174, 255} }},
-};
-
-Vtx clone_luigi_000_offset_012_mesh_layer_1_vtx_0[13] = {
-	{{ {94, 28, -19}, 0, {-129, -260}, {1, 105, 185, 255} }},
-	{{ {94, -2, -30}, 0, {-129, -260}, {0, 224, 133, 255} }},
-	{{ {18, -8, -35}, 0, {-129, -260}, {242, 220, 135, 255} }},
-	{{ {12, 30, -22}, 0, {-129, -260}, {234, 103, 185, 255} }},
-	{{ {-6, 23, -19}, 0, {-129, -260}, {170, 73, 197, 255} }},
-	{{ {-1, -7, -28}, 0, {-129, -260}, {182, 220, 160, 255} }},
-	{{ {1, -27, -5}, 0, {-129, -260}, {187, 150, 254, 255} }},
-	{{ {22, -33, -5}, 0, {-129, -260}, {250, 129, 254, 255} }},
-	{{ {19, -10, 25}, 0, {-129, -260}, {245, 213, 119, 255} }},
-	{{ {0, -8, 19}, 0, {-129, -260}, {185, 218, 98, 255} }},
-	{{ {-5, 22, 11}, 0, {-129, -260}, {172, 69, 65, 255} }},
-	{{ {13, 29, 15}, 0, {-129, -260}, {234, 97, 79, 255} }},
-	{{ {-15, 0, -4}, 0, {-129, -260}, {130, 241, 3, 255} }},
-};
-
-Vtx clone_luigi_000_offset_013_skinned_mesh_layer_1_vtx_0[8] = {
-	{{ {13, 29, 15}, 0, {-16, -16}, {234, 97, 79, 255} }},
-	{{ {19, -10, 25}, 0, {-16, -16}, {245, 213, 119, 255} }},
-	{{ {12, 30, -22}, 0, {-16, -16}, {234, 103, 185, 255} }},
-	{{ {94, 28, -19}, 0, {-16, -16}, {1, 105, 185, 255} }},
-	{{ {96, -3, 18}, 0, {-16, -16}, {2, 216, 121, 255} }},
-	{{ {22, -33, -5}, 0, {-16, -16}, {250, 129, 254, 255} }},
-	{{ {18, -8, -35}, 0, {-16, -16}, {242, 220, 135, 255} }},
-	{{ {94, -2, -30}, 0, {-16, -16}, {0, 224, 133, 255} }},
-};
-
-Vtx clone_luigi_000_offset_013_mesh_layer_1_vtx_0[6] = {
-	{{ {6, 28, 10}, 0, {-129, -260}, {3, 101, 77, 255} }},
-	{{ {62, 27, 11}, 0, {-129, -260}, {65, 85, 68, 255} }},
-	{{ {62, 28, -22}, 0, {-129, -260}, {65, 88, 192, 255} }},
-	{{ {58, -5, -34}, 0, {-129, -260}, {54, 221, 146, 255} }},
-	{{ {6, -22, -6}, 0, {-129, -260}, {2, 129, 253, 255} }},
-	{{ {59, -7, 21}, 0, {-129, -260}, {57, 215, 106, 255} }},
-};
-
-Vtx clone_luigi_000_offset_013_mesh_layer_1_vtx_1[8] = {
-	{{ {59, -7, 21}, 0, {-129, -260}, {57, 215, 106, 255} }},
-	{{ {62, 27, 11}, 0, {-129, -260}, {65, 85, 68, 255} }},
-	{{ {6, 28, 10}, 0, {-129, -260}, {3, 101, 77, 255} }},
-	{{ {71, 2, -6}, 0, {-129, -260}, {126, 243, 255, 255} }},
-	{{ {56, -27, -7}, 0, {-129, -260}, {48, 139, 251, 255} }},
-	{{ {6, -22, -6}, 0, {-129, -260}, {2, 129, 253, 255} }},
-	{{ {58, -5, -34}, 0, {-129, -260}, {54, 221, 146, 255} }},
-	{{ {62, 28, -22}, 0, {-129, -260}, {65, 88, 192, 255} }},
-};
-
-Vtx clone_luigi_000_displaylist_005_mesh_layer_1_vtx_0[8] = {
-	{{ {67, 2, -35}, 0, {-129, -260}, {104, 23, 187, 255} }},
-	{{ {35, -35, -7}, 0, {-129, -260}, {18, 131, 18, 255} }},
-	{{ {29, -20, -37}, 0, {-129, -260}, {1, 184, 152, 255} }},
-	{{ {60, 0, 26}, 0, {-129, -260}, {81, 11, 97, 255} }},
-	{{ {-21, 32, 14}, 0, {-129, -260}, {208, 87, 79, 255} }},
-	{{ {-22, 32, -31}, 0, {-129, -260}, {203, 90, 184, 255} }},
-	{{ {-23, -1, -31}, 0, {-129, -260}, {177, 204, 171, 255} }},
-	{{ {-35, 0, 4}, 0, {-129, -260}, {149, 207, 49, 255} }},
-};
-
-
-Gfx clone_luigi_000_offset_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, ENVIRONMENT),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
-	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
-	gsSPTexture(8128, 4032, 0, 0, 1),
-	gsDPSetPrimColor(0, 0, 67, 32, 178, 255),
-	gsDPSetEnvColor(22, 12, 22, 255),
-	gsDPSetTextureImage(G_IM_FMT_I, G_IM_SIZ_16b, 1, clone_luigi_galaxy_i4),
-	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
-	gsDPLoadBlock(7, 0, 0, 2047, 256),
-	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_4b, 8, 0, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 6, 0, G_TX_WRAP | G_TX_NOMIRROR, 7, 0),
-	gsDPSetTileSize(0, 0, 0, 508, 252),
-	gsSPVertex(clone_luigi_000_offset_mesh_layer_1_vtx_0 + 0, 13, 0),
-	gsSP2Triangles(0, 1, 2, 0, 3, 1, 0, 0),
-	gsSP2Triangles(4, 3, 0, 0, 0, 5, 4, 0),
-	gsSP2Triangles(6, 5, 0, 0, 7, 6, 0, 0),
-	gsSP2Triangles(7, 8, 6, 0, 6, 8, 9, 0),
-	gsSP2Triangles(5, 6, 9, 0, 5, 9, 4, 0),
-	gsSP2Triangles(9, 10, 4, 0, 10, 11, 4, 0),
-	gsSP2Triangles(10, 12, 11, 0, 11, 12, 1, 0),
-	gsSP2Triangles(11, 1, 3, 0, 4, 11, 3, 0),
-	gsDPPipeSync(),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
-	gsSPEndDisplayList(),
-};
-
-Gfx clone_luigi_000_offset_001_skinned_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
-	gsSPVertex(clone_luigi_000_offset_001_skinned_mesh_layer_1_vtx_0 + 0, 8, 0),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
-	gsSPEndDisplayList(),
-};
-
-Gfx clone_luigi_000_offset_001_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
-	gsSPVertex(clone_luigi_000_offset_001_mesh_layer_1_vtx_0 + 0, 10, 8),
-	gsSP2Triangles(0, 1, 8, 0, 8, 1, 3, 0),
-	gsSP2Triangles(3, 9, 8, 0, 4, 9, 3, 0),
-	gsSP2Triangles(9, 4, 5, 0, 10, 9, 5, 0),
-	gsSP2Triangles(5, 11, 10, 0, 5, 12, 11, 0),
-	gsSP2Triangles(6, 12, 5, 0, 12, 6, 13, 0),
-	gsSP2Triangles(6, 7, 13, 0, 7, 14, 13, 0),
-	gsSP2Triangles(14, 7, 15, 0, 7, 2, 15, 0),
-	gsSP2Triangles(2, 16, 15, 0, 17, 16, 2, 0),
-	gsSP2Triangles(8, 17, 2, 0, 2, 0, 8, 0),
-	gsSPVertex(clone_luigi_000_offset_001_mesh_layer_1_vtx_1 + 0, 20, 0),
-	gsSP2Triangles(0, 1, 2, 0, 3, 4, 5, 0),
-	gsSP2Triangles(3, 6, 4, 0, 6, 3, 7, 0),
-	gsSP2Triangles(8, 7, 3, 0, 9, 8, 3, 0),
-	gsSP2Triangles(5, 9, 3, 0, 10, 8, 9, 0),
-	gsSP2Triangles(8, 10, 11, 0, 11, 10, 12, 0),
-	gsSP2Triangles(10, 13, 12, 0, 12, 13, 14, 0),
-	gsSP2Triangles(12, 14, 15, 0, 12, 15, 16, 0),
-	gsSP2Triangles(12, 16, 17, 0, 16, 18, 17, 0),
-	gsSP2Triangles(18, 19, 17, 0, 17, 19, 7, 0),
-	gsSP2Triangles(19, 6, 7, 0, 7, 8, 17, 0),
-	gsSP2Triangles(11, 17, 8, 0, 12, 17, 11, 0),
-	gsDPPipeSync(),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
-	gsSPEndDisplayList(),
-};
-
-Gfx clone_luigi_000_displaylist_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, ENVIRONMENT),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
-	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
-	gsSPTexture(8128, 4032, 0, 0, 1),
-	gsDPSetPrimColor(0, 0, 67, 32, 178, 255),
-	gsDPSetEnvColor(22, 12, 22, 255),
-	gsDPSetTextureImage(G_IM_FMT_I, G_IM_SIZ_16b, 1, clone_luigi_galaxy_i4),
-	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
-	gsDPLoadBlock(7, 0, 0, 2047, 256),
-	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_4b, 8, 0, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 6, 0, G_TX_WRAP | G_TX_NOMIRROR, 7, 0),
-	gsDPSetTileSize(0, 0, 0, 508, 252),
-	gsSPVertex(clone_luigi_000_displaylist_mesh_layer_1_vtx_0 + 0, 30, 0),
-	gsSP2Triangles(0, 1, 2, 0, 3, 4, 5, 0),
-	gsSP2Triangles(6, 7, 8, 0, 9, 10, 11, 0),
-	gsSP2Triangles(12, 13, 14, 0, 13, 15, 16, 0),
-	gsSP2Triangles(17, 18, 19, 0, 20, 19, 21, 0),
-	gsSP2Triangles(22, 23, 24, 0, 24, 23, 25, 0),
-	gsSP2Triangles(26, 27, 28, 0, 29, 27, 26, 0),
-	gsSPVertex(clone_luigi_000_displaylist_mesh_layer_1_vtx_0 + 30, 32, 0),
-	gsSP2Triangles(0, 1, 2, 0, 3, 1, 0, 0),
-	gsSP2Triangles(4, 3, 0, 0, 5, 4, 0, 0),
-	gsSP2Triangles(5, 0, 6, 0, 5, 7, 4, 0),
-	gsSP2Triangles(5, 8, 7, 0, 9, 8, 5, 0),
-	gsSP2Triangles(8, 9, 7, 0, 9, 10, 7, 0),
-	gsSP2Triangles(11, 10, 9, 0, 12, 11, 9, 0),
-	gsSP2Triangles(12, 13, 11, 0, 14, 11, 13, 0),
-	gsSP2Triangles(13, 15, 14, 0, 14, 15, 16, 0),
-	gsSP2Triangles(16, 15, 17, 0, 17, 18, 16, 0),
-	gsSP2Triangles(18, 17, 19, 0, 18, 19, 20, 0),
-	gsSP2Triangles(20, 21, 18, 0, 22, 21, 20, 0),
-	gsSP2Triangles(23, 22, 20, 0, 24, 23, 20, 0),
-	gsSP2Triangles(23, 24, 22, 0, 3, 22, 24, 0),
-	gsSP2Triangles(1, 3, 24, 0, 25, 1, 24, 0),
-	gsSP2Triangles(26, 22, 3, 0, 22, 26, 27, 0),
-	gsSP2Triangles(26, 28, 27, 0, 3, 28, 26, 0),
-	gsSP2Triangles(28, 3, 29, 0, 4, 29, 3, 0),
-	gsSP2Triangles(29, 4, 30, 0, 31, 30, 4, 0),
-	gsSP1Triangle(4, 7, 31, 0),
-	gsSPVertex(clone_luigi_000_displaylist_mesh_layer_1_vtx_0 + 62, 32, 0),
-	gsSP2Triangles(0, 1, 2, 0, 2, 3, 0, 0),
-	gsSP2Triangles(4, 0, 3, 0, 3, 5, 4, 0),
-	gsSP2Triangles(6, 5, 3, 0, 7, 6, 3, 0),
-	gsSP2Triangles(6, 7, 8, 0, 6, 8, 9, 0),
-	gsSP2Triangles(8, 10, 9, 0, 10, 11, 9, 0),
-	gsSP2Triangles(12, 9, 11, 0, 12, 13, 9, 0),
-	gsSP2Triangles(14, 13, 12, 0, 12, 15, 14, 0),
-	gsSP2Triangles(16, 15, 12, 0, 14, 15, 4, 0),
-	gsSP2Triangles(15, 0, 4, 0, 17, 0, 15, 0),
-	gsSP2Triangles(17, 15, 18, 0, 17, 19, 0, 0),
-	gsSP2Triangles(19, 1, 0, 0, 20, 21, 22, 0),
-	gsSP2Triangles(21, 23, 22, 0, 24, 25, 26, 0),
-	gsSP2Triangles(26, 20, 24, 0, 4, 13, 14, 0),
-	gsSP2Triangles(4, 5, 13, 0, 13, 5, 6, 0),
-	gsSP2Triangles(6, 9, 13, 0, 27, 28, 29, 0),
-	gsSP2Triangles(27, 30, 28, 0, 31, 30, 27, 0),
-	gsSPVertex(clone_luigi_000_displaylist_mesh_layer_1_vtx_0 + 94, 22, 0),
-	gsSP2Triangles(0, 1, 2, 0, 3, 1, 0, 0),
-	gsSP2Triangles(3, 4, 1, 0, 5, 4, 3, 0),
-	gsSP2Triangles(5, 3, 6, 0, 7, 8, 9, 0),
-	gsSP2Triangles(10, 8, 7, 0, 10, 7, 11, 0),
-	gsSP2Triangles(12, 11, 7, 0, 9, 12, 7, 0),
-	gsSP2Triangles(12, 9, 13, 0, 13, 9, 14, 0),
-	gsSP2Triangles(8, 14, 9, 0, 15, 14, 8, 0),
-	gsSP2Triangles(15, 8, 16, 0, 16, 8, 10, 0),
-	gsSP2Triangles(11, 16, 10, 0, 16, 11, 17, 0),
-	gsSP2Triangles(17, 11, 12, 0, 18, 17, 12, 0),
-	gsSP2Triangles(18, 12, 13, 0, 19, 18, 13, 0),
-	gsSP2Triangles(13, 20, 19, 0, 14, 20, 13, 0),
-	gsSP2Triangles(15, 20, 14, 0, 20, 15, 21, 0),
-	gsSP2Triangles(21, 15, 16, 0, 21, 16, 17, 0),
-	gsSP2Triangles(21, 17, 19, 0, 17, 18, 19, 0),
-	gsSP1Triangle(19, 20, 21, 0),
-	gsDPPipeSync(),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
-	gsSPEndDisplayList(),
-};
-
-Gfx clone_luigi_002_switch_option_head_000_displaylist_head_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, ENVIRONMENT),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
-	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
-	gsSPTexture(8128, 4032, 0, 0, 1),
-	gsDPSetPrimColor(0, 0, 67, 32, 178, 255),
-	gsDPSetEnvColor(22, 12, 22, 255),
-	gsDPSetTextureImage(G_IM_FMT_I, G_IM_SIZ_16b, 1, clone_luigi_galaxy_i4),
-	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
-	gsDPLoadBlock(7, 0, 0, 2047, 256),
-	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_4b, 8, 0, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 6, 0, G_TX_WRAP | G_TX_NOMIRROR, 7, 0),
-	gsDPSetTileSize(0, 0, 0, 508, 252),
+Gfx clone_luigi_002_switch_option_head_000_displaylist_head_mesh_layer_1_tri_0[] = {
 	gsSPVertex(clone_luigi_002_switch_option_head_000_displaylist_head_mesh_layer_1_vtx_0 + 0, 32, 0),
 	gsSP2Triangles(0, 1, 2, 0, 2, 1, 3, 0),
 	gsSP2Triangles(1, 4, 3, 0, 5, 4, 1, 0),
@@ -1440,15 +1089,25 @@ Gfx clone_luigi_002_switch_option_head_000_displaylist_head_mesh_layer_1[] = {
 	gsSP2Triangles(20, 8, 21, 0, 21, 8, 9, 0),
 	gsSP2Triangles(21, 9, 19, 0, 10, 19, 9, 0),
 	gsSP2Triangles(13, 19, 10, 0, 19, 20, 21, 0),
-	gsDPPipeSync(),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPEndDisplayList(),
 };
 
-Gfx clone_luigi_000_offset_003_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+Vtx clone_luigi_000_offset_003_mesh_layer_1_vtx_0[12] = {
+	{{ {14, -9, -28}, 0, {-129, -260}, {228, 224, 136, 255} }},
+	{{ {-2, -6, -18}, 0, {-129, -260}, {155, 238, 182, 255} }},
+	{{ {-2, 11, -11}, 0, {-129, -260}, {155, 65, 214, 255} }},
+	{{ {13, -28, -3}, 0, {-129, -260}, {225, 133, 254, 255} }},
+	{{ {-3, -17, -3}, 0, {-129, -260}, {150, 186, 255, 255} }},
+	{{ {14, -11, 21}, 0, {-129, -260}, {228, 215, 117, 255} }},
+	{{ {-2, -7, 12}, 0, {-129, -260}, {156, 233, 74, 255} }},
+	{{ {15, 18, 13}, 0, {-129, -260}, {233, 98, 77, 255} }},
+	{{ {75, 13, 10}, 0, {-129, -260}, {10, 99, 79, 255} }},
+	{{ {-2, 11, 7}, 0, {-129, -260}, {158, 64, 49, 255} }},
+	{{ {15, 19, -17}, 0, {-129, -260}, {232, 104, 187, 255} }},
+	{{ {74, -9, -23}, 0, {-129, -260}, {8, 222, 134, 255} }},
+};
+
+Gfx clone_luigi_000_offset_003_mesh_layer_1_tri_0[] = {
 	gsSPVertex(clone_luigi_000_offset_003_mesh_layer_1_vtx_0 + 0, 12, 0),
 	gsSP2Triangles(0, 1, 2, 0, 3, 1, 0, 0),
 	gsSP2Triangles(3, 4, 1, 0, 5, 4, 3, 0),
@@ -1458,24 +1117,35 @@ Gfx clone_luigi_000_offset_003_mesh_layer_1[] = {
 	gsSP2Triangles(0, 2, 10, 0, 0, 10, 11, 0),
 	gsSP2Triangles(6, 9, 2, 0, 2, 1, 6, 0),
 	gsSP1Triangle(1, 4, 6, 0),
-	gsDPPipeSync(),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPEndDisplayList(),
 };
 
-Gfx clone_luigi_000_offset_004_skinned_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+Vtx clone_luigi_000_offset_004_skinned_mesh_layer_1_vtx_0[7] = {
+	{{ {75, 13, 10}, 0, {-16, -16}, {10, 99, 79, 255} }},
+	{{ {13, -28, -3}, 0, {-16, -16}, {225, 133, 254, 255} }},
+	{{ {14, -9, -28}, 0, {-16, -16}, {228, 224, 136, 255} }},
+	{{ {74, -9, -23}, 0, {-16, -16}, {8, 222, 134, 255} }},
+	{{ {15, 18, 13}, 0, {-16, -16}, {233, 98, 77, 255} }},
+	{{ {15, 19, -17}, 0, {-16, -16}, {232, 104, 187, 255} }},
+	{{ {14, -11, 21}, 0, {-16, -16}, {228, 215, 117, 255} }},
+};
+
+Gfx clone_luigi_000_offset_004_skinned_mesh_layer_1_tri_0[] = {
 	gsSPVertex(clone_luigi_000_offset_004_skinned_mesh_layer_1_vtx_0 + 0, 7, 0),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPEndDisplayList(),
 };
 
-Gfx clone_luigi_000_offset_004_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+Vtx clone_luigi_000_offset_004_mesh_layer_1_vtx_0[7] = {
+	{{ {1, -24, -3}, 0, {-129, -260}, {5, 129, 253, 255} }},
+	{{ {53, -23, -3}, 0, {-129, -260}, {59, 144, 251, 255} }},
+	{{ {54, -9, -20}, 0, {-129, -260}, {63, 225, 150, 255} }},
+	{{ {3, 14, -14}, 0, {-129, -260}, {10, 106, 187, 255} }},
+	{{ {55, 11, -13}, 0, {-129, -260}, {67, 89, 196, 255} }},
+	{{ {55, 9, 9}, 0, {-129, -260}, {67, 82, 70, 255} }},
+	{{ {2, -10, 17}, 0, {-129, -260}, {7, 213, 119, 255} }},
+};
+
+Gfx clone_luigi_000_offset_004_mesh_layer_1_tri_0[] = {
 	gsSPVertex(clone_luigi_000_offset_004_mesh_layer_1_vtx_0 + 0, 7, 7),
 	gsSP2Triangles(2, 3, 7, 0, 7, 3, 8, 0),
 	gsSP2Triangles(3, 9, 8, 0, 3, 10, 9, 0),
@@ -1484,31 +1154,59 @@ Gfx clone_luigi_000_offset_004_mesh_layer_1[] = {
 	gsSP2Triangles(0, 12, 11, 0, 0, 13, 12, 0),
 	gsSP2Triangles(6, 13, 0, 0, 6, 1, 13, 0),
 	gsSP2Triangles(1, 7, 13, 0, 1, 2, 7, 0),
+	gsSPEndDisplayList(),
+};
+
+Vtx clone_luigi_000_offset_004_mesh_layer_1_vtx_1[9] = {
+	{{ {3, 14, -14}, 0, {-129, -260}, {10, 106, 187, 255} }},
+	{{ {55, 11, -13}, 0, {-129, -260}, {67, 89, 196, 255} }},
+	{{ {54, -9, -20}, 0, {-129, -260}, {63, 225, 150, 255} }},
+	{{ {61, -5, -2}, 0, {-129, -260}, {127, 249, 1, 255} }},
+	{{ {55, 9, 9}, 0, {-129, -260}, {67, 82, 70, 255} }},
+	{{ {54, -11, 15}, 0, {-129, -260}, {62, 216, 103, 255} }},
+	{{ {2, -10, 17}, 0, {-129, -260}, {7, 213, 119, 255} }},
+	{{ {1, -24, -3}, 0, {-129, -260}, {5, 129, 253, 255} }},
+	{{ {53, -23, -3}, 0, {-129, -260}, {59, 144, 251, 255} }},
+};
+
+Gfx clone_luigi_000_offset_004_mesh_layer_1_tri_1[] = {
 	gsSPVertex(clone_luigi_000_offset_004_mesh_layer_1_vtx_1 + 0, 9, 0),
 	gsSP2Triangles(0, 1, 2, 0, 1, 3, 2, 0),
 	gsSP2Triangles(4, 3, 1, 0, 5, 3, 4, 0),
 	gsSP2Triangles(6, 5, 4, 0, 6, 7, 5, 0),
 	gsSP2Triangles(7, 8, 5, 0, 8, 3, 5, 0),
 	gsSP1Triangle(2, 3, 8, 0),
-	gsDPPipeSync(),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPEndDisplayList(),
 };
 
-Gfx clone_luigi_000_displaylist_003_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, ENVIRONMENT),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
-	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
-	gsSPTexture(8128, 4032, 0, 0, 1),
-	gsDPSetPrimColor(0, 0, 67, 32, 178, 255),
-	gsDPSetEnvColor(22, 12, 22, 255),
-	gsDPSetTextureImage(G_IM_FMT_I, G_IM_SIZ_16b, 1, clone_luigi_galaxy_i4),
-	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
-	gsDPLoadBlock(7, 0, 0, 2047, 256),
-	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_4b, 8, 0, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 6, 0, G_TX_WRAP | G_TX_NOMIRROR, 7, 0),
-	gsDPSetTileSize(0, 0, 0, 508, 252),
+Vtx clone_luigi_000_displaylist_003_mesh_layer_1_vtx_0[24] = {
+	{{ {-7, 17, -25}, 0, {-129, -260}, {44, 82, 170, 255} }},
+	{{ {-12, 30, 5}, 0, {-129, -260}, {24, 122, 26, 255} }},
+	{{ {-1, 28, 4}, 0, {-129, -260}, {227, 114, 48, 255} }},
+	{{ {6, -3, 21}, 0, {-129, -260}, {226, 243, 123, 255} }},
+	{{ {24, 4, 28}, 0, {-129, -260}, {239, 244, 125, 255} }},
+	{{ {25, -29, 3}, 0, {-129, -260}, {58, 154, 49, 255} }},
+	{{ {18, -39, 4}, 0, {-129, -260}, {105, 189, 23, 255} }},
+	{{ {11, -25, -26}, 0, {-129, -260}, {90, 238, 168, 255} }},
+	{{ {17, -17, -21}, 0, {-129, -260}, {22, 206, 141, 255} }},
+	{{ {4, 16, -21}, 0, {-129, -260}, {241, 63, 147, 255} }},
+	{{ {28, 44, -22}, 0, {-129, -260}, {235, 97, 177, 255} }},
+	{{ {39, 54, 5}, 0, {-129, -260}, {14, 122, 34, 255} }},
+	{{ {57, 19, 27}, 0, {-129, -260}, {64, 26, 107, 255} }},
+	{{ {71, -17, 3}, 0, {-129, -260}, {98, 186, 42, 255} }},
+	{{ {53, -21, -41}, 0, {-129, -260}, {29, 180, 159, 255} }},
+	{{ {41, 8, -40}, 0, {-129, -260}, {250, 29, 132, 255} }},
+	{{ {67, 0, -31}, 0, {-129, -260}, {102, 13, 181, 255} }},
+	{{ {66, 27, -11}, 0, {-129, -260}, {105, 66, 229, 255} }},
+	{{ {18, -39, 4}, 0, {-129, -260}, {161, 175, 21, 255} }},
+	{{ {-9, -9, -3}, 0, {-129, -260}, {140, 206, 11, 255} }},
+	{{ {11, -25, -26}, 0, {-129, -260}, {157, 185, 220, 255} }},
+	{{ {6, -3, 21}, 0, {-129, -260}, {160, 214, 72, 255} }},
+	{{ {-12, 30, 5}, 0, {-129, -260}, {132, 242, 22, 255} }},
+	{{ {-7, 17, -25}, 0, {-129, -260}, {136, 235, 220, 255} }},
+};
+
+Gfx clone_luigi_000_displaylist_003_mesh_layer_1_tri_0[] = {
 	gsSPVertex(clone_luigi_000_displaylist_003_mesh_layer_1_vtx_0 + 0, 24, 0),
 	gsSP2Triangles(0, 1, 2, 0, 2, 1, 3, 0),
 	gsSP2Triangles(2, 3, 4, 0, 4, 3, 5, 0),
@@ -1527,25 +1225,31 @@ Gfx clone_luigi_000_displaylist_003_mesh_layer_1[] = {
 	gsSP2Triangles(15, 16, 14, 0, 18, 19, 20, 0),
 	gsSP2Triangles(21, 19, 18, 0, 22, 19, 21, 0),
 	gsSP2Triangles(23, 19, 22, 0, 20, 19, 23, 0),
-	gsDPPipeSync(),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPEndDisplayList(),
 };
 
-Gfx clone_luigi_002_switch_option_left_hand_002_offset_left_hand_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, ENVIRONMENT),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
-	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
-	gsSPTexture(8128, 4032, 0, 0, 1),
-	gsDPSetPrimColor(0, 0, 67, 32, 178, 255),
-	gsDPSetEnvColor(22, 12, 22, 255),
-	gsDPSetTextureImage(G_IM_FMT_I, G_IM_SIZ_16b, 1, clone_luigi_galaxy_i4),
-	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
-	gsDPLoadBlock(7, 0, 0, 2047, 256),
-	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_4b, 8, 0, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 6, 0, G_TX_WRAP | G_TX_NOMIRROR, 7, 0),
-	gsDPSetTileSize(0, 0, 0, 508, 252),
+Vtx clone_luigi_002_switch_option_left_hand_002_offset_left_hand_mesh_layer_1_vtx_0[18] = {
+	{{ {47, 25, 18}, 0, {-129, -260}, {9, 37, 121, 255} }},
+	{{ {75, 51, -15}, 0, {-129, -260}, {64, 104, 220, 255} }},
+	{{ {48, 58, -12}, 0, {-129, -260}, {255, 125, 234, 255} }},
+	{{ {88, 21, 0}, 0, {-129, -260}, {114, 247, 56, 255} }},
+	{{ {50, -13, 8}, 0, {-129, -260}, {54, 177, 83, 255} }},
+	{{ {5, 5, 15}, 0, {-129, -260}, {245, 22, 125, 255} }},
+	{{ {-5, 26, -5}, 0, {-129, -260}, {212, 116, 27, 255} }},
+	{{ {6, 21, -31}, 0, {-129, -260}, {223, 48, 143, 255} }},
+	{{ {55, -2, -17}, 0, {-129, -260}, {86, 238, 165, 255} }},
+	{{ {84, 19, -22}, 0, {-129, -260}, {81, 229, 162, 255} }},
+	{{ {56, -27, -29}, 0, {-129, -260}, {77, 180, 190, 255} }},
+	{{ {14, -22, 3}, 0, {-129, -260}, {48, 165, 75, 255} }},
+	{{ {-4, 0, 16}, 0, {-129, -260}, {184, 242, 104, 255} }},
+	{{ {-14, 25, -4}, 0, {-129, -260}, {159, 78, 24, 255} }},
+	{{ {-8, 12, -26}, 0, {-129, -260}, {158, 3, 175, 255} }},
+	{{ {11, -18, -22}, 0, {-129, -260}, {10, 177, 157, 255} }},
+	{{ {4, -24, -22}, 0, {-129, -260}, {224, 158, 182, 255} }},
+	{{ {8, -31, 5}, 0, {-129, -260}, {254, 140, 51, 255} }},
+};
+
+Gfx clone_luigi_002_switch_option_left_hand_002_offset_left_hand_mesh_layer_1_tri_0[] = {
 	gsSPVertex(clone_luigi_002_switch_option_left_hand_002_offset_left_hand_mesh_layer_1_vtx_0 + 0, 18, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 3, 1, 0),
 	gsSP2Triangles(0, 4, 3, 0, 5, 4, 0, 0),
@@ -1563,15 +1267,27 @@ Gfx clone_luigi_002_switch_option_left_hand_002_offset_left_hand_mesh_layer_1[] 
 	gsSP2Triangles(16, 11, 17, 0, 11, 12, 17, 0),
 	gsSP2Triangles(12, 16, 17, 0, 16, 12, 14, 0),
 	gsSP2Triangles(14, 12, 13, 0, 14, 15, 16, 0),
-	gsDPPipeSync(),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPEndDisplayList(),
 };
 
-Gfx clone_luigi_000_offset_006_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+Vtx clone_luigi_000_offset_006_mesh_layer_1_vtx_0[14] = {
+	{{ {13, -29, 3}, 0, {-129, -260}, {227, 133, 247, 255} }},
+	{{ {-3, -19, 4}, 0, {-129, -260}, {155, 179, 251, 255} }},
+	{{ {14, -10, -20}, 0, {-129, -260}, {230, 226, 136, 255} }},
+	{{ {-3, -9, 20}, 0, {-129, -260}, {156, 231, 74, 255} }},
+	{{ {14, -13, 29}, 0, {-129, -260}, {230, 211, 116, 255} }},
+	{{ {73, -26, 4}, 0, {-129, -260}, {6, 129, 249, 255} }},
+	{{ {74, -10, -15}, 0, {-129, -260}, {7, 225, 133, 255} }},
+	{{ {74, 13, -6}, 0, {-129, -260}, {10, 107, 188, 255} }},
+	{{ {15, 18, -9}, 0, {-129, -260}, {232, 104, 188, 255} }},
+	{{ {-3, -7, -10}, 0, {-129, -260}, {154, 241, 181, 255} }},
+	{{ {-2, 10, -3}, 0, {-129, -260}, {157, 69, 216, 255} }},
+	{{ {-2, 9, 15}, 0, {-129, -260}, {158, 63, 50, 255} }},
+	{{ {15, 17, 21}, 0, {-129, -260}, {232, 98, 77, 255} }},
+	{{ {74, -12, 25}, 0, {-129, -260}, {7, 212, 119, 255} }},
+};
+
+Gfx clone_luigi_000_offset_006_mesh_layer_1_tri_0[] = {
 	gsSPVertex(clone_luigi_000_offset_006_mesh_layer_1_vtx_0 + 0, 14, 0),
 	gsSP2Triangles(0, 1, 2, 0, 3, 1, 0, 0),
 	gsSP2Triangles(4, 3, 0, 0, 5, 4, 0, 0),
@@ -1583,24 +1299,33 @@ Gfx clone_luigi_000_offset_006_mesh_layer_1[] = {
 	gsSP2Triangles(12, 11, 4, 0, 13, 12, 4, 0),
 	gsSP2Triangles(5, 13, 4, 0, 10, 11, 12, 0),
 	gsSP2Triangles(8, 10, 12, 0, 9, 10, 8, 0),
-	gsDPPipeSync(),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPEndDisplayList(),
 };
 
-Gfx clone_luigi_000_offset_007_skinned_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+Vtx clone_luigi_000_offset_007_skinned_mesh_layer_1_vtx_0[6] = {
+	{{ {74, -12, 25}, 0, {-16, -16}, {7, 212, 119, 255} }},
+	{{ {73, -26, 4}, 0, {-16, -16}, {6, 129, 249, 255} }},
+	{{ {15, 18, -9}, 0, {-16, -16}, {232, 104, 188, 255} }},
+	{{ {15, 17, 21}, 0, {-16, -16}, {232, 98, 77, 255} }},
+	{{ {74, 13, -6}, 0, {-16, -16}, {10, 107, 188, 255} }},
+	{{ {74, -10, -15}, 0, {-16, -16}, {7, 225, 133, 255} }},
+};
+
+Gfx clone_luigi_000_offset_007_skinned_mesh_layer_1_tri_0[] = {
 	gsSPVertex(clone_luigi_000_offset_007_skinned_mesh_layer_1_vtx_0 + 0, 6, 0),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPEndDisplayList(),
 };
 
-Gfx clone_luigi_000_offset_007_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+Vtx clone_luigi_000_offset_007_mesh_layer_1_vtx_0[6] = {
+	{{ {54, -24, 4}, 0, {-129, -260}, {58, 143, 251, 255} }},
+	{{ {55, -11, 23}, 0, {-129, -260}, {61, 217, 104, 255} }},
+	{{ {2, 12, 18}, 0, {-129, -260}, {9, 99, 80, 255} }},
+	{{ {56, 9, 17}, 0, {-129, -260}, {64, 85, 69, 255} }},
+	{{ {56, 10, -5}, 0, {-129, -260}, {64, 91, 195, 255} }},
+	{{ {55, -10, -13}, 0, {-129, -260}, {61, 226, 149, 255} }},
+};
+
+Gfx clone_luigi_000_offset_007_mesh_layer_1_tri_0[] = {
 	gsSPVertex(clone_luigi_000_offset_007_mesh_layer_1_vtx_0 + 0, 6, 6),
 	gsSP2Triangles(6, 0, 1, 0, 6, 7, 0, 0),
 	gsSP2Triangles(7, 8, 0, 0, 0, 8, 3, 0),
@@ -1608,29 +1333,55 @@ Gfx clone_luigi_000_offset_007_mesh_layer_1[] = {
 	gsSP2Triangles(9, 4, 8, 0, 9, 10, 4, 0),
 	gsSP2Triangles(10, 5, 4, 0, 10, 11, 5, 0),
 	gsSP2Triangles(11, 1, 5, 0, 11, 6, 1, 0),
+	gsSPEndDisplayList(),
+};
+
+Vtx clone_luigi_000_offset_007_mesh_layer_1_vtx_1[7] = {
+	{{ {55, -11, 23}, 0, {-129, -260}, {61, 217, 104, 255} }},
+	{{ {56, 9, 17}, 0, {-129, -260}, {64, 85, 69, 255} }},
+	{{ {2, 12, 18}, 0, {-129, -260}, {9, 99, 80, 255} }},
+	{{ {63, -5, 5}, 0, {-129, -260}, {127, 251, 255, 255} }},
+	{{ {54, -24, 4}, 0, {-129, -260}, {58, 143, 251, 255} }},
+	{{ {55, -10, -13}, 0, {-129, -260}, {61, 226, 149, 255} }},
+	{{ {56, 10, -5}, 0, {-129, -260}, {64, 91, 195, 255} }},
+};
+
+Gfx clone_luigi_000_offset_007_mesh_layer_1_tri_1[] = {
 	gsSPVertex(clone_luigi_000_offset_007_mesh_layer_1_vtx_1 + 0, 7, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 3, 1, 0),
 	gsSP2Triangles(4, 3, 0, 0, 5, 3, 4, 0),
 	gsSP2Triangles(6, 3, 5, 0, 1, 3, 6, 0),
-	gsDPPipeSync(),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPEndDisplayList(),
 };
 
-Gfx clone_luigi_000_displaylist_004_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, ENVIRONMENT),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
-	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
-	gsSPTexture(8128, 4032, 0, 0, 1),
-	gsDPSetPrimColor(0, 0, 67, 32, 178, 255),
-	gsDPSetEnvColor(22, 12, 22, 255),
-	gsDPSetTextureImage(G_IM_FMT_I, G_IM_SIZ_16b, 1, clone_luigi_galaxy_i4),
-	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
-	gsDPLoadBlock(7, 0, 0, 2047, 256),
-	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_4b, 8, 0, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 6, 0, G_TX_WRAP | G_TX_NOMIRROR, 7, 0),
-	gsDPSetTileSize(0, 0, 0, 508, 252),
+Vtx clone_luigi_000_displaylist_004_mesh_layer_1_vtx_0[24] = {
+	{{ {-9, 17, 27}, 0, {-129, -260}, {45, 80, 88, 255} }},
+	{{ {9, -25, 27}, 0, {-129, -260}, {87, 232, 89, 255} }},
+	{{ {15, -17, 23}, 0, {-129, -260}, {14, 199, 113, 255} }},
+	{{ {23, -28, -2}, 0, {-129, -260}, {58, 157, 202, 255} }},
+	{{ {16, -38, -3}, 0, {-129, -260}, {105, 188, 234, 255} }},
+	{{ {6, -1, -18}, 0, {-129, -260}, {228, 245, 133, 255} }},
+	{{ {23, 6, -25}, 0, {-129, -260}, {242, 250, 130, 255} }},
+	{{ {-1, 29, -2}, 0, {-129, -260}, {227, 115, 211, 255} }},
+	{{ {-13, 31, -3}, 0, {-129, -260}, {20, 123, 233, 255} }},
+	{{ {1, 15, 23}, 0, {-129, -260}, {244, 58, 112, 255} }},
+	{{ {50, -22, 44}, 0, {-129, -260}, {26, 176, 95, 255} }},
+	{{ {69, -17, 1}, 0, {-129, -260}, {98, 186, 215, 255} }},
+	{{ {57, 20, -22}, 0, {-129, -260}, {69, 28, 153, 255} }},
+	{{ {39, 54, 0}, 0, {-129, -260}, {18, 123, 228, 255} }},
+	{{ {26, 43, 26}, 0, {-129, -260}, {234, 95, 81, 255} }},
+	{{ {38, 7, 44}, 0, {-129, -260}, {248, 25, 124, 255} }},
+	{{ {64, -1, 35}, 0, {-129, -260}, {100, 9, 78, 255} }},
+	{{ {65, 26, 16}, 0, {-129, -260}, {105, 62, 34, 255} }},
+	{{ {-13, 31, -3}, 0, {-129, -260}, {133, 245, 227, 255} }},
+	{{ {-11, -8, 4}, 0, {-129, -260}, {140, 208, 239, 255} }},
+	{{ {-9, 17, 27}, 0, {-129, -260}, {135, 235, 33, 255} }},
+	{{ {6, -1, -18}, 0, {-129, -260}, {165, 218, 175, 255} }},
+	{{ {16, -38, -3}, 0, {-129, -260}, {161, 177, 229, 255} }},
+	{{ {9, -25, 27}, 0, {-129, -260}, {157, 184, 33, 255} }},
+};
+
+Gfx clone_luigi_000_displaylist_004_mesh_layer_1_tri_0[] = {
 	gsSPVertex(clone_luigi_000_displaylist_004_mesh_layer_1_vtx_0 + 0, 24, 0),
 	gsSP2Triangles(0, 1, 2, 0, 3, 2, 1, 0),
 	gsSP2Triangles(1, 4, 3, 0, 3, 4, 5, 0),
@@ -1649,25 +1400,31 @@ Gfx clone_luigi_000_displaylist_004_mesh_layer_1[] = {
 	gsSP2Triangles(16, 14, 15, 0, 18, 19, 20, 0),
 	gsSP2Triangles(21, 19, 18, 0, 22, 19, 21, 0),
 	gsSP2Triangles(23, 19, 22, 0, 20, 19, 23, 0),
-	gsDPPipeSync(),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPEndDisplayList(),
 };
 
-Gfx clone_luigi_002_switch_option_right_hand_holding_002_offset_right_hand_holding_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, ENVIRONMENT),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
-	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
-	gsSPTexture(8128, 4032, 0, 0, 1),
-	gsDPSetPrimColor(0, 0, 67, 32, 178, 255),
-	gsDPSetEnvColor(22, 12, 22, 255),
-	gsDPSetTextureImage(G_IM_FMT_I, G_IM_SIZ_16b, 1, clone_luigi_galaxy_i4),
-	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
-	gsDPLoadBlock(7, 0, 0, 2047, 256),
-	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_4b, 8, 0, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 6, 0, G_TX_WRAP | G_TX_NOMIRROR, 7, 0),
-	gsDPSetTileSize(0, 0, 0, 508, 252),
+Vtx clone_luigi_002_switch_option_right_hand_holding_002_offset_right_hand_holding_mesh_layer_1_vtx_0[18] = {
+	{{ {54, 25, -19}, 0, {-129, -260}, {9, 37, 135, 255} }},
+	{{ {55, 58, 11}, 0, {-129, -260}, {255, 125, 22, 255} }},
+	{{ {82, 51, 14}, 0, {-129, -260}, {64, 104, 36, 255} }},
+	{{ {12, 5, -16}, 0, {-129, -260}, {245, 22, 131, 255} }},
+	{{ {57, -13, -9}, 0, {-129, -260}, {54, 177, 173, 255} }},
+	{{ {95, 21, -1}, 0, {-129, -260}, {114, 247, 200, 255} }},
+	{{ {91, 19, 21}, 0, {-129, -260}, {81, 229, 94, 255} }},
+	{{ {62, -2, 16}, 0, {-129, -260}, {86, 238, 91, 255} }},
+	{{ {13, 21, 30}, 0, {-129, -260}, {223, 48, 113, 255} }},
+	{{ {2, 26, 4}, 0, {-129, -260}, {212, 116, 229, 255} }},
+	{{ {3, 0, -17}, 0, {-129, -260}, {184, 242, 152, 255} }},
+	{{ {21, -22, -4}, 0, {-129, -260}, {48, 165, 181, 255} }},
+	{{ {63, -27, 28}, 0, {-129, -260}, {77, 180, 66, 255} }},
+	{{ {18, -18, 21}, 0, {-129, -260}, {10, 177, 99, 255} }},
+	{{ {-1, 12, 25}, 0, {-129, -260}, {158, 3, 81, 255} }},
+	{{ {-7, 25, 3}, 0, {-129, -260}, {159, 78, 232, 255} }},
+	{{ {11, -24, 21}, 0, {-129, -260}, {224, 158, 74, 255} }},
+	{{ {15, -31, -6}, 0, {-129, -260}, {254, 140, 205, 255} }},
+};
+
+Gfx clone_luigi_002_switch_option_right_hand_holding_002_offset_right_hand_holding_mesh_layer_1_tri_0[] = {
 	gsSPVertex(clone_luigi_002_switch_option_right_hand_holding_002_offset_right_hand_holding_mesh_layer_1_vtx_0 + 0, 18, 0),
 	gsSP2Triangles(0, 1, 2, 0, 1, 0, 3, 0),
 	gsSP2Triangles(3, 0, 4, 0, 0, 5, 4, 0),
@@ -1685,15 +1442,26 @@ Gfx clone_luigi_002_switch_option_right_hand_holding_002_offset_right_hand_holdi
 	gsSP2Triangles(10, 17, 16, 0, 11, 17, 10, 0),
 	gsSP2Triangles(16, 17, 11, 0, 11, 13, 16, 0),
 	gsSP2Triangles(12, 13, 11, 0, 14, 16, 13, 0),
-	gsDPPipeSync(),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPEndDisplayList(),
 };
 
-Gfx clone_luigi_000_offset_009_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+Vtx clone_luigi_000_offset_009_mesh_layer_1_vtx_0[13] = {
+	{{ {-5, 22, 19}, 0, {-129, -260}, {171, 73, 59, 255} }},
+	{{ {-15, 0, 4}, 0, {-129, -260}, {130, 244, 253, 255} }},
+	{{ {-1, -7, 28}, 0, {-129, -260}, {180, 222, 96, 255} }},
+	{{ {-4, 22, -10}, 0, {-129, -260}, {173, 73, 193, 255} }},
+	{{ {14, 29, -14}, 0, {-129, -260}, {234, 99, 180, 255} }},
+	{{ {13, 29, 23}, 0, {-129, -260}, {233, 101, 74, 255} }},
+	{{ {18, -9, 35}, 0, {-129, -260}, {241, 218, 120, 255} }},
+	{{ {1, -27, 5}, 0, {-129, -260}, {186, 150, 0, 255} }},
+	{{ {0, -8, -19}, 0, {-129, -260}, {186, 219, 157, 255} }},
+	{{ {19, -9, -25}, 0, {-129, -260}, {244, 217, 136, 255} }},
+	{{ {21, -33, 5}, 0, {-129, -260}, {249, 129, 0, 255} }},
+	{{ {95, -22, 5}, 0, {-129, -260}, {1, 129, 255, 255} }},
+	{{ {95, -4, 30}, 0, {-129, -260}, {0, 220, 122, 255} }},
+};
+
+Gfx clone_luigi_000_offset_009_mesh_layer_1_tri_0[] = {
 	gsSPVertex(clone_luigi_000_offset_009_mesh_layer_1_vtx_0 + 0, 13, 0),
 	gsSP2Triangles(0, 1, 2, 0, 3, 1, 0, 0),
 	gsSP2Triangles(4, 3, 0, 0, 4, 0, 5, 0),
@@ -1704,24 +1472,33 @@ Gfx clone_luigi_000_offset_009_mesh_layer_1[] = {
 	gsSP2Triangles(7, 8, 9, 0, 10, 7, 9, 0),
 	gsSP2Triangles(10, 9, 11, 0, 6, 10, 11, 0),
 	gsSP2Triangles(11, 12, 6, 0, 6, 7, 10, 0),
-	gsDPPipeSync(),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPEndDisplayList(),
 };
 
-Gfx clone_luigi_000_offset_010_skinned_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+Vtx clone_luigi_000_offset_010_skinned_mesh_layer_1_vtx_0[6] = {
+	{{ {13, 29, 23}, 0, {-16, -16}, {233, 101, 74, 255} }},
+	{{ {18, -9, 35}, 0, {-16, -16}, {241, 218, 120, 255} }},
+	{{ {95, -4, 30}, 0, {-16, -16}, {0, 220, 122, 255} }},
+	{{ {14, 29, -14}, 0, {-16, -16}, {234, 99, 180, 255} }},
+	{{ {19, -9, -25}, 0, {-16, -16}, {244, 217, 136, 255} }},
+	{{ {95, -22, 5}, 0, {-16, -16}, {1, 129, 255, 255} }},
+};
+
+Gfx clone_luigi_000_offset_010_skinned_mesh_layer_1_tri_0[] = {
 	gsSPVertex(clone_luigi_000_offset_010_skinned_mesh_layer_1_vtx_0 + 0, 6, 0),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPEndDisplayList(),
 };
 
-Gfx clone_luigi_000_offset_010_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+Vtx clone_luigi_000_offset_010_mesh_layer_1_vtx_0[6] = {
+	{{ {5, 27, 19}, 0, {-129, -260}, {1, 104, 73, 255} }},
+	{{ {58, -7, 33}, 0, {-129, -260}, {57, 218, 107, 255} }},
+	{{ {57, -28, 5}, 0, {-129, -260}, {53, 141, 0, 255} }},
+	{{ {59, -7, -22}, 0, {-129, -260}, {59, 218, 150, 255} }},
+	{{ {6, -4, -19}, 0, {-129, -260}, {1, 219, 135, 255} }},
+	{{ {6, 27, -10}, 0, {-129, -260}, {2, 103, 181, 255} }},
+};
+
+Gfx clone_luigi_000_offset_010_mesh_layer_1_tri_0[] = {
 	gsSPVertex(clone_luigi_000_offset_010_mesh_layer_1_vtx_0 + 0, 6, 6),
 	gsSP2Triangles(0, 1, 6, 0, 1, 2, 6, 0),
 	gsSP2Triangles(6, 2, 7, 0, 7, 2, 5, 0),
@@ -1729,21 +1506,43 @@ Gfx clone_luigi_000_offset_010_mesh_layer_1[] = {
 	gsSP2Triangles(5, 10, 9, 0, 4, 10, 5, 0),
 	gsSP2Triangles(11, 10, 4, 0, 4, 3, 11, 0),
 	gsSP2Triangles(3, 0, 11, 0, 0, 6, 11, 0),
+	gsSPEndDisplayList(),
+};
+
+Vtx clone_luigi_000_offset_010_mesh_layer_1_vtx_1[9] = {
+	{{ {59, -7, -22}, 0, {-129, -260}, {59, 218, 150, 255} }},
+	{{ {6, -4, -19}, 0, {-129, -260}, {1, 219, 135, 255} }},
+	{{ {6, 27, -10}, 0, {-129, -260}, {2, 103, 181, 255} }},
+	{{ {62, 27, -11}, 0, {-129, -260}, {68, 86, 192, 255} }},
+	{{ {5, 27, 19}, 0, {-129, -260}, {1, 104, 73, 255} }},
+	{{ {61, 27, 22}, 0, {-129, -260}, {65, 86, 67, 255} }},
+	{{ {58, -7, 33}, 0, {-129, -260}, {57, 218, 107, 255} }},
+	{{ {69, 2, 5}, 0, {-129, -260}, {127, 246, 2, 255} }},
+	{{ {57, -28, 5}, 0, {-129, -260}, {53, 141, 0, 255} }},
+};
+
+Gfx clone_luigi_000_offset_010_mesh_layer_1_tri_1[] = {
 	gsSPVertex(clone_luigi_000_offset_010_mesh_layer_1_vtx_1 + 0, 9, 0),
 	gsSP2Triangles(0, 1, 2, 0, 2, 3, 0, 0),
 	gsSP2Triangles(3, 2, 4, 0, 4, 5, 3, 0),
 	gsSP2Triangles(4, 6, 5, 0, 6, 7, 5, 0),
 	gsSP2Triangles(8, 7, 6, 0, 0, 7, 8, 0),
 	gsSP2Triangles(3, 7, 0, 0, 5, 7, 3, 0),
-	gsDPPipeSync(),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPEndDisplayList(),
 };
 
-Gfx clone_luigi_000_offset_011_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+Vtx clone_luigi_000_offset_011_mesh_layer_1_vtx_0[8] = {
+	{{ {37, -36, 7}, 0, {-129, -260}, {19, 131, 241, 255} }},
+	{{ {60, -3, -26}, 0, {-129, -260}, {82, 7, 159, 255} }},
+	{{ {66, 1, 35}, 0, {-129, -260}, {102, 24, 72, 255} }},
+	{{ {-35, 1, -4}, 0, {-129, -260}, {148, 209, 210, 255} }},
+	{{ {-23, 0, 29}, 0, {-129, -260}, {176, 206, 85, 255} }},
+	{{ {29, -20, 36}, 0, {-129, -260}, {252, 185, 105, 255} }},
+	{{ {-21, 33, 29}, 0, {-129, -260}, {205, 92, 71, 255} }},
+	{{ {-20, 32, -16}, 0, {-129, -260}, {211, 86, 174, 255} }},
+};
+
+Gfx clone_luigi_000_offset_011_mesh_layer_1_tri_0[] = {
 	gsSPVertex(clone_luigi_000_offset_011_mesh_layer_1_vtx_0 + 0, 8, 0),
 	gsSP2Triangles(0, 1, 2, 0, 3, 1, 0, 0),
 	gsSP2Triangles(0, 4, 3, 0, 0, 5, 4, 0),
@@ -1751,15 +1550,26 @@ Gfx clone_luigi_000_offset_011_mesh_layer_1[] = {
 	gsSP2Triangles(6, 2, 7, 0, 2, 1, 7, 0),
 	gsSP2Triangles(1, 3, 7, 0, 3, 6, 7, 0),
 	gsSP2Triangles(6, 3, 4, 0, 4, 5, 6, 0),
-	gsDPPipeSync(),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPEndDisplayList(),
 };
 
-Gfx clone_luigi_000_offset_012_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+Vtx clone_luigi_000_offset_012_mesh_layer_1_vtx_0[13] = {
+	{{ {94, 28, -19}, 0, {-129, -260}, {1, 105, 185, 255} }},
+	{{ {94, -2, -30}, 0, {-129, -260}, {0, 224, 133, 255} }},
+	{{ {18, -8, -35}, 0, {-129, -260}, {242, 220, 135, 255} }},
+	{{ {12, 30, -22}, 0, {-129, -260}, {234, 103, 185, 255} }},
+	{{ {-6, 23, -19}, 0, {-129, -260}, {170, 73, 197, 255} }},
+	{{ {-1, -7, -28}, 0, {-129, -260}, {182, 220, 160, 255} }},
+	{{ {1, -27, -5}, 0, {-129, -260}, {187, 150, 254, 255} }},
+	{{ {22, -33, -5}, 0, {-129, -260}, {250, 129, 254, 255} }},
+	{{ {19, -10, 25}, 0, {-129, -260}, {245, 213, 119, 255} }},
+	{{ {0, -8, 19}, 0, {-129, -260}, {185, 218, 98, 255} }},
+	{{ {-5, 22, 11}, 0, {-129, -260}, {172, 69, 65, 255} }},
+	{{ {13, 29, 15}, 0, {-129, -260}, {234, 97, 79, 255} }},
+	{{ {-15, 0, -4}, 0, {-129, -260}, {130, 241, 3, 255} }},
+};
+
+Gfx clone_luigi_000_offset_012_mesh_layer_1_tri_0[] = {
 	gsSPVertex(clone_luigi_000_offset_012_mesh_layer_1_vtx_0 + 0, 13, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
 	gsSP2Triangles(2, 4, 3, 0, 2, 5, 4, 0),
@@ -1770,24 +1580,35 @@ Gfx clone_luigi_000_offset_012_mesh_layer_1[] = {
 	gsSP2Triangles(4, 12, 10, 0, 5, 12, 4, 0),
 	gsSP2Triangles(6, 12, 5, 0, 9, 12, 6, 0),
 	gsSP1Triangle(10, 12, 9, 0),
-	gsDPPipeSync(),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPEndDisplayList(),
 };
 
-Gfx clone_luigi_000_offset_013_skinned_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+Vtx clone_luigi_000_offset_013_skinned_mesh_layer_1_vtx_0[8] = {
+	{{ {13, 29, 15}, 0, {-16, -16}, {234, 97, 79, 255} }},
+	{{ {19, -10, 25}, 0, {-16, -16}, {245, 213, 119, 255} }},
+	{{ {12, 30, -22}, 0, {-16, -16}, {234, 103, 185, 255} }},
+	{{ {94, 28, -19}, 0, {-16, -16}, {1, 105, 185, 255} }},
+	{{ {96, -3, 18}, 0, {-16, -16}, {2, 216, 121, 255} }},
+	{{ {22, -33, -5}, 0, {-16, -16}, {250, 129, 254, 255} }},
+	{{ {18, -8, -35}, 0, {-16, -16}, {242, 220, 135, 255} }},
+	{{ {94, -2, -30}, 0, {-16, -16}, {0, 224, 133, 255} }},
+};
+
+Gfx clone_luigi_000_offset_013_skinned_mesh_layer_1_tri_0[] = {
 	gsSPVertex(clone_luigi_000_offset_013_skinned_mesh_layer_1_vtx_0 + 0, 8, 0),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPEndDisplayList(),
 };
 
-Gfx clone_luigi_000_offset_013_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+Vtx clone_luigi_000_offset_013_mesh_layer_1_vtx_0[6] = {
+	{{ {6, 28, 10}, 0, {-129, -260}, {3, 101, 77, 255} }},
+	{{ {62, 27, 11}, 0, {-129, -260}, {65, 85, 68, 255} }},
+	{{ {62, 28, -22}, 0, {-129, -260}, {65, 88, 192, 255} }},
+	{{ {58, -5, -34}, 0, {-129, -260}, {54, 221, 146, 255} }},
+	{{ {6, -22, -6}, 0, {-129, -260}, {2, 129, 253, 255} }},
+	{{ {59, -7, 21}, 0, {-129, -260}, {57, 215, 106, 255} }},
+};
+
+Gfx clone_luigi_000_offset_013_mesh_layer_1_tri_0[] = {
 	gsSPVertex(clone_luigi_000_offset_013_mesh_layer_1_vtx_0 + 0, 6, 8),
 	gsSP2Triangles(8, 0, 1, 0, 8, 2, 0, 0),
 	gsSP2Triangles(8, 3, 2, 0, 3, 8, 9, 0),
@@ -1797,20 +1618,41 @@ Gfx clone_luigi_000_offset_013_mesh_layer_1[] = {
 	gsSP2Triangles(12, 1, 5, 0, 12, 4, 1, 0),
 	gsSP2Triangles(13, 4, 12, 0, 8, 4, 13, 0),
 	gsSP1Triangle(1, 4, 8, 0),
+	gsSPEndDisplayList(),
+};
+
+Vtx clone_luigi_000_offset_013_mesh_layer_1_vtx_1[8] = {
+	{{ {59, -7, 21}, 0, {-129, -260}, {57, 215, 106, 255} }},
+	{{ {62, 27, 11}, 0, {-129, -260}, {65, 85, 68, 255} }},
+	{{ {6, 28, 10}, 0, {-129, -260}, {3, 101, 77, 255} }},
+	{{ {71, 2, -6}, 0, {-129, -260}, {126, 243, 255, 255} }},
+	{{ {56, -27, -7}, 0, {-129, -260}, {48, 139, 251, 255} }},
+	{{ {6, -22, -6}, 0, {-129, -260}, {2, 129, 253, 255} }},
+	{{ {58, -5, -34}, 0, {-129, -260}, {54, 221, 146, 255} }},
+	{{ {62, 28, -22}, 0, {-129, -260}, {65, 88, 192, 255} }},
+};
+
+Gfx clone_luigi_000_offset_013_mesh_layer_1_tri_1[] = {
 	gsSPVertex(clone_luigi_000_offset_013_mesh_layer_1_vtx_1 + 0, 8, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 3, 1, 0),
 	gsSP2Triangles(4, 3, 0, 0, 4, 0, 5, 0),
 	gsSP2Triangles(6, 4, 5, 0, 6, 3, 4, 0),
 	gsSP2Triangles(7, 3, 6, 0, 1, 3, 7, 0),
-	gsDPPipeSync(),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPEndDisplayList(),
 };
 
-Gfx clone_luigi_000_displaylist_005_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_CULL_BACK | G_LIGHTING | G_TEXTURE_GEN),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+Vtx clone_luigi_000_displaylist_005_mesh_layer_1_vtx_0[8] = {
+	{{ {67, 2, -35}, 0, {-129, -260}, {104, 23, 187, 255} }},
+	{{ {35, -35, -7}, 0, {-129, -260}, {18, 131, 18, 255} }},
+	{{ {29, -20, -37}, 0, {-129, -260}, {1, 184, 152, 255} }},
+	{{ {60, 0, 26}, 0, {-129, -260}, {81, 11, 97, 255} }},
+	{{ {-21, 32, 14}, 0, {-129, -260}, {208, 87, 79, 255} }},
+	{{ {-22, 32, -31}, 0, {-129, -260}, {203, 90, 184, 255} }},
+	{{ {-23, -1, -31}, 0, {-129, -260}, {177, 204, 171, 255} }},
+	{{ {-35, 0, 4}, 0, {-129, -260}, {149, 207, 49, 255} }},
+};
+
+Gfx clone_luigi_000_displaylist_005_mesh_layer_1_tri_0[] = {
 	gsSPVertex(clone_luigi_000_displaylist_005_mesh_layer_1_vtx_0 + 0, 8, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 3, 1, 0),
 	gsSP2Triangles(4, 3, 0, 0, 4, 0, 5, 0),
@@ -1818,9 +1660,199 @@ Gfx clone_luigi_000_displaylist_005_mesh_layer_1[] = {
 	gsSP2Triangles(6, 2, 1, 0, 7, 6, 1, 0),
 	gsSP2Triangles(1, 3, 7, 0, 4, 7, 3, 0),
 	gsSP2Triangles(4, 5, 7, 0, 6, 7, 5, 0),
+	gsSPEndDisplayList(),
+};
+
+
+Gfx mat_clone_luigi_clone[] = {
+	gsSPGeometryMode(G_SHADE | G_SHADING_SMOOTH, G_TEXTURE_GEN),
 	gsDPPipeSync(),
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, ENVIRONMENT),
+	gsDPSetAlphaDither(G_AD_NOISE),
+	gsSPTexture(8128, 4032, 0, 0, 1),
+	gsDPSetPrimColor(0, 0, 67, 32, 178, 255),
+	gsDPSetEnvColor(22, 12, 22, 255),
+	gsDPSetTextureImage(G_IM_FMT_I, G_IM_SIZ_16b, 1, clone_luigi_galaxy_i4),
+	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
+	gsDPLoadBlock(7, 0, 0, 2047, 256),
+	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_4b, 8, 0, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 6, 0, G_TX_WRAP | G_TX_NOMIRROR, 7, 0),
+	gsDPSetTileSize(0, 0, 0, 508, 252),
+	gsSPEndDisplayList(),
+};
+
+Gfx mat_revert_clone_luigi_clone[] = {
+	gsSPGeometryMode(G_TEXTURE_GEN, G_SHADE | G_SHADING_SMOOTH),
+	gsDPPipeSync(),
+	gsDPSetAlphaDither(G_AD_DISABLE),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_000_offset_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_000_offset_mesh_layer_1_tri_0),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_000_offset_001_skinned_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_000_offset_001_skinned_mesh_layer_1_tri_0),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_000_offset_001_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_000_offset_001_mesh_layer_1_tri_0),
+	gsSPDisplayList(clone_luigi_000_offset_001_mesh_layer_1_tri_1),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_000_displaylist_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_000_displaylist_mesh_layer_1_tri_0),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_002_switch_option_head_000_displaylist_head_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_002_switch_option_head_000_displaylist_head_mesh_layer_1_tri_0),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_000_offset_003_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_000_offset_003_mesh_layer_1_tri_0),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_000_offset_004_skinned_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_000_offset_004_skinned_mesh_layer_1_tri_0),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_000_offset_004_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_000_offset_004_mesh_layer_1_tri_0),
+	gsSPDisplayList(clone_luigi_000_offset_004_mesh_layer_1_tri_1),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_000_displaylist_003_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_000_displaylist_003_mesh_layer_1_tri_0),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_002_switch_option_left_hand_002_offset_left_hand_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_002_switch_option_left_hand_002_offset_left_hand_mesh_layer_1_tri_0),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_000_offset_006_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_000_offset_006_mesh_layer_1_tri_0),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_000_offset_007_skinned_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_000_offset_007_skinned_mesh_layer_1_tri_0),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_000_offset_007_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_000_offset_007_mesh_layer_1_tri_0),
+	gsSPDisplayList(clone_luigi_000_offset_007_mesh_layer_1_tri_1),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_000_displaylist_004_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_000_displaylist_004_mesh_layer_1_tri_0),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_002_switch_option_right_hand_holding_002_offset_right_hand_holding_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_002_switch_option_right_hand_holding_002_offset_right_hand_holding_mesh_layer_1_tri_0),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_000_offset_009_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_000_offset_009_mesh_layer_1_tri_0),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_000_offset_010_skinned_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_000_offset_010_skinned_mesh_layer_1_tri_0),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_000_offset_010_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_000_offset_010_mesh_layer_1_tri_0),
+	gsSPDisplayList(clone_luigi_000_offset_010_mesh_layer_1_tri_1),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_000_offset_011_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_000_offset_011_mesh_layer_1_tri_0),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_000_offset_012_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_000_offset_012_mesh_layer_1_tri_0),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_000_offset_013_skinned_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_000_offset_013_skinned_mesh_layer_1_tri_0),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_000_offset_013_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_000_offset_013_mesh_layer_1_tri_0),
+	gsSPDisplayList(clone_luigi_000_offset_013_mesh_layer_1_tri_1),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsSPEndDisplayList(),
+};
+
+Gfx clone_luigi_000_displaylist_005_mesh_layer_1[] = {
+	gsSPDisplayList(mat_clone_luigi_clone),
+	gsSPDisplayList(clone_luigi_000_displaylist_005_mesh_layer_1_tri_0),
+	gsSPDisplayList(mat_revert_clone_luigi_clone),
+	gsDPPipeSync(),
+	gsSPSetGeometryMode(G_LIGHTING),
+	gsSPClearGeometryMode(G_TEXTURE_GEN),
 	gsDPSetCombineLERP(0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT, 0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT),
 	gsSPTexture(65535, 65535, 0, 0, 0),
 	gsDPSetEnvColor(255, 255, 255, 255),
