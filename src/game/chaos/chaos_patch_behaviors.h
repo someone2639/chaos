@@ -95,6 +95,7 @@ u8 chs_cond_coin_size(void);
 void chs_update_brawl_tripping(void);
 void chs_update_galaxy_twirl(void);
 u8 chs_cond_no_fall_damage(void);
+u8 chs_check_sticky_walljump(void);
 
 // Random Griefing
 void chs_act_random_sleep(void);

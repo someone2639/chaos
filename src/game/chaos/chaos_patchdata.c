@@ -1525,4 +1525,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Quicktime Events",
         .shortDescription  = "Follow the buttons in the order prompted on screen or die. Directed by David Cage.",
     },
+    [CHAOS_PATCH_STICKY_WALL_JUMP] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .conditionalFunc   = chs_check_sticky_walljump,
+
+        .name              = "Sticky Wall Jump",
+        .shortDescription  = "Stick to walls! This really makes you FEEL like Spider-Man!",
+    },
 };
