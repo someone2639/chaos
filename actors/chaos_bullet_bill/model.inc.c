@@ -646,7 +646,7 @@ Vtx chaos_bullet_bill_000_displaylist_mesh_layer_1_vtx_1[49] = {
 
 
 Gfx chaos_bullet_bill_000_displaylist_mesh_layer_1[] = {
-	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
+	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_LIGHTING | G_SHADING_SMOOTH),
 	gsSPSetLights1(chaos_bullet_bill_Bullet_bill_eye_lights),
 	gsDPSetCombineLERP(TEXEL0, SHADE, TEXEL0_ALPHA, SHADE, 0, 0, 0, SHADE, TEXEL0, SHADE, TEXEL0_ALPHA, SHADE, 0, 0, 0, SHADE),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
