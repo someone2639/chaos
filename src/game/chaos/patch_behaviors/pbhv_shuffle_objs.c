@@ -53,6 +53,10 @@ const BehaviorScript *ignorelist[] = {
     bhvUkiki,
 };
 
+const BehaviorScript *allowedWithParents[] = {
+    bhvTreasureChestBottom,
+    bhvRedCoin,
+};
 
 u8 isInList(struct Object *o, const BehaviorScript *list[], int count) {
     for (int i = 0; i < count; i++) {
@@ -119,7 +123,7 @@ void cshuffle_populate_shuffle_list(UNUSED struct Camera *c) {
                 continue;
             }
 #endif // SKIPWARPS
-            if ((o->parentObj != o) && (o->behavior != segmented_to_virtual(bhvRedCoin))) {
+            if ((o->parentObj != o) && (!IS_INLIST(o, allowedWithParents))) {
                 o = (struct Object *)o->header.next;
                 continue;
             }
