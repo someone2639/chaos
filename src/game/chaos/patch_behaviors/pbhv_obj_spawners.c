@@ -15,6 +15,7 @@
 #include "game/area.h"
 #include "course_table.h"
 #include "audio/external.h"
+#include "game/object_list_processor.h"
 
 /*
     Green Demon
@@ -24,6 +25,10 @@ u8 chs_cond_green_demon(void) {
 }
 
 void chs_act_green_demon(void) {
+    if(!gMarioObject) {
+        return;
+    }
+
     if(gCurrCourseNum != COURSE_NONE) {
         spawn_object_abs_with_rot(gMarioState->marioObj, 0, MODEL_GREEN_DEMON, bhvGreenDemon,
                             gMarioState->pos[0], gMarioState->pos[1], gMarioState->pos[2], 0, 0, 0);
