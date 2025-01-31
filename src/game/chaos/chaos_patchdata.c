@@ -826,6 +826,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration          = 2,
 
         .conditionalFunc   = chs_cond_green_demon,
+        .activatedInitFunc = chs_act_green_demon,
         .areaInitFunc      = chs_area_init_green_demon,
 
         .name              = "Green Demon",
@@ -862,9 +863,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 15,
+        .duration          = 8,
 
         .activatedInitFunc = chs_act_cosmic_clones,
+        .conditionalFunc   = chs_cond_cosmic_clones,
         .deactivationFunc  = chs_deact_cosmic_clones,
         .areaInitFunc      = chs_area_init_cosmic_clones,
         .frameUpdateFunc   = chs_update_cosmic_clones,
@@ -1010,7 +1012,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_LOW_RESOLUTION] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 3,
+        .severity          = 2,
         .isStackable       = FALSE,
         .duration          = 4,
 

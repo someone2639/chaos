@@ -112,6 +112,7 @@ void chs_update_random_dialogue(void);
 
 // Object Spawners
 u8 chs_cond_green_demon(void);
+void chs_act_green_demon(void);
 void chs_area_init_green_demon(void);
 void chs_area_init_bullet_hell(void);
 void chs_update_bullet_hell(void);
@@ -121,6 +122,7 @@ void chs_deact_cosmic_clones(void);
 void chs_act_cosmic_clones(void);
 void chs_area_init_cosmic_clones(void);
 void chs_update_cosmic_clones(void);
+u8 chs_cond_cosmic_clones(void);
 
 // Visual Modifiers
 u8 chs_cond_no_zbuffer(void);
