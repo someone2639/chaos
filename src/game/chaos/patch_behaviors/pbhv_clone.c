@@ -56,21 +56,18 @@ u8 chs_cond_cherry_clone(void) {
 }
 
 void chs_create_cherry_clone(void) {
-    Vec3f dest;
-    Vec3f zero = {0};
-    vec3f_set_dist_and_angle(zero, dest, 300.0f, 0, cloneyaw);
-    cloneyaw += 0x2000;
-    struct Object *newclone = spawn_object_relative(0,
-                                                    dest[0], dest[1], dest[2],
-                                                    gMarioObject, MODEL_MARIO, bhvMarioClone
-                                                    );
+    // Vec3f dest;
+    // Vec3f zero = {0};
+    // vec3f_set_dist_and_angle(zero, dest, 300.0f, 0, cloneyaw);
+    // cloneyaw += 0x2000;
+    // struct Object *newclone = spawn_object_relative(0,
+    //                                                 dest[0], dest[1], dest[2],
+    //                                                 gMarioObject, MODEL_MARIO, bhvMarioClone
+    //                                                 );
 
-    newclone->header.gfx.sharedChild = gMarioObject->header.gfx.sharedChild;
+    // newclone->header.gfx.sharedChild = gMarioObject->header.gfx.sharedChild;
 
-    struct Object *prev = gCurrentObject;
-    gCurrentObject = newclone;
-    spawn_mist_particles();
-    gCurrentObject = prev;
+    
 
     cloneCount ++;
 }
@@ -100,5 +97,9 @@ void chs_init_cherry_clones_after_warp(void) {
                             gMarioObject, MODEL_MARIO, bhvMarioClone
                                 );
         newclone->header.gfx.sharedChild = gMarioObject->header.gfx.sharedChild;
+        struct Object *prev = gCurrentObject;
+        gCurrentObject = newclone;
+        spawn_mist_particles();
+        gCurrentObject = prev;
     }
 }
