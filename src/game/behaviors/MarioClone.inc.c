@@ -119,12 +119,13 @@ void bhv_MarioClone_loop(void) {
     if (m->intendedMag == 0) {
         o->oMoveAngleYaw = m->faceAngle[1];
         o->oFaceAngleYaw = m->faceAngle[1];
-    } else {
+    }
+    else if (!(m->action & ACT_FLAG_AIR)) {
         o->oMoveAngleYaw = m->intendedYaw;
         o->oFaceAngleYaw = m->intendedYaw;
     }
-    o->oFaceAngleRoll = m->faceAngle[2];
 
+    o->oFaceAngleRoll = m->faceAngle[2];
 
     o->oGravity = 1.0f;
 
