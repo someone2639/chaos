@@ -1468,7 +1468,20 @@ s32 act_air_hit_wall(struct MarioState *m) {
         if (m->forwardVel > 8.0f) {
             mario_set_forward_vel(m, -8.0f);
         }
-        return set_mario_action(m, ACT_SOFT_BONK, 0);
+        if (chaos_check_if_patch_active(CHAOS_PATCH_STICKY_WALL_JUMP)) {
+            if (m->actionTimer <= 3) {
+                m->marioObj->header.gfx.angle[1] += 0x8000;
+            }
+            if (m->input & INPUT_A_PRESSED) {
+                m->vel[1] = 52.0f;
+                m->faceAngle[1] += 0x8000;
+                return set_mario_action(m, ACT_WALL_KICK_AIR, 0);
+            } else {
+                return FALSE;
+            }
+        } else {
+            return set_mario_action(m, ACT_SOFT_BONK, 0);
+        }
     }
 
 #ifdef AVOID_UB

@@ -690,6 +690,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Hey! Listen!",
         .shortDescription  = "Recieve extra dialogue periodically."
     },
+    [CHAOS_PATCH_KAIZO_BLOCKS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 10,
+
+        .activatedInitFunc = chs_act_kaizo_blocks,
+        .frameUpdateFunc   = chs_update_kaizo_blocks,
+
+        .name              = "Super Mario Maker",
+        .shortDescription  = "My little brother made this level, I hope you enjoy! (Randomly Spawn Kaizo Blocks.)"
+    },
 
 // Movement Modifiers
     [CHAOS_PATCH_LOSEMOVE_BREAKDANCE] = {
@@ -1538,5 +1551,17 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Quicktime Events",
         .shortDescription  = "Follow the buttons in the order prompted on screen or die. Directed by David Cage.",
+    },
+    [CHAOS_PATCH_STICKY_WALL_JUMP] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .conditionalFunc   = chs_check_sticky_walljump,
+
+        .name              = "Sticky Wall Jump",
+        .shortDescription  = "Stick to walls! This really makes you FEEL like Spider-Man!",
     },
 };
