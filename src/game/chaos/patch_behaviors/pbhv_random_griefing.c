@@ -10,6 +10,8 @@
 #include "dialog_ids.h"
 #include "game/ingame_menu.h"
 #include "game/game_init.h"
+#include "behavior_data.h"
+#include "game/object_helpers.h"
 
 #include "game/chaos/chaos.h"
 
@@ -159,3 +161,28 @@ void chs_update_random_dialogue(void) {
     }
 }
 
+/*
+    Kaizo Blocks
+*/
+
+#define KAIZO_BLOCK_TIME_MAX    9000
+
+void chs_act_kaizo_blocks(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_KAIZO_BLOCKS, &this);
+    this->frameTimer = RAND(KAIZO_BLOCK_TIME_MAX); //Get a random offset to start the timer at
+}
+
+void chs_update_kaizo_blocks(void) {
+    struct MarioState *m = gMarioState;
+    f32 heightAboveFloor = m->pos[1] - m->floorHeight;
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_KAIZO_BLOCKS, &this);
+
+    if(this->frameTimer > KAIZO_BLOCK_TIME_MAX && m->vel[1] > 20.0f && heightAboveFloor > 100.0f) {
+        spawn_object_abs_with_rot(m->marioObj, 0, MODEL_KAIZO_BLOCK, bhvKaizoBlock,
+                            m->pos[0], m->pos[1] + 180.0f + m->vel[1], m->pos[2], 0, 0, 0);
+        m->vel[1] = 0;
+        this->frameTimer = RAND(KAIZO_BLOCK_TIME_MAX); //Get a random offset to start the timer at
+    }
+}

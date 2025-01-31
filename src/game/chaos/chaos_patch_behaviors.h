@@ -110,6 +110,8 @@ void chs_act_random_blind(void);
 void chs_update_random_blind(void);
 void chs_act_random_dialogue(void);
 void chs_update_random_dialogue(void);
+void chs_act_kaizo_blocks(void);
+void chs_update_kaizo_blocks(void);
 
 // Object Spawners
 u8 chs_cond_green_demon(void);

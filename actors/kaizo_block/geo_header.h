@@ -1,0 +1,16 @@
+extern const GeoLayout kaizo_block_switch_opt1[];
+extern const GeoLayout kaizo_block_geo[];
+extern Lights1 kaizo_block_texture_lights;
+extern Lights1 kaizo_block_hitTexture_lights;
+extern u8 kaizo_block_Block_ci8[];
+extern u8 kaizo_block_Block_pal_rgba16[];
+extern u8 kaizo_block_BlockHit_ci8[];
+extern u8 kaizo_block_BlockHit_pal_rgba16[];
+extern Vtx kaizo_block_Object_mesh_layer_1_vtx_0[55];
+extern Gfx kaizo_block_Object_mesh_layer_1_tri_0[];
+extern Gfx mat_kaizo_block_texture[];
+extern Gfx mat_revert_kaizo_block_texture[];
+extern Gfx mat_kaizo_block_hitTexture[];
+extern Gfx mat_revert_kaizo_block_hitTexture[];
+extern Gfx kaizo_block_Object_mesh_layer_1[];
+extern Gfx kaizo_block_Object_mesh_layer_1_mat_override_hitTexture_0[];

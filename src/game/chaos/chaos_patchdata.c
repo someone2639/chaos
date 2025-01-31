@@ -690,6 +690,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Hey! Listen!",
         .shortDescription  = "Recieve extra dialogue periodically."
     },
+    [CHAOS_PATCH_KAIZO_BLOCKS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 10,
+
+        .activatedInitFunc = chs_act_kaizo_blocks,
+        .frameUpdateFunc   = chs_update_kaizo_blocks,
+
+        .name              = "Super Mario Maker",
+        .shortDescription  = "My little brother made this level, I hope you enjoy! (Randomly Spawn Kaizo Blocks.)"
+    },
 
 // Movement Modifiers
     [CHAOS_PATCH_LOSEMOVE_BREAKDANCE] = {

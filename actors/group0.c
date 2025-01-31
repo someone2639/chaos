@@ -33,3 +33,5 @@
 
 #include "clone_mario/model.inc.c"
 #include "clone_luigi/model.inc.c"
+#include "kaizo_block/collision.inc.c"
+#include "kaizo_block/model.inc.c"
