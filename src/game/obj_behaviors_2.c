@@ -968,3 +968,4 @@ void obj_spit_fire(s16 relativePosX, s16 relativePosY, s16 relativePosZ, f32 sca
 #include "behaviors/triplet_butterfly.inc.c"
 #include "behaviors/bubba.inc.c"
 #include "behaviors/cosmic_clones.inc.c"
+#include "behaviors/kaizo_block.inc.c"

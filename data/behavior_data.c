@@ -331,6 +331,27 @@
     BC_PTR(dropletParams)
 
 /* fast64 object exports get inserted here */
+const BehaviorScript bhvKaizoBlock[] = {
+    BEGIN(OBJ_LIST_SURFACE),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    LOAD_COLLISION_DATA(kaizo_block_collision),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_kaizo_block_loop),
+        CALL_NATIVE(load_object_collision_model),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvKaizoBlockCoin[] = {
+    BEGIN(OBJ_LIST_UNIMPORTANT),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    BILLBOARD(),
+    BEGIN_REPEAT(5),
+        ADD_INT(oAnimState, 1),
+        ADD_FLOAT(oPosY, 7),
+    END_REPEAT(),
+    DEACTIVATE(),
+};
+
 const BehaviorScript bhvChaosBulletBill[] = {
 	BEGIN(OBJ_LIST_GENACTOR),
     OR_INT(oFlags, (OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_MOVE_XZ_USING_FVEL | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_MOVE_Y_WITH_TERMINAL_VEL)),

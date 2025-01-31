@@ -95,6 +95,7 @@ u8 chs_cond_coin_size(void);
 void chs_update_brawl_tripping(void);
 void chs_update_galaxy_twirl(void);
 u8 chs_cond_no_fall_damage(void);
+u8 chs_check_sticky_walljump(void);
 
 // Random Griefing
 void chs_act_random_sleep(void);
@@ -109,9 +110,12 @@ void chs_act_random_blind(void);
 void chs_update_random_blind(void);
 void chs_act_random_dialogue(void);
 void chs_update_random_dialogue(void);
+void chs_act_kaizo_blocks(void);
+void chs_update_kaizo_blocks(void);
 
 // Object Spawners
 u8 chs_cond_green_demon(void);
+void chs_act_green_demon(void);
 void chs_area_init_green_demon(void);
 void chs_area_init_bullet_hell(void);
 void chs_update_bullet_hell(void);
@@ -121,6 +125,7 @@ void chs_deact_cosmic_clones(void);
 void chs_act_cosmic_clones(void);
 void chs_area_init_cosmic_clones(void);
 void chs_update_cosmic_clones(void);
+u8 chs_cond_cosmic_clones(void);
 
 // Visual Modifiers
 u8 chs_cond_no_zbuffer(void);

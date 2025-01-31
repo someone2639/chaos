@@ -690,6 +690,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Hey! Listen!",
         .shortDescription  = "Recieve extra dialogue periodically."
     },
+    [CHAOS_PATCH_KAIZO_BLOCKS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 10,
+
+        .activatedInitFunc = chs_act_kaizo_blocks,
+        .frameUpdateFunc   = chs_update_kaizo_blocks,
+
+        .name              = "Super Mario Maker",
+        .shortDescription  = "My little brother made this level, I hope you enjoy! (Randomly Spawn Kaizo Blocks.)"
+    },
 
 // Movement Modifiers
     [CHAOS_PATCH_LOSEMOVE_BREAKDANCE] = {
@@ -826,6 +839,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration          = 2,
 
         .conditionalFunc   = chs_cond_green_demon,
+        .activatedInitFunc = chs_act_green_demon,
         .areaInitFunc      = chs_area_init_green_demon,
 
         .name              = "Green Demon",
@@ -862,9 +876,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 15,
+        .duration          = 8,
 
         .activatedInitFunc = chs_act_cosmic_clones,
+        .conditionalFunc   = chs_cond_cosmic_clones,
         .deactivationFunc  = chs_deact_cosmic_clones,
         .areaInitFunc      = chs_area_init_cosmic_clones,
         .frameUpdateFunc   = chs_update_cosmic_clones,
@@ -996,7 +1011,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_LOW_RESOLUTION] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 3,
+        .severity          = 2,
         .isStackable       = FALSE,
         .duration          = 4,
 
@@ -1538,5 +1553,17 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Double Cherry",
         .shortDescription  = "It's dangerous to go alone! Have a buddy!",
         .longDescription   = "Each cherry clone has 1 health point, and will take your hits until they run out, after which you will take normal damage. If the \"real\" player gets hit, its soul will be transferred to a clone. By the end of this, which Mario will be the real Mario?",
+    },
+    [CHAOS_PATCH_STICKY_WALL_JUMP] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .conditionalFunc   = chs_check_sticky_walljump,
+
+        .name              = "Sticky Wall Jump",
+        .shortDescription  = "Stick to walls! This really makes you FEEL like Spider-Man!",
     },
 };

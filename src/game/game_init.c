@@ -454,7 +454,7 @@ void select_gfx_pool(void) {
 }
 
 
-#define DOWNSAMPLE_SHIFT 3
+#define DOWNSAMPLE_SHIFT 2
 // // This is too slow to run at speed, but otherwise looks better...
 // static void render_low_resolution_better(void) {
 //     u16 *fb = gFramebuffers[sRenderedFramebuffer];
