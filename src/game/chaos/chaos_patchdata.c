@@ -998,7 +998,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_LOW_RESOLUTION] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 3,
+        .severity          = 2,
         .isStackable       = FALSE,
         .duration          = 4,
 
