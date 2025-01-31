@@ -367,7 +367,7 @@ s32 fliptarget = SCREEN_WIDTH / 2;
 u8 isInMenu = FALSE;
 
 void process_master_quest_transition(struct GraphNodeRoot *node) {
-    if (isInMenu) {
+    if (isInMenu || gInActSelect) {
         isGameFlipped = 0;
         node->width = SCREEN_WIDTH / 2;
         return;
