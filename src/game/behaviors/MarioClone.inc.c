@@ -3,7 +3,7 @@
 #include "game/interaction.h"
 
 static struct ObjectHitbox sCloneHitbox = {
-    /* interactType:      */ INTERACT_GRABBABLE,
+    /* interactType:      */ 0,
     /* downOffset:        */ 0,
     /* damageOrCoinValue: */ 0,
     /* health:            */ 0,
