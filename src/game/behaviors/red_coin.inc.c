@@ -62,10 +62,10 @@ void bhv_red_coin_loop(void) {
         f32 objDistToHome = cur_obj_lateral_dist_to_home();
         s16 runAngle;
 
-        if(o->oDistanceToMario < 1000.0f) {
+        if(o->oDistanceToMario < 600.0f) {
             runAngle = (s16)o->oAngleToMario + 0x8000;
-            o->oPosX += 20 * sins(runAngle);
-            o->oPosZ += 20 * coss(runAngle);
+            o->oPosX += 15 * sins(runAngle);
+            o->oPosZ += 15 * coss(runAngle);
         } else if(marioDistToHome > 1000.0f && objDistToHome > 45.0f) {
             runAngle = cur_obj_angle_to_home();
             o->oPosX += 30 * sins(runAngle);

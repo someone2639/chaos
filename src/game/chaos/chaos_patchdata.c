@@ -605,7 +605,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 10,
+        .duration          = 6,
 
         .name              = "Sca-red Coins",
         .shortDescription  = "Red coins will try to avoid being collected.",
@@ -802,7 +802,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 20,
+        .duration          = 12,
 
         .frameUpdateFunc   = chs_update_galaxy_twirl,
 
@@ -1084,12 +1084,12 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 2,
         .isStackable       = TRUE,
-        .duration          = 3,
+        .duration          = 1,
 
         .conditionalFunc   = chs_cond_level_reset,
 
         .name              = "Get Out of GBJ Free Card",
-        .shortDescription  = "Gain three on-command level resets. Accessible from the pause menu while in a course.",
+        .shortDescription  = "Gain an on-command level reset. Accessible from the pause menu while in a course.",
     },
 
 // Chaos Modifiers
