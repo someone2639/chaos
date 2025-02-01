@@ -159,6 +159,7 @@ s32 set_triple_jump_action(struct MarioState *m, UNUSED u32 action, UNUSED u32 a
         if (chaos_check_if_patch_active(CHAOS_PATCH_BETA)) {
             set_mario_y_vel_based_on_fspeed(m, 69.0f, 0.0f);
             m->forwardVel *= 0.8f;
+            play_sound(SOUND_MARIO_YAAHAA, m->marioObj->header.gfx.cameraToObject);
             return set_mario_action(m, ACT_TWIRLING, 1);
         } else {
             return set_mario_action(m, ACT_TRIPLE_JUMP, 0);

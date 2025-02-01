@@ -2041,6 +2041,7 @@ sound_ref .sound_peach_something_special
 sound_ref .sound_peach_bake_a_cake
 sound_ref .sound_peach_for_mario
 sound_ref .sound_peach_mario2
+sound_ref .sound_mario_YAAHAA
 
 .sound_mario_jump_hoo:
 chan_setbank 8
@@ -2099,6 +2100,20 @@ chan_setlayer 0, .layer_C7C
 chan_end
 
 .layer_C7C:
+layer_transpose_mario -2
+layer_somethingon
+layer_portamento_mario 0x85, 39, 255
+layer_note1_mario 42, 0x1e, 110
+layer_note1_mario 39, 0x41, 110
+layer_end
+
+.sound_mario_YAAHAA:
+chan_setbank 8
+chan_setinstr 27
+chan_setlayer 0, .layer_YAA
+chan_end
+
+.layer_YAA:
 layer_transpose_mario -2
 layer_somethingon
 layer_portamento_mario 0x85, 39, 255
