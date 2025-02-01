@@ -8,10 +8,10 @@ static struct ObjectHitbox sCloneHitbox = {
     /* damageOrCoinValue: */ 0,
     /* health:            */ 0,
     /* numLootCoins:      */ 0,
-    /* radius:            */ 50,
-    /* height:            */ 157,
-    /* hurtboxRadius:     */ 0,
-    /* hurtboxHeight:     */ 0,
+    /* radius:            */ 37,
+    /* height:            */ 160,
+    /* hurtboxRadius:     */ 37,
+    /* hurtboxHeight:     */ 160,
 };
 
 extern u32 cspawnlock;
@@ -116,36 +116,18 @@ void bhv_MarioClone_loop(void) {
 	update_clone_animation();
 
     o->oFaceAnglePitch = m->faceAngle[0];
-    if (m->intendedMag == 0) {
-        o->oMoveAngleYaw = m->faceAngle[1];
-        o->oFaceAngleYaw = m->faceAngle[1];
-    }
-    else if (!(m->action & ACT_FLAG_AIR)) {
-        o->oMoveAngleYaw = m->intendedYaw;
-        o->oFaceAngleYaw = m->intendedYaw;
-    }
-
+    o->oFaceAngleYaw = m->faceAngle[1];
     o->oFaceAngleRoll = m->faceAngle[2];
 
     o->oGravity = 1.0f;
 
 	UNUSED u32 collisionFlags = object_step();
+    o->oPosX += m->vel[0];
+    o->oPosZ += m->vel[2];
     if (m->vel[1] != 0) {
         o->oVelY = m->vel[1];
     }
 
-    if (!(collisionFlags & OBJ_COL_FLAG_HIT_WALL)) {
-    	o->oVelX = m->vel[0];
-        o->oVelZ = m->vel[2];
-    } else {
-        o->oVelX = 0;
-        o->oVelZ = 0;
-    }
-
-    if (!(m->action & ACT_FLAG_AIR)) {
-        vec3f_add(&o->oPosX, &o->oVelX);
-    }
-    o->oForwardVel = m->forwardVel;
     o->header.gfx.sharedChild = gMarioObject->header.gfx.sharedChild;
 
     struct Surface *floor = NULL;
