@@ -37,3 +37,8 @@ u8 chs_cond_remove_cap(void) {
     s32 flags = save_file_get_flags();
     return !(flags & (SAVE_FLAG_CAP_ON_GROUND | SAVE_FLAG_CAP_ON_KLEPTO | SAVE_FLAG_CAP_ON_MR_BLIZZARD | SAVE_FLAG_CAP_ON_UKIKI));
 }
+
+u8 chs_cond_disable_caps(void) {
+    s32 flags = save_file_get_flags();
+    return (flags & (SAVE_FLAG_HAVE_WING_CAP | SAVE_FLAG_HAVE_METAL_CAP | SAVE_FLAG_HAVE_VANISH_CAP));
+}

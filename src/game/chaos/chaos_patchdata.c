@@ -1221,6 +1221,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "No Cap",
         .shortDescription  = "Removes Mario's cap and places it in a valid stage somewhere.",
     },
+    [CHAOS_PATCH_DISABLE_CAPS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .conditionalFunc   = chs_cond_disable_caps,
+
+        .name              = "Boxing Day",
+        .shortDescription  = "Temporarily disables all cap blocks.",
+    },
 
 // Input Modifiers
     [CHAOS_PATCH_BUTTON_BROKEN_B] = {
