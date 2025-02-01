@@ -15,6 +15,7 @@
 #include "game/area.h"
 #include "course_table.h"
 #include "audio/external.h"
+#include "game/object_list_processor.h"
 
 /*
     Green Demon
@@ -24,6 +25,10 @@ u8 chs_cond_green_demon(void) {
 }
 
 void chs_act_green_demon(void) {
+    if(!gMarioObject) {
+        return;
+    }
+
     if(gCurrCourseNum != COURSE_NONE) {
         spawn_object_abs_with_rot(gMarioState->marioObj, 0, MODEL_GREEN_DEMON, bhvGreenDemon,
                             gMarioState->pos[0], gMarioState->pos[1], gMarioState->pos[2], 0, 0, 0);
@@ -160,7 +165,7 @@ u32 bullet_pattern_3() {
 u32 bullet_pattern_4() {
     struct ChaosActiveEntry *this;
     chaos_find_first_active_patch(CHAOS_PATCH_BULLET_HELL, &this);
-    if(this->frameTimer % 15) {
+    if(this->frameTimer % 30) {
         return FALSE;
     }
     f32 marioX = gMarioState->pos[0];
@@ -189,7 +194,7 @@ u32 bullet_pattern_4() {
         bullet->oForwardVel = 50.0f;
         bullet->oChaosBillTTL = 30;
     }
-    if(this->frameTimer > 90) {
+    if(this->frameTimer > 180) {
         return TRUE;
     } else {
         return FALSE;
@@ -237,7 +242,7 @@ u32 bullet_pattern_5() {
 }
 
 /*
-    One burst of long lasting spirals around Mario
+    3 rounds of spirals around Mario
 */
 u32 bullet_pattern_6() {
     f32 marioX = gMarioState->pos[0];
@@ -249,21 +254,32 @@ u32 bullet_pattern_6() {
     f32 billYaw = 0;
     s16 offset;
 
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_BULLET_HELL, &this);
+
+    if(this->frameTimer % 60) {
+        return FALSE;
+    }
+
     for(int i = 0; i < 4; i++) {
         offset = 0x2000 + (0x4000 * i);
-        billYaw = (gMarioState->faceAngle[1] - 0x8000) + offset; 
-        billX = marioX + (1000 * sins(gMarioState->faceAngle[1] + offset));
+        billYaw = (gMarioState->faceAngle[1]) + offset; 
+        billX = marioX + (800 * sins(gMarioState->faceAngle[1] + offset));
         billY = marioY + 125;
-        billZ = marioZ + (1000 * coss(gMarioState->faceAngle[1] + offset));
+        billZ = marioZ + (800 * coss(gMarioState->faceAngle[1] + offset));
 
         struct Object *bullet = spawn_object_abs_with_rot(gMarioState->marioObj, 0, MODEL_CHAOS_BULLET_BILL, 
                                                         bhvChaosBulletBill, billX, billY, billZ, 0, billYaw, 0);
         bullet->oBehParams2ndByte = BULLET_TYPE_SPIRAL;
-        bullet->oForwardVel = 60.0f;
-        bullet->oChaosBillTTL = 150;
+        bullet->oForwardVel = 100.0f;
+        bullet->oChaosBillTTL = 35;
     }
 
-    return TRUE;
+    if(this->frameTimer == 180) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
 }
 
 #define CHS_NUM_HELL_PATTERNS   6

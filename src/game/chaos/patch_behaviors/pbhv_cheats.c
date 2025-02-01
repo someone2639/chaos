@@ -74,7 +74,7 @@ u8 chs_cond_level_reset(void) {
     struct ChaosActiveEntry *match;
     chaos_find_first_active_patch(CHAOS_PATCH_LEVEL_RESET, &match);
     if(match) {
-        return (match->remainingDuration < 9);
+        return (match->remainingDuration < 3);
     } else {
         return TRUE;
     }
