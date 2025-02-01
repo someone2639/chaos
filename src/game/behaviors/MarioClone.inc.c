@@ -157,6 +157,14 @@ void bhv_MarioClone_loop(void) {
         }
     }
 
+    struct Surface *ceil = NULL;
+    f32 ceilheight = find_ceil(o->oPosX, o->oPosY, o->oPosZ, &ceil);
+    if (ceil && floor) {
+        if ((floorheight + 160.0f) > ceilheight) {
+            delete_clone(o);
+        }
+    }
+
     // char rr[100];
     // sprintf(rr, "VELY %f\n", o->oVelY);
     // osSyncPrintf(rr);
