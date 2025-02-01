@@ -1550,4 +1550,14 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Sticky Wall Jump",
         .shortDescription  = "Stick to walls! This really makes you FEEL like Spider-Man!",
     },
+    [CHAOS_PATCH_BETA] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 10,
+
+        .name              = "Beta",
+        .shortDescription  = "YAAHAA!!!",
+    },
 };
