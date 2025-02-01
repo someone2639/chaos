@@ -7,6 +7,7 @@
 #include "behavior_data.h"
 #include "camera.h"
 #include "emutest.h"
+#include "engine/behavior_script.h"
 #include "engine/graph_node.h"
 #include "engine/math_util.h"
 #include "engine/surface_collision.h"
@@ -259,8 +260,18 @@ void play_mario_jump_sound(struct MarioState *m) {
                        m->marioObj->header.gfx.cameraToObject);
         } else {
 #endif
-            play_sound(SOUND_MARIO_YAH_WAH_HOO + ((gAudioRandom % 3) << 16),
-                       m->marioObj->header.gfx.cameraToObject);
+            if (chaos_check_if_patch_active(CHAOS_PATCH_BETA)) {
+                if (m->action != ACT_TWIRLING) {
+                    u32 sound = SOUND_MARIO_BETA_HOO;
+                    if ((random_float() < 0.5f)) {
+                        sound = SOUND_MARIO_BETA_OU;
+                    }
+                    play_sound(sound, m->marioObj->header.gfx.cameraToObject);
+                }
+            } else {
+                play_sound(SOUND_MARIO_YAH_WAH_HOO + ((gAudioRandom % 3) << 16),
+                           m->marioObj->header.gfx.cameraToObject);
+            }
 #ifndef VERSION_JP
         }
 #endif

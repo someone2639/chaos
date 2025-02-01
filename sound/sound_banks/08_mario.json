@@ -159,7 +159,22 @@
         "inst27": {
             "release_rate": 208,
             "envelope": "envelope0",
-            "sound": "1B_mario_YAAHAA"
+            "sound": "1B_mario_HOO"
+        },
+        "inst28": {
+            "release_rate": 208,
+            "envelope": "envelope0",
+            "sound": "1C_mario_OU"
+        },
+        "inst29": {
+            "release_rate": 208,
+            "envelope": "envelope0",
+            "sound": "1C_mario_HAA"
+        },
+        "inst30": {
+            "release_rate": 208,
+            "envelope": "envelope0",
+            "sound": "1D_mario_YAAHAA"
         }
     },
     "instrument_list": [
@@ -190,6 +205,9 @@
         "inst24",
         "inst25",
         "inst26",
-        "inst27"
+        "inst27",
+        "inst28",
+        "inst29",
+        "inst30"
     ]
 }
