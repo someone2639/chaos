@@ -373,6 +373,11 @@ void process_master_quest_transition(struct GraphNodeRoot *node) {
         return;
     }
 
+    if (isGameFlipped && node->width > 10) {
+        // instant warp fix
+        node->width = fliptarget;
+    }
+
     #define FS_SWAPSPEED 5
     #define FS_SNAPLEFT -156
     #define FS_SNAPRIGHT 156
