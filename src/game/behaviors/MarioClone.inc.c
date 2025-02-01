@@ -136,7 +136,11 @@ void bhv_MarioClone_loop(void) {
 
     struct Surface *floor = NULL;
     f32 floorheight = find_floor(o->oPosX, o->oPosY, o->oPosZ, &floor);
+
+    u8 wasOOB = FALSE;
+
     if (!floor) {
+        wasOOB = TRUE;
         floorheight = find_floor(o->oPosX, o->oPosY + 100.0f, o->oPosZ, &floor);
         if (!floor) {
             delete_clone(o);
@@ -158,7 +162,12 @@ void bhv_MarioClone_loop(void) {
     }
 
     struct Surface *ceil = NULL;
-    f32 ceilheight = find_ceil(o->oPosX, o->oPosY, o->oPosZ, &ceil);
+    f32 ceilheight;
+    if (wasOOB) {
+        ceilheight = find_ceil(o->oPosX, o->oPosY + 100.0f, o->oPosZ, &ceil);
+    } else {
+        ceilheight = find_ceil(o->oPosX, o->oPosY + 50.0f, o->oPosZ, &ceil);
+    }
     if (ceil && floor) {
         if ((floorheight + 160.0f) > ceilheight) {
             delete_clone(o);
