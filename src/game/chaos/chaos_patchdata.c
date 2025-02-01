@@ -1558,6 +1558,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration          = 10,
 
         .name              = "Beta",
-        .shortDescription  = "YAAHAA!!!",
+        .shortDescription  = "YAAHAA!!! please give me bps for betah triple jump",
+        .longDescription   = "HUD by robichu, sounds from the Internet archive."
     },
 };

@@ -91,15 +91,48 @@ void render_hud_small_tex_lut(s32 x, s32 y, u8 *texture) {
  * Renders power meter health segment texture using a table list.
  */
 void render_power_meter_health_segment(s16 numHealthWedges) {
-    u8 *(*healthLUT)[] = segmented_to_virtual(&power_meter_health_segments_lut);
+    f32 xy[2] = {0, 0};
+    Mtx *mtx = alloc_display_list(sizeof(Mtx));
+
+    static f32 beta_xycorrection[][2] = {
+        {6, 0}, // 0
+        {7, 0}, // 1
+        {7, 0}, // 2
+        {7, -3}, // 3
+        {6, -4}, // 4
+        {6, -3}, // 5
+        {1, 0}, // 6
+        {-4, 0}, // 7
+        {-4, 0}, // 8
+    };
 
     gDPPipeSync(gDisplayListHead++);
-    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1,
-                       (*healthLUT)[numHealthWedges - 1]);
+    if (chaos_check_if_patch_active(CHAOS_PATCH_BETA)) {
+        extern u8 *power_meter_beta_lut;
+        u8 *(*betaLUT)[] = segmented_to_virtual(&power_meter_beta_lut);
+        gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, (*betaLUT)[numHealthWedges]);
+        xy[0] = beta_xycorrection[numHealthWedges][0];
+        xy[1] = beta_xycorrection[numHealthWedges][1];
+    } else {
+        u8 *(*healthLUT)[] = segmented_to_virtual(&power_meter_health_segments_lut);
+        gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1,
+                           (*healthLUT)[numHealthWedges - 1]);
+    }
+
+    guTranslate(mtx, xy[0], xy[1], 0);
+
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx++),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+
+    // do this here to correctly transform verts
+    gSPDisplayList(gDisplayListHead++, &dl_power_meter_health_segments_begin);
+
     gDPLoadSync(gDisplayListHead++);
     gDPLoadBlock(gDisplayListHead++, G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES));
     gSP1Triangle(gDisplayListHead++, 0, 1, 2, 0);
     gSP1Triangle(gDisplayListHead++, 0, 2, 3, 0);
+
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
 /**
@@ -117,10 +150,14 @@ void render_dl_power_meter(s16 numHealthWedges) {
 
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx++),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    gSPDisplayList(gDisplayListHead++, &dl_power_meter_base);
+    if (chaos_check_if_patch_active(CHAOS_PATCH_BETA)) {
+        extern Gfx dl_power_meter_beta[];
+        gSPDisplayList(gDisplayListHead++, &dl_power_meter_beta);
+    } else {
+        gSPDisplayList(gDisplayListHead++, &dl_power_meter_base);
+    }
 
-    if (numHealthWedges != 0) {
-        gSPDisplayList(gDisplayListHead++, &dl_power_meter_health_segments_begin);
+    if ((numHealthWedges != 0) || chaos_check_if_patch_active(CHAOS_PATCH_BETA)) {
         render_power_meter_health_segment(numHealthWedges);
         gSPDisplayList(gDisplayListHead++, &dl_power_meter_health_segments_end);
     }
