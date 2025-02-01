@@ -1209,6 +1209,30 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Wall Hacks",
         .shortDescription  = "Mario can now walk through all vanish cap walls, even without wearing the cap!",
     },
+    [CHAOS_PATCH_REMOVE_CAP] = {
+        .durationType      = CHAOS_DURATION_ONCE,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = TRUE,
+
+        .activatedInitFunc = chs_act_remove_cap,
+        .conditionalFunc   = chs_cond_remove_cap,
+
+        .name              = "No Cap",
+        .shortDescription  = "Removes Mario's cap and places it in a valid stage somewhere.",
+    },
+    [CHAOS_PATCH_DISABLE_CAPS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .conditionalFunc   = chs_cond_disable_caps,
+
+        .name              = "Boxing Day",
+        .shortDescription  = "Temporarily disables all cap blocks.",
+    },
 
 // Input Modifiers
     [CHAOS_PATCH_BUTTON_BROKEN_B] = {
@@ -1550,6 +1574,26 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Sticky Wall Jump",
         .shortDescription  = "Stick to walls! This really makes you FEEL like Spider-Man!",
     },
+    [CHAOS_PATCH_PLATFORM_MISPLACEMENT] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 20,
+
+        .name              = "Platform Misplacement",
+        .shortDescription  = "Moving platforms will move Mario more than usual.",
+    },
+    [CHAOS_PATCH_SLIPPERY_FLOORS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 8,
+
+        .name              = "Wet Floor",
+        .shortDescription  = "All floors will be slippery.",
+    },
     [CHAOS_PATCH_BETA] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_POSITIVE,
@@ -1559,6 +1603,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Beta",
         .shortDescription  = "YAAHAA!!! please give me bps for betah triple jump",
-        .longDescription   = "HUD by robichu, sounds from the Internet archive."
+        .longDescription   = "HUD by robichu, sounds from the Internet archive. This will be more credit than any beta hacker will ever give :)"
     },
 };
