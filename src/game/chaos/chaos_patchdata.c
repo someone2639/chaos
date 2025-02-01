@@ -1560,4 +1560,14 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Platform Misplacement",
         .shortDescription  = "Moving platforms will move Mario more than usual.",
     },
+    [CHAOS_PATCH_SLIPPERY_FLOORS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 8,
+
+        .name              = "Wet Floor",
+        .shortDescription  = "All floors will be slippery.",
+    },
 };

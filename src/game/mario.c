@@ -391,6 +391,10 @@ void mario_set_forward_vel(struct MarioState *m, f32 forwardVel) {
 s32 mario_get_floor_class(struct MarioState *m) {
     s32 floorClass;
 
+    if(chaos_check_if_patch_active(CHAOS_PATCH_SLIPPERY_FLOORS)) {
+        return SURFACE_CLASS_VERY_SLIPPERY;
+    }
+
     // The slide terrain type defaults to slide slipperiness.
     // This doesn't matter too much since normally the slide terrain
     // is checked for anyways.
