@@ -122,8 +122,12 @@ void bhv_MarioClone_loop(void) {
     o->oGravity = 1.0f;
 
 	UNUSED u32 collisionFlags = object_step();
-    o->oPosX += m->vel[0];
-    o->oPosZ += m->vel[2];
+    if (m->action & ACT_FLAG_ON_POLE) {
+        o->oVelY = 0;
+    } else {
+        o->oPosX += m->vel[0];
+        o->oPosZ += m->vel[2];
+    }
     if (m->vel[1] != 0) {
         o->oVelY = m->vel[1];
     }
