@@ -1910,7 +1910,7 @@ const Texture *const main_hud_lut[] = {
                    0x0, texture_hud_char_minus, texture_hud_char_multiply, texture_hud_char_coin,
     texture_hud_char_mario_head, texture_hud_char_star, texture_hud_char_decimal_point, texture_hud_char_beta_key,
     texture_hud_char_apostrophe, texture_hud_char_double_quote, texture_hud_char_umlaut, 0x0
-else
+#else
     texture_hud_char_0, texture_hud_char_1, texture_hud_char_2, texture_hud_char_3,
     texture_hud_char_4, texture_hud_char_5, texture_hud_char_6, texture_hud_char_7,
     texture_hud_char_8, texture_hud_char_9, texture_hud_char_A, texture_hud_char_B,
@@ -1926,6 +1926,7 @@ else
                       0x0,                   0x0, texture_hud_char_multiply, texture_hud_char_coin,
     texture_hud_char_mario_head, texture_hud_char_star, texture_hud_char_decimal_point, texture_hud_char_beta_key,
     texture_hud_char_apostrophe, texture_hud_char_double_quote,
+#endif
 };
 
 // Main small font print table 0x02008338-0x02008737

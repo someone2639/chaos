@@ -326,7 +326,7 @@ void render_hud_coins(void) {
         buf[1] = 0;
     }
 
-    print_text(168, HUD_TOP_Y, (const char*)buf); // 'Coin' glyph
+    print_text(168, HUD_TOP_Y, buf); // 'Coin' glyph
     print_text(184, HUD_TOP_Y, "*"); // 'X' glyph
     print_text_fmt_int(198, HUD_TOP_Y, "%d", gHudDisplay.coins);
 }
@@ -361,7 +361,7 @@ void render_hud_stars(void) {
         showX = 1;
     }
 
-    print_text(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(HUD_STARS_X), HUD_TOP_Y, (const char*)buf); // 'Star' glyph
+    print_text(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(HUD_STARS_X), HUD_TOP_Y, buf); // 'Star' glyph
     if (showX == 1) {
         print_text(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(HUD_STARS_X) + 16, HUD_TOP_Y, "*"); // 'X' glyph
     }
