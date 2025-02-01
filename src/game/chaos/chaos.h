@@ -145,6 +145,7 @@ enum ChaosPatchID {
 // Cap Effects
     CHAOS_PATCH_WING_CAP,
     CHAOS_PATCH_VANISH_CAP,
+    CHAOS_PATCH_REMOVE_CAP,
 
 // Input Modifiers
     CHAOS_PATCH_BUTTON_BROKEN_B,

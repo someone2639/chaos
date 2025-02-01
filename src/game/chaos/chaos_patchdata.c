@@ -1209,6 +1209,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Wall Hacks",
         .shortDescription  = "Mario can now walk through all vanish cap walls, even without wearing the cap!",
     },
+    [CHAOS_PATCH_REMOVE_CAP] = {
+        .durationType      = CHAOS_DURATION_ONCE,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = TRUE,
+
+        .activatedInitFunc = chs_act_remove_cap,
+        .conditionalFunc   = chs_cond_remove_cap,
+
+        .name              = "No Cap",
+        .shortDescription  = "Removes Mario's cap and places it in a valid stage somewhere.",
+    },
 
 // Input Modifiers
     [CHAOS_PATCH_BUTTON_BROKEN_B] = {

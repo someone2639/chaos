@@ -173,6 +173,8 @@ void chs_act_input_lag(void);
 
 // Cap Effects
 void chs_update_wing_cap(void);
+void chs_act_remove_cap(void);
+u8 chs_cond_remove_cap(void);
 
 // Size Modifiers
 void chs_act_mario_big(void);
