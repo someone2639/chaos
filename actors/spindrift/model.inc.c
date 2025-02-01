@@ -113,7 +113,7 @@ const Gfx spindrift_seg5_dl_050002A0[] = {
 
 // 0x05000328 - 0x050003D8
 const Gfx spindrift_seg5_dl_05000328[] = {
-    gsSPClearGeometryMode(G_CULL_BACK),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT),
     gsSPLight(&spindrift_seg5_lights_05000090.l, 1),
     gsSPLight(&spindrift_seg5_lights_05000090.a, 2),
     gsSPVertex(spindrift_seg5_vertex_05000180, 9, 0),

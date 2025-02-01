@@ -34,7 +34,7 @@ static const Gfx inside_castle_seg7_dl_07051B10[] = {
 // 0x07051B60 - 0x07051B88
 const Gfx inside_castle_seg7_dl_07051B60[] = {
     gsDPPipeSync(),
-    gsSPClearGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT | G_SHADING_SMOOTH),
     gsSPDisplayList(inside_castle_seg7_dl_07051B10),
     gsSPSetGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
     gsSPEndDisplayList(),

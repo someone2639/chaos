@@ -50,7 +50,7 @@ const Gfx dirt_seg3_dl_0302BFF8[] = {
 const Gfx dirt_seg3_dl_0302C028[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_DECALRGBA, G_CC_DECALRGBA),
-    gsSPClearGeometryMode(G_CULL_BACK),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),
@@ -108,7 +108,7 @@ static const Vtx dirt_seg3_vertex_0302C198[] = {
 
 // 0x0302C238 - 0x0302C298
 const Gfx dirt_seg3_dl_0302C238[] = {
-    gsSPClearGeometryMode(G_CULL_BACK),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT),
     gsSPVertex(dirt_seg3_vertex_0302C0F8, 10, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  4,  1, 0x0),
     gsSP2Triangles( 0,  5,  3, 0x0,  6,  7,  0, 0x0),
@@ -166,7 +166,7 @@ const Gfx dirt_seg3_dl_0302C318[] = {
 const Gfx dirt_seg3_dl_0302C378[] = {
     gsSPLight(&dirt_seg3_lights_0302BD68.l, 1),
     gsSPLight(&dirt_seg3_lights_0302BD68.a, 2),
-    gsSPClearGeometryMode(G_CULL_BACK),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT),
     gsSPVertex(dirt_seg3_vertex_0302C098, 3, 0),
     gsSP1Triangle( 0,  1,  2, 0x0),
     gsSPSetGeometryMode(G_CULL_BACK),
@@ -177,7 +177,7 @@ const Gfx dirt_seg3_dl_0302C378[] = {
 const Gfx dirt_seg3_dl_0302C3B0[] = {
     gsSPLight(&dirt_seg3_lights_0302BD80.l, 1),
     gsSPLight(&dirt_seg3_lights_0302BD80.a, 2),
-    gsSPClearGeometryMode(G_CULL_BACK),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT),
     gsSPVertex(dirt_seg3_vertex_0302C098, 3, 0),
     gsSP1Triangle( 0,  1,  2, 0x0),
     gsSPSetGeometryMode(G_CULL_BACK),
@@ -188,7 +188,7 @@ const Gfx dirt_seg3_dl_0302C3B0[] = {
 const Gfx dirt_seg3_dl_0302C3E8[] = {
     gsSPLight(&dirt_seg3_lights_0302BD98.l, 1),
     gsSPLight(&dirt_seg3_lights_0302BD98.a, 2),
-    gsSPClearGeometryMode(G_CULL_BACK),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT),
     gsSPVertex(dirt_seg3_vertex_0302C098, 3, 0),
     gsSP1Triangle( 0,  1,  2, 0x0),
     gsSPSetGeometryMode(G_CULL_BACK),
@@ -199,7 +199,7 @@ const Gfx dirt_seg3_dl_0302C3E8[] = {
 const Gfx dirt_seg3_dl_0302C420[] = {
     gsSPLight(&dirt_seg3_lights_0302BDB0.l, 1),
     gsSPLight(&dirt_seg3_lights_0302BDB0.a, 2),
-    gsSPClearGeometryMode(G_CULL_BACK),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT),
     gsSPVertex(dirt_seg3_vertex_0302C098, 3, 0),
     gsSP1Triangle( 0,  1,  2, 0x0),
     gsSPSetGeometryMode(G_CULL_BACK),
@@ -208,7 +208,7 @@ const Gfx dirt_seg3_dl_0302C420[] = {
 
 // 0x0302C458 - 0x0302C480
 const Gfx dirt_seg3_dl_0302C458[] = {
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT),
     gsSPVertex(dirt_seg3_vertex_0302C0C8, 3, 0),
     gsSP1Triangle( 0,  1,  2, 0x0),
     gsSPSetGeometryMode(G_LIGHTING | G_CULL_BACK),
