@@ -1550,4 +1550,14 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Sticky Wall Jump",
         .shortDescription  = "Stick to walls! This really makes you FEEL like Spider-Man!",
     },
+    [CHAOS_PATCH_PLATFORM_MISPLACEMENT] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 20,
+
+        .name              = "Platform Misplacement",
+        .shortDescription  = "Moving platforms will move Mario more than usual.",
+    },
 };
