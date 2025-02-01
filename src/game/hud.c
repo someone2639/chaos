@@ -300,7 +300,15 @@ void render_hud_power_meter(void) {
  * Renders the amount of lives Mario has.
  */
 void render_hud_mario_lives(void) {
-    print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(22), HUD_TOP_Y, ","); // 'Mario Head' glyph
+    char buf[3];
+    if (chaos_check_if_patch_active(CHAOS_PATCH_BETA)) {
+        buf[0] = '%' + 1;
+        buf[1] = 0;
+    } else {
+        buf[0] = ',';
+        buf[1] = 0;
+    }
+    print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(22), HUD_TOP_Y, buf); // 'Mario Head' glyph
     print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(38), HUD_TOP_Y, "*"); // 'X' glyph
     print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(54), HUD_TOP_Y, "%d", gHudDisplay.lives);
 }
@@ -309,7 +317,16 @@ void render_hud_mario_lives(void) {
  * Renders the amount of coins collected.
  */
 void render_hud_coins(void) {
-    print_text(168, HUD_TOP_Y, "+"); // 'Coin' glyph
+    char buf[3];
+    if (chaos_check_if_patch_active(CHAOS_PATCH_BETA)) {
+        buf[0] = '%' + 2;
+        buf[1] = 0;
+    } else {
+        buf[0] = '+';
+        buf[1] = 0;
+    }
+
+    print_text(168, HUD_TOP_Y, (const char*)buf); // 'Coin' glyph
     print_text(184, HUD_TOP_Y, "*"); // 'X' glyph
     print_text_fmt_int(198, HUD_TOP_Y, "%d", gHudDisplay.coins);
 }
@@ -326,6 +343,15 @@ void render_hud_coins(void) {
  */
 void render_hud_stars(void) {
     s8 showX = 0;
+    char buf[3];
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_BETA)) {
+        buf[0] = '%' + 3;
+        buf[1] = 0;
+    } else {
+        buf[0] = '+';
+        buf[1] = 0;
+    }
 
     if (gHudFlash == 1 && gGlobalTimer & 8) {
         return;
@@ -335,7 +361,7 @@ void render_hud_stars(void) {
         showX = 1;
     }
 
-    print_text(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(HUD_STARS_X), HUD_TOP_Y, "-"); // 'Star' glyph
+    print_text(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(HUD_STARS_X), HUD_TOP_Y, (const char*)buf); // 'Star' glyph
     if (showX == 1) {
         print_text(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(HUD_STARS_X) + 16, HUD_TOP_Y, "*"); // 'X' glyph
     }
