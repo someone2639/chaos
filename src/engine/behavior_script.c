@@ -989,6 +989,8 @@ void cur_obj_update(void) {
                 extern struct Object *gMarthObject;
                 gMarthObject = gCurrentObject;
             }
+        } else {
+            gMarthObject = NULL;
         }
     }
 
