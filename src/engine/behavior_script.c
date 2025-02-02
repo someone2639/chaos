@@ -11,6 +11,8 @@
 #include "game/obj_behaviors_2.h"
 #include "game/object_helpers.h"
 #include "game/object_list_processor.h"
+#include "game/chaos/chaos.h"
+#include "game/level_update.h"
 #include "graph_node.h"
 #include "surface_collision.h"
 
@@ -980,6 +982,17 @@ void cur_obj_update(void) {
 
     if (objFlags & OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE) {
         obj_update_gfx_pos_and_angle(gCurrentObject);
+    }
+
+    if (objFlags & OBJ_FLAG_HOLDABLE) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_MARTH_GRAB)) {
+            if (gCurrentObject->oDistanceToMario < 500.0f) {
+                extern struct Object *gMarthObject;
+                gMarthObject = gCurrentObject;
+            }
+        } else {
+            gMarthObject = NULL;
+        }
     }
 
     // Handle visibility of object
