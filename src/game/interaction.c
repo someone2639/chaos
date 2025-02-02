@@ -132,6 +132,7 @@ static u32 sBackwardKnockbackActions[][3] = {
 static u8 sDisplayingDoorText = FALSE;
 static u8 sJustTeleported = FALSE;
 static u8 sPssSlideStarted = FALSE;
+struct Object *gMarthObject = NULL;
 
 /**
  * Returns the type of cap Mario is wearing.
@@ -423,7 +424,6 @@ u32 mario_check_object_grab(struct MarioState *m) {
     u32 result = FALSE;
     const BehaviorScript *script;
 
-    extern struct Object *gMarthObject;
     if (gMarthObject && !(m->action & ACT_FLAG_AIR) && (m->action != ACT_DIVE_SLIDE)) {
         s16 facingDYaw = mario_obj_angle_to_object(m, gMarthObject) - m->faceAngle[1];
         if (facingDYaw >= -0x3AAA && facingDYaw <= 0x3AAA) {

@@ -12,6 +12,7 @@
 #include "game/object_helpers.h"
 #include "game/object_list_processor.h"
 #include "game/chaos/chaos.h"
+#include "game/level_update.h"
 #include "graph_node.h"
 #include "surface_collision.h"
 
@@ -902,7 +903,7 @@ static BhvCommandProc BehaviorCmdTable[] = {
     bhv_cmd_set_int_unused,
     bhv_cmd_spawn_water_droplet,
 };
-#include "game/level_update.h"
+
 // Execute the behavior script of the current object, process the object flags, and other miscellaneous code for updating objects.
 void cur_obj_update(void) {
     UNUSED u8 filler[4];
