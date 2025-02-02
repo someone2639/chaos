@@ -73,6 +73,9 @@ build/*
 !/textures/crash_custom/*.png
 # libultra
 
+!/textures/segment2/beta*.png
+!/actors/power_meter/beta*.png
+
 !/lib/**/*.o
 !/lib/*.a
 !/lib/gcclib/*.a
