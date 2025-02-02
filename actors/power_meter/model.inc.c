@@ -29,11 +29,38 @@ ALIGNED8 static const Texture beta_7[] = {
 ALIGNED8 static const Texture beta_8[] = {
 #include "actors/power_meter/beta_8.rgba16.inc.c"
 };
+ALIGNED8 static const Texture beta_1_super[] = {
+#include "actors/power_meter/beta_1_super.rgba16.inc.c"
+};
+ALIGNED8 static const Texture beta_2_super[] = {
+#include "actors/power_meter/beta_2_super.rgba16.inc.c"
+};
+ALIGNED8 static const Texture beta_3_super[] = {
+#include "actors/power_meter/beta_3_super.rgba16.inc.c"
+};
+ALIGNED8 static const Texture beta_4_super[] = {
+#include "actors/power_meter/beta_4_super.rgba16.inc.c"
+};
+ALIGNED8 static const Texture beta_5_super[] = {
+#include "actors/power_meter/beta_5_super.rgba16.inc.c"
+};
+ALIGNED8 static const Texture beta_6_super[] = {
+#include "actors/power_meter/beta_6_super.rgba16.inc.c"
+};
+ALIGNED8 static const Texture beta_7_super[] = {
+#include "actors/power_meter/beta_7_super.rgba16.inc.c"
+};
+ALIGNED8 static const Texture beta_8_super[] = {
+#include "actors/power_meter/beta_8_super.rgba16.inc.c"
+};
 ALIGNED8 static const Texture beta_left[] = {
 #include "actors/power_meter/beta_left.rgba16.inc.c"
 };
 ALIGNED8 static const Texture beta_right[] = {
 #include "actors/power_meter/beta_right.rgba16.inc.c"
+};
+ALIGNED8 static const Texture beta_right_super[] = {
+#include "actors/power_meter/beta_right_super.rgba16.inc.c"
 };
 
 // 0x030233E0
@@ -150,6 +177,14 @@ const Texture *const power_meter_beta_lut[] = {
     beta_6,
     beta_7,
     beta_8,
+    beta_1_super,
+    beta_2_super,
+    beta_3_super,
+    beta_4_super,
+    beta_5_super,
+    beta_6_super,
+    beta_7_super,
+    beta_8_super,
 };
 
 // 0x03029400
@@ -206,6 +241,29 @@ const Gfx dl_power_meter_beta[] = {
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 64 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, beta_right),
+    gsDPLoadSync(),
+    gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 64 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
+    gsSP2Triangles( 4,  5,  6, 0x0,  4,  6,  7, 0x0),
+    gsSPEndDisplayList(),
+};
+
+const Gfx dl_power_meter_beta_healthup[] = {
+    gsDPPipeSync(),
+    gsSPClearGeometryMode(G_LIGHTING),
+    gsDPSetCombineMode(G_CC_DECALRGBA, G_CC_DECALRGBA),
+    gsDPSetRenderMode(G_RM_TEX_EDGE, G_RM_TEX_EDGE2),
+    gsDPSetTextureFilter(G_TF_POINT),
+    gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
+    gsSPVertex(vertex_power_meter_base, 8, 0),
+    gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
+    gsDPTileSync(),
+    gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_CLAMP, 6, G_TX_NOLOD, G_TX_CLAMP, 5, G_TX_NOLOD),
+    gsDPSetTileSize(0, 0, 0, (32 - 1) << G_TEXTURE_IMAGE_FRAC, (64 - 1) << G_TEXTURE_IMAGE_FRAC),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, beta_left),
+    gsDPLoadSync(),
+    gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 64 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
+    gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
+    gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, beta_right_super),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 32 * 64 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES)),
     gsSP2Triangles( 4,  5,  6, 0x0,  4,  6,  7, 0x0),

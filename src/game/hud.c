@@ -104,6 +104,15 @@ void render_power_meter_health_segment(s16 numHealthWedges) {
         {1, 0}, // 6
         {-4, 0}, // 7
         {-4, 0}, // 8
+        // health up
+        {7, 0}, // 1
+        {7, 0}, // 2
+        {7, -3}, // 3
+        {6, -4}, // 4
+        {6, -3}, // 5
+        {1, 0}, // 6
+        {-4, 0}, // 7
+        {-4, 0}, // 8
     };
 
     gDPPipeSync(gDisplayListHead++);
@@ -151,8 +160,12 @@ void render_dl_power_meter(s16 numHealthWedges) {
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx++),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     if (chaos_check_if_patch_active(CHAOS_PATCH_BETA)) {
-        extern Gfx dl_power_meter_beta[];
-        gSPDisplayList(gDisplayListHead++, &dl_power_meter_beta);
+        extern Gfx dl_power_meter_beta[], dl_power_meter_beta_healthup[];
+        if (numHealthWedges > 8) {
+            gSPDisplayList(gDisplayListHead++, &dl_power_meter_beta_healthup);
+        } else {
+            gSPDisplayList(gDisplayListHead++, &dl_power_meter_beta);
+        }
     } else {
         gSPDisplayList(gDisplayListHead++, &dl_power_meter_base);
     }
