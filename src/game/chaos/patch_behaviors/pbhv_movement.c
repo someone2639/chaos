@@ -72,3 +72,7 @@ void chs_update_galaxy_twirl(void) {
 u8 chs_cond_no_fall_damage(void) {
     return(!chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_FALL_DAMAGE));
 }
+
+u8 chs_cond_harder_longjumps(void) {
+    return(!chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_LONG_JUMP));
+}

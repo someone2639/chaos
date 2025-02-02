@@ -1642,6 +1642,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 15,
 
+        .conditionalFunc   = chs_cond_harder_longjumps,
+
         .name              = "Long Jump Lottery",
         .shortDescription  = "Get a Ground Pound instead of a Long Jump at random!",
     },
