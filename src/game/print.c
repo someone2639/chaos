@@ -318,6 +318,18 @@ s8 char_to_glyph_index(char c) {
         return GLYPH_PERCENT; // %, JP only
     }
 
+    if (c == '%' + 1) {
+        return GLYPH_PERCENT + 1;
+    }
+
+    if (c == '%' + 2) {
+        return GLYPH_PERCENT + 2;
+    }
+
+    if (c == '%' + 3) {
+        return GLYPH_PERCENT + 3;
+    }
+
     if (c == '*') {
         return GLYPH_MULTIPLY; // x
     }

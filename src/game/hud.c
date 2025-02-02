@@ -91,15 +91,57 @@ void render_hud_small_tex_lut(s32 x, s32 y, u8 *texture) {
  * Renders power meter health segment texture using a table list.
  */
 void render_power_meter_health_segment(s16 numHealthWedges) {
-    u8 *(*healthLUT)[] = segmented_to_virtual(&power_meter_health_segments_lut);
+    f32 xy[2] = {0, 0};
+    Mtx *mtx = alloc_display_list(sizeof(Mtx));
+
+    static f32 beta_xycorrection[][2] = {
+        {6, 0}, // 0
+        {7, 0}, // 1
+        {7, 0}, // 2
+        {7, -3}, // 3
+        {6, -4}, // 4
+        {6, -3}, // 5
+        {1, 0}, // 6
+        {-4, 0}, // 7
+        {-4, 0}, // 8
+        // health up
+        {7, 0}, // 1
+        {7, 0}, // 2
+        {7, -3}, // 3
+        {6, -4}, // 4
+        {6, -3}, // 5
+        {1, 0}, // 6
+        {-4, 0}, // 7
+        {-4, 0}, // 8
+    };
 
     gDPPipeSync(gDisplayListHead++);
-    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1,
-                       (*healthLUT)[numHealthWedges - 1]);
+    if (chaos_check_if_patch_active(CHAOS_PATCH_BETA)) {
+        extern u8 *power_meter_beta_lut;
+        u8 *(*betaLUT)[] = segmented_to_virtual(&power_meter_beta_lut);
+        gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, (*betaLUT)[numHealthWedges]);
+        xy[0] = beta_xycorrection[numHealthWedges][0];
+        xy[1] = beta_xycorrection[numHealthWedges][1];
+    } else {
+        u8 *(*healthLUT)[] = segmented_to_virtual(&power_meter_health_segments_lut);
+        gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1,
+                           (*healthLUT)[numHealthWedges - 1]);
+    }
+
+    guTranslate(mtx, xy[0], xy[1], 0);
+
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx++),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+
+    // do this here to correctly transform verts
+    gSPDisplayList(gDisplayListHead++, &dl_power_meter_health_segments_begin);
+
     gDPLoadSync(gDisplayListHead++);
     gDPLoadBlock(gDisplayListHead++, G_TX_LOADTILE, 0, 0, 32 * 32 - 1, CALC_DXT(32, G_IM_SIZ_16b_BYTES));
     gSP1Triangle(gDisplayListHead++, 0, 1, 2, 0);
     gSP1Triangle(gDisplayListHead++, 0, 2, 3, 0);
+
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
 /**
@@ -117,10 +159,18 @@ void render_dl_power_meter(s16 numHealthWedges) {
 
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx++),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    gSPDisplayList(gDisplayListHead++, &dl_power_meter_base);
+    if (chaos_check_if_patch_active(CHAOS_PATCH_BETA)) {
+        extern Gfx dl_power_meter_beta[], dl_power_meter_beta_healthup[];
+        if (numHealthWedges > 8) {
+            gSPDisplayList(gDisplayListHead++, &dl_power_meter_beta_healthup);
+        } else {
+            gSPDisplayList(gDisplayListHead++, &dl_power_meter_beta);
+        }
+    } else {
+        gSPDisplayList(gDisplayListHead++, &dl_power_meter_base);
+    }
 
-    if (numHealthWedges != 0) {
-        gSPDisplayList(gDisplayListHead++, &dl_power_meter_health_segments_begin);
+    if ((numHealthWedges != 0) || chaos_check_if_patch_active(CHAOS_PATCH_BETA)) {
         render_power_meter_health_segment(numHealthWedges);
         gSPDisplayList(gDisplayListHead++, &dl_power_meter_health_segments_end);
     }
@@ -263,7 +313,15 @@ void render_hud_power_meter(void) {
  * Renders the amount of lives Mario has.
  */
 void render_hud_mario_lives(void) {
-    print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(22), HUD_TOP_Y, ","); // 'Mario Head' glyph
+    char buf[3];
+    if (chaos_check_if_patch_active(CHAOS_PATCH_BETA)) {
+        buf[0] = '%' + 1;
+        buf[1] = 0;
+    } else {
+        buf[0] = ',';
+        buf[1] = 0;
+    }
+    print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(22), HUD_TOP_Y, buf); // 'Mario Head' glyph
     print_text(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(38), HUD_TOP_Y, "*"); // 'X' glyph
     print_text_fmt_int(GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(54), HUD_TOP_Y, "%d", gHudDisplay.lives);
 }
@@ -272,7 +330,16 @@ void render_hud_mario_lives(void) {
  * Renders the amount of coins collected.
  */
 void render_hud_coins(void) {
-    print_text(168, HUD_TOP_Y, "+"); // 'Coin' glyph
+    char buf[3];
+    if (chaos_check_if_patch_active(CHAOS_PATCH_BETA)) {
+        buf[0] = '%' + 2;
+        buf[1] = 0;
+    } else {
+        buf[0] = '+';
+        buf[1] = 0;
+    }
+
+    print_text(168, HUD_TOP_Y, buf); // 'Coin' glyph
     print_text(184, HUD_TOP_Y, "*"); // 'X' glyph
     print_text_fmt_int(198, HUD_TOP_Y, "%d", gHudDisplay.coins);
 }
@@ -289,6 +356,15 @@ void render_hud_coins(void) {
  */
 void render_hud_stars(void) {
     s8 showX = 0;
+    char buf[3];
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_BETA)) {
+        buf[0] = '%' + 3;
+        buf[1] = 0;
+    } else {
+        buf[0] = '+';
+        buf[1] = 0;
+    }
 
     if (gHudFlash == 1 && gGlobalTimer & 8) {
         return;
@@ -298,7 +374,7 @@ void render_hud_stars(void) {
         showX = 1;
     }
 
-    print_text(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(HUD_STARS_X), HUD_TOP_Y, "-"); // 'Star' glyph
+    print_text(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(HUD_STARS_X), HUD_TOP_Y, buf); // 'Star' glyph
     if (showX == 1) {
         print_text(GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(HUD_STARS_X) + 16, HUD_TOP_Y, "*"); // 'X' glyph
     }

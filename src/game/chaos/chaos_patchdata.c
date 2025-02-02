@@ -1594,4 +1594,15 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Wet Floor",
         .shortDescription  = "All floors will be slippery.",
     },
+    [CHAOS_PATCH_BETA] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 10,
+
+        .name              = "Beta",
+        .shortDescription  = "YAAHAA!!! please give me bps for betah triple jump",
+        .longDescription   = "HUD by robichu, sounds from the Internet archive. This will be more credit than any beta hacker will ever give :)"
+    },
 };
