@@ -1080,7 +1080,14 @@ s32 set_jump_from_landing(struct MarioState *m) {
                     if (m->flags & MARIO_WING_CAP) {
                         set_mario_action(m, ACT_FLYING_TRIPLE_JUMP, 0);
                     } else if (m->forwardVel > 20.0f) {
-                        set_mario_action(m, ACT_TRIPLE_JUMP, 0);
+                        if (chaos_check_if_patch_active(CHAOS_PATCH_BETA)) {
+                            set_mario_y_vel_based_on_fspeed(m, 69.0f, 0.0f);
+                            m->forwardVel *= 0.8f;
+                            play_sound(SOUND_MARIO_YAAHAA, m->marioObj->header.gfx.cameraToObject);
+                            set_mario_action(m, ACT_TWIRLING, 1);
+                        }else {
+                            set_mario_action(m, ACT_TRIPLE_JUMP, 0);
+                        }
                     } else {
                         set_mario_action(m, ACT_JUMP, 0);
                     }
