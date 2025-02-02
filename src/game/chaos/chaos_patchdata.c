@@ -1635,4 +1635,14 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Bring Back Level Intro Text",
         .shortDescription  = "Wow! You're smack in the middle of the battlefield!",
     },
+    [CHAOS_PATCH_HARDER_LONG_JUMPS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .name              = "Long Jump Lottery",
+        .shortDescription  = "Get a Ground Pound instead of a Long Jump at random!",
+    },
 };

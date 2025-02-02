@@ -5,6 +5,7 @@
 #include "audio/external.h"
 #include "camera.h"
 #include "engine/graph_node.h"
+#include "engine/behavior_script.h"
 #include "engine/math_util.h"
 #include "game_init.h"
 #include "interaction.h"
@@ -733,6 +734,14 @@ s32 act_long_jump(struct MarioState *m) {
         animation = MARIO_ANIM_FAST_LONGJUMP;
     } else {
         animation = MARIO_ANIM_SLOW_LONGJUMP;
+    }
+
+    if (++m->actionTimer == 6) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_HARDER_LONG_JUMPS)) {
+            if (random_float() < 0.5f) {
+                return set_mario_action(m, ACT_GROUND_POUND, 0);
+            }
+        }
     }
 
     play_mario_sound(m, SOUND_ACTION_TERRAIN_JUMP, SOUND_MARIO_YAHOO);
