@@ -901,7 +901,7 @@ static BhvCommandProc BehaviorCmdTable[] = {
     bhv_cmd_set_int_unused,
     bhv_cmd_spawn_water_droplet,
 };
-
+#include "game/level_update.h"
 // Execute the behavior script of the current object, process the object flags, and other miscellaneous code for updating objects.
 void cur_obj_update(void) {
     UNUSED u8 filler[4];
@@ -980,6 +980,14 @@ void cur_obj_update(void) {
 
     if (objFlags & OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE) {
         obj_update_gfx_pos_and_angle(gCurrentObject);
+    }
+
+    if (objFlags & OBJ_FLAG_HOLDABLE) {
+        if (gCurrentObject->oDistanceToMario < 500.0f) {
+            osSyncPrintf("SENPAI!!!");
+            extern struct Object *gMarthObject;
+            gMarthObject = gCurrentObject;
+        }
     }
 
     // Handle visibility of object
