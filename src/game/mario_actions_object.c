@@ -50,10 +50,6 @@ s32 mario_update_punch_sequence(struct MarioState *m) {
             }
 
             if (m->marioObj->header.gfx.animInfo.animFrame >= 2) {
-                if (gMarthObject) {
-                    m->interactObj = gMarthObject;
-                    gMarthObject = NULL;
-                }
                 if (mario_check_object_grab(m)) {
                     return TRUE;
                 }

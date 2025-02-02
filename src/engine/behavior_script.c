@@ -984,7 +984,6 @@ void cur_obj_update(void) {
 
     if (objFlags & OBJ_FLAG_HOLDABLE) {
         if (gCurrentObject->oDistanceToMario < 500.0f) {
-            osSyncPrintf("SENPAI!!!");
             extern struct Object *gMarthObject;
             gMarthObject = gCurrentObject;
         }

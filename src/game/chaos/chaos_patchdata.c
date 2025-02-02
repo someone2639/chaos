@@ -1623,6 +1623,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration          = 6,
 
         .name              = "Marth Grab",
-        .shortDescription  = "Grab things from across the stage!",
+        .shortDescription  = "Grab things from farther away!",
     },
 };
