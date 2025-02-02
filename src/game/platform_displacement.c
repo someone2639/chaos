@@ -8,6 +8,7 @@
 #include "object_list_processor.h"
 #include "platform_displacement.h"
 #include "types.h"
+#include "chaos/chaos.h"
 
 u16 D_8032FEC0 = 0;
 
@@ -172,7 +173,13 @@ void apply_mario_platform_displacement(void) {
     struct Object *platform = gMarioPlatform;
 
     if (!(gTimeStopState & TIME_STOP_ACTIVE) && gMarioObject != NULL && platform != NULL) {
-        apply_platform_displacement(TRUE, platform);
+        if(chaos_check_if_patch_active(CHAOS_PATCH_PLATFORM_MISPLACEMENT)) {
+            for(int i = 0; i < 4; i ++) {
+                apply_platform_displacement(TRUE, platform);
+            }
+        } else {
+            apply_platform_displacement(TRUE, platform);
+        }
     }
 }
 

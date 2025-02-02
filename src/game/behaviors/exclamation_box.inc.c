@@ -49,8 +49,8 @@ void exclamation_box_act_0(void) {
     if (o->oBehParams2ndByte < 3) {
         o->oAnimState = o->oBehParams2ndByte;
 #ifndef UNLOCK_ALL
-        if ((save_file_get_flags() & sCapSaveFlags[o->oBehParams2ndByte])
-            || ((o->oBehParams >> 24) & 0xFF)) {
+        if (((save_file_get_flags() & sCapSaveFlags[o->oBehParams2ndByte])
+            || ((o->oBehParams >> 24) & 0xFF)) && !chaos_check_if_patch_active(CHAOS_PATCH_DISABLE_CAPS)) {
             o->oAction = 2;
         } else {
             o->oAction = 1;
@@ -70,14 +70,18 @@ void exclamation_box_act_1(void) {
         spawn_object(o, MODEL_EXCLAMATION_POINT, bhvRotatingExclamationMark);
         cur_obj_set_model(MODEL_EXCLAMATION_BOX_OUTLINE);
     }
-    if ((save_file_get_flags() & sCapSaveFlags[o->oBehParams2ndByte])
-        || ((o->oBehParams >> 24) & 0xFF)) {
+    if (((save_file_get_flags() & sCapSaveFlags[o->oBehParams2ndByte])
+        || ((o->oBehParams >> 24) & 0xFF)) && !chaos_check_if_patch_active(CHAOS_PATCH_DISABLE_CAPS)) {
         o->oAction = 2;
         cur_obj_set_model(MODEL_EXCLAMATION_BOX);
     }
 }
 
 void exclamation_box_act_2(void) {
+    if(chaos_check_if_patch_active(CHAOS_PATCH_DISABLE_CAPS)) {
+        o->oAction = 1;
+    }
+
     obj_set_hitbox(o, &sExclamationBoxHitbox);
     if (o->oTimer == 0) {
         cur_obj_unhide();
