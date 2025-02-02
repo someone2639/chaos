@@ -985,9 +985,9 @@ void cur_obj_update(void) {
     }
 
     if (objFlags & OBJ_FLAG_HOLDABLE) {
+        extern struct Object *gMarthObject;
         if (chaos_check_if_patch_active(CHAOS_PATCH_MARTH_GRAB)) {
             if (gCurrentObject->oDistanceToMario < 500.0f) {
-                extern struct Object *gMarthObject;
                 gMarthObject = gCurrentObject;
             }
         } else {
