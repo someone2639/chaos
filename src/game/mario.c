@@ -7,6 +7,7 @@
 #include "behavior_data.h"
 #include "camera.h"
 #include "emutest.h"
+#include "engine/behavior_script.h"
 #include "engine/graph_node.h"
 #include "engine/math_util.h"
 #include "engine/surface_collision.h"
@@ -259,8 +260,18 @@ void play_mario_jump_sound(struct MarioState *m) {
                        m->marioObj->header.gfx.cameraToObject);
         } else {
 #endif
-            play_sound(SOUND_MARIO_YAH_WAH_HOO + ((gAudioRandom % 3) << 16),
-                       m->marioObj->header.gfx.cameraToObject);
+            if (chaos_check_if_patch_active(CHAOS_PATCH_BETA)) {
+                if (m->action != ACT_TWIRLING) {
+                    u32 sound = SOUND_MARIO_BETA_HOO;
+                    if ((random_float() < 0.5f)) {
+                        sound = SOUND_MARIO_BETA_OU;
+                    }
+                    play_sound(sound, m->marioObj->header.gfx.cameraToObject);
+                }
+            } else {
+                play_sound(SOUND_MARIO_YAH_WAH_HOO + ((gAudioRandom % 3) << 16),
+                           m->marioObj->header.gfx.cameraToObject);
+            }
 #ifndef VERSION_JP
         }
 #endif
@@ -390,6 +401,10 @@ void mario_set_forward_vel(struct MarioState *m, f32 forwardVel) {
  */
 s32 mario_get_floor_class(struct MarioState *m) {
     s32 floorClass;
+
+    if(chaos_check_if_patch_active(CHAOS_PATCH_SLIPPERY_FLOORS)) {
+        return SURFACE_CLASS_VERY_SLIPPERY;
+    }
 
     // The slide terrain type defaults to slide slipperiness.
     // This doesn't matter too much since normally the slide terrain
@@ -764,7 +779,7 @@ void set_steep_jump_action(struct MarioState *m) {
 /**
  * Sets Mario's vertical speed from his forward speed.
  */
-static void set_mario_y_vel_based_on_fspeed(struct MarioState *m, f32 initialVelY, f32 multiplier) {
+void set_mario_y_vel_based_on_fspeed(struct MarioState *m, f32 initialVelY, f32 multiplier) {
     // get_additive_y_vel_for_jumps is always 0 and a stubbed function.
     // It was likely trampoline related based on code location.
     m->vel[1] = initialVelY + get_additive_y_vel_for_jumps() + m->forwardVel * multiplier;
@@ -1065,7 +1080,14 @@ s32 set_jump_from_landing(struct MarioState *m) {
                     if (m->flags & MARIO_WING_CAP) {
                         set_mario_action(m, ACT_FLYING_TRIPLE_JUMP, 0);
                     } else if (m->forwardVel > 20.0f) {
-                        set_mario_action(m, ACT_TRIPLE_JUMP, 0);
+                        if (chaos_check_if_patch_active(CHAOS_PATCH_BETA)) {
+                            set_mario_y_vel_based_on_fspeed(m, 69.0f, 0.0f);
+                            m->forwardVel *= 0.8f;
+                            play_sound(SOUND_MARIO_YAAHAA, m->marioObj->header.gfx.cameraToObject);
+                            set_mario_action(m, ACT_TWIRLING, 1);
+                        }else {
+                            set_mario_action(m, ACT_TRIPLE_JUMP, 0);
+                        }
                     } else {
                         set_mario_action(m, ACT_JUMP, 0);
                     }

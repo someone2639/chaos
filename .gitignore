@@ -73,6 +73,14 @@ build/*
 !/textures/crash_custom/*.png
 # libultra
 
+# I HATE BETAH!!!!!!!!!!
+!/textures/segment2/beta*.png
+!/actors/power_meter/beta*.png
+!/sound/samples/sfx_mario/1B_mario_HOO.aiff
+!/sound/samples/sfx_mario/1C_mario_HAA.aiff
+!/sound/samples/sfx_mario/1C_mario_OU.aiff
+!/sound/samples/sfx_mario/1D_mario_YAAHAA.aiff
+
 !/lib/**/*.o
 !/lib/*.a
 !/lib/gcclib/*.a

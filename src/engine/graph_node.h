@@ -212,7 +212,7 @@ struct GraphNodeRotation {
     /*0x00*/ struct GraphNode node;
     /*0x14*/ void *displayList;
     /*0x18*/ Vec3s rotation;
-    u8 filler[2];
+    u16 scale; // optional
 };
 
 /** GraphNode part that transforms itself and its children based on animation

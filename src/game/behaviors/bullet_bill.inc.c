@@ -102,7 +102,7 @@ void chaos_bullet_hell_type_1(){
 
 //Spiral
 void chaos_bullet_hell_type_2(){
-    o->oMoveAngleYaw += 0x400;
+    o->oMoveAngleYaw += 0x600;
     o->oForwardVel *= 1.01f;
     if(o->oTimer > o->oChaosBillTTL) {
         obj_mark_for_deletion(o);

@@ -404,9 +404,15 @@ void geo_process_translation(struct GraphNodeTranslation *node) {
  */
 void geo_process_rotation(struct GraphNodeRotation *node) {
     Mat4 mtxf;
+    Mat4 scaleMtx;
     Mtx *mtx = alloc_display_list(sizeof(*mtx));
 
     mtxf_rotate_zxy_and_translate(mtxf, gVec3fZero, node->rotation);
+    if (node->scale & 0x8000) {
+        f32 scale = (f32)(node->scale & 0x7FFF);
+        guScaleF(scaleMtx, scale, scale, scale);
+        mtxf_mul(mtxf, scaleMtx, mtxf);
+    }
     mtxf_mul(gMatStack[gMatStackIndex + 1], mtxf, gMatStack[gMatStackIndex]);
     gMatStackIndex++;
     mtxf_to_mtx(mtx, gMatStack[gMatStackIndex]);
