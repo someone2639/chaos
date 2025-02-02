@@ -76,3 +76,7 @@ u8 chs_cond_no_fall_damage(void) {
 u8 chs_cond_harder_longjumps(void) {
     return(!chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_LONG_JUMP));
 }
+
+u8 chs_cond_harder_longjump(void) {
+    return(!chaos_check_if_patch_active(CHAOS_PATCH_HARDER_LONG_JUMPS));
+}

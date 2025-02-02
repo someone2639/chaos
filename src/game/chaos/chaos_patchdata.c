@@ -751,6 +751,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity          = 2,
         .isStackable       = FALSE,
         .duration          = 12,
+        
+        .conditionalFunc   = chs_cond_losemove_longjump,
 
         .name              = "Lazy Leaper",
         .shortDescription  = "Mario can no longer long jump.",
