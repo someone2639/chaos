@@ -989,7 +989,7 @@ void thread5_game_loop(UNUSED void *arg) {
 
 // #ifdef SOMEONE2639_CRAZY_EXPERIMENTS
         if (gPlayer1Controller->buttonPressed & L_TRIG) {
-            chaos_add_new_entry(CHAOS_PATCH_BIG_HEAD);
+            chaos_add_new_entry(CHAOS_PATCH_MARTH_GRAB);
         }
         // if (gPlayer1Controller->buttonPressed & R_TRIG) {
         //     chaos_remove_expired_entry(0, "%s: Removed patch!");

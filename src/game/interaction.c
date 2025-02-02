@@ -424,12 +424,16 @@ u32 mario_check_object_grab(struct MarioState *m) {
     const BehaviorScript *script;
 
     extern struct Object *gMarthObject;
-    if (gMarthObject) {
-        m->usedObj = gMarthObject;
+    if (gMarthObject && !(m->action & ACT_FLAG_AIR) && (m->action != ACT_DIVE_SLIDE)) {
+        s16 facingDYaw = mario_obj_angle_to_object(m, gMarthObject) - m->faceAngle[1];
+        if (facingDYaw >= -0x3AAA && facingDYaw <= 0x3AAA) {
+            m->usedObj = gMarthObject;
+            gMarthObject = NULL;
 
-        if (!(m->action & ACT_FLAG_AIR)) {
             set_mario_action(
                 m, (m->action & ACT_FLAG_DIVING) ? ACT_DIVE_PICKING_UP : ACT_PICKING_UP, 0);
+
+            result = TRUE;
         }
 
         result = TRUE;
