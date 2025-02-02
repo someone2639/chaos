@@ -1605,4 +1605,14 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription  = "YAAHAA!!! please give me bps for betah triple jump",
         .longDescription   = "HUD by robichu, sounds from the Internet archive. This will be more credit than any beta hacker will ever give :)"
     },
+    [CHAOS_PATCH_BIG_HEAD] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .name              = "Big Head Mode",
+        .shortDescription  = "Mario might have a college degree, but now he looks the part!",
+    },
 };
