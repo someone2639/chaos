@@ -1625,4 +1625,14 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Marth Grab",
         .shortDescription  = "Grab things from farther away!",
     },
+    [CHAOS_PATCH_BATTLEFIELD] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .name              = "Bring Back Level Intro Text",
+        .shortDescription  = "Wow! You're smack in the middle of the battlefield!",
+    },
 };

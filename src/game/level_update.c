@@ -260,8 +260,6 @@ void stub_level_update_1(void) {
 }
 
 void load_level_init_text(UNUSED u32 arg) {
-    return;
-
     // s32 gotAchievement;
     // u32 dialogID = gCurrentArea->dialog[arg];
 
@@ -290,10 +288,10 @@ void load_level_init_text(UNUSED u32 arg) {
     //         break;
     // }
 
-    // if (!gotAchievement) {
-    //     level_set_transition(-1, NULL);
-    //     create_dialog_box(dialogID);
-    // }
+    if (chaos_check_if_patch_active(CHAOS_PATCH_BATTLEFIELD)) {
+        level_set_transition(-1, NULL);
+        create_dialog_box(0);
+    }
 }
 
 void init_door_warp(struct SpawnInfo *spawnInfo, u32 arg1) {
