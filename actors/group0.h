@@ -353,4 +353,8 @@ extern const Gfx white_particle_small_unused_dl[];
 
 #include "clone_luigi/geo_header.h"
 
+#include "kaizo_block/collision_header.h"
+
+#include "kaizo_block/geo_header.h"
+
 #endif

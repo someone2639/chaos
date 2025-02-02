@@ -19,6 +19,7 @@
 #include "game/debug.h"
 #include "game/rendering_graph_node.h"
 #include "mario_geo_switch_case_ids.h"
+#include "game/object_list_processor.h"
 
 #include "pbhv_cosmic_clones.h"
 
@@ -45,7 +46,15 @@ void spawn_cosmic_clones(s32 startActive) {
     }
 }
 
+u8 chs_cond_cosmic_clones(void) {
+    return (!chaos_check_if_patch_active(CHAOS_PATCH_WALKIES));
+}
+
 void chs_act_cosmic_clones(void) {
+    if(!gMarioObject) {
+        return;
+    }
+
     //In case the patch is activated in the middle of a course
     if(gCurrCourseNum != COURSE_NONE) {
         spawn_cosmic_clones(FALSE);

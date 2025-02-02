@@ -605,7 +605,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 10,
+        .duration          = 6,
 
         .name              = "Sca-red Coins",
         .shortDescription  = "Red coins will try to avoid being collected.",
@@ -689,6 +689,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Hey! Listen!",
         .shortDescription  = "Recieve extra dialogue periodically."
+    },
+    [CHAOS_PATCH_KAIZO_BLOCKS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 10,
+
+        .activatedInitFunc = chs_act_kaizo_blocks,
+        .frameUpdateFunc   = chs_update_kaizo_blocks,
+
+        .name              = "Super Mario Maker",
+        .shortDescription  = "My little brother made this level, I hope you enjoy! (Randomly Spawn Kaizo Blocks.)"
     },
 
 // Movement Modifiers
@@ -789,7 +802,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 20,
+        .duration          = 12,
 
         .frameUpdateFunc   = chs_update_galaxy_twirl,
 
@@ -826,6 +839,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration          = 2,
 
         .conditionalFunc   = chs_cond_green_demon,
+        .activatedInitFunc = chs_act_green_demon,
         .areaInitFunc      = chs_area_init_green_demon,
 
         .name              = "Green Demon",
@@ -862,9 +876,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 15,
+        .duration          = 8,
 
         .activatedInitFunc = chs_act_cosmic_clones,
+        .conditionalFunc   = chs_cond_cosmic_clones,
         .deactivationFunc  = chs_deact_cosmic_clones,
         .areaInitFunc      = chs_area_init_cosmic_clones,
         .frameUpdateFunc   = chs_update_cosmic_clones,
@@ -996,7 +1011,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_LOW_RESOLUTION] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 3,
+        .severity          = 2,
         .isStackable       = FALSE,
         .duration          = 4,
 
@@ -1069,12 +1084,12 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 2,
         .isStackable       = TRUE,
-        .duration          = 3,
+        .duration          = 1,
 
         .conditionalFunc   = chs_cond_level_reset,
 
         .name              = "Get Out of GBJ Free Card",
-        .shortDescription  = "Gain three on-command level resets. Accessible from the pause menu while in a course.",
+        .shortDescription  = "Gain an on-command level reset. Accessible from the pause menu while in a course.",
     },
 
 // Chaos Modifiers
@@ -1193,6 +1208,30 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Wall Hacks",
         .shortDescription  = "Mario can now walk through all vanish cap walls, even without wearing the cap!",
+    },
+    [CHAOS_PATCH_REMOVE_CAP] = {
+        .durationType      = CHAOS_DURATION_ONCE,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = TRUE,
+
+        .activatedInitFunc = chs_act_remove_cap,
+        .conditionalFunc   = chs_cond_remove_cap,
+
+        .name              = "No Cap",
+        .shortDescription  = "Removes Mario's cap and places it in a valid stage somewhere.",
+    },
+    [CHAOS_PATCH_DISABLE_CAPS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .conditionalFunc   = chs_cond_disable_caps,
+
+        .name              = "Boxing Day",
+        .shortDescription  = "Temporarily disables all cap blocks.",
     },
 
 // Input Modifiers
@@ -1523,7 +1562,80 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Quicktime Events",
         .shortDescription  = "Follow the buttons in the order prompted on screen or die. Directed by David Cage.",
     },
-    [CHAOS_PATCH_SHUFFLE_OBJECTS] = {
+    [CHAOS_PATCH_STICKY_WALL_JUMP] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .conditionalFunc   = chs_check_sticky_walljump,
+
+        .name              = "Sticky Wall Jump",
+        .shortDescription  = "Stick to walls! This really makes you FEEL like Spider-Man!",
+    },
+    [CHAOS_PATCH_PLATFORM_MISPLACEMENT] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 20,
+
+        .name              = "Platform Misplacement",
+        .shortDescription  = "Moving platforms will move Mario more than usual.",
+    },
+    [CHAOS_PATCH_SLIPPERY_FLOORS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 8,
+
+        .name              = "Wet Floor",
+        .shortDescription  = "All floors will be slippery.",
+    },
+    [CHAOS_PATCH_BETA] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 10,
+
+        .name              = "Beta",
+        .shortDescription  = "YAAHAA!!! please give me bps for betah triple jump",
+        .longDescription   = "HUD by robichu, sounds from the Internet archive. This will be more credit than any beta hacker will ever give :)"
+    },
+    [CHAOS_PATCH_BIG_HEAD] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .name              = "Big Head Mode",
+        .shortDescription  = "Mario might have a college degree, but now he looks the part!",
+    },
+    [CHAOS_PATCH_MARTH_GRAB] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .name              = "Marth Grab",
+        .shortDescription  = "Grab things from farther away!",
+    },
+    [CHAOS_PATCH_BATTLEFIELD] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .name              = "Bring Back Level Intro Text",
+        .shortDescription  = "Wow! You're smack in the middle of the battlefield!",
+    },
+        [CHAOS_PATCH_SHUFFLE_OBJECTS] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
@@ -1535,5 +1647,5 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Shuffle Object Positions",
         .shortDescription  = "Kaze WISHES tornado did this!",
-    },
+    };
 };

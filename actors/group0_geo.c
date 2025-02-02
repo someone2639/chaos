@@ -23,3 +23,4 @@
 
 #include "clone_mario/geo.inc.c"
 #include "clone_luigi/geo.inc.c"
+#include "kaizo_block/geo.inc.c"

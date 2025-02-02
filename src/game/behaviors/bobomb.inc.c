@@ -311,6 +311,13 @@ void bobomb_buddy_act_idle(void) {
         cur_obj_play_sound_2(SOUND_OBJ_BOBOMB_WALK);
     }
 
+    if (o->oHeldState == HELD_HELD) {
+        cur_obj_disable_rendering();
+        cur_obj_set_pos_relative(gMarioObject, 0, 60.0f, 150.0);
+    } else {
+        cur_obj_enable_rendering_2();
+    }
+
     if (o->oDistanceToMario < 1000.0f) {
         o->oMoveAngleYaw = approach_s16_symmetric(o->oMoveAngleYaw, o->oAngleToMario, 0x140);
     }
