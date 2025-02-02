@@ -362,7 +362,7 @@ void render_hud_stars(void) {
         buf[0] = '%' + 3;
         buf[1] = 0;
     } else {
-        buf[0] = '+';
+        buf[0] = '-';
         buf[1] = 0;
     }
 
