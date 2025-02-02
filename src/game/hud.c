@@ -315,7 +315,7 @@ void render_hud_power_meter(void) {
 void render_hud_mario_lives(void) {
     char buf[3];
     if (chaos_check_if_patch_active(CHAOS_PATCH_BETA)) {
-        buf[0] = '%' + 1;
+        buf[0] = '%' + 4;
         buf[1] = 0;
     } else {
         buf[0] = ',';

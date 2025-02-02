@@ -1905,8 +1905,8 @@ const Texture *const main_hud_lut[] = {
     texture_hud_char_S, texture_hud_char_T, texture_hud_char_U, texture_hud_char_V,
     texture_hud_char_W, texture_hud_char_X, texture_hud_char_Y, texture_hud_char_Z,
     texture_hud_char_exclamation, texture_hud_char_double_exclamation, texture_hud_char_question, texture_hud_char_ampersand,
-    texture_hud_char_percent,     texture_hud_char_beta_head,  texture_hud_char_beta_coin,  texture_hud_char_beta_star,
-                   0x0,                0x0,                0x0,                0x0,
+    texture_hud_char_percent,     0x0,  texture_hud_char_beta_coin,  texture_hud_char_beta_star,
+    texture_hud_char_beta_head,                0x0,                0x0,                0x0,
                    0x0, texture_hud_char_minus, texture_hud_char_multiply, texture_hud_char_coin,
     texture_hud_char_mario_head, texture_hud_char_star, texture_hud_char_decimal_point, texture_hud_char_beta_key,
     texture_hud_char_apostrophe, texture_hud_char_double_quote, texture_hud_char_umlaut, 0x0
