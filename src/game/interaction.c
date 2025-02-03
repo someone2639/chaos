@@ -428,13 +428,15 @@ u32 mario_check_object_grab(struct MarioState *m) {
         s16 facingDYaw = mario_obj_angle_to_object(m, gMarthObject) - m->faceAngle[1];
         if (facingDYaw >= -0x3AAA && facingDYaw <= 0x3AAA) {
             m->usedObj = gMarthObject;
-            gMarthObject = NULL;
 
             set_mario_action(
                 m, (m->action & ACT_FLAG_DIVING) ? ACT_DIVE_PICKING_UP : ACT_PICKING_UP, 0);
 
             result = TRUE;
+        } else {
+            m->usedObj = NULL;
         }
+        gMarthObject = NULL;
     } else if (m->input & INPUT_INTERACT_OBJ_GRABBABLE) {
         script = virtual_to_segmented(0x13, m->interactObj->behavior);
 
