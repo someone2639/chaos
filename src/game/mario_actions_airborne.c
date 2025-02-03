@@ -5,6 +5,7 @@
 #include "audio/external.h"
 #include "camera.h"
 #include "engine/graph_node.h"
+#include "engine/behavior_script.h"
 #include "engine/math_util.h"
 #include "game_init.h"
 #include "interaction.h"

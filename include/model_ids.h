@@ -26,6 +26,7 @@
 #define MODEL_CLONE_MARIO                 227
 #define MODEL_CLONE_LUIGI                 228
 #define MODEL_KAIZO_BLOCK                 229
+#define MODEL_RAINBOW_STAR                230
 #define MODEL_CHAOS_SAVE_BUTTON           13
 #define MODEL_CHAOS_SCORE_BUTTON          14
 
