@@ -309,6 +309,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 15,
 
+        .conditionalFunc   = chs_cond_noheal_coins,
+
         .name              = "Unaffordable Health Care",
         .shortDescription  = "Coins no longer heal Mario.",
     },

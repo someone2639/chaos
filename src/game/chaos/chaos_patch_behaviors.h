@@ -47,6 +47,7 @@ void chs_deact_gravity_increase(void);
 // Health Modifiers
 u8 chs_calculate_max_heal_counter(void);
 u8 chs_cond_health_drain(void);
+u8 chs_cond_noheal_coins(void);
 void chs_update_health_drain(void);
 u8 chs_cond_health_gain(void);
 void chs_update_health_gain(void);
