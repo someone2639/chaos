@@ -39,24 +39,10 @@ void chs_act_unlock_cannons(void);
 u8 chs_cond_unlock_cannons(void);
 
 // Gravity Modifiers
-u8 chs_cond_gravity_decrease_lv1(void);
-u8 chs_cond_gravity_decrease_lv2(void);
-u8 chs_cond_gravity_decrease_lv3(void);
-u8 chs_cond_gravity_increase_lv1(void);
-u8 chs_cond_gravity_increase_lv2(void);
-u8 chs_cond_gravity_increase_lv3(void);
-void chs_act_gravity_decrease_lv1(void);
-void chs_act_gravity_decrease_lv2(void);
-void chs_act_gravity_decrease_lv3(void);
-void chs_act_gravity_increase_lv1(void);
-void chs_act_gravity_increase_lv2(void);
-void chs_act_gravity_increase_lv3(void);
-void chs_deact_gravity_decrease_lv1(void);
-void chs_deact_gravity_decrease_lv2(void);
-void chs_deact_gravity_decrease_lv3(void);
-void chs_deact_gravity_increase_lv1(void);
-void chs_deact_gravity_increase_lv2(void);
-void chs_deact_gravity_increase_lv3(void);
+void chs_act_gravity_decrease(void);
+void chs_act_gravity_increase(void);
+void chs_deact_gravity_decrease(void);
+void chs_deact_gravity_increase(void);
 
 // Health Modifiers
 u8 chs_calculate_max_heal_counter(void);

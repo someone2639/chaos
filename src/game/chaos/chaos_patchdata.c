@@ -252,95 +252,33 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     },
 
 // Gravity Modifiers
-    [CHAOS_PATCH_GRAVITY_DECREASE_LV1] = {
+    [CHAOS_PATCH_GRAVITY_DECREASE] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_POSITIVE,
-        .negationId        = CHAOS_PATCH_GRAVITY_INCREASE_LV1,
-        .severity          = 1,
-        .isStackable       = TRUE,
-        .duration          = 10,
-
-        .conditionalFunc   = chs_cond_gravity_decrease_lv1,
-        .activatedInitFunc = chs_act_gravity_decrease_lv1,
-        .deactivationFunc  = chs_deact_gravity_decrease_lv1,
-
-        .name              = "Decreased Gravity",
-        .shortDescription  = "Decrease Mario's gravity by 15%.",
-    },
-    [CHAOS_PATCH_GRAVITY_DECREASE_LV2] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_POSITIVE,
-        .negationId        = CHAOS_PATCH_GRAVITY_INCREASE_LV2,
-        .severity          = 2,
-        .isStackable       = TRUE,
-        .duration          = 10,
-
-        .conditionalFunc   = chs_cond_gravity_decrease_lv2,
-        .activatedInitFunc = chs_act_gravity_decrease_lv2,
-        .deactivationFunc  = chs_deact_gravity_decrease_lv2,
-
-        .name              = "Low Gravity",
-        .shortDescription  = "Decrease Mario's gravity by 30%.",
-    },
-    [CHAOS_PATCH_GRAVITY_DECREASE_LV3] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_POSITIVE,
-        .negationId        = CHAOS_PATCH_GRAVITY_INCREASE_LV3,
+        .negationId        = CHAOS_PATCH_GRAVITY_INCREASE,
         .severity          = 3,
-        .isStackable       = TRUE,
+        .isStackable       = FALSE,
         .duration          = 10,
 
-        .conditionalFunc   = chs_cond_gravity_decrease_lv3,
-        .activatedInitFunc = chs_act_gravity_decrease_lv3,
-        .deactivationFunc  = chs_deact_gravity_decrease_lv3,
+        .activatedInitFunc = chs_act_gravity_decrease,
+        .deactivationFunc  = chs_deact_gravity_decrease,
 
         .name              = "Moon Gravity",
-        .shortDescription  = "Decrease Mario's gravity by 50%.",
+        .shortDescription  = "Decrease Mario's gravity by 37.5%.",
     },
-    [CHAOS_PATCH_GRAVITY_INCREASE_LV1] = {
+    [CHAOS_PATCH_GRAVITY_INCREASE] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .negationId        = CHAOS_PATCH_GRAVITY_DECREASE_LV1,
-        .severity          = 1,
-        .isStackable       = TRUE,
-        .duration          = 10,
-
-        .conditionalFunc   = chs_cond_gravity_increase_lv1,
-        .activatedInitFunc = chs_act_gravity_increase_lv1,
-        .deactivationFunc  = chs_deact_gravity_increase_lv1,
-
-        .name              = "Increased Gravity",
-        .shortDescription  = "Increase Mario's gravity by 15%.",
-    },
-    [CHAOS_PATCH_GRAVITY_INCREASE_LV2] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .negationId        = CHAOS_PATCH_GRAVITY_DECREASE_LV2,
-        .severity          = 2,
-        .isStackable       = TRUE,
-        .duration          = 10,
-
-        .conditionalFunc   = chs_cond_gravity_increase_lv2,
-        .activatedInitFunc = chs_act_gravity_increase_lv2,
-        .deactivationFunc  = chs_deact_gravity_increase_lv2,
-
-        .name              = "High Gravity",
-        .shortDescription  = "Increase Mario's gravity by 30%.",
-    },
-    [CHAOS_PATCH_GRAVITY_INCREASE_LV3] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .negationId        = CHAOS_PATCH_GRAVITY_DECREASE_LV3,
+        .negationId        = CHAOS_PATCH_GRAVITY_DECREASE,
         .severity          = 3,
-        .isStackable       = TRUE,
+        .isStackable       = FALSE,
         .duration          = 10,
 
-        .conditionalFunc   = chs_cond_gravity_increase_lv3,
-        .activatedInitFunc = chs_act_gravity_increase_lv3,
-        .deactivationFunc  = chs_deact_gravity_increase_lv3,
+        .activatedInitFunc = chs_act_gravity_increase,
+        .deactivationFunc  = chs_deact_gravity_increase,
 
         .name              = "Ultra Gravity",
-        .shortDescription  = "Increase Mario's gravity by 50%.",
+        .shortDescription  = "Increase Mario's gravity by 37.5%.",
     },
 
 // Health Modifiers
