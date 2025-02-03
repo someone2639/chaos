@@ -462,6 +462,8 @@ u32 mario_check_object_grab(struct MarioState *m) {
         }
     }
 
+    gMarthObject = NULL;
+
     return result;
 }
 
