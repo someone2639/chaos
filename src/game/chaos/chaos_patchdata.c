@@ -643,6 +643,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Super Mario Maker",
         .shortDescription  = "My little brother made this level, I hope you enjoy! (Randomly Spawn Kaizo Blocks.)"
     },
+    [CHAOS_PATCH_BATTLEFIELD] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .name              = "Bring Back Level Intro Text",
+        .shortDescription  = "Wow! You're smack in the middle of the battlefield.",
+    },
 
 // Movement Modifiers
     [CHAOS_PATCH_LOSEMOVE_BREAKDANCE] = {
@@ -770,6 +780,41 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Bounce Back",
         .shortDescription  = "Press A shortly after landing from a ground pound to do a bigger jump!",
+    },
+    [CHAOS_PATCH_STICKY_WALL_JUMP] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .conditionalFunc   = chs_check_sticky_walljump,
+
+        .name              = "Sticky Wall Jump",
+        .shortDescription  = "Stick to walls! This really makes you FEEL like Spider-Man!",
+    },
+    [CHAOS_PATCH_BETA] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 10,
+
+        .name              = "Beta",
+        .shortDescription  = "YAAHAA!!! please give me bps for betah triple jump",
+        .longDescription   = "HUD by robichu, sounds from the Internet archive. This will be more credit than any beta hacker will ever give :)"
+    },
+    [CHAOS_PATCH_HARDER_LONG_JUMPS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .conditionalFunc   = chs_cond_harder_longjumps,
+
+        .name              = "Long Jump Lottery",
+        .shortDescription  = "Get a Ground Pound instead of a Long Jump at random!",
     },
 
 // Object Spawners
@@ -961,6 +1006,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Potato Graphics",
         .shortDescription  = "Now you're gaming like it's the 70's!",
+    },
+    [CHAOS_PATCH_BIG_HEAD] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .name              = "Big Head Mode",
+        .shortDescription  = "Mario might have a college degree, but now he looks the part!",
     },
 
 // Time Limit
@@ -1504,18 +1559,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Quicktime Events",
         .shortDescription  = "Follow the buttons in the order prompted on screen or die. Directed by David Cage.",
     },
-    [CHAOS_PATCH_STICKY_WALL_JUMP] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_POSITIVE,
-        .severity          = 2,
-        .isStackable       = FALSE,
-        .duration          = 15,
-
-        .conditionalFunc   = chs_check_sticky_walljump,
-
-        .name              = "Sticky Wall Jump",
-        .shortDescription  = "Stick to walls! This really makes you FEEL like Spider-Man!",
-    },
     [CHAOS_PATCH_PLATFORM_MISPLACEMENT] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
@@ -1536,27 +1579,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Wet Floor",
         .shortDescription  = "All floors will be slippery.",
     },
-    [CHAOS_PATCH_BETA] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_POSITIVE,
-        .severity          = 1,
-        .isStackable       = FALSE,
-        .duration          = 10,
-
-        .name              = "Beta",
-        .shortDescription  = "YAAHAA!!! please give me bps for betah triple jump",
-        .longDescription   = "HUD by robichu, sounds from the Internet archive. This will be more credit than any beta hacker will ever give :)"
-    },
-    [CHAOS_PATCH_BIG_HEAD] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 1,
-        .isStackable       = FALSE,
-        .duration          = 6,
-
-        .name              = "Big Head Mode",
-        .shortDescription  = "Mario might have a college degree, but now he looks the part!",
-    },
     [CHAOS_PATCH_MARTH_GRAB] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
@@ -1565,28 +1587,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration          = 6,
 
         .name              = "Marth Grab",
-        .shortDescription  = "Grab things from farther away!",
+        .shortDescription  = "I mean, have you SEEN his grab range??",
     },
-    [CHAOS_PATCH_BATTLEFIELD] = {
+    [CHAOS_PATCH_NOCLIP] = {
         .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 1,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 15,
+        .duration          = 2,
 
-        .name              = "Bring Back Level Intro Text",
-        .shortDescription  = "Wow! You're smack in the middle of the battlefield!",
-    },
-    [CHAOS_PATCH_HARDER_LONG_JUMPS] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 1,
-        .isStackable       = FALSE,
-        .duration          = 15,
-
-        .conditionalFunc   = chs_cond_harder_longjumps,
-
-        .name              = "Long Jump Lottery",
-        .shortDescription  = "Get a Ground Pound instead of a Long Jump at random!",
+        .name              = "No Clip",
+        .shortDescription  = "Walls are just a complete suggestion.",
     },
 };

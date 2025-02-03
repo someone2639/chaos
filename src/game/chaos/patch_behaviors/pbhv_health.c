@@ -24,6 +24,7 @@ void chs_update_health_drain(void) {
     
     if(!(this->frameTimer % 90)) {
         gMarioState->hurtCounter++;
+        this->frameTimer = 0;
     }
 }
 
@@ -39,6 +40,7 @@ void chs_update_health_gain(void) {
     
     if(!(this->frameTimer % 90)) {
         gMarioState->healCounter++;
+        this->frameTimer = 0;
     }
 }
 
