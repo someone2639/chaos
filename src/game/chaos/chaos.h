@@ -44,12 +44,8 @@ enum ChaosPatchID {
     CHAOS_PATCH_UNLOCK_CANNONS,
 
 // Gravity Modifiers
-    CHAOS_PATCH_GRAVITY_DECREASE_LV1,
-    CHAOS_PATCH_GRAVITY_DECREASE_LV2,
-    CHAOS_PATCH_GRAVITY_DECREASE_LV3,
-    CHAOS_PATCH_GRAVITY_INCREASE_LV1,
-    CHAOS_PATCH_GRAVITY_INCREASE_LV2,
-    CHAOS_PATCH_GRAVITY_INCREASE_LV3,
+    CHAOS_PATCH_GRAVITY_DECREASE,
+    CHAOS_PATCH_GRAVITY_INCREASE,
 
 // Health Modifiers
     CHAOS_PATCH_NOHEAL_HEARTS,
@@ -209,6 +205,8 @@ enum ChaosDifficulty {
     CHAOS_DIFFICULTY_EASY,   // Offsets negative patches such that top severities should (almost) never show up
     CHAOS_DIFFICULTY_NORMAL, // Standard difficulty
     CHAOS_DIFFICULTY_HARD,   // Offsets positive patches such that top severities should (almost) never show up
+
+    CHAOS_DIFFICULTY_COUNT,
 };
 
 enum ChaosPatchDurationType {

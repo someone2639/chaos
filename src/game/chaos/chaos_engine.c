@@ -12,6 +12,8 @@
 #include "game/level_update.h"
 
 #define WEIGHT_OFFSET 1.25f // Must be > 0!
+#define RETRY_ATTEMPTS_DUPLICATES 3
+#define DUPLICATE_ALLOWANCE 0.45f
 
 static u32 activePatchCounts[CHAOS_PATCH_COUNT];
 static u8 availablePatches[CHAOS_PATCH_COUNT];
@@ -22,6 +24,12 @@ char gChaosInternalBuffer[0x1000];
 s32 *gChaosActiveEntryCount = NULL;
 struct ChaosActiveEntry *gChaosActiveEntries = NULL;
 u8 gChaosLevelWarped = FALSE;
+
+static const f32 difficultyWeights[CHAOS_DIFFICULTY_COUNT][CHAOS_PATCH_SEVERITY_COUNT - 1] = {
+    [CHAOS_DIFFICULTY_EASY  ] = { 0.12f, 0.25f, 0.37f }, // Difficulty offset should make highest level more common
+    [CHAOS_DIFFICULTY_NORMAL] = { 0.25f, 0.25f, 0.25f }, // Difficulty probability is balanced across the board
+    [CHAOS_DIFFICULTY_HARD  ] = { 0.15f, 0.25f, 0.35f }, // Difficulty offset doesn't really matter as much for hard, so just make highest level more common
+};
 
 static enum ChaosPatchID negativePatchCompare = CHAOS_PATCH_NONE;
 
@@ -439,19 +447,39 @@ void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_
         s32 negativeSeverity = posNegPairings[generatedSeverity][CHAOS_EFFECT_NEGATIVE];
         s32 positiveSeverity = posNegPairings[generatedSeverity][CHAOS_EFFECT_POSITIVE];
 
-        s32 negativeWeight = (s32) (random_float() * (f32) severityCounts[negativeSeverity][CHAOS_EFFECT_NEGATIVE]);
-        for (enum ChaosPatchID patchId = 0; patchId < CHAOS_PATCH_COUNT; patchId++) {
-            const struct ChaosPatch *patch = &gChaosPatches[patchId];
-            if (!availablePatches[patchId] || patch->effectType != CHAOS_EFFECT_NEGATIVE || patch->severity != negativeSeverity) {
+        for (s32 attempts = 0; attempts < RETRY_ATTEMPTS_DUPLICATES; attempts++) {
+            s32 negativeWeight = (s32) (random_float() * (f32) severityCounts[negativeSeverity][CHAOS_EFFECT_NEGATIVE]);
+
+            for (enum ChaosPatchID patchId = 0; patchId < CHAOS_PATCH_COUNT; patchId++) {
+                const struct ChaosPatch *patch = &gChaosPatches[patchId];
+                if (!availablePatches[patchId] || patch->effectType != CHAOS_EFFECT_NEGATIVE || patch->severity != negativeSeverity) {
+                    continue;
+                }
+
+                if (negativeWeight <= 0) {
+                    negativePatchId = patchId;
+                    break;
+                }
+
+                negativeWeight--;
+            }
+
+            // Make duplicates of stackable patches less likely
+            s32 patchDuplicates = chaos_count_active_instances(negativePatchId);
+            f32 retryChance = 1.0f;
+            f32 duplicateAllowance = DUPLICATE_ALLOWANCE;
+            if (gChaosPatches[negativePatchId].negationId) {
+                // Double chances of passing allowance when patch negation is possible
+                duplicateAllowance += (1.0f - duplicateAllowance) / 2.0f;
+            }
+            for (s32 i = 0; i < patchDuplicates; i++) {
+                retryChance *= duplicateAllowance;
+            }
+            if (random_float() < retryChance) {
                 continue;
             }
 
-            if (negativeWeight <= 0) {
-                negativePatchId = patchId;
-                break;
-            }
-
-            negativeWeight--;
+            break;
         }
 
         negativePatchCompare = negativePatchId;
@@ -472,26 +500,44 @@ void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_
             applicablePositiveCount++;
         }
 
-        s32 positiveWeight = (s32) (random_float() * applicablePositiveCount);
         if (applicablePositiveCount > 0) {
-            for (enum ChaosPatchID patchId = 0; patchId < CHAOS_PATCH_COUNT; patchId++) {
-                const struct ChaosPatch *patch = &gChaosPatches[patchId];
-                if (!availablePatches[patchId] || patch->effectType != CHAOS_EFFECT_POSITIVE || patch->severity != positiveSeverity) {
-                    continue;
-                }
-                if (gChaosPatches[negativePatchId].negationId && gChaosPatches[negativePatchId].negationId == patchId) {
-                    continue;
-                }
-                if (gChaosPatches[patchId].conditionalFunc && !gChaosPatches[patchId].conditionalFunc()) {
-                    continue;
+            for (s32 attempts = 0; attempts < RETRY_ATTEMPTS_DUPLICATES; attempts++) {
+                s32 positiveWeight = (s32) (random_float() * applicablePositiveCount);
+
+                for (enum ChaosPatchID patchId = 0; patchId < CHAOS_PATCH_COUNT; patchId++) {
+                    const struct ChaosPatch *patch = &gChaosPatches[patchId];
+                    if (!availablePatches[patchId] || patch->effectType != CHAOS_EFFECT_POSITIVE || patch->severity != positiveSeverity) {
+                        continue;
+                    }
+                    if (gChaosPatches[negativePatchId].negationId && gChaosPatches[negativePatchId].negationId == patchId) {
+                        continue;
+                    }
+                    if (gChaosPatches[patchId].conditionalFunc && !gChaosPatches[patchId].conditionalFunc()) {
+                        continue;
+                    }
+
+                    if (positiveWeight <= 0) {
+                        positivePatchId = patchId;
+                        break;
+                    }
+
+                    positiveWeight--;
                 }
 
-                if (positiveWeight <= 0) {
-                    positivePatchId = patchId;
+                // Make duplicates of stackable patches less likely
+                s32 patchDuplicates = chaos_count_active_instances(positivePatchId);
+                f32 retryChance = 1.0f;
+                f32 duplicateAllowance = DUPLICATE_ALLOWANCE;
+                if (gChaosPatches[positivePatchId].negationId) {
+                    // Double chances of passing allowance when patch negation is possible
+                    duplicateAllowance += (1.0f - duplicateAllowance) / 2.0f;
+                }
+                for (s32 i = 0; i < patchDuplicates; i++) {
+                    retryChance *= duplicateAllowance;
+                }
+                if (random_float() >= retryChance) {
                     break;
                 }
-
-                positiveWeight--;
             }
         }
 
@@ -515,6 +561,9 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
     s8 allowedSeverities[CHAOS_PATCH_SEVERITY_COUNT];
     f32 severityWeights[CHAOS_PATCH_SEVERITY_COUNT];
     f32 offsetSeverityWeight;
+    f32 generatedDifficultyWeight;
+    s32 forcedDifficulty = -1;
+    static s32 lastForcedDifficulty = -2;
 
     bzero(severityCounts, sizeof(severityCounts));
     bzero(posNegPairings, sizeof(posNegPairings));
@@ -537,8 +586,28 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
         }
     }
 
+    // Lessen likelihood of repeat aeverity randomization types in a row via attempts
+    for (s32 attempts = 0; attempts < 2; attempts++) {
+        generatedDifficultyWeight = random_float();
+        f32 weight = 0.0f;
+        for (s32 i = 0; i < ARRAY_COUNT(difficultyWeights[0]); i++) {
+            weight += difficultyWeights[gChaosDifficulty][i];
+            if (generatedDifficultyWeight < weight) {
+                forcedDifficulty = i + 1;
+                break;
+            }
+        }
+
+        // Check if repeat or should break early
+        if (forcedDifficulty != lastForcedDifficulty) {
+            lastForcedDifficulty = forcedDifficulty;
+            break;
+        } else if (random_float() < 0.33f) {
+            break;
+        }
+    }
+
     offsetSeverityWeight = random_float();
-    s32 forcedValue = -1;
 
     // Determine available severity combinations that may be used for selections
     for (s32 i = 1; i < ARRAY_COUNT(posNegPairings); i++) {
@@ -549,26 +618,21 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
         posNegPairings[i][CHAOS_EFFECT_NEGATIVE] = 0;
         allowedSeverities[i] = FALSE;
 
+        if (forcedDifficulty >= 0) {
+            pos = forcedDifficulty;
+            neg = forcedDifficulty;
+        }
+
         // Determine whether to offset pairings of positive and negative effects
-        if (offsetSeverityWeight < 0.20f) {
-            // 20% chance
+        if (offsetSeverityWeight < 0.15f) {
+            // 15% chance to globally increase negative severity
             neg++;
         } else if (offsetSeverityWeight < 0.30f) {
-            // 10% chance
+            // 15% chance to globally increase possitive severity
             pos++;
         } else if (offsetSeverityWeight < 0.40f) {
-            // 10% chance
+            // 10% chance to eliminate all positive patches
             pos = 0;
-        } else if (offsetSeverityWeight < 0.50f) {
-            // 10% chance
-            pos = CHAOS_PATCH_SEVERITY_MAX;
-            neg = CHAOS_PATCH_SEVERITY_MAX;
-            forcedValue = CHAOS_PATCH_SEVERITY_MAX;
-        } else if (offsetSeverityWeight < 0.55f) {
-            // 5% chance
-            pos = CHAOS_PATCH_SEVERITY_MAX - 1;
-            neg = CHAOS_PATCH_SEVERITY_MAX - 1;
-            forcedValue = CHAOS_PATCH_SEVERITY_MAX - 1;
         }
 
         if (gChaosDifficulty == CHAOS_DIFFICULTY_EASY) {
@@ -635,25 +699,28 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
 
     // Compute weights for generation
     f32 totalWeight = 0.0f;
-    for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
-        struct ChaosActiveEntry *entry = &gChaosActiveEntries[i];
-        const struct ChaosPatch *patch = &gChaosPatches[entry->id];
 
-        if (patch->durationType == CHAOS_DURATION_ONCE) {
-            severityWeights[patch->severity] += 0.33f;
-            continue;
-        }
-        if (patch->durationType == CHAOS_DURATION_USE_COUNT) {
-            severityWeights[patch->severity] += 0.5f;
-            continue;
-        }
-        if (patch->durationType == CHAOS_DURATION_INFINITE) {
-            severityWeights[patch->severity] += 0.67f;
-            continue;
-        }
+    // NOTE: Comment out these weight calculations now that a different severity weighting system exists (so these weights are all even now)
+    // for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+    //     struct ChaosActiveEntry *entry = &gChaosActiveEntries[i];
+    //     const struct ChaosPatch *patch = &gChaosPatches[entry->id];
 
-        severityWeights[patch->severity] += 1.0f;
-    }
+    //     if (patch->durationType == CHAOS_DURATION_ONCE) {
+    //         severityWeights[patch->severity] += 0.33f;
+    //         continue;
+    //     }
+    //     if (patch->durationType == CHAOS_DURATION_USE_COUNT) {
+    //         severityWeights[patch->severity] += 0.5f;
+    //         continue;
+    //     }
+    //     if (patch->durationType == CHAOS_DURATION_INFINITE) {
+    //         severityWeights[patch->severity] += 0.67f;
+    //         continue;
+    //     }
+
+    //     severityWeights[patch->severity] += 1.0f;
+    // }
+
     for (s32 i = 1; i < ARRAY_COUNT(severityWeights); i++) {
         severityWeights[i] += WEIGHT_OFFSET;
         totalWeight += severityWeights[i];
@@ -668,9 +735,9 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
 
     chaos_generate_patches(severityCounts, posNegPairings, severityWeights);
 
-    if (forcedValue >= 0) {
-        for (s32 index = 0; index < CHAOS_PATCH_MAX_GENERATABLE; index++) {
-            generatedPatches[index].severityLevel = forcedValue;
+    if (forcedDifficulty >= 0) {
+        for (s32 index = 1; index < CHAOS_PATCH_MAX_GENERATABLE; index++) {
+            generatedPatches[index].severityLevel = forcedDifficulty;
         }
     }
 
