@@ -469,6 +469,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Ligma Shield",
         .shortDescription  = "Ignore the next damage Mario Takes.",
     },
+    [CHAOS_PATCH_RANDOM_INVINCIBILITY] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 10,
+
+        .frameUpdateFunc   = chs_update_random_invincibility,
+        .activatedInitFunc = chs_act_random_invincibility,
+
+        .name              = "Windfall",
+        .shortDescription  = "At random, gain 30 seconds of invincibility.",
+    },
 
 // Coin Modifiers
     [CHAOS_PATCH_DOUBLE_COINS] = {

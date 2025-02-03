@@ -155,3 +155,24 @@ u8 chs_cond_shield(void) {
         return TRUE;
     }
 }
+
+#define INVINCIBILITY_TIME_MAX      27000
+
+/*
+    Random Invincibility
+*/
+
+void chs_act_random_invincibility(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_RANDOM_INVINCIBILITY, &this);
+    this->frameTimer = RAND(INVINCIBILITY_TIME_MAX); //Get a random offset to start the timer at
+}
+
+void chs_update_random_invincibility(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_RANDOM_INVINCIBILITY, &this);
+    if(this->frameTimer > INVINCIBILITY_TIME_MAX) {
+        gMarioState->invincTimer = 900;
+        this->frameTimer = RAND(INVINCIBILITY_TIME_MAX); //Get a random offset to restart the timer at
+    }
+}
