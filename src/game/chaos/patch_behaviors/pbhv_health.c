@@ -141,3 +141,17 @@ void chs_act_extradamage_lava(void) {
 void chs_deact_extradamage_lava(void) {
     gMarioState->extraDamageLava -= 4;
 }
+
+/*
+    Shield
+*/
+
+u8 chs_cond_shield(void) {
+    struct ChaosActiveEntry *match;
+    chaos_find_first_active_patch(CHAOS_PATCH_SHIELD, &match);
+    if(match) {
+        return (match->remainingDuration < 9);
+    } else {
+        return TRUE;
+    }
+}

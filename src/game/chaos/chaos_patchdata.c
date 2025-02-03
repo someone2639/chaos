@@ -457,6 +457,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Breath Boost",
         .shortDescription  = "Mario loses health more slowly underwater.",
     },
+    [CHAOS_PATCH_SHIELD] = {
+        .durationType      = CHAOS_DURATION_USE_COUNT,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = TRUE,
+        .duration          = 3,
+
+        .conditionalFunc   = chs_cond_shield,
+
+        .name              = "Ligma Shield",
+        .shortDescription  = "Ignore the next damage Mario Takes.",
+    },
 
 // Coin Modifiers
     [CHAOS_PATCH_DOUBLE_COINS] = {

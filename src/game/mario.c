@@ -1151,6 +1151,9 @@ void set_hurt_counter(struct MarioState *m, u8 additionalDamage) {
     m->hurtCounter += additionalDamage;
     if (chs_check_temporary_invincibility()) {
         m->hurtCounter = 0;
+    } else if(chaos_check_if_patch_active(CHAOS_PATCH_SHIELD)) {
+        chaos_decrement_patch_usage(CHAOS_PATCH_SHIELD);
+        m->hurtCounter = 0;
     }
 
     if (m->hurtCounter == 0) {
