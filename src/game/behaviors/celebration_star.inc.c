@@ -14,14 +14,22 @@ void bhv_celebration_star_init(void) {
         cur_obj_scale(0.1f);
         o->oCelebStarUnkF4 = 1;
     } else {
-        o->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_STAR];
+        if(chaos_check_if_patch_active(CHAOS_PATCH_RAINBOW_STARS)) {
+            o->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_RAINBOW_STAR];
+        } else {
+            o->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_STAR];
+        }
         o->oFaceAnglePitch = 0;
         o->oFaceAngleRoll = 0;
         cur_obj_scale(0.4f);
         o->oCelebStarUnkF4 = 0;
     }
 #else
-    o->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_STAR];
+    if(chaos_check_if_patch_active(CHAOS_PATCH_RAINBOW_STARS)) {
+        o->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_RAINBOW_STAR];
+    } else {
+        o->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_STAR];
+    }
     cur_obj_scale(0.4f);
     o->oFaceAnglePitch = 0;
     o->oFaceAngleRoll = 0;

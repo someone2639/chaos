@@ -1636,4 +1636,14 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "No Clip",
         .shortDescription  = "Walls are just a complete suggestion.",
     },
+    [CHAOS_PATCH_RAINBOW_STARS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 20,
+
+        .name              = "Rainbow Stars",
+        .shortDescription  = "Shoutouts to SimpleFlips.",
+    },
 };

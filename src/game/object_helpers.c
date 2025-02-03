@@ -2508,6 +2508,22 @@ Gfx *geo_offset_klepto_held_object(s32 callContext, struct GraphNode *node, UNUS
     return NULL;
 }
 
+Gfx *geo_switch_klepto_star_model(s32 callContext, struct GraphNode *node, UNUSED Mat4 mtx) {
+    struct GraphNodeSwitchCase *switchCase;
+
+    if (callContext == GEO_CONTEXT_RENDER) {
+        switchCase = (struct GraphNodeSwitchCase *) node;
+
+        if(chaos_check_if_patch_active(CHAOS_PATCH_RAINBOW_STARS)) { 
+            switchCase->selectedCase = 1;
+        } else {
+            switchCase->selectedCase = 0;
+        }
+    }
+
+    return NULL;
+}
+
 Gfx *geo_offset_klepto_debug(s32 callContext, struct GraphNode *node, UNUSED Mat4 mtx) {
     if (callContext == GEO_CONTEXT_RENDER) {
         ((struct GraphNodeTranslationRotation *) node->next)->translation[0] = gDebugInfo[DEBUG_PAGE_EFFECTINFO][0];
