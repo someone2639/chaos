@@ -12,6 +12,8 @@
 #include "game/level_update.h"
 
 #define WEIGHT_OFFSET 1.25f // Must be > 0!
+#define RETRY_ATTEMPTS_DUPLICATES 3
+#define DUPLICATE_ALLOWANCE 0.45f
 
 static u32 activePatchCounts[CHAOS_PATCH_COUNT];
 static u8 availablePatches[CHAOS_PATCH_COUNT];
@@ -445,19 +447,39 @@ void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_
         s32 negativeSeverity = posNegPairings[generatedSeverity][CHAOS_EFFECT_NEGATIVE];
         s32 positiveSeverity = posNegPairings[generatedSeverity][CHAOS_EFFECT_POSITIVE];
 
-        s32 negativeWeight = (s32) (random_float() * (f32) severityCounts[negativeSeverity][CHAOS_EFFECT_NEGATIVE]);
-        for (enum ChaosPatchID patchId = 0; patchId < CHAOS_PATCH_COUNT; patchId++) {
-            const struct ChaosPatch *patch = &gChaosPatches[patchId];
-            if (!availablePatches[patchId] || patch->effectType != CHAOS_EFFECT_NEGATIVE || patch->severity != negativeSeverity) {
+        for (s32 attempts = 0; attempts < RETRY_ATTEMPTS_DUPLICATES; attempts++) {
+            s32 negativeWeight = (s32) (random_float() * (f32) severityCounts[negativeSeverity][CHAOS_EFFECT_NEGATIVE]);
+
+            for (enum ChaosPatchID patchId = 0; patchId < CHAOS_PATCH_COUNT; patchId++) {
+                const struct ChaosPatch *patch = &gChaosPatches[patchId];
+                if (!availablePatches[patchId] || patch->effectType != CHAOS_EFFECT_NEGATIVE || patch->severity != negativeSeverity) {
+                    continue;
+                }
+
+                if (negativeWeight <= 0) {
+                    negativePatchId = patchId;
+                    break;
+                }
+
+                negativeWeight--;
+            }
+
+            // Make duplicates of stackable patches less likely
+            s32 patchDuplicates = chaos_count_active_instances(negativePatchId);
+            f32 retryChance = 1.0f;
+            f32 duplicateAllowance = DUPLICATE_ALLOWANCE;
+            if (gChaosPatches[negativePatchId].negationId) {
+                // Double chances of passing allowance when patch negation is possible
+                duplicateAllowance += (1.0f - duplicateAllowance) / 2.0f;
+            }
+            for (s32 i = 0; i < patchDuplicates; i++) {
+                retryChance *= duplicateAllowance;
+            }
+            if (random_float() < retryChance) {
                 continue;
             }
 
-            if (negativeWeight <= 0) {
-                negativePatchId = patchId;
-                break;
-            }
-
-            negativeWeight--;
+            break;
         }
 
         negativePatchCompare = negativePatchId;
@@ -478,26 +500,44 @@ void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_
             applicablePositiveCount++;
         }
 
-        s32 positiveWeight = (s32) (random_float() * applicablePositiveCount);
         if (applicablePositiveCount > 0) {
-            for (enum ChaosPatchID patchId = 0; patchId < CHAOS_PATCH_COUNT; patchId++) {
-                const struct ChaosPatch *patch = &gChaosPatches[patchId];
-                if (!availablePatches[patchId] || patch->effectType != CHAOS_EFFECT_POSITIVE || patch->severity != positiveSeverity) {
-                    continue;
-                }
-                if (gChaosPatches[negativePatchId].negationId && gChaosPatches[negativePatchId].negationId == patchId) {
-                    continue;
-                }
-                if (gChaosPatches[patchId].conditionalFunc && !gChaosPatches[patchId].conditionalFunc()) {
-                    continue;
+            for (s32 attempts = 0; attempts < RETRY_ATTEMPTS_DUPLICATES; attempts++) {
+                s32 positiveWeight = (s32) (random_float() * applicablePositiveCount);
+
+                for (enum ChaosPatchID patchId = 0; patchId < CHAOS_PATCH_COUNT; patchId++) {
+                    const struct ChaosPatch *patch = &gChaosPatches[patchId];
+                    if (!availablePatches[patchId] || patch->effectType != CHAOS_EFFECT_POSITIVE || patch->severity != positiveSeverity) {
+                        continue;
+                    }
+                    if (gChaosPatches[negativePatchId].negationId && gChaosPatches[negativePatchId].negationId == patchId) {
+                        continue;
+                    }
+                    if (gChaosPatches[patchId].conditionalFunc && !gChaosPatches[patchId].conditionalFunc()) {
+                        continue;
+                    }
+
+                    if (positiveWeight <= 0) {
+                        positivePatchId = patchId;
+                        break;
+                    }
+
+                    positiveWeight--;
                 }
 
-                if (positiveWeight <= 0) {
-                    positivePatchId = patchId;
+                // Make duplicates of stackable patches less likely
+                s32 patchDuplicates = chaos_count_active_instances(positivePatchId);
+                f32 retryChance = 1.0f;
+                f32 duplicateAllowance = DUPLICATE_ALLOWANCE;
+                if (gChaosPatches[positivePatchId].negationId) {
+                    // Double chances of passing allowance when patch negation is possible
+                    duplicateAllowance += (1.0f - duplicateAllowance) / 2.0f;
+                }
+                for (s32 i = 0; i < patchDuplicates; i++) {
+                    retryChance *= duplicateAllowance;
+                }
+                if (random_float() >= retryChance) {
                     break;
                 }
-
-                positiveWeight--;
             }
         }
 
