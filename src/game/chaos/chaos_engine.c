@@ -659,25 +659,28 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
 
     // Compute weights for generation
     f32 totalWeight = 0.0f;
-    for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
-        struct ChaosActiveEntry *entry = &gChaosActiveEntries[i];
-        const struct ChaosPatch *patch = &gChaosPatches[entry->id];
 
-        if (patch->durationType == CHAOS_DURATION_ONCE) {
-            severityWeights[patch->severity] += 0.33f;
-            continue;
-        }
-        if (patch->durationType == CHAOS_DURATION_USE_COUNT) {
-            severityWeights[patch->severity] += 0.5f;
-            continue;
-        }
-        if (patch->durationType == CHAOS_DURATION_INFINITE) {
-            severityWeights[patch->severity] += 0.67f;
-            continue;
-        }
+    // NOTE: Comment out these weight calculations now that a different severity weighting system exists (so these weights are all even now)
+    // for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+    //     struct ChaosActiveEntry *entry = &gChaosActiveEntries[i];
+    //     const struct ChaosPatch *patch = &gChaosPatches[entry->id];
 
-        severityWeights[patch->severity] += 1.0f;
-    }
+    //     if (patch->durationType == CHAOS_DURATION_ONCE) {
+    //         severityWeights[patch->severity] += 0.33f;
+    //         continue;
+    //     }
+    //     if (patch->durationType == CHAOS_DURATION_USE_COUNT) {
+    //         severityWeights[patch->severity] += 0.5f;
+    //         continue;
+    //     }
+    //     if (patch->durationType == CHAOS_DURATION_INFINITE) {
+    //         severityWeights[patch->severity] += 0.67f;
+    //         continue;
+    //     }
+
+    //     severityWeights[patch->severity] += 1.0f;
+    // }
+
     for (s32 i = 1; i < ARRAY_COUNT(severityWeights); i++) {
         severityWeights[i] += WEIGHT_OFFSET;
         totalWeight += severityWeights[i];
@@ -693,7 +696,7 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
     chaos_generate_patches(severityCounts, posNegPairings, severityWeights);
 
     if (forcedDifficulty >= 0) {
-        for (s32 index = 0; index < CHAOS_PATCH_MAX_GENERATABLE; index++) {
+        for (s32 index = 1; index < CHAOS_PATCH_MAX_GENERATABLE; index++) {
             generatedPatches[index].severityLevel = forcedDifficulty;
         }
     }
