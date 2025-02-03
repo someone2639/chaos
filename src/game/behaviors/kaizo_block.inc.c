@@ -16,6 +16,7 @@ void bhv_kaizo_block_loop(void) {
             break;
         case 1:
             //Lower
+            load_object_collision_model();
             o->oPosY -= (10 * sins(((0xFFFF / 4) / KBLOCK_ACT_2_FRAMES) * o->oTimer));
             if(o->oTimer > KBLOCK_ACT_2_FRAMES) {
                 o->oAction++;
@@ -23,6 +24,7 @@ void bhv_kaizo_block_loop(void) {
             break;
         case 2:
             //Wait to despawn
+            load_object_collision_model();
             if(o->oTimer > 300) {
                 obj_mark_for_deletion(o);
             }

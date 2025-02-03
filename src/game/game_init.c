@@ -9,6 +9,7 @@
 #include "buffers/framebuffers.h"
 #include "buffers/zbuffer.h"
 #include "debug.h"
+#include "engine/behavior_script.h"
 #include "engine/level_script.h"
 #include "rendering_graph_node.h"
 #include "game_init.h"
@@ -718,6 +719,8 @@ void read_controller_inputs(void) {
     static s32 chaosControllerLagIter = 0;
     chaosControllerLagIter = (chaosControllerLagIter + 1) % ARRAY_COUNT(chaosControllerLag[0]);
     static u16 lastContBtnDown[MAX_NUM_PLAYERS];
+    static u16 lastContBrokenButton[MAX_NUM_PLAYERS];
+    static u16 lastContBrokenButtonHasPolled[MAX_NUM_PLAYERS];
 
     // If any controllers are plugged in, update the controller information.
     if (gControllerBits) {
@@ -765,8 +768,39 @@ void read_controller_inputs(void) {
                 controller->controllerData->button |= newButtons;
             }
 
+            if (chaos_check_if_patch_active(CHAOS_PATCH_BUTTON_BROKEN_A)) {
+                if (controller->controllerData->button & A_BUTTON) {
+                    if (!(lastContBrokenButtonHasPolled[cont] & A_BUTTON)) {
+                        lastContBrokenButtonHasPolled[cont] |= A_BUTTON;
+                        if (random_float() < 0.175f) {
+                            lastContBrokenButton[cont] |= A_BUTTON;
+                        }
+                    }
+                } else {
+                    lastContBrokenButton[cont] &= ~A_BUTTON;
+                    lastContBrokenButtonHasPolled[cont] &= ~A_BUTTON;
+                }
+
+                if (lastContBrokenButton[cont] & A_BUTTON) {
+                    controller->controllerData->button &= ~A_BUTTON;
+                }
+            }
             if (chaos_check_if_patch_active(CHAOS_PATCH_BUTTON_BROKEN_B)) {
-                controller->controllerData->button &= ~B_BUTTON;
+                if (controller->controllerData->button & B_BUTTON) {
+                    if (!(lastContBrokenButtonHasPolled[cont] & B_BUTTON)) {
+                        lastContBrokenButtonHasPolled[cont] |= B_BUTTON;
+                        if (random_float() < 0.33f) {
+                            lastContBrokenButton[cont] |= B_BUTTON;
+                        }
+                    }
+                } else {
+                    lastContBrokenButton[cont] &= ~B_BUTTON;
+                    lastContBrokenButtonHasPolled[cont] &= ~B_BUTTON;
+                }
+
+                if (lastContBrokenButton[cont] & B_BUTTON) {
+                    controller->controllerData->button &= ~B_BUTTON;
+                }
             }
             if (chaos_check_if_patch_active(CHAOS_PATCH_BUTTON_BROKEN_Z)) {
                 controller->controllerData->button &= ~Z_TRIG;

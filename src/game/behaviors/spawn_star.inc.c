@@ -19,7 +19,11 @@ void bhv_collect_star_init(void) {
     if (currentLevelStarFlags & (1 << starId)) {
         o->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_TRANSPARENT_STAR];
     } else {
-        o->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_STAR];
+        if(chaos_check_if_patch_active(CHAOS_PATCH_RAINBOW_STARS)) {
+            o->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_RAINBOW_STAR];
+        } else {
+            o->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_STAR];
+        }
     }
 
     obj_set_hitbox(o, &sCollectStarHitbox);

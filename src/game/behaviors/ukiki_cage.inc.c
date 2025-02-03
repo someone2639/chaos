@@ -21,6 +21,8 @@ void bhv_ukiki_cage_star_loop(void) {
                 if (bit_shift_left(1)
                     & save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum))) {
                     cur_obj_set_model(MODEL_TRANSPARENT_STAR);
+                } else if (chaos_check_if_patch_active(CHAOS_PATCH_RAINBOW_STARS)) {
+                    cur_obj_set_model(MODEL_RAINBOW_STAR);
                 }
             }
 

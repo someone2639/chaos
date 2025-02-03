@@ -6,6 +6,7 @@
 #include "game/area.h"
 #include "game/behavior_actions.h"
 #include "game/game_init.h"
+#include "game/interaction.h"
 #include "game/mario.h"
 #include "game/memory.h"
 #include "game/obj_behaviors_2.h"
@@ -984,15 +985,16 @@ void cur_obj_update(void) {
         obj_update_gfx_pos_and_angle(gCurrentObject);
     }
 
-    if (objFlags & OBJ_FLAG_HOLDABLE) {
-        extern struct Object *gMarthObject;
-        if (chaos_check_if_patch_active(CHAOS_PATCH_MARTH_GRAB)) {
-            if (gCurrentObject->oDistanceToMario < 500.0f) {
-                gMarthObject = gCurrentObject;
-            }
-        } else {
-            gMarthObject = NULL;
-        }
+    if (
+      chaos_check_if_patch_active(CHAOS_PATCH_MARTH_GRAB) &&
+      gCurrentObject->activeFlags != ACTIVE_FLAG_DEACTIVATED &&
+      gCurrentObject->oIntangibleTimer == 0 &&
+      (objFlags & (OBJ_FLAG_HOLDABLE | OBJ_FLAG_COMPUTE_DIST_TO_MARIO)) == (OBJ_FLAG_HOLDABLE | OBJ_FLAG_COMPUTE_DIST_TO_MARIO) &&
+      gCurrentObject->oDistanceToMario < 500.0f
+    )  {
+        gMarthObject = gCurrentObject;
+    } else if (gCurrentObject == gMarthObject) {
+        gMarthObject = NULL;
     }
 
     // Handle visibility of object

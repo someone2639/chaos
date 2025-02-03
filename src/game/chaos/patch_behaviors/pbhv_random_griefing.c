@@ -179,10 +179,13 @@ void chs_update_kaizo_blocks(void) {
     struct ChaosActiveEntry *this;
     chaos_find_first_active_patch(CHAOS_PATCH_KAIZO_BLOCKS, &this);
 
-    if(this->frameTimer > KAIZO_BLOCK_TIME_MAX && m->vel[1] > 20.0f && heightAboveFloor > 100.0f) {
+    if(this->frameTimer > KAIZO_BLOCK_TIME_MAX && m->vel[1] > 15.0f && heightAboveFloor > 120.0f) {
         spawn_object_abs_with_rot(m->marioObj, 0, MODEL_KAIZO_BLOCK, bhvKaizoBlock,
-                            m->pos[0], m->pos[1] + 180.0f + m->vel[1], m->pos[2], 0, 0, 0);
-        m->vel[1] = 0;
+                            m->pos[0], m->pos[1] + 170.0f, m->pos[2], 0, 0, 0);
+        m->vel[1] = -20.0f;
+        if (m->marioObj) {
+            m->marioObj->oVelY = m->vel[1];
+        }
         this->frameTimer = RAND(KAIZO_BLOCK_TIME_MAX); //Get a random offset to start the timer at
     }
 }

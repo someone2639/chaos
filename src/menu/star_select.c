@@ -132,7 +132,11 @@ void bhv_act_selector_init(void) {
     sVisibleStars = 0;
     while (i != starsToShow) {
         if (stars & (1 << sVisibleStars)) { // Star has been collected
-            selectorModelIDs[sVisibleStars] = MODEL_STAR;
+            if(chaos_check_if_patch_active(CHAOS_PATCH_RAINBOW_STARS)) {
+                selectorModelIDs[sVisibleStars] = MODEL_RAINBOW_STAR;
+            } else {
+                selectorModelIDs[sVisibleStars] = MODEL_STAR;
+            }
             i++;
         } else { // Star has not been collected
             selectorModelIDs[sVisibleStars] = MODEL_TRANSPARENT_STAR;

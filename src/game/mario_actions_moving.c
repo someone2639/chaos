@@ -4,6 +4,7 @@
 #include "course_table.h"
 #include "mario.h"
 #include "audio/external.h"
+#include "engine/behavior_script.h"
 #include "engine/math_util.h"
 #include "engine/surface_collision.h"
 #include "chaos/chaos.h"
@@ -1501,6 +1502,12 @@ s32 act_crouch_slide(struct MarioState *m) {
         m->actionTimer++;
         if (m->input & INPUT_A_PRESSED && !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_LONG_JUMP)) {
             if (m->forwardVel > 10.0f) {
+                if (chaos_check_if_patch_active(CHAOS_PATCH_HARDER_LONG_JUMPS)) {
+                    if (random_float() < 0.33f) {
+                        return set_mario_action(m, ACT_GROUND_POUND, 0);
+                    }
+                }
+
                 return set_jumping_action(m, ACT_LONG_JUMP, 0);
             }
         }

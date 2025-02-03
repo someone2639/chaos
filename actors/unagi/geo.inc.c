@@ -1,3 +1,22 @@
+const GeoLayout unagi_star_geo[] = { 
+   GEO_NODE_START(),
+   GEO_OPEN_NODE(),
+      GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_OPAQUE, 2000, 0, 0, 0, 0, 0, star_seg3_dl_0302B870),
+      GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_ALPHA, 2000, 0, 0, 0, 0, 0, star_seg3_dl_0302BA18),
+   GEO_CLOSE_NODE(),
+   GEO_RETURN(),
+};
+
+const GeoLayout unagi_rainbow_star_geo[] = { 
+   GEO_NODE_START(),
+   GEO_OPEN_NODE(),
+      GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_OPAQUE, 2000, 0, 0, 0, 0, 0, rainbow_star_dl),
+      GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_TRANSPARENT_DECAL, 2000, 0, 0, 0, 0, 0, rainbow_star_dl_spec),
+      GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_ALPHA, 2000, 0, 0, 0, 0, 0, star_seg3_dl_0302BA18),
+   GEO_CLOSE_NODE(),
+   GEO_RETURN(),
+};
+
 // 0x0C00010C
 const GeoLayout unagi_geo[] = {
    GEO_CULLING_RADIUS(2000),
@@ -21,8 +40,11 @@ const GeoLayout unagi_geo[] = {
                            GEO_OPEN_NODE(),
                               GEO_SCALE(0x00, 16384),
                               GEO_OPEN_NODE(),
-                                 GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_OPAQUE, 2000, 0, 0, 0, 0, 0, star_seg3_dl_0302B870),
-                                 GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_ALPHA, 2000, 0, 0, 0, 0, 0, star_seg3_dl_0302BA18),
+                                 GEO_SWITCH_CASE(2, geo_switch_enemy_star_model),
+                                 GEO_OPEN_NODE(),
+                                    GEO_BRANCH(1, unagi_star_geo),
+                                    GEO_BRANCH(1, unagi_rainbow_star_geo),
+                                 GEO_CLOSE_NODE(),
                               GEO_CLOSE_NODE(),
                            GEO_CLOSE_NODE(),
                         GEO_CLOSE_NODE(),
