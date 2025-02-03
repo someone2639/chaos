@@ -566,7 +566,7 @@ struct Surface *resolve_and_return_wall_collisions(Vec3f pos, f32 offset, f32 ra
 f32 vec3f_find_ceil(Vec3f pos, f32 height, struct Surface **ceil) {
     if (chaos_check_if_patch_active(CHAOS_PATCH_NOCLIP)) {
         // Exposed ceilings fix
-        height = MAX(height, pos[1]) + 3.0f;
+        height = MAX(height, pos[1]) + 80.0f;
     } else {
         height += 80.0f;
     }

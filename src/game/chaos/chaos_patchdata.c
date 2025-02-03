@@ -1232,24 +1232,36 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     },
 
 // Input Modifiers
-    [CHAOS_PATCH_BUTTON_BROKEN_B] = {
+    [CHAOS_PATCH_BUTTON_BROKEN_A] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
         .duration          = 4,
         
+        .conditionalFunc   = chs_cond_button_broken_a,
+
+        .name              = "The Atrocious A",
+        .shortDescription  = "The A button's contact has an unreliable connection. Maybe you should get a better controller...",
+    },
+    [CHAOS_PATCH_BUTTON_BROKEN_B] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 5,
+        
         .conditionalFunc   = chs_cond_button_broken_b,
 
         .name              = "The Busted B",
-        .shortDescription  = "The B button is completely nonfunctional (even for menus!)",
+        .shortDescription  = "The B button is finnicky and doesn't work sometimes.",
     },
     [CHAOS_PATCH_BUTTON_BROKEN_Z] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 4,
+        .duration          = 5,
         
         .conditionalFunc   = chs_cond_button_broken_z,
 
@@ -1581,7 +1593,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     },
     [CHAOS_PATCH_MARTH_GRAB] = {
         .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 1,
         .isStackable       = FALSE,
         .duration          = 6,

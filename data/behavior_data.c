@@ -336,7 +336,6 @@ const BehaviorScript bhvKaizoBlock[] = {
     LOAD_COLLISION_DATA(kaizo_block_collision),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_kaizo_block_loop),
-        CALL_NATIVE(load_object_collision_model),
     END_LOOP(),
 };
 
