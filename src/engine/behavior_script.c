@@ -988,7 +988,7 @@ void cur_obj_update(void) {
     if (
       chaos_check_if_patch_active(CHAOS_PATCH_MARTH_GRAB) &&
       gCurrentObject->activeFlags != ACTIVE_FLAG_DEACTIVATED &&
-      (gCurrentObject->activeFlags & ACTIVE_FLAG_ACTIVE) &&
+      gCurrentObject->oIntangibleTimer == 0 &&
       (objFlags & (OBJ_FLAG_HOLDABLE | OBJ_FLAG_COMPUTE_DIST_TO_MARIO)) == (OBJ_FLAG_HOLDABLE | OBJ_FLAG_COMPUTE_DIST_TO_MARIO) &&
       gCurrentObject->oDistanceToMario < 500.0f
     )  {
