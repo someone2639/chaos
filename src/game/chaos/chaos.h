@@ -209,6 +209,8 @@ enum ChaosDifficulty {
     CHAOS_DIFFICULTY_EASY,   // Offsets negative patches such that top severities should (almost) never show up
     CHAOS_DIFFICULTY_NORMAL, // Standard difficulty
     CHAOS_DIFFICULTY_HARD,   // Offsets positive patches such that top severities should (almost) never show up
+
+    CHAOS_DIFFICULTY_COUNT,
 };
 
 enum ChaosPatchDurationType {

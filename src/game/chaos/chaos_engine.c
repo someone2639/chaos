@@ -23,6 +23,12 @@ s32 *gChaosActiveEntryCount = NULL;
 struct ChaosActiveEntry *gChaosActiveEntries = NULL;
 u8 gChaosLevelWarped = FALSE;
 
+static const f32 difficultyWeights[CHAOS_DIFFICULTY_COUNT][CHAOS_PATCH_SEVERITY_COUNT - 1] = {
+    [CHAOS_DIFFICULTY_EASY  ] = { 0.12f, 0.25f, 0.37f }, // Difficulty offset should make highest level more common
+    [CHAOS_DIFFICULTY_NORMAL] = { 0.25f, 0.25f, 0.25f }, // Difficulty probability is balanced across the board
+    [CHAOS_DIFFICULTY_HARD  ] = { 0.15f, 0.25f, 0.35f }, // Difficulty offset doesn't really matter as much for hard, so just make highest level more common
+};
+
 static enum ChaosPatchID negativePatchCompare = CHAOS_PATCH_NONE;
 
 // TODO: These are written to by the save file, but are never actually saved to the save file!
@@ -515,6 +521,9 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
     s8 allowedSeverities[CHAOS_PATCH_SEVERITY_COUNT];
     f32 severityWeights[CHAOS_PATCH_SEVERITY_COUNT];
     f32 offsetSeverityWeight;
+    f32 generatedDifficultyWeight;
+    s32 forcedDifficulty = -1;
+    static s32 lastForcedDifficulty = -2;
 
     bzero(severityCounts, sizeof(severityCounts));
     bzero(posNegPairings, sizeof(posNegPairings));
@@ -537,8 +546,28 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
         }
     }
 
+    // Lessen likelihood of repeat aeverity randomization types in a row via attempts
+    for (s32 attempts = 0; attempts < 2; attempts++) {
+        generatedDifficultyWeight = random_float();
+        f32 weight = 0.0f;
+        for (s32 i = 0; i < ARRAY_COUNT(difficultyWeights[0]); i++) {
+            weight += difficultyWeights[gChaosDifficulty][i];
+            if (generatedDifficultyWeight < weight) {
+                forcedDifficulty = i + 1;
+                break;
+            }
+        }
+
+        // Check if repeat or should break early
+        if (forcedDifficulty != lastForcedDifficulty) {
+            lastForcedDifficulty = forcedDifficulty;
+            break;
+        } else if (random_float() < 0.33f) {
+            break;
+        }
+    }
+
     offsetSeverityWeight = random_float();
-    s32 forcedValue = -1;
 
     // Determine available severity combinations that may be used for selections
     for (s32 i = 1; i < ARRAY_COUNT(posNegPairings); i++) {
@@ -549,26 +578,21 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
         posNegPairings[i][CHAOS_EFFECT_NEGATIVE] = 0;
         allowedSeverities[i] = FALSE;
 
+        if (forcedDifficulty >= 0) {
+            pos = forcedDifficulty;
+            neg = forcedDifficulty;
+        }
+
         // Determine whether to offset pairings of positive and negative effects
-        if (offsetSeverityWeight < 0.20f) {
-            // 20% chance
+        if (offsetSeverityWeight < 0.15f) {
+            // 15% chance to globally increase negative severity
             neg++;
         } else if (offsetSeverityWeight < 0.30f) {
-            // 10% chance
+            // 15% chance to globally increase possitive severity
             pos++;
         } else if (offsetSeverityWeight < 0.40f) {
-            // 10% chance
+            // 10% chance to eliminate all positive patches
             pos = 0;
-        } else if (offsetSeverityWeight < 0.50f) {
-            // 10% chance
-            pos = CHAOS_PATCH_SEVERITY_MAX;
-            neg = CHAOS_PATCH_SEVERITY_MAX;
-            forcedValue = CHAOS_PATCH_SEVERITY_MAX;
-        } else if (offsetSeverityWeight < 0.55f) {
-            // 5% chance
-            pos = CHAOS_PATCH_SEVERITY_MAX - 1;
-            neg = CHAOS_PATCH_SEVERITY_MAX - 1;
-            forcedValue = CHAOS_PATCH_SEVERITY_MAX - 1;
         }
 
         if (gChaosDifficulty == CHAOS_DIFFICULTY_EASY) {
@@ -668,9 +692,9 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
 
     chaos_generate_patches(severityCounts, posNegPairings, severityWeights);
 
-    if (forcedValue >= 0) {
+    if (forcedDifficulty >= 0) {
         for (s32 index = 0; index < CHAOS_PATCH_MAX_GENERATABLE; index++) {
-            generatedPatches[index].severityLevel = forcedValue;
+            generatedPatches[index].severityLevel = forcedDifficulty;
         }
     }
 
