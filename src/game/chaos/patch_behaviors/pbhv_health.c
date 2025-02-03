@@ -15,14 +15,16 @@
     Health Drain
 */
 
-u8 chs_cond_health_drain(void) {return !chaos_check_if_patch_active(CHAOS_PATCH_HEALTH_GAIN);}
+u8 chs_cond_noheal_coins(void) {return !chaos_check_if_patch_active(CHAOS_PATCH_HEALTH_DRAIN);}
+u8 chs_cond_health_drain(void) {return !(chaos_check_if_patch_active(CHAOS_PATCH_HEALTH_GAIN) || chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_COINS) || chaos_check_if_patch_active(CHAOS_PATCH_WALKIES));}
 
 void chs_update_health_drain(void) {
     struct ChaosActiveEntry *this;
     chaos_find_first_active_patch(CHAOS_PATCH_HEALTH_DRAIN, &this);
     
-    if(!(this->frameTimer % 60)) {
+    if(!(this->frameTimer % 90)) {
         gMarioState->hurtCounter++;
+        this->frameTimer = 0;
     }
 }
 
@@ -36,8 +38,9 @@ void chs_update_health_gain(void) {
     struct ChaosActiveEntry *this;
     chaos_find_first_active_patch(CHAOS_PATCH_HEALTH_GAIN, &this);
     
-    if(!(this->frameTimer % 60)) {
+    if(!(this->frameTimer % 90)) {
         gMarioState->healCounter++;
+        this->frameTimer = 0;
     }
 }
 
@@ -137,4 +140,39 @@ void chs_act_extradamage_lava(void) {
 
 void chs_deact_extradamage_lava(void) {
     gMarioState->extraDamageLava -= 4;
+}
+
+/*
+    Shield
+*/
+
+u8 chs_cond_shield(void) {
+    struct ChaosActiveEntry *match;
+    chaos_find_first_active_patch(CHAOS_PATCH_SHIELD, &match);
+    if(match) {
+        return (match->remainingDuration < 9);
+    } else {
+        return TRUE;
+    }
+}
+
+#define INVINCIBILITY_TIME_MAX      27000
+
+/*
+    Random Invincibility
+*/
+
+void chs_act_random_invincibility(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_RANDOM_INVINCIBILITY, &this);
+    this->frameTimer = RAND(INVINCIBILITY_TIME_MAX); //Get a random offset to start the timer at
+}
+
+void chs_update_random_invincibility(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_RANDOM_INVINCIBILITY, &this);
+    if(this->frameTimer > INVINCIBILITY_TIME_MAX) {
+        gMarioState->invincTimer = 600;
+        this->frameTimer = RAND(INVINCIBILITY_TIME_MAX); //Get a random offset to restart the timer at
+    }
 }

@@ -424,15 +424,15 @@ u32 mario_check_object_grab(struct MarioState *m) {
         s16 facingDYaw = mario_obj_angle_to_object(m, gMarthObject) - m->faceAngle[1];
         if (facingDYaw >= -0x3AAA && facingDYaw <= 0x3AAA) {
             m->usedObj = gMarthObject;
-            gMarthObject = NULL;
 
             set_mario_action(
                 m, (m->action & ACT_FLAG_DIVING) ? ACT_DIVE_PICKING_UP : ACT_PICKING_UP, 0);
 
             result = TRUE;
+        } else {
+            m->usedObj = NULL;
         }
-
-        result = TRUE;
+        gMarthObject = NULL;
     } else if (m->input & INPUT_INTERACT_OBJ_GRABBABLE) {
         script = virtual_to_segmented(0x13, m->interactObj->behavior);
 
@@ -457,6 +457,8 @@ u32 mario_check_object_grab(struct MarioState *m) {
             }
         }
     }
+
+    gMarthObject = NULL;
 
     return result;
 }
@@ -745,6 +747,15 @@ u32 take_damage_and_knock_back(struct MarioState *m, struct Object *o) {
 
     if (!sInvulnerable && !(m->flags & MARIO_VANISH_CAP)
         && !(o->oInteractionSubtype & INT_SUBTYPE_DELAY_INVINCIBILITY)) {
+        if(chaos_check_if_patch_active(CHAOS_PATCH_SHIELD)) {
+            if(!chs_check_temporary_invincibility()) {
+                chaos_decrement_patch_usage(CHAOS_PATCH_SHIELD);
+            }
+
+            m->invincTimer = 30;
+            return FALSE;
+        }
+
         o->oInteractStatus = INT_STATUS_INTERACTED | INT_STATUS_ATTACKED_MARIO;
         m->interactObj = o;
 
@@ -1241,6 +1252,13 @@ u32 interact_flame(struct MarioState *m, UNUSED u32 interactType, struct Object 
             || m->waterLevel - m->pos[1] > 50.0f) {
             play_sound(SOUND_GENERAL_FLAME_OUT, m->marioObj->header.gfx.cameraToObject);
         } else {
+            if(chaos_check_if_patch_active(CHAOS_PATCH_SHIELD)) {
+                if(!chs_check_temporary_invincibility()) {
+                    chaos_decrement_patch_usage(CHAOS_PATCH_SHIELD);
+                }
+                m->invincTimer = 30;
+                return FALSE;
+            }
             m->marioObj->oMarioBurnTimer = 0;
             update_mario_sound_and_camera(m);
             play_sound(SOUND_MARIO_ON_FIRE, m->marioObj->header.gfx.cameraToObject);
@@ -1264,6 +1282,12 @@ u32 interact_snufit_bullet(struct MarioState *m, UNUSED u32 interactType, struct
         if (m->flags & MARIO_METAL_CAP) {
             o->oInteractStatus = INT_STATUS_INTERACTED | INT_STATUS_WAS_ATTACKED;
             play_sound(SOUND_ACTION_SNUFFIT_BULLET_HIT_METAL, m->marioObj->header.gfx.cameraToObject);
+        } else if (chaos_check_if_patch_active(CHAOS_PATCH_SHIELD)) {
+            if(!chs_check_temporary_invincibility()) {
+                chaos_decrement_patch_usage(CHAOS_PATCH_SHIELD);
+            }
+            m->invincTimer = 30;
+            return FALSE;
         } else {
             o->oInteractStatus = INT_STATUS_INTERACTED | INT_STATUS_ATTACKED_MARIO;
             m->interactObj = o;
@@ -1350,6 +1374,15 @@ u32 interact_bully(struct MarioState *m, UNUSED u32 interactType, struct Object 
 u32 interact_shock(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
     if (!sInvulnerable && !(m->flags & MARIO_VANISH_CAP)
         && !(o->oInteractionSubtype & INT_SUBTYPE_DELAY_INVINCIBILITY)) {
+
+        if(chaos_check_if_patch_active(CHAOS_PATCH_SHIELD)) {
+            if(!chs_check_temporary_invincibility()) {
+                chaos_decrement_patch_usage(CHAOS_PATCH_SHIELD);
+            }
+            m->invincTimer = 30;
+            return FALSE;
+        }
+
         u32 actionArg = (m->action & (ACT_FLAG_AIR | ACT_FLAG_ON_POLE | ACT_FLAG_HANGING)) == 0;
 
         o->oInteractStatus = INT_STATUS_INTERACTED | INT_STATUS_ATTACKED_MARIO;

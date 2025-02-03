@@ -564,9 +564,14 @@ struct Surface *resolve_and_return_wall_collisions(Vec3f pos, f32 offset, f32 ra
  * Finds the ceiling from a vec3f horizontally and a height (with 80 vertical buffer).
  */
 f32 vec3f_find_ceil(Vec3f pos, f32 height, struct Surface **ceil) {
-    UNUSED u8 filler[4];
+    if (chaos_check_if_patch_active(CHAOS_PATCH_NOCLIP)) {
+        // Exposed ceilings fix
+        height = MAX(height, pos[1]) + 80.0f;
+    } else {
+        height += 80.0f;
+    }
 
-    return find_ceil(pos[0], height + 80.0f, pos[2], ceil);
+    return find_ceil(pos[0], height, pos[2], ceil);
 }
 
 /**
@@ -1145,6 +1150,9 @@ s32 drop_and_set_mario_action(struct MarioState *m, u32 action, u32 actionArg) {
 void set_hurt_counter(struct MarioState *m, u8 additionalDamage) {
     m->hurtCounter += additionalDamage;
     if (chs_check_temporary_invincibility()) {
+        m->hurtCounter = 0;
+    } else if(chaos_check_if_patch_active(CHAOS_PATCH_SHIELD)) {
+        chaos_decrement_patch_usage(CHAOS_PATCH_SHIELD);
         m->hurtCounter = 0;
     }
 

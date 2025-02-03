@@ -120,6 +120,12 @@ static s32 find_wall_collisions_from_list(struct SurfaceNode *surfaceNode,
                 continue;
             }
 
+            
+            if (gCurrentObject != NULL && gCurrentObject == gMarioObject
+                && (chaos_check_if_patch_active(CHAOS_PATCH_NOCLIP))) {
+                continue;
+            }
+
             // If an object can pass through a vanish cap wall, pass through.
             if (surf->type == SURFACE_VANISH_CAP_WALLS) {
                 // If an object can pass through a vanish cap wall, pass through.

@@ -252,95 +252,33 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     },
 
 // Gravity Modifiers
-    [CHAOS_PATCH_GRAVITY_DECREASE_LV1] = {
+    [CHAOS_PATCH_GRAVITY_DECREASE] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_POSITIVE,
-        .negationId        = CHAOS_PATCH_GRAVITY_INCREASE_LV1,
-        .severity          = 1,
-        .isStackable       = TRUE,
-        .duration          = 10,
-
-        .conditionalFunc   = chs_cond_gravity_decrease_lv1,
-        .activatedInitFunc = chs_act_gravity_decrease_lv1,
-        .deactivationFunc  = chs_deact_gravity_decrease_lv1,
-
-        .name              = "Decreased Gravity",
-        .shortDescription  = "Decrease Mario's gravity by 15%.",
-    },
-    [CHAOS_PATCH_GRAVITY_DECREASE_LV2] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_POSITIVE,
-        .negationId        = CHAOS_PATCH_GRAVITY_INCREASE_LV2,
-        .severity          = 2,
-        .isStackable       = TRUE,
-        .duration          = 10,
-
-        .conditionalFunc   = chs_cond_gravity_decrease_lv2,
-        .activatedInitFunc = chs_act_gravity_decrease_lv2,
-        .deactivationFunc  = chs_deact_gravity_decrease_lv2,
-
-        .name              = "Low Gravity",
-        .shortDescription  = "Decrease Mario's gravity by 30%.",
-    },
-    [CHAOS_PATCH_GRAVITY_DECREASE_LV3] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_POSITIVE,
-        .negationId        = CHAOS_PATCH_GRAVITY_INCREASE_LV3,
+        .negationId        = CHAOS_PATCH_GRAVITY_INCREASE,
         .severity          = 3,
-        .isStackable       = TRUE,
+        .isStackable       = FALSE,
         .duration          = 10,
 
-        .conditionalFunc   = chs_cond_gravity_decrease_lv3,
-        .activatedInitFunc = chs_act_gravity_decrease_lv3,
-        .deactivationFunc  = chs_deact_gravity_decrease_lv3,
+        .activatedInitFunc = chs_act_gravity_decrease,
+        .deactivationFunc  = chs_deact_gravity_decrease,
 
         .name              = "Moon Gravity",
-        .shortDescription  = "Decrease Mario's gravity by 50%.",
+        .shortDescription  = "Decrease Mario's gravity by 37.5%.",
     },
-    [CHAOS_PATCH_GRAVITY_INCREASE_LV1] = {
+    [CHAOS_PATCH_GRAVITY_INCREASE] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .negationId        = CHAOS_PATCH_GRAVITY_DECREASE_LV1,
-        .severity          = 1,
-        .isStackable       = TRUE,
-        .duration          = 10,
-
-        .conditionalFunc   = chs_cond_gravity_increase_lv1,
-        .activatedInitFunc = chs_act_gravity_increase_lv1,
-        .deactivationFunc  = chs_deact_gravity_increase_lv1,
-
-        .name              = "Increased Gravity",
-        .shortDescription  = "Increase Mario's gravity by 15%.",
-    },
-    [CHAOS_PATCH_GRAVITY_INCREASE_LV2] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .negationId        = CHAOS_PATCH_GRAVITY_DECREASE_LV2,
-        .severity          = 2,
-        .isStackable       = TRUE,
-        .duration          = 10,
-
-        .conditionalFunc   = chs_cond_gravity_increase_lv2,
-        .activatedInitFunc = chs_act_gravity_increase_lv2,
-        .deactivationFunc  = chs_deact_gravity_increase_lv2,
-
-        .name              = "High Gravity",
-        .shortDescription  = "Increase Mario's gravity by 30%.",
-    },
-    [CHAOS_PATCH_GRAVITY_INCREASE_LV3] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .negationId        = CHAOS_PATCH_GRAVITY_DECREASE_LV3,
+        .negationId        = CHAOS_PATCH_GRAVITY_DECREASE,
         .severity          = 3,
-        .isStackable       = TRUE,
+        .isStackable       = FALSE,
         .duration          = 10,
 
-        .conditionalFunc   = chs_cond_gravity_increase_lv3,
-        .activatedInitFunc = chs_act_gravity_increase_lv3,
-        .deactivationFunc  = chs_deact_gravity_increase_lv3,
+        .activatedInitFunc = chs_act_gravity_increase,
+        .deactivationFunc  = chs_deact_gravity_increase,
 
         .name              = "Ultra Gravity",
-        .shortDescription  = "Increase Mario's gravity by 50%.",
+        .shortDescription  = "Increase Mario's gravity by 37.5%.",
     },
 
 // Health Modifiers
@@ -370,6 +308,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity          = 3,
         .isStackable       = FALSE,
         .duration          = 15,
+
+        .conditionalFunc   = chs_cond_noheal_coins,
 
         .name              = "Unaffordable Health Care",
         .shortDescription  = "Coins no longer heal Mario.",
@@ -516,6 +456,31 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Breath Boost",
         .shortDescription  = "Mario loses health more slowly underwater.",
+    },
+    [CHAOS_PATCH_SHIELD] = {
+        .durationType      = CHAOS_DURATION_USE_COUNT,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = TRUE,
+        .duration          = 3,
+
+        .conditionalFunc   = chs_cond_shield,
+
+        .name              = "Ligma Shield",
+        .shortDescription  = "Ignore the next damage Mario Takes.",
+    },
+    [CHAOS_PATCH_RANDOM_INVINCIBILITY] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 10,
+
+        .frameUpdateFunc   = chs_update_random_invincibility,
+        .activatedInitFunc = chs_act_random_invincibility,
+
+        .name              = "Windfall",
+        .shortDescription  = "At random, gain 20 seconds of invincibility.",
     },
 
 // Coin Modifiers
@@ -703,6 +668,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Super Mario Maker",
         .shortDescription  = "My little brother made this level, I hope you enjoy! (Randomly Spawn Kaizo Blocks.)"
     },
+    [CHAOS_PATCH_BATTLEFIELD] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .name              = "Bring Back Level Intro Text",
+        .shortDescription  = "Wow! You're smack in the middle of the battlefield.",
+    },
 
 // Movement Modifiers
     [CHAOS_PATCH_LOSEMOVE_BREAKDANCE] = {
@@ -751,6 +726,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity          = 2,
         .isStackable       = FALSE,
         .duration          = 12,
+        
+        .conditionalFunc   = chs_cond_losemove_longjump,
 
         .name              = "Lazy Leaper",
         .shortDescription  = "Mario can no longer long jump.",
@@ -828,6 +805,41 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Bounce Back",
         .shortDescription  = "Press A shortly after landing from a ground pound to do a bigger jump!",
+    },
+    [CHAOS_PATCH_STICKY_WALL_JUMP] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .conditionalFunc   = chs_check_sticky_walljump,
+
+        .name              = "Sticky Wall Jump",
+        .shortDescription  = "Stick to walls! This really makes you FEEL like Spider-Man!",
+    },
+    [CHAOS_PATCH_BETA] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 10,
+
+        .name              = "Beta",
+        .shortDescription  = "YAAHAA!!! please give me bps for betah triple jump",
+        .longDescription   = "HUD by robichu, sounds from the Internet archive. This will be more credit than any beta hacker will ever give :)"
+    },
+    [CHAOS_PATCH_HARDER_LONG_JUMPS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 15,
+
+        .conditionalFunc   = chs_cond_harder_longjumps,
+
+        .name              = "Long Jump Lottery",
+        .shortDescription  = "Get a Ground Pound instead of a Long Jump at random!",
     },
 
 // Object Spawners
@@ -1019,6 +1031,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Potato Graphics",
         .shortDescription  = "Now you're gaming like it's the 70's!",
+    },
+    [CHAOS_PATCH_BIG_HEAD] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .name              = "Big Head Mode",
+        .shortDescription  = "Mario might have a college degree, but now he looks the part!",
     },
 
 // Time Limit
@@ -1235,24 +1257,36 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     },
 
 // Input Modifiers
-    [CHAOS_PATCH_BUTTON_BROKEN_B] = {
+    [CHAOS_PATCH_BUTTON_BROKEN_A] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
         .duration          = 4,
         
+        .conditionalFunc   = chs_cond_button_broken_a,
+
+        .name              = "The Atrocious A",
+        .shortDescription  = "The A button's contact has an unreliable connection. Maybe you should get a better controller...",
+    },
+    [CHAOS_PATCH_BUTTON_BROKEN_B] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 5,
+        
         .conditionalFunc   = chs_cond_button_broken_b,
 
         .name              = "The Busted B",
-        .shortDescription  = "The B button is completely nonfunctional (even for menus!)",
+        .shortDescription  = "The B button is finnicky and doesn't work sometimes.",
     },
     [CHAOS_PATCH_BUTTON_BROKEN_Z] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 4,
+        .duration          = 5,
         
         .conditionalFunc   = chs_cond_button_broken_z,
 
@@ -1562,34 +1596,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Quicktime Events",
         .shortDescription  = "Follow the buttons in the order prompted on screen or die. Directed by David Cage.",
     },
-    [CHAOS_PATCH_DOUBLE_CHERRY] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_POSITIVE,
-        .severity          = 2,
-        .isStackable       = TRUE,
-        .duration          = 6,
-
-        .conditionalFunc   = chs_cond_cherry_clone,
-        .activatedInitFunc = chs_create_cherry_clone,
-        .deactivationFunc  = chs_remove_cherry_clone,
-        .areaInitFunc      = chs_init_cherry_clones_after_warp,
-
-        .name              = "Double Cherry",
-        .shortDescription  = "It's dangerous to go alone! Have a buddy!",
-        .longDescription   = "Each cherry clone has 1 health point, and will take your hits until they run out, after which you will take normal damage. If the \"real\" player gets hit, its soul will be transferred to a clone. By the end of this, which Mario will be the real Mario?",
-    },
-    [CHAOS_PATCH_STICKY_WALL_JUMP] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_POSITIVE,
-        .severity          = 2,
-        .isStackable       = FALSE,
-        .duration          = 15,
-
-        .conditionalFunc   = chs_check_sticky_walljump,
-
-        .name              = "Sticky Wall Jump",
-        .shortDescription  = "Stick to walls! This really makes you FEEL like Spider-Man!",
-    },
     [CHAOS_PATCH_PLATFORM_MISPLACEMENT] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
@@ -1610,45 +1616,50 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Wet Floor",
         .shortDescription  = "All floors will be slippery.",
     },
-    [CHAOS_PATCH_BETA] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_POSITIVE,
-        .severity          = 1,
-        .isStackable       = FALSE,
-        .duration          = 10,
-
-        .name              = "Beta",
-        .shortDescription  = "YAAHAA!!! please give me bps for betah triple jump",
-        .longDescription   = "HUD by robichu, sounds from the Internet archive. This will be more credit than any beta hacker will ever give :)"
-    },
-    [CHAOS_PATCH_BIG_HEAD] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 1,
-        .isStackable       = FALSE,
-        .duration          = 6,
-
-        .name              = "Big Head Mode",
-        .shortDescription  = "Mario might have a college degree, but now he looks the part!",
-    },
     [CHAOS_PATCH_MARTH_GRAB] = {
         .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 1,
         .isStackable       = FALSE,
         .duration          = 6,
 
         .name              = "Marth Grab",
-        .shortDescription  = "Grab things from farther away!",
+        .shortDescription  = "I mean, have you SEEN his grab range??",
     },
-    [CHAOS_PATCH_BATTLEFIELD] = {
+    [CHAOS_PATCH_NOCLIP] = {
         .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 2,
+
+        .name              = "No Clip",
+        .shortDescription  = "Walls are just a complete suggestion.",
+    },
+    [CHAOS_PATCH_RAINBOW_STARS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 1,
         .isStackable       = FALSE,
-        .duration          = 15,
+        .duration          = 20,
 
-        .name              = "Bring Back Level Intro Text",
-        .shortDescription  = "Wow! You're smack in the middle of the battlefield!",
+        .name              = "Rainbow Stars",
+        .shortDescription  = "Shoutouts to SimpleFlips.",
+    },
+    [CHAOS_PATCH_DOUBLE_CHERRY] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = TRUE,
+        .duration          = 6,
+
+        .conditionalFunc   = chs_cond_cherry_clone,
+        .activatedInitFunc = chs_create_cherry_clone,
+        .deactivationFunc  = chs_remove_cherry_clone,
+        .areaInitFunc      = chs_init_cherry_clones_after_warp,
+
+        .name              = "Double Cherry",
+        .shortDescription  = "It's dangerous to go alone! Have a buddy!",
+        .longDescription   = "Each cherry clone has 1 health point, and will take your hits until they run out, after which you will take normal damage. If the \"real\" player gets hit, its soul will be transferred to a clone. By the end of this, which Mario will be the real Mario?",
     },
 };

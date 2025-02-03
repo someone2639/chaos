@@ -112,6 +112,7 @@ struct InteractionHandler {
 
 extern s32 gShouldGive1UP;
 extern struct InteractionHandler sInteractionHandlers[INTERACT_COUNT];
+extern struct Object *gMarthObject;
 
 s16 mario_obj_angle_to_object(struct MarioState *m, struct Object *o);
 void mario_stop_riding_object(struct MarioState *m);

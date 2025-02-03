@@ -39,28 +39,15 @@ void chs_act_unlock_cannons(void);
 u8 chs_cond_unlock_cannons(void);
 
 // Gravity Modifiers
-u8 chs_cond_gravity_decrease_lv1(void);
-u8 chs_cond_gravity_decrease_lv2(void);
-u8 chs_cond_gravity_decrease_lv3(void);
-u8 chs_cond_gravity_increase_lv1(void);
-u8 chs_cond_gravity_increase_lv2(void);
-u8 chs_cond_gravity_increase_lv3(void);
-void chs_act_gravity_decrease_lv1(void);
-void chs_act_gravity_decrease_lv2(void);
-void chs_act_gravity_decrease_lv3(void);
-void chs_act_gravity_increase_lv1(void);
-void chs_act_gravity_increase_lv2(void);
-void chs_act_gravity_increase_lv3(void);
-void chs_deact_gravity_decrease_lv1(void);
-void chs_deact_gravity_decrease_lv2(void);
-void chs_deact_gravity_decrease_lv3(void);
-void chs_deact_gravity_increase_lv1(void);
-void chs_deact_gravity_increase_lv2(void);
-void chs_deact_gravity_increase_lv3(void);
+void chs_act_gravity_decrease(void);
+void chs_act_gravity_increase(void);
+void chs_deact_gravity_decrease(void);
+void chs_deact_gravity_increase(void);
 
 // Health Modifiers
 u8 chs_calculate_max_heal_counter(void);
 u8 chs_cond_health_drain(void);
+u8 chs_cond_noheal_coins(void);
 void chs_update_health_drain(void);
 u8 chs_cond_health_gain(void);
 void chs_update_health_gain(void);
@@ -78,6 +65,9 @@ void chs_deact_extradamage_enemies(void);
 u8 chs_cond_extradamage_lava(void);
 void chs_act_extradamage_lava(void);
 void chs_deact_extradamage_lava(void);
+u8 chs_cond_shield(void);
+void chs_update_random_invincibility(void);
+void chs_act_random_invincibility(void);
 
 // Coin Modifiers
 u8 chs_double_coins_under_30s(void); // Check whether double coins should remain in effect
@@ -96,6 +86,8 @@ void chs_update_brawl_tripping(void);
 void chs_update_galaxy_twirl(void);
 u8 chs_cond_no_fall_damage(void);
 u8 chs_check_sticky_walljump(void);
+u8 chs_cond_harder_longjumps(void);
+u8 chs_cond_losemove_longjump(void);
 
 // Random Griefing
 void chs_act_random_sleep(void);
@@ -165,6 +157,7 @@ u8 chs_cond_speed_tax(void);
 void chs_update_speed_tax(void);
 
 // Input Modifiers
+u8 chs_cond_button_broken_a(void);
 u8 chs_cond_button_broken_b(void);
 u8 chs_cond_button_broken_z(void);
 u8 chs_cond_button_broken_c(void);
