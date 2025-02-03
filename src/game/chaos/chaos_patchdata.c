@@ -480,7 +480,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .activatedInitFunc = chs_act_random_invincibility,
 
         .name              = "Windfall",
-        .shortDescription  = "At random, gain 30 seconds of invincibility.",
+        .shortDescription  = "At random, gain 20 seconds of invincibility.",
     },
 
 // Coin Modifiers
