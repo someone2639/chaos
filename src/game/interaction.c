@@ -435,8 +435,6 @@ u32 mario_check_object_grab(struct MarioState *m) {
 
             result = TRUE;
         }
-
-        result = TRUE;
     } else if (m->input & INPUT_INTERACT_OBJ_GRABBABLE) {
         script = virtual_to_segmented(0x13, m->interactObj->behavior);
 
