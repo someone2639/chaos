@@ -16,7 +16,7 @@
 */
 
 u8 chs_cond_noheal_coins(void) {return !chaos_check_if_patch_active(CHAOS_PATCH_HEALTH_DRAIN);}
-u8 chs_cond_health_drain(void) {return !(chaos_check_if_patch_active(CHAOS_PATCH_HEALTH_GAIN) || !chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_COINS));}
+u8 chs_cond_health_drain(void) {return !(chaos_check_if_patch_active(CHAOS_PATCH_HEALTH_GAIN) || chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_COINS) || chaos_check_if_patch_active(CHAOS_PATCH_WALKIES));}
 
 void chs_update_health_drain(void) {
     struct ChaosActiveEntry *this;
