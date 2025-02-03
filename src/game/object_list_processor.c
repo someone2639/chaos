@@ -677,6 +677,11 @@ void update_objects(UNUSED s32 unused) {
     cycleCounts[4] = get_clock_difference(cycleCounts[0]);
     update_non_terrain_objects();
 
+    // Unset Marth object if object is unloaded
+    if (gMarthObject && gMarthObject->activeFlags == ACTIVE_FLAG_DEACTIVATED) {
+        gMarthObject = NULL;
+    }
+
     // Unload any objects that have been deactivated
     cycleCounts[5] = get_clock_difference(cycleCounts[0]);
     unload_deactivated_objects();
