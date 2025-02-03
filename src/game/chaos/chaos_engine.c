@@ -475,7 +475,7 @@ void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_
             for (s32 i = 0; i < patchDuplicates; i++) {
                 retryChance *= duplicateAllowance;
             }
-            if (random_float() < retryChance) {
+            if (random_float() >= retryChance) {
                 continue;
             }
 
