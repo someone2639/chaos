@@ -63,7 +63,7 @@ const GeoLayout klepto_geo[] = {
                            GEO_OPEN_NODE(),
                               GEO_SCALE(0x00, 16384),
                               GEO_OPEN_NODE(),
-                                 GEO_SWITCH_CASE(2, geo_switch_klepto_star_model),
+                                 GEO_SWITCH_CASE(2, geo_switch_enemy_star_model),
                                  GEO_OPEN_NODE(),
                                     GEO_BRANCH(1, klepto_star_geo),
                                     GEO_BRANCH(1, klepto_rainbow_star_geo),

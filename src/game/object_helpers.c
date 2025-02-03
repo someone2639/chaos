@@ -2508,7 +2508,7 @@ Gfx *geo_offset_klepto_held_object(s32 callContext, struct GraphNode *node, UNUS
     return NULL;
 }
 
-Gfx *geo_switch_klepto_star_model(s32 callContext, struct GraphNode *node, UNUSED Mat4 mtx) {
+Gfx *geo_switch_enemy_star_model(s32 callContext, struct GraphNode *node, UNUSED Mat4 mtx) {
     struct GraphNodeSwitchCase *switchCase;
 
     if (callContext == GEO_CONTEXT_RENDER) {

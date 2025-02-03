@@ -280,7 +280,7 @@ void enable_time_stop_including_mario(void);
 void disable_time_stop_including_mario(void);
 s32 cur_obj_check_interacted(void);
 void cur_obj_spawn_loot_blue_coin(void);
-Gfx *geo_switch_klepto_star_model(s32 callContext, struct GraphNode *node, UNUSED Mat4 mtx);
+Gfx *geo_switch_enemy_star_model(s32 callContext, struct GraphNode *node, UNUSED Mat4 mtx);
 
 #ifndef VERSION_JP
 void cur_obj_spawn_star_at_y_offset(f32 targetX, f32 targetY, f32 targetZ, f32 offsetY);
