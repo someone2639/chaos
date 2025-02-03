@@ -989,6 +989,8 @@ void cur_obj_update(void) {
         if (chaos_check_if_patch_active(CHAOS_PATCH_MARTH_GRAB)) {
             if (gCurrentObject->oDistanceToMario < 500.0f) {
                 gMarthObject = gCurrentObject;
+            } else if (gMarthObject == gCurrentObject) {
+                gMarthObject = NULL;
             }
         } else {
             gMarthObject = NULL;
