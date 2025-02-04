@@ -993,7 +993,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Master Quest",
         .shortDescription  = "Mirror Mario has broken out! Flip the game horizontally and play from his perspective!",
-        .longDescription   = "For a full version of this mod, check out Super Mario 64 Mirrored by mountainflaw on RomHacking.com!",
+        .longDescription   = "For a full version of this mod, check out Super Mario 64 Master Quest by mountainflaw on RomHacking.com!",
     },
     [CHAOS_PATCH_45_FPS] = {
         .durationType      = CHAOS_DURATION_STARS,
