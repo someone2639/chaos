@@ -19,6 +19,7 @@
 #include "camera.h"
 #include "object_list_processor.h"
 #include "ingame_menu.h"
+#include "interaction.h"
 #include "obj_behaviors.h"
 #include "save_file.h"
 #include "debug.h"
@@ -575,7 +576,7 @@ void check_instant_warp(void) {
     if (gCurrLevelNum == LEVEL_CASTLE) {
  #else // !UNLOCK_ALL
     if (gCurrLevelNum == LEVEL_CASTLE
-        && save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 70) {
+        && save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= BITS_STAR_REQUIREMENT) {
  #endif // !UNLOCK_ALL
         return;
     }

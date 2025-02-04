@@ -341,6 +341,7 @@ void chs_lvlupdate_spawn_on_shell(void) {
     chaos_find_first_active_patch(CHAOS_PATCH_SPAWN_ON_SHELL, &this);
 
     if (gCurrCourseNum == COURSE_NONE 
+        || gCurrLevelNum == LEVEL_SA
         || gCurrLevelNum == LEVEL_BOWSER_1
         || gCurrLevelNum == LEVEL_BOWSER_2
         || gCurrLevelNum == LEVEL_BOWSER_3) {

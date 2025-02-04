@@ -5,6 +5,7 @@
 #include "audio/load.h"
 #include "engine/graph_node.h"
 #include "engine/math_util.h"
+#include "interaction.h"
 #include "level_table.h"
 #include "level_update.h"
 #include "main.h"
@@ -206,7 +207,7 @@ void play_infinite_stairs_music(void) {
     u8 shouldPlay = FALSE;
 
     /* Infinite stairs? */
-    if (gCurrLevelNum == LEVEL_CASTLE && gCurrAreaIndex == 2 && gMarioState->numStars < 70) {
+    if (gCurrLevelNum == LEVEL_CASTLE && gCurrAreaIndex == 2 && gMarioState->numStars < BITS_STAR_REQUIREMENT) {
         if (gMarioState->floor != NULL && gMarioState->floor->room == 6) {
             if (gMarioState->pos[2] < 2540.0f) {
                 shouldPlay = TRUE;
