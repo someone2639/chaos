@@ -195,6 +195,8 @@ void chs_mq_init(void);
 void chs_mq_deinit(void);
 u8 chs_topdown_check(void);
 u8 chs_cam_invert_x_check(void);
+void chs_shuffle_objects(void);
+void chs_start_shuffle(void);
 u8 chs_cond_quicktime(void);
 void chs_update_quicktime(void);
 void chs_act_quicktime(void);

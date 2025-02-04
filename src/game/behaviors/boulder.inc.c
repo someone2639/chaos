@@ -25,6 +25,11 @@ void boulder_act_1(void) {
     if (o->oPosY < -1000.0f) {
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }
+    if (chaos_check_if_patch_active(CHAOS_PATCH_SHUFFLE_OBJECTS)) {
+        if (o->oTimer > 300) {
+            o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
+        }
+    }
 }
 
 void bhv_big_boulder_loop(void) {

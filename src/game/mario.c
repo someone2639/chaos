@@ -1811,6 +1811,46 @@ s32 execute_mario_action(UNUSED struct Object *o) {
         s32 tmpStickX = gMarioState->controller->stickX;
         s32 tmpStickY = gMarioState->controller->stickY;
 
+        if(chaos_check_if_patch_active(CHAOS_PATCH_SM64_DS)) {
+            s32 adjustedX;
+            s32 adjustedY;
+            f32 magX;
+            f32 magY;
+            f32 mag = ((gMarioState->controller->stickMag / 64.0f) * (gMarioState->controller->stickMag / 64.0f)) * 64.0f;
+            
+            if(mag == 0) {
+                adjustedX = 0;
+                adjustedY = 0;
+                gMarioState->controller->stickMag = 0;
+            } else {
+                magX = absf(gMarioState->controller->stickX / mag);
+                magY = absf(gMarioState->controller->stickY / mag);
+                gMarioState->controller->stickMag = 64;
+
+                if(absf(magX - magY) > 0.5f) {
+                    if(magX > magY) {
+                        adjustedX = 64;
+                        adjustedY = 0;
+                    } else {
+                        adjustedX = 0;
+                        adjustedY = 64;
+                    }
+                } else {
+                    adjustedX = 45;
+                    adjustedY = 45;
+                }
+
+                if(gMarioState->controller->stickX < 0) {
+                    adjustedX *= -1;
+                }
+                if(gMarioState->controller->stickY < 0) {
+                    adjustedY *= -1;
+                }
+            }
+
+            gMarioState->controller->stickX = adjustedX;
+            gMarioState->controller->stickY = adjustedY;
+        }
         if (chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_STICK_X)) {
             gMarioState->controller->stickX *= -1.0f;
         }

@@ -5,6 +5,7 @@
 #include "audio/load.h"
 #include "engine/graph_node.h"
 #include "engine/math_util.h"
+#include "interaction.h"
 #include "level_table.h"
 #include "level_update.h"
 #include "main.h"
@@ -32,7 +33,9 @@ static u8 sBgMusicDisabled = FALSE;
 static u16 sCurrentMusic = MUSIC_NONE;
 static u16 sCurrentShellMusic = MUSIC_NONE;
 static u16 sCurrentCapMusic = MUSIC_NONE;
+#ifndef UNLOCK_ALL
 static u8 sPlayingInfiniteStairs = FALSE;
+#endif
 // Only the 20th array element is used.
 static u32 sMenuSoundsExtra[] = {
     SOUND_MOVING_TERRAIN_SLIDE + (0 << 16),
@@ -200,10 +203,11 @@ void play_painting_eject_sound(void) {
  * Called from threads: thread5_game_loop
  */
 void play_infinite_stairs_music(void) {
+#ifndef UNLOCK_ALL
     u8 shouldPlay = FALSE;
 
     /* Infinite stairs? */
-    if (gCurrLevelNum == LEVEL_CASTLE && gCurrAreaIndex == 2 && gMarioState->numStars < 70) {
+    if (gCurrLevelNum == LEVEL_CASTLE && gCurrAreaIndex == 2 && gMarioState->numStars < BITS_STAR_REQUIREMENT) {
         if (gMarioState->floor != NULL && gMarioState->floor->room == 6) {
             if (gMarioState->pos[2] < 2540.0f) {
                 shouldPlay = TRUE;
@@ -219,6 +223,7 @@ void play_infinite_stairs_music(void) {
             stop_secondary_music(500);
         }
     }
+#endif
 }
 
 /**

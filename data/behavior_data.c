@@ -862,8 +862,14 @@ const BehaviorScript bhvFadingWarp[] = {
     END_LOOP(),
 };
 
+const BehaviorScript bhvBitSWarp[] = {
+    BEGIN(OBJ_LIST_LEVEL),
+    GOTO(bhvWarp + 1),
+};
+
 const BehaviorScript bhvWarp[] = {
     BEGIN(OBJ_LIST_LEVEL),
+    // warp - common:
     OR_INT(oFlags, (OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
     SET_INT(oInteractType, INTERACT_WARP),
     SET_INT(oIntangibleTimer, 0),

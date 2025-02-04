@@ -19,6 +19,7 @@
 #include "camera.h"
 #include "object_list_processor.h"
 #include "ingame_menu.h"
+#include "interaction.h"
 #include "obj_behaviors.h"
 #include "save_file.h"
 #include "debug.h"
@@ -483,9 +484,12 @@ void init_mario_after_warp(void) {
 
 #ifndef VERSION_JP
         if (sWarpDest.levelNum == LEVEL_CASTLE_GROUNDS && sWarpDest.areaIdx == 1
-            && (sWarpDest.nodeId == 0x07 || sWarpDest.nodeId == 0x10 || sWarpDest.nodeId == 0x14
-                || sWarpDest.nodeId == 0x1E)) {
+            && (sWarpDest.nodeId == 0x07 || sWarpDest.nodeId == 0x0A || sWarpDest.nodeId == 0x0B
+                || sWarpDest.nodeId == 0x14 || sWarpDest.nodeId == 0x1E)) {
             play_sound(SOUND_MENU_MARIO_CASTLE_WARP, gGlobalSoundSource);
+            if (sWarpDest.nodeId == 0x0B) {
+                chaosmsg_print(CHAOS_PATCH_NONE, "@FF7F10--Nice try!@-------- :)");
+            }
         }
 #endif
     }
@@ -572,7 +576,7 @@ void check_instant_warp(void) {
     if (gCurrLevelNum == LEVEL_CASTLE) {
  #else // !UNLOCK_ALL
     if (gCurrLevelNum == LEVEL_CASTLE
-        && save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 70) {
+        && save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= BITS_STAR_REQUIREMENT) {
  #endif // !UNLOCK_ALL
         return;
     }
@@ -620,6 +624,12 @@ void check_instant_warp(void) {
                 warp_camera(warp->displacement[0], warp->displacement[1], warp->displacement[2]);
 
                 gMarioState->area->camera->yaw = cameraAngle;
+
+                if (chaos_check_if_patch_active(CHAOS_PATCH_SHUFFLE_OBJECTS)) {
+                    if (gCurrCourseNum != COURSE_NONE) {
+                        gMarioState->statusForCamera->cameraEvent = CAM_EVENT_SHUFFLE;
+                    }
+                }
 
                 if(chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_CLONES) && gCurrCourseNum != COURSE_NONE) {
                     chs_cosmic_clones_move_instant_warp(warp->displacement);
