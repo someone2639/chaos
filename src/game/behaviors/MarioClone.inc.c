@@ -115,9 +115,9 @@ void bhv_MarioClone_loop(void) {
 	}
 	update_clone_animation();
 
-    o->oFaceAnglePitch = m->faceAngle[0];
-    o->oFaceAngleYaw = m->faceAngle[1];
-    o->oFaceAngleRoll = m->faceAngle[2];
+    o->oFaceAnglePitch = m->marioObj->header.gfx.angle[0];
+    o->oFaceAngleYaw = m->marioObj->header.gfx.angle[1];
+    o->oFaceAngleRoll = m->marioObj->header.gfx.angle[2];
 
     o->oGravity = 1.0f;
 

@@ -47,8 +47,6 @@ s16 set_obj_animation(struct Object *o, s32 targetAnimID) {
     return o->header.gfx.animInfo.animFrame;
 }
 
-s16 cloneyaw = 0;
-
 u32 cloneCount = 0;
 
 u8 chs_cond_cherry_clone(void) {
