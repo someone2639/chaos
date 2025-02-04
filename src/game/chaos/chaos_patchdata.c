@@ -1646,4 +1646,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Rainbow Stars",
         .shortDescription  = "Shoutouts to SimpleFlips.",
     },
+    [CHAOS_PATCH_ORTHO] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 5,
+
+        .conditionalFunc   = chs_cond_ortho,
+
+        .name              = "Orthographic Mode",
+        .shortDescription  = "A whole new perspective! Or really a lack of one...",
+    },
 };
