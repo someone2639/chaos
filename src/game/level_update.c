@@ -625,6 +625,12 @@ void check_instant_warp(void) {
 
                 gMarioState->area->camera->yaw = cameraAngle;
 
+                if (chaos_check_if_patch_active(CHAOS_PATCH_SHUFFLE_OBJECTS)) {
+                    if (gCurrCourseNum != COURSE_NONE) {
+                        gMarioState->statusForCamera->cameraEvent = CAM_EVENT_SHUFFLE;
+                    }
+                }
+
                 if(chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_CLONES) && gCurrCourseNum != COURSE_NONE) {
                     chs_cosmic_clones_move_instant_warp(warp->displacement);
                 }

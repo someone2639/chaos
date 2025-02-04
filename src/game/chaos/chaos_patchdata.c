@@ -1668,4 +1668,17 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Orthographic Mode",
         .shortDescription  = "A whole new perspective! Or really a lack of one...",
     },
+    [CHAOS_PATCH_SHUFFLE_OBJECTS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .areaInitFunc     = chs_start_shuffle,
+        .frameUpdateFunc   = chs_shuffle_objects,
+
+        .name              = "Shuffle Object Positions",
+        .shortDescription  = "Kaze WISHES tornado did this!",
+    };
 };
