@@ -11,6 +11,7 @@
 #include "debug.h"
 #include "engine/behavior_script.h"
 #include "engine/level_script.h"
+#include "rendering_graph_node.h"
 #include "game_init.h"
 #include "level_update.h"
 #include "main.h"
@@ -648,6 +649,10 @@ void adjust_analog_stick(struct Controller *controller) {
         controller->stickY *= 64 / controller->stickMag;
         controller->stickMag = 64;
     }
+
+    if (isGameFlipped) {
+        controller->stickX *= -1;
+    }
 }
 
 /**
@@ -1023,7 +1028,7 @@ void thread5_game_loop(UNUSED void *arg) {
 
 #ifdef SOMEONE2639_CRAZY_EXPERIMENTS
         if (gPlayer1Controller->buttonPressed & L_TRIG) {
-            chaos_add_new_entry(CHAOS_PATCH_TOP_DOWN_CAMERA);
+            chaos_add_new_entry(CHAOS_PATCH_MIRROR_MODE);
         }
         if (gPlayer1Controller->buttonPressed & R_TRIG) {
             chaos_remove_expired_entry(0, "%s: Removed patch!");

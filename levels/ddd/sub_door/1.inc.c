@@ -18,7 +18,7 @@ const Gfx ddd_seg7_dl_07009030[] = {
     gsDPPipeSync(),
     gsDPSetEnvColor(255, 255, 255, 80),
     gsDPSetCombineMode(G_CC_SHADEFADEA, G_CC_SHADEFADEA),
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT),
     gsSPDisplayList(ddd_seg7_dl_07009010),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),

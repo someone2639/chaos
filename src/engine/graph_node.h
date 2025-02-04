@@ -82,6 +82,7 @@ struct GraphNodeRoot {
     /*0x16*/ s16 x;
     /*0x18*/ s16 y;
     /*0x1A*/ s16 width; // half width, 160
+    s16 perspWidth;
     /*0x1C*/ s16 height; // half height
     /*0x1E*/ s16 numViews; // number of entries in mystery array
     /*0x20*/ struct GraphNode **views;

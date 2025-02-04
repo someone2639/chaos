@@ -981,6 +981,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "The Sky is...Gone?",
         .shortDescription  = "Meh, who needed it anyway...",
     },
+    [CHAOS_PATCH_MIRROR_MODE] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .activatedInitFunc = chs_mq_init,
+        .deactivationFunc  = chs_mq_deinit,
+
+        .name              = "Master Quest",
+        .shortDescription  = "Mirror Mario has broken out! Flip the game horizontally and play from his perspective!",
+        .longDescription   = "For a full version of this mod, check out Super Mario 64 Mirrored by mountainflaw on RomHacking.com!",
+    },
     [CHAOS_PATCH_45_FPS] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,

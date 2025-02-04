@@ -1286,7 +1286,7 @@ const Gfx skeeter_seg6_dl_06003FF0[] = {
 
 // 0x06004040 - 0x06004070
 const Gfx skeeter_seg6_dl_06004040[] = {
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_SHADING_SMOOTH),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT | G_SHADING_SMOOTH),
     gsSPVertex(skeeter_seg6_vertex_06000FA0, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  0,  2, 0x0),
     gsSPSetGeometryMode(G_LIGHTING | G_CULL_BACK | G_SHADING_SMOOTH),
@@ -1295,7 +1295,7 @@ const Gfx skeeter_seg6_dl_06004040[] = {
 
 // 0x06004070 - 0x060040A0
 const Gfx skeeter_seg6_dl_06004070[] = {
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_SHADING_SMOOTH),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT | G_SHADING_SMOOTH),
     gsSPVertex(skeeter_seg6_vertex_06000FE0, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  0,  2, 0x0),
     gsSPSetGeometryMode(G_LIGHTING | G_CULL_BACK | G_SHADING_SMOOTH),
@@ -1314,7 +1314,7 @@ const Gfx skeeter_seg6_dl_060040A0[] = {
 
 // 0x060040F0 - 0x06004120
 const Gfx skeeter_seg6_dl_060040F0[] = {
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_SHADING_SMOOTH),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT | G_SHADING_SMOOTH),
     gsSPVertex(skeeter_seg6_vertex_060010D0, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  0,  2, 0x0),
     gsSPSetGeometryMode(G_LIGHTING | G_CULL_BACK | G_SHADING_SMOOTH),
@@ -1323,7 +1323,7 @@ const Gfx skeeter_seg6_dl_060040F0[] = {
 
 // 0x06004120 - 0x06004150
 const Gfx skeeter_seg6_dl_06004120[] = {
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_SHADING_SMOOTH),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT | G_SHADING_SMOOTH),
     gsSPVertex(skeeter_seg6_vertex_06001110, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  3,  0,  2, 0x0),
     gsSPSetGeometryMode(G_LIGHTING | G_CULL_BACK | G_SHADING_SMOOTH),
@@ -1342,7 +1342,7 @@ const Gfx skeeter_seg6_dl_06004150[] = {
 
 // 0x060041A0 - 0x060041D0
 const Gfx skeeter_seg6_dl_060041A0[] = {
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_SHADING_SMOOTH),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT | G_SHADING_SMOOTH),
     gsSPVertex(skeeter_seg6_vertex_06001200, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSPSetGeometryMode(G_LIGHTING | G_CULL_BACK | G_SHADING_SMOOTH),
@@ -1351,7 +1351,7 @@ const Gfx skeeter_seg6_dl_060041A0[] = {
 
 // 0x060041D0 - 0x06004200
 const Gfx skeeter_seg6_dl_060041D0[] = {
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_SHADING_SMOOTH),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT | G_SHADING_SMOOTH),
     gsSPVertex(skeeter_seg6_vertex_06001240, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSPSetGeometryMode(G_LIGHTING | G_CULL_BACK | G_SHADING_SMOOTH),
@@ -1439,7 +1439,7 @@ const Gfx skeeter_seg6_dl_060045C8[] = {
 
 // 0x06004618 - 0x06004648
 const Gfx skeeter_seg6_dl_06004618[] = {
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_SHADING_SMOOTH),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT | G_SHADING_SMOOTH),
     gsSPVertex(skeeter_seg6_vertex_06001B30, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSPSetGeometryMode(G_LIGHTING | G_CULL_BACK | G_SHADING_SMOOTH),
@@ -1448,7 +1448,7 @@ const Gfx skeeter_seg6_dl_06004618[] = {
 
 // 0x06004648 - 0x06004678
 const Gfx skeeter_seg6_dl_06004648[] = {
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_SHADING_SMOOTH),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT | G_SHADING_SMOOTH),
     gsSPVertex(skeeter_seg6_vertex_06001B70, 4, 0),
     gsSP1Triangle( 0,  1,  2, 0x0),
     gsSP1Triangle( 0,  2,  3, 0x0),
@@ -1684,7 +1684,7 @@ const Gfx skeeter_seg6_dl_06004A40[] = {
 
 // 0x06005328 - 0x06005358
 const Gfx skeeter_seg6_dl_06005328[] = {
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_SHADING_SMOOTH),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT | G_SHADING_SMOOTH),
     gsSPVertex(skeeter_seg6_vertex_060037B0, 4, 0),
     gsSP2Triangles( 0,  1,  2, 0x0,  0,  2,  3, 0x0),
     gsSPSetGeometryMode(G_LIGHTING | G_CULL_BACK | G_SHADING_SMOOTH),

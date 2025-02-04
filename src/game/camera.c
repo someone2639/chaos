@@ -28,8 +28,30 @@
 #include "paintings.h"
 #include "engine/graph_node.h"
 #include "level_table.h"
+#include "game/rendering_graph_node.h"
 
-#define CBUTTON_MASK (U_CBUTTONS | D_CBUTTONS | L_CBUTTONS | R_CBUTTONS)
+#undef L_CBUTTONS
+#undef R_CBUTTONS
+#define L_CBUTTONS chCheckCLeft()
+#define R_CBUTTONS chCheckCRight()
+
+int chCheckCLeft() {
+    if (isGameFlipped) {
+        return CONT_F;
+    } else {
+        return CONT_C;
+    }
+}
+
+int chCheckCRight() {
+    if (isGameFlipped) {
+        return CONT_C;
+    } else {
+        return CONT_F;
+    }
+}
+
+#define CBUTTON_MASK (U_CBUTTONS | D_CBUTTONS | R_CBUTTONS | L_CBUTTONS)
 
 /**
  * @file camera.c

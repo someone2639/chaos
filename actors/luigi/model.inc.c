@@ -4655,7 +4655,7 @@ Gfx mat_revert_luigi_EyesDead[] = {
 };
 
 Gfx mat_luigi_WingsTip[] = {
-	gsSPGeometryMode(G_CULL_BACK, 0),
+	gsSPGeometryMode(G_CULL_BACK | G_CULL_FRONT, 0),
 	gsSPSetLights1(luigi_WingsTip_lights),
 	gsDPPipeSync(),
 	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0, TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0),
@@ -4678,7 +4678,7 @@ Gfx mat_revert_luigi_WingsTip[] = {
 };
 
 Gfx mat_luigi_Wings[] = {
-	gsSPGeometryMode(G_CULL_BACK, 0),
+	gsSPGeometryMode(G_CULL_BACK | G_CULL_FRONT, 0),
 	gsSPSetLights1(luigi_Wings_lights),
 	gsDPPipeSync(),
 	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0, TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0),

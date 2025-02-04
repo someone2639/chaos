@@ -23,7 +23,7 @@ static const Gfx sl_seg7_dl_0700A958[] = {
 // 0x0700A980 - 0x0700A9B0
 const Gfx sl_seg7_dl_0700A980[] = {
     gsDPPipeSync(),
-    gsSPClearGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT | G_SHADING_SMOOTH),
     gsSPDisplayList(sl_seg7_dl_0700A958),
     gsDPPipeSync(),
     gsSPSetGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),

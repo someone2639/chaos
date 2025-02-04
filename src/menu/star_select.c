@@ -11,6 +11,7 @@
 #include "game/level_update.h"
 #include "game/main.h"
 #include "game/memory.h"
+#include "game/rendering_graph_node.h"
 #include "game/object_helpers.h"
 #include "game/object_list_processor.h"
 #include "game/save_file.h"
@@ -251,6 +252,8 @@ void print_course_number(void) {
 
     create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_PUSH, 158.0f, 81.0f, 0.0f);
 
+    gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
+
     // Full wood texture in JP & US, lower part of it on EU
     gSPDisplayList(gDisplayListHead++, dl_menu_rgba16_wood_course);
 
@@ -436,6 +439,7 @@ s32 lvl_init_act_selector_values_and_stars(UNUSED s32 arg, UNUSED s32 unused) {
  * Also updates objects and returns act number selected after is chosen.
  */
 s32 lvl_update_obj_and_load_act_button_actions(UNUSED s32 arg, UNUSED s32 unused) {
+    isInMenu = TRUE;
     if (sActSelectorMenuTimer > 10) {
         // If any of these buttons are pressed, play sound and go to course act
 #ifndef VERSION_EU

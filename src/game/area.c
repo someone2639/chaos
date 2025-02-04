@@ -363,9 +363,49 @@ void play_transition_after_delay(s16 transType, s16 time, u8 red, u8 green, u8 b
     play_transition(transType, time, red, green, blue);
 }
 
+s32 fliptarget = SCREEN_WIDTH / 2;
+u8 isInMenu = FALSE;
+
+void process_master_quest_transition(struct GraphNodeRoot *node) {
+    if (isInMenu || gInActSelect) {
+        isGameFlipped = 0;
+        node->width = SCREEN_WIDTH / 2;
+        return;
+    }
+
+    if (isGameFlipped && node->width > 10) {
+        // instant warp fix
+        node->width = fliptarget;
+    }
+
+    #define FS_SWAPSPEED 5
+    #define FS_SNAPLEFT -156
+    #define FS_SNAPRIGHT 156
+    if (node == NULL) return;
+
+    node->width = approach_s16_asymptotic(node->width, fliptarget, FS_SWAPSPEED);
+    if (node->width >= FS_SNAPRIGHT) {
+        node->width = fliptarget;
+    }
+    if (node->width <= FS_SNAPLEFT) {
+        node->width = fliptarget;
+    }
+    if (node->width < 0) {
+        isGameFlipped = 1;
+    } else {
+        isGameFlipped = 0;
+    }
+
+    node->perspWidth = ABS(node->width);
+    if (node->perspWidth != (SCREEN_WIDTH / 2)) {
+        clear_framebuffer(gWarpTransFBSetColor);
+    }
+}
+
 void drawslots();
 void render_game(void) {
     if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
+        process_master_quest_transition(gCurrentArea->unk04);
         if(!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_STOP_GAME_RENDER) && !(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_STOP_GAME_RENDER)) {
             geo_process_root(gCurrentArea->unk04, D_8032CE74, D_8032CE78, gFBSetColor);             
         }
