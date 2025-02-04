@@ -56,11 +56,15 @@ void force_mario_interaction(struct MarioState *m, struct Object *obj) {
 
 void update_clone_animation() {
     struct MarioState *m = gMarioState;
-    s32 newAnim = m->marioObj->header.gfx.animInfo.animID;
+    struct AnimInfo animInfo = m->marioObj->header.gfx.animInfo;
+    s32 newAnim = animInfo.animID;
     struct Animation *targetAnim = m->animList->bufTarget;
 
     if (o->header.gfx.animInfo.animID != newAnim) {
         o->header.gfx.animInfo.animID = newAnim;
+        o->header.gfx.animInfo.curAnim = targetAnim;
+        o->header.gfx.animInfo.animAccel = animInfo.animAccel;
+        o->header.gfx.animInfo.animYTrans = gMarioState->unkB0;
 
         if (targetAnim->flags & ANIM_FLAG_2) {
             o->header.gfx.animInfo.animFrame = targetAnim->startFrame;
