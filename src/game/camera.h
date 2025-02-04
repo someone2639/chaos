@@ -244,6 +244,7 @@
 #define CUTSCENE_EXIT_WATERFALL       179
 #define CUTSCENE_EXIT_FALL_WMOTR      180
 #define CUTSCENE_ENTER_POOL           181
+#define CUTSCENE_SHUFFLE_OBJS         182
 
 /**
  * Stop the cutscene.
@@ -292,6 +293,7 @@
 #define CAM_EVENT_START_ENDING        11
 #define CAM_EVENT_START_END_WAVING    12
 #define CAM_EVENT_START_CREDITS       13
+#define CAM_EVENT_SHUFFLE             14
 
 /**
  * A copy of player information that is relevant to the camera.

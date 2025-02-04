@@ -9,7 +9,7 @@ const Gfx cotmc_dl_water_begin[] = {
     gsSPSetGeometryMode(G_FOG),
     gsDPSetEnvColor(255, 255, 255, 140),
     gsDPSetCombineMode(G_CC_DECALFADE, G_CC_PASS2),
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, 5, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, 5, G_TX_NOLOD),

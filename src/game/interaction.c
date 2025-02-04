@@ -965,6 +965,13 @@ u32 interact_warp(struct MarioState *m, UNUSED u32 interactType, struct Object *
                        m->marioObj->header.gfx.cameraToObject);
 #endif
 
+#ifndef UNLOCK_ALL
+            if (obj_has_behavior(o, bhvBitSWarp) && save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) < BITS_STAR_REQUIREMENT) {
+                o->oBehParams2ndByte = 0x0C; // Change warp to anti-cheese warp
+                o->oBehParams = (o->oBehParams & 0xFF00FFFF) | (o->oBehParams2ndByte << 16);
+            }
+#endif
+
             mario_stop_riding_object(m);
             return set_mario_action(m, ACT_DISAPPEARED, (WARP_OP_WARP_OBJECT << 16) + 2);
         }
@@ -1136,7 +1143,7 @@ u32 interact_door(struct MarioState *m, UNUSED u32 interactType, struct Object *
             return set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG, text);
         }
 #endif
-    // } else if (m->action == ACT_IDLE && sDisplayingDoorText == TRUE && requiredNumStars == 70) {
+    // } else if (m->action == ACT_IDLE && sDisplayingDoorText == TRUE && requiredNumStars == BITS_STAR_REQUIREMENT) {
     //     m->interactObj = o;
     //     m->usedObj = o;
     //     return set_mario_action(m, ACT_ENTERING_STAR_DOOR, should_push_or_pull_door(m, o));

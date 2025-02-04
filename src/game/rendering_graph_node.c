@@ -13,6 +13,8 @@
 #include "sm64.h"
 #include "chaos/chaos.h"
 
+u8 isGameFlipped = FALSE;
+
 /**
  * This file contains the code that processes the scene graph for rendering.
  * The scene graph is responsible for drawing everything except the HUD / text boxes.
@@ -132,6 +134,34 @@ u16 gAreaUpdateCounter = 0;
 LookAt lookAt;
 #endif
 
+Gfx *geo_invert(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx) {
+    if (callContext == GEO_CONTEXT_RENDER) {
+        gSPGeometryMode(gDisplayListHead++, G_CULL_BACK, G_CULL_FRONT);
+    }
+    return NULL;
+}
+
+Gfx *geo_invert_off(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx) {
+    if (callContext == GEO_CONTEXT_RENDER) {
+        gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
+    }
+    return NULL;
+}
+
+Gfx *geo_invert_cond(s32 callContext, UNUSED struct GraphNode *node, UNUSED f32 mtx[4][4]) {
+    if (callContext == GEO_CONTEXT_RENDER && !isGameFlipped) {
+        gSPGeometryMode(gDisplayListHead++, G_CULL_BACK, G_CULL_FRONT);
+    }
+    return NULL;
+}
+
+Gfx *geo_invert_cond_off(s32 callContext, UNUSED struct GraphNode *node, UNUSED f32 mtx[4][4]) {
+    if (callContext == GEO_CONTEXT_RENDER && !isGameFlipped) {
+        gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
+    }
+    return NULL;
+}
+
 /**
  * Process a master list node.
  */
@@ -161,7 +191,13 @@ void geo_process_master_list_sub(struct GraphNodeMasterList *node) {
             while (currList != NULL) {
                 gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(currList->transform),
                           G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
+                if (isGameFlipped) {
+                    gSPGeometryMode(gDisplayListHead++, G_CULL_BACK, G_CULL_FRONT);
+                }
                 gSPDisplayList(gDisplayListHead++, currList->displayList);
+                if (isGameFlipped) {
+                    gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
+                }
                 currList = currList->next;
             }
         }
@@ -1095,6 +1131,7 @@ void geo_process_root(struct GraphNodeRoot *node, Vp *b, Vp *c, s32 clearColor) 
         initialMatrix = alloc_display_list(sizeof(*initialMatrix));
         gMatStackIndex = 0;
         gCurrAnimType = 0;
+
         if (chaos_check_if_patch_active(CHAOS_PATCH_NO_Z_BUFFER)) {
             vec3s_set(viewport->vp.vtrans, node->x * 4, node->y * 4, -511);
             vec3s_set(viewport->vp.vscale, node->width * 4, node->height * 4, 511);

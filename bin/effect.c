@@ -114,7 +114,7 @@ ALIGNED8 const Texture effect_0B00684C[] = {
 // 0x0B006A50 - 0x0B006AB0
 const Gfx tiny_bubble_dl_0B006A50[] = {
     gsDPPipeSync(),
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_SHADING_SMOOTH),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT | G_SHADING_SMOOTH),
     gsSPTexture(0x8000, 0x8000, 0, G_TX_RENDERTILE, G_ON),
     gsDPSetCombineMode(G_CC_DECALRGBA, G_CC_DECALRGBA),
     gsDPSetRenderMode(G_RM_AA_ZB_TEX_EDGE, G_RM_AA_ZB_TEX_EDGE2),

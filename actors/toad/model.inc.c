@@ -416,7 +416,7 @@ const Gfx toad_seg6_dl_06007960[] = {
 const Gfx toad_seg6_dl_06007A48[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADEFADEA, G_CC_SHADEFADEA),
-    gsSPClearGeometryMode(G_CULL_BACK),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT),
     gsSPDisplayList(toad_seg6_dl_06007960),
     gsDPPipeSync(),
     gsSPSetGeometryMode(G_CULL_BACK),

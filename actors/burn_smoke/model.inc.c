@@ -20,7 +20,7 @@ ALIGNED8 static const Texture burn_smoke_seg4_texture_04021800[] = {
 const Gfx burn_smoke_seg4_dl_04022000[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_MODULATERGBA, G_CC_MODULATERGBA),
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsSPEndDisplayList(),
 };

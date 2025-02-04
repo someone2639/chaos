@@ -594,7 +594,7 @@ const Gfx king_bobomb_seg5_dl_0500B3C8[] = {
 const Gfx king_bobomb_seg5_dl_0500B418[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
-    gsSPClearGeometryMode(G_CULL_BACK),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
     gsSPDisplayList(king_bobomb_seg5_dl_0500B3C8),
@@ -665,7 +665,7 @@ const Gfx king_bobomb_seg5_dl_0500B5F0[] = {
 const Gfx king_bobomb_seg5_dl_0500B6C0[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_MODULATERGB, G_CC_MODULATERGB),
-    gsSPClearGeometryMode(G_CULL_BACK),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),

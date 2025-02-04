@@ -28,8 +28,30 @@
 #include "paintings.h"
 #include "engine/graph_node.h"
 #include "level_table.h"
+#include "game/rendering_graph_node.h"
 
-#define CBUTTON_MASK (U_CBUTTONS | D_CBUTTONS | L_CBUTTONS | R_CBUTTONS)
+#undef L_CBUTTONS
+#undef R_CBUTTONS
+#define L_CBUTTONS chCheckCLeft()
+#define R_CBUTTONS chCheckCRight()
+
+int chCheckCLeft() {
+    if (isGameFlipped) {
+        return CONT_F;
+    } else {
+        return CONT_C;
+    }
+}
+
+int chCheckCRight() {
+    if (isGameFlipped) {
+        return CONT_C;
+    } else {
+        return CONT_F;
+    }
+}
+
+#define CBUTTON_MASK (U_CBUTTONS | D_CBUTTONS | R_CBUTTONS | L_CBUTTONS)
 
 /**
  * @file camera.c
@@ -5242,6 +5264,9 @@ u8 get_cutscene_from_mario_status(struct Camera *c) {
         }
         if (sMarioCamState->cameraEvent == CAM_EVENT_CANNON) {
             cutscene = CUTSCENE_ENTER_CANNON;
+        }
+        if (sMarioCamState->cameraEvent == CAM_EVENT_SHUFFLE) {
+            cutscene = CUTSCENE_SHUFFLE_OBJS;
         }
         if (SURFACE_IS_PAINTING_WARP(sMarioGeometry.currFloorType)) {
             cutscene = CUTSCENE_ENTER_PAINTING;
@@ -11257,6 +11282,8 @@ struct CutsceneSplinePoint sCcmOutsideCreditsSplineFocus[] = {
  * Note that CAM_FLAG_SMOOTH_MOVEMENT is cleared while a cutscene is playing, so cutscenes set it for
  * the duration they want the flag to be active.
  */
+extern struct Cutscene sCutsceneShuffleObjs[];
+
 void play_cutscene(struct Camera *c) {
     UNUSED u8 filler[12];
     UNUSED s16 unusedYawFocToMario;
@@ -11320,6 +11347,7 @@ void play_cutscene(struct Camera *c) {
         CUTSCENE(CUTSCENE_RACE_DIALOG, sCutsceneDialog)
         CUTSCENE(CUTSCENE_ENTER_PYRAMID_TOP, sCutsceneEnterPyramidTop)
         CUTSCENE(CUTSCENE_SSL_PYRAMID_EXPLODE, sCutscenePyramidTopExplode)
+        CUTSCENE(CUTSCENE_SHUFFLE_OBJS, sCutsceneShuffleObjs)
     }
 
 #undef CUTSCENE

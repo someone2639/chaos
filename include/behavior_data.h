@@ -52,6 +52,7 @@ extern const BehaviorScript bhvWfRotatingWoodenPlatform[];
 extern const BehaviorScript bhvKoopaShellUnderwater[];
 extern const BehaviorScript bhvExitPodiumWarp[];
 extern const BehaviorScript bhvFadingWarp[];
+extern const BehaviorScript bhvBitSWarp[];
 extern const BehaviorScript bhvWarp[];
 extern const BehaviorScript bhvWarpPipe[];
 extern const BehaviorScript bhvWhitePuffExplosion[];

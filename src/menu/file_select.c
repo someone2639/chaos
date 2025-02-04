@@ -14,6 +14,7 @@
 #include "game/object_helpers.h"
 #include "game/object_list_processor.h"
 #include "game/print.h"
+#include "game/rendering_graph_node.h"
 #include "game/save_file.h"
 #include "game/segment2.h"
 #include "game/segment7.h"
@@ -3088,6 +3089,7 @@ s32 lvl_init_menu_values_and_cursor_pos(UNUSED s32 arg, UNUSED s32 unused) {
  * defined in load_main_menu_save_file.
  */
 s32 lvl_update_obj_and_load_file_selected(UNUSED s32 arg, UNUSED s32 unused) {
+    isInMenu = TRUE;
     area_update_objects();
     return sSelectedFileNum;
 }

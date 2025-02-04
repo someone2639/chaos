@@ -723,7 +723,7 @@
 	(m1a) << 28 | (m1b) << 24 | (m2a) << 20 | (m2b) << 16
 
 #define	RM_AA_ZB_OPA_SURF(clk)					\
-	AA_EN | Z_CMP | Z_UPD | IM_RD | CVG_DST_CLAMP |		\
+	AA_EN | Z_CMP | Z_UPD | CVG_DST_CLAMP |			\
 	ZMODE_OPA | ALPHA_CVG_SEL |				\
 	GBL_c##clk(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_MEM, G_BL_A_MEM)
 
@@ -738,7 +738,7 @@
 	GBL_c##clk(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_MEM, G_BL_1MA)
 
 #define	RM_AA_ZB_OPA_DECAL(clk)					\
-	AA_EN | Z_CMP | IM_RD | CVG_DST_WRAP | ALPHA_CVG_SEL |	\
+	AA_EN | Z_CMP | CVG_DST_WRAP | ALPHA_CVG_SEL |		\
 	ZMODE_DEC |						\
 	GBL_c##clk(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_MEM, G_BL_A_MEM)
 
@@ -753,7 +753,7 @@
 	GBL_c##clk(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_MEM, G_BL_1MA)
 
 #define	RM_AA_ZB_OPA_INTER(clk)					\
-	AA_EN | Z_CMP | Z_UPD | IM_RD | CVG_DST_CLAMP |		\
+	AA_EN | Z_CMP | Z_UPD | CVG_DST_CLAMP |			\
 	ALPHA_CVG_SEL |	ZMODE_INTER |				\
 	GBL_c##clk(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_MEM, G_BL_A_MEM)
 
@@ -814,7 +814,7 @@
 
 
 #define	RM_AA_OPA_SURF(clk)					\
-	AA_EN | IM_RD | CVG_DST_CLAMP |				\
+	AA_EN | CVG_DST_CLAMP |				\
 	ZMODE_OPA | ALPHA_CVG_SEL |				\
 	GBL_c##clk(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_MEM, G_BL_A_MEM)
 

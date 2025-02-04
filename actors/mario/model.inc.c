@@ -6063,7 +6063,7 @@ const Gfx mario_right_hand_cap_wings_half_2_dl[] = {
 const Gfx mario_right_hand_cap_wings_initial_dl[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_MODULATERGBFADEA, G_CC_MODULATERGBFADEA),
-    gsSPClearGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT | G_SHADING_SMOOTH),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsSPLight(&mario_white_lights_group.l, 1),
@@ -6593,7 +6593,7 @@ const Gfx mario_wings_half_2_unused_dl[] = {
 const Gfx mario_cap_wings_unused_initial_dl[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_MODULATERGBA, G_CC_MODULATERGBA),
-    gsSPClearGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT | G_SHADING_SMOOTH),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),
@@ -6718,7 +6718,7 @@ const Gfx mario_wings_half_2_dl[] = {
 const Gfx mario_cap_wings[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_DECALRGBA, G_CC_DECALRGBA),
-    gsSPClearGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT | G_SHADING_SMOOTH),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),
@@ -6745,7 +6745,7 @@ const Gfx mario_cap_wings[] = {
 const Gfx mario_cap_wings_transparent[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_DECALFADEA, G_CC_DECALFADEA),
-    gsSPClearGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT | G_SHADING_SMOOTH),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),
@@ -6764,7 +6764,7 @@ const Gfx mario_cap_wings_transparent[] = {
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADEFADEA, G_CC_SHADEFADEA),
-    gsSPSetGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
+    gsSPSetGeometryMode(G_CULL_BACK | G_CULL_FRONT | G_SHADING_SMOOTH),
     gsSPEndDisplayList(),
 };
 
@@ -6772,7 +6772,7 @@ const Gfx mario_cap_wings_transparent[] = {
 const Gfx mario_metal_cap_wings[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_DECALRGBA, G_CC_DECALRGBA),
-    gsSPClearGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT | G_SHADING_SMOOTH),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),
@@ -6801,7 +6801,7 @@ const Gfx mario_metal_cap_wings_transparent[] = {
     gsSPClearGeometryMode(G_TEXTURE_GEN),
     gsSPTexture(0x0F80, 0x07C0, 0, G_TX_RENDERTILE, G_OFF),
     gsDPSetCombineMode(G_CC_DECALFADEA, G_CC_DECALFADEA),
-    gsSPClearGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT | G_SHADING_SMOOTH),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),

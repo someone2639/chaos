@@ -8,7 +8,7 @@ const Gfx ssl_dl_pyramid_sand_pathway_floor_begin[] = {
     gsSPFogFactor(0x0E49, 0xF2B7), // This isn't gsSPFogPosition since there is no valid min/max pair that corresponds to 0x0E49F2B7
     gsSPSetGeometryMode(G_FOG),
     gsDPSetCombineMode(G_CC_DECALRGB, G_CC_PASS2),
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, 5, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, 5, G_TX_NOLOD),
@@ -38,7 +38,7 @@ const Gfx ssl_dl_pyramid_sand_pathway_begin[] = {
     gsSPSetGeometryMode(G_FOG),
     gsDPSetEnvColor(255, 255, 255, 180),
     gsDPSetCombineMode(G_CC_DECALFADE, G_CC_PASS2),
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, 5, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, 5, G_TX_NOLOD),

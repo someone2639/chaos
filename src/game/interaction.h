@@ -44,6 +44,8 @@ struct InteractionHandler {
 #define INTERACT_UNKNOWN_31     /* 0x80000000 */ (1 << 31)
 #define INTERACT_COUNT 32
 
+#define BITS_STAR_REQUIREMENT 70
+
 
 // INTERACT_WARP
 #define INT_SUBTYPE_FADING_WARP 0x00000001

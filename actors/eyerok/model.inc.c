@@ -88,6 +88,7 @@ const Gfx eyerok_seg5_dl_0500B6B8[] = {
 // 0x0500B748 - 0x0500B7B8
 const Gfx eyerok_seg5_dl_0500B748[] = {
     gsDPPipeSync(),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT),
     gsDPSetCombineMode(G_CC_MODULATERGB, G_CC_MODULATERGB),
     gsSPClearGeometryMode(G_SHADING_SMOOTH),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
@@ -99,7 +100,7 @@ const Gfx eyerok_seg5_dl_0500B748[] = {
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
-    gsSPSetGeometryMode(G_SHADING_SMOOTH),
+    gsSPSetGeometryMode(G_SHADING_SMOOTH | G_CULL_BACK),
     gsSPEndDisplayList(),
 };
 
@@ -160,6 +161,7 @@ const Gfx eyerok_seg5_dl_0500B930[] = {
 // 0x0500B9C0 - 0x0500BA30
 const Gfx eyerok_seg5_dl_0500B9C0[] = {
     gsDPPipeSync(),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT),
     gsDPSetCombineMode(G_CC_MODULATERGB, G_CC_MODULATERGB),
     gsSPClearGeometryMode(G_SHADING_SMOOTH),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
@@ -171,7 +173,7 @@ const Gfx eyerok_seg5_dl_0500B9C0[] = {
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
-    gsSPSetGeometryMode(G_SHADING_SMOOTH),
+    gsSPSetGeometryMode(G_SHADING_SMOOTH | G_CULL_BACK),
     gsSPEndDisplayList(),
 };
 
@@ -237,6 +239,7 @@ const Gfx eyerok_seg5_dl_0500BBE8[] = {
 // 0x0500BC88 - 0x0500BCF8
 const Gfx eyerok_seg5_dl_0500BC88[] = {
     gsDPPipeSync(),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT),
     gsDPSetCombineMode(G_CC_MODULATERGB, G_CC_MODULATERGB),
     gsSPClearGeometryMode(G_SHADING_SMOOTH),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
@@ -248,7 +251,7 @@ const Gfx eyerok_seg5_dl_0500BC88[] = {
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
-    gsSPSetGeometryMode(G_SHADING_SMOOTH),
+    gsSPSetGeometryMode(G_SHADING_SMOOTH | G_CULL_BACK),
     gsSPEndDisplayList(),
 };
 
@@ -309,6 +312,7 @@ const Gfx eyerok_seg5_dl_0500BE70[] = {
 // 0x0500BF00 - 0x0500BF70
 const Gfx eyerok_seg5_dl_0500BF00[] = {
     gsDPPipeSync(),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT),
     gsDPSetCombineMode(G_CC_MODULATERGB, G_CC_MODULATERGB),
     gsSPClearGeometryMode(G_SHADING_SMOOTH),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
@@ -320,7 +324,7 @@ const Gfx eyerok_seg5_dl_0500BF00[] = {
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
-    gsSPSetGeometryMode(G_SHADING_SMOOTH),
+    gsSPSetGeometryMode(G_SHADING_SMOOTH | G_CULL_BACK),
     gsSPEndDisplayList(),
 };
 
@@ -368,6 +372,7 @@ const Gfx eyerok_seg5_dl_0500C088[] = {
 // 0x0500C100 - 0x0500C170
 const Gfx eyerok_seg5_dl_0500C100[] = {
     gsDPPipeSync(),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT),
     gsDPSetCombineMode(G_CC_MODULATERGB, G_CC_MODULATERGB),
     gsSPClearGeometryMode(G_SHADING_SMOOTH),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
@@ -379,7 +384,7 @@ const Gfx eyerok_seg5_dl_0500C100[] = {
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
-    gsSPSetGeometryMode(G_SHADING_SMOOTH),
+    gsSPSetGeometryMode(G_SHADING_SMOOTH | G_CULL_BACK),
     gsSPEndDisplayList(),
 };
 
@@ -440,6 +445,7 @@ const Gfx eyerok_seg5_dl_0500C2E8[] = {
 // 0x0500C378 - 0x0500C3E8
 const Gfx eyerok_seg5_dl_0500C378[] = {
     gsDPPipeSync(),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT),
     gsDPSetCombineMode(G_CC_MODULATERGB, G_CC_MODULATERGB),
     gsSPClearGeometryMode(G_SHADING_SMOOTH),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
@@ -451,7 +457,7 @@ const Gfx eyerok_seg5_dl_0500C378[] = {
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
-    gsSPSetGeometryMode(G_SHADING_SMOOTH),
+    gsSPSetGeometryMode(G_SHADING_SMOOTH | G_CULL_BACK),
     gsSPEndDisplayList(),
 };
 
@@ -518,7 +524,7 @@ const Gfx eyerok_seg5_dl_0500C5A0[] = {
 const Gfx eyerok_seg5_dl_0500C640[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_MODULATERGB, G_CC_MODULATERGB),
-    gsSPClearGeometryMode(G_SHADING_SMOOTH),
+    gsSPClearGeometryMode(G_SHADING_SMOOTH | G_CULL_BACK | G_CULL_FRONT),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),
@@ -528,7 +534,7 @@ const Gfx eyerok_seg5_dl_0500C640[] = {
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
-    gsSPSetGeometryMode(G_SHADING_SMOOTH),
+    gsSPSetGeometryMode(G_SHADING_SMOOTH | G_CULL_BACK),
     gsSPEndDisplayList(),
 };
 
@@ -595,7 +601,7 @@ const Gfx eyerok_seg5_dl_0500C868[] = {
 const Gfx eyerok_seg5_dl_0500C908[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_MODULATERGB, G_CC_MODULATERGB),
-    gsSPClearGeometryMode(G_SHADING_SMOOTH),
+    gsSPClearGeometryMode(G_SHADING_SMOOTH | G_CULL_BACK | G_CULL_FRONT),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),
@@ -605,7 +611,7 @@ const Gfx eyerok_seg5_dl_0500C908[] = {
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
-    gsSPSetGeometryMode(G_SHADING_SMOOTH),
+    gsSPSetGeometryMode(G_SHADING_SMOOTH | G_CULL_BACK),
     gsSPEndDisplayList(),
 };
 
@@ -621,7 +627,7 @@ static const Vtx eyerok_seg5_vertex_0500C978[] = {
 const Gfx eyerok_seg5_dl_0500C9B8[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_DECALRGBA, G_CC_DECALRGBA),
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),
@@ -643,7 +649,7 @@ const Gfx eyerok_seg5_dl_0500C9B8[] = {
 const Gfx eyerok_seg5_dl_0500CA50[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_DECALRGBA, G_CC_DECALRGBA),
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),
@@ -665,7 +671,7 @@ const Gfx eyerok_seg5_dl_0500CA50[] = {
 const Gfx eyerok_seg5_dl_0500CAE8[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_DECALRGBA, G_CC_DECALRGBA),
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),
@@ -687,7 +693,7 @@ const Gfx eyerok_seg5_dl_0500CAE8[] = {
 const Gfx eyerok_seg5_dl_0500CB80[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_DECALRGBA, G_CC_DECALRGBA),
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),

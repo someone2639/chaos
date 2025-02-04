@@ -2203,7 +2203,7 @@ const Gfx peach_seg5_dl_05009E20[] = {
 const Gfx peach_seg5_dl_0500A0A8[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_MODULATERGBFADE, G_CC_MODULATERGBFADE),
-    gsSPClearGeometryMode(G_CULL_BACK),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),
@@ -2224,7 +2224,7 @@ const Gfx peach_seg5_dl_0500A0A8[] = {
 const Gfx peach_seg5_us_dl_0500A188[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_MODULATERGBFADE, G_CC_MODULATERGBFADE),
-    gsSPClearGeometryMode(G_CULL_BACK),
+    gsSPClearGeometryMode(G_CULL_BACK | G_CULL_FRONT),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 0, 0, G_TX_LOADTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOLOD),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),

@@ -89,6 +89,7 @@ struct PatchSelectionMenu {
     Vec2f selectPatchTextPos;
     f32 extendedDescScale;
     f32 selectPatchTextScale;
+    f32 eventTextScale;
     struct PatchCard patchCards[MAX_CARDS];
 };
 
