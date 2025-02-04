@@ -556,15 +556,16 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
         return NULL;
     }
 
+    static s32 lastForcedDifficulty = -2;
+    s32 forcedDifficulty;
+    f32 offsetSeverityWeight;
+    f32 generatedDifficultyWeight;
+    s32 starCount = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
+    enum ChaosPatchSpecialEvent specialEvent = CHAOS_SPECIAL_NONE;
     u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_EFFECT_COUNT];
     u8 posNegPairings[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_EFFECT_COUNT];
     s8 allowedSeverities[CHAOS_PATCH_SEVERITY_COUNT];
     f32 severityWeights[CHAOS_PATCH_SEVERITY_COUNT];
-    f32 offsetSeverityWeight;
-    f32 generatedDifficultyWeight;
-    s32 forcedDifficulty;
-    enum ChaosPatchSpecialEvent specialEvent = CHAOS_SPECIAL_NONE;
-    static s32 lastForcedDifficulty = -2;
 
     bzero(severityCounts, sizeof(severityCounts));
     bzero(posNegPairings, sizeof(posNegPairings));
@@ -610,6 +611,13 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
     }
 
     offsetSeverityWeight = random_float();
+
+    if (starCount < 3) {
+        forcedDifficulty = -1;
+    }
+    if (starCount < 5) {
+        offsetSeverityWeight = 1.0f;
+    }
 
     chaosmsg_print_debug("@FFFF009FforcedDifficulty: "
                          "@FF3F3F9F%d",
