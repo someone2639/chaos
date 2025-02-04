@@ -1361,6 +1361,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Nintendo Wii Online Mode",
         .shortDescription  = "Truly the most playable and responsive experience!",
     },
+    [CHAOS_PATCH_SM64_DS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 8,
+
+        .name              = "Super Mario 64 DS",
+        .shortDescription  = "Locks analog input to 8 directions. It's beans for your mouth, for your floor!",
+    },
 
 // Size Modifiers
     [CHAOS_PATCH_MARIO_BIG] = {
