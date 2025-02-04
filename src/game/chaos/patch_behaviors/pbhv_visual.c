@@ -20,3 +20,18 @@ u8 chs_cond_decreased_fov(void)       { return !(chaos_check_if_patch_active(CHA
 u8 chs_cond_increased_fov(void)       { return !(chaos_check_if_patch_active(CHAOS_PATCH_DECREASED_FOV) || ((gEmulator & EMU_CONSOLE) && chaos_check_if_patch_active(CHAOS_PATCH_TOP_DOWN_CAMERA))); }
 
 u8 chs_cond_low_resolution(void) { return (!(gEmulator & (EMU_CONSOLE | EMU_ARES)) && gFBEEnabled); }
+
+u8 chs_cond_ortho(void) {
+    if (chaos_check_if_patch_active(CHAOS_PATCH_INCREASED_FOV)) {
+        return FALSE;
+    }
+    if (chaos_check_if_patch_active(CHAOS_PATCH_DECREASED_FOV)) {
+        return FALSE;
+    }
+    // if (chaos_check_if_patch_active(CHAOS_PATCH_TOP_DOWN_CAMERA)) {
+    //     return FALSE;
+    // }
+
+
+    return TRUE;
+}
