@@ -298,8 +298,19 @@ void geo_process_perspective(struct GraphNodePerspective *node) {
             fov *= 3.0f;
         }
 
-        guPerspective(mtx, &perspNorm, fov, sAspectRatio, node->near, node->far, 1.0f);
-        gSPPerspNormalize(gDisplayListHead++, perspNorm);
+        if (chaos_check_if_patch_active(CHAOS_PATCH_ORTHO)) {
+            guOrtho(mtx, -3840.0f,
+                3840.0f,
+                -2880.0f,
+                2880.0f,
+                -16384.0f,
+                8192.0f,
+                0.5f);
+        } else {
+            guPerspective(mtx, &perspNorm, fov, sAspectRatio, node->near, node->far, 1.0f);
+            gSPPerspNormalize(gDisplayListHead++, perspNorm);
+        }
+
 
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx), G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
 

@@ -125,6 +125,7 @@ u8 chs_cond_inverted_zbuffer(void);
 u8 chs_cond_decreased_fov(void);
 u8 chs_cond_increased_fov(void);
 u8 chs_cond_low_resolution(void);
+u8 chs_cond_ortho(void);
 
 // Time Limit
 void chs_level_init_time_limit(void);
