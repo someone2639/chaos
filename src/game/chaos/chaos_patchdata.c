@@ -1694,5 +1694,21 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Shuffle Object Positions",
         .shortDescription  = "Kaze WISHES tornado did this!",
-    };
+    },
+    [CHAOS_PATCH_DOUBLE_CHERRY] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = TRUE,
+        .duration          = 6,
+
+        .conditionalFunc   = chs_cond_cherry_clone,
+        .activatedInitFunc = chs_create_cherry_clone,
+        .deactivationFunc  = chs_remove_cherry_clone,
+        .areaInitFunc      = chs_init_cherry_clones_after_warp,
+
+        .name              = "Double Cherry",
+        .shortDescription  = "It's dangerous to go alone! Have a buddy!",
+        .longDescription   = "Each cherry clone has 1 health point, and will take your hits until they run out, after which you will take normal damage. If the \"real\" player gets hit, its soul will be transferred to a clone. By the end of this, which Mario will be the real Mario?",
+    },
 };
