@@ -18,10 +18,17 @@
 #include "chaos_menus.h"
 
 u8 sQualityColors[CHAOS_PATCH_SEVERITY_COUNT][3] = {
-    {0x9F, 0x9F, 0x9F},
-    {0x40, 0xFB, 0x3D},
-    {0x67, 0x62, 0xFB},
-    {0xAB, 0x20, 0xE5},
+    {0x9F, 0x9F, 0x9F}, //Lvl 0
+    {0x47, 0x8D, 0xCE}, //Lvl 1
+    {0xBB, 0xA1, 0x24}, //Lvl 2
+    {0x60, 0x00, 0xA8}, //Lvl 3
+};
+
+u8 sEventColors[CHAOS_SPECIAL_COUNT][3] = {
+    {0xC0, 0xC0, 0xC0}, //None
+    {0x25, 0xCF, 0x65}, //Pos+
+    {0xFF, 0x62, 0x5A}, //Neg+
+    {0x46, 0x46, 0x46}, //No Pos
 };
 
 u8 sEffectColors[CHAOS_EFFECT_COUNT][3] = {
@@ -146,6 +153,7 @@ void reset_patch_selection_menu() {
     gPatchSelectionMenu->selectPatchTextPos[1] = SCREEN_CENTER_Y;
     gPatchSelectionMenu->extendedDescScale = 0.0f;
     gPatchSelectionMenu->selectPatchTextScale = 0.0f;
+    gPatchSelectionMenu->eventTextScale = 0.0f;
 }
 
 /*
@@ -331,6 +339,9 @@ s32 patch_select_anim_startup() {
             gPatchSelectionMenu->patchCards[3].pos[0] = menu_translate_percentage(gPatchSelectionMenu->patchCards[3].pos[0], card4XTarget, 0.27f);
 
             gPatchSelectionMenu->descPos[1] = menu_translate_percentage(PATCH_DESC_Y_START, PATCH_DESC_Y, animPercent);
+
+            //Bonus text grows
+            gPatchSelectionMenu->eventTextScale = approach_f32(gPatchSelectionMenu->eventTextScale, 1.0f, 0.2f, 0.2f);
             break;
         case 2:
             //Wait a few frames
@@ -693,21 +704,59 @@ void desc_bg_scroll() {
 	currentX += deltaX;	currentY += deltaY;
 }
 
-void render_select_patch_text() {
+void render_select_patch_text(enum ChaosPatchSpecialEvent event) {
     f32 scale = gPatchSelectionMenu->selectPatchTextScale;
     f32 posX = gPatchSelectionMenu->selectPatchTextPos[0];
     f32 posY = gPatchSelectionMenu->selectPatchTextPos[1];
+    Gfx *eventText = NULL;
+    f32 eventTextScale = gPatchSelectionMenu->eventTextScale;
 
-    Mtx *transMtx = alloc_display_list(sizeof(Mtx));
-    Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
+
+    switch(event) {
+        case CHAOS_SPECIAL_PLUS1_POSITIVE:
+            eventText = segmented_to_virtual(&select_patch_text_event_1);
+            break;
+        case CHAOS_SPECIAL_PLUS1_NEGATIVE:
+            eventText = segmented_to_virtual(&select_patch_text_event_2);
+            break;
+        case CHAOS_SPECIAL_ZERO_POSITIVE:
+            eventText = segmented_to_virtual(&select_patch_text_event_3);
+            break;
+        default:
+            eventText = NULL;
+            break;
+    }
+
+    //If there's an event text, offset the pos upwards to keep it centered
+    if(event) {
+        posY += 17;
+    }
+
+    Mtx *transMtx = alloc_display_list(sizeof(Mtx) * 2);
+    Mtx *scaleMtx = alloc_display_list(sizeof(Mtx) * 2);
     guTranslate(transMtx, posX, posY, 0);
-    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     guScale(scaleMtx, scale, scale, 1.0f);
-    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx),
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx++),
             G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
     gSPDisplayList(gDisplayListHead++, select_patch_text_mesh_mesh);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+
+    //If there's an event, draw additional text
+    if(eventText) {
+        gDPSetPrimColor(gDisplayListHead++, 0, 0, 
+                    sEventColors[event][0], sEventColors[event][1], sEventColors[event][2], 255);
+        guTranslate(transMtx, posX, posY - 35, 0);
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
+                G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+                guScale(scaleMtx, eventTextScale, eventTextScale, 1.0f);
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx),
+            G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+        gSPDisplayList(gDisplayListHead++, eventText);
+        gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    }
+
 }
 
 void render_curtain_bg() {
@@ -766,6 +815,7 @@ void render_patch_card(struct PatchCard *card, s32 reverse) {
     const struct ChaosPatch *neg = sel->negativePatch;
 
     s32 quality = sel->severityLevel;
+    s32 event = sel->specialEvent;
     Mtx *cardScaleMtx = alloc_display_list(sizeof(Mtx));
     Mtx *cardTransMtx = alloc_display_list(sizeof(Mtx));
     char timer1Text[4];
@@ -776,6 +826,8 @@ void render_patch_card(struct PatchCard *card, s32 reverse) {
 
     gDPSetPrimColor(gDisplayListHead++, 0, 0, 
                     sQualityColors[quality][0], sQualityColors[quality][1], sQualityColors[quality][2], 255);
+    gDPSetEnvColor(gDisplayListHead++, 
+                    sEventColors[event][0], sEventColors[event][1], sEventColors[event][2], 255);
 
     //Draw patch bg
     guTranslate(cardTransMtx, x, y, 0);
@@ -1029,6 +1081,7 @@ void display_patch_selection_ui() {
     s32 selectedPatch = gPatchSelectionMenu->selectedPatch;
     s32 numPatches = gPatchSelectionMenu->numPatches;
     f32 cursorX, cursorY;
+    enum ChaosPatchSpecialEvent event = gPatchSelectionMenu->patchCards[0].sel->specialEvent;
 
     cursorX = gPatchSelectionMenu->patchCards[selectedPatch].layoutPos[0];
     cursorY = gPatchSelectionMenu->patchCards[selectedPatch].layoutPos[1];
@@ -1057,7 +1110,7 @@ void display_patch_selection_ui() {
         render_lower_box(gPatchSelectionMenu->descPos[0], gPatchSelectionMenu->descPos[1]);
 
         if(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_DRAW_START_TEXT) {
-            render_select_patch_text();
+            render_select_patch_text(event);
         }
 
         if(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_DRAW_EXTENDED_DESCRIPTION) {

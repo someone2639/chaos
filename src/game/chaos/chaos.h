@@ -161,6 +161,7 @@ enum ChaosPatchID {
     CHAOS_PATCH_INVERTED_STICK_X,
     CHAOS_PATCH_INVERTED_STICK_Y,
     CHAOS_PATCH_INPUT_LAG,
+    CHAOS_PATCH_SM64_DS,
 
 // Size Modifiers
     CHAOS_PATCH_MARIO_BIG,
@@ -223,6 +224,15 @@ enum ChaosPatchDurationType {
     CHAOS_DURATION_USE_COUNT, // Duration is decremented each time its use case is invoked (this must be done manually!)
 };
 
+enum ChaosPatchSpecialEvent {
+    CHAOS_SPECIAL_NONE,           // No special effect
+    CHAOS_SPECIAL_PLUS1_POSITIVE, // Add +1 severity to each positive listing only
+    CHAOS_SPECIAL_PLUS1_NEGATIVE, // Add +1 severity to each negative listing only
+    CHAOS_SPECIAL_ZERO_POSITIVE,  // Floor positive severity to 0, effectively eliminating any positive effect
+
+    CHAOS_SPECIAL_COUNT,
+};
+
 // Remaining Duration and Patch ID will be tracked within a separate array of active patch data (to be defined later). Memory behind said array should also be copied to the save file.
 // Any uses of activatedInitFunc should also consider save file reloads appropriately and never touch duration directly.
 struct ChaosPatch {
@@ -246,10 +256,11 @@ struct ChaosPatch {
 };
 
 struct ChaosPatchSelection {
-    enum ChaosPatchID positiveId;           // ID of positive generated patch
-    enum ChaosPatchID negativeId;           // ID of negative generated patch
-    const struct ChaosPatch *positivePatch; // pointer to actual positive patch data
-    const struct ChaosPatch *negativePatch; // pointer to actual negative patch data
+    enum ChaosPatchID positiveId;             // ID of positive generated patch
+    enum ChaosPatchID negativeId;             // ID of negative generated patch
+    enum ChaosPatchSpecialEvent specialEvent; // Special event used during generation to further manipulate patch severities
+    const struct ChaosPatch *positivePatch;   // pointer to actual positive patch data
+    const struct ChaosPatch *negativePatch;   // pointer to actual negative patch data
 
     u8 severityLevel; // For selection display (since actual patch severities may vary, can be 0)
 };

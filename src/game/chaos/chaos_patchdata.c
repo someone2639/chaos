@@ -462,7 +462,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_POSITIVE,
         .severity          = 1,
         .isStackable       = TRUE,
-        .duration          = 3,
+        .duration          = 2,
 
         .conditionalFunc   = chs_cond_shield,
 
@@ -827,7 +827,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Beta",
         .shortDescription  = "YAAHAA!!! please give me bps for betah triple jump",
-        .longDescription   = "HUD by robichu, sounds from the Internet archive. This will be more credit than any beta hacker will ever give :)"
+        .longDescription   = "HUD by robichu, sounds from the Internet archive (this will be more credit than any beta hacker will ever give)."
     },
     [CHAOS_PATCH_HARDER_LONG_JUMPS] = {
         .durationType      = CHAOS_DURATION_STARS,
@@ -1076,9 +1076,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_L_TO_LEVITATE] = {
         .durationType      = CHAOS_DURATION_USE_COUNT,
         .effectType        = CHAOS_EFFECT_POSITIVE,
-        .severity          = 2,
+        .severity          = 3,
         .isStackable       = TRUE,
-        .duration          = 3,
+        .duration          = 2,
 
         .conditionalFunc   = chs_cond_l_to_levitate,
         .frameUpdateFunc   = chs_update_l_to_levitate,
@@ -1310,7 +1310,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 5,
+        .duration          = 3,
         
         .conditionalFunc   = chs_cond_swapped_zr_ab,
 
@@ -1360,6 +1360,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Nintendo Wii Online Mode",
         .shortDescription  = "Truly the most playable and responsive experience!",
+    },
+    [CHAOS_PATCH_SM64_DS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 8,
+
+        .name              = "Super Mario 64 DS",
+        .shortDescription  = "Locks analog input to 8 directions. It's beans for your mouth, for your floor!",
     },
 
 // Size Modifiers
