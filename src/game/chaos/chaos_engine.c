@@ -563,6 +563,7 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
     f32 offsetSeverityWeight;
     f32 generatedDifficultyWeight;
     s32 forcedDifficulty;
+    enum ChaosPatchSpecialEvent specialEvent = CHAOS_SPECIAL_NONE;
     static s32 lastForcedDifficulty = -2;
 
     bzero(severityCounts, sizeof(severityCounts));
@@ -633,21 +634,25 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
             // 15% chance to globally increase negative severity
             neg++;
             if (i == 1) {
+                specialEvent = CHAOS_SPECIAL_PLUS1_NEGATIVE;
                 chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9Fneg++");
             }
         } else if (offsetSeverityWeight < 0.30f) {
             // 15% chance to globally increase positive severity
             pos++;
             if (i == 1) {
+                specialEvent = CHAOS_SPECIAL_PLUS1_POSITIVE;
                 chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9Fpos++");
             }
         } else if (offsetSeverityWeight < 0.40f) {
             // 10% chance to eliminate all positive patches
             pos = 0;
             if (i == 1) {
+                specialEvent = CHAOS_SPECIAL_ZERO_POSITIVE;
                 chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9Fpos 0");
             }
         } else if (i == 1) {
+            specialEvent = CHAOS_SPECIAL_NONE;
             chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9FN/A");
         }
 
@@ -755,6 +760,10 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
         for (s32 index = 0; index < CHAOS_PATCH_MAX_GENERATABLE; index++) {
             generatedPatches[index].severityLevel = forcedDifficulty;
         }
+    }
+
+    for (s32 index = 0; index < CHAOS_PATCH_MAX_GENERATABLE; index++) {
+        generatedPatches[index].specialEvent = specialEvent;
     }
 
     return generatedPatches;
