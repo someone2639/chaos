@@ -483,9 +483,12 @@ void init_mario_after_warp(void) {
 
 #ifndef VERSION_JP
         if (sWarpDest.levelNum == LEVEL_CASTLE_GROUNDS && sWarpDest.areaIdx == 1
-            && (sWarpDest.nodeId == 0x07 || sWarpDest.nodeId == 0x10 || sWarpDest.nodeId == 0x14
-                || sWarpDest.nodeId == 0x1E)) {
+            && (sWarpDest.nodeId == 0x07 || sWarpDest.nodeId == 0x0A || sWarpDest.nodeId == 0x0B
+                || sWarpDest.nodeId == 0x14 || sWarpDest.nodeId == 0x1E)) {
             play_sound(SOUND_MENU_MARIO_CASTLE_WARP, gGlobalSoundSource);
+            if (sWarpDest.nodeId == 0x0B) {
+                chaosmsg_print(CHAOS_PATCH_NONE, "@FF7F10--Nice try!@-------- :)");
+            }
         }
 #endif
     }

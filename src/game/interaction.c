@@ -956,6 +956,13 @@ u32 interact_warp(struct MarioState *m, UNUSED u32 interactType, struct Object *
                        m->marioObj->header.gfx.cameraToObject);
 #endif
 
+#ifndef UNLOCK_ALL
+            if (obj_has_behavior(o, bhvBitSWarp) && save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) < 70) {
+                o->oBehParams2ndByte = 0x0C; // Change warp to anti-cheese warp
+                o->oBehParams = (o->oBehParams & 0xFF00FFFF) | (o->oBehParams2ndByte << 16);
+            }
+#endif
+
             mario_stop_riding_object(m);
             return set_mario_action(m, ACT_DISAPPEARED, (WARP_OP_WARP_OBJECT << 16) + 2);
         }

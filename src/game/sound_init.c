@@ -32,7 +32,9 @@ static u8 sBgMusicDisabled = FALSE;
 static u16 sCurrentMusic = MUSIC_NONE;
 static u16 sCurrentShellMusic = MUSIC_NONE;
 static u16 sCurrentCapMusic = MUSIC_NONE;
+#ifndef UNLOCK_ALL
 static u8 sPlayingInfiniteStairs = FALSE;
+#endif
 // Only the 20th array element is used.
 static u32 sMenuSoundsExtra[] = {
     SOUND_MOVING_TERRAIN_SLIDE + (0 << 16),
@@ -200,6 +202,7 @@ void play_painting_eject_sound(void) {
  * Called from threads: thread5_game_loop
  */
 void play_infinite_stairs_music(void) {
+#ifndef UNLOCK_ALL
     u8 shouldPlay = FALSE;
 
     /* Infinite stairs? */
@@ -219,6 +222,7 @@ void play_infinite_stairs_music(void) {
             stop_secondary_music(500);
         }
     }
+#endif
 }
 
 /**
