@@ -253,7 +253,3 @@ void chs_update_troll_sounds(void) {
         this->frameTimer = RAND(TROLL_SOUNDS_TIME_MAX); //Get a random offset to start the timer at
     }
 }
-
-u8 chs_cond_troll_sounds(void) {
-    return (!chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_SOUND));
-}

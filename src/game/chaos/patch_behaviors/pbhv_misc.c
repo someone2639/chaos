@@ -55,7 +55,3 @@ void chs_deact_reverb(void) { init_reverb_us(1 << 31); }
 u8 chs_cond_lethal_fall_damage() {
     return (!chaos_check_if_patch_active(CHAOS_PATCH_NO_FALL_DAMAGE));
 }
-
-u8 chs_cond_inverted_sound(void) {
-    return (!chaos_check_if_patch_active(CHAOS_PATCH_TROLL_SOUNDS));
-}

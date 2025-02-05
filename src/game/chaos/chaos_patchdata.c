@@ -685,7 +685,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 20,
 
-        .conditionalFunc   = chs_cond_troll_sounds,
         .activatedInitFunc = chs_act_troll_sounds,
         .frameUpdateFunc   = chs_update_troll_sounds,
 
@@ -1522,8 +1521,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity          = 1,
         .isStackable       = FALSE,
         .duration          = 6,
-
-        .conditionalFunc   = chs_cond_inverted_sound,
 
         .name              = "Inverted Sound",
         .shortDescription  = "The game will sound upside-down!",
