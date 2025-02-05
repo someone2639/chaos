@@ -6972,6 +6972,15 @@ sound_ref .sound_menu_curtain_lower
 sound_ref .sound_menu_curtain_raise
 sound_ref .sound_menu_timer_ring
 sound_ref .sound_menu_timer_up
+sound_ref .sound_menu_troll_ping
+sound_ref .sound_menu_troll_skype
+sound_ref .sound_menu_troll_trombone
+sound_ref .sound_menu_troll_usb
+sound_ref .sound_menu_troll_knock
+sound_ref .sound_menu_troll_alarm
+sound_ref .sound_menu_troll_join
+sound_ref .sound_menu_troll_click
+sound_ref .sound_menu_troll_notif
 
 .sound_menu_change_select:
 chan_setbank 9
@@ -7326,6 +7335,142 @@ chan_end
 
 .layer_timer_up:
 layer_note1 39, 0x13B, 127
+layer_end
+
+.sound_menu_troll_ping:
+chan_setbank 9
+chan_setinstr 11
+chan_setlayer 0, .layer_troll_ping
+chan_end
+
+.layer_troll_ping:
+layer_note1 39, 0x36, 127
+layer_end
+
+.sound_menu_troll_skype:
+chan_setbank 9
+chan_setinstr 12
+chan_setlayer 0, .layer_troll_skype
+chan_end
+
+.layer_troll_skype:
+layer_note1 39, 0x2D1, 127
+layer_end
+
+.sound_menu_troll_trombone:
+chan_setbank 9
+chan_setinstr 13
+chan_setlayer 0, .layer_troll_trombone
+chan_end
+
+.layer_troll_trombone:
+layer_note1 39, 0x2D1, 127
+layer_end
+
+.sound_menu_troll_usb:
+chan_setbank 9
+chan_setpanmix 0
+chan_setinstr 14
+chan_setlayer 0, .layer_troll_usb_l
+chan_setinstr 15
+chan_setlayer 1, .layer_troll_usb_r
+chan_end
+
+.layer_troll_usb_l:
+layer_setpan 0
+layer_note1 39, 0x99, 127
+layer_end
+
+.layer_troll_usb_r:
+layer_setpan 127
+layer_note1 39, 0x99, 127
+layer_end
+
+.sound_menu_troll_knock:
+chan_setbank 9
+chan_setpanmix 0
+chan_setinstr 16
+chan_setlayer 0, .layer_troll_knock_l
+chan_setinstr 17
+chan_setlayer 1, .layer_troll_knock_r
+chan_end
+
+.layer_troll_knock_l:
+layer_setpan 0
+layer_note1 39, 0x90, 100
+layer_end
+
+.layer_troll_knock_r:
+layer_setpan 127
+layer_note1 39, 0x66, 127
+layer_end
+
+.sound_menu_troll_alarm:
+chan_setbank 9
+chan_setpanmix 0
+chan_setinstr 18
+chan_setlayer 0, .layer_troll_alarm_l
+chan_setinstr 19
+chan_setlayer 1, .layer_troll_alarm_r
+chan_end
+
+.layer_troll_alarm_l:
+layer_setpan 0
+layer_note1 39, 0xFF, 127
+layer_end
+
+.layer_troll_alarm_r:
+layer_setpan 127
+layer_note1 39, 0xFF, 127
+layer_end
+
+.sound_menu_troll_join:
+chan_setbank 9
+chan_setpanmix 0
+chan_setinstr 20
+chan_setlayer 0, .layer_troll_join_l
+chan_setinstr 21
+chan_setlayer 1, .layer_troll_join_r
+chan_end
+
+.layer_troll_join_l:
+layer_setpan 0
+layer_note1 39, 0x5D, 127
+layer_end
+
+.layer_troll_join_r:
+layer_setpan 127
+layer_note1 39, 0x5D, 127
+layer_end
+
+.sound_menu_troll_click:
+chan_setbank 9
+chan_setinstr 22
+chan_setlayer 0, .layer_troll_click
+chan_end
+
+.layer_troll_click:
+layer_setpan 0
+layer_note1 39, 0x15, 127
+layer_end
+
+.sound_menu_troll_notif:
+chan_setbank 9
+chan_setpanmix 0
+chan_setinstr 23
+chan_setlayer 0, .layer_troll_notif_l
+chan_setinstr 24
+chan_setlayer 1, .layer_troll_notif_r
+chan_end
+
+.layer_troll_notif_l:
+layer_setpan 0
+layer_note1 39, 0xCE, 127
+layer_end
+
+.layer_troll_notif_r:
+layer_setpan 127
+layer_note1 39, 0xCE, 127
 layer_end
 
 .sound_menu_click_file_select:

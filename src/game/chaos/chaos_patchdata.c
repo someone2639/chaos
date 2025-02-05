@@ -678,6 +678,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Bring Back Level Intro Text",
         .shortDescription  = "Wow! You're smack in the middle of the battlefield.",
     },
+    [CHAOS_PATCH_TROLL_SOUNDS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 20,
+
+        .conditionalFunc   = chs_cond_troll_sounds,
+        .activatedInitFunc = chs_act_troll_sounds,
+        .frameUpdateFunc   = chs_update_troll_sounds,
+
+        .name              = "Hearing Things",
+        .shortDescription  = "I don't think this one actually does anything.",
+    },
 
 // Movement Modifiers
     [CHAOS_PATCH_LOSEMOVE_BREAKDANCE] = {
@@ -1508,6 +1522,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity          = 1,
         .isStackable       = FALSE,
         .duration          = 6,
+
+        .conditionalFunc   = chs_cond_inverted_sound,
 
         .name              = "Inverted Sound",
         .shortDescription  = "The game will sound upside-down!",

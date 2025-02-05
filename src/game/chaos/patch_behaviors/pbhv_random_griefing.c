@@ -12,7 +12,7 @@
 #include "game/game_init.h"
 #include "behavior_data.h"
 #include "game/object_helpers.h"
-
+#include "audio/external.h"
 #include "game/chaos/chaos.h"
 
 #define SLEEP_TIME_MIN  (1 * 60 * 30)
@@ -188,4 +188,72 @@ void chs_update_kaizo_blocks(void) {
         }
         this->frameTimer = RAND(KAIZO_BLOCK_TIME_MAX); //Get a random offset to start the timer at
     }
+}
+
+/*
+    Troll Sounds
+*/
+
+#define TROLL_SOUNDS_TIME_MAX   18000
+
+void chs_act_troll_sounds(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_TROLL_SOUNDS, &this);
+    this->frameTimer = RAND(TROLL_SOUNDS_TIME_MAX); //Get a random offset to start the timer at
+}
+
+void chs_update_troll_sounds(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_TROLL_SOUNDS, &this);
+    
+    if(this->frameTimer > TROLL_SOUNDS_TIME_MAX) {
+        s32 rand = RAND(100);
+
+        if(rand > 90) {
+            //5% chance
+            rand = RAND(2);
+            if(rand) {
+                play_sound(SOUND_MENU_TROLL_TROMBONE, gGlobalSoundSource);
+            } else {
+                play_sound(SOUND_MENU_TROLL_SKYPE, gGlobalSoundSource);
+            }
+        } else if (rand > 50) {
+            //10% chance
+            rand = RAND(4);
+            switch(rand) {
+                case 0:
+                    play_sound(SOUND_MENU_TROLL_KNOCK, gGlobalSoundSource);
+                    break;
+                case 1:
+                    play_sound(SOUND_MENU_TROLL_ALARM, gGlobalSoundSource);
+                    break;
+                case 2:
+                    play_sound(SOUND_MENU_TROLL_CLICK, gGlobalSoundSource);
+                    break;
+                case 3:
+                    play_sound(SOUND_MENU_TROLL_NOTIF, gGlobalSoundSource);
+                    break;
+            }
+        } else {
+            //16.666...% chance
+            rand = RAND(3);
+            switch(rand) {
+                case 0:
+                    play_sound(SOUND_MENU_TROLL_PING, gGlobalSoundSource);
+                    break;
+                case 1:
+                    play_sound(SOUND_MENU_TROLL_JOIN, gGlobalSoundSource);
+                    break;
+                case 2:
+                    play_sound(SOUND_MENU_TROLL_USB, gGlobalSoundSource);
+                    break;
+            }
+        }
+
+        this->frameTimer = RAND(TROLL_SOUNDS_TIME_MAX); //Get a random offset to start the timer at
+    }
+}
+
+u8 chs_cond_troll_sounds(void) {
+    return (!chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_SOUND));
 }
