@@ -150,10 +150,8 @@ u8 chs_cond_remove_selectable_patch(void);
 // Speed Modifiers
 u8 chs_cond_push_back(void);
 void chs_update_push_back(void);
-u8 chs_cond_speed_limit(void);
-void chs_update_speed_limit(void);
 u8 chs_cond_walkies(void);
-void chs_update_walkies(void);
+void chs_act_speed_tax(void);
 u8 chs_cond_speed_tax(void);
 void chs_update_speed_tax(void);
 

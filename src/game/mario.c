@@ -1466,6 +1466,11 @@ void update_mario_inputs(struct MarioState *m) {
         update_mario_button_inputs(m);
         update_mario_joystick_inputs(m);
     }
+
+    if(chaos_check_if_patch_active(CHAOS_PATCH_WALKIES)) {
+        m->intendedMag = (m->intendedMag > 15.0f) ? 15.0f : m->intendedMag;
+    }
+
     update_mario_geometry_inputs(m);
 
     debug_print_speed_action_normal(m);

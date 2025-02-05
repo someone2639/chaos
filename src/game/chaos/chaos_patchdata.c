@@ -1182,31 +1182,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "A Little Push in the Wrong Direction",
         .shortDescription  = "Mario will constantly get pushed backwards a little.",
     },
-    [CHAOS_PATCH_SPEED_LIMIT] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 2,
-        .isStackable       = FALSE,
-        .duration          = 4,
-
-        .frameUpdateFunc   = chs_update_speed_limit,
-        .conditionalFunc   = chs_cond_speed_limit,
-
-        .name              = "Speed Limit",
-        .shortDescription  = "Lowers Mario's maximum movement speed by a bit.",
-    },
     [CHAOS_PATCH_WALKIES] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 1,
+        .duration          = 3,
 
-        .frameUpdateFunc   = chs_update_walkies,
         .conditionalFunc   = chs_cond_walkies,
 
         .name              = "Walkies",
-        .shortDescription  = "Lowers Mario's maximum movement speed to a crawl.",
+        .shortDescription  = "Slows Mario down to walking speed. This is a Walkies level now.",
+        .longDescription   = "Lowers Mario's intended magnitude. This essentially acts as though you are never holding the joystick more than the amount it takes for Mario to go from walking to running, which is more or less the SM64 equivalent of not using the run button.",
     },
     [CHAOS_PATCH_SPEED_TAX] = {
         .durationType      = CHAOS_DURATION_STARS,
@@ -1215,6 +1202,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 5,
 
+        .activatedInitFunc = chs_act_speed_tax,
         .frameUpdateFunc   = chs_update_speed_tax,
         .conditionalFunc   = chs_cond_speed_tax,
 

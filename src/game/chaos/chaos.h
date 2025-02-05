@@ -143,7 +143,6 @@ enum ChaosPatchID {
 
 // Speed Modifiers
     CHAOS_PATCH_PUSH_BACK,
-    CHAOS_PATCH_SPEED_LIMIT,
     CHAOS_PATCH_WALKIES,
     CHAOS_PATCH_SPEED_TAX,
 
