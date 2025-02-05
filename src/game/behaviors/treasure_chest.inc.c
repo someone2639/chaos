@@ -20,9 +20,9 @@ void bhv_treasure_chest_top_loop(void) {
 
     switch (o->oAction) {
         case 0:
-            o->oPosX = o->parentObj->oPosX;
+            o->oPosX = o->parentObj->oPosX - (77 * sins(o->oFaceAngleYaw));
             o->oPosY = o->parentObj->oPosY + 102;
-            o->oPosZ = o->parentObj->oPosZ + 77;
+            o->oPosZ = o->parentObj->oPosZ - (77 * coss(o->oFaceAngleYaw));
             if (o->parentObj->oAction == 1) {
                 o->oAction = 1;
             }
