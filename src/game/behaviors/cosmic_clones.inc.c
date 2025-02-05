@@ -84,8 +84,6 @@ void bhv_cosmic_clones_loop(void) {
             //And star grab
             case ACT_STAR_DANCE_EXIT:
             case ACT_STAR_DANCE_WATER:
-            case ACT_FALL_AFTER_STAR_GRAB:
-            case ACT_STAR_DANCE_NO_EXIT:
                 spawn_mist_particles_with_sound(SOUND_OBJ_DEFAULT_DEATH);
                 obj_mark_for_deletion(o);
                 break;

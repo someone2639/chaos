@@ -94,7 +94,17 @@ void chs_update_cosmic_clones(void) {
 
         return;
     }
-    
+
+    //Don't update if Mario is collecting a star or in dialogue
+    switch(gMarioState->action) {
+        case ACT_FALL_AFTER_STAR_GRAB: 
+        case ACT_STAR_DANCE_NO_EXIT:
+        case ACT_READING_AUTOMATIC_DIALOG:
+        case ACT_READING_NPC_DIALOG:
+        case ACT_WAITING_FOR_DIALOG:
+            return;
+    }
+
     for(int i = TOTAL_CLONE_FRAMES - 1; i > 0; i--) {
         bcopy(&gCosmicCloneFrames[i - 1], &gCosmicCloneFrames[i], sizeof(struct CosmicCloneFrameData));
     }
