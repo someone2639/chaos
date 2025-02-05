@@ -61,6 +61,8 @@ void draw_quicktime_event_prompts() {
     if(sQTETimeLeft < 1) {
         return;
     }
+
+    create_dl_ortho_matrix(&gDisplayListHead);
     
     shade_screen();
 
@@ -93,7 +95,9 @@ void play_mode_quicktime() {
                 sQTECurrentIndex++;
                 play_sound(SOUND_MENU_POWER_METER, gGlobalSoundSource);
             } else {
-                sQTETimeLeft -= QTE_INPUT_TIME_PER_INPUT;
+                if(sQTETimeLeft < sQTETimeTotal - 20) {
+                    sQTETimeLeft -= QTE_INPUT_TIME_PER_INPUT;
+                }
                 play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
             }
         }
