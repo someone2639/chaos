@@ -15,6 +15,7 @@
 #include "engine/math_util.h"
 #include "seq_ids.h"
 #include "dialog_ids.h"
+#include "game/chaos/chaos.h"
 
 #ifdef PUPPYPRINT
 #include "game/puppyprint.h"
@@ -1555,12 +1556,70 @@ static void update_game_sound(void) {
     }
 }
 
+#define RAND_MUSIC_SEQ_COUNT    20
+u8 sRandomMusicSeqsLUT[RAND_MUSIC_SEQ_COUNT] = {
+    SEQ_MENU_TITLE_SCREEN,
+    SEQ_LEVEL_GRASS,
+    SEQ_LEVEL_INSIDE_CASTLE,
+    SEQ_LEVEL_WATER,
+    SEQ_LEVEL_HOT,
+    SEQ_LEVEL_BOSS_KOOPA,
+    SEQ_LEVEL_SNOW,
+    SEQ_LEVEL_SLIDE,
+    SEQ_LEVEL_SPOOKY,
+    SEQ_EVENT_PIRANHA_PLANT,
+    SEQ_LEVEL_UNDERGROUND,
+    SEQ_EVENT_POWERUP,
+    SEQ_EVENT_METAL_CAP,
+    SEQ_LEVEL_KOOPA_ROAD,
+    SEQ_EVENT_MERRY_GO_ROUND,
+    SEQ_EVENT_BOSS,
+    SEQ_EVENT_ENDLESS_STAIRS,
+    SEQ_LEVEL_BOSS_KOOPA_FINAL,
+    SEQ_EVENT_CUTSCENE_ENDING,
+    SEQ_EVENT_CUTSCENE_CREDITS,
+};
+
+#define RAND_JINGLE_SEQ_COUNT       12
+u8 sRandomJingleSeqsLUT[RAND_JINGLE_SEQ_COUNT] = {
+    SEQ_EVENT_CUTSCENE_COLLECT_STAR,
+    SEQ_MENU_STAR_SELECT,
+    SEQ_EVENT_KOOPA_MESSAGE,
+    SEQ_EVENT_HIGH_SCORE,
+    SEQ_EVENT_RACE,
+    SEQ_EVENT_CUTSCENE_STAR_SPAWN,
+    SEQ_EVENT_CUTSCENE_COLLECT_KEY,
+    SEQ_EVENT_SOLVE_PUZZLE,
+    SEQ_EVENT_TOAD_MESSAGE,
+    SEQ_EVENT_PEACH_MESSAGE,
+    SEQ_EVENT_CUTSCENE_INTRO,
+    SEQ_EVENT_CUTSCENE_VICTORY,
+};
+
 /**
  * Called from threads: thread4_sound, thread5_game_loop
  */
 static void seq_player_play_sequence(u8 player, u8 seqId, u16 arg2) {
     u8 targetVolume;
     u8 i;
+
+    if(chaos_check_if_patch_active(CHAOS_PATCH_RANDOMIZED_MUSIC)) {
+        // Randomize music
+        for(int j = 0; j < RAND_MUSIC_SEQ_COUNT; j++) {
+            if(seqId == sRandomMusicSeqsLUT[j]) {
+                seqId = sRandomMusicSeqsLUT[RAND(RAND_MUSIC_SEQ_COUNT)];
+                break;
+            }
+        }
+
+        // Randomize jingles
+        for(int j = 0; j < RAND_JINGLE_SEQ_COUNT; j++) {
+            if(seqId == sRandomJingleSeqsLUT[j]) {
+                seqId = sRandomJingleSeqsLUT[RAND(RAND_JINGLE_SEQ_COUNT)];
+                break;
+            }
+        }
+    }
 
     if (player == SEQ_PLAYER_LEVEL) {
         sCurrentBackgroundMusicSeqId = seqId & SEQ_BASE_ID;

@@ -206,3 +206,4 @@ void chs_create_cherry_clone(void);
 void chs_remove_cherry_clone(void);
 void chs_init_cherry_clones_after_warp(void);
 u8 chs_cond_forced_mario_cam(void);
+u8 chs_cond_randomized_music(void);
