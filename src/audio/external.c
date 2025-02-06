@@ -1556,8 +1556,8 @@ static void update_game_sound(void) {
     }
 }
 
-#define RAND_MUSIC_SEQ_COUNT    20
-u8 sRandomMusicSeqsLUT[RAND_MUSIC_SEQ_COUNT] = {
+
+u8 sRandomMusicSeqsLUT[] = {
     SEQ_MENU_TITLE_SCREEN,
     SEQ_LEVEL_GRASS,
     SEQ_LEVEL_INSIDE_CASTLE,
@@ -1580,8 +1580,8 @@ u8 sRandomMusicSeqsLUT[RAND_MUSIC_SEQ_COUNT] = {
     SEQ_EVENT_CUTSCENE_CREDITS,
 };
 
-#define RAND_JINGLE_SEQ_COUNT       12
-u8 sRandomJingleSeqsLUT[RAND_JINGLE_SEQ_COUNT] = {
+
+u8 sRandomJingleSeqsLUT[] = {
     SEQ_EVENT_CUTSCENE_COLLECT_STAR,
     SEQ_MENU_STAR_SELECT,
     SEQ_EVENT_KOOPA_MESSAGE,
@@ -1605,17 +1605,17 @@ static void seq_player_play_sequence(u8 player, u8 seqId, u16 arg2) {
 
     if(chaos_check_if_patch_active(CHAOS_PATCH_RANDOMIZED_MUSIC)) {
         // Randomize music
-        for(int j = 0; j < RAND_MUSIC_SEQ_COUNT; j++) {
+        for(int j = 0; j < ARRAY_COUNT(sRandomMusicSeqsLUT); j++) {
             if(seqId == sRandomMusicSeqsLUT[j]) {
-                seqId = sRandomMusicSeqsLUT[RAND(RAND_MUSIC_SEQ_COUNT)];
+                seqId = sRandomMusicSeqsLUT[RAND(ARRAY_COUNT(sRandomMusicSeqsLUT))];
                 break;
             }
         }
 
         // Randomize jingles
-        for(int j = 0; j < RAND_JINGLE_SEQ_COUNT; j++) {
+        for(int j = 0; j < ARRAY_COUNT(sRandomJingleSeqsLUT); j++) {
             if(seqId == sRandomJingleSeqsLUT[j]) {
-                seqId = sRandomJingleSeqsLUT[RAND(RAND_JINGLE_SEQ_COUNT)];
+                seqId = sRandomJingleSeqsLUT[RAND(ARRAY_COUNT(sRandomJingleSeqsLUT))];
                 break;
             }
         }
