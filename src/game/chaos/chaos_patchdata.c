@@ -691,6 +691,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Hearing Things",
         .shortDescription  = "I don't think this one actually does anything.",
     },
+    [CHAOS_PATCH_RED_LIGHT] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .activatedInitFunc = chs_act_red_light,
+        .conditionalFunc   = chs_cond_red_light,
+        .frameUpdateFunc   = chs_update_red_light,
+
+        .name              = "Red Light Green Light",
+        .shortDescription  = "When you see 'Red Light' appear on screen, stop using the controller! Just like Mr. Beast's Squid Game.",
+    },
 
 // Movement Modifiers
     [CHAOS_PATCH_LOSEMOVE_BREAKDANCE] = {

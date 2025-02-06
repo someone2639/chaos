@@ -37,7 +37,7 @@ void chs_update_push_back(void) {
 */
 
 u8 chs_cond_walkies(void) {
-    return(!chaos_check_if_patch_active(CHAOS_PATCH_GREEN_DEMON) && !chaos_check_if_patch_active(CHAOS_PATCH_SPEED_TAX) && !chaos_check_if_patch_active(CHAOS_PATCH_HEALTH_DRAIN));
+    return(!chaos_check_if_patch_active(CHAOS_PATCH_GREEN_DEMON) && !chaos_check_if_patch_active(CHAOS_PATCH_SPEED_TAX) && !chaos_check_if_patch_active(CHAOS_PATCH_HEALTH_DRAIN) && !chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_CLONES));
 }
 
 /*

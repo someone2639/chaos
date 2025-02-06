@@ -47,7 +47,7 @@ void spawn_cosmic_clones(s32 startActive) {
 }
 
 u8 chs_cond_cosmic_clones(void) {
-    return (!chaos_check_if_patch_active(CHAOS_PATCH_WALKIES));
+    return (!chaos_check_if_patch_active(CHAOS_PATCH_WALKIES) && !chaos_check_if_patch_active(CHAOS_PATCH_RED_LIGHT));
 }
 
 void chs_act_cosmic_clones(void) {
