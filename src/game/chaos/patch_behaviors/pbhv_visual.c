@@ -16,8 +16,30 @@
 u8 chs_cond_no_zbuffer(void)       { return !chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_Z_BUFFER); }
 u8 chs_cond_inverted_zbuffer(void) { return !chaos_check_if_patch_active(CHAOS_PATCH_NO_Z_BUFFER      ); }
 
-u8 chs_cond_decreased_fov(void)       { return !(chaos_check_if_patch_active(CHAOS_PATCH_INCREASED_FOV) || chaos_check_if_patch_active(CHAOS_PATCH_TOP_DOWN_CAMERA)); }
-u8 chs_cond_increased_fov(void)       { return !(chaos_check_if_patch_active(CHAOS_PATCH_DECREASED_FOV) || ((gEmulator & EMU_CONSOLE) && chaos_check_if_patch_active(CHAOS_PATCH_TOP_DOWN_CAMERA))); }
+u8 chs_cond_decreased_fov(void) {
+    if (chaos_check_if_patch_active(CHAOS_PATCH_INCREASED_FOV)) {
+        return FALSE;
+    }
+    if (chaos_check_if_patch_active(CHAOS_PATCH_TOP_DOWN_CAMERA)) {
+        return FALSE;
+    }
+    if (chaos_check_if_patch_active(CHAOS_PATCH_ORTHO)) {
+        return FALSE;
+    }
+    return TRUE;
+}
+u8 chs_cond_increased_fov(void) {
+    if (chaos_check_if_patch_active(CHAOS_PATCH_DECREASED_FOV)) {
+        return FALSE;
+    }
+    if ((gEmulator & EMU_CONSOLE) && chaos_check_if_patch_active(CHAOS_PATCH_TOP_DOWN_CAMERA)) {
+        return FALSE;
+    }
+    if (chaos_check_if_patch_active(CHAOS_PATCH_ORTHO)) {
+        return FALSE;
+    }
+    return TRUE;
+}
 
 u8 chs_cond_low_resolution(void) { return (!(gEmulator & (EMU_CONSOLE | EMU_ARES)) && gFBEEnabled); }
 
