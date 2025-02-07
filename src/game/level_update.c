@@ -690,10 +690,63 @@ s16 music_changed_through_warp(s16 arg) {
     return unchanged;
 }
 
+struct RandomWarp {
+    u8 level;
+    u8 area;
+    u8 warp;
+};
+
+struct RandomWarp sRandomWarpTable[] = {
+    {LEVEL_BBH, 1, 0x0A},
+    {LEVEL_CCM, 1, 0x0A},
+    {LEVEL_CCM, 2, 0x0A},
+    {LEVEL_HMC, 1, 0x0A},
+    {LEVEL_SSL, 1, 0x0A},
+    {LEVEL_SSL, 2, 0x0A},
+    {LEVEL_BOB, 1, 0x0A},
+    {LEVEL_SL, 1, 0x0A},
+    {LEVEL_SL, 2, 0x0A},
+    {LEVEL_WDW, 1, 0x0A},
+    {LEVEL_JRB, 1, 0x0A},
+    {LEVEL_JRB, 2, 0x0A},
+    {LEVEL_THI, 1, 0x0A},
+    {LEVEL_THI, 2, 0x0A},
+    {LEVEL_THI, 3, 0x0A},
+    {LEVEL_TTC, 1, 0x0A},
+    {LEVEL_RR, 1, 0x0A},
+    {LEVEL_BITDW, 1, 0x0A},
+    {LEVEL_VCUTM, 1, 0x0A},
+    {LEVEL_BITFS, 1, 0x0A},
+    {LEVEL_SA, 1, 0x0A},
+    {LEVEL_LLL, 1, 0x0A},
+    {LEVEL_DDD, 1, 0x0A},
+    {LEVEL_WF, 1, 0x0A},
+    {LEVEL_PSS, 1, 0x0A},
+    {LEVEL_COTMC, 1, 0x0A},
+    {LEVEL_TOTWC, 1, 0x0A},
+    {LEVEL_WMOTR, 1, 0x0A},
+    {LEVEL_TTM, 1, 0x0A},
+    {LEVEL_TTM, 2, 0x0A},
+};
+
 /**
  * Set the current warp type and destination level/area/node.
  */
 void initiate_warp(s16 destLevel, s16 destArea, s16 destWarpNode, s32 arg3) {
+    if(chaos_check_if_patch_active(CHAOS_PATCH_RANDOMIZE_WARPS) && 
+    !(destLevel == LEVEL_CASTLE || destLevel == LEVEL_CASTLE_GROUNDS || destLevel == LEVEL_CASTLE_COURTYARD || destLevel == LEVEL_BITS 
+        || destLevel == LEVEL_BOWSER_1 ||  destLevel == LEVEL_BOWSER_2 || destLevel == LEVEL_BOWSER_3)) {
+
+        s32 randWarp = RAND(ARRAY_COUNT(sRandomWarpTable));
+
+        sWarpDest.type = WARP_TYPE_CHANGE_LEVEL;
+        sWarpDest.levelNum = sRandomWarpTable[randWarp].level;
+        sWarpDest.areaIdx = sRandomWarpTable[randWarp].area;
+        sWarpDest.nodeId = sRandomWarpTable[randWarp].warp;
+        sWarpDest.arg = arg3;
+        return;
+    }
+
     if (destWarpNode >= WARP_NODE_CREDITS_MIN) {
         sWarpDest.type = WARP_TYPE_CHANGE_LEVEL;
     } else if (destLevel != gCurrLevelNum) {

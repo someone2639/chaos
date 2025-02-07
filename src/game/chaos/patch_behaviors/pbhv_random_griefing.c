@@ -253,3 +253,87 @@ void chs_update_troll_sounds(void) {
         this->frameTimer = RAND(TROLL_SOUNDS_TIME_MAX); //Get a random offset to start the timer at
     }
 }
+
+/*
+    Red Light Green Light
+*/
+
+#define RED_LIGHT_TIME_MAX      (7 * 30)
+#define RED_LIGHT_TIME_MIN      (2 * 30)
+#define RED_LIGHT_RAND          (RED_LIGHT_TIME_MAX - RED_LIGHT_TIME_MIN)
+
+#define GREEN_LIGHT_TIME_MAX    (3 * 60 * 30)
+#define GREEN_LIGHT_TIME_MIN    (45 * 30)
+#define GREEN_LIGHT_RAND        (GREEN_LIGHT_TIME_MAX - GREEN_LIGHT_TIME_MIN)
+
+#define CHS_GREEN_LIGHT         0
+#define CHS_RED_LIGHT           1
+
+u8 sChsRedLightPhase = CHS_GREEN_LIGHT;
+s16 sChsRedLightTextTimer = 0;
+u8 sChsRedLightCounter = 0;
+
+void chs_act_red_light(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_RED_LIGHT, &this);
+    this->frameTimer = RAND(GREEN_LIGHT_RAND);
+    sChsRedLightPhase = CHS_GREEN_LIGHT;
+    sChsRedLightTextTimer = 30;
+    sChsRedLightCounter = 0;
+}
+
+void chs_update_red_light(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_RED_LIGHT, &this);
+    if(sChsRedLightPhase == CHS_GREEN_LIGHT) {
+        if(sChsRedLightTextTimer++ < 30) {
+            print_text_centered(SCREEN_CENTER_X, 40, "GREEN LIGHT");
+        }
+
+        s16 timeLeft = GREEN_LIGHT_TIME_MAX - this->frameTimer;
+
+        switch(timeLeft) {
+            case 90:
+                play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
+                sChsRedLightCounter = 3;
+                break;
+            case 60:
+                play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
+                sChsRedLightCounter = 2;
+                break;
+            case 30:
+                play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
+                sChsRedLightCounter = 1;
+                break;
+        }
+
+        if(sChsRedLightCounter) {
+            print_text_fmt_int(SCREEN_CENTER_X, 40, "%d", sChsRedLightCounter);
+        }
+
+        if(this->frameTimer > GREEN_LIGHT_TIME_MAX) {
+            this->frameTimer = RAND(RED_LIGHT_RAND);
+            sChsRedLightPhase = CHS_RED_LIGHT;
+            play_sound(SOUND_MENU_PAUSE_OPEN, gGlobalSoundSource);
+            sChsRedLightCounter = 0;
+        }
+    } else {
+        if(this->frameTimer > RED_LIGHT_TIME_MAX) {
+            this->frameTimer = RAND(GREEN_LIGHT_RAND);
+            sChsRedLightPhase = CHS_GREEN_LIGHT;
+            sChsRedLightTextTimer = 0;
+            play_sound(SOUND_MENU_PAUSE_CLOSE, gGlobalSoundSource);
+            sChsRedLightCounter = 0;
+        } else {
+            print_text_centered(SCREEN_CENTER_X, 40, "RED LIGHT");
+
+            if(gPlayer1Controller->buttonPressed || gPlayer1Controller->buttonDown || gPlayer1Controller->stickMag) {
+                gMarioState->health = 0;
+            }
+        }
+    }
+}
+
+u8 chs_cond_red_light(void) {
+    return (!(chaos_check_if_patch_active(CHAOS_PATCH_GREEN_DEMON) || chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_CLONES)));
+}

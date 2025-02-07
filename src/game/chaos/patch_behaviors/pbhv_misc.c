@@ -6,6 +6,7 @@
 #include "game/chaos/chaos.h"
 #include "game/level_update.h"
 #include "game/area.h"
+#include "game/main.h"
 
 u8 chs_cond_one_hit_wonder(void) {
     return(!chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_SHOCK) && !chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_BURN));
@@ -54,4 +55,8 @@ void chs_deact_reverb(void) { init_reverb_us(1 << 31); }
 
 u8 chs_cond_lethal_fall_damage() {
     return (!chaos_check_if_patch_active(CHAOS_PATCH_NO_FALL_DAMAGE));
+}
+
+u8 chs_cond_randomized_music(void) {
+    return (!gConfig.disableBGMusic);
 }

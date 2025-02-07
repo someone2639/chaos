@@ -691,6 +691,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Hearing Things",
         .shortDescription  = "I don't think this one actually does anything.",
     },
+    [CHAOS_PATCH_RED_LIGHT] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .activatedInitFunc = chs_act_red_light,
+        .conditionalFunc   = chs_cond_red_light,
+        .frameUpdateFunc   = chs_update_red_light,
+
+        .name              = "Red Light Green Light",
+        .shortDescription  = "When you see 'Red Light' appear on screen, stop using the controller! Just like Mr. Beast's Squid Game.",
+    },
 
 // Movement Modifiers
     [CHAOS_PATCH_LOSEMOVE_BREAKDANCE] = {
@@ -1411,7 +1425,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .activatedInitFunc = chs_act_mario_small,
         .conditionalFunc   = chs_cond_mario_small,
 
-        .name              = "One Makes You Smaller",
+        .name              = "One Makes You Small",
         .shortDescription  = "Decrease Mario's size by 12.5% (additive).",
     },
 
@@ -1438,6 +1452,43 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Realistic Fall Damage",
         .shortDescription  = "Falling will now instantly kill Mario.",
 },
+
+// Audio Modifiers
+    [CHAOS_PATCH_INVERTED_SOUND] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .name              = "Inverted Sound",
+        .shortDescription  = "The game will sound upside-down!",
+    },
+    [CHAOS_PATCH_REVERB] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 8,
+
+        .activatedInitFunc = chs_act_reverb,
+        .deactivationFunc  = chs_deact_reverb,
+
+        .name              = "High-Fidelity Reverb",
+        .shortDescription  = "For that more immersive experience (even more epic in caves!)",
+    },
+    [CHAOS_PATCH_RANDOMIZED_MUSIC] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 1,
+        .isStackable       = FALSE,
+        .duration          = 24,
+
+        .conditionalFunc   = chs_cond_randomized_music,
+
+        .name              = "Randomize Music",
+        .shortDescription  = "Let's listen to something else.",
+    },
 
 // Miscellaneous Modifiers
     [CHAOS_PATCH_MARIO_INVISIBLE] = {
@@ -1515,16 +1566,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Blue Coin Lottery",
         .shortDescription  = "Test your luck! Every blue coin is a 1% chance to win big!",
     },
-    [CHAOS_PATCH_INVERTED_SOUND] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 1,
-        .isStackable       = FALSE,
-        .duration          = 6,
-
-        .name              = "Inverted Sound",
-        .shortDescription  = "The game will sound upside-down!",
-    },
     [CHAOS_PATCH_AD_BREAK] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
@@ -1583,19 +1624,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "L is Real 2401",
         .shortDescription  = "You can now play as Luigi.",
-    },
-    [CHAOS_PATCH_REVERB] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_POSITIVE,
-        .severity          = 1,
-        .isStackable       = FALSE,
-        .duration          = 8,
-
-        .activatedInitFunc = chs_act_reverb,
-        .deactivationFunc  = chs_deact_reverb,
-
-        .name              = "High-Fidelity Reverb",
-        .shortDescription  = "For that more immersive experience (even more epic in caves!)",
     },
     [CHAOS_PATCH_WEAK_BOSSES] = {
         .durationType      = CHAOS_DURATION_STARS,
@@ -1711,5 +1739,15 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Double Cherry",
         .shortDescription  = "It's dangerous to go alone! Have a buddy!",
         .longDescription   = "Each cherry clone has 1 health point, and will take your hits until they run out, after which you will take normal damage. If the \"real\" player gets hit, its soul will be transferred to a clone. By the end of this, which Mario will be the real Mario?",
+    },
+    [CHAOS_PATCH_RANDOMIZE_WARPS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 4,
+
+        .name              = "Randomize Warps",
+        .shortDescription  = "I'm bored of this level. Can we go to a different one?",
     },
 };

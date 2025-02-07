@@ -106,6 +106,9 @@ void chs_act_kaizo_blocks(void);
 void chs_update_kaizo_blocks(void);
 void chs_act_troll_sounds(void);
 void chs_update_troll_sounds(void);
+void chs_act_red_light(void);
+u8 chs_cond_red_light(void);
+void chs_update_red_light(void);
 
 // Object Spawners
 u8 chs_cond_green_demon(void);
@@ -206,3 +209,4 @@ void chs_create_cherry_clone(void);
 void chs_remove_cherry_clone(void);
 void chs_init_cherry_clones_after_warp(void);
 u8 chs_cond_forced_mario_cam(void);
+u8 chs_cond_randomized_music(void);
