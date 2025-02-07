@@ -1083,6 +1083,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Big Head Mode",
         .shortDescription  = "Mario might have a college degree, but now he looks the part!",
     },
+    [CHAOS_PATCH_DIZZY_OBJECTS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .name              = "Dizzy Objects",
+        .shortDescription  = "Spins objects around in a circle (visuals only). I hope you don't get motion sick!",
+    },
 
 // Time Limit
     [CHAOS_PATCH_TIME_LIMIT] = {
