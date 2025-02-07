@@ -12,6 +12,7 @@
 #include "shadow.h"
 #include "sm64.h"
 #include "chaos/chaos.h"
+#include "behavior_data.h"
 
 u8 isGameFlipped = FALSE;
 
@@ -882,8 +883,12 @@ void geo_process_object(struct Object *node) {
 
     if (node->header.gfx.areaIndex == gCurGraphNodeRoot->areaIndex) {
         s16 angleTmp = node->header.gfx.angle[1];
-        if (chaos_check_if_patch_active(CHAOS_PATCH_CONFUSED_OBJECTS)) {
-            node->header.gfx.angle[1] += 0x8000;
+
+        if (chaos_check_if_patch_active(CHAOS_PATCH_CONFUSED_OBJECTS)){
+            struct Object *obj = (struct Object *) node;
+            if(obj->behavior != segmented_to_virtual(bhvStaticObject)) {
+                node->header.gfx.angle[1] += 0x8000;
+            }
         }
 
         if (node->header.gfx.throwMatrix != NULL) {
