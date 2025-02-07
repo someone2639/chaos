@@ -298,7 +298,7 @@ void geo_process_perspective(struct GraphNodePerspective *node) {
             fov *= 3.0f;
         }
 
-        if (chaos_check_if_patch_active(CHAOS_PATCH_ORTHO)) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_ORTHO) && !gInActSelect) {
             #define ZOOM 2
             guOrtho(mtx, -(ZOOM*SCREEN_WIDTH),
                 (ZOOM*SCREEN_WIDTH),
@@ -306,7 +306,7 @@ void geo_process_perspective(struct GraphNodePerspective *node) {
                 (ZOOM*SCREEN_HEIGHT),
                 -16384.0f,
                 8192.0f,
-                0.5f);
+                1.0f);
             #undef ZOOM
         } else {
             guPerspective(mtx, &perspNorm, fov, sAspectRatio, node->near, node->far, 1.0f);
