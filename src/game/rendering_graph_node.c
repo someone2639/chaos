@@ -299,13 +299,15 @@ void geo_process_perspective(struct GraphNodePerspective *node) {
         }
 
         if (chaos_check_if_patch_active(CHAOS_PATCH_ORTHO)) {
-            guOrtho(mtx, -3840.0f,
-                3840.0f,
-                -2880.0f,
-                2880.0f,
+            #define ZOOM 2
+            guOrtho(mtx, -(ZOOM*SCREEN_WIDTH),
+                (ZOOM*SCREEN_WIDTH),
+                -(ZOOM*SCREEN_HEIGHT),
+                (ZOOM*SCREEN_HEIGHT),
                 -16384.0f,
                 8192.0f,
                 0.5f);
+            #undef ZOOM
         } else {
             guPerspective(mtx, &perspNorm, fov, sAspectRatio, node->near, node->far, 1.0f);
             gSPPerspNormalize(gDisplayListHead++, perspNorm);
