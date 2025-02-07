@@ -1710,6 +1710,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 2,
 
+        
+        .frameUpdateFunc   = chs_update_noclip,
+
         .name              = "No Clip",
         .shortDescription  = "Walls are just a complete suggestion.",
     },

@@ -7,6 +7,10 @@
 #include "game/level_update.h"
 #include "game/area.h"
 #include "game/main.h"
+#include "game/object_helpers.h"
+#include "course_table.h"
+#include "behavior_data.h"
+#include "engine/surface_collision.h"
 
 u8 chs_cond_one_hit_wonder(void) {
     return(!chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_SHOCK) && !chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_BURN));
@@ -59,4 +63,11 @@ u8 chs_cond_lethal_fall_damage() {
 
 u8 chs_cond_randomized_music(void) {
     return (!gConfig.disableBGMusic);
+}
+
+void chs_update_noclip(void) {
+    if (!count_objects_with_behavior(bhvNoclipPlane)) {
+        spawn_object_abs_with_rot(gMarioState->marioObj, 0, MODEL_NONE, bhvNoclipPlane,
+                            gMarioState->pos[0], FLOOR_LOWER_LIMIT + 50, gMarioState->pos[2], 0, 0, 0);
+    }
 }

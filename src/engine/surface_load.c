@@ -798,8 +798,8 @@ void load_object_collision_model(void) {
     }
 
     // Update if no Time Stop, in range, and in the current room.
-    if (!(gTimeStopState & TIME_STOP_ACTIVE) && marioDist < tangibleDist
-        && !(gCurrentObject->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM)) {
+    if ((!(gTimeStopState & TIME_STOP_ACTIVE) && marioDist < tangibleDist
+        && !(gCurrentObject->activeFlags & ACTIVE_FLAG_IN_DIFFERENT_ROOM)) || gCurrentObject->behavior == segmented_to_virtual(bhvNoclipPlane)) {
         collisionData++;
         transform_object_vertices(&collisionData, vertexData);
 

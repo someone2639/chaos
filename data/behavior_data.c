@@ -331,6 +331,16 @@
     BC_PTR(dropletParams)
 
 /* fast64 object exports get inserted here */
+const BehaviorScript bhvNoclipPlane[] = {
+	BEGIN(OBJ_LIST_SURFACE),
+	OR_INT(oFlags, (OBJ_FLAG_ACTIVE_FROM_AFAR | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+	LOAD_COLLISION_DATA(noclip_plane_collision),
+	BEGIN_LOOP(),
+		CALL_NATIVE(load_object_collision_model),
+        CALL_NATIVE(bhv_noclip_plane_loop),
+	END_LOOP(),
+};
+
 const BehaviorScript bhvKaizoBlock[] = {
     BEGIN(OBJ_LIST_SURFACE),
     OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),

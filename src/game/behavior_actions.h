@@ -561,6 +561,7 @@ void bhv_volcano_trap_loop(void);
 void bhv_cosmic_clones_init(void);
 void bhv_cosmic_clones_loop(void);
 void bhv_kaizo_block_loop(void);
+void bhv_noclip_plane_loop(void);
 
 Gfx *geo_move_mario_part_from_parent(s32 run, UNUSED struct GraphNode *node, Mat4 mtx);
 
