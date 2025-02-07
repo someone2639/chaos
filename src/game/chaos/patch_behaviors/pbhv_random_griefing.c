@@ -337,3 +337,25 @@ void chs_update_red_light(void) {
 u8 chs_cond_red_light(void) {
     return (!(chaos_check_if_patch_active(CHAOS_PATCH_GREEN_DEMON) || chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_CLONES)));
 }
+
+/*
+    Cosmic Rays
+*/
+
+#define COSMIC_RAYS_TIME_MAX    (4 * 60 * 30)
+
+void chs_act_cosmic_rays(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_COSMIC_RAYS, &this);
+    this->frameTimer = RAND(COSMIC_RAYS_TIME_MAX);
+}
+
+void chs_update_cosmic_rays(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_COSMIC_RAYS, &this);
+
+    if(this->frameTimer > COSMIC_RAYS_TIME_MAX) {
+        gMarioState->pos[1] += 3155.25f;
+        this->frameTimer = RAND(COSMIC_RAYS_TIME_MAX);
+    }
+}

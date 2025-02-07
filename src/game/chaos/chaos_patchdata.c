@@ -705,6 +705,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Red Light Green Light",
         .shortDescription  = "When you see 'Red Light' appear on screen, stop using the controller! Just like Mr. Beast's Squid Game.",
     },
+    [CHAOS_PATCH_COSMIC_RAYS] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 8,
+
+        .activatedInitFunc = chs_act_cosmic_rays,
+        .frameUpdateFunc   = chs_update_cosmic_rays,
+
+        .name              = "Cosmic Rays",
+        .shortDescription  = "Now you too can experience the famous TTC upwarp!",
+        .longDescription   = "Was it a solar flare? A tilted cartridge? A one in a million glitch? Probably not!",
+    },
 
 // Movement Modifiers
     [CHAOS_PATCH_LOSEMOVE_BREAKDANCE] = {

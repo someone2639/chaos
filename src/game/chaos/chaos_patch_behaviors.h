@@ -109,6 +109,8 @@ void chs_update_troll_sounds(void);
 void chs_act_red_light(void);
 u8 chs_cond_red_light(void);
 void chs_update_red_light(void);
+void chs_act_cosmic_rays(void);
+void chs_update_cosmic_rays(void);
 
 // Object Spawners
 u8 chs_cond_green_demon(void);
