@@ -16,6 +16,7 @@
 #include "sm64.h"
 #include "save_file.h"
 #include "chaos_menus.h"
+#include "chaos_pause_menu.h"
 
 u8 sQualityColors[CHAOS_PATCH_SEVERITY_COUNT][3] = {
     {0x9F, 0x9F, 0x9F}, //Lvl 0
@@ -186,6 +187,10 @@ void handle_inputs_patch_select_state_select(s32 stickDir) {
         } else {
             play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
         }
+    } else if (gPlayer1Controller->buttonPressed & R_TRIG) {
+        init_active_patches_menu();
+        menu_play_anim(&gPatchSelectionMenu->menu, PATCH_SELECT_ANIM_ACTIVE_PATCHES);
+        menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_SHOW_ACTIVE_PATCHES);
     } else if(pressedUpDown) {
         if(numPatches > 2) {
             selection += 2;
@@ -600,6 +605,76 @@ s32 patch_select_menu_anim_ext_desc_return() {
     return FALSE;
 }
 
+#define PATCH_SELECT_ACTIVE_PATCHES_CARDS_SLIDE_FRAMES  7
+s32 patch_select_menu_anim_active_patches() {
+    s32 phase = gPatchSelectionMenu->menu.animPhase;
+    s32 animTimer = gPatchSelectionMenu->menu.animTimer;
+    f32 animPercent;
+
+    switch(phase) {
+        case 0:
+            //Hide cursor and halt input
+            gPatchSelectionMenu->menu.flags &= ~PATCH_SELECT_FLAG_DRAW_CURSOR;
+            gPatchSelectionMenu->menu.flags |= PATCH_SELECT_FLAG_HALT_INPUT;
+
+            //Slide cards off screen
+            gPatchSelectionMenu->menu.animFrames = PATCH_SELECT_ACTIVE_PATCHES_CARDS_SLIDE_FRAMES;
+            animPercent = sins((0x3FFF / gPatchSelectionMenu->menu.animFrames) * animTimer);
+
+            gPatchSelectionMenu->patchCards[0].pos[0] = menu_translate_percentage(gPatchSelectionMenu->patchCards[0].layoutPos[0], CARD_X_LEFT_START,  animPercent);
+            gPatchSelectionMenu->patchCards[1].pos[0] = menu_translate_percentage(gPatchSelectionMenu->patchCards[1].layoutPos[0], CARD_X_RIGHT_START, animPercent);
+            gPatchSelectionMenu->patchCards[2].pos[0] = menu_translate_percentage(gPatchSelectionMenu->patchCards[2].layoutPos[0], CARD_X_LEFT_START,  animPercent);
+            gPatchSelectionMenu->patchCards[3].pos[0] = menu_translate_percentage(gPatchSelectionMenu->patchCards[3].layoutPos[0], CARD_X_RIGHT_START, animPercent);
+
+            gPatchSelectionMenu->descPos[1] = menu_translate_percentage(PATCH_DESC_Y, PATCH_DESC_Y_START, animPercent);
+
+            break;
+        default:
+            return TRUE;
+            break;
+    }
+
+    return FALSE;
+}
+
+s32 patch_select_menu_anim_active_patches_return() {
+    s32 phase = gPatchSelectionMenu->menu.animPhase;
+    s32 animTimer = gPatchSelectionMenu->menu.animTimer;
+    f32 animPercent;
+
+    f32 card1XTarget = gPatchSelectionMenu->patchCards[0].layoutPos[0];
+    f32 card2XTarget = gPatchSelectionMenu->patchCards[1].layoutPos[0];
+    f32 card3XTarget = gPatchSelectionMenu->patchCards[2].layoutPos[0];
+    f32 card4XTarget = gPatchSelectionMenu->patchCards[3].layoutPos[0];
+
+    switch(phase) {
+        case 0:
+            //Halt input
+            gPatchSelectionMenu->menu.flags |= PATCH_SELECT_FLAG_HALT_INPUT;
+
+            //Slide cards on screen
+            gPatchSelectionMenu->menu.animFrames = PATCH_SELECT_ACTIVE_PATCHES_CARDS_SLIDE_FRAMES;
+            animPercent = sins((0x3FFF / gPatchSelectionMenu->menu.animFrames) * animTimer);
+
+            gPatchSelectionMenu->patchCards[0].pos[0] = menu_translate_percentage(CARD_X_LEFT_START,  card1XTarget, animPercent);
+            gPatchSelectionMenu->patchCards[1].pos[0] = menu_translate_percentage(CARD_X_RIGHT_START, card2XTarget, animPercent);
+            gPatchSelectionMenu->patchCards[2].pos[0] = menu_translate_percentage(CARD_X_LEFT_START,  card3XTarget, animPercent);
+            gPatchSelectionMenu->patchCards[3].pos[0] = menu_translate_percentage(CARD_X_RIGHT_START, card4XTarget, animPercent);
+
+            gPatchSelectionMenu->descPos[1] = menu_translate_percentage(PATCH_DESC_Y_START, PATCH_DESC_Y, animPercent);
+
+            break;
+        default:
+            //Turn input back on and draw cursor
+            gPatchSelectionMenu->menu.flags &= ~PATCH_SELECT_FLAG_HALT_INPUT;
+            gPatchSelectionMenu->menu.flags |= PATCH_SELECT_FLAG_DRAW_CURSOR;
+            return TRUE;
+            break;
+    }
+
+    return FALSE;
+}
+
 s32 (*sPatchSelectMenuAnims[])(void) = {
     &patch_select_anim_startup,
     &patch_select_anim_select,
@@ -607,6 +682,8 @@ s32 (*sPatchSelectMenuAnims[])(void) = {
     &patch_select_anim_confirmation_return,
     &patch_select_anim_ext_desc,
     &patch_select_menu_anim_ext_desc_return,
+    &patch_select_menu_anim_active_patches,
+    &patch_select_menu_anim_active_patches_return,
     &patch_select_anim_ending,
 };
 
@@ -629,6 +706,14 @@ void update_patch_selection_menu() {
                 menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_CLOSED);
                 chaos_select_patches(gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].sel);
                 save_file_do_save(gCurrSaveFileNum - 1);
+                break;
+            case PATCH_SELECT_STATE_SHOW_ACTIVE_PATCHES:
+                if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) {
+                    update_active_patches_menu();
+                } else {
+                    menu_play_anim(&gPatchSelectionMenu->menu, PATCH_SELECT_ANIM_ACTIVE_PATCHES_RETURN);    
+                    menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_SELECT);
+                }
                 break;
         }
     }
@@ -1038,18 +1123,22 @@ void render_patch_select_button_prompts() {
                 neg->longDescription) {
                 menu_start_button_prompt();
                 menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 21, MENU_PROMPT_A_BUTTON);
-                menu_button_prompt(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 21, MENU_PROMPT_Z_TRIG);
+                menu_button_prompt(SCREEN_WIDTH - 80, SCREEN_HEIGHT - 21, MENU_PROMPT_R_TRIG);
+                menu_button_prompt(SCREEN_WIDTH - 160, SCREEN_HEIGHT - 21, MENU_PROMPT_Z_TRIG);
                 menu_end_button_prompt();
                 fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
                 fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 21, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_draw_texrect(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 21, "More Info", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_draw_texrect(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 21, "Active Patches", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_draw_texrect(SCREEN_WIDTH - 160, SCREEN_HEIGHT - 21, "More Info", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
                 fasttext_finished_rendering();
             } else {
                 menu_start_button_prompt();
                 menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 21, MENU_PROMPT_A_BUTTON);
+                menu_button_prompt(SCREEN_WIDTH - 80, SCREEN_HEIGHT - 21, MENU_PROMPT_R_TRIG);
                 menu_end_button_prompt();
                 fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
                 fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 21, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_draw_texrect(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 21, "Active Patches", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
                 fasttext_finished_rendering();
             }
             break;
@@ -1092,6 +1181,11 @@ void display_patch_selection_ui() {
         create_dl_ortho_matrix(&gDisplayListHead);
 
         render_curtain_bg();
+
+        if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) {
+            render_active_patches();
+        }
+
         switch(numPatches) {
             case 4:
                 render_patch_card(&gPatchSelectionMenu->patchCards[3], TRUE);
