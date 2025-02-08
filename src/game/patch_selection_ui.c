@@ -889,48 +889,43 @@ void draw_patch_type(f32 x, f32 y, enum ChaosPatchDurationType type) {
 }
 
 /*
-    Draws a patch card at the given x/y coordinates
+    Draws the info for a patch card with one patch
 */
-void render_patch_card(struct PatchCard *card, s32 reverse) {
-    aggress(card, "render_patch_card:\ncard is NULL!");
-    aggress(card->sel, "render_patch_card:\ncard->sel is NULL!");
+void draw_single_patch_info(const struct ChaosPatch *patch) {
+    char timerText[4];
+    s32 type = patch->effectType;
 
-    struct ChaosPatchSelection *sel = card->sel;
-    const struct ChaosPatch *pos = sel->positivePatch;
-    const struct ChaosPatch *neg = sel->negativePatch;
+    //Draw patch type
+    gSPDisplayList(gDisplayListHead++, patch_use_type_start);
+    if (patch->durationType == CHAOS_DURATION_STARS || patch->durationType == CHAOS_DURATION_USE_COUNT) {
+        draw_patch_type(42, 14, patch->durationType);
+        assert(patch->duration < 1000, "render_patch_card:\nduration out of range!");
+        sprintf(timerText, "%d", patch->duration);
+    } else if (patch->durationType == CHAOS_DURATION_INFINITE) {
+        draw_patch_type(42, 14, patch->durationType);
+        sprintf(timerText, "`"); // Infinity symbol
+    } else {
+        timerText[0] = '\0';
+    }
+    gSPDisplayList(gDisplayListHead++, patch_use_type_end);
 
-    s32 quality = sel->severityLevel;
-    s32 event = sel->specialEvent;
-    Mtx *cardScaleMtx = alloc_display_list(sizeof(Mtx));
-    Mtx *cardTransMtx = alloc_display_list(sizeof(Mtx));
+    //Write text
+    slowtext_setup_ortho_rendering(FT_FONT_SMALL_THIN);
+    slowtext_draw_ortho_text_linebreaks(-63, 4, CARD_STRING_WIDTH, patch->name, FT_FLAG_ALIGN_LEFT, 
+        sEffectColors[type][0], sEffectColors[type][1], sEffectColors[type][2], 0xFF);
+    slowtext_setup_ortho_rendering(FT_FONT_OUTLINE);
+    if (timerText[0] != '\0') {
+        slowtext_draw_ortho_text(51, 4, timerText, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
+    }
+    slowtext_finished_rendering();
+}
+
+/*
+    Draws the info for a patch card with two patches
+*/
+void draw_double_patch_info(const struct ChaosPatch *pos, const struct ChaosPatch *neg) {
     char timer1Text[4];
     char timer2Text[4];
-    f32 x = card->pos[0];
-    f32 y = card->pos[1];
-    f32 scale = card->scale;
-
-    gDPSetPrimColor(gDisplayListHead++, 0, 0, 
-                    sQualityColors[quality][0], sQualityColors[quality][1], sQualityColors[quality][2], 255);
-    gDPSetEnvColor(gDisplayListHead++, 
-                    sEventColors[event][0], sEventColors[event][1], sEventColors[event][2], 255);
-
-    //Draw patch bg
-    guTranslate(cardTransMtx, x, y, 0);
-    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardTransMtx),
-              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    if(scale != 1.0f) {
-        guScale(cardScaleMtx, scale, scale, 1.0f);
-        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardScaleMtx),
-              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-    }
-    if(reverse) {
-        gSPDisplayList(gDisplayListHead++, patch_bg_r_mesh_r_mesh);
-    } else {
-        gSPDisplayList(gDisplayListHead++, patch_bg_mesh_mesh);
-    }
-    
-    //Draw patch quality beads
-    draw_patch_quality(quality);
 
     //Draw patch type(s)
     gSPDisplayList(gDisplayListHead++, patch_use_type_start);
@@ -970,6 +965,57 @@ void render_patch_card(struct PatchCard *card, s32 reverse) {
         slowtext_draw_ortho_text(51, -20, timer2Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
     }
     slowtext_finished_rendering();
+}
+
+/*
+    Draws a patch card at the given x/y coordinates
+*/
+void render_patch_card(struct PatchCard *card, s32 reverse) {
+    aggress(card, "render_patch_card:\ncard is NULL!");
+    aggress(card->sel, "render_patch_card:\ncard->sel is NULL!");
+
+    struct ChaosPatchSelection *sel = card->sel;
+    const struct ChaosPatch *pos = sel->positivePatch;
+    const struct ChaosPatch *neg = sel->negativePatch;
+
+    s32 quality = sel->severityLevel;
+    s32 event = sel->specialEvent;
+    Mtx *cardScaleMtx = alloc_display_list(sizeof(Mtx));
+    Mtx *cardTransMtx = alloc_display_list(sizeof(Mtx));
+    f32 x = card->pos[0];
+    f32 y = card->pos[1];
+    f32 scale = card->scale;
+
+    gDPSetPrimColor(gDisplayListHead++, 0, 0, 
+                    sQualityColors[quality][0], sQualityColors[quality][1], sQualityColors[quality][2], 255);
+    gDPSetEnvColor(gDisplayListHead++, 
+                    sEventColors[event][0], sEventColors[event][1], sEventColors[event][2], 255);
+
+    //Draw patch bg
+    guTranslate(cardTransMtx, x, y, 0);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardTransMtx),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    if(scale != 1.0f) {
+        guScale(cardScaleMtx, scale, scale, 1.0f);
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(cardScaleMtx),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+    }
+    if(reverse) {
+        gSPDisplayList(gDisplayListHead++, patch_bg_r_mesh_r_mesh);
+    } else {
+        gSPDisplayList(gDisplayListHead++, patch_bg_mesh_mesh);
+    }
+    
+    //Draw patch quality beads
+    draw_patch_quality(quality);
+
+    if(sel->positiveId == CHAOS_PATCH_NONE_POSITIVE) {
+        draw_single_patch_info(neg);
+    } else if (sel->negativeId == CHAOS_PATCH_NONE_NEGATIVE) {
+        draw_single_patch_info(pos);
+    } else {
+        draw_double_patch_info(pos, neg);
+    }
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
