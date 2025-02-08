@@ -889,6 +889,21 @@ void draw_patch_type(f32 x, f32 y, enum ChaosPatchDurationType type) {
 }
 
 /*
+    Draws a patch name, centered vertically if it's only one line long
+*/
+void draw_patch_name(f32 x, f32 y, const char *patchName, s32 type) {
+    char drawName[48];
+    f32 nameY;
+    s32 lines, length;
+
+    //Center name if it's only one line long
+    fasttext_compute_print_text_with_line_breaks(FT_FONT_SMALL_THIN, CARD_STRING_WIDTH, &lines, &length, drawName, patchName);
+    nameY = (lines == 1) ? y - 7 : y;
+    slowtext_draw_ortho_text(x, nameY, drawName, FT_FLAG_ALIGN_LEFT, 
+        sEffectColors[type][0], sEffectColors[type][1], sEffectColors[type][2], 0xFF);
+}
+
+/*
     Draws the info for a patch card with one patch
 */
 void draw_single_patch_info(const struct ChaosPatch *patch) {
@@ -898,11 +913,11 @@ void draw_single_patch_info(const struct ChaosPatch *patch) {
     //Draw patch type
     gSPDisplayList(gDisplayListHead++, patch_use_type_start);
     if (patch->durationType == CHAOS_DURATION_STARS || patch->durationType == CHAOS_DURATION_USE_COUNT) {
-        draw_patch_type(42, 14, patch->durationType);
+        draw_patch_type(42, 7, patch->durationType);
         assert(patch->duration < 1000, "render_patch_card:\nduration out of range!");
         sprintf(timerText, "%d", patch->duration);
     } else if (patch->durationType == CHAOS_DURATION_INFINITE) {
-        draw_patch_type(42, 14, patch->durationType);
+        draw_patch_type(42, 7, patch->durationType);
         sprintf(timerText, "`"); // Infinity symbol
     } else {
         timerText[0] = '\0';
@@ -911,11 +926,10 @@ void draw_single_patch_info(const struct ChaosPatch *patch) {
 
     //Write text
     slowtext_setup_ortho_rendering(FT_FONT_SMALL_THIN);
-    slowtext_draw_ortho_text_linebreaks(-63, 4, CARD_STRING_WIDTH, patch->name, FT_FLAG_ALIGN_LEFT, 
-        sEffectColors[type][0], sEffectColors[type][1], sEffectColors[type][2], 0xFF);
+    draw_patch_name(-63, 4, patch->name, type);
     slowtext_setup_ortho_rendering(FT_FONT_OUTLINE);
     if (timerText[0] != '\0') {
-        slowtext_draw_ortho_text(51, 4, timerText, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
+        slowtext_draw_ortho_text(51, -3, timerText, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
     }
     slowtext_finished_rendering();
 }
@@ -930,21 +944,21 @@ void draw_double_patch_info(const struct ChaosPatch *pos, const struct ChaosPatc
     //Draw patch type(s)
     gSPDisplayList(gDisplayListHead++, patch_use_type_start);
     if (pos->durationType == CHAOS_DURATION_STARS || pos->durationType == CHAOS_DURATION_USE_COUNT) {
-        draw_patch_type(42, 14, pos->durationType);
+        draw_patch_type(42, 7, pos->durationType);
         assert(pos->duration < 1000, "render_patch_card:\nduration out of range!");
         sprintf(timer1Text, "%d", pos->duration);
     } else if (pos->durationType == CHAOS_DURATION_INFINITE) {
-        draw_patch_type(42, 14, pos->durationType);
+        draw_patch_type(42, 7, pos->durationType);
         sprintf(timer1Text, "`"); // Infinity symbol
     } else {
         timer1Text[0] = '\0';
     }
     if (neg->durationType == CHAOS_DURATION_STARS || neg->durationType == CHAOS_DURATION_USE_COUNT) {
-        draw_patch_type(42, -10, neg->durationType);
+        draw_patch_type(42, -17, neg->durationType);
         assert(neg->duration < 1000, "render_patch_card:\nduration out of range!");
         sprintf(timer2Text, "%d", neg->duration);
     } else if (neg->durationType == CHAOS_DURATION_INFINITE) {
-        draw_patch_type(42, -10, neg->durationType);
+        draw_patch_type(42, -17, neg->durationType);
         sprintf(timer2Text, "`"); // Infinity symbol
     } else {
         timer2Text[0] = '\0';
@@ -953,16 +967,15 @@ void draw_double_patch_info(const struct ChaosPatch *pos, const struct ChaosPatc
 
     //Write text
     slowtext_setup_ortho_rendering(FT_FONT_SMALL_THIN);
-    slowtext_draw_ortho_text_linebreaks(-63, 4, CARD_STRING_WIDTH, pos->name, FT_FLAG_ALIGN_LEFT, 
-        sEffectColors[EFFECT_COLOR_GOOD][0], sEffectColors[EFFECT_COLOR_GOOD][1], sEffectColors[EFFECT_COLOR_GOOD][2], 0xFF);
-    slowtext_draw_ortho_text_linebreaks(-63, -20, CARD_STRING_WIDTH, neg->name, FT_FLAG_ALIGN_LEFT, 
-        sEffectColors[EFFECT_COLOR_BAD][0], sEffectColors[EFFECT_COLOR_BAD][1], sEffectColors[EFFECT_COLOR_BAD][2], 0xFF);
+    
+    draw_patch_name(-63, 4, pos->name, EFFECT_COLOR_GOOD);
+    draw_patch_name(-63, -20, neg->name, EFFECT_COLOR_BAD);
     slowtext_setup_ortho_rendering(FT_FONT_OUTLINE);
     if (timer1Text[0] != '\0') {
-        slowtext_draw_ortho_text(51, 4, timer1Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
+        slowtext_draw_ortho_text(51, -3, timer1Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
     }
     if (timer2Text[0] != '\0') {
-        slowtext_draw_ortho_text(51, -20, timer2Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
+        slowtext_draw_ortho_text(51, -27, timer2Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
     }
     slowtext_finished_rendering();
 }
