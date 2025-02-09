@@ -422,11 +422,14 @@ void green_demon_move_towards_mario(void) {
 void bhv_green_demon_loop(void) {
     switch (o->oAction) {
     case 0:
-        o->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
-        o->oVelY = 40.0f;
-        o->oAction = 3;
-        o->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
-        play_sound(SOUND_GENERAL2_1UP_APPEAR, gGlobalSoundSource);
+        if(!(gMarioState->action & ACT_GROUP_CUTSCENE)) {
+            o->oVelY = 40.0f;
+            o->oAction = 3;
+            o->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
+            play_sound(SOUND_GENERAL2_1UP_APPEAR, gGlobalSoundSource);
+        } else {
+            o->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
+        }
         break;
 
     case 1:
@@ -448,5 +451,9 @@ void bhv_green_demon_loop(void) {
             o->oForwardVel = 10.0f;
         }
         break;
+    }
+
+    if(!chaos_check_if_patch_active(CHAOS_PATCH_GREEN_DEMON)) {
+        obj_mark_for_deletion(o);
     }
 }
