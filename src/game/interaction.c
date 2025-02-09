@@ -877,6 +877,10 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
         m->numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
         newSaveFlags = save_file_get_flags();
 
+        if(!(m->numStars > previousStarCount || (newSaveFlags & ~previousSaveFlags)) && !grandStar) {
+            save_file_add_blue_star();
+        }
+
         if (gChaosLivesEnabled && (m->numStars > previousStarCount || (newSaveFlags & ~previousSaveFlags))) {
             gShouldGive1UP = TRUE;
         } else {

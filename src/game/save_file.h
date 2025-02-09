@@ -53,6 +53,12 @@ struct SaveFile {
     s32 chaosEntryCount;
     struct ChaosActiveEntry chaosEntries[CHAOS_PATCH_ENTRIES];
 
+    u16 blueStars;
+    u16 deaths;
+    u16 gameLoads;
+    u32 playTime;
+    u16 totalPatches;
+
     struct SaveBlockSignature signature;
 };
 
@@ -176,6 +182,17 @@ void save_file_set_sound_mode(u16 mode);
 u16 save_file_get_sound_mode(void);
 void save_file_move_cap_to_default_location(void);
 void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount, enum ChaosDifficulty *gChaosDifficulty, u8 *gChaosLivesEnabled);
+
+void save_file_add_blue_star();
+u16 save_file_get_blue_stars();
+void save_file_add_death_count();
+u16 save_file_get_death_count();
+void save_file_add_game_load();
+u16 save_file_get_game_loads();
+void save_file_update_play_time();
+u32 save_file_get_play_time();
+void save_file_update_total_patches();
+u16 save_file_get_total_patches();
 
 void disable_warp_checkpoint(void);
 void check_if_should_set_warp_checkpoint(struct WarpNode *warpNode);

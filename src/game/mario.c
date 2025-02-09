@@ -2080,6 +2080,8 @@ void init_mario_from_save_file(void) {
     gMarioState->extraDamageEnemy = 0;
     gMarioState->extraDamageLava = 0;
     gMarioState->size = 1.0f;
+
+    save_file_add_game_load();
 }
 
 void update_mario_safe_pos(void) {

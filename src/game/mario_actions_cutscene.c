@@ -1218,6 +1218,7 @@ s32 act_death_exit(struct MarioState *m) {
         if (gChaosLivesEnabled) {
             m->numLives--;
         }
+        save_file_add_death_count();
         save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives);
 
         m->healCounter = chs_calculate_max_heal_counter();
@@ -1237,6 +1238,7 @@ s32 act_unused_death_exit(struct MarioState *m) {
         if (gChaosLivesEnabled) {
             m->numLives--;
         }
+        save_file_add_death_count();
         save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives);
 
         m->healCounter = chs_calculate_max_heal_counter();
@@ -1259,6 +1261,7 @@ s32 act_falling_death_exit(struct MarioState *m) {
         if (gChaosLivesEnabled) {
             m->numLives--;
         }
+        save_file_add_death_count();
         save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives);
 
         m->healCounter = chs_calculate_max_heal_counter();
@@ -1319,6 +1322,7 @@ s32 act_special_death_exit(struct MarioState *m) {
         if (gChaosLivesEnabled) {
             m->numLives--;
         }
+        save_file_add_death_count();
         save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives);
 
         m->healCounter = chs_calculate_max_heal_counter();
