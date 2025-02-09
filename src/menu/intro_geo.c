@@ -10,6 +10,7 @@
 #include "buffers/framebuffers.h"
 #include "game/game_init.h"
 #include "audio/external.h"
+#include "game/fasttext.h"
 
 // frame counts for the zoom in, hold, and zoom out of title model
 #define INTRO_STEPS_ZOOM_IN 20
@@ -82,7 +83,7 @@ Gfx *geo_intro_super_mario_64_logo(s32 state, struct GraphNode *node, UNUSED voi
         guScale(scaleMat, scaleX, scaleY, scaleZ);
 
         gSPMatrix(dlIter++, scaleMat, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-        gSPDisplayList(dlIter++, &intro_seg7_dl_0700B3A0);  // draw model
+        gSPDisplayList(dlIter++, &chaos_title_intro_seg7_dl_0700B3A0_mesh_mesh);  // draw model
         gSPPopMatrix(dlIter++, G_MTX_MODELVIEW);
         gSPEndDisplayList(dlIter);
 
@@ -126,6 +127,11 @@ Gfx *geo_intro_tm_copyright(s32 state, struct GraphNode *node, UNUSED void *cont
                 sTmCopyrightAlpha = 255;
             }
         }
+
+        fasttext_setup_textrect_rendering(FT_FONT_MEDIUM);
+        fasttext_draw_texrect(SCREEN_CENTER_X, SCREEN_HEIGHT - 54, "Created by:\nArcticJaguar725 Someone2639 Anoliah", 
+        FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, sTmCopyrightAlpha);
+        fasttext_finished_rendering();
     }
     return dl;
 }
