@@ -869,7 +869,9 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 sDelayedWarpTimer = 48;
                 sSourceWarpNodeId = WARP_NODE_DEATH;
                 play_transition(WARP_TRANSITION_FADE_INTO_BOWSER, 0x30, 0x00, 0x00, 0x00);
-                play_sound(SOUND_MENU_BOWSER_LAUGH, gGlobalSoundSource);
+                if(!chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE)) {
+                    play_sound(SOUND_MENU_BOWSER_LAUGH, gGlobalSoundSource);
+                }
                 break;
 
             case WARP_OP_WARP_FLOOR:
@@ -973,7 +975,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 if(m->action & ACT_FLAG_SWIMMING) {
                     set_mario_action(gMarioState, ACT_WATER_IDLE, 0);
                 } else {
-                    set_mario_action(gMarioState, ACT_FALLING_DEATH_EXIT, 0);
+                    set_mario_action(gMarioState, ACT_MIRACLE_RESPAWN, 0);
                 }
                 
                 chaos_decrement_patch_usage(CHAOS_PATCH_MIRACLE);

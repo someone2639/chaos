@@ -1271,6 +1271,19 @@ s32 act_falling_death_exit(struct MarioState *m) {
     return FALSE;
 }
 
+s32 act_miracle_respawn(struct MarioState *m) {
+    if (launch_mario_until_land(m, ACT_DEATH_EXIT_LAND, MARIO_ANIM_GENERAL_FALL, 0.0f)) {
+        play_sound(SOUND_MARIO_OOOF2, m->marioObj->header.gfx.cameraToObject);
+#if ENABLE_RUMBLE
+        queue_rumble_data(5, 80);
+#endif
+        m->healCounter = chs_calculate_max_heal_counter();
+    }
+    // one unit of health
+    m->health = 0x0100;
+    return FALSE;
+}
+
 // waits 11 frames before actually executing, also has reduced fvel
 s32 act_special_exit_airborne(struct MarioState *m) {
     struct Object *marioObj = m->marioObj;
@@ -2828,6 +2841,7 @@ s32 mario_execute_cutscene_action(struct MarioState *m) {
         case ACT_BUTT_STUCK_IN_GROUND:       cancel = act_butt_stuck_in_ground(m);       break;
         case ACT_FEET_STUCK_IN_GROUND:       cancel = act_feet_stuck_in_ground(m);       break;
         case ACT_PUTTING_ON_CAP:             cancel = act_putting_on_cap(m);             break;
+        case ACT_MIRACLE_RESPAWN:            cancel = act_miracle_respawn(m);            break;
     }
     /* clang-format on */
 

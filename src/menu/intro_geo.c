@@ -129,7 +129,7 @@ Gfx *geo_intro_tm_copyright(s32 state, struct GraphNode *node, UNUSED void *cont
         }
 
         fasttext_setup_textrect_rendering(FT_FONT_MEDIUM);
-        fasttext_draw_texrect(SCREEN_CENTER_X, SCREEN_HEIGHT - 54, "Created by:\nArcticJaguar725 Someone2639 Anoliah", 
+        fasttext_draw_texrect(SCREEN_CENTER_X, SCREEN_HEIGHT - 54, "Created by:\nArcticJaguar725    someone2639    Anoliah", 
         FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, sTmCopyrightAlpha);
         fasttext_finished_rendering();
     }
