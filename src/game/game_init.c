@@ -114,7 +114,7 @@ u8 gFBEEnabled = FALSE;
 static u8 checkingFBE = 0;
 static u8 fbeCheckFinished = FALSE;
 
-struct Controller chaosControllerLag[MAX_NUM_PLAYERS][8];
+struct Controller chaosControllerLag[MAX_NUM_PLAYERS][7];
 
 // Display
 // ----------------------------------------------------------------------------------------------------

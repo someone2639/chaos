@@ -1445,7 +1445,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 4,
+        .duration          = 3,
 
         .activatedInitFunc = chs_act_input_lag,
 
