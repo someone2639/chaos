@@ -22,13 +22,13 @@ HVQM_EXTERN(cod);
 HVQM_EXTERN(krabs);
 
 u32 *chsHVQMTable[] = {
-    HVQM_PTR(anime);
-    HVQM_PTR(blj);
-    HVQM_PTR(chaos);
-    HVQM_PTR(chaos2);
-    HVQM_PTR(chat);
-    HVQM_PTR(cod);
-    HVQM_PTR(krabs);
+    HVQM_PTR(anime),
+    HVQM_PTR(blj),
+    HVQM_PTR(chaos),
+    HVQM_PTR(chaos2),
+    HVQM_PTR(chat),
+    HVQM_PTR(cod),
+    HVQM_PTR(krabs),
 };
 u32 chsCurrentAd = 0;
 
