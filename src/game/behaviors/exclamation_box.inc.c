@@ -78,7 +78,7 @@ void exclamation_box_act_1(void) {
 }
 
 void exclamation_box_act_2(void) {
-    if(chaos_check_if_patch_active(CHAOS_PATCH_DISABLE_CAPS)) {
+    if(chaos_check_if_patch_active(CHAOS_PATCH_DISABLE_CAPS) && o->oBehParams2ndByte < 3) {
         o->oAction = 1;
     }
 

@@ -2738,7 +2738,7 @@ const Gfx dl_skybox_end[] = {
 const Gfx dl_waterbox_rgba16_begin[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_MODULATERGBA, G_CC_MODULATERGBA),
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, 5, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, 5, G_TX_NOLOD),
@@ -2750,7 +2750,7 @@ const Gfx dl_waterbox_rgba16_begin[] = {
 const Gfx dl_waterbox_ia16_begin[] = {
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_MODULATEIA, G_CC_MODULATEIA),
-    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK),
+    gsSPClearGeometryMode(G_LIGHTING | G_CULL_BACK | G_CULL_FRONT),
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON),
     gsDPTileSync(),
     gsDPSetTile(G_IM_FMT_IA, G_IM_SIZ_16b, 8, 0, G_TX_RENDERTILE, 0, G_TX_WRAP | G_TX_NOMIRROR, 5, G_TX_NOLOD, G_TX_WRAP | G_TX_NOMIRROR, 5, G_TX_NOLOD),
@@ -4030,6 +4030,53 @@ Gfx act_desc_bg_act_desc_mesh_mesh[] = {
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
 	gsDPSetPrimColor(0, 0, 255, 255, 255, 255),
 	gsSPVertex(act_desc_bg_act_desc_mesh_mesh_vtx_1 + 0, 8, 0),
+	gsSP2Triangles(0, 1, 2, 0, 1, 3, 2, 0),
+	gsSP2Triangles(1, 4, 3, 0, 4, 5, 3, 0),
+	gsSP2Triangles(4, 6, 5, 0, 6, 7, 5, 0),
+	gsSP2Triangles(6, 0, 7, 0, 0, 2, 7, 0),
+	gsDPPipeSync(),
+	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+	gsSPEndDisplayList(),
+};
+
+Vtx stats_bg_stats_mesh_mesh_vtx_0[4] = {
+	{{ {-69, 82, 0}, 0, {-1261, -564}, {255, 255, 255, 255} }},
+	{{ {-69, -79, 0}, 0, {-2768, 1917}, {255, 255, 255, 255} }},
+	{{ {77, -79, 0}, 0, {1493, 2566}, {255, 255, 255, 255} }},
+	{{ {77, 82, 0}, 0, {2998, 88}, {255, 255, 255, 255} }},
+};
+
+Vtx stats_bg_stats_mesh_mesh_vtx_1[8] = {
+	{{ {-69, -79, 0}, 0, {-1392, 1917}, {0, 0, 127, 255} }},
+	{{ {-69, 82, 0}, 0, {-639, -564}, {0, 0, 127, 255} }},
+	{{ {-71, 84, 0}, 0, {-657, -606}, {0, 0, 127, 255} }},
+	{{ {79, 84, 0}, 0, {1530, 64}, {0, 0, 127, 255} }},
+	{{ {77, 82, 0}, 0, {1491, 88}, {0, 0, 127, 255} }},
+	{{ {79, -81, 0}, 0, {757, 2608}, {0, 0, 127, 255} }},
+	{{ {77, -79, 0}, 0, {738, 2566}, {0, 0, 127, 255} }},
+	{{ {-71, -81, 0}, 0, {-1432, 1944}, {0, 0, 127, 255} }},
+};
+
+Gfx stats_bg_stats_mesh_mesh[] = {
+	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
+	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE),
+	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 32, G_AC_NONE | G_ZS_PIXEL | AA_EN | IM_RD | CLR_ON_CVG | CVG_DST_WRAP | ZMODE_XLU | FORCE_BL | GBL_c1(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_MEM, G_BL_1MA) | GBL_c2(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_MEM, G_BL_1MA)),
+	gsSPTexture(65535, 65535, 0, 0, 1),
+	gsDPSetPrimColor(0, 0, 25, 25, 25, 217),
+	gsDPSetTextureImage(G_IM_FMT_I, G_IM_SIZ_8b_LOAD_BLOCK, 1, desc_bg_desc_bg_i8),
+	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_8b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
+	gsDPLoadBlock(7, 0, 0, 1023, 256),
+	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_8b, 8, 0, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 5, 0, G_TX_WRAP | G_TX_NOMIRROR, 6, 0),
+	gsDPSetTileSize(0, 0, 0, 252, 124),
+	gsSPVertex(stats_bg_stats_mesh_mesh_vtx_0 + 0, 4, 0),
+	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
+	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
+	gsDPPipeSync(),
+	gsDPSetCombineLERP(0, 0, 0, PRIMITIVE, 0, 0, 0, 1, 0, 0, 0, PRIMITIVE, 0, 0, 0, 1),
+	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
+	gsDPSetPrimColor(0, 0, 255, 255, 255, 255),
+	gsSPVertex(stats_bg_stats_mesh_mesh_vtx_1 + 0, 8, 0),
 	gsSP2Triangles(0, 1, 2, 0, 1, 3, 2, 0),
 	gsSP2Triangles(1, 4, 3, 0, 4, 5, 3, 0),
 	gsSP2Triangles(4, 6, 5, 0, 6, 7, 5, 0),

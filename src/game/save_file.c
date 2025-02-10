@@ -749,3 +749,59 @@ void save_file_set_gamemode(s32 fileIndex, s32 difficulty, s32 challenge) {
     gSaveFileModified = TRUE;
     save_file_do_save(fileIndex);
 }
+
+void save_file_add_blue_star() {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
+    saveFile->blueStars++;
+    gSaveFileModified = TRUE;
+}
+
+u16 save_file_get_blue_stars() {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
+    return saveFile->blueStars;
+}
+
+void save_file_add_death_count() {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
+    saveFile->deaths++;
+    gSaveFileModified = TRUE;
+}
+
+u16 save_file_get_death_count() {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
+    return saveFile->deaths;
+}
+
+void save_file_add_game_load() {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
+    saveFile->gameLoads++;
+    gSaveFileModified = TRUE;
+    save_file_do_save(gCurrSaveFileNum - 1);
+}
+
+u16 save_file_get_game_loads() {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
+    return saveFile->gameLoads;
+}
+
+void save_file_update_play_time() {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
+    saveFile->playTime++;
+}
+
+u32 save_file_get_play_time() {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
+    return saveFile->playTime;
+}
+
+void save_file_update_total_patches() {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
+    saveFile->totalPatches++;
+    gSaveFileModified = TRUE;
+}
+
+u16 save_file_get_total_patches() {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
+    return saveFile->totalPatches;
+}
+

@@ -1027,7 +1027,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 6,
+        .duration          = 12,
 
         .activatedInitFunc = chs_mq_init,
         .deactivationFunc  = chs_mq_deinit,
@@ -1532,7 +1532,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 1,
         .isStackable       = FALSE,
-        .duration          = 12,
+        .duration          = 10,
 
         .name              = "Tutorial Mode",
         .shortDescription  = "New to SM64? We'll make extra sure you don't miss any tutorial signs by increasing their range!",
@@ -1688,7 +1688,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 8,
+        .duration          = 6,
 
         .name              = "Wet Floor",
         .shortDescription  = "All floors will be slippery.",
@@ -1729,7 +1729,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_ORTHO] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 1,
+        .severity          = 3,
         .isStackable       = FALSE,
         .duration          = 5,
 
