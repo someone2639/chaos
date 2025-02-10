@@ -1026,9 +1026,7 @@ void initiate_delayed_warp(void) {
                     break;
 
                 case WARP_OP_CREDITS_START:
-                    gCurrCreditsEntry = &sCreditsSequence[0];
-                    initiate_warp(gCurrCreditsEntry->levelNum, gCurrCreditsEntry->areaIndex,
-                                  WARP_NODE_CREDITS_START, 0);
+                    initiate_warp(LEVEL_ENDING, 0x01, 0x0A, 0);
                     break;
 
                 case WARP_OP_CREDITS_NEXT:
