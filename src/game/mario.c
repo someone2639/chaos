@@ -1252,6 +1252,8 @@ s32 transition_submerged_to_walking(struct MarioState *m) {
     }
 }
 
+extern u8 sBonkKill;
+
 /**
  * This is the transition function typically for entering a submerged action for a
  * non-submerged action. This also applies the water surface camera preset.
@@ -1272,6 +1274,10 @@ s32 set_water_plunge_action(struct MarioState *m) {
 
     if (m->area->camera->mode != CAMERA_MODE_WATER_SURFACE) {
         set_camera_mode(m->area->camera, CAMERA_MODE_WATER_SURFACE, 1);
+    }
+
+    if(sBonkKill && chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_BONK)) {
+        m->health = 0;
     }
 
     return set_mario_action(m, ACT_WATER_PLUNGE, 0);

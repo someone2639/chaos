@@ -91,6 +91,7 @@ void bhv_act_selector_star_type_loop(void) {
  * Renders the 100 coin star with an special star selector type.
  */
 void render_100_coin_star(u8 stars) {
+    u32 starModel = (chaos_check_if_patch_active(CHAOS_PATCH_RAINBOW_STARS)) ? MODEL_RAINBOW_STAR : MODEL_STAR;
     if (stars & (1 << 6)) {
 #ifdef WIDE
         f32 aspectRatio = 370.0f;
@@ -99,11 +100,11 @@ void render_100_coin_star(u8 stars) {
         }
 
         // If the 100 coin star has been collected, create a new star selector next to the coin score.
-        sStarSelectorModels[6] = spawn_object_abs_with_rot(gCurrentObject, 0, MODEL_STAR,
+        sStarSelectorModels[6] = spawn_object_abs_with_rot(gCurrentObject, 0, starModel,
                                                         bhvActSelectorStarType, aspectRatio, 24, -300, 0, 0, 0);
 #else
         // If the 100 coin star has been collected, create a new star selector next to the coin score.
-        sStarSelectorModels[6] = spawn_object_abs_with_rot(gCurrentObject, 0, MODEL_STAR,
+        sStarSelectorModels[6] = spawn_object_abs_with_rot(gCurrentObject, 0, starModel,
                                                         bhvActSelectorStarType, 370, 24, -300, 0, 0, 0);
 #endif
         sStarSelectorModels[6]->oStarSelectorSize = 0.8;

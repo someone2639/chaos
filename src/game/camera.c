@@ -3059,7 +3059,7 @@ void mode_top_down_cam(struct Camera *c) {
         if(gCurrLevelNum == LEVEL_VCUTM) {
             c->pos[1] = 6454;
         } else {
-            c->pos[1] = gMarioState->floorHeight + 5000.0f;
+            c->pos[1] = ((gMarioState->pos[1] - gMarioState->floorHeight) > 2000.0f) ? (gMarioState->pos[1] + 3000.0f) : (gMarioState->floorHeight + 5000.0f);
         }
     }
 
