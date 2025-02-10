@@ -1474,12 +1474,14 @@ s32 act_air_hit_wall(struct MarioState *m) {
             mario_set_forward_vel(m, -8.0f);
         }
         if (chaos_check_if_patch_active(CHAOS_PATCH_STICKY_WALL_JUMP)) {
+            sBonkKill = FALSE;
             if (m->actionTimer <= 3) {
                 m->marioObj->header.gfx.angle[1] += 0x8000;
             }
             if (m->input & INPUT_A_PRESSED) {
                 m->vel[1] = 52.0f;
                 m->faceAngle[1] += 0x8000;
+                m->spinTimer = 0;
                 return set_mario_action(m, ACT_WALL_KICK_AIR, 0);
             } else {
                 return FALSE;
