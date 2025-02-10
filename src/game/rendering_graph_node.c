@@ -305,9 +305,9 @@ void geo_process_perspective(struct GraphNodePerspective *node) {
                 (ZOOM*SCREEN_WIDTH),
                 -(ZOOM*SCREEN_HEIGHT),
                 (ZOOM*SCREEN_HEIGHT),
-                -16384.0f,
+                -4096.0f,
                 8192.0f,
-                1.0f);
+                10.0f);
             #undef ZOOM
         } else {
             guPerspective(mtx, &perspNorm, fov, sAspectRatio, node->near, node->far, 1.0f);
