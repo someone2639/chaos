@@ -1011,6 +1011,10 @@ void initiate_delayed_warp(void) {
         } else {
             switch (sDelayedWarpOp) {
                 case WARP_OP_GAME_OVER:
+                    // Deactivate all chaos patches
+                    while (*gChaosActiveEntryCount > 0) {
+                        chaos_remove_expired_entry(0, NULL);
+                    }
                     isInMenu = TRUE;
                     warp_special(-3);
                     break;
