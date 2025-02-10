@@ -789,7 +789,7 @@ void read_controller_inputs(void) {
                 if (controller->controllerData->button & B_BUTTON) {
                     if (!(lastContBrokenButtonHasPolled[cont] & B_BUTTON)) {
                         lastContBrokenButtonHasPolled[cont] |= B_BUTTON;
-                        if (random_float() < 0.33f) {
+                        if (random_float() < 0.25f) {
                             lastContBrokenButton[cont] |= B_BUTTON;
                         }
                     }

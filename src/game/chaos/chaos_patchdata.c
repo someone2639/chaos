@@ -1092,7 +1092,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 12,
+        .duration          = 10,
 
         .activatedInitFunc = chs_mq_init,
         .deactivationFunc  = chs_mq_deinit,
@@ -1276,7 +1276,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 3,
+        .duration          = 4,
 
         .conditionalFunc   = chs_cond_walkies,
 
@@ -1580,7 +1580,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 6,
+        .duration          = 4,
 
         .conditionalFunc   = chs_cond_one_hit_wonder,
 
@@ -1717,7 +1717,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 7,
+        .duration          = 4,
 
         .name              = "Wet Floor",
         .shortDescription  = "All floors will be slippery.",
