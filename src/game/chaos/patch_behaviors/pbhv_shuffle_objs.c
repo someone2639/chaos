@@ -51,6 +51,8 @@ const BehaviorScript *surflist[] = {
 const BehaviorScript *ignorelist[] = {
     bhvStar,
     bhvUkiki,
+    bhvInitializeChangingWaterLevel,
+    bhvWaterLevelDiamond,
 };
 
 const BehaviorScript *allowedWithParents[] = {
@@ -327,6 +329,7 @@ void cshuffle_timestop(UNUSED struct Camera *c) {
 }
 void cshuffle_timestart(UNUSED struct Camera *c) {
     disable_time_stop_including_mario();
+    gWDWWaterLevelChanging = FALSE;
 }
 
 extern void cutscene_goto_cvar_pos(struct Camera *c, f32 goalDist, s16 goalPitch, s16 rotPitch, s16 rotYaw);
