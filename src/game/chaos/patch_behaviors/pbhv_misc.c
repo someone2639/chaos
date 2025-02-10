@@ -71,3 +71,7 @@ void chs_update_noclip(void) {
                             gMarioState->pos[0], FLOOR_LOWER_LIMIT + 50, gMarioState->pos[2], 0, 0, 0);
     }
 }
+
+u8 chs_cond_randomize_warps(void) {
+    return gChaosLivesEnabled;
+}

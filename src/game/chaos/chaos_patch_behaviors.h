@@ -213,3 +213,4 @@ void chs_init_cherry_clones_after_warp(void);
 u8 chs_cond_forced_mario_cam(void);
 u8 chs_cond_randomized_music(void);
 void chs_update_noclip(void);
+u8 chs_cond_randomize_warps(void);

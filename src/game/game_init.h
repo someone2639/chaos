@@ -80,7 +80,7 @@ extern OSMesg gHVQM_SyncMesg;
 #endif // HVQM
 
 extern u8 gFBEEnabled;
-extern struct Controller chaosControllerLag[MAX_NUM_PLAYERS][10];
+extern struct Controller chaosControllerLag[MAX_NUM_PLAYERS][8];
 
 s32 check_fbe(s16 arg0, s32 arg1);
 void setup_game_memory(void);
