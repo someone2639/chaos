@@ -1714,9 +1714,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_SLIPPERY_FLOORS] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 2,
+        .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 6,
+        .duration          = 7,
 
         .name              = "Wet Floor",
         .shortDescription  = "All floors will be slippery.",
@@ -1733,10 +1733,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     },
     [CHAOS_PATCH_NOCLIP] = {
         .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 2,
+        .duration          = 5,
 
         
         .frameUpdateFunc   = chs_update_noclip,
