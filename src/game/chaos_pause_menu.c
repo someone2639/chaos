@@ -276,6 +276,28 @@ void draw_default_patch_desc(f32 x, f32 y) {
 }
 
 /*
+    Draws the patch quality beads
+*/
+static void draw_patch_quality(s32 quality) {
+    gDPSetPrimColor(gDisplayListHead++, 0, 0, 
+                    sQualityColors[quality][0], sQualityColors[quality][1], sQualityColors[quality][2], 255);
+
+    Mtx *transMtx = alloc_display_list(sizeof(Mtx) * 2);
+    gSPDisplayList(gDisplayListHead++, patch_quality_bead_begin);
+    guTranslate(transMtx, (s32) (55 + ((13.0f / 2.0f) * (quality - 1))), 83, 0);
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
+          G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    for(int i = 0; i < quality; i++) {
+        guTranslate(transMtx, -13, 0, 0);
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
+              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+        gSPDisplayList(gDisplayListHead++, patch_quality_bead);
+    }
+    gSPDisplayList(gDisplayListHead++, patch_quality_bead_end);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+}
+
+/*
     Draws the patch description for the selected patch in the active patches menu
 */
 void draw_active_patch_desc(f32 x, f32 y, struct ChaosActiveEntry *patch) {
@@ -309,6 +331,8 @@ void draw_active_patch_desc(f32 x, f32 y, struct ChaosActiveEntry *patch) {
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     gSPDisplayList(gDisplayListHead++, act_desc_bg_act_desc_mesh_mesh);
+
+    draw_patch_quality(patchInfo->severity);
 
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
     slowtext_draw_ortho_text_linebreaks(-62, 55, ACT_DESC_WIDTH, patchDesc, FT_FLAG_ALIGN_LEFT, 

@@ -1092,7 +1092,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 12,
+        .duration          = 10,
 
         .activatedInitFunc = chs_mq_init,
         .deactivationFunc  = chs_mq_deinit,
@@ -1126,9 +1126,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_ORTHO] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 3,
+        .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 2,
+        .duration          = 6,
 
         .conditionalFunc   = chs_cond_ortho,
 
@@ -1276,7 +1276,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 3,
+        .duration          = 4,
 
         .conditionalFunc   = chs_cond_walkies,
 
@@ -1445,7 +1445,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 4,
+        .duration          = 3,
 
         .activatedInitFunc = chs_act_input_lag,
 
@@ -1580,7 +1580,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 6,
+        .duration          = 4,
 
         .conditionalFunc   = chs_cond_one_hit_wonder,
 
@@ -1717,7 +1717,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 7,
+        .duration          = 4,
 
         .name              = "Wet Floor",
         .shortDescription  = "All floors will be slippery.",

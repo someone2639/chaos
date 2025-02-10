@@ -1279,6 +1279,7 @@ s32 set_water_plunge_action(struct MarioState *m) {
     if(sBonkKill && chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_BONK)) {
         m->health = 0;
     }
+    sBonkKill = FALSE;
 
     return set_mario_action(m, ACT_WATER_PLUNGE, 0);
 }

@@ -2036,10 +2036,22 @@ static s32 jumbo_star_cutscene_flying(struct MarioState *m) {
     return FALSE;
 }
 
-enum { JUMBO_STAR_CUTSCENE_FALLING, JUMBO_STAR_CUTSCENE_TAKING_OFF, JUMBO_STAR_CUTSCENE_FLYING };
+enum { JUMBO_STAR_CUTSCENE_INIT, JUMBO_STAR_CUTSCENE_FALLING, JUMBO_STAR_CUTSCENE_TAKING_OFF, JUMBO_STAR_CUTSCENE_FLYING };
 
 static s32 act_jumbo_star_cutscene(struct MarioState *m) {
     switch (m->actionArg) {
+        case JUMBO_STAR_CUTSCENE_INIT:
+            // Deactivate all patches
+            while (*gChaosActiveEntryCount > 0) {
+                chaos_remove_expired_entry(0, NULL);
+            }
+
+            // Do not save to the save file!
+            gSaveFileModified = FALSE;
+
+            // Resume normal grand star processing
+            m->actionArg = JUMBO_STAR_CUTSCENE_FALLING;
+            FALL_THROUGH;
         case JUMBO_STAR_CUTSCENE_FALLING:
             jumbo_star_cutscene_falling(m);
             break;

@@ -856,7 +856,7 @@ void render_curtain_bg() {
 /*
     Draws the patch quality beads
 */
-void draw_patch_quality(s32 quality) {
+static void draw_patch_quality(s32 quality) {
     Mtx *transMtx = alloc_display_list(sizeof(Mtx) * 2);
     gSPDisplayList(gDisplayListHead++, patch_quality_bead_begin);
     guTranslate(transMtx, -70, 24, 0);

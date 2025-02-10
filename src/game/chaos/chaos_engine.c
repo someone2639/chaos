@@ -774,6 +774,26 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
 
     for (s32 index = 0; index < CHAOS_PATCH_MAX_GENERATABLE; index++) {
         generatedPatches[index].specialEvent = specialEvent;
+        if (specialEvent == CHAOS_SPECIAL_PLUS1_POSITIVE &&
+                    gChaosDifficulty == CHAOS_DIFFICULTY_EASY &&
+                    generatedPatches[index].severityLevel == 3
+        ) {
+            generatedPatches[index].specialEvent = CHAOS_SPECIAL_NONE;
+        }
+
+        if (specialEvent == CHAOS_SPECIAL_PLUS1_NEGATIVE &&
+                    gChaosDifficulty == CHAOS_DIFFICULTY_HARD &&
+                    generatedPatches[index].severityLevel == 3
+        ) {
+            generatedPatches[index].specialEvent = CHAOS_SPECIAL_NONE;
+        }
+
+        if (specialEvent == CHAOS_SPECIAL_ZERO_POSITIVE &&
+                    gChaosDifficulty == CHAOS_DIFFICULTY_HARD &&
+                    generatedPatches[index].severityLevel == 1
+        ) {
+            generatedPatches[index].specialEvent = CHAOS_SPECIAL_NONE;
+        }
     }
 
     return generatedPatches;

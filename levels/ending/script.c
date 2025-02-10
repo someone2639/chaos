@@ -32,6 +32,7 @@ const LevelScript level_ending_entry[] = {
     FREE_LEVEL_POOL(),
     SLEEP(/*frames*/ 60),
     BLACKOUT(/*active*/ FALSE),
+    SET_MENU_MUSIC(SEQ_CHAOSEVENT_SMS_CASINO_DELFINO),
     LOAD_AREA(/*area*/ 1),
     TRANSITION(/*transType*/ WARP_TRANSITION_FADE_FROM_COLOR, /*time*/ 75, /*color*/ 0x00, 0x00, 0x00),
     SLEEP(/*frames*/ 120),
