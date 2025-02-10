@@ -13,11 +13,22 @@
 
 #define AD_MINUTES 5
 
-HVQM_EXTERN(krabs);
+HVQM_EXTERN(anime);
+HVQM_EXTERN(blj);
 HVQM_EXTERN(chaos);
+HVQM_EXTERN(chaos2);
+HVQM_EXTERN(chat);
+HVQM_EXTERN(cod);
+HVQM_EXTERN(krabs);
+
 u32 *chsHVQMTable[] = {
-    HVQM_PTR(krabs),
-    HVQM_PTR(chaos),
+    HVQM_PTR(anime);
+    HVQM_PTR(blj);
+    HVQM_PTR(chaos);
+    HVQM_PTR(chaos2);
+    HVQM_PTR(chat);
+    HVQM_PTR(cod);
+    HVQM_PTR(krabs);
 };
 u32 chsCurrentAd = 0;
 
