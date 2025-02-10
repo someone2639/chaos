@@ -42,14 +42,16 @@ enum SlotStates {
 };
 
 u32 interact_coin_delayed(struct Object *o, struct MarioState *m) {
-    m->numCoins += o->oDamageOrCoinValue;
-    m->healCounter += 4 * o->oDamageOrCoinValue;
+    s32 coinCount = o->oDamageOrCoinValue;
+    m->numCoins += coinCount;
 
     o->oInteractStatus = INT_STATUS_INTERACTED;
-
-    if (o->oDamageOrCoinValue == 100) {
+        
+    if (COURSE_IS_MAIN_COURSE(gCurrCourseNum) && m->numCoins - coinCount < (100 + m->hundredCoinOffset)
+        && m->numCoins >= (100 + m->hundredCoinOffset)) {
         bhv_spawn_star_no_level_exit(6);
     }
+
 #if ENABLE_RUMBLE
     if (o->oDamageOrCoinValue >= 2) {
         queue_rumble_data(5, 80);
@@ -149,6 +151,17 @@ void drawslots() {
                     slot_nextstate = S_SHOWDOWN;
                 }
             }
+
+            // Deactivate patch
+            for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+                if (gChaosActiveEntries[i].id != CHAOS_PATCH_BLUECOIN_LOTTERY) {
+                    continue;
+                }
+
+                chaos_remove_expired_entry(i, "%s: Expired!");
+                break;
+            }
+
             break;
         case S_SHOWDOWN:
             globalY = approach_f32_asymptotic(globalY, OFFSCREEN_POS, 0.25f);
