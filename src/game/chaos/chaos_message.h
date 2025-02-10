@@ -23,3 +23,6 @@ void chaosmsg_print(enum ChaosPatchID patchId, const char *str);
 
 // Print and update all chaos messages for this frame.
 void chaosmsg_render(void);
+
+// Show recap of previous messages
+void render_message_log_recap();

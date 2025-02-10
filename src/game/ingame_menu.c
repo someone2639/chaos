@@ -24,6 +24,7 @@
 #include "text_strings.h"
 #include "types.h"
 #include "chaos_pause_menu.h"
+#include "chaos/chaos_message.h"
 
 #ifdef VERSION_EU
 #undef LANGUAGE_FUNCTION
@@ -58,6 +59,8 @@ s8 gChsTrollDialog = FALSE;
 
 extern u8 gLastCompletedCourseNum;
 extern u8 gLastCompletedStarNum;
+
+s8 sShowMessageLogRecap = FALSE;
 
 enum DialogBoxState {
     DIALOG_STATE_OPENING,
@@ -2326,10 +2329,18 @@ void render_view_patches_prompt(void) {
 }
 
 void handle_page_switch_inputs(void) {
-    if (gPlayer1Controller->buttonPressed & L_TRIG){
+    if (gPlayer1Controller->buttonPressed & L_TRIG) {
         init_setings_panel();
-    } else if (gPlayer1Controller->buttonPressed & R_TRIG){
+    } else if (gPlayer1Controller->buttonPressed & R_TRIG) {
         init_active_patches_menu();
+    } else if (gPlayer1Controller->buttonPressed & Z_TRIG) {
+        sShowMessageLogRecap = TRUE;
+    }
+}
+
+void handle_mesage_log_inputs() {
+    if (gPlayer1Controller->buttonPressed & (Z_TRIG | B_BUTTON | A_BUTTON | START_BUTTON)) {
+        sShowMessageLogRecap = FALSE;
     }
 }
 
@@ -2793,6 +2804,13 @@ s16 render_pause_courses_and_castle(void) {
         return 0;
     }
 
+    if (sShowMessageLogRecap) {
+        shade_screen();
+        render_message_log_recap();
+        handle_mesage_log_inputs();
+        return 0;
+    }
+
 #ifdef VERSION_EU
     gInGameLanguage = eu_get_language();
 #endif
@@ -2880,10 +2898,6 @@ s16 render_pause_courses_and_castle(void) {
             handle_page_switch_inputs();
             render_pause_screen_button_prompts();
         }
-        //render_bgmusic_setting();
-#ifdef WIDE
-        //render_widescreen_setting();
-#endif
     if (gDialogTextAlpha < 250) {
         gDialogTextAlpha += 25;
     }

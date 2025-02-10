@@ -402,6 +402,7 @@ void process_master_quest_transition(struct GraphNodeRoot *node) {
     }
 }
 
+extern s8 sShowMessageLogRecap;
 void drawslots();
 void render_game(void) {
     if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
@@ -489,7 +490,9 @@ void render_game(void) {
             drawslots();
         }
 
-        chaosmsg_render();
+        if(!sShowMessageLogRecap) {
+            chaosmsg_render();
+        }
     } else {
         render_text_labels();
         if (D_8032CE78 != NULL) {

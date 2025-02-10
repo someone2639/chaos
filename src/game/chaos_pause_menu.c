@@ -999,10 +999,12 @@ void update_settings_panel() {
 void render_pause_screen_button_prompts() {
     menu_start_button_prompt();
     menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 21, MENU_PROMPT_R_TRIG);
+    menu_button_prompt(SCREEN_WIDTH - 144, SCREEN_HEIGHT - 21, MENU_PROMPT_Z_TRIG);
     menu_button_prompt(15, SCREEN_HEIGHT - 21, MENU_PROMPT_L_TRIG);
     menu_end_button_prompt();
     fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
     fasttext_draw_texrect(SCREEN_WIDTH - 35, SCREEN_HEIGHT - 21, "Active Patches", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+    fasttext_draw_texrect(SCREEN_WIDTH - 144, SCREEN_HEIGHT - 21, "Message Log", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
     fasttext_draw_texrect(33, SCREEN_HEIGHT - 21, "Settings", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
     fasttext_finished_rendering();
 }

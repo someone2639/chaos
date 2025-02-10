@@ -11,6 +11,7 @@
 #include "game/debug.h"
 #include "game/fasttext.h"
 #include "game/object_list_processor.h"
+#include "game/chaos_menus.h"
 
 #define MSGBUF_COUNT 16
 #define MSGBUF_SIZE  0x400
@@ -168,4 +169,33 @@ void chaosmsg_render(void) {
     if (ftInitialized) {
         fasttext_finished_rendering();
     }
+}
+
+void render_message_log_recap() {
+    s32 printX = BASE_X;
+    s32 printY;
+    struct ChaosMessageParams *params;
+
+    menu_start_button_prompt();
+    menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 21, MENU_PROMPT_B_BUTTON);
+    menu_end_button_prompt();
+
+    fasttext_setup_textrect_rendering(FT_FONT);
+    for(int i = 0; i < MSGBUF_COUNT; i++) {
+        if(chsStrParams[i].status != CHSMSG_UNINITIALIZED) {
+            params = &chsStrParams[i];
+            printY = SCREEN_HEIGHT - params->yOffset - MESSAGE_MARGIN;
+            if(printY > MESSAGE_MARGIN) {
+                chaosmsg_draw_bg(printX - MESSAGE_MARGIN,
+                    printY + (gFasttextFonts[FT_FONT].lineHeight - gFasttextFonts[FT_FONT].averageCharHeight) - MESSAGE_MARGIN, 
+                    MAX_WIDTH + (MESSAGE_MARGIN * 2),
+                    params->lineHeight,
+                    255);
+                fasttext_draw_texrect(printX, printY, params->str, FT_FLAG_ALIGN_LEFT, 255, 255, 255, 255);
+            }
+        }
+    }
+    fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
+    fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 21, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+    fasttext_finished_rendering();
 }
