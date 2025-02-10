@@ -554,6 +554,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Sonic Simulator",
         .shortDescription  = "Coins represent Mario's health. Just like in Sonic, Mario will drop all of his coins upon taking damage.",
     },
+    [CHAOS_PATCH_BLUECOIN_LOTTERY] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 6,
+
+        .name              = "Blue Coin Lottery",
+        .shortDescription  = "Test your luck! Every blue coin is a 1% chance to win big!",
+    },
     [CHAOS_PATCH_COIN_SIZE] = {
         .durationType      = CHAOS_DURATION_INFINITE,
         .effectType        = CHAOS_EFFECT_POSITIVE,
@@ -924,6 +934,22 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Shell Spawn",
         .shortDescription  = "Start riding on a shell upon entering a new course.",
     },
+    [CHAOS_PATCH_DOUBLE_CHERRY] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .severity          = 2,
+        .isStackable       = TRUE,
+        .duration          = 6,
+
+        .conditionalFunc   = chs_cond_cherry_clone,
+        .activatedInitFunc = chs_create_cherry_clone,
+        .deactivationFunc  = chs_remove_cherry_clone,
+        .areaInitFunc      = chs_init_cherry_clones_after_warp,
+
+        .name              = "Double Cherry",
+        .shortDescription  = "It's dangerous to go alone! Have a buddy!",
+        .longDescription   = "Each cherry clone has 1 health point, and will take your hits until they run out, after which you will take normal damage. If the \"real\" player gets hit, its soul will be transferred to a clone. By the end of this, which Mario will be the real Mario?",
+    },
     [CHAOS_PATCH_COSMIC_CLONES] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
@@ -1022,20 +1048,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "The Sky is...Gone?",
         .shortDescription  = "Meh, who needed it anyway...",
     },
-    [CHAOS_PATCH_MIRROR_MODE] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 2,
-        .isStackable       = FALSE,
-        .duration          = 12,
-
-        .activatedInitFunc = chs_mq_init,
-        .deactivationFunc  = chs_mq_deinit,
-
-        .name              = "Master Quest",
-        .shortDescription  = "Mirror Mario has broken out! Flip the game horizontally and play from his perspective!",
-        .longDescription   = "For a full version of this mod, check out Super Mario 64 Master Quest by mountainflaw on RomHacking.com!",
-    },
     [CHAOS_PATCH_45_FPS] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
@@ -1075,6 +1087,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Top-Down Camera",
         .shortDescription  = "Now you're playing Zelda! (without the items) (without the story) (without the combat) (without the",
     },
+    [CHAOS_PATCH_MIRROR_MODE] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 2,
+        .isStackable       = FALSE,
+        .duration          = 12,
+
+        .activatedInitFunc = chs_mq_init,
+        .deactivationFunc  = chs_mq_deinit,
+
+        .name              = "Master Quest",
+        .shortDescription  = "Mirror Mario has broken out! Flip the game horizontally and play from his perspective!",
+        .longDescription   = "For a full version of this mod, check out Super Mario 64 Master Quest by mountainflaw on RomHacking.com!",
+    },
     [CHAOS_PATCH_LOW_RESOLUTION] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
@@ -1096,6 +1122,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Big Head Mode",
         .shortDescription  = "Mario might have a college degree, but now he looks the part!",
+    },
+    [CHAOS_PATCH_ORTHO] = {
+        .durationType      = CHAOS_DURATION_STARS,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
+        .severity          = 3,
+        .isStackable       = FALSE,
+        .duration          = 5,
+
+        .conditionalFunc   = chs_cond_ortho,
+
+        .name              = "Orthographic Mode",
+        .shortDescription  = "A whole new perspective! Or really a lack of one...",
     },
     [CHAOS_PATCH_DIZZY_OBJECTS] = {
         .durationType      = CHAOS_DURATION_STARS,
@@ -1368,7 +1406,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc   = chs_cond_swapped_zr_ab,
 
         .name              = "Bizarro Buttons",
-        .shortDescription  = "The Z and R buttons will be swapped with A and B respectively (including for menus!)",
+        .shortDescription  = "The A and B buttons will be swapped with Z and R respectively (including for menus!)",
     },
     [CHAOS_PATCH_INVERTED_CAMERA_X] = {
         .durationType      = CHAOS_DURATION_STARS,
@@ -1457,9 +1495,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 [CHAOS_PATCH_LETHAL_BONK] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 2,
+        .severity          = 3,
         .isStackable       = FALSE,
-        .duration          = 5,
+        .duration          = 8,
 
         .name              = "Realistic Concussions",
         .shortDescription  = "Careful not to hit your head! Bonking now results in severe brain trauma.",
@@ -1485,7 +1523,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 6,
 
-        .name              = "Inverted Sound",
+        .name              = "Audio Inversion",
         .shortDescription  = "The game will sound upside-down!",
     },
     [CHAOS_PATCH_REVERB] = {
@@ -1506,7 +1544,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 1,
         .isStackable       = FALSE,
-        .duration          = 24,
+        .duration          = 20,
 
         .conditionalFunc   = chs_cond_randomized_music,
 
@@ -1579,16 +1617,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name              = "Code That Makes You Miss Bowser Throws",
         .shortDescription  = "They have that in this game, I swear!",
-    },
-    [CHAOS_PATCH_BLUECOIN_LOTTERY] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_POSITIVE,
-        .severity          = 3,
-        .isStackable       = FALSE,
-        .duration          = 6,
-
-        .name              = "Blue Coin Lottery",
-        .shortDescription  = "Test your luck! Every blue coin is a 1% chance to win big!",
     },
     [CHAOS_PATCH_AD_BREAK] = {
         .durationType      = CHAOS_DURATION_STARS,
@@ -1726,18 +1754,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name              = "Rainbow Stars",
         .shortDescription  = "Shoutouts to SimpleFlips.",
     },
-    [CHAOS_PATCH_ORTHO] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 3,
-        .isStackable       = FALSE,
-        .duration          = 5,
-
-        .conditionalFunc   = chs_cond_ortho,
-
-        .name              = "Orthographic Mode",
-        .shortDescription  = "A whole new perspective! Or really a lack of one...",
-    },
     [CHAOS_PATCH_SHUFFLE_OBJECTS] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
@@ -1745,27 +1761,11 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 6,
 
-        .areaInitFunc     = chs_start_shuffle,
+        .areaInitFunc      = chs_start_shuffle,
         .frameUpdateFunc   = chs_shuffle_objects,
 
         .name              = "Shuffle Object Positions",
         .shortDescription  = "Kaze WISHES tornado did this!",
-    },
-    [CHAOS_PATCH_DOUBLE_CHERRY] = {
-        .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_POSITIVE,
-        .severity          = 2,
-        .isStackable       = TRUE,
-        .duration          = 6,
-
-        .conditionalFunc   = chs_cond_cherry_clone,
-        .activatedInitFunc = chs_create_cherry_clone,
-        .deactivationFunc  = chs_remove_cherry_clone,
-        .areaInitFunc      = chs_init_cherry_clones_after_warp,
-
-        .name              = "Double Cherry",
-        .shortDescription  = "It's dangerous to go alone! Have a buddy!",
-        .longDescription   = "Each cherry clone has 1 health point, and will take your hits until they run out, after which you will take normal damage. If the \"real\" player gets hit, its soul will be transferred to a clone. By the end of this, which Mario will be the real Mario?",
     },
     [CHAOS_PATCH_RANDOMIZE_WARPS] = {
         .durationType      = CHAOS_DURATION_STARS,
@@ -1773,6 +1773,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity          = 2,
         .isStackable       = FALSE,
         .duration          = 4,
+
+        .conditionalFunc   = chs_cond_randomize_warps,
 
         .name              = "Randomize Warps",
         .shortDescription  = "I'm bored of this level. Can we go to a different one?",
