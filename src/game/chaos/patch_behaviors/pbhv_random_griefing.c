@@ -15,13 +15,13 @@
 #include "audio/external.h"
 #include "game/chaos/chaos.h"
 
-#define SLEEP_TIME_MIN  (1 * 60 * 30)
-#define SLEEP_TIME_RAND (6 * 60 * 30)
+#define SLEEP_TIME_MIN  (30 * 30)
+#define SLEEP_TIME_RAND (5 * 60 * 30)
 
-#define SHOCK_TIME_MIN  (45 * 30)
-#define SHOCK_TIME_RAND (210 * 30)
+#define SHOCK_TIME_MIN  (15 * 30)
+#define SHOCK_TIME_RAND (2 * 60 * 30)
 
-#define BURN_TIME_MIN  (60 * 30)
+#define BURN_TIME_MIN  (30 * 30)
 #define BURN_TIME_RAND (240 * 30)
 
 s16 sRandomSleepTimer = -1;
@@ -143,7 +143,7 @@ void chs_update_random_blind(void) {
     Dialogue
 */
 
-#define DIALOGUE_TIME_MAX      9000
+#define DIALOGUE_TIME_MAX      (4 * 60 * 30)
 
 void chs_act_random_dialogue(void) {
     struct ChaosActiveEntry *this;
@@ -165,7 +165,7 @@ void chs_update_random_dialogue(void) {
     Kaizo Blocks
 */
 
-#define KAIZO_BLOCK_TIME_MAX    9000
+#define KAIZO_BLOCK_TIME_MAX    (4 * 60 * 30)
 
 void chs_act_kaizo_blocks(void) {
     struct ChaosActiveEntry *this;
@@ -342,7 +342,7 @@ u8 chs_cond_red_light(void) {
     Cosmic Rays
 */
 
-#define COSMIC_RAYS_TIME_MAX    (4 * 60 * 30)
+#define COSMIC_RAYS_TIME_MAX    (3 * 60 * 30)
 
 void chs_act_cosmic_rays(void) {
     struct ChaosActiveEntry *this;
