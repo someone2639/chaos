@@ -64,13 +64,18 @@ void bhv_red_coin_loop(void) {
 
         if(o->oDistanceToMario < 600.0f) {
             runAngle = (s16)o->oAngleToMario + 0x8000;
-            o->oPosX += 15 * sins(runAngle);
-            o->oPosZ += 15 * coss(runAngle);
-        } else if(marioDistToHome > 1000.0f && objDistToHome > 45.0f) {
-            runAngle = cur_obj_angle_to_home();
-            o->oPosX += 30 * sins(runAngle);
-            o->oPosZ += 30 * coss(runAngle);
-        }
+            o->oPosX += 8 * sins(runAngle);
+            o->oPosZ += 8 * coss(runAngle);
+        } else if(marioDistToHome > 1000.0f) {
+            if(objDistToHome > 30.0f) {
+                runAngle = cur_obj_angle_to_home();
+                o->oPosX += 30 * sins(runAngle);
+                o->oPosZ += 30 * coss(runAngle);
+            } else {
+                o->oPosX = o->oHomeX;
+                o->oPosZ = o->oHomeZ;
+            }
+        } 
     }
 
     // If Mario interacted with the object...

@@ -174,7 +174,7 @@ void apply_mario_platform_displacement(void) {
 
     if (!(gTimeStopState & TIME_STOP_ACTIVE) && gMarioObject != NULL && platform != NULL) {
         if(chaos_check_if_patch_active(CHAOS_PATCH_PLATFORM_MISPLACEMENT)) {
-            for(int i = 0; i < 4; i ++) {
+            for(int i = 0; i < 2; i ++) {
                 apply_platform_displacement(TRUE, platform);
             }
         } else {
