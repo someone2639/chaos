@@ -888,9 +888,6 @@ void geo_process_object(struct Object *node) {
             struct Object *obj = (struct Object *) node;
             if(obj->behavior != segmented_to_virtual(bhvStaticObject) && obj->behavior != segmented_to_virtual(bhvBowsersSub) && obj->behavior != segmented_to_virtual(bhvSquishablePlatform)) {
                 node->header.gfx.angle[1] += 0x8000;
-                if(node->header.gfx.throwMatrix != NULL) {
-                    mtxf_rotate_zxy_and_translate(*node->header.gfx.throwMatrix, node->header.gfx.pos, node->header.gfx.angle);
-                }
             }
         }
 
@@ -900,13 +897,10 @@ void geo_process_object(struct Object *node) {
                 s16 phase = (0xFFFF / 60) * (gGlobalTimer % 60);
                 node->header.gfx.pos[0] = obj->oPosX + (100 * sins(phase));
                 node->header.gfx.pos[2] = obj->oPosZ + (100 * coss(phase));
-                if(node->header.gfx.throwMatrix != NULL) {
-                    mtxf_rotate_zxy_and_translate(*node->header.gfx.throwMatrix, node->header.gfx.pos, node->header.gfx.angle);
-                }
             }
         }
 
-        if (node->header.gfx.throwMatrix != NULL) {
+        if (node->header.gfx.throwMatrix != NULL && !chaos_check_if_patch_active(CHAOS_PATCH_DIZZY_OBJECTS) && !chaos_check_if_patch_active(CHAOS_PATCH_CONFUSED_OBJECTS)) {
             mtxf_mul(gMatStack[gMatStackIndex + 1], *node->header.gfx.throwMatrix,
                      gMatStack[gMatStackIndex]);
         } else if (node->header.gfx.node.flags & GRAPH_RENDER_BILLBOARD) {
