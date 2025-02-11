@@ -555,6 +555,28 @@ void vsync() {
     osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
 }
 
+void increment_fb_index() {
+    if (gEmulator & INSTANT_INPUT_BLACKLIST) {
+        if (++sRenderedFramebuffer == 3) {
+            sRenderedFramebuffer = 0;
+        }
+        if (++sRenderingFramebuffer == 3) {
+            sRenderingFramebuffer = 0;
+        }
+    }
+}
+
+void decrement_fb_index() {
+    if (gEmulator & INSTANT_INPUT_BLACKLIST) {
+        if (sRenderedFramebuffer-- == 0) {
+            sRenderedFramebuffer = 2;
+        }
+        if (sRenderingFramebuffer-- == 0) {
+            sRenderingFramebuffer = 2;
+        }
+    }
+}
+
 void display_and_vsync(void) {
     display();
     if (chaos_check_if_patch_active(CHAOS_PATCH_45_FPS)) {
@@ -568,12 +590,11 @@ void display_and_vsync(void) {
         vsync();
     }
     // Skip swapping buffers on inaccurate emulators other than VC so that they display immediately as the Gfx task finishes
-    if (gEmulator & INSTANT_INPUT_BLACKLIST) {
-        if (++sRenderedFramebuffer == 3) {
-            sRenderedFramebuffer = 0;
-        }
-        if (++sRenderingFramebuffer == 3) {
-            sRenderingFramebuffer = 0;
+    increment_fb_index();
+    if (chaos_check_if_patch_active(CHAOS_PATCH_45_FPS)) {
+        if ((gGlobalTimer % 3 == 0)) {
+        } else { 
+            decrement_fb_index();
         }
     }
     gGlobalTimer++;
