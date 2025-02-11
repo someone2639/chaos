@@ -135,6 +135,7 @@ u8 chs_cond_low_resolution(void);
 u8 chs_cond_ortho(void);
 
 // Time Limit
+#define CHS_TIME_LIMIT_DURATION    12
 void chs_level_init_time_limit(void);
 void chs_update_time_limit(void);
 void chs_deact_time_limit(void);

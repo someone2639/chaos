@@ -67,7 +67,7 @@ u8 chs_cond_lower_time_limit(void) {
 void chs_act_lower_time_limit(void) {
     struct ChaosActiveEntry *chaosTimer;
     chaos_find_first_active_patch(CHAOS_PATCH_TIME_LIMIT, &chaosTimer);
-    chaosTimer->remainingDuration = 15;
+    chaosTimer->remainingDuration = CHS_TIME_LIMIT_DURATION;
     sTimeLimitOffset += 450;
     
     //Refresh the remaining duration of all other lower time limit patches.
@@ -75,7 +75,7 @@ void chs_act_lower_time_limit(void) {
     //can be saved to the file and all of the patches will expire at once.
     for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
         if (gChaosActiveEntries[i].id == CHAOS_PATCH_LOWER_TIME_LIMIT) {
-            gChaosActiveEntries[i].remainingDuration = 15;
+            gChaosActiveEntries[i].remainingDuration = CHS_TIME_LIMIT_DURATION;
         }
     }
 }

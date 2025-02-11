@@ -145,6 +145,7 @@ void check_ledge_climb_down(struct MarioState *m) {
 
 void slide_bonk(struct MarioState *m, u32 fastAction, u32 slowAction) {
     if (m->forwardVel > 16.0f) {
+        sBonkKill = TRUE;
         mario_bonk_reflection(m, TRUE);
         drop_and_set_mario_action(m, fastAction, 0);
     } else {
@@ -1431,8 +1432,6 @@ void common_slide_action(struct MarioState *m, u32 endAction, u32 airAction, s32
                     m->particleFlags |= PARTICLE_VERTICAL_STAR;
                 }
 #endif
-                
-                sBonkKill = TRUE;
                 slide_bonk(m, ACT_GROUND_BONK, endAction);
             } else if (m->wall != NULL) {
                 s16 wallAngle = atan2s(m->wall->normal.z, m->wall->normal.x);
