@@ -886,7 +886,7 @@ void geo_process_object(struct Object *node) {
 
         if (chaos_check_if_patch_active(CHAOS_PATCH_CONFUSED_OBJECTS)){
             struct Object *obj = (struct Object *) node;
-            if(obj->behavior != segmented_to_virtual(bhvStaticObject)) {
+            if(obj->behavior != segmented_to_virtual(bhvStaticObject) && obj->behavior != segmented_to_virtual(bhvBowsersSub) && obj->behavior != segmented_to_virtual(bhvSquishablePlatform)) {
                 node->header.gfx.angle[1] += 0x8000;
                 if(node->header.gfx.throwMatrix != NULL) {
                     mtxf_rotate_zxy_and_translate(*node->header.gfx.throwMatrix, node->header.gfx.pos, node->header.gfx.angle);
