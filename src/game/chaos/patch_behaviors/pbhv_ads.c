@@ -20,6 +20,7 @@ HVQM_EXTERN(chaos2);
 HVQM_EXTERN(chat);
 HVQM_EXTERN(cod);
 HVQM_EXTERN(krabs);
+HVQM_EXTERN(ligma);
 
 u32 *chsHVQMTable[] = {
     HVQM_PTR(anime),
@@ -29,6 +30,7 @@ u32 *chsHVQMTable[] = {
     HVQM_PTR(chat),
     HVQM_PTR(cod),
     HVQM_PTR(krabs),
+    HVQM_PTR(ligma),
 };
 u32 chsCurrentAd = 0;
 
