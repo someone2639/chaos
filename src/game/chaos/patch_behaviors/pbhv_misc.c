@@ -11,6 +11,7 @@
 #include "course_table.h"
 #include "behavior_data.h"
 #include "engine/surface_collision.h"
+#include "game/emutest.h"
 
 u8 chs_cond_one_hit_wonder(void) {
     return(!chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_SHOCK) && !chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_BURN));
@@ -51,7 +52,16 @@ void chs_deact_luigi(void) {
     gMarioState->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO];
 }
 
-u8 chs_cond_45_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_20_FPS)); }
+u8 chs_cond_45_fps(void) {
+    if (chaos_check_if_patch_active(CHAOS_PATCH_20_FPS)) {
+        return FALSE;
+    }
+    if ((gEmulator & (EMU_ARES | EMU_CONSOLE))) {
+        return FALSE;
+    }
+    return TRUE;
+}
+
 u8 chs_cond_20_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_45_FPS)); }
 
 void chs_act_reverb(void) { init_reverb_us(1 << 31); }
