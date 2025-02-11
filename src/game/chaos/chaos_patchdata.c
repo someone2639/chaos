@@ -1129,7 +1129,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 6,
+        .duration          = 5,
 
         .conditionalFunc   = chs_cond_ortho,
 
