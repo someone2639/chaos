@@ -17,6 +17,7 @@ HVQM_EXTERN(anime);
 HVQM_EXTERN(blj);
 HVQM_EXTERN(chaos);
 HVQM_EXTERN(chaos2);
+HVQM_EXTERN(chaos3);
 HVQM_EXTERN(chat);
 HVQM_EXTERN(cod);
 HVQM_EXTERN(krabs);
@@ -29,6 +30,7 @@ u32 *chsHVQMTable[] = {
     HVQM_PTR(blj),
     HVQM_PTR(chaos),
     HVQM_PTR(chaos2),
+    HVQM_PTR(chaos3),
     HVQM_PTR(chat),
     HVQM_PTR(cod),
     HVQM_PTR(krabs),
