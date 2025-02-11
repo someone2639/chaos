@@ -790,6 +790,7 @@ u32 interact_coin(struct MarioState *m, UNUSED u32 interactType, struct Object *
         o->oInteractStatus = INT_STATUS_INTERACTED;
         void init_slots(struct Object *, f32);
         init_slots(o, random_float());
+        return FALSE;
     }
 
     if (chs_double_coins_under_30s()) {

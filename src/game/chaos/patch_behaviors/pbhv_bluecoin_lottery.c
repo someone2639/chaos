@@ -1,5 +1,8 @@
 #include "actors/group0.h"
+#include "behavior_data.h"
 #include "object_fields.h"
+#include "sounds.h"
+#include "audio/external.h"
 #include "game/ingame_menu.h"
 #include "game/game_init.h"
 #include "game/camera.h"
@@ -21,10 +24,9 @@ u32 slot_state = 0;
 u32 slot_nextstate = 0;
 u32 slot_timer = 0;
 struct Object *currCoin = NULL;
-u32 slot_semaphore = 0;
 
 static f32 chanceroll = 0;
-#define CHANCE 0.01f
+#define CHANCE 0.03f
 
 #define OFFSCREEN_POS -50.0f
 static f32 globalY = OFFSCREEN_POS;
@@ -41,19 +43,37 @@ enum SlotStates {
     S_FINISH
 };
 
-u32 interact_coin_delayed(struct Object *o, struct MarioState *m) {
-    s32 coinCount = o->oDamageOrCoinValue;
-    m->numCoins += coinCount;
-
-    o->oInteractStatus = INT_STATUS_INTERACTED;
-        
-    if (COURSE_IS_MAIN_COURSE(gCurrCourseNum) && m->numCoins - coinCount < (100 + m->hundredCoinOffset)
-        && m->numCoins >= (100 + m->hundredCoinOffset)) {
-        bhv_spawn_star_no_level_exit(6);
+u32 interact_coin_delayed(struct MarioState *m, struct Object *obj) {
+    s32 coinCount = obj->oDamageOrCoinValue;
+    s32 healCount = 0;
+    if (chs_double_coins_under_30s()) {
+        coinCount *= 2;
     }
 
+    m->numCoins += coinCount;
+
+    if (!chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_COINS)) {
+        if (!(obj_has_behavior(obj, bhvYellowCoin) && obj->oDroppedCoinBounce)) {
+            healCount += 4 * coinCount;
+        }
+    }
+
+    m->healCounter += healCount;
+    if (healCount > m->healCounter) {
+        healCount = U8_MAX;
+    }
+
+    obj->oInteractStatus = INT_STATUS_INTERACTED;
+
+    if (COURSE_IS_MAIN_COURSE(gCurrCourseNum) && m->numCoins - coinCount < (100 + m->hundredCoinOffset)
+        && m->numCoins >= (100 + m->hundredCoinOffset)) {
+        struct Object *tmp = gCurrentObject;
+        gCurrentObject = obj;
+        bhv_spawn_star_no_level_exit(6);
+        gCurrentObject = tmp;
+    }
 #if ENABLE_RUMBLE
-    if (o->oDamageOrCoinValue >= 2) {
+    if (obj->oDamageOrCoinValue >= 2) {
         queue_rumble_data(5, 80);
     }
 #endif
@@ -66,7 +86,7 @@ void init_slots(struct Object *oo, f32 chance) {
     currCoin = oo;
     chanceroll = chance;
 
-    if (gCurrCourseNum == COURSE_PSS) {
+    if (!COURSE_IS_MAIN_COURSE(gCurrCourseNum)) {
         chanceroll = 1;
     }
 
@@ -74,7 +94,6 @@ void init_slots(struct Object *oo, f32 chance) {
     for (int i = 0; i < NUM_SLOTS; i++) {
         rotations[i] = 0;
     }
-    slot_semaphore = 1;
 }
 
 // (60 * i) + (gGlobalTimer * 16)
@@ -140,28 +159,19 @@ void drawslots() {
         case S_STOP:
             if (rotations[NUM_SLOTS - 1] == 90) {
                 currCoin->oDamageOrCoinValue = 100;
-                slot_semaphore = 0;
-                // TODO: success sound
-                interact_coin_delayed(currCoin, gMarioState);
-                slot_nextstate = S_SHOWDOWN;
+                if (slot_timer == 0) {
+                    play_sound(SOUND_GENERAL2_RIGHT_ANSWER, gGlobalSoundSource);
+                }
             } else {
                 currCoin->oDamageOrCoinValue = 5;
-                // TODO: failure sound
-                if (slot_timer > 10) {
-                    slot_nextstate = S_SHOWDOWN;
+                if (slot_timer == 0) {
+                    play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
                 }
             }
 
-            // Deactivate patch
-            for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
-                if (gChaosActiveEntries[i].id != CHAOS_PATCH_BLUECOIN_LOTTERY) {
-                    continue;
-                }
-
-                chaos_remove_expired_entry(i, "%s: Expired!");
-                break;
+            if (slot_timer > 10) {
+                slot_nextstate = S_SHOWDOWN;
             }
-
             break;
         case S_SHOWDOWN:
             globalY = approach_f32_asymptotic(globalY, OFFSCREEN_POS, 0.25f);
@@ -171,9 +181,21 @@ void drawslots() {
             break;
         case S_FINISH:
             disable_time_stop_including_mario();
-            slot_semaphore = 0;
-            currCoin = NULL;
             slot_nextstate = S_STANDBY;
+            interact_coin_delayed(gMarioState, currCoin);
+            // Deactivate patch
+            if (currCoin->oDamageOrCoinValue == 100) {
+                for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+                    if (gChaosActiveEntries[i].id != CHAOS_PATCH_BLUECOIN_LOTTERY) {
+                        continue;
+                    }
+
+                    chaos_remove_expired_entry(i, "%s: Expired!");
+                    break;
+                }
+            }
+
+            currCoin = NULL;
             break;
     }
 

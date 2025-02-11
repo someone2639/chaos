@@ -562,7 +562,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration          = 8,
 
         .name              = "Blue Coin Lottery",
-        .shortDescription  = "Test your luck! Every blue coin is a 1% chance to win big!",
+        .shortDescription  = "Test your luck! Every blue coin is a 3% chance to win big!",
         .longDescription   = "This patch will expire the instant a blue coin lottery has been won. Use this wisely!"
     },
     [CHAOS_PATCH_COIN_SIZE] = {
