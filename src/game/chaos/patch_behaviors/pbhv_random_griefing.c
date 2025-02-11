@@ -356,6 +356,7 @@ void chs_update_cosmic_rays(void) {
 
     if(this->frameTimer > COSMIC_RAYS_TIME_MAX) {
         gMarioState->pos[1] += 3155.25f;
+        gMarioState->peakHeight = gMarioState->pos[1];
         this->frameTimer = RAND(COSMIC_RAYS_TIME_MAX);
     }
 }
