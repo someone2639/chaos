@@ -236,6 +236,7 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
                 size = sprintf(gChaosInternalBuffer, "%%s: Cancels out with @9F9F9F--%s@--------", patch->name);
             }
             assert_args(size < ARRAY_COUNT(gChaosInternalBuffer), "chaos_add_new_entry:\nString too long:\n 0x%08X", size);
+            (void) size; // Remove compiler warning
 
             // Deactivate negated action, and also instantly activate and deactivate the new function (deactivate will not ever execute for ONCE entries that aren't stackable)
             chaos_remove_expired_entry(i--, gChaosInternalBuffer);
@@ -382,6 +383,8 @@ void chaos_decrement_patch_usage(const enum ChaosPatchID patchId) {
         size = sprintf(gChaosInternalBuffer, "%%s: @FFFF00--%d@-------- uses remaining!", firstFoundMatch->remainingDuration);
     }
     assert_args(size < ARRAY_COUNT(gChaosInternalBuffer), "chaos_decrement_patch_usage:\nString too long:\n 0x%08X", size);
+    (void) size; // Remove compiler warning
+
     chaosmsg_print(patchId, gChaosInternalBuffer);
 
     if (firstFoundMatch->remainingDuration <= 0) {
