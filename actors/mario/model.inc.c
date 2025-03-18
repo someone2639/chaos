@@ -6764,7 +6764,7 @@ const Gfx mario_cap_wings_transparent[] = {
     gsSPTexture(0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF),
     gsDPPipeSync(),
     gsDPSetCombineMode(G_CC_SHADEFADEA, G_CC_SHADEFADEA),
-    gsSPSetGeometryMode(G_CULL_BACK | G_CULL_FRONT | G_SHADING_SMOOTH),
+    gsSPSetGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
     gsSPEndDisplayList(),
 };
 
