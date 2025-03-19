@@ -743,6 +743,10 @@ s32 act_long_jump(struct MarioState *m) {
         m->actionState = 1;
     }
 
+    if(check_galaxy_spin(m)) {
+        return TRUE;
+    }
+
     common_air_action_step(m, ACT_LONG_JUMP_LAND, animation, AIR_STEP_CHECK_LEDGE_GRAB);
 #if ENABLE_RUMBLE
     if (m->action == ACT_LONG_JUMP_LAND) {
@@ -1514,6 +1518,10 @@ s32 act_forward_rollout(struct MarioState *m) {
 
     update_air_without_turn(m);
 
+    if(check_galaxy_spin(m)) {
+        return TRUE;
+    }
+
     switch (perform_air_step(m, 0)) {
         case AIR_STEP_NONE:
             if (m->actionState == 1) {
@@ -1555,6 +1563,10 @@ s32 act_backward_rollout(struct MarioState *m) {
 
     update_air_without_turn(m);
 
+    if(check_galaxy_spin(m)) {
+        return TRUE;
+    }
+
     switch (perform_air_step(m, 0)) {
         case AIR_STEP_NONE:
             if (m->actionState == 1) {
@@ -1592,6 +1604,10 @@ s32 act_butt_slide_air(struct MarioState *m) {
     }
 
     update_air_with_turn(m);
+
+    if(check_galaxy_spin(m)) {
+        return TRUE;
+    }
 
     switch (perform_air_step(m, 0)) {
         case AIR_STEP_LANDED:
@@ -2236,7 +2252,9 @@ s32 act_galaxy_spin(struct MarioState *m) {
             break;
 
         case AIR_STEP_HIT_WALL:
-            mario_set_forward_vel(m, 0.0f);
+            if(m->actionState == 2) {
+                set_mario_action(m, ACT_AIR_HIT_WALL, 0);
+            }
             break;
         
         case AIR_STEP_GRABBED_LEDGE:

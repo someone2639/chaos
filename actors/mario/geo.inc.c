@@ -1807,7 +1807,6 @@ const GeoLayout mario_geo_invisible[] = {
    GEO_NODE_START(),
    GEO_OPEN_NODE(),
       GEO_ASM(0, geo_mirror_mario_backface_culling),
-      GEO_ASM(0, geo_mirror_mario_set_alpha),
       GEO_ANIMATED_PART(LAYER_OPAQUE, 0, 0, 0, NULL),
       GEO_OPEN_NODE(),
          GEO_ANIMATED_PART(LAYER_OPAQUE, 0, 0, 0, NULL),
