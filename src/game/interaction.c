@@ -1827,7 +1827,7 @@ u32 check_read_sign(struct MarioState *m, struct Object *o) {
     u32 conditions;
 
     if (chaosActive) {
-        conditions = !((gCameraMovementFlags & CAM_MOVE_C_UP_MODE) ||
+        conditions = !((gCameraMovementFlags & CAM_MOVE_C_UP_MODE) || (gCamera->cutscene != 0) ||
             (gMarioState->action & (ACT_FLAG_INTANGIBLE | ACT_FLAG_THROWING | ACT_FLAG_SWIMMING | ACT_FLAG_RIDING_SHELL)));
     } else {
         conditions = (mario_can_talk(m, chaosActive) && object_facing_mario(m, o, SIGN_RANGE));
