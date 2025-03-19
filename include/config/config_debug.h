@@ -16,7 +16,7 @@
 /**
  * Enables a comprehensive standalone profiler. Press D-Pad Up + L to toggle the profiler.
  */
-// #define USE_PROFILER
+#define USE_PROFILER
 
 /**
  * -- TEST LEVEL --
@@ -32,7 +32,7 @@
 /**
  * Enables debug free move (D-pad up to enter, A to exit).
  */
-// #define ENABLE_DEBUG_FREE_MOVE
+#define ENABLE_DEBUG_FREE_MOVE
 
 /**
  * Opens all courses and doors. Used for debugging purposes to unlock all content.
@@ -49,10 +49,10 @@
  * Hold Z and press R while in PLAY_MODE_NORMAL
  * Also fills the menu with dummy data for testing
 */
-// #define DEBUG_PATCH_SELECT_MENU
+#define DEBUG_PATCH_SELECT_MENU
 
 /**
  * Start with all 4 chaos patches to display by default.
  * NOTE: Toggling this on an existing save file may trigger an assertion if patch counts have been meddled with already!
  */
-// #define DISPLAY_MAX_PATCHES
+#define DISPLAY_MAX_PATCHES

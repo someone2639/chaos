@@ -6223,3 +6223,8 @@ const BehaviorScript bhvMarioClone[] = {
 		CALL_NATIVE(bhv_MarioClone_loop),
 	END_LOOP(),
 };
+
+const BehaviorScript bhvSlotCoinPlaceholder[] = {
+	BEGIN(OBJ_LIST_LEVEL),
+	BREAK(),
+};
