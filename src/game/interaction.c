@@ -789,7 +789,10 @@ u32 interact_coin(struct MarioState *m, UNUSED u32 interactType, struct Object *
     if (coinCount >= 5 && chaos_check_if_patch_active(CHAOS_PATCH_BLUECOIN_LOTTERY)) {
         o->oInteractStatus = INT_STATUS_INTERACTED;
         void init_slots(struct Object *, f32);
-        init_slots(o, random_float());
+        struct Object *obj = spawn_object(o, MODEL_NONE, bhvSlotCoinPlaceholder);
+        obj->parentObj = obj;
+        obj->oDamageOrCoinValue = o->oDamageOrCoinValue;
+        init_slots(obj, random_float());
         return FALSE;
     }
 
@@ -1824,7 +1827,7 @@ u32 check_read_sign(struct MarioState *m, struct Object *o) {
     u32 conditions;
 
     if (chaosActive) {
-        conditions = !((gCameraMovementFlags & CAM_MOVE_C_UP_MODE) ||
+        conditions = !((gCameraMovementFlags & CAM_MOVE_C_UP_MODE) || (gCamera->cutscene != 0) ||
             (gMarioState->action & (ACT_FLAG_INTANGIBLE | ACT_FLAG_THROWING | ACT_FLAG_SWIMMING | ACT_FLAG_RIDING_SHELL)));
     } else {
         conditions = (mario_can_talk(m, chaosActive) && object_facing_mario(m, o, SIGN_RANGE));

@@ -86,6 +86,10 @@ void init_slots(struct Object *oo, f32 chance) {
     currCoin = oo;
     chanceroll = chance;
 
+    if (!currCoin) {
+        return;
+    }
+
     if (!COURSE_IS_MAIN_COURSE(gCurrCourseNum)) {
         chanceroll = 1;
     }
@@ -195,6 +199,7 @@ void drawslots() {
                 }
             }
 
+            obj_mark_for_deletion(currCoin);
             currCoin = NULL;
             break;
     }

@@ -1222,6 +1222,18 @@ void render_patch_select_button_prompts() {
     }
 }
 
+#define PATCH_LIVES_X      (12)
+#define PATCH_HUD_Y        (5)
+
+void render_patch_hud_info() {
+    if(save_file_get_challenge_mode(gCurrSaveFileNum - 1)) {
+        print_text(PATCH_LIVES_X, PATCH_HUD_Y, ",");
+        print_text(PATCH_LIVES_X + 16, PATCH_HUD_Y, "*");
+        print_text_fmt_int(PATCH_LIVES_X + 32, PATCH_HUD_Y, "%d", gHudDisplay.lives);
+    }
+}
+
+
 /*
     Displays the patch selection menu
 */
@@ -1276,6 +1288,10 @@ void display_patch_selection_ui() {
 
         if(!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_HALT_INPUT)) {
             render_patch_select_button_prompts();
+        }
+
+        if(!(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) && (gPatchSelectionMenu->menu.animId != PATCH_SELECT_ANIM_STARTUP)) {
+            render_patch_hud_info();
         }
     }
 }

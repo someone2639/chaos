@@ -552,7 +552,7 @@ extern const BehaviorScript bhvEndBirds1[];
 extern const BehaviorScript bhvEndBirds2[];
 extern const BehaviorScript bhvIntroScene[];
 extern const BehaviorScript bhvUnusedFakeStar[];
+extern const BehaviorScript bhvMarioClone[];
+extern const BehaviorScript bhvSlotCoinPlaceholder[];
 
 #endif // BEHAVIOR_DATA_H
-
-extern const BehaviorScript bhvMarioClone[];

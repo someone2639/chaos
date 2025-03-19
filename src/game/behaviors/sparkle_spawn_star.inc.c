@@ -131,6 +131,12 @@ void bhv_spawned_star_loop(void) {
     cur_obj_move_using_fvel_and_gravity();
     o->oFaceAngleYaw += o->oAngleVelYaw;
     o->oInteractStatus = 0;
+
+    if (chs_pay2win_can_collect_star()) {
+        cur_obj_become_tangible();
+    } else {
+        cur_obj_become_intangible();
+    }
 }
 
 void bhv_spawn_star_no_level_exit(u32 sp20) {
