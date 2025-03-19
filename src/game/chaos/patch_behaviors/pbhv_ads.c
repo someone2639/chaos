@@ -26,7 +26,6 @@ HVQM_EXTERN(fushigi);
 HVQM_EXTERN(pizza);
 
 u32 *chsHVQMTable[] = {
-    HVQM_PTR(anime),
     HVQM_PTR(blj),
     HVQM_PTR(chaos),
     HVQM_PTR(chaos2),
@@ -34,9 +33,10 @@ u32 *chsHVQMTable[] = {
     HVQM_PTR(chat),
     HVQM_PTR(cod),
     HVQM_PTR(krabs),
-    HVQM_PTR(ligma),
-    HVQM_PTR(fushigi),
     HVQM_PTR(pizza),
+    // HVQM_PTR(anime),
+    // HVQM_PTR(fushigi),
+    // HVQM_PTR(ligma),
 };
 u32 chsCurrentAd = 0;
 
