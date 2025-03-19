@@ -34,8 +34,8 @@ u32 *chsHVQMTable[] = {
     HVQM_PTR(cod),
     HVQM_PTR(krabs),
     HVQM_PTR(pizza),
+    HVQM_PTR(fushigi),
     // HVQM_PTR(anime),
-    // HVQM_PTR(fushigi),
     // HVQM_PTR(ligma),
 };
 u32 chsCurrentAd = 0;
