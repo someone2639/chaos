@@ -64,8 +64,12 @@ void chs_update_random_shock(void) {
         sRandomShockTimer = -1;
     } else if (sRandomShockTimer == -1) {
         s32 actGroup = (gMarioState->action & ACT_GROUP_MASK);
-        if(!(actGroup == ACT_GROUP_CUTSCENE || actGroup == ACT_GROUP_AUTOMATIC)) {
-            hurt_and_set_mario_action(gMarioState, ACT_SHOCKED, 0, 4);
+        if(!(actGroup == ACT_GROUP_CUTSCENE || actGroup == ACT_GROUP_AUTOMATIC) && (gMarioState->action != ACT_FIRST_PERSON)) {
+            if (gMarioState->action & (ACT_FLAG_SWIMMING | ACT_FLAG_METAL_WATER)) {
+                hurt_and_set_mario_action(gMarioState, ACT_WATER_SHOCKED, 0, 4);
+            } else {
+                hurt_and_set_mario_action(gMarioState, ACT_SHOCKED, 0, 4);
+            }
             sRandomShockTimer = RAND(SHOCK_TIME_RAND) + SHOCK_TIME_MIN;
         }
     } else {
@@ -218,33 +222,27 @@ void chs_update_troll_sounds(void) {
                 play_sound(SOUND_MENU_TROLL_SKYPE, gGlobalSoundSource);
             }
         } else if (rand > 50) {
-            //10% chance
-            rand = RAND(4);
+            //13.333...% chance
+            rand = RAND(3);
             switch(rand) {
                 case 0:
                     play_sound(SOUND_MENU_TROLL_KNOCK, gGlobalSoundSource);
                     break;
                 case 1:
-                    play_sound(SOUND_MENU_TROLL_ALARM, gGlobalSoundSource);
+                    play_sound(SOUND_MENU_TROLL_NOTIF, gGlobalSoundSource);
                     break;
                 case 2:
-                    play_sound(SOUND_MENU_TROLL_CLICK, gGlobalSoundSource);
-                    break;
-                case 3:
-                    play_sound(SOUND_MENU_TROLL_NOTIF, gGlobalSoundSource);
+                    play_sound(SOUND_MENU_TROLL_JOIN, gGlobalSoundSource);
                     break;
             }
         } else {
-            //16.666...% chance
-            rand = RAND(3);
+            //25% chance
+            rand = RAND(2);
             switch(rand) {
                 case 0:
                     play_sound(SOUND_MENU_TROLL_PING, gGlobalSoundSource);
                     break;
                 case 1:
-                    play_sound(SOUND_MENU_TROLL_JOIN, gGlobalSoundSource);
-                    break;
-                case 2:
                     play_sound(SOUND_MENU_TROLL_USB, gGlobalSoundSource);
                     break;
             }

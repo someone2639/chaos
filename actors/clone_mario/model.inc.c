@@ -2491,7 +2491,6 @@ Gfx mat_clone_mario_clone[] = {
 	gsDPPipeSync(),
 	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, ENVIRONMENT),
 	gsDPSetAlphaDither(G_AD_NOISE),
-	gsDPPipelineMode(G_PM_1PRIMITIVE),
 	gsSPTexture(8128, 4032, 0, 0, 1),
 	gsDPSetPrimColor(0, 0, 139, 57, 255, 255),
 	gsDPSetEnvColor(22, 12, 22, 255),
@@ -2507,7 +2506,6 @@ Gfx mat_revert_clone_mario_clone[] = {
 	gsSPGeometryMode(G_TEXTURE_GEN, G_SHADING_SMOOTH),
 	gsDPPipeSync(),
 	gsDPSetAlphaDither(G_AD_DISABLE),
-	gsDPPipelineMode(G_PM_NPRIMITIVE),
 	gsSPEndDisplayList(),
 };
 
@@ -2519,7 +2517,6 @@ Gfx mat_clone_mario_Eyes_Half_Open_layer1[] = {
 	gsDPSetAlphaDither(G_AD_NOISE),
 	gsDPSetTextureLUT(G_TT_RGBA16),
 	gsDPSetCycleType(G_CYC_2CYCLE),
-	gsDPPipelineMode(G_PM_1PRIMITIVE),
 	gsDPSetRenderMode(GBL_c1(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_IN, G_BL_1MA) | GBL_c2(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_IN, G_BL_1MA), AA_EN | Z_CMP | Z_UPD | CVG_DST_CLAMP | ZMODE_OPA),
 	gsSPTexture(65535, 65535, 0, 0, 1),
 	gsDPSetPrimColor(0, 0, 10, 10, 10, 255),
@@ -2539,7 +2536,6 @@ Gfx mat_revert_clone_mario_Eyes_Half_Open_layer1[] = {
 	gsDPSetAlphaDither(G_AD_DISABLE),
 	gsDPSetTextureLUT(G_TT_NONE),
 	gsDPSetCycleType(G_CYC_1CYCLE),
-	gsDPPipelineMode(G_PM_NPRIMITIVE),
 	gsDPSetRenderMode(G_RM_AA_ZB_OPA_SURF, G_RM_AA_ZB_OPA_SURF2),
 	gsSPEndDisplayList(),
 };
@@ -2552,7 +2548,6 @@ Gfx mat_clone_mario_Eyes_Closed_layer1[] = {
 	gsDPSetAlphaDither(G_AD_NOISE),
 	gsDPSetTextureLUT(G_TT_RGBA16),
 	gsDPSetCycleType(G_CYC_2CYCLE),
-	gsDPPipelineMode(G_PM_1PRIMITIVE),
 	gsDPSetRenderMode(GBL_c1(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_IN, G_BL_1MA) | GBL_c2(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_IN, G_BL_1MA), AA_EN | Z_CMP | Z_UPD | CVG_DST_CLAMP | ZMODE_OPA),
 	gsSPTexture(65535, 65535, 0, 0, 1),
 	gsDPSetPrimColor(0, 0, 10, 10, 10, 255),
@@ -2572,7 +2567,6 @@ Gfx mat_revert_clone_mario_Eyes_Closed_layer1[] = {
 	gsDPSetAlphaDither(G_AD_DISABLE),
 	gsDPSetTextureLUT(G_TT_NONE),
 	gsDPSetCycleType(G_CYC_1CYCLE),
-	gsDPPipelineMode(G_PM_NPRIMITIVE),
 	gsDPSetRenderMode(G_RM_AA_ZB_OPA_SURF, G_RM_AA_ZB_OPA_SURF2),
 	gsSPEndDisplayList(),
 };
@@ -2585,7 +2579,6 @@ Gfx mat_clone_mario_Eyes_Dead_layer1[] = {
 	gsDPSetAlphaDither(G_AD_NOISE),
 	gsDPSetTextureLUT(G_TT_RGBA16),
 	gsDPSetCycleType(G_CYC_2CYCLE),
-	gsDPPipelineMode(G_PM_1PRIMITIVE),
 	gsDPSetRenderMode(GBL_c1(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_IN, G_BL_1MA) | GBL_c2(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_IN, G_BL_1MA), AA_EN | Z_CMP | Z_UPD | CVG_DST_CLAMP | ZMODE_OPA),
 	gsSPTexture(65535, 65535, 0, 0, 1),
 	gsDPSetPrimColor(0, 0, 10, 10, 10, 255),
@@ -2605,7 +2598,6 @@ Gfx mat_revert_clone_mario_Eyes_Dead_layer1[] = {
 	gsDPSetAlphaDither(G_AD_DISABLE),
 	gsDPSetTextureLUT(G_TT_NONE),
 	gsDPSetCycleType(G_CYC_1CYCLE),
-	gsDPPipelineMode(G_PM_NPRIMITIVE),
 	gsDPSetRenderMode(G_RM_AA_ZB_OPA_SURF, G_RM_AA_ZB_OPA_SURF2),
 	gsSPEndDisplayList(),
 };
