@@ -64,8 +64,12 @@ void chs_update_random_shock(void) {
         sRandomShockTimer = -1;
     } else if (sRandomShockTimer == -1) {
         s32 actGroup = (gMarioState->action & ACT_GROUP_MASK);
-        if(!(actGroup == ACT_GROUP_CUTSCENE || actGroup == ACT_GROUP_AUTOMATIC)) {
-            hurt_and_set_mario_action(gMarioState, ACT_SHOCKED, 0, 4);
+        if(!(actGroup == ACT_GROUP_CUTSCENE || actGroup == ACT_GROUP_AUTOMATIC) && (gMarioState->action != ACT_FIRST_PERSON)) {
+            if (gMarioState->action & (ACT_FLAG_SWIMMING | ACT_FLAG_METAL_WATER)) {
+                hurt_and_set_mario_action(gMarioState, ACT_WATER_SHOCKED, 0, 4);
+            } else {
+                hurt_and_set_mario_action(gMarioState, ACT_SHOCKED, 0, 4);
+            }
             sRandomShockTimer = RAND(SHOCK_TIME_RAND) + SHOCK_TIME_MIN;
         }
     } else {
