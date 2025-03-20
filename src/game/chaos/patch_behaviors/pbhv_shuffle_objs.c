@@ -53,6 +53,7 @@ const BehaviorScript *ignorelist[] = {
     bhvUkiki,
     bhvInitializeChangingWaterLevel,
     bhvWaterLevelDiamond,
+    bhvBigChillBully,
 };
 
 const BehaviorScript *allowedWithParents[] = {
