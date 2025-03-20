@@ -218,33 +218,27 @@ void chs_update_troll_sounds(void) {
                 play_sound(SOUND_MENU_TROLL_SKYPE, gGlobalSoundSource);
             }
         } else if (rand > 50) {
-            //10% chance
-            rand = RAND(4);
+            //13.333...% chance
+            rand = RAND(3);
             switch(rand) {
                 case 0:
                     play_sound(SOUND_MENU_TROLL_KNOCK, gGlobalSoundSource);
                     break;
                 case 1:
-                    play_sound(SOUND_MENU_TROLL_ALARM, gGlobalSoundSource);
+                    play_sound(SOUND_MENU_TROLL_NOTIF, gGlobalSoundSource);
                     break;
                 case 2:
-                    play_sound(SOUND_MENU_TROLL_CLICK, gGlobalSoundSource);
-                    break;
-                case 3:
-                    play_sound(SOUND_MENU_TROLL_NOTIF, gGlobalSoundSource);
+                    play_sound(SOUND_MENU_TROLL_JOIN, gGlobalSoundSource);
                     break;
             }
         } else {
-            //16.666...% chance
-            rand = RAND(3);
+            //25% chance
+            rand = RAND(2);
             switch(rand) {
                 case 0:
                     play_sound(SOUND_MENU_TROLL_PING, gGlobalSoundSource);
                     break;
                 case 1:
-                    play_sound(SOUND_MENU_TROLL_JOIN, gGlobalSoundSource);
-                    break;
-                case 2:
                     play_sound(SOUND_MENU_TROLL_USB, gGlobalSoundSource);
                     break;
             }
