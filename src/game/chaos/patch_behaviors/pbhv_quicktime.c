@@ -77,9 +77,10 @@ void draw_quicktime_event_prompts() {
     menu_end_button_prompt();
 
     gDPPipeSync(gDisplayListHead++);
-    gDPSetCycleType(gDisplayListHead++, G_CYC_FILL);
-    gDPSetFillColor(gDisplayListHead++, 0xFFFFFFFF);
-    gDPScisFillRectangle(gDisplayListHead++, startX, (SCREEN_CENTER_Y + QTE_PADDING), startX + timerBarWidth, (SCREEN_CENTER_Y + QTE_PADDING + 2));
+    gDPSetCombineLERP(gDisplayListHead++, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT);
+    gDPSetFillColor(gDisplayListHead++, (GPACK_RGBA5551(255, 255, 255, 1) << 16) | GPACK_RGBA5551(255, 255, 255, 1));
+    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 255);
+    gDPFillRectangle(gDisplayListHead++, startX, (SCREEN_CENTER_Y + QTE_PADDING), startX + timerBarWidth, (SCREEN_CENTER_Y + QTE_PADDING + 2));
     gDPPipeSync(gDisplayListHead++);
     gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
 }
