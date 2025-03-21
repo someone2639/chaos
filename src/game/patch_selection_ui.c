@@ -913,11 +913,11 @@ void draw_single_patch_info(const struct ChaosPatch *patch) {
     //Draw patch type
     gSPDisplayList(gDisplayListHead++, patch_use_type_start);
     if (patch->durationType == CHAOS_DURATION_STARS || patch->durationType == CHAOS_DURATION_USE_COUNT) {
-        draw_patch_type(42, 7, patch->durationType);
+        draw_patch_type(42, 8, patch->durationType);
         assert(patch->duration < 1000, "render_patch_card:\nduration out of range!");
         sprintf(timerText, "%d", patch->duration);
     } else if (patch->durationType == CHAOS_DURATION_INFINITE) {
-        draw_patch_type(42, 7, patch->durationType);
+        draw_patch_type(42, 8, patch->durationType);
         sprintf(timerText, "`"); // Infinity symbol
     } else {
         timerText[0] = '\0';
@@ -929,7 +929,7 @@ void draw_single_patch_info(const struct ChaosPatch *patch) {
     draw_patch_name(-63, 4, patch->name, type);
     slowtext_setup_ortho_rendering(FT_FONT_OUTLINE);
     if (timerText[0] != '\0') {
-        slowtext_draw_ortho_text(51, -3, timerText, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
+        slowtext_draw_ortho_text(51, -1, timerText, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
     }
     slowtext_finished_rendering();
 }
@@ -944,21 +944,21 @@ void draw_double_patch_info(const struct ChaosPatch *pos, const struct ChaosPatc
     //Draw patch type(s)
     gSPDisplayList(gDisplayListHead++, patch_use_type_start);
     if (pos->durationType == CHAOS_DURATION_STARS || pos->durationType == CHAOS_DURATION_USE_COUNT) {
-        draw_patch_type(42, 7, pos->durationType);
+        draw_patch_type(42, 8, pos->durationType);
         assert(pos->duration < 1000, "render_patch_card:\nduration out of range!");
         sprintf(timer1Text, "%d", pos->duration);
     } else if (pos->durationType == CHAOS_DURATION_INFINITE) {
-        draw_patch_type(42, 7, pos->durationType);
+        draw_patch_type(42, 8, pos->durationType);
         sprintf(timer1Text, "`"); // Infinity symbol
     } else {
         timer1Text[0] = '\0';
     }
     if (neg->durationType == CHAOS_DURATION_STARS || neg->durationType == CHAOS_DURATION_USE_COUNT) {
-        draw_patch_type(42, -17, neg->durationType);
+        draw_patch_type(42, -16, neg->durationType);
         assert(neg->duration < 1000, "render_patch_card:\nduration out of range!");
         sprintf(timer2Text, "%d", neg->duration);
     } else if (neg->durationType == CHAOS_DURATION_INFINITE) {
-        draw_patch_type(42, -17, neg->durationType);
+        draw_patch_type(42, -16, neg->durationType);
         sprintf(timer2Text, "`"); // Infinity symbol
     } else {
         timer2Text[0] = '\0';
@@ -972,10 +972,10 @@ void draw_double_patch_info(const struct ChaosPatch *pos, const struct ChaosPatc
     draw_patch_name(-63, -20, neg->name, EFFECT_COLOR_BAD);
     slowtext_setup_ortho_rendering(FT_FONT_OUTLINE);
     if (timer1Text[0] != '\0') {
-        slowtext_draw_ortho_text(51, -3, timer1Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
+        slowtext_draw_ortho_text(51, -1, timer1Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
     }
     if (timer2Text[0] != '\0') {
-        slowtext_draw_ortho_text(51, -27, timer2Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
+        slowtext_draw_ortho_text(51, -25, timer2Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
     }
     slowtext_finished_rendering();
 }
@@ -1112,7 +1112,7 @@ void render_lower_box(f32 x, f32 y) {
 */
 void render_patch_selection_cursor(f32 x, f32 y) {
     Mtx *transMtx = alloc_display_list(sizeof(Mtx));
-    guTranslate(transMtx, x + 65, y - 30, 0);
+    guTranslate(transMtx, x + 70, y - 30, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     
