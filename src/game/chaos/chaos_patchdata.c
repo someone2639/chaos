@@ -878,8 +878,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration          = 10,
 
         .name              = "Beta",
-        .shortDescription  = "YAAHAA!!! please give me bps for betah triple jump",
-        .longDescription   = "HUD by robichu, sounds from the Internet archive (this will be more credit than any beta hacker will ever give)."
+        .shortDescription  = "YAAHAA!!! Triple Jumps will now cause you to twirl!",
+        .longDescription   = "HUD by robichu, sounds from the Internet archive (this will be more credit than any beta hacker will ever give). pls give me bps for betah triple jump"
     },
     [CHAOS_PATCH_HARDER_LONG_JUMPS] = {
         .durationType      = CHAOS_DURATION_STARS,
