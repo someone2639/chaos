@@ -206,6 +206,10 @@ s8 init_shadow(struct Surface *floor, struct Shadow *s, f32 xPos, f32 yPos, f32 
     f32 floorSteepness;
     struct FloorGeometry *floorGeometry;
 
+    if(floor == NULL) {
+        return 1;
+    }
+
     s->parentX = xPos;
     s->parentY = yPos;
     s->parentZ = zPos;
