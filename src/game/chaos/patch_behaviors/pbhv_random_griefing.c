@@ -157,9 +157,14 @@ void chs_act_random_dialogue(void) {
 
 void chs_update_random_dialogue(void) {
     struct ChaosActiveEntry *this;
+    u32 dialog;
     chaos_find_first_active_patch(CHAOS_PATCH_RANDOM_DIALOGUE, &this);
     if(this->frameTimer > DIALOGUE_TIME_MAX && !(gMarioState->action & ACT_GROUP_CUTSCENE)) {
-        create_dialog_box(RAND(DIALOG_COUNT));
+        do {
+            dialog = RAND(DIALOG_COUNT);
+        } while (dialog == DIALOG_020);
+
+        create_dialog_box(dialog);
         gChsTrollDialog = TRUE;
         this->frameTimer = RAND(DIALOGUE_TIME_MAX); //Get a random offset to restart the timer at
     }
