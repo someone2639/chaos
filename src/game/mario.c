@@ -1252,8 +1252,6 @@ s32 transition_submerged_to_walking(struct MarioState *m) {
     }
 }
 
-extern u8 sBonkKill;
-
 /**
  * This is the transition function typically for entering a submerged action for a
  * non-submerged action. This also applies the water surface camera preset.
@@ -1276,10 +1274,10 @@ s32 set_water_plunge_action(struct MarioState *m) {
         set_camera_mode(m->area->camera, CAMERA_MODE_WATER_SURFACE, 1);
     }
 
-    if(sBonkKill && chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_BONK)) {
+    if(m->bonkKill && chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_BONK)) {
         m->health = 0;
     }
-    sBonkKill = FALSE;
+    m->bonkKill = FALSE;
 
     return set_mario_action(m, ACT_WATER_PLUNGE, 0);
 }
@@ -1469,6 +1467,15 @@ void update_mario_inputs(struct MarioState *m) {
     m->collidedObjInteractTypes = m->marioObj->collidedObjInteractTypes;
     m->flags &= 0xFFFFFF;
 
+    if(m->bonkKill) {
+        if(++m->bonkKillTimer > 200) {
+            m->bonkKill = FALSE;
+            m->bonkKillTimer = 0;
+        }
+    } else {
+        m->bonkKillTimer = 0;
+    }
+    
     if(!gChsTrollDialog) {
         update_mario_button_inputs(m);
         update_mario_joystick_inputs(m);
@@ -2052,6 +2059,9 @@ void init_mario(void) {
         capObject->oMoveAngleYaw = 0;
     }
 
+    gMarioState->bonkKill = FALSE;
+    gMarioState->bonkKillTimer = 0;
+
     chaos_area_update();
 }
 
@@ -2087,6 +2097,8 @@ void init_mario_from_save_file(void) {
     gMarioState->extraDamageEnemy = 0;
     gMarioState->extraDamageLava = 0;
     gMarioState->size = 1.0f;
+    gMarioState->bonkKill = FALSE;
+    gMarioState->bonkKillTimer = 0;
 
     save_file_add_game_load();
 }

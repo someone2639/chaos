@@ -16,8 +16,6 @@
 #include "behavior_data.h"
 #include "rumble_init.h"
 
-extern u8 sBonkKill;
-
 struct LandingAction {
     s16 numFrames;
     s16 unk02;
@@ -145,7 +143,7 @@ void check_ledge_climb_down(struct MarioState *m) {
 
 void slide_bonk(struct MarioState *m, u32 fastAction, u32 slowAction) {
     if (m->forwardVel > 16.0f) {
-        sBonkKill = TRUE;
+        m->bonkKill = TRUE;
         mario_bonk_reflection(m, TRUE);
         drop_and_set_mario_action(m, fastAction, 0);
     } else {
@@ -1639,10 +1637,10 @@ s32 act_dive_slide(struct MarioState *m) {
 s32 common_ground_knockback_action(struct MarioState *m, s32 animation, s32 arg2, s32 arg3, s32 arg4) {
     s32 animFrame;
 
-    if(sBonkKill && chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_BONK)) {
+    if(m->bonkKill && chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_BONK)) {
         m->health = 0;
     }
-    sBonkKill = FALSE;
+    m->bonkKill = FALSE;
 
     if (arg3) {
         play_mario_heavy_landing_sound_once(m, SOUND_ACTION_TERRAIN_BODY_HIT_GROUND);
