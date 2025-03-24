@@ -65,12 +65,14 @@ void chs_update_random_shock(void) {
     } else if (sRandomShockTimer == -1) {
         s32 actGroup = (gMarioState->action & ACT_GROUP_MASK);
         if(!(actGroup == ACT_GROUP_CUTSCENE || actGroup == ACT_GROUP_AUTOMATIC) && (gMarioState->action != ACT_FIRST_PERSON)) {
-            if (gMarioState->action & (ACT_FLAG_SWIMMING | ACT_FLAG_METAL_WATER)) {
-                hurt_and_set_mario_action(gMarioState, ACT_WATER_SHOCKED, 0, 4);
-            } else {
-                hurt_and_set_mario_action(gMarioState, ACT_SHOCKED, 0, 4);
+            if(!RAND(90)) {
+                if (gMarioState->action & (ACT_FLAG_SWIMMING | ACT_FLAG_METAL_WATER)) {
+                    hurt_and_set_mario_action(gMarioState, ACT_WATER_SHOCKED, 0, 4);
+                } else {
+                    hurt_and_set_mario_action(gMarioState, ACT_SHOCKED, 0, 4);
+                }
+                sRandomShockTimer = RAND(SHOCK_TIME_RAND) + SHOCK_TIME_MIN;
             }
-            sRandomShockTimer = RAND(SHOCK_TIME_RAND) + SHOCK_TIME_MIN;
         }
     } else {
         sRandomShockTimer--;
@@ -95,23 +97,25 @@ void chs_update_random_burn(void) {
     } else if (sRandomBurnTimer == -1) {
         s32 actGroup = (gMarioState->action & ACT_GROUP_MASK);
         if(!(actGroup == ACT_GROUP_CUTSCENE || actGroup == ACT_GROUP_SUBMERGED || actGroup == ACT_GROUP_AUTOMATIC)) {
-            gMarioState->marioObj->oMarioBurnTimer = 0;
-            u32 burningAction = ACT_BURNING_JUMP;
+            if(!RAND(90)) {
+                gMarioState->marioObj->oMarioBurnTimer = 0;
+                u32 burningAction = ACT_BURNING_JUMP;
 
-            play_mario_sound(gMarioState, SOUND_MARIO_ON_FIRE, 0);
-            if (!chs_check_temporary_invincibility()) {
-                if (chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) && gCurrCourseNum != COURSE_NONE) {
-                    set_hurt_counter(gMarioState, (gMarioState->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+                play_mario_sound(gMarioState, SOUND_MARIO_ON_FIRE, 0);
+                if (!chs_check_temporary_invincibility()) {
+                    if (chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) && gCurrCourseNum != COURSE_NONE) {
+                        set_hurt_counter(gMarioState, (gMarioState->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
+                    }
                 }
+
+                if ((gMarioState->action & ACT_FLAG_AIR) && gMarioState->vel[1] <= 0.0f) {
+                    burningAction = ACT_BURNING_FALL;
+                }
+
+                set_mario_action(gMarioState, burningAction, 0);
+
+                sRandomBurnTimer = RAND(BURN_TIME_RAND) + BURN_TIME_MIN;
             }
-
-            if ((gMarioState->action & ACT_FLAG_AIR) && gMarioState->vel[1] <= 0.0f) {
-                burningAction = ACT_BURNING_FALL;
-            }
-
-            set_mario_action(gMarioState, burningAction, 0);
-
-            sRandomBurnTimer = RAND(BURN_TIME_RAND) + BURN_TIME_MIN;
         }
     } else {
         sRandomBurnTimer--;
@@ -157,9 +161,14 @@ void chs_act_random_dialogue(void) {
 
 void chs_update_random_dialogue(void) {
     struct ChaosActiveEntry *this;
+    u32 dialog;
     chaos_find_first_active_patch(CHAOS_PATCH_RANDOM_DIALOGUE, &this);
     if(this->frameTimer > DIALOGUE_TIME_MAX && !(gMarioState->action & ACT_GROUP_CUTSCENE)) {
-        create_dialog_box(RAND(DIALOG_COUNT));
+        do {
+            dialog = RAND(DIALOG_COUNT);
+        } while (dialog == DIALOG_020);
+
+        create_dialog_box(dialog);
         gChsTrollDialog = TRUE;
         this->frameTimer = RAND(DIALOGUE_TIME_MAX); //Get a random offset to restart the timer at
     }
@@ -184,13 +193,15 @@ void chs_update_kaizo_blocks(void) {
     chaos_find_first_active_patch(CHAOS_PATCH_KAIZO_BLOCKS, &this);
 
     if(this->frameTimer > KAIZO_BLOCK_TIME_MAX && m->vel[1] > 15.0f && heightAboveFloor > 120.0f) {
-        spawn_object_abs_with_rot(m->marioObj, 0, MODEL_KAIZO_BLOCK, bhvKaizoBlock,
-                            m->pos[0], m->pos[1] + 170.0f, m->pos[2], 0, 0, 0);
-        m->vel[1] = -20.0f;
-        if (m->marioObj) {
-            m->marioObj->oVelY = m->vel[1];
+        if(!RAND(15)) {
+            spawn_object_abs_with_rot(m->marioObj, 0, MODEL_KAIZO_BLOCK, bhvKaizoBlock,
+                                m->pos[0], m->pos[1] + 170.0f, m->pos[2], 0, 0, 0);
+            m->vel[1] = -20.0f;
+            if (m->marioObj) {
+                m->marioObj->oVelY = m->vel[1];
+            }
+            this->frameTimer = RAND(KAIZO_BLOCK_TIME_MAX); //Get a random offset to start the timer at
         }
-        this->frameTimer = RAND(KAIZO_BLOCK_TIME_MAX); //Get a random offset to start the timer at
     }
 }
 

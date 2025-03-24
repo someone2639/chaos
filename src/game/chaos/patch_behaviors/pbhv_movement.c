@@ -80,3 +80,7 @@ u8 chs_cond_harder_longjumps(void) {
 u8 chs_cond_losemove_longjump(void) {
     return(!chaos_check_if_patch_active(CHAOS_PATCH_HARDER_LONG_JUMPS));
 }
+
+u8 chs_cond_losemove_wall_kick(void) {
+    return(!chaos_check_if_patch_active(CHAOS_PATCH_STICKY_WALL_JUMP));
+}

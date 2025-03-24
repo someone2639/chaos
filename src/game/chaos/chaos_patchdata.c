@@ -801,6 +801,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable       = FALSE,
         .duration          = 12,
 
+        .conditionalFunc   = chs_cond_losemove_wall_kick,
+
         .name              = "Wall Kicks Won't Work",
         .shortDescription  = "Mario can no longer wall kick.",
     },

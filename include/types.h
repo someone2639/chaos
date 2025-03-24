@@ -332,6 +332,8 @@ struct MarioState {
     /*0xF2*/ s16 maxHealth;
     /*0xF6*/ f32 size;
              Vec3f safePos;
+             u8 bonkKill;
+             u8 bonkKillTimer;
 };
 
 #endif // TYPES_H

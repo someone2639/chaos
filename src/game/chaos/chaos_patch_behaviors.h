@@ -88,6 +88,7 @@ u8 chs_cond_no_fall_damage(void);
 u8 chs_check_sticky_walljump(void);
 u8 chs_cond_harder_longjumps(void);
 u8 chs_cond_losemove_longjump(void);
+u8 chs_cond_losemove_wall_kick(void);
 
 // Random Griefing
 void chs_act_random_sleep(void);
