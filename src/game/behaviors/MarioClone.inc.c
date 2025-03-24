@@ -110,6 +110,8 @@ void bhv_MarioClone_loop(void) {
             force_mario_interaction(m, m->interactObj);
             if ((coll->oDamageOrCoinValue > 0) && (coll->oInteractType != INTERACT_COIN)) {
                 delete_clone(o);
+            } else if ((coll->oInteractType == INTERACT_TEXT)) {
+                // do nothing
             } else {
                 swap(m, o);
             }
