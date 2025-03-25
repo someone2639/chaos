@@ -224,6 +224,17 @@
 #define TEXT_SAVE_AND_QUIT _("SAVE & QUIT")
 #define TEXT_CONTINUE_WITHOUT_SAVING _("CONTINUE, DON'T SAVE")
 
+// Secret Course text
+#define TEXT_SEC_PSS        _("PSS")
+#define TEXT_SEC_SA         _("SA")
+#define TEXT_SEC_TOTWC      _("WC")
+#define TEXT_SEC_COTMC      _("MC")
+#define TEXT_SEC_VCUTM      _("VC")
+#define TEXT_SEC_WMOTR      _("WMOTR")
+#define TEXT_SEC_TOAD       _("TOAD")
+#define TEXT_SEC_MIPS       _("MIPS")
+#define TEXT_SEC_BOWSER     _("BOWS")
+
 /**
  * Ending Peach cutscene text.
  */

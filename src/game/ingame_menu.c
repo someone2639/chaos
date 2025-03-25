@@ -2693,38 +2693,33 @@ void render_pause_castle_course_stars(s16 x, s16 y, s16 fileIndex, s16 courseInd
     print_generic_string(x + 14, y + 13, str);
 }
 
-void render_pause_castle_main_strings(s16 x, s16 y) {
-#ifdef VERSION_EU
-    void **courseNameTbl = NULL;
-#else
-    void **courseNameTbl = segmented_to_virtual(seg2_course_name_table);
-#endif
+void render_pause_secret_course_stars(s16 x, s16 y, s32 startStar, s32 endStar, s16 fileIndex, s16 courseIndex) {
+    u8 str[COURSE_STAGES_COUNT * 2];
+    u8 starFlags = save_file_get_star_flags(fileIndex, courseIndex);
+    u16 nextStar = 0;
 
-#ifdef VERSION_EU
-    u8 textCoin[] = { TEXT_COIN };
-    u8 textX[] = { TEXT_VARIABLE_X };
-#else
+    for(int i = startStar; i <= endStar; i++) {
+        if (starFlags & (1 << i)) {
+            str[nextStar] = DIALOG_CHAR_STAR_FILLED;
+        } else {
+            str[nextStar] = DIALOG_CHAR_STAR_OPEN;
+        }
+        nextStar++;
+    }
+    str[nextStar] = DIALOG_CHAR_TERMINATOR;
+
+    print_generic_string(x, y, str);
+}
+
+void render_pause_castle_main_strings(s16 x, s16 y) {
+    void **courseNameTbl = segmented_to_virtual(seg2_course_name_table);
+
     u8 textCoin[] = { TEXT_COIN_X };
-#endif
 
     void *courseName;
 
     u8 strVal[8];
     s16 prevCourseIndex = gDialogLineNum;
-
-#ifdef VERSION_EU
-    switch (gInGameLanguage) {
-        case LANGUAGE_ENGLISH:
-            courseNameTbl = segmented_to_virtual(course_name_table_eu_en);
-            break;
-        case LANGUAGE_FRENCH:
-            courseNameTbl = segmented_to_virtual(course_name_table_eu_fr);
-            break;
-        case LANGUAGE_GERMAN:
-            courseNameTbl = segmented_to_virtual(course_name_table_eu_de);
-            break;
-    }
-#endif
 
     if(!(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE) && !(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE)) {
         handle_menu_scrolling(
@@ -2765,28 +2760,46 @@ void render_pause_castle_main_strings(s16 x, s16 y) {
         courseName = segmented_to_virtual(courseNameTbl[gDialogLineNum]);
         render_pause_castle_course_stars(x, y, gCurrSaveFileNum - 1, gDialogLineNum);
         print_generic_string(x + 34, y - 5, textCoin);
-#ifdef VERSION_EU
-        print_generic_string(x + 44, y - 5, textX);
-#endif
         int_to_str(save_file_get_course_coin_score(gCurrSaveFileNum - 1, gDialogLineNum), strVal);
         print_generic_string(x + 54, y - 5, strVal);
-#ifdef VERSION_EU
-        print_generic_string(x - 17, y + 30, courseName);
-#endif
     } else { // Castle secret stars
-        u8 textStarX[] = { TEXT_STAR_X };
+        u8 textPSS[]            = { TEXT_SEC_PSS    };
+        u8 textSA[]             = { TEXT_SEC_SA     };
+        u8 textTotWC[]          = { TEXT_SEC_TOTWC  };
+        u8 textCotMC[]          = { TEXT_SEC_COTMC  };
+        u8 textVCUtM[]          = { TEXT_SEC_VCUTM  };
+        u8 textWMOtR[]          = { TEXT_SEC_WMOTR  };
+        u8 textToad[]           = { TEXT_SEC_TOAD   };
+        u8 textMips[]           = { TEXT_SEC_MIPS   };
+        u8 textBowser[]         = { TEXT_SEC_BOWSER };
         courseName = segmented_to_virtual(courseNameTbl[COURSE_MAX]);
-        print_generic_string(x + 40, y + 13, textStarX);
-        int_to_str(save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_BONUS_STAGES - 1, COURSE_MAX - 1), strVal);
-        print_generic_string(x + 60, y + 13, strVal);
-#ifdef VERSION_EU
-        print_generic_string(get_str_x_pos_from_center(x + 51, courseName, 10.0f), y + 30, courseName);
-#endif
+        print_generic_string(x - 20,    y + 13,     textPSS);
+        print_generic_string(x - 20,    y + 0,      textSA);
+        print_generic_string(x - 20,    y - 13,     textWMOtR);
+        render_pause_secret_course_stars(x + 15, y + 13, 0, 1, gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(COURSE_PSS));
+        render_pause_secret_course_stars(x + 15, y + 0, 0, 0, gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(COURSE_SA));
+        render_pause_secret_course_stars(x + 15, y - 13, 0, 0, gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(COURSE_WMOTR));
+
+        print_generic_string(x + 40,    y + 13,     textTotWC);
+        print_generic_string(x + 40,    y + 0,      textCotMC);
+        print_generic_string(x + 40,    y - 13,     textVCUtM);
+        render_pause_secret_course_stars(x + 55, y + 13, 0, 0, gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(COURSE_TOTWC));
+        render_pause_secret_course_stars(x + 55, y + 0, 0, 0, gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(COURSE_COTMC));
+        render_pause_secret_course_stars(x + 55, y - 13, 0, 0, gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(COURSE_VCUTM));
+
+        print_generic_string(x + 70,    y + 13,     textToad);
+        print_generic_string(x + 70,    y + 0,      textMips);
+        print_generic_string(x + 70,    y - 13,     textBowser);
+        render_pause_secret_course_stars(x + 97, y + 13, 0, 2, gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(COURSE_NONE));
+        render_pause_secret_course_stars(x + 97, y + 0, 3, 4, gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(COURSE_NONE));
+
+        //Bowser courses
+        render_pause_secret_course_stars(x + 97, y - 13, 0, 0, gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(COURSE_BITDW));
+        render_pause_secret_course_stars(x + 107, y - 13, 0, 0, gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(COURSE_BITFS));
+        render_pause_secret_course_stars(x + 117, y - 13, 0, 0, gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(COURSE_BITS));
     }
 
-#ifndef VERSION_EU
     print_generic_string(x - 9, y + 30, courseName);
-#endif
 
     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
 }
