@@ -1223,7 +1223,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .activatedInitFunc = chs_act_lower_time_limit,
 
         .name              = "Speedy Comet++",
-        .shortDescription  = "Reset the active duration for the Speedy Comet patch, and lower the time limit by 15 seconds.",
+        .shortDescription  = "Reset the active duration for the Speedy Comet patch, and lower the time limit by 30 seconds.",
     },
 
 // Cheats

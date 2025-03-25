@@ -13,7 +13,8 @@
 #include "audio/external.h"
 #include "game/object_list_processor.h"
 
-#define CHS_TIME_LIMIT          5400
+#define CHS_TIME_LIMIT                  (3 * 60 * 30)
+#define CHS_TIME_LIMIT_OFFSET_MAX       (90 * 30)
 s32 sTimeLimitOffset = 0;
 
 void chs_level_init_time_limit(void) {
@@ -61,14 +62,14 @@ void chs_deact_time_limit(void) {
 }
 
 u8 chs_cond_lower_time_limit(void) {
-    return (chaos_check_if_patch_active(CHAOS_PATCH_TIME_LIMIT) && sTimeLimitOffset < 1800);
+    return (chaos_check_if_patch_active(CHAOS_PATCH_TIME_LIMIT) && sTimeLimitOffset < CHS_TIME_LIMIT_OFFSET_MAX);
 }
 
 void chs_act_lower_time_limit(void) {
     struct ChaosActiveEntry *chaosTimer;
     chaos_find_first_active_patch(CHAOS_PATCH_TIME_LIMIT, &chaosTimer);
     chaosTimer->remainingDuration = CHS_TIME_LIMIT_DURATION;
-    sTimeLimitOffset += 450;
+    sTimeLimitOffset += (30 * 30);
     
     //Refresh the remaining duration of all other lower time limit patches.
     //This is mostly done so that the amount of time limit decrements
