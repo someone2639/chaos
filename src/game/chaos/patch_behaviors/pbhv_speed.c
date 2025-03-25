@@ -59,13 +59,15 @@ void chs_update_speed_tax(void) {
         return;
     }
 
-    if(gMarioState->forwardVel > 36.0f) {
+    f32 speed = (gMarioState->forwardVel > 0) ? gMarioState->forwardVel : -gMarioState->forwardVel;
+
+    if(speed > 36.0f) {
         if(sSpeedTaxCounter++ > 30) {
             if(gMarioState->numCoins > 0) {
                 gMarioState->numCoins--;
                 gHudDisplay.coins = gMarioState->numCoins;
             } else {
-                gMarioState->hurtCounter++;
+                gMarioState->hurtCounter += 4;
             }
 
             play_sound(SOUND_GENERAL_COIN, gGlobalSoundSource);
