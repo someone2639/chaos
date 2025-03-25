@@ -914,8 +914,25 @@ void draw_single_patch_info(const struct ChaosPatch *patch) {
     gSPDisplayList(gDisplayListHead++, patch_use_type_start);
     if (patch->durationType == CHAOS_DURATION_STARS || patch->durationType == CHAOS_DURATION_USE_COUNT) {
         draw_patch_type(42, 8, patch->durationType);
-        assert(patch->duration < 1000, "render_patch_card:\nduration out of range!");
-        sprintf(timerText, "%d", patch->duration);
+        s32 duration = patch->duration;
+        if (gChaosDifficulty == CHAOS_DIFFICULTY_HARD) {
+            if (patch->durationHard > 0) {
+                duration = patch->durationHard;
+            } else if (patch->durationType == CHAOS_DURATION_STARS) {
+                if (patch->effectType == CHAOS_EFFECT_POSITIVE) {
+                    duration += HARD_DURATION_DEFAULT_OFFSET_POSITIVE;
+                } else if (patch->effectType == CHAOS_EFFECT_NEGATIVE) {
+                    duration += HARD_DURATION_DEFAULT_OFFSET_NEGATIVE;
+                }
+
+                if (duration <= 0) {
+                    duration = 1;
+                }
+            }
+        }
+
+        assert(duration < 1000, "render_patch_card:\nduration out of range!");
+        sprintf(timerText, "%d", duration);
     } else if (patch->durationType == CHAOS_DURATION_INFINITE) {
         draw_patch_type(42, 8, patch->durationType);
         sprintf(timerText, "`"); // Infinity symbol
@@ -945,8 +962,25 @@ void draw_double_patch_info(const struct ChaosPatch *pos, const struct ChaosPatc
     gSPDisplayList(gDisplayListHead++, patch_use_type_start);
     if (pos->durationType == CHAOS_DURATION_STARS || pos->durationType == CHAOS_DURATION_USE_COUNT) {
         draw_patch_type(42, 8, pos->durationType);
-        assert(pos->duration < 1000, "render_patch_card:\nduration out of range!");
-        sprintf(timer1Text, "%d", pos->duration);
+        s32 duration = pos->duration;
+        if (gChaosDifficulty == CHAOS_DIFFICULTY_HARD) {
+            if (pos->durationHard > 0) {
+                duration = pos->durationHard;
+            } else if (pos->durationType == CHAOS_DURATION_STARS) {
+                if (pos->effectType == CHAOS_EFFECT_POSITIVE) {
+                    duration += HARD_DURATION_DEFAULT_OFFSET_POSITIVE;
+                } else if (pos->effectType == CHAOS_EFFECT_NEGATIVE) {
+                    duration += HARD_DURATION_DEFAULT_OFFSET_NEGATIVE;
+                }
+
+                if (duration <= 0) {
+                    duration = 1;
+                }
+            }
+        }
+
+        assert(duration < 1000, "render_patch_card:\nduration out of range!");
+        sprintf(timer1Text, "%d", duration);
     } else if (pos->durationType == CHAOS_DURATION_INFINITE) {
         draw_patch_type(42, 8, pos->durationType);
         sprintf(timer1Text, "`"); // Infinity symbol
@@ -955,8 +989,25 @@ void draw_double_patch_info(const struct ChaosPatch *pos, const struct ChaosPatc
     }
     if (neg->durationType == CHAOS_DURATION_STARS || neg->durationType == CHAOS_DURATION_USE_COUNT) {
         draw_patch_type(42, -16, neg->durationType);
-        assert(neg->duration < 1000, "render_patch_card:\nduration out of range!");
-        sprintf(timer2Text, "%d", neg->duration);
+        s32 duration = neg->duration;
+        if (gChaosDifficulty == CHAOS_DIFFICULTY_HARD) {
+            if (neg->durationHard > 0) {
+                duration = neg->durationHard;
+            } else if (neg->durationType == CHAOS_DURATION_STARS) {
+                if (neg->effectType == CHAOS_EFFECT_POSITIVE) {
+                    duration += HARD_DURATION_DEFAULT_OFFSET_POSITIVE;
+                } else if (neg->effectType == CHAOS_EFFECT_NEGATIVE) {
+                    duration += HARD_DURATION_DEFAULT_OFFSET_NEGATIVE;
+                }
+
+                if (duration <= 0) {
+                    duration = 1;
+                }
+            }
+        }
+
+        assert(duration < 1000, "render_patch_card:\nduration out of range!");
+        sprintf(timer2Text, "%d", duration);
     } else if (neg->durationType == CHAOS_DURATION_INFINITE) {
         draw_patch_type(42, -16, neg->durationType);
         sprintf(timer2Text, "`"); // Infinity symbol

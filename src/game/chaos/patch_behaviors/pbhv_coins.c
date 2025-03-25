@@ -17,7 +17,7 @@
 #define MIN_100C 25
 #define LV2_100C 10
 #define LV3_100C 25
-#define PAY2WIN_REQ 40
+#define PAY2WIN_REQ 30
 
 u8 chs_double_coins_under_30s(void) {
     struct ChaosActiveEntry *entry;

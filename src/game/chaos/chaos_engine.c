@@ -31,7 +31,7 @@ static const f32 difficultyWeights[CHAOS_DIFFICULTY_COUNT][CHAOS_PATCH_SEVERITY_
     [CHAOS_DIFFICULTY_HARD  ] = { 0.15f, 0.25f, 0.35f }, // Difficulty offset doesn't really matter as much for hard, so just make highest level more common
 };
 
-static enum ChaosPatchID negativePatchCompare = CHAOS_PATCH_NONE;
+enum ChaosPatchID gNegativePatchCompare = CHAOS_PATCH_NONE;
 
 // TODO: These are written to by the save file, but are never actually saved to the save file!
 // This essentially means that they will always be 0 and are unconfigurable at compile time!
@@ -51,7 +51,7 @@ static void chaos_recompute_active_patch_counts(void) {
 }
 
 u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId) {
-    return (activePatchCounts[patchId] > 0 || patchId == negativePatchCompare);
+    return (activePatchCounts[patchId] > 0 || patchId == gNegativePatchCompare);
 }
 
 static void chaos_swap_active_entry_indexes(struct ChaosActiveEntry *first, struct ChaosActiveEntry *second) {
@@ -274,9 +274,26 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
         }
 
         if (patch->durationType == CHAOS_DURATION_USE_COUNT && matchingIndex >= 0) {
+            s32 duration = patch->duration;
+            if (gChaosDifficulty == CHAOS_DIFFICULTY_HARD) {
+                if (patch->durationHard > 0) {
+                    duration = patch->durationHard;
+                } else if (patch->durationType == CHAOS_DURATION_STARS) {
+                    if (patch->effectType == CHAOS_EFFECT_POSITIVE) {
+                        duration += HARD_DURATION_DEFAULT_OFFSET_POSITIVE;
+                    } else if (patch->effectType == CHAOS_EFFECT_NEGATIVE) {
+                        duration += HARD_DURATION_DEFAULT_OFFSET_NEGATIVE;
+                    }
+    
+                    if (duration <= 0) {
+                        duration = 1;
+                    }
+                }
+            }
+
             // Invoke activation function, add duration to existing patch, and return early
-            gChaosActiveEntries[matchingIndex].remainingDuration += patch->duration;
-            if (gChaosActiveEntries[matchingIndex].remainingDuration < patch->duration) {
+            gChaosActiveEntries[matchingIndex].remainingDuration += duration;
+            if (gChaosActiveEntries[matchingIndex].remainingDuration < duration) {
                 // Overflow detected!
                 gChaosActiveEntries[matchingIndex].remainingDuration = -1;
             }
@@ -306,7 +323,24 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
     if (patch->durationType == CHAOS_DURATION_ONCE || patch->durationType == CHAOS_DURATION_INFINITE) {
         newEntry->remainingDuration = 0;
     } else {
-        newEntry->remainingDuration = patch->duration;
+        s32 duration = patch->duration;
+        if (gChaosDifficulty == CHAOS_DIFFICULTY_HARD) {
+            if (patch->durationHard > 0) {
+                duration = patch->durationHard;
+            } else if (patch->durationType == CHAOS_DURATION_STARS) {
+                if (patch->effectType == CHAOS_EFFECT_POSITIVE) {
+                    duration += HARD_DURATION_DEFAULT_OFFSET_POSITIVE;
+                } else if (patch->effectType == CHAOS_EFFECT_NEGATIVE) {
+                    duration += HARD_DURATION_DEFAULT_OFFSET_NEGATIVE;
+                }
+
+                if (duration <= 0) {
+                    duration = 1;
+                }
+            }
+        }
+
+        newEntry->remainingDuration = duration;
         assert_args(newEntry->remainingDuration > 0, "%s%08X", "chaos_add_new_entry:\nDuration-type patch contains duration of 0: 0x", patchId);
     }
 
@@ -487,7 +521,7 @@ void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_
             break;
         }
 
-        negativePatchCompare = negativePatchId;
+        gNegativePatchCompare = negativePatchId;
 
         s32 applicablePositiveCount = 0;
         for (enum ChaosPatchID patchId = 0; patchId < CHAOS_PATCH_COUNT; patchId++) {
@@ -546,7 +580,7 @@ void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_
             }
         }
 
-        negativePatchCompare = CHAOS_PATCH_NONE;
+        gNegativePatchCompare = CHAOS_PATCH_NONE;
 
         generatedPatches[index].positiveId = positivePatchId;
         generatedPatches[index].negativeId = negativePatchId;
