@@ -1232,34 +1232,34 @@ void render_patch_select_button_prompts() {
             if(pos->longDescription || 
                 neg->longDescription) {
                 menu_start_button_prompt();
-                menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 21, MENU_PROMPT_A_BUTTON);
-                menu_button_prompt(SCREEN_WIDTH - 80, SCREEN_HEIGHT - 21, MENU_PROMPT_R_TRIG);
-                menu_button_prompt(SCREEN_WIDTH - 160, SCREEN_HEIGHT - 21, MENU_PROMPT_Z_TRIG);
+                menu_button_prompt(SCREEN_WIDTH - 32, PATCH_SEL_BUTTON_Y, MENU_PROMPT_A_BUTTON);
+                menu_button_prompt(SCREEN_WIDTH - 80, PATCH_SEL_BUTTON_Y, MENU_PROMPT_R_TRIG);
+                menu_button_prompt(SCREEN_WIDTH - 160, PATCH_SEL_BUTTON_Y, MENU_PROMPT_Z_TRIG);
                 menu_end_button_prompt();
                 fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-                fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 21, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_draw_texrect(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 21, "Active Patches", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_draw_texrect(SCREEN_WIDTH - 160, SCREEN_HEIGHT - 21, "More Info", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_draw_texrect(SCREEN_WIDTH - 33, PATCH_SEL_BUTTON_Y, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_draw_texrect(SCREEN_WIDTH - 82, PATCH_SEL_BUTTON_Y, "Active Patches", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_draw_texrect(SCREEN_WIDTH - 160, PATCH_SEL_BUTTON_Y, "More Info", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
                 fasttext_finished_rendering();
             } else {
                 menu_start_button_prompt();
-                menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 21, MENU_PROMPT_A_BUTTON);
-                menu_button_prompt(SCREEN_WIDTH - 80, SCREEN_HEIGHT - 21, MENU_PROMPT_R_TRIG);
+                menu_button_prompt(SCREEN_WIDTH - 32, PATCH_SEL_BUTTON_Y, MENU_PROMPT_A_BUTTON);
+                menu_button_prompt(SCREEN_WIDTH - 80, PATCH_SEL_BUTTON_Y, MENU_PROMPT_R_TRIG);
                 menu_end_button_prompt();
                 fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-                fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 21, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_draw_texrect(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 21, "Active Patches", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_draw_texrect(SCREEN_WIDTH - 33, PATCH_SEL_BUTTON_Y, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_draw_texrect(SCREEN_WIDTH - 82, PATCH_SEL_BUTTON_Y, "Active Patches", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
                 fasttext_finished_rendering();
             }
             break;
         case PATCH_SELECT_STATE_CONFIRMATION:
             menu_start_button_prompt();
-            menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 21, MENU_PROMPT_A_BUTTON);
-            menu_button_prompt(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 21, MENU_PROMPT_B_BUTTON);
+            menu_button_prompt(SCREEN_WIDTH - 32, PATCH_SEL_BUTTON_Y, MENU_PROMPT_A_BUTTON);
+            menu_button_prompt(SCREEN_WIDTH - 82, PATCH_SEL_BUTTON_Y, MENU_PROMPT_B_BUTTON);
             menu_end_button_prompt();
             fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-            fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 21, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-            fasttext_draw_texrect(SCREEN_WIDTH - 83, SCREEN_HEIGHT - 21, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+            fasttext_draw_texrect(SCREEN_WIDTH - 33, PATCH_SEL_BUTTON_Y, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+            fasttext_draw_texrect(SCREEN_WIDTH - 83, PATCH_SEL_BUTTON_Y, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
             fasttext_finished_rendering();
             break;
         case PATCH_SELECT_STATE_SHOW_EXTENDED_DESC:
@@ -1274,7 +1274,7 @@ void render_patch_select_button_prompts() {
 }
 
 #define PATCH_LIVES_X      (12)
-#define PATCH_HUD_Y        (5)
+#define PATCH_HUD_Y        (7)
 
 void render_patch_hud_info() {
     if(save_file_get_challenge_mode(gCurrSaveFileNum - 1)) {

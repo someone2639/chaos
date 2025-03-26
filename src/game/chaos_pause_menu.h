@@ -8,9 +8,10 @@
 #define MINI_CARD_X_START           -104
 #define ACTIVE_PATCH_DESC_X         (SCREEN_WIDTH - 74)
 #define ACTIVE_PATCH_DESC_X_START   (SCREEN_WIDTH + 104)
-#define ACTIVE_PATCH_DESC_Y         ((SCREEN_HEIGHT / 3) + 18)
-#define SETTINGS_PANEL_Y            52
+#define ACTIVE_PATCH_DESC_Y         ((SCREEN_HEIGHT / 3) + 20)
+#define SETTINGS_PANEL_Y            54
 #define SETTINGS_PANEL_Y_START      -52
+#define PAUSE_BUTTON_PROMPTS_Y      (SCREEN_HEIGHT - 23)
 
 enum ChaosSettingsFlags {
     CHAOS_SETTINGS_ACTIVE           = (1 << 0),

@@ -436,21 +436,25 @@ void render_active_patches() {
         draw_active_patch_ext_desc(&gChaosActiveEntries[selection]);
     }
 
-    //Draw the menu scroll indicator arrows
-    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, triangleAlpha);
+    if(gChaosPauseMenu->activePatchesMenu.menuState != ACTIVE_PATCHES_MENU_STATE_SHOW_EXT_DESC) {
+        //Draw the menu scroll indicator arrows
+        gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, triangleAlpha);
 
-    if(listStart != 0) {
-        create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_PUSH, cardX + 8, SCREEN_HEIGHT - 12, 0);
-        create_dl_rotation_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, 90.0f, 0, 0, 1.0f);
-        gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
-        gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
-    }
+        if(listStart != 0) {
+            create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_PUSH, cardX + 8, SCREEN_HEIGHT - 14, 0);
+            create_dl_scale_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, 0.8f, 0.8f, 1.0f);
+            create_dl_rotation_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, 90.0f, 0, 0, 1.0f);
+            gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
+            gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+        }
 
-    if(listEnd < numPatches) {
-        create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_PUSH, cardX - 8, 12, 0);
-        create_dl_rotation_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, 270.0f, 0, 0, 1.0f);
-        gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
-        gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+        if(listEnd < numPatches) {
+            create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_PUSH, cardX - 8, 15, 0);
+            create_dl_scale_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, 0.8f, 0.8f, 1.0f);
+            create_dl_rotation_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, 270.0f, 0, 0, 1.0f);
+            gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
+            gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+        }
     }
 }
 
@@ -499,19 +503,19 @@ void render_active_patches_menu_button_prompts() {
             //Draw extra prompt if there's an extended description
             if(patchInfo->longDescription){
                 menu_start_button_prompt();
-                menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 21, MENU_PROMPT_B_BUTTON);
-                menu_button_prompt(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 21, MENU_PROMPT_Z_TRIG);
+                menu_button_prompt(SCREEN_WIDTH - 32, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_B_BUTTON);
+                menu_button_prompt(SCREEN_WIDTH - 82, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_Z_TRIG);
                 menu_end_button_prompt();
                 fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-                fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 21, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_draw_texrect(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 21, "More Info", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_draw_texrect(SCREEN_WIDTH - 33, PAUSE_BUTTON_PROMPTS_Y, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_draw_texrect(SCREEN_WIDTH - 82, PAUSE_BUTTON_PROMPTS_Y, "More Info", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
                 fasttext_finished_rendering();
             } else {
                 menu_start_button_prompt();
-                menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 21, MENU_PROMPT_B_BUTTON);
+                menu_button_prompt(SCREEN_WIDTH - 32, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_B_BUTTON);
                 menu_end_button_prompt();
                 fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-                fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 21, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_draw_texrect(SCREEN_WIDTH - 33, PAUSE_BUTTON_PROMPTS_Y, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
                 fasttext_finished_rendering();
             }
             break;
@@ -864,12 +868,12 @@ void render_settings_panel() {
 */
 void render_settings_panel_button_prompts() {
     menu_start_button_prompt();
-    menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 21, MENU_PROMPT_A_BUTTON);
-    menu_button_prompt(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 21, MENU_PROMPT_B_BUTTON);
+    menu_button_prompt(SCREEN_WIDTH - 32, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_A_BUTTON);
+    menu_button_prompt(SCREEN_WIDTH - 82, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_B_BUTTON);
     menu_end_button_prompt();
     fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-    fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 21, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-    fasttext_draw_texrect(SCREEN_WIDTH - 83, SCREEN_HEIGHT - 21, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+    fasttext_draw_texrect(SCREEN_WIDTH - 33, PAUSE_BUTTON_PROMPTS_Y, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+    fasttext_draw_texrect(SCREEN_WIDTH - 83, PAUSE_BUTTON_PROMPTS_Y, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
     fasttext_finished_rendering();
 }
 
@@ -998,13 +1002,13 @@ void update_settings_panel() {
 */
 void render_pause_screen_button_prompts() {
     menu_start_button_prompt();
-    menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 21, MENU_PROMPT_R_TRIG);
-    menu_button_prompt(SCREEN_WIDTH - 144, SCREEN_HEIGHT - 21, MENU_PROMPT_Z_TRIG);
-    menu_button_prompt(15, SCREEN_HEIGHT - 21, MENU_PROMPT_L_TRIG);
+    menu_button_prompt(SCREEN_WIDTH - 32, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_R_TRIG);
+    menu_button_prompt(SCREEN_WIDTH - 144, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_Z_TRIG);
+    menu_button_prompt(15, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_L_TRIG);
     menu_end_button_prompt();
     fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-    fasttext_draw_texrect(SCREEN_WIDTH - 35, SCREEN_HEIGHT - 21, "Active Patches", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-    fasttext_draw_texrect(SCREEN_WIDTH - 144, SCREEN_HEIGHT - 21, "Message Log", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-    fasttext_draw_texrect(33, SCREEN_HEIGHT - 21, "Settings", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    fasttext_draw_texrect(SCREEN_WIDTH - 35, PAUSE_BUTTON_PROMPTS_Y, "Active Patches", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+    fasttext_draw_texrect(SCREEN_WIDTH - 144, PAUSE_BUTTON_PROMPTS_Y, "Message Log", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+    fasttext_draw_texrect(33, PAUSE_BUTTON_PROMPTS_Y, "Settings", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
     fasttext_finished_rendering();
 }

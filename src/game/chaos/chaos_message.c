@@ -177,7 +177,7 @@ void render_message_log_recap() {
     struct ChaosMessageParams *params;
 
     menu_start_button_prompt();
-    menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 21, MENU_PROMPT_B_BUTTON);
+    menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 23, MENU_PROMPT_B_BUTTON);
     menu_end_button_prompt();
 
     fasttext_setup_textrect_rendering(FT_FONT);
@@ -196,6 +196,6 @@ void render_message_log_recap() {
         }
     }
     fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-    fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 21, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+    fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 23, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
     fasttext_finished_rendering();
 }
