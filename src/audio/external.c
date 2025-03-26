@@ -11,6 +11,7 @@
 #include "game/main.h"
 #include "game/level_update.h"
 #include "game/object_list_processor.h"
+#include "game/rendering_graph_node.h"
 #include "game/camera.h"
 #include "engine/math_util.h"
 #include "seq_ids.h"
@@ -1064,6 +1065,10 @@ static f32 get_sound_pan(f32 x, f32 z) {
     } else {
         // center pan
         pan = 0.5f + x / (6.0f * absZ);
+    }
+
+    if (isGameFlipped) {
+        return 1.0f - pan;
     }
 
     return pan;
