@@ -2059,6 +2059,7 @@ void init_mario(void) {
 
     gMarioState->bonkKill = FALSE;
     gMarioState->bonkKillTimer = 0;
+    gChsTrollDialog = FALSE;
 
     chaos_area_update();
 }
