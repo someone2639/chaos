@@ -1258,7 +1258,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_LEVEL_RESET] = {
         .durationType      = CHAOS_DURATION_USE_COUNT,
         .effectType        = CHAOS_EFFECT_POSITIVE,
-        .severity          = 2,
+        .severity          = 1,
         .isStackable       = TRUE,
         .duration          = 1,
 
@@ -1510,7 +1510,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity          = 3,
         .isStackable       = FALSE,
         .duration          = 3,
-        .durationHard      = 3,
+        .durationHard      = 4,
 
         .activatedInitFunc = chs_act_input_lag,
 
