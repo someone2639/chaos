@@ -3,6 +3,7 @@
 #include <hvqm2dec.h>
 #include "system.h"
 #include "profiler.h"
+#include "buffers/framebuffers.h"
 
 static OSMesgQueue spMesgQ;
 static OSMesg spMesgBuf;
@@ -53,9 +54,9 @@ void init_video(void **streamp, u32 offset) {
     // new_profiler("HVQM Part2 (RSP)");
 
     for (int i = 0; i < NUM_CFBs; i++) {
-        vbuffer[i].cfb = &cfb[i][0];
-        bzero(cfb[i], sizeof(cfb[i]));
-        vbuffer[i].drawbuf = &cfb[i][offset];
+        vbuffer[i].cfb = &gFramebuffers[i][0];
+        bzero(gFramebuffers[i], sizeof(gFramebuffers[i]));
+        vbuffer[i].drawbuf = &gFramebuffers[i][offset];
         vbuffer[i].endtime_us = 0;
     }
 
@@ -98,6 +99,7 @@ void init_hvqm_task() {
 void load_video_frame(void **streamp, VideoRing *vbuf) {
     HVQM2Record record_header ALIGNED(16);
     // Get the next video record
+
     u32 record_size = get_record(&record_header, HVQM2_VIDEO, streamp);
 
     vbuf->format = load16(record_header.format);
@@ -125,10 +127,10 @@ void load_video_frame(void **streamp, VideoRing *vbuf) {
                 record_size = get_record(&record_header, HVQM2_VIDEO, streamp);
                 video_remain--;
                 if (record_header.format == HVQM2_VIDEO_KEYFRAME) {
-                    osSyncPrintf("(keyframed)\n");
+                    // osSyncPrintf("(keyframed)\n");
                     // skup further if we're REALLY far behind
                     if (playtime_us > (starttime_us + (usec_per_frame * 2))) {
-                        osSyncPrintf("(we're REALLY far behind)\n");
+                        // osSyncPrintf("(we're REALLY far behind)\n");
                         continue;
                     } else {
                         break;
@@ -138,7 +140,7 @@ void load_video_frame(void **streamp, VideoRing *vbuf) {
                     break;
                 }
             }
-            osSyncPrintf("(SKIPPED %d FRAMES)\n", skipped_frames);
+            // osSyncPrintf("(SKIPPED %d FRAMES)\n", skipped_frames);
         }
         if (video_remain == 0) {
             return;
@@ -197,7 +199,7 @@ void show_next_frame(void **streamp) {
     if (video_playing()) {
         if (disptime_us > (playtime_us + (usec_per_frame * 10))) {
             u32 count = (disptime_us - playtime_us) / (usec_per_frame);
-            osSyncPrintf("HOLD %d\n", count);
+            // osSyncPrintf("HOLD %d\n", count);
             hold_all_frames(count);
             osYieldThread();
         }

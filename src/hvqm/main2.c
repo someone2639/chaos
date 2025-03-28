@@ -2,6 +2,7 @@
 #include <HVQM2File.h>
 #include <hvqm2dec.h>
 #include <adpcmdec.h>
+#include "buffers/framebuffers.h"
 #include "system.h"
 
 #define VI_MSG_SIZE 2
@@ -12,8 +13,6 @@ HVQM2Header hvqm_header __attribute__((aligned(16)));
 
 static OSThread audThread;
 static u64 audThreadStack[STACKSIZE / 8];
-OSThread vidThread;
-static u64 vidThreadStack[STACKSIZE / 8];
 
 extern void AudioMain(void *arg);
 extern void VideoMain(void *arg);
@@ -52,16 +51,12 @@ void Main(void *video) {
     init_dma();
     init_hvqm_task();
 
-#ifdef HVQM_CONTSUPPORT
-    start_cont_thread();
-#endif // HVQM_CONTSUPPORT
-
     // Initialize the frame buffer (clear buffer contents and status flag)
-    osViSwapBuffer(cfb[NUM_CFBs - 1]);
+    osViSwapBuffer(gFramebuffers[NUM_CFBs - 1]);
 
     // Fetch the HVQM2 header
     dma_copy(&hvqm_header, video, sizeof(HVQM2Header), NULL);
-    verify_hvqm();
+    // verify_hvqm();
 
     u32 total_frames = load32(hvqm_header.total_frames);
     extern u32 usec_per_frame;
@@ -69,9 +64,8 @@ void Main(void *video) {
     u32 total_audio_records = load32(hvqm_header.total_audio_records);
 
     void *video_streamP = video + sizeof(HVQM2Header);
-    void *vstreambase = video_streamP;
     extern u32 video_remain;
-    u32 vremain_base = video_remain = total_frames - NUM_CFBs;
+    video_remain = total_frames - NUM_CFBs;
 
     void *audio_streamP = video + sizeof(HVQM2Header);
     u32 audio_remain = total_audio_records;
@@ -82,7 +76,8 @@ void Main(void *video) {
         parms.remain = audio_remain;
         parms.samples_per_sec = hvqm_header.samples_per_sec;
         parms.num_channels = hvqm_header.channels;
-        osCreateThread(&audThread, AUD_THREAD_ID, AudioMain, &parms, audThreadStack + STACKSIZE / 8,
+        bzero(&audThread, sizeof(OSThread));
+        osCreateThread(&audThread, 8, AudioMain, &parms, audThreadStack + STACKSIZE / 8,
                        AUD_PRIORITY);
         osStartThread(&audThread);
     }
@@ -94,38 +89,21 @@ void Main(void *video) {
     // Setup the HVQM2 image decoder
     hvqm2SetupSP1(&hvqm_header, SCREEN_WD);
     init_video(&video_streamP, screen_offset);
-    while (1) {
-        osSyncPrintf("VREMAIN %d STREAMP %08X\n", video_remain, video_streamP);
-        osSetTime(0);
-        while (video_remain > 0) {
-            // osSyncPrintf("VREMAIN %d\n", video_remain);
-            VideoMain(&video_streamP);
+    extern OSMesgQueue gHVQM_SyncQueue;
 
-            if (video_remain == 0) {
-                osSetEventMesg(OS_EVENT_AI, NULL, 0);
-                osDestroyThread(&audThread);
-                extern OSMesgQueue gHVQM_SyncQueue;
-                osSendMesg(&gHVQM_SyncQueue, (OSMesg*)0, OS_MESG_BLOCK);
-            }
+    osSetTime(0);
+    while (video_remain > 0) {
+        VideoMain(&video_streamP);
 
-            disptime_us = OS_CYCLES_TO_USEC(osGetTime());
-            osRecvMesg(&viMessageQ, NULL, OS_MESG_BLOCK);
 
-#ifdef HVQM_CONTSUPPORT
-            if (get_button() & A_BUTTON) {
-                // TODO: Pause
-            }
-#endif // HVQM_CONTSUPPORT
-        }
-
-#ifdef HVQM_VIDLOOP
-        video_streamP = vstreambase;
-        reset_video(&video_streamP, vremain_base, screen_offset);
-        disptime_us = 0;
-#else
-        break;
-#endif // HVQM_VIDLOOP
+        disptime_us = OS_CYCLES_TO_USEC(osGetTime());
+        osRecvMesg(&viMessageQ, NULL, OS_MESG_BLOCK);
     }
-
-    while (1) { ; }
+    osSyncPrintf("video done");
+    osSetEventMesg(OS_EVENT_AI, NULL, 0);
+    osSyncPrintf("before send");
+    osJamMesg(&gHVQM_SyncQueue, (OSMesg*)0, OS_MESG_BLOCK);
+    osSyncPrintf("after send");
+    osStopThread(NULL);
+    osSyncPrintf("does this happen");
 }

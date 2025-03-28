@@ -14,7 +14,7 @@ u64 hvq_yieldbuf[HVQM2_YIELD_DATA_SIZE/8] ALIGNED(0x100);
 // suitable for bth 4:2:2 and 4:2:1 data
 u16 hvqwork[(MAXWIDTH/8)*(MAXHEIGHT/4)*4] ALIGNED(0x100);
 /* Image frame buffer */
-CFBPix cfb[NUM_CFBs][SCREEN_WD*SCREEN_HT] ALIGNED(0x100);
+// CFBPix cfb[NUM_CFBs][SCREEN_WD*SCREEN_HT] ALIGNED(0x100);
 
 /*
  *  Buffer for video records (HVQM2 compressed data) read from 

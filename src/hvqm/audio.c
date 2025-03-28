@@ -161,7 +161,7 @@ void AudioMain(void *arg) {
             audio_remain -= process_audio(&streamp);
         }
 
-        osSyncPrintf("PLAYBACK DONE\n");
+        // osSyncPrintf("PLAYBACK DONE\n");
 
         osSetEventMesg(OS_EVENT_AI, NULL, 0);
         extern OSThread hvqmThread;;

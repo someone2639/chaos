@@ -35,7 +35,7 @@ static void mainproc(void *arg) {
 }
 
 void createHvqmThread(void *arg) {
+    bzero(&hvqmThread, sizeof(OSThread));
     osCreateThread(&hvqmThread, 7, mainproc, arg, hvqmThreadStack + STACKSIZE / 8, 11);
-    osStartThread(&hvqmThread);
 }
 

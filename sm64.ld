@@ -118,6 +118,7 @@ SECTIONS
    BEGIN_NOLOAD(hvqmwork)
    {
       BUILD_DIR/src/buffers/audio_buffers.o(.bss*);
+      . = ALIGN(0x100);
    }
    END_NOLOAD(hvqmwork)
    BEGIN_NOLOAD(adpcmbuf)
