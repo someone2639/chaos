@@ -15,14 +15,14 @@
 #include "audio/external.h"
 #include "game/chaos/chaos.h"
 
-#define SLEEP_TIME_MIN  (30 * 30)
+#define SLEEP_TIME_MIN  (1 * 60 * 30)
 #define SLEEP_TIME_RAND (5 * 60 * 30)
 
-#define SHOCK_TIME_MIN  (15 * 30)
+#define SHOCK_TIME_MIN  (1 * 60 * 30)
 #define SHOCK_TIME_RAND (2 * 60 * 30)
 
-#define BURN_TIME_MIN  (30 * 30)
-#define BURN_TIME_RAND (240 * 30)
+#define BURN_TIME_MIN  (1 * 60 * 30)
+#define BURN_TIME_RAND (4 * 60 * 30)
 
 s16 sRandomSleepTimer = -1;
 s16 sRandomShockTimer = -1;
@@ -344,7 +344,7 @@ void chs_update_red_light(void) {
 }
 
 u8 chs_cond_red_light(void) {
-    return (!(chaos_check_if_patch_active(CHAOS_PATCH_GREEN_DEMON) || chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_CLONES)));
+    return (!(chaos_check_if_patch_active(CHAOS_PATCH_GREEN_DEMON) || chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_CLONES) || chaos_check_if_patch_active(CHAOS_PATCH_QUICKTIME)));
 }
 
 /*
