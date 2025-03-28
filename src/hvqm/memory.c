@@ -80,9 +80,6 @@ void load_record(u32 record_size, u16 type, void *bodybuf, void **streamp) {
 }
 
 void dma_copy(void *dest, void *src, u32 len, OSIoMesg *msg) {
-    char tt[500];
-    sprintf(tt, "    [ROMCPY] %08X <- [%08X, %08X]\n", dest, src, len);
-    osSyncPrintf(tt);
     bzero(dest, len);
     osInvalDCache(dest, len); 
 
@@ -94,7 +91,5 @@ void dma_copy(void *dest, void *src, u32 len, OSIoMesg *msg) {
 
     // Start the DMA
     osEPiStartDma(cartrom_hd, msg, OS_READ);
-    while (osPiStartDma(msg, msg->hdr.pri, OS_READ, (u32) src, dest, len, msg->hdr.retQueue) == -1) {
-    }
     osRecvMesg(msg->hdr.retQueue, NULL, OS_MESG_BLOCK);
 }

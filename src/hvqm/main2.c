@@ -19,27 +19,6 @@ extern void VideoMain(void *arg);
 
 extern u64 disptime_us;
 
-void panic() {
-    while (1);
-}
-
-void verify_hvqm() {
-    if (hvqm_header.max_sp_packets > (HVQ_SPFIFO_SIZE / sizeof(HVQM2Info))) {
-        osSyncPrintf("HVQ_SPFIFO_SIZE must be at least %d\n", hvqm_header.max_sp_packets);
-        panic();
-    }
-
-    if (hvqm_header.max_audio_record_size > (AUDIO_RECORD_SIZE_MAX)) {
-        osSyncPrintf("AUDIO_RECORD_SIZE_MAX must be at least %d\n", hvqm_header.max_audio_record_size);
-        panic();
-    }
-
-    if (hvqm_header.max_frame_size > HVQ_DATASIZE_MAX) {
-        osSyncPrintf("HVQ_DATASIZE_MAX must be at least %d\n", hvqm_header.max_frame_size);
-        panic();
-    }
-}
-
 void Main(void *video) {
     int h_offset, v_offset; // Position of image display
     int screen_offset;      // Number of pixels from start of frame buffer to display position
@@ -56,7 +35,6 @@ void Main(void *video) {
 
     // Fetch the HVQM2 header
     dma_copy(&hvqm_header, video, sizeof(HVQM2Header), NULL);
-    // verify_hvqm();
 
     u32 total_frames = load32(hvqm_header.total_frames);
     extern u32 usec_per_frame;
@@ -99,11 +77,7 @@ void Main(void *video) {
         disptime_us = OS_CYCLES_TO_USEC(osGetTime());
         osRecvMesg(&viMessageQ, NULL, OS_MESG_BLOCK);
     }
-    osSyncPrintf("video done");
     osSetEventMesg(OS_EVENT_AI, NULL, 0);
-    osSyncPrintf("before send");
     osJamMesg(&gHVQM_SyncQueue, (OSMesg*)0, OS_MESG_BLOCK);
-    osSyncPrintf("after send");
     osStopThread(NULL);
-    osSyncPrintf("does this happen");
 }
