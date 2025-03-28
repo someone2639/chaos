@@ -92,16 +92,6 @@ void tkStop(void);
 void createHvqmThread(uintptr_t a);
 
 /*
- * in system.c
- */
-void romcpy(void *dest, void *src, u32 len, s32 pri, OSIoMesg *mb, OSMesgQueue *mq);
-
-/*
- * in getrecord.c
- */
-u8 *get_record(HVQM2Record *headerbuf, void *bodybuf, u16 type, u8 *stream, OSIoMesg *mb, OSMesgQueue *mq);
-
-/*
  * in cfbkeep.c
  */
 extern u32 cfb_status[NUM_CFBs];

@@ -117,21 +117,16 @@ SECTIONS
 #ifdef HVQM
    BEGIN_NOLOAD(hvqmwork)
    {
-      BUILD_DIR/src/buffers/hvqmwork.o(.bss*);
+      BUILD_DIR/src/buffers/audio_buffers.o(.bss*);
    }
    END_NOLOAD(hvqmwork)
    BEGIN_NOLOAD(adpcmbuf)
    {
-      BUILD_DIR/src/buffers/adpcmbuf.o(.bss*);
+      BUILD_DIR/src/buffers/hvqm_buffers.o(.bss*);
    }
    END_NOLOAD(adpcmbuf)
-   BEGIN_NOLOAD(hvqbuf)
-   {
-      BUILD_DIR/src/buffers/hvqbuf.o(.bss*);
-   }
-   END_NOLOAD(hvqbuf)
 
-   . = _hvqbufSegmentBssEnd;
+   . = _adpcmbufSegmentBssEnd;
 #endif
 
    BEGIN_SEG(main, .)
@@ -161,6 +156,7 @@ SECTIONS
       /* data */
       BUILD_DIR/src/boot*.o(.data*);
       BUILD_DIR/src/audio*.o(.data*);
+      BUILD_DIR/src/hvqm*.o(.data*);
 #if defined(ISVPRINT) || defined(UNF)
       *libultra_d.a:*.o(.data*);
 #else
