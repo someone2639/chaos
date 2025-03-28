@@ -3051,7 +3051,11 @@ void set_camera_mode_top_down(struct Camera *c, s16 transitionTime) {
 
 void mode_top_down_cam(struct Camera *c) {
     struct Surface *surface;
-    f32 camCeilHeight = find_ceil(c->pos[0], gMarioState->pos[1] + 50, c->pos[2], &surface);
+
+    vec3f_copy(c->focus, gMarioState->pos);
+    vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0);
+    c->yaw = 0;
+    f32 camCeilHeight = find_ceil(c->focus[0], gMarioState->pos[1] + 50, c->focus[2], &surface);
     if (surface) {
         c->pos[1] = camCeilHeight - 100.0f;
     } else {
@@ -3063,13 +3067,8 @@ void mode_top_down_cam(struct Camera *c) {
         }
     }
 
-    c->pos[0] = gMarioState->pos[0];
-    c->pos[2] = gMarioState->pos[2] + 100.0f;
 
-    c->yaw = 0;
-    c->focus[0] = gMarioState->pos[0];
-    c->focus[1] = gMarioState->pos[1];
-    c->focus[2] = gMarioState->pos[2];
+    sLakituPitch = 0x3C00;
 }
 
 
