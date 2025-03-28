@@ -1292,7 +1292,14 @@ void display_patch_selection_ui() {
     s32 selectedPatch = gPatchSelectionMenu->selectedPatch;
     s32 numPatches = gPatchSelectionMenu->numPatches;
     f32 cursorX, cursorY;
-    enum ChaosPatchSpecialEvent event = gPatchSelectionMenu->patchCards[0].sel->specialEvent;
+    enum ChaosPatchSpecialEvent event = CHAOS_SPECIAL_NONE;
+
+    for(int i = 0; i < numPatches; i++) {
+        if(gPatchSelectionMenu->patchCards[i].sel->specialEvent != CHAOS_SPECIAL_NONE) {
+            event = gPatchSelectionMenu->patchCards[i].sel->specialEvent;
+            break;
+        }
+    }
 
     cursorX = gPatchSelectionMenu->patchCards[selectedPatch].layoutPos[0];
     cursorY = gPatchSelectionMenu->patchCards[selectedPatch].layoutPos[1];
