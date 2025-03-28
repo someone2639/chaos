@@ -3063,6 +3063,10 @@ void mode_top_down_cam(struct Camera *c) {
         vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0x8000 + gMarioState->faceAngle[1]);
         c->yaw = gMarioState->faceAngle[1] + 0x8000;
     }
+    if (gMarioState->action == ACT_FLYING) {
+        vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0x8000 + gMarioState->faceAngle[1]);
+        c->yaw = gMarioState->faceAngle[1] + 0x8000;
+    }
     f32 camCeilHeight = find_ceil(c->focus[0], gMarioState->pos[1] + 50, c->focus[2], &surface);
     if (surface) {
         c->pos[1] = camCeilHeight - 100.0f;
