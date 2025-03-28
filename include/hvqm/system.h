@@ -156,11 +156,13 @@ extern u8 adpcmbuf[];       /* Buffer for audio records ADPCM) */
 extern u8 hvqbuf[];     /* Buffer for video records (HVQM2) */
 extern s16 pcmbuf[NUM_PCMBUFs][PCMBUF_SIZE]; /* PCM data buffer */
 extern CFBPix cfb[NUM_CFBs][SCREEN_WD*SCREEN_HT]; /* Image frame buffer */
+extern OSMesgQueue spMesgQ;
 
 extern void init_dma();
 extern void init_hvqm_task();
 extern void init_video(void **, u32);
 extern void show_next_frame(void **);
+extern void hvqm_drawHLE();
 
 // fault
 extern void crash_screen_init();

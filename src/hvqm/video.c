@@ -4,8 +4,9 @@
 #include "system.h"
 #include "profiler.h"
 #include "buffers/framebuffers.h"
+#include "game/game_init.h"
 
-static OSMesgQueue spMesgQ;
+OSMesgQueue spMesgQ;
 static OSMesg spMesgBuf;
 
 OSTask hvqtask;     // RSP task data
@@ -212,7 +213,11 @@ void show_next_frame(void **streamp) {
         frames_elapsed++;
     }
     if (currVBuf->format != HVQM2_VIDEO_HOLD) {
-        osViSwapBuffer(currVBuf->cfb);
+        if (gFBEEnabled == FALSE) {
+            hvqm_drawHLE(currVBuf->cfb);
+        } else {
+            osViSwapBuffer(currVBuf->cfb);
+        }
         osYieldThread();
     }
 }
