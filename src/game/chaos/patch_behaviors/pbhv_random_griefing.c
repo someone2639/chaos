@@ -344,7 +344,7 @@ void chs_update_red_light(void) {
 }
 
 u8 chs_cond_red_light(void) {
-    return (!(chaos_check_if_patch_active(CHAOS_PATCH_GREEN_DEMON) || chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_CLONES)));
+    return (!(chaos_check_if_patch_active(CHAOS_PATCH_GREEN_DEMON) || chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_CLONES) || chaos_check_if_patch_active(CHAOS_PATCH_QUICKTIME)));
 }
 
 /*
