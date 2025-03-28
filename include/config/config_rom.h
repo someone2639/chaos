@@ -12,3 +12,5 @@
  * NOTE: Using save editors with this define will likely just end up wiping your save, since SM64 specific save editors most likely use hardcoded save magic.
  */
 #define UNIQUE_SAVE_DATA
+
+#define VERSION_STRING  "Rogue Chaos v1.1.0"
