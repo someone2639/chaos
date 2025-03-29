@@ -10,11 +10,14 @@
 /* 1998-12-15 */
 
 #include <ultra64.h>
-#include <HVQM2File.h>
-#include "hvqm.h"
-#include "types.h"
-#include "buffers/framebuffers.h"
+#include "system.h"
 #include "game/game_init.h"
+
+/***********************************************************************
+ * Main thread
+ ***********************************************************************/
+OSThread hvqmThread;
+static u64 hvqmThreadStack[STACKSIZE / 8];
 
 #define video_glistp gDisplayListHead
 
@@ -111,6 +114,9 @@ static void render_multi_image(Texture *image, s32 x, s32 y, s32 width, s32 heig
 
 void create_gfx_task_structure();
 
+OSMesgQueue dpMesgQ;
+OSMesg dpMesg;
+
 void hvqm_drawHLE(void *buf) {
     select_gfx_pool();
     // gDPPipeSync(video_glistp++);
@@ -128,35 +134,24 @@ void hvqm_drawHLE(void *buf) {
     gGfxSPTask->task.t.data_size = ((u32)gDisplayListHead - (u32)gGfxPool->buffer) * sizeof(Gfx);
     osSpTaskStart(&gGfxSPTask->task);
     osRecvMesg(&spMesgQ, NULL, OS_MESG_BLOCK);
+    osRecvMesg(&dpMesgQ, NULL, OS_MESG_BLOCK);
 }
 
-/***********************************************************************
- *
- * void romcpy(void *dest, void *src, u32 len, s32 pri, OSIoMesg *mb,
- *             OSMesgQueue *mq)
- *
- * Arguments
- *     dest      DRAM address
- *     src       PI device (ROM) address
- *     len       Transfer length (bytes)
- *     pri       Priority of the transfer request
- *     mb        I/O message block request
- *     mq        Message queue receiving notification of end of DMA
- *
- * Explanation
- *     DMA transfers "len" bytes from ROM address "SRC" to DRAM
- *  address "dest" and returns after waiting for end of DMA. The
- *  data cache of the transfer destination in DRAM is invalidated
- *  ahead of time.
- *
- *     The parameters have the same meaning as for osPiStartDma()
- *
- ***********************************************************************/
-void romcpy(void *dest, void *src, u32 len, s32 pri, OSIoMesg *mb, OSMesgQueue *mq) {
-    osInvalDCache(dest, (s32) len);
-    while (osPiStartDma(mb, pri, OS_READ, (u32) src, dest, len, mq) == -1) {
-    }
-    osRecvMesg(mq, (OSMesg *) NULL, OS_MESG_BLOCK);
+static void mainproc(void *arg) {
+    osCreateMesgQueue(&dpMesgQ, &dpMesg, 1);
+    osSetEventMesg(OS_EVENT_DP, &dpMesgQ, (OSMesg*)1);
+    /* To main function */
+    Main(arg);
+
+    /* To idle state */
+    osSetThreadPri(0, 0);
+    for (;;)
+        ;
+    /* NOT REACHED */
 }
 
-/* end */
+void createHvqmThread(void *arg) {
+    bzero(&hvqmThread, sizeof(OSThread));
+    osCreateThread(&hvqmThread, 7, mainproc, arg, hvqmThreadStack + STACKSIZE / 8, 11);
+}
+

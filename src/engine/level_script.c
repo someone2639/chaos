@@ -796,13 +796,12 @@ static void level_cmd_set_echo(void) {
 
 void hvqm_play(void *addr) {
     extern u8 _hvqmworkSegmentBssStart[];
-    extern u8 _hvqbufSegmentBssEnd[];
+    extern u8 _adpcmbufSegmentBssEnd[];
     gHVQMPlaying = 1;
 
-    bzero(_hvqmworkSegmentBssStart, (u32)_hvqbufSegmentBssEnd - (u32)_hvqmworkSegmentBssStart);
+    bzero(_hvqmworkSegmentBssStart, (u32)_adpcmbufSegmentBssEnd - (u32)_hvqmworkSegmentBssStart);
 
     hvqm_reset_bss();
-    timekeeper_reset_bss();
 
     createHvqmThread((uintptr_t)addr);
     osStartThread(&hvqmThread);
