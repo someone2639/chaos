@@ -3030,6 +3030,8 @@ void update_lakitu(struct Camera *c) {
     gLakituState.defMode = c->defMode;
 }
 
+s16 topdown_yawcorrection = 0;
+
 void set_camera_mode_top_down(struct Camera *c, s16 transitionTime) {
     Vec3f focus;
     s16 yaw;
@@ -3038,6 +3040,7 @@ void set_camera_mode_top_down(struct Camera *c, s16 transitionTime) {
     focus[1] = sMarioCamState->pos[1];
     focus[2] = sMarioCamState->pos[2];
     if (c->mode != CAMERA_MODE_TOP_DOWN) {
+        topdown_yawcorrection = 0;
         yaw = calculate_yaw(focus, sMarioCamState->pos) - calculate_yaw(c->focus, c->pos) + DEGREES(90);
         if (yaw > 0) {
             transition_to_camera_mode(c, CAMERA_MODE_TOP_DOWN, transitionTime);
@@ -3053,19 +3056,26 @@ void mode_top_down_cam(struct Camera *c) {
     struct Surface *surface;
 
     vec3f_copy(c->focus, gMarioState->pos);
-    vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0);
-    c->yaw = 0;
+    vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, topdown_yawcorrection);
+    c->yaw = topdown_yawcorrection;
+
     if (gMarioState->action & ACT_FLAG_SWIMMING_OR_FLYING) {
         vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0x8000 + gMarioState->faceAngle[1]);
         c->yaw = gMarioState->faceAngle[1];
-    }
-    if (gMarioState->action & ACT_FLAG_BUTT_OR_STOMACH_SLIDE) {
+    } else if ((gCurrLevelNum != LEVEL_VCUTM) && (gMarioState->action & ACT_FLAG_BUTT_OR_STOMACH_SLIDE)) {
         vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0x8000 + gMarioState->faceAngle[1]);
         c->yaw = gMarioState->faceAngle[1] + 0x8000;
-    }
-    if (gMarioState->action == ACT_FLYING) {
+    } else if (gMarioState->action == ACT_FLYING) {
         vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0x8000 + gMarioState->faceAngle[1]);
         c->yaw = gMarioState->faceAngle[1] + 0x8000;
+    } else {
+        // only do rotation handling if it's controllable
+        if (gPlayer1Controller->buttonPressed & L_CBUTTONS) {
+            topdown_yawcorrection -= 0x2000;
+        }
+        if (gPlayer1Controller->buttonPressed & R_CBUTTONS) {
+            topdown_yawcorrection += 0x2000;
+        }
     }
     f32 camCeilHeight = find_ceil(c->focus[0], gMarioState->pos[1] + 50, c->focus[2], &surface);
     if (surface) {
