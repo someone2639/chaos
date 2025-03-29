@@ -44,7 +44,7 @@ void force_mario_interaction(struct MarioState *m, struct Object *obj) {
     for (int i = 0; i < INTERACT_COUNT; i++) {
         ih = &sInteractionHandlers[i];
         if (obj->collidedObjInteractTypes & ih->interactType) {
-            if (!(ih->interactType & (INTERACT_CANNON_BASE | INTERACT_DAMAGE | INTERACT_FLAME))) {
+            if (!(ih->interactType & (INTERACT_WHIRLPOOL | INTERACT_CANNON_BASE | INTERACT_DAMAGE | INTERACT_FLAME))) {
                 m->collidedObjInteractTypes |= ih->interactType;
                 obj->collidedObjInteractTypes &= ~ih->interactType;
             } else {
