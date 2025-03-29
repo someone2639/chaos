@@ -3271,54 +3271,54 @@ Gfx luigi_002_switch_option_head_000_displaylist_head_mesh_layer_1_tri_3[] = {
 	gsSPEndDisplayList(),
 };
 
-Vtx luigi_000_displaylist_001_mesh_layer_5_vtx_0[4] = {
+Vtx luigi_000_displaylist_001_mesh_layer_4_vtx_0[4] = {
 	{{ {0, 0, 0}, 0, {-16, 4008}, {23, 0, 125, 255} }},
 	{{ {65, 0, -12}, 0, {974, 4008}, {23, 0, 125, 255} }},
 	{{ {65, 106, -12}, 0, {974, -16}, {23, 0, 125, 255} }},
 	{{ {-1, 106, 0}, 0, {-16, -16}, {23, 0, 125, 255} }},
 };
 
-Gfx luigi_000_displaylist_001_mesh_layer_5_tri_0[] = {
-	gsSPVertex(luigi_000_displaylist_001_mesh_layer_5_vtx_0 + 0, 4, 0),
+Gfx luigi_000_displaylist_001_mesh_layer_4_tri_0[] = {
+	gsSPVertex(luigi_000_displaylist_001_mesh_layer_4_vtx_0 + 0, 4, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
 	gsSPEndDisplayList(),
 };
 
-Vtx luigi_000_displaylist_001_mesh_layer_5_vtx_1[4] = {
+Vtx luigi_000_displaylist_001_mesh_layer_4_vtx_1[4] = {
 	{{ {-65, 106, 12}, 0, {-16, -16}, {23, 0, 125, 255} }},
 	{{ {0, 0, 0}, 0, {974, 4008}, {23, 0, 125, 255} }},
 	{{ {-1, 106, 0}, 0, {974, -16}, {23, 0, 125, 255} }},
 	{{ {-65, 0, 11}, 0, {-16, 4008}, {22, 0, 125, 255} }},
 };
 
-Gfx luigi_000_displaylist_001_mesh_layer_5_tri_1[] = {
-	gsSPVertex(luigi_000_displaylist_001_mesh_layer_5_vtx_1 + 0, 4, 0),
+Gfx luigi_000_displaylist_001_mesh_layer_4_tri_1[] = {
+	gsSPVertex(luigi_000_displaylist_001_mesh_layer_4_vtx_1 + 0, 4, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 3, 1, 0),
 	gsSPEndDisplayList(),
 };
 
-Vtx luigi_000_displaylist_002_mesh_layer_5_vtx_0[4] = {
+Vtx luigi_000_displaylist_002_mesh_layer_4_vtx_0[4] = {
 	{{ {0, 0, 0}, 0, {-16, 4008}, {233, 0, 125, 255} }},
 	{{ {65, 0, 12}, 0, {974, 4008}, {233, 0, 125, 255} }},
 	{{ {65, 106, 12}, 0, {974, -16}, {233, 0, 125, 255} }},
 	{{ {-1, 106, 0}, 0, {-16, -16}, {233, 0, 125, 255} }},
 };
 
-Gfx luigi_000_displaylist_002_mesh_layer_5_tri_0[] = {
-	gsSPVertex(luigi_000_displaylist_002_mesh_layer_5_vtx_0 + 0, 4, 0),
+Gfx luigi_000_displaylist_002_mesh_layer_4_tri_0[] = {
+	gsSPVertex(luigi_000_displaylist_002_mesh_layer_4_vtx_0 + 0, 4, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
 	gsSPEndDisplayList(),
 };
 
-Vtx luigi_000_displaylist_002_mesh_layer_5_vtx_1[4] = {
+Vtx luigi_000_displaylist_002_mesh_layer_4_vtx_1[4] = {
 	{{ {-65, 106, -12}, 0, {-16, -16}, {233, 0, 125, 255} }},
 	{{ {-65, 0, -11}, 0, {-16, 4008}, {234, 0, 125, 255} }},
 	{{ {0, 0, 0}, 0, {974, 4008}, {233, 0, 125, 255} }},
 	{{ {-1, 106, 0}, 0, {974, -16}, {233, 0, 125, 255} }},
 };
 
-Gfx luigi_000_displaylist_002_mesh_layer_5_tri_1[] = {
-	gsSPVertex(luigi_000_displaylist_002_mesh_layer_5_vtx_1 + 0, 4, 0),
+Gfx luigi_000_displaylist_002_mesh_layer_4_tri_1[] = {
+	gsSPVertex(luigi_000_displaylist_002_mesh_layer_4_vtx_1 + 0, 4, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
 	gsSPEndDisplayList(),
 };
@@ -4163,7 +4163,7 @@ Gfx luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_
 	gsSPEndDisplayList(),
 };
 
-Vtx luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_5_vtx_0[8] = {
+Vtx luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_4_vtx_0[8] = {
 	{{ {176, 76, 16}, 0, {-16, 4008}, {233, 78, 159, 255} }},
 	{{ {210, 123, 47}, 0, {974, 4008}, {233, 78, 159, 255} }},
 	{{ {298, 91, 0}, 0, {974, -16}, {233, 78, 159, 255} }},
@@ -4174,14 +4174,14 @@ Vtx luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_
 	{{ {265, -68, -17}, 0, {-16, -16}, {23, 100, 74, 255} }},
 };
 
-Gfx luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_5_tri_0[] = {
-	gsSPVertex(luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_5_vtx_0 + 0, 8, 0),
+Gfx luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_4_tri_0[] = {
+	gsSPVertex(luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_4_vtx_0 + 0, 8, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
 	gsSP2Triangles(4, 5, 6, 0, 4, 6, 7, 0),
 	gsSPEndDisplayList(),
 };
 
-Vtx luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_5_vtx_1[8] = {
+Vtx luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_4_vtx_1[8] = {
 	{{ {231, -5, -61}, 0, {-16, -16}, {233, 78, 159, 255} }},
 	{{ {142, 28, -14}, 0, {-16, 4008}, {234, 79, 159, 255} }},
 	{{ {176, 76, 16}, 0, {974, 4008}, {233, 78, 159, 255} }},
@@ -4192,8 +4192,8 @@ Vtx luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_
 	{{ {142, -50, -4}, 0, {-16, 4008}, {22, 101, 74, 255} }},
 };
 
-Gfx luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_5_tri_1[] = {
-	gsSPVertex(luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_5_vtx_1 + 0, 8, 0),
+Gfx luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_4_tri_1[] = {
+	gsSPVertex(luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_4_vtx_1 + 0, 8, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
 	gsSP2Triangles(4, 5, 6, 0, 4, 7, 5, 0),
 	gsSPEndDisplayList(),
@@ -4658,10 +4658,9 @@ Gfx mat_luigi_WingsTip[] = {
 	gsSPGeometryMode(G_CULL_BACK | G_CULL_FRONT, 0),
 	gsSPSetLights1(luigi_WingsTip_lights),
 	gsDPPipeSync(),
-	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0, TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0),
+	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, TEXEL0, 0, ENVIRONMENT, 0, TEXEL0, 0, SHADE, 0, TEXEL0, 0, ENVIRONMENT, 0),
 	gsDPSetAlphaDither(G_AD_NOISE),
 	gsSPTexture(65535, 65535, 0, 0, 1),
-	gsDPSetPrimColor(0, 0, 255, 255, 255, 255),
 	gsDPSetTextureImage(G_IM_FMT_IA, G_IM_SIZ_8b_LOAD_BLOCK, 1, luigi_mario_wing_tip_rgba16_ia8),
 	gsDPSetTile(G_IM_FMT_IA, G_IM_SIZ_8b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
 	gsDPLoadBlock(7, 0, 0, 1023, 512),
@@ -4681,10 +4680,9 @@ Gfx mat_luigi_Wings[] = {
 	gsSPGeometryMode(G_CULL_BACK | G_CULL_FRONT, 0),
 	gsSPSetLights1(luigi_Wings_lights),
 	gsDPPipeSync(),
-	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0, TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0),
+	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, TEXEL0, 0, ENVIRONMENT, 0, TEXEL0, 0, SHADE, 0, TEXEL0, 0, ENVIRONMENT, 0),
 	gsDPSetAlphaDither(G_AD_NOISE),
 	gsSPTexture(65535, 65535, 0, 0, 1),
-	gsDPSetPrimColor(0, 0, 255, 255, 255, 255),
 	gsDPSetTextureImage(G_IM_FMT_IA, G_IM_SIZ_8b_LOAD_BLOCK, 1, luigi_mario_wing_rgba16_ia8),
 	gsDPSetTile(G_IM_FMT_IA, G_IM_SIZ_8b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
 	gsDPLoadBlock(7, 0, 0, 1023, 512),
@@ -4959,62 +4957,62 @@ Gfx luigi_002_switch_option_head_000_displaylist_head_mesh_layer_1_mat_override_
 	gsSPEndDisplayList(),
 };
 
-Gfx luigi_000_displaylist_001_mesh_layer_5[] = {
+Gfx luigi_000_displaylist_001_mesh_layer_4[] = {
 	gsSPDisplayList(mat_luigi_WingsTip),
-	gsSPDisplayList(luigi_000_displaylist_001_mesh_layer_5_tri_0),
+	gsSPDisplayList(luigi_000_displaylist_001_mesh_layer_4_tri_0),
 	gsSPDisplayList(mat_revert_luigi_WingsTip),
 	gsSPDisplayList(mat_luigi_Wings),
-	gsSPDisplayList(luigi_000_displaylist_001_mesh_layer_5_tri_1),
+	gsSPDisplayList(luigi_000_displaylist_001_mesh_layer_4_tri_1),
 	gsSPDisplayList(mat_revert_luigi_Wings),
 	gsSPEndDisplayList(),
 };
 
-Gfx luigi_000_displaylist_001_mesh_layer_5_mat_override_metal_v3_001_0[] = {
+Gfx luigi_000_displaylist_001_mesh_layer_4_mat_override_metal_v3_001_0[] = {
 	gsSPDisplayList(mat_luigi_WingsTip),
-	gsSPDisplayList(luigi_000_displaylist_001_mesh_layer_5_tri_0),
+	gsSPDisplayList(luigi_000_displaylist_001_mesh_layer_4_tri_0),
 	gsSPDisplayList(mat_revert_luigi_WingsTip),
 	gsSPDisplayList(mat_luigi_Wings),
-	gsSPDisplayList(luigi_000_displaylist_001_mesh_layer_5_tri_1),
+	gsSPDisplayList(luigi_000_displaylist_001_mesh_layer_4_tri_1),
 	gsSPDisplayList(mat_revert_luigi_Wings),
 	gsSPEndDisplayList(),
 };
 
-Gfx luigi_000_displaylist_001_mesh_layer_5_mat_override_metal_v3_001_1[] = {
+Gfx luigi_000_displaylist_001_mesh_layer_4_mat_override_metal_v3_001_1[] = {
 	gsSPDisplayList(mat_luigi_WingsTip),
-	gsSPDisplayList(luigi_000_displaylist_001_mesh_layer_5_tri_0),
+	gsSPDisplayList(luigi_000_displaylist_001_mesh_layer_4_tri_0),
 	gsSPDisplayList(mat_revert_luigi_WingsTip),
 	gsSPDisplayList(mat_luigi_Wings),
-	gsSPDisplayList(luigi_000_displaylist_001_mesh_layer_5_tri_1),
+	gsSPDisplayList(luigi_000_displaylist_001_mesh_layer_4_tri_1),
 	gsSPDisplayList(mat_revert_luigi_Wings),
 	gsSPEndDisplayList(),
 };
 
-Gfx luigi_000_displaylist_002_mesh_layer_5[] = {
+Gfx luigi_000_displaylist_002_mesh_layer_4[] = {
 	gsSPDisplayList(mat_luigi_WingsTip),
-	gsSPDisplayList(luigi_000_displaylist_002_mesh_layer_5_tri_0),
+	gsSPDisplayList(luigi_000_displaylist_002_mesh_layer_4_tri_0),
 	gsSPDisplayList(mat_revert_luigi_WingsTip),
 	gsSPDisplayList(mat_luigi_Wings),
-	gsSPDisplayList(luigi_000_displaylist_002_mesh_layer_5_tri_1),
+	gsSPDisplayList(luigi_000_displaylist_002_mesh_layer_4_tri_1),
 	gsSPDisplayList(mat_revert_luigi_Wings),
 	gsSPEndDisplayList(),
 };
 
-Gfx luigi_000_displaylist_002_mesh_layer_5_mat_override_metal_v3_001_0[] = {
+Gfx luigi_000_displaylist_002_mesh_layer_4_mat_override_metal_v3_001_0[] = {
 	gsSPDisplayList(mat_luigi_WingsTip),
-	gsSPDisplayList(luigi_000_displaylist_002_mesh_layer_5_tri_0),
+	gsSPDisplayList(luigi_000_displaylist_002_mesh_layer_4_tri_0),
 	gsSPDisplayList(mat_revert_luigi_WingsTip),
 	gsSPDisplayList(mat_luigi_Wings),
-	gsSPDisplayList(luigi_000_displaylist_002_mesh_layer_5_tri_1),
+	gsSPDisplayList(luigi_000_displaylist_002_mesh_layer_4_tri_1),
 	gsSPDisplayList(mat_revert_luigi_Wings),
 	gsSPEndDisplayList(),
 };
 
-Gfx luigi_000_displaylist_002_mesh_layer_5_mat_override_metal_v3_001_1[] = {
+Gfx luigi_000_displaylist_002_mesh_layer_4_mat_override_metal_v3_001_1[] = {
 	gsSPDisplayList(mat_luigi_WingsTip),
-	gsSPDisplayList(luigi_000_displaylist_002_mesh_layer_5_tri_0),
+	gsSPDisplayList(luigi_000_displaylist_002_mesh_layer_4_tri_0),
 	gsSPDisplayList(mat_revert_luigi_WingsTip),
 	gsSPDisplayList(mat_luigi_Wings),
-	gsSPDisplayList(luigi_000_displaylist_002_mesh_layer_5_tri_1),
+	gsSPDisplayList(luigi_000_displaylist_002_mesh_layer_4_tri_1),
 	gsSPDisplayList(mat_revert_luigi_Wings),
 	gsSPEndDisplayList(),
 };
@@ -5260,12 +5258,12 @@ Gfx luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_
 	gsSPEndDisplayList(),
 };
 
-Gfx luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_5[] = {
+Gfx luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_4[] = {
 	gsSPDisplayList(mat_luigi_WingsTip),
-	gsSPDisplayList(luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_5_tri_0),
+	gsSPDisplayList(luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_4_tri_0),
 	gsSPDisplayList(mat_revert_luigi_WingsTip),
 	gsSPDisplayList(mat_luigi_Wings),
-	gsSPDisplayList(luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_5_tri_1),
+	gsSPDisplayList(luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_4_tri_1),
 	gsSPDisplayList(mat_revert_luigi_Wings),
 	gsDPPipeSync(),
 	gsSPSetGeometryMode(G_LIGHTING),
@@ -5277,12 +5275,12 @@ Gfx luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_
 	gsSPEndDisplayList(),
 };
 
-Gfx luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_5_mat_override_metal_v3_001_0[] = {
+Gfx luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_4_mat_override_metal_v3_001_0[] = {
 	gsSPDisplayList(mat_luigi_WingsTip),
-	gsSPDisplayList(luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_5_tri_0),
+	gsSPDisplayList(luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_4_tri_0),
 	gsSPDisplayList(mat_revert_luigi_WingsTip),
 	gsSPDisplayList(mat_luigi_Wings),
-	gsSPDisplayList(luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_5_tri_1),
+	gsSPDisplayList(luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_4_tri_1),
 	gsSPDisplayList(mat_revert_luigi_Wings),
 	gsDPPipeSync(),
 	gsSPSetGeometryMode(G_LIGHTING),
@@ -5294,12 +5292,12 @@ Gfx luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_
 	gsSPEndDisplayList(),
 };
 
-Gfx luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_5_mat_override_metal_v3_001_1[] = {
+Gfx luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_4_mat_override_metal_v3_001_1[] = {
 	gsSPDisplayList(mat_luigi_WingsTip),
-	gsSPDisplayList(luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_5_tri_0),
+	gsSPDisplayList(luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_4_tri_0),
 	gsSPDisplayList(mat_revert_luigi_WingsTip),
 	gsSPDisplayList(mat_luigi_Wings),
-	gsSPDisplayList(luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_5_tri_1),
+	gsSPDisplayList(luigi_006_switch_option_right_hand_cap_wings_000_displaylist_right_hand_cap_wings_mesh_layer_4_tri_1),
 	gsSPDisplayList(mat_revert_luigi_Wings),
 	gsSPEndDisplayList(),
 };
