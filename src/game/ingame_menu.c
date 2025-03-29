@@ -25,6 +25,7 @@
 #include "types.h"
 #include "chaos_pause_menu.h"
 #include "chaos/chaos_message.h"
+#include "fasttext.h"
 
 #ifdef VERSION_EU
 #undef LANGUAGE_FUNCTION
@@ -54,7 +55,7 @@ u8 textCurrRatio43[] = { TEXT_HUD_CURRENT_RATIO_43 };
 u8 textCurrRatio169[] = { TEXT_HUD_CURRENT_RATIO_169 };
 u8 textPressL[] = { TEXT_HUD_PRESS_L };
 #endif
-
+u8 sPauseShowVerText = TRUE;
 s8 gChsTrollDialog = FALSE;
 
 extern u8 gLastCompletedCourseNum;
@@ -2501,7 +2502,9 @@ void render_pause_camera_options(s16 x, s16 y, s8 *index, s16 xIndex) {
     u8 textNormalFixed[] = { TEXT_NORMAL_FIXED };
 #endif
 
-    handle_menu_scrolling(MENU_SCROLL_HORIZONTAL, index, 1, 2);
+    if(!(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE) && !(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE)) { 
+        handle_menu_scrolling(MENU_SCROLL_HORIZONTAL, index, 1, 2);
+    }
 
     gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
@@ -2563,11 +2566,12 @@ void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) {
     s32 lvlResetOffset = 0;
     s32 numPauseOptions = 3;
     s32 camAngleIndex = MENU_OPT_3;
+    s32 lvlResetActive = chaos_check_if_patch_active(CHAOS_PATCH_LEVEL_RESET);
     
     gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
 
-    if(chaos_check_if_patch_active(CHAOS_PATCH_LEVEL_RESET)) {
+    if(lvlResetActive) {
         lvlResetOffset = 15;
         numPauseOptions = 4;
         camAngleIndex = MENU_OPT_4;
@@ -2598,6 +2602,13 @@ void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) {
 
     if (*index == camAngleIndex) {
         render_pause_camera_options(x - 42, y - 42 - lvlResetOffset, &gDialogCameraAngleIndex, 110);
+        if(lvlResetActive) {
+            sPauseShowVerText = FALSE;
+        } else {
+            sPauseShowVerText = TRUE;
+        }
+    } else {
+        sPauseShowVerText = TRUE;
     }
 }
 
@@ -2888,6 +2899,7 @@ s16 render_pause_courses_and_castle(void) {
             print_hud_pause_colorful_str();
             render_pause_castle_menu_box(160, 143);
             render_pause_castle_main_strings(104, 60);
+            sPauseShowVerText = TRUE;
 
 #ifdef VERSION_EU
             if (gPlayer3Controller->buttonPressed & (A_BUTTON | Z_TRIG | START_BUTTON))
@@ -2910,6 +2922,11 @@ s16 render_pause_courses_and_castle(void) {
         } else {
             handle_page_switch_inputs();
             render_pause_screen_button_prompts();
+            if(sPauseShowVerText) {
+                fasttext_setup_textrect_rendering(FT_FONT_VANILLA_SHADOW);
+                fasttext_draw_texrect(16, (SCREEN_HEIGHT - 38), VERSION_STRING, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_finished_rendering();
+            }
         }
     if (gDialogTextAlpha < 250) {
         gDialogTextAlpha += 25;

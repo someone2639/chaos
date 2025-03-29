@@ -15,7 +15,9 @@ extern const struct Animation *const blue_fish_seg3_anims_0301C2B0[];
 // bowser_key
 extern const GeoLayout bowser_key_geo[];
 extern const GeoLayout bowser_key_cutscene_geo[];
+extern const GeoLayout transparent_bowser_key_geo[];
 extern const Gfx bowser_key_dl[];
+extern const Gfx transparent_key_dl[];
 extern const struct Animation *const bowser_key_seg3_anims_list[];
 
 // butterfly

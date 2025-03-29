@@ -542,7 +542,7 @@
 #define MODEL_SEAWEED                     0xC1        // seaweed_geo
 #define MODEL_AMP                         0xC2        // dAmpGeo
 #define MODEL_BOBOMB_BUDDY                0xC3        // bobomb_buddy_geo
-// find me
+#define MODEL_TRANSPARENT_BOWSER_KEY      0xC4        // transparent_bowser_key_geo
 #define MODEL_SILVER_COIN                 0xC5        // silver_coin_geo
 #define MODEL_SILVER_COIN_NO_SHADOW       0xC6        // silver_coin_no_shadow_geo
 #define MODEL_SSL_TOX_BOX                 0xC7        // ssl_geo_000630

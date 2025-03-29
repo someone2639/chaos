@@ -344,10 +344,13 @@ Gfx *geo_chaos_cake_stats(s32 callContext, UNUSED struct GraphNode *node, UNUSED
             gSPDisplayList(gDisplayListHead++, stats_bg_stats_mesh_mesh);
             gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
-            fasttext_setup_textrect_rendering(FT_FONT_MEDIUM);
+            fasttext_setup_textrect_rendering(FT_FONT_VANILLA_SHADOW);
             if(sEndCakeTimer > 15) {
-                //Difficulty
+                fasttext_draw_texrect((SCREEN_WIDTH - 16), (SCREEN_HEIGHT - 24), VERSION_STRING, FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_setup_textrect_rendering(FT_FONT_MEDIUM);
                 fasttext_draw_texrect(SCREEN_CENTER_X, 15, "FINAL SCORE", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+                
+                //Difficulty
                 fasttext_draw_texrect(16, 40, "Difficulty:", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
                 switch(save_file_get_difficulty(gCurrSaveFileNum - 1)) {
                     case CHAOS_DIFFICULTY_EASY:

@@ -1165,10 +1165,20 @@ void bowser_act_dance(void) {
  * Spawns a Key in BitDW/BitFS or Grand Star in BitS
  */
 void bowser_spawn_collectable(void) {
+    u32 keyModel = MODEL_BOWSER_KEY;
     if (o->oBehParams2ndByte == BOWSER_BP_BITS) {
         gSecondCameraFocus = spawn_object(o, MODEL_STAR, bhvGrandStar);
     } else {
-        gSecondCameraFocus = spawn_object(o, MODEL_BOWSER_KEY, bhvBowserKey);
+        if(gCurrLevelNum == LEVEL_BOWSER_1) {
+            if(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_1 | SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)) {
+                keyModel = MODEL_TRANSPARENT_BOWSER_KEY;
+            }
+        } else if(gCurrLevelNum == LEVEL_BOWSER_2) {
+            if(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_2 | SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR)) {
+                keyModel = MODEL_TRANSPARENT_BOWSER_KEY;
+            }
+        }
+        gSecondCameraFocus = spawn_object(o, keyModel, bhvBowserKey);
         cur_obj_play_sound_2(SOUND_GENERAL2_BOWSER_KEY);
     }
     gSecondCameraFocus->oAngleVelYaw = o->oAngleVelYaw;
