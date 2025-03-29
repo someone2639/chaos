@@ -112,6 +112,8 @@ void bhv_MarioClone_loop(void) {
                 delete_clone(o);
             } else if ((coll->oInteractType == INTERACT_TEXT)) {
                 // do nothing
+            } else if (coll->oInteractType == INTERACT_WHIRLPOOL) {
+                delete_clone(o);
             } else {
                 swap(m, o);
             }
