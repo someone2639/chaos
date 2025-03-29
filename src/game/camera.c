@@ -3031,6 +3031,7 @@ void update_lakitu(struct Camera *c) {
 }
 
 s16 topdown_yawcorrection = 0;
+u16 topdown_vcutmlatch = 0;
 
 void set_camera_mode_top_down(struct Camera *c, s16 transitionTime) {
     Vec3f focus;
@@ -3041,6 +3042,7 @@ void set_camera_mode_top_down(struct Camera *c, s16 transitionTime) {
     focus[2] = sMarioCamState->pos[2];
     if (c->mode != CAMERA_MODE_TOP_DOWN) {
         topdown_yawcorrection = 0;
+        topdown_vcutmlatch = 0;
         yaw = calculate_yaw(focus, sMarioCamState->pos) - calculate_yaw(c->focus, c->pos) + DEGREES(90);
         if (yaw > 0) {
             transition_to_camera_mode(c, CAMERA_MODE_TOP_DOWN, transitionTime);
@@ -3078,12 +3080,17 @@ void mode_top_down_cam(struct Camera *c) {
         }
     }
     f32 camCeilHeight = find_ceil(c->focus[0], gMarioState->pos[1] + 50, c->focus[2], &surface);
-    if (surface) {
+    if (surface && (gCurrLevelNum != LEVEL_VCUTM)) {
         c->pos[1] = camCeilHeight - 100.0f;
     } else {
         // Hard coded check because otherwise it crashes on level entrance for some reason
         if(gCurrLevelNum == LEVEL_VCUTM) {
-            c->pos[1] = 6454;
+            if (topdown_vcutmlatch == 0) {
+                c->pos[1] = 6454;
+                topdown_vcutmlatch = 1;
+            } else {
+                c->pos[1] = ((gMarioState->pos[1] - gMarioState->floorHeight) > 2000.0f) ? (gMarioState->pos[1] + 3000.0f) : (gMarioState->floorHeight + 5000.0f);
+            }
         } else {
             c->pos[1] = ((gMarioState->pos[1] - gMarioState->floorHeight) > 2000.0f) ? (gMarioState->pos[1] + 3000.0f) : (gMarioState->floorHeight + 5000.0f);
         }
