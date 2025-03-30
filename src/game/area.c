@@ -27,6 +27,7 @@
 #include "profiling.h"
 #include "patch_selection_ui.h"
 #include "chaos_pause_menu.h"
+#include "chaos_tutorial.h"
 
 struct SpawnInfo gPlayerSpawnInfos[1];
 struct GraphNode *D_8033A160[0x100];

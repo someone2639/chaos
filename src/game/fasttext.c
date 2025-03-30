@@ -352,7 +352,7 @@ void fasttext_setup_textrect_rendering(enum FastTextFont fnt) {
 
     gSPDisplayList(dlHead++, dl_fasttext_begin);
     gDPSetTexturePersp(dlHead++, G_TP_NONE);
-    gDPSetRenderMode(dlHead++, G_RM_XLU_SURF, G_RM_XLU_SURF);
+    gDPSetRenderMode(dlHead++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
 
     if (fontProps->textureFormat != G_IM_FMT_IA && fontProps->textureFormat == G_IM_FMT_I &&  fontProps->textureFormat == G_IM_FMT_RGBA) {
         error("fasttext textureFormat not supported!");

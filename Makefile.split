@@ -273,3 +273,6 @@ CRASH_TEXTURE_C_FILES       := $(addprefix $(BUILD_DIR)/,$(patsubst %.png,%.inc.
 
 FASTTEXT_TEXTURE_FILES      := $(wildcard $(TEXTURE_DIR)/fasttext/*.png)
 FASTTEXT_TEXTURE_C_FILES    := $(addprefix $(BUILD_DIR)/,$(patsubst %.png,%.inc.c,$(FASTTEXT_TEXTURE_FILES)))
+
+CHAOS_TUTORIAL_TEXTURE_FILES   := $(wildcard $(TEXTURE_DIR)/chaos_tutorial/*.png)
+CHAOS_TUTORIAL_TEXTURE_C_FILES := $(addprefix $(BUILD_DIR)/,$(patsubst %.png,%.inc.c,$(CHAOS_TUTORIAL_TEXTURE_FILES)))
