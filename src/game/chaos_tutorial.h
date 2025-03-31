@@ -7,10 +7,11 @@ struct ChaosTutorialSlide {
     char *description;
 };
 
+extern s32 gChaosTutorialSlideIndex;
 extern u8 *gChaosTutorialLoadedAddr;
 extern u8 gChaosTutorialImgBuffer[CHAOS_TUTORIAL_IMG_SIZE];
 extern struct ChaosTutorialSlide gChaosTutorialSlides[];
-extern const u32 gChaosTutorialSlideCount;
+extern const s32 gChaosTutorialSlideCount;
 
-void chstut_load_image(u8 *imgAddress);
-void chstut_render_image(u8 r, u8 g, u8 b, u8 a);
+void chstut_tutorial_init(void);
+void chstut_render_tutorial(void);

@@ -1,20 +1,64 @@
 #include "sm64.h"
 
 #include "chaos_tutorial.h"
+#include "audio/external.h"
 #include "debug.h"
+#include "fasttext.h"
 #include "game_init.h"
+#include "geo_misc.h"
+#include "ingame_menu.h"
 #include "memory.h"
+#include "object_helpers.h"
+#include "patch_selection_ui.h"
+#include "segment2.h"
+
+#define G_CC_FILL         0,      0,      0,         PRIMITIVE,   0,      0,      0,         1
+#define G_CC_FILLA        0,      0,      0,         PRIMITIVE,   0,      0,      0,         PRIMITIVE
+#define G_CC_TEX          TEXEL0, 0,      PRIMITIVE, 0,           0,      0,      0,         TEXEL0
+#define G_CC_TEXA         TEXEL0, 0,      PRIMITIVE, 0,           TEXEL0, 0,      PRIMITIVE, 0
+
+#define STICK_DOWN (1 << 0)
+#define STICK_UP (1 << 1)
+#define STICK_LEFT (1 << 2)
+#define STICK_RIGHT (1 << 3)
+#define STICK_VERTICAL_MASK (STICK_UP | STICK_DOWN)
+#define STICK_HORIZONTAL_MASK (STICK_LEFT | STICK_RIGHT)
+#define STICK_DIRECTIONS 4
+#define STICK_TRIGGER_ON 54.0f
+#define STICK_TRIGGER_OFF 52.0f
+#define STICK_INFLUENCE_MAX 0.08f
+
+#define FRAMES_TO_CONTINUE 4
+#define FRAMES_TO_WAIT_AFTER_FIRST 10
+
+static u8 inputStickFlags = 0;
+static s8 stickHistoryFrames = 0;
+static s8 stickShouldOverrideHold = TRUE;
+
+static s32 animScaleRight = 0;
+static s32 animScaleLeft = 0;
+
+static f32 animScaleLUT[] = {
+    1.0f,
+    0.993f,
+    0.985f,
+    0.97f,
+    0.95f,
+    0.925f,
+    0.875f,
+    0.80f,
+};
 
 static const Gfx dl_chstut_img_1cycle_begin[] = {
     gsDPPipeSync(),
     gsDPSetTexturePersp(G_TP_NONE),
-    gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, TEXEL0, 0, PRIMITIVE, 0, TEXEL0, 0, PRIMITIVE, 0, TEXEL0, 0, PRIMITIVE, 0),
     gsDPSetTextureFilter(G_TF_POINT),
     gsSPEndDisplayList(),
 };
 
 static const Gfx dl_chstut_img_1cycle_end[] = {
     gsDPPipeSync(),
+    gsDPSetPrimColor(0, 0, 255, 255, 255, 255),
     gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
     gsDPSetCycleType(G_CYC_1CYCLE),
     gsDPSetRenderMode(G_RM_AA_ZB_OPA_SURF, G_RM_AA_ZB_OPA_SURF2),
@@ -23,8 +67,12 @@ static const Gfx dl_chstut_img_1cycle_end[] = {
     gsSPEndDisplayList(),
 };
 
-static void chstut_render_tiled_image(Gfx **dl, Texture *image, s32 x, s32 y, s32 width, s32 height, s32 useCopyMode) {
+static void chstut_render_tiled_image(Gfx **dl, Texture *image, s32 x, s32 y, s32 width, s32 height, u8 r, u8 g, u8 b, u8 a) {
     Gfx *dlHead = *dl;
+
+    if (a == 0) {
+        return; // Don't even bother if it's invisible
+    }
 
     s32 modeSC;
     s32 mOne;
@@ -36,15 +84,25 @@ static void chstut_render_tiled_image(Gfx **dl, Texture *image, s32 x, s32 y, s3
         maxWidth = 64;
     }
 
+    gDPSetPrimColor(dlHead++, 0, 0, r, g, b, a);
     gSPDisplayList(dlHead++, dl_chstut_img_1cycle_begin);
-    if (useCopyMode) {
-        gDPSetCycleType(dlHead++, G_CYC_COPY);
+
+    if (a >= 0xFF) {
+        gDPSetCombineMode(dlHead++, G_CC_TEX, G_CC_TEX);
         gDPSetRenderMode(dlHead++, G_RM_NOOP, G_RM_NOOP2);
-        modeSC = 4;
-        mOne = 1;
+        if (x >= 0) {
+            gDPSetCycleType(dlHead++, G_CYC_COPY);
+            modeSC = 4;
+            mOne = 1;
+        } else {
+            gDPSetCycleType(dlHead++, G_CYC_1CYCLE);
+            modeSC = 1;
+            mOne = 0;
+        }
     } else {
-        gDPSetCycleType(dlHead++, G_CYC_1CYCLE);
+        gDPSetCombineMode(dlHead++, G_CC_TEXA, G_CC_TEXA);
         gDPSetRenderMode(dlHead++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
+        gDPSetCycleType(dlHead++, G_CYC_1CYCLE);
         modeSC = 1;
         mOne = 0;
     }
@@ -65,7 +123,8 @@ static void chstut_render_tiled_image(Gfx **dl, Texture *image, s32 x, s32 y, s3
 
             gDPLoadSync(dlHead++);
             gDPLoadTextureTile(dlHead++,
-                image, G_IM_FMT_RGBA, G_IM_SIZ_16b, width, height, curImgX, curImgY, ((curImgX + tileWidth) - 1), ((curImgY + tileHeight) - 1), 0, (G_TX_NOMIRROR | G_TX_WRAP), (G_TX_NOMIRROR | G_TX_WRAP), widthMask, heightMask, G_TX_NOLOD, G_TX_NOLOD);
+                image, G_IM_FMT_RGBA, G_IM_SIZ_16b, width, height, curImgX, curImgY, ((curImgX + tileWidth) - 1), ((curImgY + tileHeight) - 1),
+                0, (G_TX_NOMIRROR | G_TX_WRAP), (G_TX_NOMIRROR | G_TX_WRAP), widthMask, heightMask, G_TX_NOLOD, G_TX_NOLOD);
             gSPScisTextureRectangle(dlHead++,
                 ((x + curImgX) << 2),
                 ((y + curImgY) << 2),
@@ -80,7 +139,132 @@ static void chstut_render_tiled_image(Gfx **dl, Texture *image, s32 x, s32 y, s3
     *dl = dlHead;
 }
 
-void chstut_load_image(u8 *imgAddress) {
+static void chstut_draw_shaded_background(Gfx** dl, s32 x1, s32 x2, s32 y1, s32 y2, u8 r, u8 g, u8 b, u8 a) {
+    Gfx* dlHead = *dl;
+
+    if (a == 0) {
+        return; // Don't even bother if it's invisible
+    }
+
+    gDPPipeSync(dlHead++);
+    gDPSetTextureFilter(dlHead++, G_TF_POINT);
+    gDPSetCycleType(dlHead++, G_CYC_1CYCLE);
+
+    if (a == 0xFF) {
+        gDPSetRenderMode(dlHead++, G_RM_OPA_SURF, G_RM_OPA_SURF2);
+        gDPSetCombineMode(dlHead++, G_CC_FILL, G_CC_FILL);
+    } else {
+        gDPSetRenderMode(dlHead++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
+        gDPSetCombineMode(dlHead++, G_CC_FILLA, G_CC_FILLA);
+    }
+
+    gDPSetPrimColor(dlHead++, 0, 0, r, g, b, a);
+    gDPPipeSync(dlHead++);
+
+    if (x1 > x2) {
+        s32 tmp = x1;
+        x1 = x2;
+        x2 = tmp;
+    }
+    if (y1 > y2) {
+        s32 tmp = y1;
+        y1 = y2;
+        y2 = tmp;
+    }
+
+    Vtx *verts = alloc_display_list(4 * sizeof(Vtx));
+    if (verts != NULL) {
+        make_vertex(verts, 0, x1, y1, 0, 0, 0, 255, 255, 255, 255);
+        make_vertex(verts, 1, x2, y1, 0, 0, 0, 255, 255, 255, 255);
+        make_vertex(verts, 2, x2, y2, 0, 0, 0, 255, 255, 255, 255);
+        make_vertex(verts, 3, x1, y2, 0, 0, 0, 255, 255, 255, 255);
+
+        gSPVertex(dlHead++, verts, 4, 0);
+        gSP2Triangles(dlHead++, 0, 1, 2, 0x0, 0, 2, 3, 0x0);
+    }
+
+    gDPPipeSync(dlHead++);
+    gDPSetPrimColor(dlHead++, 0, 0, 255, 255, 255, 255);
+    gDPSetCombineMode(dlHead++, G_CC_SHADE, G_CC_SHADE);
+    gDPSetRenderMode(dlHead++, G_RM_AA_ZB_OPA_SURF, G_RM_AA_ZB_OPA_SURF2);
+    gDPSetTextureFilter(dlHead++, G_TF_BILERP);
+    gDPSetTexturePersp(dlHead++, G_TP_PERSP);
+
+    *dl = dlHead;
+}
+
+static u8 chstut_attempt_selection_move(u8 movementMask) {
+    u8 inputStickFlagsLast = inputStickFlags;
+
+    // Check for change in stick inputs
+    if (gPlayer1Controller->rawStickY <= -STICK_TRIGGER_ON || gPlayer1Controller->buttonDown & D_JPAD || gPlayer1Controller->buttonDown & D_CBUTTONS) {
+        inputStickFlags |= STICK_DOWN;
+    } else if (gPlayer1Controller->rawStickY > -STICK_TRIGGER_OFF) {
+        inputStickFlags &= ~STICK_DOWN;
+    }
+
+    if (gPlayer1Controller->rawStickY >= STICK_TRIGGER_ON || gPlayer1Controller->buttonDown & U_JPAD || gPlayer1Controller->buttonDown & U_CBUTTONS) {
+        inputStickFlags |= STICK_UP;
+    } else if (gPlayer1Controller->rawStickY < STICK_TRIGGER_OFF) {
+        inputStickFlags &= ~STICK_UP;
+    }
+
+    if (gPlayer1Controller->rawStickX <= -STICK_TRIGGER_ON || gPlayer1Controller->buttonDown & L_JPAD || gPlayer1Controller->buttonDown & L_CBUTTONS) {
+        inputStickFlags |= STICK_LEFT;
+    } else if (gPlayer1Controller->rawStickX > -STICK_TRIGGER_OFF) {
+        inputStickFlags &= ~STICK_LEFT;
+    }
+
+    if (gPlayer1Controller->rawStickX >= STICK_TRIGGER_ON || gPlayer1Controller->buttonDown & R_JPAD || gPlayer1Controller->buttonDown & R_CBUTTONS) {
+        inputStickFlags |= STICK_RIGHT;
+    } else if (gPlayer1Controller->rawStickX < STICK_TRIGGER_OFF) {
+        inputStickFlags &= ~STICK_RIGHT;
+    }
+
+    // If opposing directions are both active, cancel them out
+    if ((inputStickFlags & STICK_VERTICAL_MASK) == STICK_VERTICAL_MASK) {
+        inputStickFlags &= ~STICK_VERTICAL_MASK;
+    }
+
+    if ((inputStickFlags & STICK_HORIZONTAL_MASK) == STICK_HORIZONTAL_MASK) {
+        inputStickFlags &= ~STICK_HORIZONTAL_MASK;
+    }
+
+    // Remove stick inputs unrepresentative of scroll mask
+    inputStickFlags &= movementMask;
+
+    u8 appliedInput = 0;
+
+    u8 anyInputsHeld = FALSE;
+    // Check whether to progress held inputs
+    for (u32 i = 0; i < STICK_DIRECTIONS; i++) {
+        if (!(inputStickFlags & (1 << i))) {
+            continue;
+        }
+    
+        anyInputsHeld = TRUE;
+        if (stickHistoryFrames == 0) {
+            appliedInput |= (1 << i);
+        } else if (stickHistoryFrames >= FRAMES_TO_WAIT_AFTER_FIRST && ((stickHistoryFrames - FRAMES_TO_WAIT_AFTER_FIRST) % FRAMES_TO_CONTINUE) == 0) {
+            appliedInput |= (1 << i);
+            stickHistoryFrames = FRAMES_TO_WAIT_AFTER_FIRST;
+            stickShouldOverrideHold = FALSE;
+        } else if (stickShouldOverrideHold && !(inputStickFlagsLast & (1 << i))) {
+            appliedInput |= (1 << i);
+        }
+    }
+
+    if (!anyInputsHeld) {
+        stickHistoryFrames = 0;
+        stickShouldOverrideHold = TRUE;
+    } else {
+        stickHistoryFrames++;
+    }    
+
+    return appliedInput;
+}
+
+static void chstut_load_image(u8 *imgAddress) {
     if (imgAddress == gChaosTutorialLoadedAddr) {
         return;
     }
@@ -94,15 +278,136 @@ void chstut_load_image(u8 *imgAddress) {
     dma_read(gChaosTutorialImgBuffer, (u8 *) imgAddress, (u8 *) imgAddress + (size_t) CHAOS_TUTORIAL_IMG_SIZE);
 }
 
-void chstut_render_image(u8 r, u8 g, u8 b, u8 a) {
-    if (gChaosTutorialLoadedAddr == NULL) {
-        return;
+void chstut_bg_scroll(void) {
+	int i = 0;
+	int count = 4;
+	int width = 64 * 0x20;
+	int height = 32 * 0x20;
+
+	static int currentX = 0;
+	int deltaX;
+	static int currentY = 0;
+	int deltaY;
+	Vtx *vertices = segmented_to_virtual(chstut_bg_mesh_mesh_vtx_0);
+
+	deltaX = (int)(0.1 * 0x20) % width;
+	deltaY = (int)(0.1 * 0x20) % height;
+
+	if (absi(currentX) > width) {
+		deltaX -= (int)(absi(currentX) / width) * width * signum_positive(deltaX);
+	}
+	if (absi(currentY) > height) {
+		deltaY -= (int)(absi(currentY) / height) * height * signum_positive(deltaY);
+	}
+
+	for (i = 0; i < count; i++) {
+		vertices[i].n.tc[0] += deltaX;
+		vertices[i].n.tc[1] += deltaY;
+	}
+	currentX += deltaX;	currentY += deltaY;
+}
+
+static void chstut_render_tutorial_description(Gfx** dl) {
+    Gfx* dlHead = *dl;
+    f32 scale = 1.0f;
+    enum FastTextFont font = FT_FONT_SMALL_THIN;
+
+    create_dl_translation_matrix(&dlHead, MENU_MTX_PUSH, SCREEN_CENTER_X, SCREEN_CENTER_Y, 0.0f);
+    create_dl_scale_matrix(&dlHead, MENU_MTX_NOPUSH, 1.0f, scale, 1.0f);
+    gSPDisplayList(dlHead++, chstut_bg_mesh_mesh);
+
+    if (*dl == gDisplayListHead) {
+        *dl = dlHead;
     }
 
-    gDPPipeSync(gDisplayListHead++);
-    gDPSetPrimColor(gDisplayListHead++, 0, 0, r, g, b, a);
+    if (gChaosTutorialSlides[gChaosTutorialSlideIndex].description != NULL) {
+        slowtext_setup_ortho_rendering(font);
+        slowtext_draw_ortho_text_linebreaks(-142, -77, DESC_STRING_WIDTH, gChaosTutorialSlides[gChaosTutorialSlideIndex].description,
+            FT_FLAG_ALIGN_LEFT, 0xDF, 0xDF, 0xDF, 0xFF);
+        slowtext_finished_rendering();
+    }
 
-    chstut_render_tiled_image(&gDisplayListHead, gChaosTutorialImgBuffer, SCREEN_CENTER_X - ((CHAOS_TUTORIAL_IMG_WIDTH + 1) / 2), 12, CHAOS_TUTORIAL_IMG_WIDTH, CHAOS_TUTORIAL_IMG_HEIGHT, (a == 255) ? TRUE : FALSE);
+    if (*dl == gDisplayListHead) {
+        dlHead = *dl;
+    }
 
-    gDPSetPrimColor(gDisplayListHead++, 0, 0, 255, 255, 255, 255);
+    gSPPopMatrix(dlHead++, G_MTX_MODELVIEW);
+
+    *dl = dlHead;
+}
+
+static void chstut_render_scroll_arrows(Gfx** dl) {
+    Gfx* dlHead = *dl;
+
+    const f32 scale = 2.0f;
+    const f32 leftScale = animScaleLUT[animScaleLeft] * scale;
+    const f32 rightScale = animScaleLUT[animScaleRight] * scale;
+    const s32 x = (SCREEN_CENTER_X * 4) / 5;
+    const s32 y = (SCREEN_HEIGHT - 12) - ((CHAOS_TUTORIAL_IMG_HEIGHT + 1) / 2);
+
+    create_dl_translation_matrix(&dlHead, MENU_MTX_PUSH, SCREEN_CENTER_X + x, y, 0.0f);
+    create_dl_scale_matrix(&dlHead, MENU_MTX_NOPUSH, rightScale, rightScale, rightScale);
+    if (gChaosTutorialSlideIndex < (gChaosTutorialSlideCount - 1)) {
+        gDPSetEnvColor(dlHead++, 255, 255, 255, 255);
+    } else {
+        gDPSetEnvColor(dlHead++, 255, 255, 255, 31);
+    }
+    gSPDisplayList(dlHead++, dl_draw_triangle_centered);
+    gSPPopMatrix(dlHead++, G_MTX_MODELVIEW);
+    
+    create_dl_translation_matrix(&dlHead, MENU_MTX_PUSH, SCREEN_CENTER_X - x, y, 0.0f);
+    create_dl_scale_matrix(&dlHead, MENU_MTX_NOPUSH, -leftScale, -leftScale, leftScale);
+    if (gChaosTutorialSlideIndex > 0) {
+        gDPSetEnvColor(dlHead++, 255, 255, 255, 255);
+    } else {
+        gDPSetEnvColor(dlHead++, 255, 255, 255, 31);
+    }
+    gSPDisplayList(dlHead++, dl_draw_triangle_centered);
+    gSPPopMatrix(dlHead++, G_MTX_MODELVIEW);
+
+    if (animScaleLeft > 0) {
+        animScaleLeft--;
+    }
+    if (animScaleRight > 0) {
+        animScaleRight--;
+    }
+
+    *dl = dlHead;
+}
+
+void chstut_tutorial_init(void) {
+    gChaosTutorialSlideIndex = 0;
+    inputStickFlags = 0;
+    stickHistoryFrames = 0;
+    stickShouldOverrideHold = TRUE;
+    animScaleRight = 0;
+    animScaleLeft = 0;
+}
+
+void chstut_render_tutorial(void) {
+    u8 stickMove = chstut_attempt_selection_move(STICK_HORIZONTAL_MASK);
+
+    if ((stickMove & STICK_RIGHT) && gChaosTutorialSlideIndex < (gChaosTutorialSlideCount - 1)) {
+        gChaosTutorialSlideIndex++;
+        animScaleRight = ARRAY_COUNT(animScaleLUT) - 1;
+        play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
+    } else if ((stickMove & STICK_LEFT) && gChaosTutorialSlideIndex > 0) {
+        gChaosTutorialSlideIndex--;
+        animScaleLeft = ARRAY_COUNT(animScaleLUT) - 1;
+        play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
+    }
+
+    chstut_load_image(gChaosTutorialSlides[gChaosTutorialSlideIndex].imageAddress);
+
+    create_dl_ortho_matrix(&gDisplayListHead);
+
+    chstut_draw_shaded_background(&gDisplayListHead, 0, SCREEN_WIDTH, 0, SCREEN_HEIGHT, 0, 0, 0, 255);
+    if (gChaosTutorialLoadedAddr != NULL) {
+        chstut_render_tiled_image(&gDisplayListHead, gChaosTutorialImgBuffer, SCREEN_CENTER_X - ((CHAOS_TUTORIAL_IMG_WIDTH + 1) / 2), 12,
+            CHAOS_TUTORIAL_IMG_WIDTH, CHAOS_TUTORIAL_IMG_HEIGHT, 255, 255, 255, 255);
+    }
+    chstut_render_scroll_arrows(&gDisplayListHead);
+
+    chstut_bg_scroll();
+    chstut_render_tutorial_description(&gDisplayListHead);
 }
