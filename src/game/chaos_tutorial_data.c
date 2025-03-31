@@ -11,7 +11,7 @@ struct ChaosTutorialSlide gChaosTutorialSlides[] = {
     },
     {
         .imageAddress = chsTutDMA_01_select_patch,
-        .description = "In this game, Mario will be sent to this patch selection menu any time he collects a star or activate a cap switch. Here, you will need to select a @FF7F00--patch card@--------.",
+        .description = "In this game, Mario will be sent to this patch selection menu any time he collects a star, key, or activates a cap switch. Here, you will need to select a @FF7F00--patch card@--------.",
     },
     {
         .imageAddress = chsTutDMA_02_selection_layout,
@@ -38,39 +38,39 @@ struct ChaosTutorialSlide gChaosTutorialSlides[] = {
         .description = "Some special effects will come with a @1FBF1F--Use Counter@-------- instead, which indicates a specific number of times that effect may be activated. These may be saved for use in the perfect scenario!",
     },
     {
-        .imageAddress = chsTutDMA_08_event_lucky,
-        .description = "Occasionally, you will encounter a special event when visiting the patch selection menu. The three event types include @1FCF5F--Lucky@-------- events, @FF5F5F--Bad Luck@-------- events, and @4F4F4F--Chaos@-------- events.",
+        .imageAddress = chsTutDMA_08_special_events,
+        .description = "Occasionally, you will encounter a special event when visiting the patch selection menu. The three event types include @25CF65--Lucky@-------- events, @FF625A--Bad Luck@-------- events, and @464646--Chaos@-------- events.",
     },
     {
-        .imageAddress = chsTutDMA_08_event_lucky,
-        .description = "A @1FCF5F--Lucky@-------- event will attempt to display positive effects that are valued one rank higher than each patch card's listed rank. Affected cards will be given a @1FCF5F--green@-------- background.",
+        .imageAddress = chsTutDMA_09_event_lucky,
+        .description = "A @25CF65--Lucky@-------- event will attempt to display positive effects that are valued one rank higher than each patch card's listed rank. Affected cards will be given a @25CF65--green@-------- background.",
     },
     {
-        .imageAddress = chsTutDMA_09_event_bad_luck,
-        .description = "Conversely, a @FF5F5F--Bad Luck@-------- event will attempt to display negative effects that are valued one rank higher than each patch card's listed rank. Affected cards will be given a @FF5F5F--red@-------- background.",
+        .imageAddress = chsTutDMA_0A_event_bad_luck,
+        .description = "Conversely, a @FF625A--Bad Luck@-------- event will attempt to display negative effects that are valued one rank higher than each patch card's listed rank. Affected cards will be given a @FF625A--red@-------- background.",
     },
     {
-        .imageAddress = chsTutDMA_0A_event_chaos,
-        .description = "Lastly, a @4F4F4F--Chaos@-------- event will completely eliminate the positive effect from the patch cards, leaving only negative effects to choose from. Affected cards will be given a @4F4F4F--dark gray@-------- background.",
+        .imageAddress = chsTutDMA_0B_event_chaos,
+        .description = "Lastly, a @464646--Chaos@-------- event will completely eliminate the positive effect from the patch cards, leaving only negative effects to choose from. Affected cards will be given a @464646--dark gray@-------- background.",
     },
     {
-        .imageAddress = chsTutDMA_0B_difficulty_easy,
+        .imageAddress = chsTutDMA_0C_difficulty_selection,
         .description = "This hack comes with an @1FAF1F--Easy@--------, @7F7F7F--Normal@--------, and @9F1F1F--Hard@-------- difficulty, as well as a special @FFBF00--Challenge Mode@--------.",
     },
     {
-        .imageAddress = chsTutDMA_0B_difficulty_easy,
+        .imageAddress = chsTutDMA_0D_difficulty_easy,
         .description = "On @1FAF1F--Easy@-------- difficulty, you won't have to worry so much about the most intense negative effects appearing. Recommended for players brand new to Super Mario 64, or Mario games in general.",
     },
     {
-        .imageAddress = chsTutDMA_0C_difficulty_hard,
+        .imageAddress = chsTutDMA_0E_difficulty_hard,
         .description = "On @9F1F1F--Hard@-------- difficulty, you will need to endure brutal negative effects more frequently and for longer, with fewer offsetting benefits from positive effects. Recommended for experienced players only.",
     },
     {
-        .imageAddress = chsTutDMA_0D_challenge_mode,
+        .imageAddress = chsTutDMA_0F_challenge_mode,
         .description = "If you're feeling confident in your abilities, take on @FFBF00--Challenge Mode@--------! Your entire save file is on the line, and you must work to complete the game without running out of lives!",
     },
     {
-        .imageAddress = chsTutDMA_0E_conclusion,
+        .imageAddress = chsTutDMA_10_conclusion,
         .description = "Your goal is to defeat @6F4F2F--Bowser@-------- and rescue the @FFFF00--Grand Star@--------. What kinds of unique effect combinations will you experience during your adventure?",
     },
 };
