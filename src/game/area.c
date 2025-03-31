@@ -487,8 +487,6 @@ void render_game(void) {
             }
         }
 
-        chstut_render_tutorial();
-
         if (chaos_check_if_patch_active(CHAOS_PATCH_BLUECOIN_LOTTERY)) {
             drawslots();
         }

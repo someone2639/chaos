@@ -107,7 +107,6 @@ void menu_start_button_prompt() {
 	gDPSetTexturePersp(gDisplayListHead++, G_TP_NONE);
 	gDPSetAlphaCompare(gDisplayListHead++, G_AC_THRESHOLD);
 	gDPSetBlendColor(gDisplayListHead++, 255, 255, 255, 255);
-	gDPSetRenderMode(gDisplayListHead++, G_RM_AA_XLU_SURF, G_RM_AA_XLU_SURF2);
     gDPPipeSync(gDisplayListHead++);
     gSPTexture(gDisplayListHead++, 65535, 65535, 0, 0, 1);
 }
@@ -120,7 +119,7 @@ void menu_end_button_prompt() {
 	gSPTexture(gDisplayListHead++, 65535, 65535, 0, G_TX_RENDERTILE, G_OFF);
 	gDPSetTexturePersp(gDisplayListHead++, G_TP_PERSP);
 	gDPSetAlphaCompare(gDisplayListHead++, G_AC_NONE);
-	gDPSetRenderMode(gDisplayListHead++, G_RM_AA_ZB_OPA_SURF, G_RM_AA_ZB_OPA_SURF2);
+    gDPPipeSync(gDisplayListHead++);
 }
 
 /*

@@ -11,6 +11,7 @@
 #include "object_helpers.h"
 #include "patch_selection_ui.h"
 #include "segment2.h"
+#include "chaos_menus.h"
 
 #define G_CC_FILL         0,      0,      0,         PRIMITIVE,   0,      0,      0,         1
 #define G_CC_FILLA        0,      0,      0,         PRIMITIVE,   0,      0,      0,         PRIMITIVE
@@ -31,12 +32,20 @@
 #define FRAMES_TO_CONTINUE 4
 #define FRAMES_TO_WAIT_AFTER_FIRST 10
 
+#define TUTORIAL_ANIM_FRAMES    9
+#define TUTORIAL_DESC_START_Y   (-50)
+#define TUTORIAL_DESC_END_Y     (SCREEN_CENTER_Y + 5)
+
 static u8 inputStickFlags = 0;
 static s8 stickHistoryFrames = 0;
 static s8 stickShouldOverrideHold = TRUE;
 
 static s32 animScaleRight = 0;
 static s32 animScaleLeft = 0;
+static s8 sTutorialAnimProg = 0;
+static u8 sTutorialImgA = 0;
+static f32 sTutorialDescY = TUTORIAL_DESC_START_Y;
+static u8 sChsTutState;
 
 static f32 animScaleLUT[] = {
     1.0f,
@@ -312,7 +321,7 @@ static void chstut_render_tutorial_description(Gfx** dl) {
     f32 scale = 1.0f;
     enum FastTextFont font = FT_FONT_SMALL_THIN;
 
-    create_dl_translation_matrix(&dlHead, MENU_MTX_PUSH, SCREEN_CENTER_X, SCREEN_CENTER_Y, 0.0f);
+    create_dl_translation_matrix(&dlHead, MENU_MTX_PUSH, SCREEN_CENTER_X, sTutorialDescY, 0.0f);
     create_dl_scale_matrix(&dlHead, MENU_MTX_NOPUSH, 1.0f, scale, 1.0f);
     gSPDisplayList(dlHead++, chstut_bg_mesh_mesh);
 
@@ -348,9 +357,9 @@ static void chstut_render_scroll_arrows(Gfx** dl) {
     create_dl_translation_matrix(&dlHead, MENU_MTX_PUSH, SCREEN_CENTER_X + x, y, 0.0f);
     create_dl_scale_matrix(&dlHead, MENU_MTX_NOPUSH, rightScale, rightScale, rightScale);
     if (gChaosTutorialSlideIndex < (gChaosTutorialSlideCount - 1)) {
-        gDPSetEnvColor(dlHead++, 255, 255, 255, 255);
+        gDPSetEnvColor(dlHead++, 255, 255, 255, sTutorialImgA);
     } else {
-        gDPSetEnvColor(dlHead++, 255, 255, 255, 31);
+        gDPSetEnvColor(dlHead++, 255, 255, 255, ((f32)sTutorialImgA / 0xFF) * 31);
     }
     gSPDisplayList(dlHead++, dl_draw_triangle_centered);
     gSPPopMatrix(dlHead++, G_MTX_MODELVIEW);
@@ -358,9 +367,9 @@ static void chstut_render_scroll_arrows(Gfx** dl) {
     create_dl_translation_matrix(&dlHead, MENU_MTX_PUSH, SCREEN_CENTER_X - x, y, 0.0f);
     create_dl_scale_matrix(&dlHead, MENU_MTX_NOPUSH, -leftScale, -leftScale, leftScale);
     if (gChaosTutorialSlideIndex > 0) {
-        gDPSetEnvColor(dlHead++, 255, 255, 255, 255);
+        gDPSetEnvColor(dlHead++, 255, 255, 255, sTutorialImgA);
     } else {
-        gDPSetEnvColor(dlHead++, 255, 255, 255, 31);
+        gDPSetEnvColor(dlHead++, 255, 255, 255, ((f32)sTutorialImgA / 0xFF) * 31);
     }
     gSPDisplayList(dlHead++, dl_draw_triangle_centered);
     gSPPopMatrix(dlHead++, G_MTX_MODELVIEW);
@@ -382,32 +391,113 @@ void chstut_tutorial_init(void) {
     stickShouldOverrideHold = TRUE;
     animScaleRight = 0;
     animScaleLeft = 0;
+    sTutorialAnimProg = 0;
+    sTutorialImgA = 0;
+    sTutorialDescY = TUTORIAL_DESC_START_Y;
+    sChsTutState = CHS_TUT_STATE_STARTING;
 }
 
-void chstut_render_tutorial(void) {
-    u8 stickMove = chstut_attempt_selection_move(STICK_HORIZONTAL_MASK);
-
-    if ((stickMove & STICK_RIGHT) && gChaosTutorialSlideIndex < (gChaosTutorialSlideCount - 1)) {
+s32 chstut_move_right(void) {
+    if(gChaosTutorialSlideIndex < (gChaosTutorialSlideCount - 1)) {
         gChaosTutorialSlideIndex++;
         animScaleRight = ARRAY_COUNT(animScaleLUT) - 1;
         play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
-    } else if ((stickMove & STICK_LEFT) && gChaosTutorialSlideIndex > 0) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
+
+s32 chstut_move_left(void) {
+    if(gChaosTutorialSlideIndex > 0) {
         gChaosTutorialSlideIndex--;
         animScaleLeft = ARRAY_COUNT(animScaleLUT) - 1;
         play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
+        return TRUE;
+    } else {
+        return FALSE;
     }
+}
 
+s32 chstut_update_tutorial(void) {
+    s32 end = FALSE;
+    u8 stickMove = chstut_attempt_selection_move(STICK_HORIZONTAL_MASK);
+
+    sTutorialImgA = (0xFF * ((f32)sTutorialAnimProg / TUTORIAL_ANIM_FRAMES));
+    sTutorialDescY = (TUTORIAL_DESC_START_Y + (TUTORIAL_DESC_END_Y - TUTORIAL_DESC_START_Y) * sins((0x3FFF / TUTORIAL_ANIM_FRAMES) * sTutorialAnimProg));
+
+    switch(sChsTutState) {
+        case CHS_TUT_STATE_STARTING:
+            if(sTutorialAnimProg == 0) {
+                play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
+            }
+            if(sTutorialAnimProg < TUTORIAL_ANIM_FRAMES) {
+                sTutorialAnimProg++;
+            } else {
+                sChsTutState = CHS_TUT_STATE_DEFAULT;
+            }
+            break;
+        case CHS_TUT_STATE_ENDING:
+            if(sTutorialAnimProg == TUTORIAL_ANIM_FRAMES) {
+                play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
+            }
+            if(sTutorialAnimProg > 0) {
+                sTutorialAnimProg--;
+            } else {
+                end = TRUE;
+            }
+            break;
+        case CHS_TUT_STATE_DEFAULT:
+        default:
+            if(gPlayer1Controller->buttonPressed & (START_BUTTON | Z_TRIG | L_TRIG)) {
+                sChsTutState = CHS_TUT_STATE_ENDING;
+            } else if (gPlayer1Controller->buttonPressed & A_BUTTON) {
+                if(!chstut_move_right()) {
+                    sChsTutState = CHS_TUT_STATE_ENDING;
+                }
+            } else if (gPlayer1Controller->buttonPressed & B_BUTTON) {
+                if(!chstut_move_left()) {
+                    sChsTutState = CHS_TUT_STATE_ENDING;
+                }
+            } else if (stickMove & STICK_RIGHT) {
+                if(!chstut_move_right()) {
+                   play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
+                }
+            } else if (stickMove & STICK_LEFT) {
+                if(!chstut_move_left()) {
+                    play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
+                }
+            }
+    }
+    
+    return end;
+}
+
+void chstut_render_tutorial(void) {
     chstut_load_image(gChaosTutorialSlides[gChaosTutorialSlideIndex].imageAddress);
 
     create_dl_ortho_matrix(&gDisplayListHead);
 
-    chstut_draw_shaded_background(&gDisplayListHead, 0, SCREEN_WIDTH, 0, SCREEN_HEIGHT, 0, 0, 0, 255);
+    chstut_draw_shaded_background(&gDisplayListHead, 0, SCREEN_WIDTH, 0, SCREEN_HEIGHT, 0, 0, 0, ((f32)sTutorialImgA / 0xFF) * 200);
     if (gChaosTutorialLoadedAddr != NULL) {
-        chstut_render_tiled_image(&gDisplayListHead, gChaosTutorialImgBuffer, SCREEN_CENTER_X - ((CHAOS_TUTORIAL_IMG_WIDTH + 1) / 2), 12,
-            CHAOS_TUTORIAL_IMG_WIDTH, CHAOS_TUTORIAL_IMG_HEIGHT, 255, 255, 255, 255);
+        chstut_render_tiled_image(&gDisplayListHead, gChaosTutorialImgBuffer, SCREEN_CENTER_X - ((CHAOS_TUTORIAL_IMG_WIDTH + 1) / 2), 9,
+            CHAOS_TUTORIAL_IMG_WIDTH, CHAOS_TUTORIAL_IMG_HEIGHT, 255, 255, 255, sTutorialImgA);
     }
     chstut_render_scroll_arrows(&gDisplayListHead);
 
     chstut_bg_scroll();
     chstut_render_tutorial_description(&gDisplayListHead);
+
+    if(sChsTutState == CHS_TUT_STATE_DEFAULT) {
+        menu_start_button_prompt();
+        menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 23, MENU_PROMPT_A_BUTTON);
+        menu_button_prompt(SCREEN_WIDTH - 70, SCREEN_HEIGHT - 23, MENU_PROMPT_B_BUTTON);
+        menu_button_prompt(SCREEN_WIDTH - 112, SCREEN_HEIGHT - 23, MENU_PROMPT_START_BUTTON);
+        menu_end_button_prompt();
+        fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
+        fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 23, "Next", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+        fasttext_draw_texrect(SCREEN_WIDTH - 72, SCREEN_HEIGHT - 23, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+        fasttext_draw_texrect(SCREEN_WIDTH - 114, SCREEN_HEIGHT - 23, "Return", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+        fasttext_finished_rendering();
+    }
 }
