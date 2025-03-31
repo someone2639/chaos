@@ -26,6 +26,7 @@ HVQM_EXTERN(fushigi);
 HVQM_EXTERN(pizza);
 HVQM_EXTERN(dream);
 HVQM_EXTERN(show);
+HVQM_EXTERN(castle);
 
 u32 *chsHVQMTable[] = {
     HVQM_PTR(blj),
@@ -39,7 +40,7 @@ u32 *chsHVQMTable[] = {
     HVQM_PTR(fushigi),
     HVQM_PTR(dream),
     HVQM_PTR(show),
-    // HVQM_PTR(ligma),
+    HVQM_PTR(castle),
 };
 u32 chsCurrentAd = 0;
 
