@@ -205,7 +205,7 @@ void slowtext_setup_ortho_rendering(enum FastTextFont fnt) {
     const struct FastTextProps *fontProps = &gFasttextFonts[fasttextCachedFontId];
 
     gSPDisplayList(dlHead++, dl_fasttext_begin);
-    gDPSetRenderMode(dlHead++, G_RM_XLU_SURF, G_RM_XLU_SURF);
+    gDPSetRenderMode(dlHead++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
 
     if (fontProps->textureFormat != G_IM_FMT_IA && fontProps->textureFormat == G_IM_FMT_I &&  fontProps->textureFormat == G_IM_FMT_RGBA) {
         error("slowtext textureFormat not supported!");

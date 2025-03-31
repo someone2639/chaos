@@ -463,6 +463,13 @@ SECTIONS
       KEEP(BUILD_DIR/sound/sound_data.o(.data));
    }
    END_SEG(assets)
+   BEGIN_SEG(chaosTutorial, __romPos) SUBALIGN(16)
+   {
+      KEEP(BUILD_DIR/src/chaos_tutorial/chaos_tutorial_dma.o(.data*));
+      KEEP(BUILD_DIR/src/chaos_tutorial/chaos_tutorial_dma.o(.rodata*));
+   }
+   END_SEG(chaosTutorial)
+
 #ifdef HVQM 
    #include "build/us_n64/hvqm_table.ld"
 #endif

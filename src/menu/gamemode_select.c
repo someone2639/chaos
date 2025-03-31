@@ -10,6 +10,7 @@
 #include "game/ingame_menu.h"
 #include "audio/external.h"
 #include "sm64.h"
+#include "game/chaos_tutorial.h"
 
 #define DESC_STRING_WIDTH 284
 
@@ -89,6 +90,10 @@ void handle_inputs_gamemode_select_state_default(u32 stickDir) {
         menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_RETURN);
         menu_play_anim(&sGamemodeSelectMenu.menu, GM_SELECT_ANIM_RETURN);
         play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
+    } else if (gPlayer1Controller->buttonPressed & (Z_TRIG | L_TRIG)) {
+        chstut_tutorial_init();
+        menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_TUTORIAL);
+        sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_HALT_INPUT;
     } else if(gPlayer1Controller->buttonPressed & D_JPAD || (stickDir == MENU_JOYSTICK_DIR_DOWN)) {
         selection++;
         playCursorSound = TRUE;
@@ -349,6 +354,11 @@ s32 (*sGMSelectAnims[])(void) = {
 s32 update_gamemode_select() {
     if(!(sGamemodeSelectMenu.menu.flags & GAMEMODE_SELECT_FLAG_HALT_INPUT)) {
         handle_gamemode_select_inputs();
+    } else if (sGamemodeSelectMenu.menu.menuState == GM_SELECT_STATE_TUTORIAL) {
+        if(chstut_update_tutorial()) {
+            menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_DEFAULT);
+            sGamemodeSelectMenu.menu.flags &= ~GAMEMODE_SELECT_FLAG_HALT_INPUT;
+        }
     }
 
     if(menu_update_anims(&sGamemodeSelectMenu.menu, sGMSelectAnims)) {
@@ -590,13 +600,15 @@ void render_gm_select_button_prompts() {
         case GM_SELECT_STATE_DEFAULT:
             menu_start_button_prompt();
             menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 33, MENU_PROMPT_A_BUTTON);
-            menu_button_prompt(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 33, MENU_PROMPT_START_BUTTON);
-            menu_button_prompt(SCREEN_WIDTH - 128, SCREEN_HEIGHT - 33, MENU_PROMPT_B_BUTTON);
+            menu_button_prompt(SCREEN_WIDTH - 77, SCREEN_HEIGHT - 33, MENU_PROMPT_START_BUTTON);
+            menu_button_prompt(SCREEN_WIDTH - 119, SCREEN_HEIGHT - 33, MENU_PROMPT_B_BUTTON);
+            menu_button_prompt(SCREEN_WIDTH - 157, SCREEN_HEIGHT - 33, MENU_PROMPT_Z_TRIG);
             menu_end_button_prompt();
             fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
             fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 33, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-            fasttext_draw_texrect(SCREEN_WIDTH - 83, SCREEN_HEIGHT - 33, "Begin", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-            fasttext_draw_texrect(SCREEN_WIDTH - 129, SCREEN_HEIGHT - 33, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+            fasttext_draw_texrect(SCREEN_WIDTH - 78, SCREEN_HEIGHT - 33, "Begin", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+            fasttext_draw_texrect(SCREEN_WIDTH - 120, SCREEN_HEIGHT - 33, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+            fasttext_draw_texrect(SCREEN_WIDTH - 158, SCREEN_HEIGHT - 33, "Tutorial", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
             fasttext_finished_rendering();
             break;
         case GM_SELECT_STATE_CHANGE_DIFF:
@@ -663,5 +675,9 @@ void render_gamemode_select() {
 
     if(!(flags & GAMEMODE_SELECT_FLAG_HALT_INPUT)) {
         render_gm_select_button_prompts();
+    }
+
+    if(sGamemodeSelectMenu.menu.menuState == GM_SELECT_STATE_TUTORIAL) {
+        chstut_render_tutorial();
     }
 }

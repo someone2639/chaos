@@ -1,3 +1,5 @@
+#pragma once
+
 #include <PR/ultratypes.h>
 #include "types.h"
 #include "src/engine/math_util.h"

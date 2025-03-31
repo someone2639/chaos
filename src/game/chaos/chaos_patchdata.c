@@ -972,10 +972,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     },
     [CHAOS_PATCH_DOUBLE_CHERRY] = {
         .durationType      = CHAOS_DURATION_STARS,
-        .effectType        = CHAOS_EFFECT_POSITIVE,
+        .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 1,
         .isStackable       = TRUE,
-        .duration          = 5,
+        .duration          = 6,
 
         .conditionalFunc   = chs_cond_cherry_clone,
         .activatedInitFunc = chs_create_cherry_clone,
@@ -983,8 +983,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .areaInitFunc      = chs_init_cherry_clones_after_warp,
 
         .name              = "Double Cherry",
-        .shortDescription  = "It's dangerous to go alone! Have a buddy!",
-        .longDescription   = "Each cherry clone has 1 health point, and will take your hits until they run out, after which you will take normal damage. If the \"real\" player gets hit, its soul will be transferred to a clone. By the end of this, which Mario will be the real Mario?",
+        .shortDescription  = "Spawn an additional Mario. While this is largely positive, keeping track of it may be disorienting!",
+        .longDescription   = "Each cherry clone has 1 health point, and will take your hits until they run out, after which you will take normal damage. If the \"real\" player gets hit or interacts with anything, its soul will be transferred to a clone. By the end of this, which Mario will be the real Mario?",
     },
     [CHAOS_PATCH_COSMIC_CLONES] = {
         .durationType      = CHAOS_DURATION_STARS,
@@ -1300,8 +1300,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .negationId        = CHAOS_PATCH_ADD_SELECTABLE_PATCH,
         .severity          = 3,
         .isStackable       = TRUE,
-        .duration          = 8,
-        .durationHard      = 10,
+        .duration          = 5,
+        .durationHard      = 6,
         
         .conditionalFunc   = chs_cond_remove_selectable_patch,
 

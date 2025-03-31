@@ -508,7 +508,7 @@ void render_active_patches_menu_button_prompts() {
                 menu_end_button_prompt();
                 fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
                 fasttext_draw_texrect(SCREEN_WIDTH - 33, PAUSE_BUTTON_PROMPTS_Y, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_draw_texrect(SCREEN_WIDTH - 82, PAUSE_BUTTON_PROMPTS_Y, "More Info", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_draw_texrect(SCREEN_WIDTH - 82, PAUSE_BUTTON_PROMPTS_Y, "Details", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
                 fasttext_finished_rendering();
             } else {
                 menu_start_button_prompt();

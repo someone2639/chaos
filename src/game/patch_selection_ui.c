@@ -17,6 +17,7 @@
 #include "save_file.h"
 #include "chaos_menus.h"
 #include "chaos_pause_menu.h"
+#include "chaos_tutorial.h"
 
 u8 sQualityColors[CHAOS_PATCH_SEVERITY_COUNT][3] = {
     {0x9F, 0x9F, 0x9F}, //Lvl 0
@@ -168,7 +169,7 @@ void handle_inputs_patch_select_state_select(s32 stickDir) {
     s32 pressedLeftRight = ((gPlayer1Controller->buttonPressed & (L_JPAD | R_JPAD)) || stickDir & (MENU_JOYSTICK_DIR_LEFT | MENU_JOYSTICK_DIR_RIGHT));
 
 
-    if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
+    if(gPlayer1Controller->buttonPressed & (A_BUTTON)) {
         menu_play_anim(&gPatchSelectionMenu->menu, PATCH_SELECT_ANIM_CONFIRMATION);
         menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_CONFIRMATION);
         play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
@@ -191,6 +192,10 @@ void handle_inputs_patch_select_state_select(s32 stickDir) {
         init_active_patches_menu();
         menu_play_anim(&gPatchSelectionMenu->menu, PATCH_SELECT_ANIM_ACTIVE_PATCHES);
         menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_SHOW_ACTIVE_PATCHES);
+    } else if (gPlayer1Controller->buttonPressed & START_BUTTON) {
+        chstut_tutorial_init();
+        menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_TUTORIAL);
+        gPatchSelectionMenu->menu.flags |= PATCH_SELECT_FLAG_HALT_INPUT;
     } else if(pressedUpDown) {
         if(numPatches > 2) {
             selection += 2;
@@ -693,6 +698,11 @@ s32 (*sPatchSelectMenuAnims[])(void) = {
 void update_patch_selection_menu() {
     if(!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_HALT_INPUT)) {
         handle_patch_selection_inputs();
+    } else if (gPatchSelectionMenu->menu.menuState == PATCH_SELECT_STATE_TUTORIAL) {
+        if(chstut_update_tutorial()) {
+            menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_SELECT);
+            gPatchSelectionMenu->menu.flags &= ~PATCH_SELECT_FLAG_HALT_INPUT;
+        }
     }
 
     if(menu_update_anims(&gPatchSelectionMenu->menu, sPatchSelectMenuAnims)) {
@@ -1234,21 +1244,25 @@ void render_patch_select_button_prompts() {
                 menu_start_button_prompt();
                 menu_button_prompt(SCREEN_WIDTH - 32, PATCH_SEL_BUTTON_Y, MENU_PROMPT_A_BUTTON);
                 menu_button_prompt(SCREEN_WIDTH - 80, PATCH_SEL_BUTTON_Y, MENU_PROMPT_R_TRIG);
-                menu_button_prompt(SCREEN_WIDTH - 160, PATCH_SEL_BUTTON_Y, MENU_PROMPT_Z_TRIG);
+                menu_button_prompt(SCREEN_WIDTH - 162, PATCH_SEL_BUTTON_Y, MENU_PROMPT_START_BUTTON);
+                menu_button_prompt(SCREEN_WIDTH - 199, PATCH_SEL_BUTTON_Y, MENU_PROMPT_Z_TRIG);
                 menu_end_button_prompt();
                 fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
                 fasttext_draw_texrect(SCREEN_WIDTH - 33, PATCH_SEL_BUTTON_Y, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
                 fasttext_draw_texrect(SCREEN_WIDTH - 82, PATCH_SEL_BUTTON_Y, "Active Patches", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_draw_texrect(SCREEN_WIDTH - 160, PATCH_SEL_BUTTON_Y, "More Info", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_draw_texrect(SCREEN_WIDTH - 164, PATCH_SEL_BUTTON_Y, "Help", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_draw_texrect(SCREEN_WIDTH - 199, PATCH_SEL_BUTTON_Y, "Details", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
                 fasttext_finished_rendering();
             } else {
                 menu_start_button_prompt();
                 menu_button_prompt(SCREEN_WIDTH - 32, PATCH_SEL_BUTTON_Y, MENU_PROMPT_A_BUTTON);
                 menu_button_prompt(SCREEN_WIDTH - 80, PATCH_SEL_BUTTON_Y, MENU_PROMPT_R_TRIG);
+                menu_button_prompt(SCREEN_WIDTH - 162, PATCH_SEL_BUTTON_Y, MENU_PROMPT_START_BUTTON);
                 menu_end_button_prompt();
                 fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
                 fasttext_draw_texrect(SCREEN_WIDTH - 33, PATCH_SEL_BUTTON_Y, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
                 fasttext_draw_texrect(SCREEN_WIDTH - 82, PATCH_SEL_BUTTON_Y, "Active Patches", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_draw_texrect(SCREEN_WIDTH - 164, PATCH_SEL_BUTTON_Y, "Help", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
                 fasttext_finished_rendering();
             }
             break;
@@ -1348,8 +1362,14 @@ void display_patch_selection_ui() {
             render_patch_select_button_prompts();
         }
 
-        if(!(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) && (gPatchSelectionMenu->menu.animId != PATCH_SELECT_ANIM_STARTUP)) {
+        if(!(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) 
+            && (gPatchSelectionMenu->menu.animId != PATCH_SELECT_ANIM_STARTUP) 
+            && (gPatchSelectionMenu->menu.menuState != PATCH_SELECT_STATE_SHOW_EXTENDED_DESC)) {
             render_patch_hud_info();
+        }
+
+        if(gPatchSelectionMenu->menu.menuState == PATCH_SELECT_STATE_TUTORIAL) {
+            chstut_render_tutorial();
         }
     }
 }
