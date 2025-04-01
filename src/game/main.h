@@ -83,6 +83,12 @@ extern s8 gShowDebugText;
 #define MESG_VI_VBLANK 102
 #define MESG_START_GFX_SPTASK 103
 #define MESG_NMI_REQUEST 104
+#define MESG_RCP_HUNG 105
+
+typedef struct {
+    u8 started;
+    OSTimer timer;
+} OSTimerEx;
 
 extern u32 gHVQMPlaying;
 
