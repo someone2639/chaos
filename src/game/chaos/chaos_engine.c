@@ -407,7 +407,9 @@ void chaos_decrement_patch_usage(const enum ChaosPatchID patchId) {
     }
 
     assert_args(firstFoundMatch->remainingDuration > 0, "%s%08X", "chaos_decrement_patch_usage:\nRemaining duration for patch is 0: ", patchId);
-    firstFoundMatch->remainingDuration--;
+    if (firstFoundMatch->remainingDuration > 0) {
+        firstFoundMatch->remainingDuration--;
+    }
 
 
     // Create message string

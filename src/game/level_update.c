@@ -972,6 +972,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 gMarioState->hurtCounter = 0;
                 gMarioState->healCounter = chs_calculate_max_heal_counter();
                 sDelayedWarpTimer = 0;
+                val04 = FALSE;
                 if(m->action & ACT_FLAG_SWIMMING) {
                     set_mario_action(gMarioState, ACT_WATER_IDLE, 0);
                 } else {
