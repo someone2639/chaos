@@ -351,6 +351,24 @@ void handle_dp_complete(void) {
     sCurrentDisplaySPTask->state = SPTASK_STATE_FINISHED_DP;
     sCurrentDisplaySPTask = NULL;
 }
+
+OSTimerEx RCPHangTimer;
+void start_rcp_hang_timer(void) {
+    if (RCPHangTimer.started == FALSE) {
+        osSetTimer(&RCPHangTimer.timer, OS_USEC_TO_CYCLES(3000000), (OSTime) 0, &gIntrMesgQueue, (OSMesg) MESG_RCP_HUNG);
+        RCPHangTimer.started = TRUE;
+    }
+}
+
+void stop_rcp_hang_timer(void) {
+    osStopTimer(&RCPHangTimer.timer);
+    RCPHangTimer.started = FALSE;
+}
+
+void alert_rcp_hung_up(void) {
+    error("RCP is HUNG UP!! Oh! MY GOD!!");
+}
+
 extern void crash_screen_init(void);
 
 void thread3_main(UNUSED void *arg) {
@@ -417,9 +435,11 @@ void thread3_main(UNUSED void *arg) {
                 handle_sp_complete();
                 break;
             case MESG_DP_COMPLETE:
+                stop_rcp_hang_timer();
                 handle_dp_complete();
                 break;
             case MESG_START_GFX_SPTASK:
+                start_rcp_hang_timer();
                 start_gfx_sptask();
                 break;
             case MESG_NMI_REQUEST:

@@ -1727,7 +1727,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc   = chs_cond_miracle,
 
         .name              = "The Miracle Happened",
-        .shortDescription  = "The next time Mario dies, he is revived.",
+        .shortDescription  = "The next time Mario dies, he is revived as if nothing ever happened.",
+        .longDescription   = "On death, Mario will be instantly healed back to full health instead of being thrown out of the level. He will maintain his level and coin progress."
     },
     [CHAOS_PATCH_DISABLE_FADE_WARPS] = {
         .durationType      = CHAOS_DURATION_STARS,

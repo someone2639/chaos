@@ -41,6 +41,40 @@ void bobomb_act_explode(void) {
     }
 }
 
+static s32 bobomb_attack_collided_from_other_object_sign_override(struct Object *obj) {
+    s32 numCollidedObjs;
+    struct Object *other;
+    s32 touchedOtherObject = FALSE;
+
+    numCollidedObjs = obj->numCollidedObjs;
+    if (numCollidedObjs != 0) {
+        other = obj->collidedObjs[0];
+
+        if (obj_has_behavior(other, bhvMessagePanel)) {
+            s32 result;
+            f32 lastHitboxRadius = other->hitboxRadius;
+            f32 lastHitboxHeight = other->hitboxHeight;
+            other->hitboxRadius = 150;
+            other->hitboxHeight = 80;
+
+            result = detect_object_hitbox_overlap(o, other);
+
+            other->hitboxRadius = lastHitboxRadius;
+            other->hitboxHeight = lastHitboxHeight;
+
+            return result;
+        }
+
+        if (other != gMarioObject) {
+            other->oInteractStatus |= ATTACK_PUNCH | INT_STATUS_WAS_ATTACKED | INT_STATUS_INTERACTED
+                                      | INT_STATUS_TOUCHED_BOB_OMB;
+            touchedOtherObject = TRUE;
+        }
+    }
+
+    return touchedOtherObject;
+}
+
 void bobomb_check_interactions(void) {
     obj_set_hitbox(o, &sBobombHitbox);
 
@@ -59,8 +93,14 @@ void bobomb_check_interactions(void) {
         o->oInteractStatus = 0;
     }
 
-    if (obj_attack_collided_from_other_object(o) == TRUE) {
-        o->oAction = BOBOMB_ACT_EXPLODE;
+    if (chaos_check_if_patch_active(CHAOS_PATCH_SIGNREAD_FAR)) {
+        if (bobomb_attack_collided_from_other_object_sign_override(o) == TRUE) {
+            o->oAction = BOBOMB_ACT_EXPLODE;
+        }
+    } else {
+        if (obj_attack_collided_from_other_object(o) == TRUE) {
+            o->oAction = BOBOMB_ACT_EXPLODE;
+        }
     }
 }
 
