@@ -1279,7 +1279,7 @@ s32 play_mode_select_patch(void) {
         if (chaosSeqVolSubtractable && chaosSeqVolMult > CHAOS_SEQ_VOL_LOWER) {
             chaosSeqVolMult -= 0.01f;
         }
-        play_secondary_music(chaosSeqArray[chaosSeqSelected].seq, 0, chaosSeqArray[chaosSeqSelected].vol * chaosSeqVolMult + 0.5f, 1);
+        force_secondary_music(chaosSeqArray[chaosSeqSelected].seq, 0, chaosSeqArray[chaosSeqSelected].vol * chaosSeqVolMult + 0.5f, 1);
         update_patch_selection_menu();
     } else {
         stop_secondary_music(75);

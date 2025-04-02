@@ -2413,12 +2413,7 @@ void func_80320ED8(void) {
 /**
  * Called from threads: thread5_game_loop
  */
-void play_secondary_music(u8 seqId, u8 bgMusicVolume, u8 volume, u16 fadeTimer) {
-    if ((sCurrentBackgroundMusicSeqId == SEQUENCE_NONE)
-     || (sCurrentBackgroundMusicSeqId == SEQ_MENU_TITLE_SCREEN)) {
-        return;
-    }
-
+void play_secondary_music_common(u8 seqId, u8 bgMusicVolume, u8 volume, u16 fadeTimer) {
     if (sBackgroundMusicTargetVolume == TARGET_VOLUME_UNSET) {
         sBackgroundMusicTargetVolume = bgMusicVolume + TARGET_VOLUME_IS_PRESENT_FLAG;
         begin_background_music_fade(fadeTimer);
@@ -2434,6 +2429,33 @@ void play_secondary_music(u8 seqId, u8 bgMusicVolume, u8 volume, u16 fadeTimer) 
         seq_player_fade_to_target_volume(SEQ_PLAYER_ENV, fadeTimer, volume);
         D_80332124 = volume;
     }
+}
+
+/**
+ * Called from threads: thread5_game_loop
+ */
+void force_secondary_music(u8 seqId, u8 bgMusicVolume, u8 volume, u16 fadeTimer) {
+    if (sCurrentBackgroundMusicSeqId == SEQUENCE_NONE) {
+        seq_player_fade_out(SEQ_PLAYER_LEVEL, 1);
+    }
+
+    if (D_80332120 != seqId) {
+        sBackgroundMusicTargetVolume = TARGET_VOLUME_UNSET;
+    }
+
+    play_secondary_music_common(seqId, bgMusicVolume, volume, fadeTimer);
+}
+
+/**
+ * Called from threads: thread5_game_loop
+ */
+void play_secondary_music(u8 seqId, u8 bgMusicVolume, u8 volume, u16 fadeTimer) {
+    if ((sCurrentBackgroundMusicSeqId == SEQUENCE_NONE)
+     || (sCurrentBackgroundMusicSeqId == SEQ_MENU_TITLE_SCREEN)) {
+        return;
+    }
+
+    play_secondary_music_common(seqId, bgMusicVolume, volume, fadeTimer);
 }
 
 /**
