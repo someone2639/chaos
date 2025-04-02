@@ -198,12 +198,12 @@ void hold_all_frames(u32 count) {
 
 void show_next_frame(void **streamp) {
     if (video_playing()) {
-        if (disptime_us > (playtime_us + (usec_per_frame * 10))) {
-            u32 count = (disptime_us - playtime_us) / (usec_per_frame);
-            // osSyncPrintf("HOLD %d\n", count);
-            hold_all_frames(count);
-            osYieldThread();
-        }
+        // if (disptime_us > (playtime_us + (usec_per_frame * 10))) {
+        //     u32 count = (disptime_us - playtime_us) / (usec_per_frame);
+        //     // osSyncPrintf("HOLD %d\n", count);
+        //     hold_all_frames(count);
+        //     osYieldThread();
+        // }
     }
     if (currVBuf->endtime_us <= playtime_us) {
         currVBuf = currVBuf->next;
