@@ -1701,7 +1701,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration          = 10,
         .durationHard      = 15,
 
-        .conditionalFunc   = chs_cond_serve_ads,
         .frameUpdateFunc   = chs_update_serve_ads,
 
         .name              = "Ad Breaks",

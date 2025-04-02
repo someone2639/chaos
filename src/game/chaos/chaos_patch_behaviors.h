@@ -186,7 +186,6 @@ u8 chs_cond_mario_small(void);
 
 // Misc
 u8 chs_cond_one_hit_wonder(void);
-u8 chs_cond_serve_ads(void);
 void chs_update_serve_ads(void);
 u8 chs_cond_miracle(void);
 void chs_update_miracle(void);

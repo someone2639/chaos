@@ -48,8 +48,6 @@ u32 *chsHVQMTable[] = {
 };
 u32 chsCurrentAd = 0;
 
-u8 chs_cond_serve_ads(void) { return gFBEEnabled; }
-
 void chs_update_serve_ads(void) {
     struct ChaosActiveEntry *this;
     chaos_find_first_active_patch(CHAOS_PATCH_AD_BREAK, &this);
