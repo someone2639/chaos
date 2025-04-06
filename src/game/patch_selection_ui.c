@@ -1319,6 +1319,16 @@ void display_patch_selection_ui() {
     cursorY = gPatchSelectionMenu->patchCards[selectedPatch].layoutPos[1];
 
     if(gPatchSelectionMenu->menu.menuState != PATCH_SELECT_STATE_CLOSED) {
+        // Coverage meme
+        gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
+        gDPSetRenderMode(gDisplayListHead++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
+        gDPSetCombineLERP(gDisplayListHead++, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT);
+        gDPSetFillColor(gDisplayListHead++, (GPACK_RGBA5551(0, 0, 0, 1) << 16) | GPACK_RGBA5551(0, 0, 0, 1));
+        gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 0);
+        gDPFillRectangle(gDisplayListHead++, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        gDPPipeSync(gDisplayListHead++);
+        gDPSetRenderMode(gDisplayListHead++, G_RM_OPA_SURF, G_RM_OPA_SURF2);
+        
         patch_bg_scroll();
         desc_bg_scroll();
         create_dl_ortho_matrix(&gDisplayListHead);

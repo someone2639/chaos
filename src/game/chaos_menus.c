@@ -104,6 +104,7 @@ void menu_start_button_prompt() {
     }
     gDPPipeSync(gDisplayListHead++);
 	gDPSetCycleType(gDisplayListHead++, G_CYC_COPY);
+    gDPSetRenderMode(gDisplayListHead++, G_RM_NOOP, G_RM_NOOP2);
 	gDPSetTexturePersp(gDisplayListHead++, G_TP_NONE);
 	gDPSetAlphaCompare(gDisplayListHead++, G_AC_THRESHOLD);
 	gDPSetBlendColor(gDisplayListHead++, 255, 255, 255, 255);
