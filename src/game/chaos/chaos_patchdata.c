@@ -1639,10 +1639,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_SIGNREAD_FAR] = {
         .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
-        .severity          = 1,
+        .severity          = 2,
         .isStackable       = FALSE,
-        .duration          = 10,
-        .durationHard      = 12,
+        .duration          = 6,
+        .durationHard      = 9,
 
         .name              = "Tutorial Mode",
         .shortDescription  = "New to SM64? We'll make extra sure you don't miss any tutorial signs by increasing their range!",
