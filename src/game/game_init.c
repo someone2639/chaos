@@ -532,6 +532,10 @@ static void render_low_resolution(void) {
  * - Selects which framebuffer will be rendered and displayed to next time.
  */
 
+void vsync() {
+    osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
+}
+
 void display() {
     profiler_log_thread5_time(BEFORE_DISPLAY_LISTS);
     osRecvMesg(&gGfxVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
@@ -546,17 +550,6 @@ void display() {
         render_low_resolution();
     }
 
-    osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
-    osViSwapBuffer((void *) PHYSICAL_TO_VIRTUAL(gPhysicalFramebuffers[sRenderedFramebuffer]));
-    profiler_log_thread5_time(THREAD5_END);
-}
-
-void vsync() {
-    osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
-}
-
-void display_and_vsync(void) {
-    display();
     if (chaos_check_if_patch_active(CHAOS_PATCH_45_FPS)) {
         if ((gGlobalTimer % 3 == 0)) {
             vsync();
@@ -567,6 +560,13 @@ void display_and_vsync(void) {
     if (chaos_check_if_patch_active(CHAOS_PATCH_20_FPS)) {
         vsync();
     }
+    osViSwapBuffer((void *) PHYSICAL_TO_VIRTUAL(gPhysicalFramebuffers[sRenderedFramebuffer]));
+    osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
+    profiler_log_thread5_time(THREAD5_END);
+}
+
+void display_and_vsync(void) {
+    display();
     // Skip swapping buffers on inaccurate emulators other than VC so that they display immediately as the Gfx task finishes
     if (gEmulator & INSTANT_INPUT_BLACKLIST) {
         if (++sRenderedFramebuffer == 3) {
