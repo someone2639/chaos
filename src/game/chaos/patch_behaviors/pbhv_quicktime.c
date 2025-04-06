@@ -16,7 +16,7 @@
 #define NUM_QTE                     9
 #define QTE_PADDING                 18
 #define QTE_ACTIVATE_TIME           5400
-#define QTE_INPUT_TIME_PER_INPUT    20
+#define QTE_INPUT_TIME_PER_INPUT    24
 
 struct QuickTimePrompt {
     u16 button;
