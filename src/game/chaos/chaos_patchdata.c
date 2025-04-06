@@ -699,10 +699,12 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription  = "My little brother made this level, I hope you enjoy! (Randomly Spawn Kaizo Blocks.)"
     },
     [CHAOS_PATCH_BATTLEFIELD] = {
-        .durationType      = CHAOS_DURATION_INFINITE,
+        .durationType      = CHAOS_DURATION_STARS,
         .effectType        = CHAOS_EFFECT_NEGATIVE,
         .severity          = 1,
         .isStackable       = FALSE,
+        .duration          = 20,
+        .durationHard      = 25,
 
         .name              = "Bring Back Level Intro Text",
         .shortDescription  = "Wow! You're smack in the middle of the battlefield.",
