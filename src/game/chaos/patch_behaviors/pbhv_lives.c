@@ -33,27 +33,27 @@ u8 chs_cond_lives_decrease_lv3(void) { return (gChaosLivesEnabled && gMarioState
 void chs_act_lives_increase_lv1(void) {
     gMarioState->numLives += LV1_LIVES_POS;
     play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
-    save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives);
+    save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives, TRUE);
 }
 void chs_act_lives_increase_lv2(void) {
     gMarioState->numLives += LV2_LIVES_POS;
     play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
-    save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives);
+    save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives, TRUE);
 }
 void chs_act_lives_increase_lv3(void) {
     gMarioState->numLives += LV3_LIVES_POS;
     play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
-    save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives);
+    save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives, TRUE);
 }
 void chs_act_lives_decrease_lv1(void) {
     gMarioState->numLives -= LV1_LIVES_NEG;
-    save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives);
+    save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives, TRUE);
 }
 void chs_act_lives_decrease_lv2(void) {
     gMarioState->numLives -= LV2_LIVES_NEG;
-    save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives);
+    save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives, TRUE);
 }
 void chs_act_lives_decrease_lv3(void) {
     gMarioState->numLives -= LV3_LIVES_NEG;
-    save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives);
+    save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives, TRUE);
 }

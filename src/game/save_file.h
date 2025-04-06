@@ -175,7 +175,7 @@ s32 save_file_get_course_coin_score(s32 fileIndex, s32 courseIndex);
 s32 save_file_is_cannon_unlocked(void);
 void save_file_set_cannon_unlocked(void);
 s8 save_file_get_life_count(s32 fileIndex);
-void save_file_set_life_count(s32 fileIndex, s8 lives);
+void save_file_set_life_count(s32 fileIndex, s8 lives, u8 doSave);
 void save_file_set_cap_pos(s16 x, s16 y, s16 z);
 s32 save_file_get_cap_pos(Vec3s capPos);
 void save_file_set_sound_mode(u16 mode);

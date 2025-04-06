@@ -573,11 +573,13 @@ s8 save_file_get_life_count(s32 fileIndex) {
     return gSaveBuffer.files[fileIndex].lives;
 }
 
-void save_file_set_life_count(s32 fileIndex, s8 lives) {
+void save_file_set_life_count(s32 fileIndex, s8 lives, u8 doSave) {
     gSaveBuffer.files[fileIndex].lives = lives;
     gSaveFileModified = TRUE;
 
-    save_file_do_save(fileIndex);
+    if (doSave) {
+        save_file_do_save(fileIndex);
+    }
 }
 
 void save_file_set_cap_pos(s16 x, s16 y, s16 z) {

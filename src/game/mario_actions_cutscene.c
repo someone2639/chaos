@@ -647,7 +647,7 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
                         play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
                         m->numLives++;
                         gShouldGive1UP = FALSE;
-                        // Do not save here, handle that later after spplying new patch!
+                        save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, FALSE);
                     }
                     set_play_mode(PLAY_MODE_SELECT_PATCH);
                     m->actionState = 2;
@@ -1086,7 +1086,7 @@ s32 act_exit_airborne(struct MarioState *m) {
             play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
             m->numLives++;
             gShouldGive1UP = FALSE;
-            // Do not save here, handle that later after spplying new patch!
+            save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, FALSE);
         }
     }
     // rotate him to face away from the entrance
@@ -1107,7 +1107,7 @@ s32 act_falling_exit_airborne(struct MarioState *m) {
             play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
             m->numLives++;
             gShouldGive1UP = FALSE;
-            // Do not save here, handle that later after spplying new patch!
+            save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, FALSE);
         }
     }
 
@@ -1219,7 +1219,7 @@ s32 act_death_exit(struct MarioState *m) {
             m->numLives--;
         }
         save_file_add_death_count();
-        save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives);
+        save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, TRUE);
 
         m->healCounter = chs_calculate_max_heal_counter();
     }
@@ -1239,7 +1239,7 @@ s32 act_unused_death_exit(struct MarioState *m) {
             m->numLives--;
         }
         save_file_add_death_count();
-        save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives);
+        save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, TRUE);
 
         m->healCounter = chs_calculate_max_heal_counter();
     }
@@ -1262,7 +1262,7 @@ s32 act_falling_death_exit(struct MarioState *m) {
             m->numLives--;
         }
         save_file_add_death_count();
-        save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives);
+        save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, TRUE);
 
         m->healCounter = chs_calculate_max_heal_counter();
     }
@@ -1303,7 +1303,7 @@ s32 act_special_exit_airborne(struct MarioState *m) {
             play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
             m->numLives++;
             gShouldGive1UP = FALSE;
-            // Do not save here, handle that later after spplying new patch!
+            save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, FALSE);
         }
     }
 
@@ -1336,7 +1336,7 @@ s32 act_special_death_exit(struct MarioState *m) {
             m->numLives--;
         }
         save_file_add_death_count();
-        save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives);
+        save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, TRUE);
 
         m->healCounter = chs_calculate_max_heal_counter();
     }
