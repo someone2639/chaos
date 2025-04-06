@@ -38,7 +38,7 @@ void chs_act_random_sleep(void) {
 void chs_update_random_sleep(void) {
     if(sRandomSleepTimer == 0) {
         s32 actGroup = (gMarioState->action & ACT_GROUP_MASK);
-        if(actGroup == ACT_GROUP_MOVING || actGroup == ACT_GROUP_STATIONARY) {
+        if((actGroup == ACT_GROUP_MOVING || actGroup == ACT_GROUP_STATIONARY) && (gMarioState->action != ACT_FIRST_PERSON)) {
             set_mario_action(gMarioState, ACT_START_SLEEPING, 0);
             sRandomSleepTimer = -1;
         }
@@ -96,7 +96,7 @@ void chs_update_random_burn(void) {
         sRandomBurnTimer = -1;
     } else if (sRandomBurnTimer == -1) {
         s32 actGroup = (gMarioState->action & ACT_GROUP_MASK);
-        if(!(actGroup == ACT_GROUP_CUTSCENE || actGroup == ACT_GROUP_SUBMERGED || actGroup == ACT_GROUP_AUTOMATIC)) {
+        if(!(actGroup == ACT_GROUP_CUTSCENE || actGroup == ACT_GROUP_SUBMERGED || actGroup == ACT_GROUP_AUTOMATIC) && (gMarioState->action != ACT_FIRST_PERSON)) {
             if(!RAND(90)) {
                 gMarioState->marioObj->oMarioBurnTimer = 0;
                 u32 burningAction = ACT_BURNING_JUMP;
