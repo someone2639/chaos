@@ -1046,19 +1046,18 @@ void init_reverb_eu(void) {
     }
 }
 #else
-void init_reverb_us(s32 presetId) {
+void init_reverb_us(u32 presetId) {
     static s32 lastPresetId = 0;
     s16 *mem;
     s32 i;
     s32 reinitBetterReverbBuffers = TRUE;
 
-    if ((u32) (presetId >> 31) & 1) {
+    if ((presetId >> 31) & 1U) {
         if (sAudioIsInitialized) {
             reinitBetterReverbBuffers = FALSE;
         }
-        presetId = (s32) ((u32) presetId & ~(1 << 31));
-    }
-    if (!((u32) presetId & (1 << 31))) {
+        presetId &= ~(1U << 31);
+    } else {
         lastPresetId = presetId;
     }
 
@@ -1203,9 +1202,6 @@ void init_reverb_us(s32 presetId) {
         gSynthesisReverb.reverbGain = gReverbSettings[presetId].gain * 0.875f;
     }
 
-    if (!sAudioIsInitialized)
-        initialize_better_reverb_buffers();
-
     // This does not have to be reset after being initialized for the first time, which would help speed up load times.
     // However, resetting this allows for proper clearing of the reverb buffers, as well as dynamic customization of the delays array.
     set_better_reverb_buffers(betterReverbPreset->delaysL, betterReverbPreset->delaysR);
@@ -1215,7 +1211,7 @@ void init_reverb_us(s32 presetId) {
 
 
 #if defined(VERSION_JP) || defined(VERSION_US)
-void audio_reset_session(s32 reverbPresetId) {
+void audio_reset_session(u32 reverbPresetId) {
     if (sAudioIsInitialized) {
         if (gAudioLoadLock != AUDIO_LOCK_UNINITIALIZED) {
             gAudioLoadLock = AUDIO_LOCK_LOADING;

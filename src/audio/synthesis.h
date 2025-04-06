@@ -31,13 +31,12 @@ enum ChannelIndexes {
 /* ------------ BETTER REVERB GENERAL PARAMETERS ------------ */
 
 #define NUM_ALLPASS 12 // Maximum number of delay filters to use with better reverb; do not change this value if you don't know what you're doing.
-#define BETTER_REVERB_PTR_SIZE ALIGN16(NUM_ALLPASS * sizeof(s16*) * SYNTH_CHANNEL_STEREO_COUNT) // Allocation space consumed by dynamically allocated pointers
 
-// Minimum size requirement determined by ((all delaysL and delaysR values) / (2 ^ (downsampleRate - 1)) * sizeof(s16) + BETTER_REVERB_PTR_SIZE).
+// Minimum size requirement determined by ((all delaysL and delaysR values) / (2 ^ (downsampleRate - 1)) * sizeof(s16)).
 // The default value can be increased or decreased in conjunction with the values in delaysL/R.
 // This can be significantly decreased if a downsample rate of 1 is not being used or if filter count is less than NUM_ALLPASS,
 // as this default is configured to handle the emulator RCVI settings.
-#define BETTER_REVERB_SIZE ALIGN16(0xEDE0 + BETTER_REVERB_PTR_SIZE)
+#define BETTER_REVERB_SIZE ALIGN16(0xEDE0)
 
 
 /* ------ BETTER REVERB LIGHTWEIGHT PARAMETER OVERRIDES ------ */
@@ -67,7 +66,6 @@ extern u8 *gReverbMults[SYNTH_CHANNEL_STEREO_COUNT];
 
 /* ------------ BETTER REVERB EXTERNED FUNCTIONS ------------ */
 
-void initialize_better_reverb_buffers(void);
 void set_better_reverb_buffers(u32 *inputDelaysL, u32 *inputDelaysR);
 
 

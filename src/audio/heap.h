@@ -144,8 +144,8 @@ void init_reverb_eu(void);
 s32 audio_shut_down_and_reset_step(void);
 void audio_reset_session(void);
 #else
-void init_reverb_us(s32 presetId);
-void audio_reset_session(s32 reverbPresetId);
+void init_reverb_us(u32 presetId);
+void audio_reset_session(u32 reverbPresetId);
 #endif
 void discard_bank(s32 bankId);
 

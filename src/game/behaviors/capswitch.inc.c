@@ -44,7 +44,7 @@ void cap_switch_act_2(void) {
         if (gChaosLivesEnabled) {
             play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
             gMarioState->numLives++;
-            // Do not save here, handle that later after spplying new patch!
+            save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives, FALSE);
         }
         set_play_mode(PLAY_MODE_SELECT_PATCH);
         o->oAction = 3;

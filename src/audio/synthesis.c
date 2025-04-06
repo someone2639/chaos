@@ -52,7 +52,7 @@ static s32         reverbMults[SYNTH_CHANNEL_STEREO_COUNT][NUM_ALLPASS / 3] = {0
 static s32          allpassIdx[SYNTH_CHANNEL_STEREO_COUNT][NUM_ALLPASS] = {0};
 static s32  betterReverbDelays[SYNTH_CHANNEL_STEREO_COUNT][NUM_ALLPASS] = {0};
 static s32 historySamplesLight[SYNTH_CHANNEL_STEREO_COUNT];
-static s16         **delayBufs[SYNTH_CHANNEL_STEREO_COUNT];
+static s16          *delayBufs[SYNTH_CHANNEL_STEREO_COUNT][NUM_ALLPASS];
 u8 *gReverbMults[SYNTH_CHANNEL_STEREO_COUNT];
 s32 reverbLastFilterIndex;
 s32 reverbFilterCount;
@@ -173,11 +173,6 @@ static void reverb_samples_light(s16 *start, s16 *end, s16 *downsampleBuffer, s3
     historySamplesLight[channel] = tmpCarryover;
 }
 
-void initialize_better_reverb_buffers(void) {
-    delayBufs[SYNTH_CHANNEL_LEFT] = (s16**) soundAlloc(&gBetterReverbPool, BETTER_REVERB_PTR_SIZE);
-    delayBufs[SYNTH_CHANNEL_RIGHT] = &delayBufs[SYNTH_CHANNEL_LEFT][NUM_ALLPASS];
-}
-
 void set_better_reverb_buffers(u32 *inputDelaysL, u32 *inputDelaysR) {
     s32 bufOffset = 0;
     s32 filterCount = reverbFilterCount;
@@ -189,7 +184,7 @@ void set_better_reverb_buffers(u32 *inputDelaysL, u32 *inputDelaysR) {
     if (betterReverbLightweight)
         filterCount = BETTER_REVERB_FILTER_COUNT_LIGHT;
 
-    gBetterReverbPool.cur = gBetterReverbPool.start + BETTER_REVERB_PTR_SIZE; // Reset reverb data pool
+    gBetterReverbPool.cur = gBetterReverbPool.start; // Reset reverb data pool
 
     // Don't bother setting any buffers if BETTER_REVERB is disabled
     if (!toggleBetterReverb)
@@ -206,7 +201,7 @@ void set_better_reverb_buffers(u32 *inputDelaysL, u32 *inputDelaysR) {
         }
     }
 
-    aggress(bufOffset * sizeof(s16) <= BETTER_REVERB_SIZE - BETTER_REVERB_PTR_SIZE, "BETTER_REVERB_SIZE is too small for this preset!");
+    aggress(bufOffset * sizeof(s16) <= BETTER_REVERB_SIZE, "BETTER_REVERB_SIZE is too small for this preset!");
 
     bzero(allpassIdx, sizeof(allpassIdx));
 }
