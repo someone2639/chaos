@@ -13,4 +13,4 @@
  */
 #define UNIQUE_SAVE_DATA
 
-#define VERSION_STRING  "Rogue Chaos v1.1.0"
+#define VERSION_STRING  "Rogue Chaos v1.1.1"
