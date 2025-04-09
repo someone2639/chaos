@@ -89,21 +89,22 @@ static void chstut_render_tiled_image(Gfx **dl, Texture *image, s32 x, s32 y, s3
     s32 maxHeight = 32;
 
     if (height > width) {
-        maxHeight = 32;
-        maxWidth = 64;
+        maxWidth = 32;
+        maxHeight = 64;
     }
 
-    gDPSetPrimColor(dlHead++, 0, 0, r, g, b, a);
     gSPDisplayList(dlHead++, dl_chstut_img_1cycle_begin);
+    gDPSetPrimColor(dlHead++, 0, 0, r, g, b, a);
 
     if (a >= 0xFF) {
         gDPSetCombineMode(dlHead++, G_CC_TEX, G_CC_TEX);
-        gDPSetRenderMode(dlHead++, G_RM_NOOP, G_RM_NOOP2);
-        if (x >= 0) {
+        if (x >= 0 && (width % 4) == 0 && (r >= 0xFF && g >= 0xFF && b >= 0xFF)) {
+            gDPSetRenderMode(dlHead++, G_RM_NOOP, G_RM_NOOP2);
             gDPSetCycleType(dlHead++, G_CYC_COPY);
             modeSC = 4;
             mOne = 1;
         } else {
+            gDPSetRenderMode(dlHead++, G_RM_OPA_SURF, G_RM_OPA_SURF2);
             gDPSetCycleType(dlHead++, G_CYC_1CYCLE);
             modeSC = 1;
             mOne = 0;
@@ -356,6 +357,7 @@ static void chstut_render_scroll_arrows(Gfx** dl) {
 
     create_dl_translation_matrix(&dlHead, MENU_MTX_PUSH, SCREEN_CENTER_X + x, y, 0.0f);
     create_dl_scale_matrix(&dlHead, MENU_MTX_NOPUSH, rightScale, rightScale, rightScale);
+    gDPPipeSync(dlHead++);
     if (gChaosTutorialSlideIndex < (gChaosTutorialSlideCount - 1)) {
         gDPSetEnvColor(dlHead++, 255, 255, 255, sTutorialImgA);
     } else {
@@ -366,6 +368,7 @@ static void chstut_render_scroll_arrows(Gfx** dl) {
     
     create_dl_translation_matrix(&dlHead, MENU_MTX_PUSH, SCREEN_CENTER_X - x, y, 0.0f);
     create_dl_scale_matrix(&dlHead, MENU_MTX_NOPUSH, -leftScale, -leftScale, leftScale);
+    gDPPipeSync(dlHead++);
     if (gChaosTutorialSlideIndex > 0) {
         gDPSetEnvColor(dlHead++, 255, 255, 255, sTutorialImgA);
     } else {

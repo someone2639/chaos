@@ -2,7 +2,7 @@
 
 s32 gChaosTutorialSlideIndex = 0;
 u8 *gChaosTutorialLoadedAddr = NULL;
-u8 gChaosTutorialImgBuffer[CHAOS_TUTORIAL_IMG_SIZE];
+ALIGNED16 u8 gChaosTutorialImgBuffer[CHAOS_TUTORIAL_IMG_SIZE];
 
 struct ChaosTutorialSlide gChaosTutorialSlides[] = {
     {

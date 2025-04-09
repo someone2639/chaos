@@ -3510,6 +3510,7 @@ Vtx patch_bg_mesh_mesh_vtx_1[8] = {
 };
 
 Gfx patch_bg_mesh_mesh[] = {
+	gsDPPipeSync(),
 	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADE | G_SHADING_SMOOTH),
 	gsDPSetCombineLERP(ENVIRONMENT, 0, TEXEL0, 0, 0, 0, 0, 1, ENVIRONMENT, 0, TEXEL0, 0, 0, 0, 0, 1),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -3554,6 +3555,7 @@ Vtx patch_bg_r_mesh_r_mesh_vtx_1[8] = {
 };
 
 Gfx patch_bg_r_mesh_r_mesh[] = {
+	gsDPPipeSync(),
 	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADE | G_SHADING_SMOOTH),
 	gsDPSetCombineLERP(ENVIRONMENT, 0, TEXEL0, 0, 0, 0, 0, 1, ENVIRONMENT, 0, TEXEL0, 0, 0, 0, 0, 1),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -3598,6 +3600,7 @@ Vtx patch_bg_s_mesh_s_mesh_vtx_1[8] = {
 };
 
 Gfx patch_bg_s_mesh_s_mesh[] = {
+	gsDPPipeSync(),
 	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
 	gsDPSetCombineLERP(0, 0, 0, TEXEL0, 0, 0, 0, 1, 0, 0, 0, TEXEL0, 0, 0, 0, 1),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -3637,6 +3640,7 @@ Vtx patch_quality_bead_Mesh_mesh_vtx_0[4] = {
 };
 
 Gfx patch_quality_bead_begin[] = {
+	gsDPPipeSync(),
 	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
 	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -3682,6 +3686,7 @@ Vtx patch_use_type_mesh_vtx_0[4] = {
 };
 
 Gfx patch_use_type_start[] = {
+	gsDPPipeSync(),
 	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
 	gsDPSetCombineLERP(0, 0, 0, TEXEL0, 0, 0, 0, TEXEL0, 0, 0, 0, TEXEL0, 0, 0, 0, TEXEL0),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_POINT | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -3744,6 +3749,7 @@ Vtx desc_bg_mesh_mesh_vtx_1[8] = {
 };
 
 Gfx desc_bg_mesh_mesh[] = {
+	gsDPPipeSync(),
 	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
 	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -3791,6 +3797,7 @@ Vtx ext_desc_bg_ext_mesh_mesh_vtx_1[8] = {
 };
 
 Gfx ext_desc_bg_ext_mesh_mesh[] = {
+	gsDPPipeSync(),
 	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
 	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -3840,6 +3847,7 @@ Vtx desc_bg_diff_diff_mesh_mesh_vtx_1[10] = {
 };
 
 Gfx desc_bg_diff_diff_mesh_mesh[] = {
+	gsDPPipeSync(),
 	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
 	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -3887,6 +3895,7 @@ Vtx desc_bg_chal_chal_mesh_mesh_vtx_1[8] = {
 };
 
 Gfx desc_bg_chal_chal_mesh_mesh[] = {
+	gsDPPipeSync(),
 	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
 	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -3934,6 +3943,7 @@ Vtx desc_bg_start_start_mesh_mesh_vtx_1[8] = {
 };
 
 Gfx desc_bg_start_start_mesh_mesh[] = {
+	gsDPPipeSync(),
 	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
 	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -3981,6 +3991,7 @@ Vtx chstut_bg_mesh_mesh_vtx_1[8] = {
 };
 
 Gfx chstut_bg_mesh_mesh[] = {
+	gsDPPipeSync(),
 	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
 	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -4028,6 +4039,7 @@ Vtx opt_bg_opt_mesh_mesh_vtx_1[8] = {
 };
 
 Gfx opt_bg_opt_mesh_mesh[] = {
+	gsDPPipeSync(),
 	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
 	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -4075,6 +4087,7 @@ Vtx act_desc_bg_act_desc_mesh_mesh_vtx_1[8] = {
 };
 
 Gfx act_desc_bg_act_desc_mesh_mesh[] = {
+	gsDPPipeSync(),
 	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
 	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -4122,6 +4135,7 @@ Vtx stats_bg_stats_mesh_mesh_vtx_1[8] = {
 };
 
 Gfx stats_bg_stats_mesh_mesh[] = {
+	gsDPPipeSync(),
 	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
 	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -4168,6 +4182,7 @@ Vtx hand_Mesh_mesh_vtx_0[4] = {
 };
 
 Gfx hand_cursor_start[] = {
+	gsDPPipeSync(),
 	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
 	gsDPSetCombineLERP(0, 0, 0, TEXEL0, 0, 0, 0, TEXEL0, 0, 0, 0, TEXEL0, 0, 0, 0, TEXEL0),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_POINT | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -4251,6 +4266,7 @@ Vtx curtain_Plane_mesh_vtx_4[4] = {
 };
 
 Gfx curtain_Plane_mesh[] = {
+	gsDPPipeSync(),
 	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
 	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, TEXEL0),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -4319,6 +4335,7 @@ Vtx select_patch_text_mesh_mesh_vtx_0[4] = {
 };
 
 Gfx select_patch_text_mesh_mesh[] = {
+	gsDPPipeSync(),
 	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
 	gsDPSetCombineLERP(0, 0, 0, TEXEL0, 0, 0, 0, TEXEL0, 0, 0, 0, TEXEL0, 0, 0, 0, TEXEL0),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -4339,6 +4356,7 @@ Gfx select_patch_text_mesh_mesh[] = {
 };
 
 Gfx select_patch_text_event_1[] = {
+	gsDPPipeSync(),
 	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
 	gsDPSetCombineLERP(PRIMITIVE, 0, TEXEL0, 0, 0, 0, 0, TEXEL0, PRIMITIVE, 0, TEXEL0, 0, 0, 0, 0, TEXEL0),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -4359,6 +4377,7 @@ Gfx select_patch_text_event_1[] = {
 };
 
 Gfx select_patch_text_event_2[] = {
+	gsDPPipeSync(),
 	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
 	gsDPSetCombineLERP(PRIMITIVE, 0, TEXEL0, 0, 0, 0, 0, TEXEL0, PRIMITIVE, 0, TEXEL0, 0, 0, 0, 0, TEXEL0),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -4379,6 +4398,7 @@ Gfx select_patch_text_event_2[] = {
 };
 
 Gfx select_patch_text_event_3[] = {
+	gsDPPipeSync(),
 	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
 	gsDPSetCombineLERP(PRIMITIVE, 0, TEXEL0, 0, 0, 0, 0, TEXEL0, PRIMITIVE, 0, TEXEL0, 0, 0, 0, 0, TEXEL0),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),

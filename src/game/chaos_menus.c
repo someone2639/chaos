@@ -116,11 +116,11 @@ void menu_start_button_prompt() {
     Resets everything after drawing a button prompt
 */
 void menu_end_button_prompt() {
+    gDPPipeSync(gDisplayListHead++);
 	gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
 	gSPTexture(gDisplayListHead++, 65535, 65535, 0, G_TX_RENDERTILE, G_OFF);
 	gDPSetTexturePersp(gDisplayListHead++, G_TP_PERSP);
 	gDPSetAlphaCompare(gDisplayListHead++, G_AC_NONE);
-    gDPPipeSync(gDisplayListHead++);
 }
 
 /*
