@@ -26,6 +26,7 @@
 #define ACT_DESC_WIDTH      126
 struct ChaosPauseMenu sChaosPauseMenu = {.chaosListStart = 0};
 struct ChaosPauseMenu *gChaosPauseMenu = &sChaosPauseMenu;
+s16 sPrevHudFlags = HUD_DISPLAY_DEFAULT;
 u16 sPauseScreenBuffer[SCREEN_WIDTH * SCREEN_HEIGHT];
 
 /*
@@ -222,6 +223,7 @@ void init_active_patches_menu() {
     gChaosPauseMenu->descX = ACTIVE_PATCH_DESC_X_START;
     gChaosPauseMenu->cardX = MINI_CARD_X_START;
     gChaosPauseMenu->extDescScale = 0.0f;
+    sPrevHudFlags = gHudDisplay.flags;
 }
 
 /*
@@ -618,6 +620,7 @@ s32 active_patches_menu_anim_startup() {
     switch(phase) {
         case 0:
             gHudDisplay.flags = HUD_DISPLAY_NONE;
+            
             gChaosPauseMenu->activePatchesMenu.animFrames = ACTIVE_PATCH_MENU_WAIT_FB_FRAMES;
             //Waits a few frames then copies the framebuffer (for console)
             if(animTimer == ACTIVE_PATCH_MENU_WAIT_FB_FRAMES) {
@@ -663,12 +666,7 @@ s32 active_patches_menu_anim_ending() {
     } else {
         gChaosPauseMenu->activePatchesMenu.flags &= ~ACTIVE_PATCHES_MENU_ACTIVE;
         gChaosPauseMenu->activePatchesMenu.animFrames = MENU_ANIM_LOOP;
-        gHudDisplay.flags = HUD_DISPLAY_DEFAULT;
-        if (gCurrCourseNum >= COURSE_MIN) {
-            gHudDisplay.flags |= HUD_DISPLAY_FLAG_COIN_COUNT;
-        } else {
-            gHudDisplay.flags &= ~HUD_DISPLAY_FLAG_COIN_COUNT;
-        }
+        gHudDisplay.flags = sPrevHudFlags;
     }
     return FALSE;
 }
