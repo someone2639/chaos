@@ -7,6 +7,7 @@
 #include "heap.h"
 #include "load.h"
 #include "seqplayer.h"
+#include "game/debug.h"
 
 struct SharedDma {
     /*0x0*/ u8 *buffer;       // target, points to pre-allocated buffer
@@ -19,7 +20,7 @@ struct SharedDma {
 // EU only
 void port_eu_init(void);
 
-ALIGNED16 u32 dmaTempBuffer[4];
+ALIGNED16 u8 dmaTempBuffer[ALIGN16(0x10)];
 
 struct Note *gNotes;
 
@@ -104,6 +105,11 @@ ALSeqFile *get_audio_file_header(s32 poolIdx);
  */
 void audio_dma_copy_immediate(uintptr_t devAddr, void *vAddr, size_t nbytes) {
     eu_stubbed_printf_3("Romcopy %x -> %x ,size %x\n", devAddr, vAddr, nbytes);
+
+    aggress_args(((u32) devAddr & (0x02 - 1)) == 0, "audio_dma_copy_immediate:\nMisaligned DMA devAddr: 0x%08X", (u32) devAddr);
+    aggress_args(((u32) vAddr   & (0x10 - 1)) == 0, "audio_dma_copy_immediate:\nMisaligned DMA vAddr: 0x%08X",   (u32) vAddr  );
+    aggress_args(((u32) nbytes  & (0x02 - 1)) == 0, "audio_dma_copy_immediate:\nBad nbytes value: 0x%08X",       (u32) nbytes );
+
     osInvalDCache(vAddr, nbytes);
     osPiStartDma(&gAudioDmaIoMesg, OS_MESG_PRI_HIGH, OS_READ, devAddr, vAddr, nbytes,
                  &gAudioDmaMesgQueue);
@@ -134,6 +140,10 @@ u8 audioString49[] = "BANK LOAD MISS! FOR %d\n";
  * Performs an asynchronus (normal priority) DMA copy
  */
 void audio_dma_copy_async(uintptr_t devAddr, void *vAddr, size_t nbytes, OSMesgQueue *queue, OSIoMesg *mesg) {
+    assert_args(((u32) devAddr & (0x02 - 1)) == 0, "audio_dma_copy_async:\nMisaligned DMA devAddr: 0x%08X", (u32) devAddr);
+    assert_args(((u32) vAddr   & (0x10 - 1)) == 0, "audio_dma_copy_async:\nMisaligned DMA vAddr: 0x%08X",   (u32) vAddr  );
+    assert_args(((u32) nbytes  & (0x02 - 1)) == 0, "audio_dma_copy_async:\nBad nbytes value: 0x%08X",       (u32) nbytes );
+
     osInvalDCache(vAddr, nbytes);
     osPiStartDma(mesg, OS_MESG_PRI_NORMAL, OS_READ, devAddr, vAddr, nbytes, queue);
 }
@@ -145,6 +155,11 @@ void audio_dma_copy_async(uintptr_t devAddr, void *vAddr, size_t nbytes, OSMesgQ
 void audio_dma_partial_copy_async(uintptr_t *devAddr, u8 **vAddr, ssize_t *remaining, OSMesgQueue *queue, OSIoMesg *mesg) {
     ssize_t transfer = MIN(*remaining, 0x1000);
     *remaining -= transfer;
+
+    assert_args(((u32) devAddr  & (0x02 - 1)) == 0, "audio_dma_partial_copy_async:\nMisaligned DMA devAddr: 0x%08X", (u32) devAddr );
+    assert_args(((u32) vAddr    & (0x10 - 1)) == 0, "audio_dma_partial_copy_async:\nMisaligned DMA vAddr: 0x%08X",   (u32) vAddr   );
+    assert_args(((u32) transfer & (0x02 - 1)) == 0, "audio_dma_partial_copy_async:\nBad transfer value: 0x%08X",     (u32) transfer);
+
     osInvalDCache(*vAddr, transfer);
     osPiStartDma(mesg, OS_MESG_PRI_NORMAL, OS_READ, *devAddr, *vAddr, transfer, queue);
     *devAddr += transfer;
@@ -249,6 +264,11 @@ void *dma_sample_data(uintptr_t devAddr, u32 size, s32 arg2, u8 *dmaIndexRef) {
     transfer = dma->bufSize;
     dmaDevAddr = devAddr & ~0xF;
     dma->source = dmaDevAddr;
+
+    assert_args(((u32) dmaDevAddr  & (0x02 - 1)) == 0, "dma_sample_data:\nMisaligned dmaDevAddr: 0x%08X", (u32) dmaDevAddr );
+    assert_args(((u32) dma->buffer & (0x10 - 1)) == 0, "dma_sample_data:\nMisaligned dma buffer: 0x%08X", (u32) dma->buffer);
+    assert_args(((u32) transfer    & (0x02 - 1)) == 0, "dma_sample_data:\nBad transfer value: 0x%08X",    (u32) transfer   );
+
 #ifdef VERSION_US // HACKERSM64_DO: Is there a reason this only exists in US?
     osInvalDCache(dma->buffer, transfer);
 #endif
@@ -467,9 +487,9 @@ struct AudioBank *bank_load_immediate(s32 bankId, s32 arg1) {
         return NULL;
     }
 
-    audio_dma_copy_immediate((uintptr_t) ctlData, dmaTempBuffer, 0x10);
-    u32 numInstruments = dmaTempBuffer[0];
-    u32 numDrums = dmaTempBuffer[1];
+    audio_dma_copy_immediate((uintptr_t) ctlData, dmaTempBuffer, sizeof(dmaTempBuffer));
+    u32 numInstruments = ((u32 *) dmaTempBuffer)[0];
+    u32 numDrums = ((u32 *) dmaTempBuffer)[1];
     audio_dma_copy_immediate((uintptr_t)(ctlData + 0x10), ret, alloc);
     patch_audio_bank(ret, gAlTbl->seqArray[bankId].offset, numInstruments, numDrums);
     gCtlEntries[bankId].numInstruments = (u8) numInstruments;
@@ -490,9 +510,9 @@ struct AudioBank *bank_load_async(s32 bankId, s32 arg1, struct SequencePlayer *s
         return NULL;
     }
 
-    audio_dma_copy_immediate((uintptr_t) ctlData, dmaTempBuffer, 0x10);
-    u32 numInstruments = dmaTempBuffer[0];
-    u32 numDrums = dmaTempBuffer[1];
+    audio_dma_copy_immediate((uintptr_t) ctlData, dmaTempBuffer, sizeof(dmaTempBuffer));
+    u32 numInstruments = ((u32 *) dmaTempBuffer)[0];
+    u32 numDrums = ((u32 *) dmaTempBuffer)[1];
     seqPlayer->loadingBankId = (u8) bankId;
 #if defined(VERSION_EU)
     gCtlEntries[bankId].numInstruments = numInstruments;
@@ -849,7 +869,7 @@ void audio_init() {
     // Load headers for sounds and sequences
     gSeqFileHeader = (ALSeqFile *) dmaTempBuffer;
     data = gMusicData;
-    audio_dma_copy_immediate((uintptr_t) data, gSeqFileHeader, 0x10);
+    audio_dma_copy_immediate((uintptr_t) data, gSeqFileHeader, sizeof(dmaTempBuffer));
     gSequenceCount = gSeqFileHeader->seqCount;
     size = gSequenceCount * sizeof(ALSeqData) + 4;
     size = ALIGN16(size);
@@ -860,7 +880,7 @@ void audio_init() {
     // Load header for CTL (instrument metadata)
     gAlCtlHeader = (ALSeqFile *) dmaTempBuffer;
     data = gSoundDataADSR;
-    audio_dma_copy_immediate((uintptr_t) data, gAlCtlHeader, 0x10);
+    audio_dma_copy_immediate((uintptr_t) data, gAlCtlHeader, sizeof(dmaTempBuffer));
     size = gAlCtlHeader->seqCount * sizeof(ALSeqData) + 4;
     size = ALIGN16(size);
     gCtlEntries = soundAlloc(&gAudioInitPool, gAlCtlHeader->seqCount * sizeof(struct CtlEntry));
@@ -870,7 +890,7 @@ void audio_init() {
 
     // Load header for TBL (raw sound data)
     gAlTbl = (ALSeqFile *) dmaTempBuffer;
-    audio_dma_copy_immediate((uintptr_t) data, gAlTbl, 0x10);
+    audio_dma_copy_immediate((uintptr_t) data, gAlTbl, sizeof(dmaTempBuffer));
     size = gAlTbl->seqCount * sizeof(ALSeqData) + 4;
     size = ALIGN16(size);
     gAlTbl = soundAlloc(&gAudioInitPool, size);

@@ -14,6 +14,7 @@
 
 #include "printf.h"
 
+static volatile u8 gCrashScreenInitialized = FALSE;
 static char crashScreenBuf[0x200];
 
 u8 gCrashScreenCharToGlyph[128] = {
@@ -369,29 +370,31 @@ void draw_crash_screen(OSThread *thread) {
     osViBlack(FALSE);
 }
 
-char *__n64Assert_Filename;
-u32   __n64Assert_LineNum;
-char *__n64Assert_Message;
+volatile char *__n64Assert_Filename;
+volatile u32   __n64Assert_LineNum;
+volatile char *__n64Assert_Message;
 
 void __n64Assert(char *fileName, u32 lineNum, char *message) {
-    __n64Assert_Filename = fileName;
-    __n64Assert_LineNum = lineNum;
-    __n64Assert_Message = message;
+    if (gCrashScreenInitialized || !__n64Assert_Filename) {
+        __n64Assert_Filename = fileName;
+        __n64Assert_LineNum = lineNum;
+        __n64Assert_Message = message;
+    }
 
-    *(volatile int*)NULL = 0;
+    if (gCrashScreenInitialized) {
+        *(volatile int*)NULL = 0;
+    }
+}
+
+void __n64DelayedAssertCheck(void) {
+    gCrashScreenInitialized = TRUE;
+    if (__n64Assert_Filename) {
+        *(volatile int*)NULL = 0;
+    }
 }
 
 void draw_assert_screen(OSThread *thread) {
-    s16 cause;
     __OSThreadContext *tc = &thread->context;
-
-    cause = (tc->cause >> 2) & 0x1f;
-    if (cause == 23) { // EXC_WATCH
-        cause = 16;
-    }
-    if (cause == 31) { // EXC_VCED
-        cause = 17;
-    }
 
     crash_screen_draw_rect(25, 20, 270, 210);
     crash_screen_print(30, 25, "Assertion Failed!");
@@ -399,7 +402,7 @@ void draw_assert_screen(OSThread *thread) {
     crash_screen_print(30, 65, "FILE: %s", __n64Assert_Filename);
     crash_screen_print(30, 75, "LINE: %d", __n64Assert_LineNum);
     crash_screen_print(30, 95, "MESSAGE:", __n64Assert_Message);
-    crash_screen_print_with_newlines(36, 105, 30, __n64Assert_Message);
+    crash_screen_print_with_newlines(36, 105, 30, (char *) __n64Assert_Message);
     osWritebackDCacheAll();
     osViBlack(FALSE);
 }

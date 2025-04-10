@@ -25,10 +25,11 @@ void try_print_debug_mario_object_info(void);
 void try_do_mario_debug_object_spawn(void);
 void try_print_debug_mario_level_info(void);
 
-extern char *__n64Assert_Filename;
-extern u32   __n64Assert_LineNum;
-extern char *__n64Assert_Message;
+extern volatile char *__n64Assert_Filename;
+extern volatile u32   __n64Assert_LineNum;
+extern volatile char *__n64Assert_Message;
 extern void __n64Assert(char *fileName, u32 lineNum, char *message);
+extern void __n64DelayedAssertCheck(void);
 
 extern char gAssertionStr[512];
 

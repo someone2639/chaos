@@ -251,6 +251,9 @@ u32 main_pool_pop_state(void) {
 void dma_read(u8 *dest, u8 *srcStart, u8 *srcEnd) {
     u32 size = ALIGN16(srcEnd - srcStart);
 
+    aggress_args(((u32) srcStart & (0x02 - 1)) == 0, "dma_read:\nMisaligned DMA start address: 0x%08X", (u32) srcStart);
+    aggress_args(((u32) dest     & (0x10 - 1)) == 0, "dma_read:\nMisaligned DMA dest address: 0x%08X",  (u32) dest    );
+
     osInvalDCache(dest, size);
     while (size != 0) {
         u32 copySize = (size >= 0x1000) ? 0x1000 : size;

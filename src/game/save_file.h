@@ -85,6 +85,8 @@ struct MainMenuSaveData {
     u8 wideMode: 1;
 #endif
 
+    u8 padding[8];
+
     struct SaveBlockSignature signature;
 };
 
@@ -95,9 +97,9 @@ struct SaveBuffer {
     struct MainMenuSaveData menuData;
 };
 
-STATIC_ASSERT(sizeof(struct SaveFile) % 8 == 0, "ERROR: SaveFile struct must be multiple of 8!");
-STATIC_ASSERT(sizeof(struct MainMenuSaveData) % 8 == 0, "ERROR: MainMenuSaveData struct must be multiple of 8!");
-STATIC_ASSERT(sizeof(struct SaveBuffer) % 8 == 0, "ERROR: SaveBuffer should be multiple of 8!");
+STATIC_ASSERT(sizeof(struct SaveFile) % 16 == 0, "ERROR: SaveFile struct must be multiple of 16!");
+STATIC_ASSERT(sizeof(struct MainMenuSaveData) % 16 == 0, "ERROR: MainMenuSaveData struct must be multiple of 16!");
+STATIC_ASSERT(sizeof(struct SaveBuffer) % 16 == 0, "ERROR: SaveBuffer should be multiple of 16!");
 STATIC_ASSERT(sizeof(struct SaveBuffer) <= EEPROM_SIZE, "ERROR: Save file too large!");
 
 extern u8 gLastCompletedCourseNum;

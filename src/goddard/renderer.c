@@ -18,6 +18,7 @@
 #include "shape_helper.h"
 #include "skin.h"
 #include "types.h"
+#include "game/debug.h"
 
 #define MAX_GD_DLS 1000
 #define OS_MESG_SI_COMPLETE 0x33333333
@@ -3420,6 +3421,10 @@ void make_timer_gadgets(void) {
  */
 static void gd_block_dma(u32 romAddr, void *vAddr, s32 size) {
     s32 blockSize;
+
+    aggress_args(((u32) romAddr & (0x02 - 1)) == 0, "gd_block_dma:\nMisaligned DMA romAddr: 0x%08X", (u32) romAddr);
+    aggress_args(((u32) vAddr   & (0x10 - 1)) == 0, "gd_block_dma:\nMisaligned DMA vAddr: 0x%08X",   (u32) vAddr  );
+    aggress_args(((u32) size    & (0x02 - 1)) == 0, "gd_block_dma:\nBad size value: 0x%08X",         (u32) size   );
 
     do {
         if ((blockSize = size) > 0x1000) {
