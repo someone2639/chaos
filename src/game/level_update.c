@@ -488,7 +488,8 @@ void init_mario_after_warp(void) {
                 || sWarpDest.nodeId == 0x14 || sWarpDest.nodeId == 0x1E)) {
             play_sound(SOUND_MENU_MARIO_CASTLE_WARP, gGlobalSoundSource);
             if (sWarpDest.nodeId == 0x0B) {
-                chaosmsg_print(CHAOS_PATCH_NONE, "@FF7F10--Nice try!@-------- :)");
+                sprintf(gChaosInternalBuffer, "You need @FF7F10--%d@-------- more stars before you may enter @00AFFF--Bowser in the Sky@--------!", BITS_STAR_REQUIREMENT - save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1));
+                chaosmsg_print(CHAOS_PATCH_NONE, gChaosInternalBuffer);
             }
         }
 #endif
