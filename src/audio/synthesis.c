@@ -173,7 +173,7 @@ static void reverb_samples_light(s16 *start, s16 *end, s16 *downsampleBuffer, s3
     historySamplesLight[channel] = tmpCarryover;
 }
 
-void set_better_reverb_buffers(u32 *inputDelaysL, u32 *inputDelaysR) {
+void set_better_reverb_buffers(u32 *inputDelaysL, u32 *inputDelaysR, u8 betterReverbEnabled) {
     s32 bufOffset = 0;
     s32 filterCount = reverbFilterCount;
     u32 *inputDelayPtrs[SYNTH_CHANNEL_STEREO_COUNT] = {
@@ -187,7 +187,7 @@ void set_better_reverb_buffers(u32 *inputDelaysL, u32 *inputDelaysR) {
     gBetterReverbPool.cur = gBetterReverbPool.start; // Reset reverb data pool
 
     // Don't bother setting any buffers if BETTER_REVERB is disabled
-    if (!toggleBetterReverb)
+    if (!betterReverbEnabled)
         return;
 
     // NOTE: Using filterCount over NUM_ALLPASS will report less memory usage with fewer filters, but poses an additional

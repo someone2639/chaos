@@ -1051,6 +1051,12 @@ void init_reverb_us(u32 presetId) {
     s16 *mem;
     s32 i;
     s32 reinitBetterReverbBuffers = TRUE;
+    s32 toggleBetterReverbLocal = FALSE;
+    s32 audioLoadLockHist = gAudioLoadLock;
+
+    if (gAudioLoadLock != AUDIO_LOCK_UNINITIALIZED) {
+        gAudioLoadLock = AUDIO_LOCK_LOADING;
+    }
 
     if ((presetId >> 31) & 1U) {
         if (sAudioIsInitialized) {
@@ -1108,11 +1114,11 @@ void init_reverb_us(u32 presetId) {
     gReverbMults[SYNTH_CHANNEL_RIGHT] = betterReverbPreset->reverbMultsR;
 
     if (betterReverbDownsampleRate <= 0) {
-        toggleBetterReverb = FALSE;
+        toggleBetterReverbLocal = FALSE;
         if (betterReverbWindowsSize >= 0)
             reverbWindowSize = betterReverbWindowsSize;
     } else {
-        toggleBetterReverb = TRUE;
+        toggleBetterReverbLocal = TRUE;
         gReverbDownsampleRate = (1 << (betterReverbDownsampleRate - 1));
 
         if (betterReverbWindowsSize >= 0) {
@@ -1194,18 +1200,22 @@ void init_reverb_us(u32 presetId) {
 
 #ifdef BETTER_REVERB
     if (!gSynthesisReverb.useReverb)
-        toggleBetterReverb = FALSE;
+        toggleBetterReverbLocal = FALSE;
 
     if (betterReverbPreset->gain >= 0) {
         gSynthesisReverb.reverbGain = (u16) betterReverbPreset->gain;
-    } else if (toggleBetterReverb) {
+    } else if (toggleBetterReverbLocal) {
         gSynthesisReverb.reverbGain = gReverbSettings[presetId].gain * 0.875f;
     }
 
     // This does not have to be reset after being initialized for the first time, which would help speed up load times.
     // However, resetting this allows for proper clearing of the reverb buffers, as well as dynamic customization of the delays array.
-    set_better_reverb_buffers(betterReverbPreset->delaysL, betterReverbPreset->delaysR);
+    set_better_reverb_buffers(betterReverbPreset->delaysL, betterReverbPreset->delaysR, toggleBetterReverbLocal);
 #endif
+
+    toggleBetterReverb = toggleBetterReverbLocal; // Set at end of function to eliminate possible race condition
+
+    gAudioLoadLock = audioLoadLockHist;
 }
 #endif
 

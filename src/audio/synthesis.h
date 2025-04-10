@@ -66,7 +66,7 @@ extern u8 *gReverbMults[SYNTH_CHANNEL_STEREO_COUNT];
 
 /* ------------ BETTER REVERB EXTERNED FUNCTIONS ------------ */
 
-void set_better_reverb_buffers(u32 *inputDelaysL, u32 *inputDelaysR);
+void set_better_reverb_buffers(u32 *inputDelaysL, u32 *inputDelaysR, u8 betterReverbEnabled);
 
 
 /* -------------- BETTER REVERB STATIC ASSERTS -------------- */
