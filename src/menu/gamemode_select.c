@@ -22,9 +22,9 @@ const char *sGMSelectDescriptions[] = {
     [GM_SELECT_DESC_START]          = "Begin the game with the selected settings.",
     [GM_SELECT_DESC_EASY]           = "Patch cards will be more favorable. Cards will feature weaker negative effects.",
     [GM_SELECT_DESC_NORMAL]         = "Patch cards will be evenly balanced. Cards will have equal positive and negative effects.",
-    [GM_SELECT_DESC_HARD]           = "Patch cards will be more punishing. Cards will feature weaker positive effects and certain patches will have a longer duration.",
+    [GM_SELECT_DESC_HARD]           = "Patch cards will be more punishing. Cards will feature weaker positive effects and most negative patches will have a longer duration.",
     [GM_SELECT_DESC_CLASSIC]        = "Infinite Lives. Dying will send you out of the course with no additional punishment.",
-    [GM_SELECT_DESC_CHALLENGE]      = "Enables Lives. Running out of lives will delete the save file. 1-UP mushrooms are removed, and lives can only be increased by collecting yellow stars."
+    [GM_SELECT_DESC_CHALLENGE]      = "Enables Lives. Running out of lives will delete the save file. 1-UP mushrooms are removed, and lives may only be increased by collecting yellow stars."
 };
 
 /*
