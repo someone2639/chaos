@@ -5,6 +5,7 @@
 #include "engine/behavior_script.h"
 #include "game/chaos/chaos.h"
 #include "hvqm/hvqm.h"
+#include "game/emutest.h"
 #include "game/game_init.h"
 
 #define HVQM_FILE(ptr) _ ## ptr ## SegmentRomStart
@@ -55,19 +56,25 @@ void chs_update_serve_ads(void) {
         return;
     }
 
-    if (chsCurrentAd == 0) {
-        // Shuffle order of ads
-        for (s32 i = ARRAY_COUNT(chsHVQMTable) - 1; i >= 0; i--) {
-            s32 randIndex = random_float() * (i + 1);
-            u32 *tmp = chsHVQMTable[randIndex];
-            chsHVQMTable[randIndex] = chsHVQMTable[i];
-            chsHVQMTable[i] = tmp;
+    s32 adToPlay = 0;
+    do {
+        if (chsCurrentAd == 0) {
+            // Shuffle order of ads
+            for (s32 i = ARRAY_COUNT(chsHVQMTable) - 1; i >= 0; i--) {
+                s32 randIndex = random_float() * (i + 1);
+                u32 *tmp = chsHVQMTable[randIndex];
+                chsHVQMTable[randIndex] = chsHVQMTable[i];
+                chsHVQMTable[i] = tmp;
+            }
         }
-    }
 
+        adToPlay = chsCurrentAd++;
+        if (chsCurrentAd >= ARRAY_COUNT(chsHVQMTable)) {
+            chsCurrentAd = 0;
+        }
+
+    } while ((gEmulator & (EMU_CONSOLE | EMU_ARES | EMU_CEN64)) && chsHVQMTable[adToPlay] == HVQM_PTR(chaos3)); // Do not play fake crash on console when video is already unstable
+
+    hvqm_play(chsHVQMTable[adToPlay]);
     this->frameTimer = 0;
-    hvqm_play(chsHVQMTable[chsCurrentAd++]);
-    if (chsCurrentAd >= ARRAY_COUNT(chsHVQMTable)) {
-        chsCurrentAd = 0;
-    }
 }
