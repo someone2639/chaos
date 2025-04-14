@@ -214,7 +214,9 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
         return;
     }
     
-    save_file_update_total_patches();
+    if(patchId != CHAOS_PATCH_NONE_POSITIVE && patchId != CHAOS_PATCH_NONE_NEGATIVE) {
+        save_file_update_total_patches();
+    }
 
     const struct ChaosPatch *patch = &gChaosPatches[patchId];
     s32 matchingIndex = -1;
