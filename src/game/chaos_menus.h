@@ -17,6 +17,7 @@ enum MenuButtonPrompt {
     MENU_PROMPT_C_LEFT,
     MENU_PROMPT_C_UP,
     MENU_PROMPT_C_RIGHT,
+    MENU_PROMPT_COUNT,
 };
 
 enum MenuJoystickDir {
@@ -25,6 +26,11 @@ enum MenuJoystickDir {
     MENU_JOYSTICK_DIR_DOWN  = (1 << 1),
     MENU_JOYSTICK_DIR_RIGHT = (1 << 2),
     MENU_JOYSTICK_DIR_LEFT  = (1 << 3),
+};
+
+struct ButtonTexturePair {
+    u8 *up;
+    u8 *down;
 };
 
 //Generic menu handler
@@ -48,3 +54,4 @@ s32 menu_update_anims(struct ChaosMenu *menu, s32 (*animFunctions[])(void));
 void menu_start_button_prompt();
 void menu_end_button_prompt();
 void menu_button_prompt(s32 x, s32 y, s32 button);
+void menu_static_button_prompt(s32 x, s32 y, s32 button, s32 pressed);

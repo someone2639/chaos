@@ -8,6 +8,19 @@
 
 static u8 sDisplayButtonsDown = FALSE;
 
+struct ButtonTexturePair sButtonTextureTable[MENU_PROMPT_COUNT] = {
+    [MENU_PROMPT_A_BUTTON]      = {.up = texture_icon_a_button,     .down = texture_icon_a_button_down},
+    [MENU_PROMPT_B_BUTTON]      = {.up = texture_icon_b_button,     .down = texture_icon_b_button_down},
+    [MENU_PROMPT_START_BUTTON]  = {.up = texture_icon_start_button, .down = texture_icon_start_button_down},
+    [MENU_PROMPT_L_TRIG]        = {.up = texture_icon_l_trig,       .down = texture_icon_l_trig_down},
+    [MENU_PROMPT_R_TRIG]        = {.up = texture_icon_r_trig,       .down = texture_icon_r_trig_down},
+    [MENU_PROMPT_Z_TRIG]        = {.up = texture_icon_z_trig,       .down = texture_icon_z_trig_down},
+    [MENU_PROMPT_C_DOWN]        = {.up = texture_icon_c_d_button,   .down = texture_icon_c_d_button_down},
+    [MENU_PROMPT_C_LEFT]        = {.up = texture_icon_c_l_button,   .down = texture_icon_c_l_button_down},
+    [MENU_PROMPT_C_UP]          = {.up = texture_icon_c_u_button,   .down = texture_icon_c_u_button_down},
+    [MENU_PROMPT_C_RIGHT]       = {.up = texture_icon_c_r_button,   .down = texture_icon_c_r_button_down},
+};
+
 /*
     Returns the point a percentage of the way from start to end, used for menu anims
 */
@@ -127,42 +140,24 @@ void menu_end_button_prompt() {
     Draws a button prompt
 */
 void menu_button_prompt(s32 x, s32 y, s32 button) {
-    u8 *buttonTexture;
+    u8 *buttonTexture = (sDisplayButtonsDown) ? sButtonTextureTable[button].down : sButtonTextureTable[button].up;
+    buttonTexture = segmented_to_virtual(buttonTexture);
 
-    switch(button) {
-        case MENU_PROMPT_A_BUTTON:
-            buttonTexture = (sDisplayButtonsDown) ? texture_icon_a_button_down : texture_icon_a_button;
-            break;
-        case MENU_PROMPT_B_BUTTON:
-            buttonTexture = (sDisplayButtonsDown) ? texture_icon_b_button_down : texture_icon_b_button;
-            break;
-        case MENU_PROMPT_START_BUTTON:
-            buttonTexture = (sDisplayButtonsDown) ? texture_icon_start_button_down : texture_icon_start_button;
-            break;
-        case MENU_PROMPT_L_TRIG:
-            buttonTexture = (sDisplayButtonsDown) ? texture_icon_l_trig_down : texture_icon_l_trig;
-            break;
-        case MENU_PROMPT_R_TRIG:
-            buttonTexture = (sDisplayButtonsDown) ? texture_icon_r_trig_down : texture_icon_r_trig;
-            break;
-        case MENU_PROMPT_Z_TRIG:
-            buttonTexture = (sDisplayButtonsDown) ? texture_icon_z_trig_down : texture_icon_z_trig;
-            break;
-        case MENU_PROMPT_C_DOWN:
-            buttonTexture = (sDisplayButtonsDown) ? texture_icon_c_d_button_down : texture_icon_c_d_button;
-            break;
-        case MENU_PROMPT_C_LEFT:
-            buttonTexture = (sDisplayButtonsDown) ? texture_icon_c_l_button_down : texture_icon_c_l_button;
-            break;
-        case MENU_PROMPT_C_UP:
-            buttonTexture = (sDisplayButtonsDown) ? texture_icon_c_u_button_down : texture_icon_c_u_button;
-            break;
-        case MENU_PROMPT_C_RIGHT:
-        default:
-            buttonTexture = (sDisplayButtonsDown) ? texture_icon_c_r_button_down : texture_icon_c_r_button;
-            break;
-    }
+    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, buttonTexture);
+	gDPSetTile(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0);
+	gDPLoadBlock(gDisplayListHead++, 7, 0, 0, 255, 512);
+	gDPSetTile(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 4, 0, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 4, 0, G_TX_WRAP | G_TX_NOMIRROR, 4, 0);
+	gDPSetTileSize(gDisplayListHead++, 0, 0, 0, 60, 60);
+    gSPTextureRectangle(gDisplayListHead++, x << 2, y << 2, (x + 15) << 2, (y + 15) << 2,
+                        G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10);
+    gDPPipeSync(gDisplayListHead++);
+}
 
+/*
+    Draws a button prompt that is always either pressed up or down
+*/
+void menu_static_button_prompt(s32 x, s32 y, s32 button, s32 pressed) {
+    u8 *buttonTexture = (pressed) ? sButtonTextureTable[button].down : sButtonTextureTable[button].up;
     buttonTexture = segmented_to_virtual(buttonTexture);
 
     gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, buttonTexture);

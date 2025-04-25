@@ -38,11 +38,13 @@ u32 sQTEButtonLUT[NUM_QTE * 2] = {
 struct QuickTimePrompt sQTEPromptQueue[MAX_PROMPTS];
 u8 sQTEQueueLength = MIN_PROMPTS;
 u8 sQTECurrentIndex = 0;
+u8 sQTEPrevDisplayTimer = 0;
 s16 sQTETimeLeft = 0;
 s16 sQTETimeTotal = QTE_INPUT_TIME_PER_INPUT;
 
 void generate_qte() {
     sQTECurrentIndex = 0;
+    sQTEPrevDisplayTimer = 0;
     sQTEQueueLength = MIN_PROMPTS + RAND((MAX_PROMPTS - MIN_PROMPTS + 1));
     sQTETimeTotal = QTE_INPUT_TIME_PER_INPUT * sQTEQueueLength;
     sQTETimeLeft = sQTETimeTotal;
@@ -69,9 +71,15 @@ void draw_quicktime_event_prompts() {
     menu_start_button_prompt();
     f32 startX = SCREEN_CENTER_X - ((sQTEQueueLength * QTE_PADDING) / 2);
     f32 timerBarWidth = (((SCREEN_WIDTH - startX) - startX) / sQTETimeTotal) * sQTETimeLeft;
+    s32 prevIndex = sQTECurrentIndex - 1;
 
     for(int i = sQTECurrentIndex; i < sQTEQueueLength; i++) {
-        menu_button_prompt(startX + (QTE_PADDING * i), SCREEN_CENTER_Y, sQTEPromptQueue[i].prompt);
+        menu_static_button_prompt(startX + (QTE_PADDING * i), SCREEN_CENTER_Y, sQTEPromptQueue[i].prompt, FALSE);
+    }
+
+    if(sQTECurrentIndex > 0 && sQTEPrevDisplayTimer > 0) {
+        menu_static_button_prompt(startX + (QTE_PADDING * prevIndex), SCREEN_CENTER_Y, sQTEPromptQueue[prevIndex].prompt, TRUE);
+        sQTEPrevDisplayTimer--;
     }
 
     menu_end_button_prompt();
@@ -94,6 +102,7 @@ void play_mode_quicktime() {
         if(buttons) {
             if(buttons == sQTEPromptQueue[sQTECurrentIndex].button) { // NO BUTTON MASHING !!!!
                 sQTECurrentIndex++;
+                sQTEPrevDisplayTimer = 5;
                 play_sound(SOUND_MENU_POWER_METER, gGlobalSoundSource);
             } else {
                 if(sQTETimeLeft < sQTETimeTotal - 20) {
