@@ -135,7 +135,7 @@ void Main(void *);
  */
 void romcpy(void *dest, void *src, u32 len, s32 pri, OSIoMesg *mb, OSMesgQueue *mq);
 void dma_copy(void *dest, void *src, u32 len, OSIoMesg *msg);
-u32 get_record(HVQM2Record *headerbuf, u16 type, void **stream);
+s32 get_record(HVQM2Record *headerbuf, u16 type, void **stream);
 void load_record(u32 record_size, u16 type, void *bodybuf, void **streamp);
 void skip_record(u32 record_size, void **streamp);
 

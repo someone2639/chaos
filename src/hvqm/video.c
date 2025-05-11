@@ -22,7 +22,7 @@ typedef struct VideoRing {
     u64 endtime_us;
 } VideoRing;
 
-void load_video_frame(void **streamp, VideoRing *vbuf);
+int load_video_frame(void **streamp, VideoRing *vbuf);
 void decode_video(VideoRing *vbuf);
 extern u64 playtime_us, disptime_us;
 u64 disptime_us = 0;
@@ -62,7 +62,11 @@ void init_video(void **streamp, u32 offset) {
     }
 
     for (int i = 0; i < NUM_CFBs; i++) {
-        load_video_frame(streamp, &vbuffer[i]);
+        int _ = load_video_frame(streamp, &vbuffer[i]);
+        if (_ == -1) {
+            video_remain = 0;
+            return;
+        }
         decode_video(&vbuffer[i]);
     }
 
@@ -97,11 +101,15 @@ void init_hvqm_task() {
 
 
 // Loads the data required to decode a video frame
-void load_video_frame(void **streamp, VideoRing *vbuf) {
+int load_video_frame(void **streamp, VideoRing *vbuf) {
     HVQM2Record record_header ALIGNED(16);
     // Get the next video record
 
-    u32 record_size = get_record(&record_header, HVQM2_VIDEO, streamp);
+    s32 record_size = get_record(&record_header, HVQM2_VIDEO, streamp);
+    if (record_size == -1) {
+        video_remain = 0;
+        return -1;
+    }
 
     vbuf->format = load16(record_header.format);
 
@@ -144,7 +152,7 @@ void load_video_frame(void **streamp, VideoRing *vbuf) {
             // osSyncPrintf("(SKIPPED %d FRAMES)\n", skipped_frames);
         }
         if (video_remain == 0) {
-            return;
+            return 0;
         } else {
             vbuf->format = load16(record_header.format);
         }
@@ -152,6 +160,7 @@ void load_video_frame(void **streamp, VideoRing *vbuf) {
     load_record(record_size, HVQM2_VIDEO, hvqbuf, streamp);
 
     vbuf->endtime_us = starttime_us;
+    return 0;
 }
 
 // Actually decodes the frame
@@ -207,7 +216,11 @@ void show_next_frame(void **streamp) {
     }
     if (currVBuf->endtime_us <= playtime_us) {
         currVBuf = currVBuf->next;
-        load_video_frame(streamp, currVBuf);
+        int _ = load_video_frame(streamp, currVBuf);
+        if (_ == -1) {
+            video_remain = 0;
+            return;
+        }
         decode_video(currVBuf);
         video_remain--;
         frames_elapsed++;

@@ -63,6 +63,7 @@ typedef struct {
  */
 #define HVQM2_AUDIO		0 /* Audio record */
 #define HVQM2_VIDEO		1 /* Video record */
+#define HVQM2_GUARD   0xFFFF /* Video record */
 
 /*
  * Audio record's (HVQM2Record.type == HVQM2_AUDIO)

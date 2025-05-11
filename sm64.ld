@@ -75,6 +75,14 @@ OUTPUT_ARCH (mips)
    BEGIN_SEG(name, __romPos) \
    { \
       KEEP(BUILD_DIR/data/name.o(.data)); \
+      BYTE(0xFF); \
+      BYTE(0xFF); \
+      BYTE(0xFF); \
+      BYTE(0xFF); \
+      BYTE(0xFF); \
+      BYTE(0xFF); \
+      BYTE(0xFF); \
+      BYTE(0xFF); \
       . = ALIGN(0x10); \
    } \
    END_SEG(name)

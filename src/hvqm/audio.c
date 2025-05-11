@@ -21,10 +21,12 @@ static u32 audRemainBase = 0;
 typedef struct AudioRing {
     struct AudioRing *next;
     struct AudioRing *prev;
-    u32 len;
+    s32 len;
     u64 endtime_us;
     s16 (*samples)[PCMBUF_SIZE];
 } AudioRing;
+
+u32 audio_remain = 0;
 
 AudioRing rbuffer[NUM_PCMBUFs] = {
     {.next = &rbuffer[1]},
@@ -61,12 +63,16 @@ static u32 samples2usec(AudioRing *buf) {
     return (((f32)buf->len / (f32)real_frequency) * 1000000.0f);
 }
 
-static u32 next_audio_record(void **streamp, void *pcmbuf) {
+static s32 next_audio_record(void **streamp, void *pcmbuf) {
     HVQM2Record record_header __attribute__((aligned(16)));
     HVQM2Audio *audio_headerP;
     u32 samples;
 
-    u32 size = get_record(&record_header, HVQM2_AUDIO, streamp);
+    s32 size = get_record(&record_header, HVQM2_AUDIO, streamp);
+    if (size == -1) {
+        audio_remain = 0;
+        return -1;
+    }
     load_record(size, HVQM2_AUDIO, adpcmbuf, streamp);
 
     audio_headerP = (HVQM2Audio *) adpcmbuf;
@@ -77,9 +83,13 @@ static u32 next_audio_record(void **streamp, void *pcmbuf) {
     return samples;
 }
 
-static void ring_update(void **streamp, AudioRing *abuf) {
+static int ring_update(void **streamp, AudioRing *abuf) {
     abuf->len = next_audio_record(streamp, abuf->samples);
+    if (abuf->len == -1) {
+        return -1;
+    }
     abuf->endtime_us = playtime_us + samples2usec(abuf)/2;
+    return 0;
 }
 
 static void init_audio(void **streamp) {
@@ -93,7 +103,11 @@ static void init_audio(void **streamp) {
     for (int i = 0; i < NUM_PCMBUFs; i++) {
         rbuffer[(i + 1) % NUM_PCMBUFs].prev = &rbuffer[i];
         rbuffer[i].samples = &pcmbuf[i];
-        ring_update(streamp, &rbuffer[i]);
+        int _ = ring_update(streamp, &rbuffer[i]);
+        if (_ == -1) {
+            audio_remain = 0;
+            return;
+        }
         playtime_us += samples2usec(&rbuffer[i]) / 2;
     }
 
@@ -103,6 +117,12 @@ static void init_audio(void **streamp) {
 
 static int process_audio(void **streamp) {
     int ret = 0;
+
+    if (currBuf->len == -1) {
+        audio_remain = 0;
+        return 0;
+    }
+
     osWritebackDCacheAll();
 
     osRecvMesg(&aiMessageQ, NULL, OS_MESG_BLOCK);
@@ -121,8 +141,6 @@ static int process_audio(void **streamp) {
     return ret;
 }
 
-u32 audio_remain = 0;
-
 UNUSED static void reset_audio(void **streamp) {
     *streamp = audStreamPBase;
     audio_remain = audRemainBase;
@@ -132,16 +150,21 @@ UNUSED static void reset_audio(void **streamp) {
     samples_elapsed = 0;
 }
 
-UNUSED static void AudioImmediate(void **streamp) {
-    osRecvMesg(&aiMessageQ, NULL, OS_MESG_BLOCK);
-    u32 len = next_audio_record(streamp, pcmbuf[samples_elapsed % NUM_PCMBUFs]);
-    osWritebackDCacheAll();
-    int result = osAiSetNextBuffer(pcmbuf[samples_elapsed % NUM_PCMBUFs], ALIGN(len * 2 * sizeof(u16), 8));
-    if (result == 0) {
-        samples_elapsed++;
-        audio_remain--;
-    }
-}
+// UNUSED static void AudioImmediate(void **streamp) {
+//     osRecvMesg(&aiMessageQ, NULL, OS_MESG_BLOCK);
+//     s32 len = next_audio_record(streamp, pcmbuf[samples_elapsed % NUM_PCMBUFs]);
+//     if (len == -1) {
+//         audio_remain = 0;
+//         return;
+//     }
+
+//     osWritebackDCacheAll();
+//     int result = osAiSetNextBuffer(pcmbuf[samples_elapsed % NUM_PCMBUFs], ALIGN(len * 2 * sizeof(u16), 8));
+//     if (result == 0) {
+//         samples_elapsed++;
+//         audio_remain--;
+//     }
+// }
 
 void AudioMain(void *arg) {
     AudThreadParams *args = arg;

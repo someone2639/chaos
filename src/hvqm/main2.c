@@ -73,10 +73,14 @@ void Main(void *video) {
     while (video_remain > 0) {
         VideoMain(&video_streamP);
 
+        char t[50];
+        sprintf(t, "video_remain: %d\n", video_remain);
+        osSyncPrintf(t);
 
         disptime_us = OS_CYCLES_TO_USEC(osGetTime());
         osRecvMesg(&viMessageQ, NULL, OS_MESG_BLOCK);
     }
+    osSyncPrintf("before handback...");
     osSetEventMesg(OS_EVENT_AI, NULL, 0);
     osJamMesg(&gHVQM_SyncQueue, (OSMesg*)0, OS_MESG_BLOCK);
     osStopThread(NULL);
