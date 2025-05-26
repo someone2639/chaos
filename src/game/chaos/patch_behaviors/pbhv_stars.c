@@ -66,7 +66,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "Ride Big Boo's Merry-Go-Round",
         "Secret of the Haunted Books",
         "Seek the 8 Red Coins",
-        "Big Boo's Baclony",
+        "Big Boo's Balcony",
         "Eye to Eye in the Secret Room",
         "100 Coins (BBH)",
     },
