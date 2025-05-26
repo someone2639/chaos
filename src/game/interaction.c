@@ -882,6 +882,7 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
         newSaveFlags = save_file_get_flags();
 
         if(!(m->numStars > previousStarCount || (newSaveFlags & ~previousSaveFlags)) && !grandStar) {
+            gChaosBlueStarLastCollected = TRUE;
             save_file_add_blue_star();
         }
 

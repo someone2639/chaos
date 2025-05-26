@@ -54,23 +54,27 @@ struct ChaosTutorialSlide gChaosTutorialSlides[] = {
         .description = "Lastly, a @464646--Chaos@-------- event will completely eliminate the positive effect from the patch cards, leaving only negative effects to choose from. Affected cards will be given a @464646--dark gray@-------- background.",
     },
     {
-        .imageAddress = chsTutDMA_0C_difficulty_selection,
+        .imageAddress = chsTutDMA_0C_star_duplicates,
+        .description = "Note that while collecting duplicate stars to cycle through patches is allowed, it is generally discouraged. Whenever a blue star is collected, you will automatically be given a @464646--Chaos@-------- event!",
+    },
+    {
+        .imageAddress = chsTutDMA_0D_difficulty_selection,
         .description = "This hack comes with an @1FAF1F--Easy@--------, @7F7F7F--Normal@--------, and @9F1F1F--Hard@-------- difficulty, as well as a special @FFBF00--Challenge Mode@--------.",
     },
     {
-        .imageAddress = chsTutDMA_0D_difficulty_easy,
+        .imageAddress = chsTutDMA_0E_difficulty_easy,
         .description = "On @1FAF1F--Easy@-------- difficulty, you won't have to worry so much about the most intense negative effects appearing. Recommended for players brand new to Super Mario 64, or Mario games in general.",
     },
     {
-        .imageAddress = chsTutDMA_0E_difficulty_hard,
+        .imageAddress = chsTutDMA_0F_difficulty_hard,
         .description = "On @9F1F1F--Hard@-------- difficulty, you will need to endure brutal negative effects more frequently and for longer, with fewer offsetting benefits from positive effects. Recommended for experienced players only.",
     },
     {
-        .imageAddress = chsTutDMA_0F_challenge_mode,
+        .imageAddress = chsTutDMA_10_challenge_mode,
         .description = "If you're feeling confident in your abilities, take on @FFBF00--Challenge Mode@--------! Your entire save file is on the line, and you must work to complete the game without running out of lives!",
     },
     {
-        .imageAddress = chsTutDMA_10_conclusion,
+        .imageAddress = chsTutDMA_11_conclusion,
         .description = "Your goal is to defeat @6F4F2F--Bowser@-------- and rescue the @FFFF00--Grand Star@--------. What kinds of unique effect combinations will you experience during your adventure?",
     },
 };

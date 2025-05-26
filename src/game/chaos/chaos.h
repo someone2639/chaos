@@ -295,6 +295,7 @@ extern char gChaosInternalBuffer[0x1000];
 extern s32 *gChaosActiveEntryCount;
 extern struct ChaosActiveEntry *gChaosActiveEntries;
 extern u8 gChaosLevelWarped;
+extern u8 gChaosBlueStarLastCollected;
 extern enum ChaosDifficulty gChaosDifficulty;
 extern u8 gChaosLivesEnabled;
 extern enum ChaosPatchID gNegativePatchCompare;

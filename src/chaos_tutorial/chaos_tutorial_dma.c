@@ -48,24 +48,28 @@ ALIGNED16 u8 chsTutDMA_0B_event_chaos[] = {
 #include "textures/chaos_tutorial/0B_event_chaos.custom.rgba16.inc.c"
 };
 
-ALIGNED16 u8 chsTutDMA_0C_difficulty_selection[] = {
-#include "textures/chaos_tutorial/0C_difficulty_selection.custom.rgba16.inc.c"
+ALIGNED16 u8 chsTutDMA_0C_star_duplicates[] = {
+#include "textures/chaos_tutorial/0C_star_duplicates.rgba16.inc.c"
 };
 
-ALIGNED16 u8 chsTutDMA_0D_difficulty_easy[] = {
-#include "textures/chaos_tutorial/0D_difficulty_easy.custom.rgba16.inc.c"
+ALIGNED16 u8 chsTutDMA_0D_difficulty_selection[] = {
+#include "textures/chaos_tutorial/0D_difficulty_selection.custom.rgba16.inc.c"
 };
 
-ALIGNED16 u8 chsTutDMA_0E_difficulty_hard[] = {
-#include "textures/chaos_tutorial/0E_difficulty_hard.custom.rgba16.inc.c"
+ALIGNED16 u8 chsTutDMA_0E_difficulty_easy[] = {
+#include "textures/chaos_tutorial/0E_difficulty_easy.custom.rgba16.inc.c"
 };
 
-ALIGNED16 u8 chsTutDMA_0F_challenge_mode[] = {
-#include "textures/chaos_tutorial/0F_challenge_mode.custom.rgba16.inc.c"
+ALIGNED16 u8 chsTutDMA_0F_difficulty_hard[] = {
+#include "textures/chaos_tutorial/0F_difficulty_hard.custom.rgba16.inc.c"
 };
 
-ALIGNED16 u8 chsTutDMA_10_conclusion[] = {
-#include "textures/chaos_tutorial/10_conclusion.custom.rgba16.inc.c"
+ALIGNED16 u8 chsTutDMA_10_challenge_mode[] = {
+#include "textures/chaos_tutorial/10_challenge_mode.custom.rgba16.inc.c"
+};
+
+ALIGNED16 u8 chsTutDMA_11_conclusion[] = {
+#include "textures/chaos_tutorial/11_conclusion.custom.rgba16.inc.c"
 };
 
 STATIC_ASSERT(sizeof(chsTutDMA_00_introduction)         == CHAOS_TUTORIAL_IMG_SIZE, "chsTutDMA_00_introduction"        );
@@ -80,8 +84,9 @@ STATIC_ASSERT(sizeof(chsTutDMA_08_special_events)       == CHAOS_TUTORIAL_IMG_SI
 STATIC_ASSERT(sizeof(chsTutDMA_09_event_lucky)          == CHAOS_TUTORIAL_IMG_SIZE, "chsTutDMA_09_event_lucky"         );
 STATIC_ASSERT(sizeof(chsTutDMA_0A_event_bad_luck)       == CHAOS_TUTORIAL_IMG_SIZE, "chsTutDMA_0A_event_bad_luck"      );
 STATIC_ASSERT(sizeof(chsTutDMA_0B_event_chaos)          == CHAOS_TUTORIAL_IMG_SIZE, "chsTutDMA_0B_event_chaos"         );
-STATIC_ASSERT(sizeof(chsTutDMA_0C_difficulty_selection) == CHAOS_TUTORIAL_IMG_SIZE, "chsTutDMA_0C_difficulty_selection");
-STATIC_ASSERT(sizeof(chsTutDMA_0D_difficulty_easy)      == CHAOS_TUTORIAL_IMG_SIZE, "chsTutDMA_0D_difficulty_easy"     );
-STATIC_ASSERT(sizeof(chsTutDMA_0E_difficulty_hard)      == CHAOS_TUTORIAL_IMG_SIZE, "chsTutDMA_0E_difficulty_hard"     );
-STATIC_ASSERT(sizeof(chsTutDMA_0F_challenge_mode)       == CHAOS_TUTORIAL_IMG_SIZE, "chsTutDMA_0F_challenge_mode"      );
-STATIC_ASSERT(sizeof(chsTutDMA_10_conclusion)           == CHAOS_TUTORIAL_IMG_SIZE, "chsTutDMA_10_conclusion"          );
+STATIC_ASSERT(sizeof(chsTutDMA_0C_star_duplicates)      == CHAOS_TUTORIAL_IMG_SIZE, "chsTutDMA_0C_star_duplicates"     );
+STATIC_ASSERT(sizeof(chsTutDMA_0D_difficulty_selection) == CHAOS_TUTORIAL_IMG_SIZE, "chsTutDMA_0D_difficulty_selection");
+STATIC_ASSERT(sizeof(chsTutDMA_0E_difficulty_easy)      == CHAOS_TUTORIAL_IMG_SIZE, "chsTutDMA_0E_difficulty_easy"     );
+STATIC_ASSERT(sizeof(chsTutDMA_0F_difficulty_hard)      == CHAOS_TUTORIAL_IMG_SIZE, "chsTutDMA_0F_difficulty_hard"     );
+STATIC_ASSERT(sizeof(chsTutDMA_10_challenge_mode)       == CHAOS_TUTORIAL_IMG_SIZE, "chsTutDMA_10_challenge_mode"      );
+STATIC_ASSERT(sizeof(chsTutDMA_11_conclusion)           == CHAOS_TUTORIAL_IMG_SIZE, "chsTutDMA_11_conclusion"          );

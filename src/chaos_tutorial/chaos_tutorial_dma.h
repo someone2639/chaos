@@ -19,10 +19,11 @@ extern u8 chsTutDMA_08_special_events[];
 extern u8 chsTutDMA_09_event_lucky[];
 extern u8 chsTutDMA_0A_event_bad_luck[];
 extern u8 chsTutDMA_0B_event_chaos[];
-extern u8 chsTutDMA_0C_difficulty_selection[];
-extern u8 chsTutDMA_0D_difficulty_easy[];
-extern u8 chsTutDMA_0E_difficulty_hard[];
-extern u8 chsTutDMA_0F_challenge_mode[];
-extern u8 chsTutDMA_10_conclusion[];
+extern u8 chsTutDMA_0C_star_duplicates[];
+extern u8 chsTutDMA_0D_difficulty_selection[];
+extern u8 chsTutDMA_0E_difficulty_easy[];
+extern u8 chsTutDMA_0F_difficulty_hard[];
+extern u8 chsTutDMA_10_challenge_mode[];
+extern u8 chsTutDMA_11_conclusion[];
 
 #endif // CHAOS_TUTORIAL_DMA_H
