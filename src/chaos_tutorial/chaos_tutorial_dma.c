@@ -49,7 +49,7 @@ ALIGNED16 u8 chsTutDMA_0B_event_chaos[] = {
 };
 
 ALIGNED16 u8 chsTutDMA_0C_star_duplicates[] = {
-#include "textures/chaos_tutorial/0C_star_duplicates.rgba16.inc.c"
+#include "textures/chaos_tutorial/0C_star_duplicates.custom.rgba16.inc.c"
 };
 
 ALIGNED16 u8 chsTutDMA_0D_difficulty_selection[] = {
