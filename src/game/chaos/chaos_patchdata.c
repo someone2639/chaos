@@ -682,7 +682,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc   = chs_update_random_dialogue,
 
         .name              = "Hey! Listen!",
-        .shortDescription  = "Recieve extra dialogue periodically."
+        .shortDescription  = "Receive extra dialogue periodically."
     },
     [CHAOS_PATCH_KAIZO_BLOCKS] = {
         .durationType      = CHAOS_DURATION_STARS,
