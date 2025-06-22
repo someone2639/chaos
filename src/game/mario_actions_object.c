@@ -365,7 +365,7 @@ s32 act_holding_bowser(struct MarioState *m) {
         set_mario_animation(m, MARIO_ANIM_SWINGING_BOWSER);
     }
 
-    if (m->intendedMag > 20.0f) {
+    if (m->intendedMag > 20.0f || (chaos_check_if_patch_active(CHAOS_PATCH_WALKIES) && m->intendedMag > 10.0f)) {
         if (m->actionArg == 0) {
             m->actionArg = 1;
             m->twirlYaw = m->intendedYaw;
