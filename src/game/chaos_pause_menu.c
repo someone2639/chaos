@@ -474,6 +474,11 @@ void update_active_patch_list_bounds() {
         return;
     }
 
+    if(selection == 0) {
+        gChaosPauseMenu->chaosListStart = 0;
+        return;
+    }
+
     if(selection > end - 2) {
         start = selection - PATCH_LIST_SIZE + 2;
     } else if (selection < start + 1) {
