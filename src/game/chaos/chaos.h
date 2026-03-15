@@ -9,6 +9,8 @@
 
 #define HARD_DURATION_DEFAULT_OFFSET_POSITIVE 0
 #define HARD_DURATION_DEFAULT_OFFSET_NEGATIVE 0
+#define IMPOSSIBLE_DURATION_DEFAULT_OFFSET_POSITIVE 0
+#define IMPOSSIBLE_DURATION_DEFAULT_OFFSET_NEGATIVE 0
 
 #ifndef DISPLAY_MAX_PATCHES
 #define DEFAULT_PATCH_DISPLAY_QUANTITY 2
@@ -222,9 +224,10 @@ enum ChaosPatchEffectType {
 };
 
 enum ChaosDifficulty {
-    CHAOS_DIFFICULTY_EASY,   // Offsets negative patches such that top severities should (almost) never show up
-    CHAOS_DIFFICULTY_NORMAL, // Standard difficulty
-    CHAOS_DIFFICULTY_HARD,   // Offsets positive patches such that top severities should (almost) never show up
+    CHAOS_DIFFICULTY_EASY,       // Offsets negative patches such that top severities should (almost) never show up
+    CHAOS_DIFFICULTY_NORMAL,     // Standard difficulty
+    CHAOS_DIFFICULTY_HARD,       // Offsets positive patches such that top severities should (almost) never show up
+    CHAOS_DIFFICULTY_IMPOSSIBLE, // Positive patches will never show up, negative patches last EVEN longer
 
     CHAOS_DIFFICULTY_COUNT,
 };
@@ -251,10 +254,11 @@ struct ChaosPatch {
     const enum ChaosPatchDurationType durationType; // How/when should this patch be consumed or deactivated?
     const enum ChaosPatchEffectType effectType;     // Is this patch beneficial or punishing?
     const enum ChaosPatchID negationId;             // This is the exact opposite of what effect (if any)? This is useful for deactivating an infinite, opposite effect rather than creating a useless stack, which helps oppose theoretically infinite memory requirements.
-    const u8 severity;     // Usefulness or severity impact of the patch (must be between 1 and CHAOS_PATCH_SEVERITY_MAX, excluding CHAOS_PATCH_NONE_*)
-    const u8 isStackable;  // Can this patch be active more than once at a time?
-    const u8 duration;     // Ignored for CHAOS_DURATION_ONCE and CHAOS_DURATION_INFINITE
-    const u8 durationHard; // Duration to be used in Hard mode (except when set to 0)
+    const u8 severity;           // Usefulness or severity impact of the patch (must be between 1 and CHAOS_PATCH_SEVERITY_MAX, excluding CHAOS_PATCH_NONE_*)
+    const u8 isStackable;        // Can this patch be active more than once at a time?
+    const u8 duration;           // Ignored for CHAOS_DURATION_ONCE and CHAOS_DURATION_INFINITE
+    const u8 durationHard;       // Duration to be used in Hard mode (except when set to 0)
+    const u8 durationImpossible; // Duration to be used in Impossible mode (except when set to 0)
 
     u8   (*conditionalFunc  )(void); // Check specific scenarios for whether this patch type is allowed to show up (Optional)
     void (*activatedInitFunc)(void); // Invoked the moment this patch takes effect (Optional)

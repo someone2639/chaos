@@ -363,6 +363,9 @@ Gfx *geo_chaos_cake_stats(s32 callContext, UNUSED struct GraphNode *node, UNUSED
                     case CHAOS_DIFFICULTY_HARD:
                         fasttext_draw_texrect(150, 40, "Hard", FT_FLAG_ALIGN_RIGHT, 0xFF, 0x15, 0x25, 0xFF);
                         break;
+                    case CHAOS_DIFFICULTY_IMPOSSIBLE:
+                        fasttext_draw_texrect(150, 40, "Impoossible", FT_FLAG_ALIGN_RIGHT, 0xFF, 0x15, 0x25, 0xFF);
+                        break;
                 }
             }
             if(sEndCakeTimer > 30) {

@@ -939,6 +939,22 @@ void draw_single_patch_info(const struct ChaosPatch *patch) {
                     duration = 1;
                 }
             }
+        } else if (gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE) {
+            if (patch->durationImpossible > 0) {
+                duration = patch->durationImpossible;
+            } else if (patch->durationHard > 0) {
+                duration = patch->durationHard;
+            } else if (patch->durationType == CHAOS_DURATION_STARS) {
+                if (patch->effectType == CHAOS_EFFECT_POSITIVE) {
+                    duration += IMPOSSIBLE_DURATION_DEFAULT_OFFSET_POSITIVE;
+                } else if (patch->effectType == CHAOS_EFFECT_NEGATIVE) {
+                    duration += IMPOSSIBLE_DURATION_DEFAULT_OFFSET_NEGATIVE;
+                }
+
+                if (duration <= 0) {
+                    duration = 1;
+                }
+            }
         }
 
         assert(duration < 1000, "render_patch_card:\nduration out of range!");
@@ -987,6 +1003,22 @@ void draw_double_patch_info(const struct ChaosPatch *pos, const struct ChaosPatc
                     duration = 1;
                 }
             }
+        } else if (gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE) {
+            if (pos->durationImpossible > 0) {
+                duration = pos->durationImpossible;
+            } else if (pos->durationHard > 0) {
+                duration = pos->durationHard;
+            } else if (pos->durationType == CHAOS_DURATION_STARS) {
+                if (pos->effectType == CHAOS_EFFECT_POSITIVE) {
+                    duration += IMPOSSIBLE_DURATION_DEFAULT_OFFSET_POSITIVE;
+                } else if (pos->effectType == CHAOS_EFFECT_NEGATIVE) {
+                    duration += IMPOSSIBLE_DURATION_DEFAULT_OFFSET_NEGATIVE;
+                }
+
+                if (duration <= 0) {
+                    duration = 1;
+                }
+            }
         }
 
         assert(duration < 1000, "render_patch_card:\nduration out of range!");
@@ -1008,6 +1040,22 @@ void draw_double_patch_info(const struct ChaosPatch *pos, const struct ChaosPatc
                     duration += HARD_DURATION_DEFAULT_OFFSET_POSITIVE;
                 } else if (neg->effectType == CHAOS_EFFECT_NEGATIVE) {
                     duration += HARD_DURATION_DEFAULT_OFFSET_NEGATIVE;
+                }
+
+                if (duration <= 0) {
+                    duration = 1;
+                }
+            }
+        } else if (gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE) {
+            if (neg->durationImpossible > 0) {
+                duration = neg->durationImpossible;
+            } else if (neg->durationHard > 0) {
+                duration = neg->durationHard;
+            } else if (neg->durationType == CHAOS_DURATION_STARS) {
+                if (neg->effectType == CHAOS_EFFECT_POSITIVE) {
+                    duration += IMPOSSIBLE_DURATION_DEFAULT_OFFSET_POSITIVE;
+                } else if (neg->effectType == CHAOS_EFFECT_NEGATIVE) {
+                    duration += IMPOSSIBLE_DURATION_DEFAULT_OFFSET_NEGATIVE;
                 }
 
                 if (duration <= 0) {

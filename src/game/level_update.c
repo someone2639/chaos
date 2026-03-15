@@ -1270,7 +1270,11 @@ s32 play_mode_frame_advance(void) {
 s32 play_mode_select_patch(void) {
     if (gPatchSelectionMenu->menu.menuState != PATCH_SELECT_STATE_CLOSED) {
         if (!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_ACTIVE)) {
-            chaos_decrement_star_timers();
+            if (gChaosBlueStarLastCollected && gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE) {
+                chaosmsg_print(CHAOS_PATCH_NONE, "@AF4F4F--You collected a duplicate star or key on Impossible difficulty. Patch timers will not be decremented this time!@--------");
+            } else {
+                chaos_decrement_star_timers();
+            }
             load_new_patches();
             gPatchSelectionMenu->menu.flags |= PATCH_SELECT_FLAG_ACTIVE;
             chaosSeqVolSubtractable = FALSE;
