@@ -293,7 +293,7 @@ void save_file_populate_default_params(s32 fileIndex) {
 
     file->lives = 4;
     file->chaosDifficulty = CHAOS_DIFFICULTY_NORMAL;
-    file->chaosChallengeMode = FALSE;
+    file->chaosGameMode = FALSE;
     file->chaosEntryCount = 0;
 }
 
@@ -672,11 +672,11 @@ u16 eu_get_language(void) {
 }
 #endif
 
-void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount, enum ChaosDifficulty *gChaosDifficulty, u8 *gChaosLivesEnabled) {
+void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount, enum ChaosDifficulty *gChaosDifficulty, enum ChaosGameMode *gChaosGameMode) {
     *entryData = gSaveBuffer.files[gCurrSaveFileNum - 1].chaosEntries;
     *currentEntryCount = &gSaveBuffer.files[gCurrSaveFileNum - 1].chaosEntryCount;
     *gChaosDifficulty = save_file_get_difficulty(gCurrSaveFileNum - 1);
-    *gChaosLivesEnabled = save_file_get_challenge_mode(gCurrSaveFileNum - 1);
+    *gChaosGameMode = save_file_get_game_mode(gCurrSaveFileNum - 1);
 
     gSaveBuffer.files[gCurrSaveFileNum - 1].flags |= SAVE_FLAG_FILE_EXISTS;
     gMainMenuDataModified = TRUE;
@@ -736,16 +736,16 @@ s32 save_file_get_difficulty(s32 fileIndex) {
 /*
     Gets the challenge mode of the save file in fileindex
 */
-s32 save_file_get_challenge_mode(s32 fileIndex) {
-    return gSaveBuffer.files[fileIndex].chaosChallengeMode;
+s32 save_file_get_game_mode(s32 fileIndex) {
+    return gSaveBuffer.files[fileIndex].chaosGameMode;
 }
 
 /*
     Sets the gamemode of the save file in fileindex
 */
-void save_file_set_gamemode(s32 fileIndex, s32 difficulty, s32 challenge) {
+void save_file_set_difficulty_game_mode(s32 fileIndex, s32 difficulty, s32 gameMode) {
     gSaveBuffer.files[fileIndex].chaosDifficulty = difficulty;
-    gSaveBuffer.files[fileIndex].chaosChallengeMode = challenge;
+    gSaveBuffer.files[fileIndex].chaosGameMode = gameMode;
 
     gSaveBuffer.files[fileIndex].flags |= SAVE_FLAG_FILE_EXISTS;
     gSaveFileModified = TRUE;

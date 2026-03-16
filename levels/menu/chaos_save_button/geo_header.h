@@ -7,6 +7,7 @@ extern u8 chaos_save_button_save_icon_stone_bg_ci8[];
 extern u8 chaos_save_button_save_icon_stone_bg_pal_rgba16[];
 extern u8 chaos_save_button_save_icon_mario_face_rgba16[];
 extern u8 chaos_save_button_save_icon_mario_face_challenge_rgba16[];
+extern u8 chaos_save_button_save_icon_mario_face_hardcore_rgba16[];
 extern Vtx chaos_save_button_save_button_mesh_layer_1_vtx_0[20];
 extern Vtx chaos_save_button_save_button_mesh_layer_1_vtx_1[4];
 extern Vtx chaos_save_button_save_button_mesh_layer_6_vtx_0[4];

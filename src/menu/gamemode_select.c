@@ -11,6 +11,7 @@
 #include "audio/external.h"
 #include "sm64.h"
 #include "game/chaos_tutorial.h"
+#include "game/chaos/chaos.h"
 
 #define DESC_STRING_WIDTH 284
 
@@ -22,9 +23,11 @@ const char *sGMSelectDescriptions[] = {
     [GM_SELECT_DESC_START]          = "Begin the game with the selected settings.",
     [GM_SELECT_DESC_EASY]           = "Patch cards will be more favorable. Cards will feature weaker negative effects.",
     [GM_SELECT_DESC_NORMAL]         = "Patch cards will be evenly balanced. Cards will have equal positive and negative effects.",
-    [GM_SELECT_DESC_HARD]           = "Patch cards will be more punishing. Cards will feature weaker positive effects and most negative patches will have a longer duration.",
+    [GM_SELECT_DESC_HARD]           = "Patch cards will be more punishing. Cards will feature weaker positive effects, and most negative patches will have a longer duration.",
+    [GM_SELECT_DESC_IMPOSSIBLE]     = "Patch cards will be extremely punishing. Cards will feature no positive effects whatsoever, and most negative patches will have brutal durations.",
     [GM_SELECT_DESC_CLASSIC]        = "Infinite Lives. Dying will send you out of the course with no additional punishment.",
-    [GM_SELECT_DESC_CHALLENGE]      = "Enables Lives. Running out of lives will delete the save file. 1-UP mushrooms are removed, and lives may only be increased by collecting yellow stars."
+    [GM_SELECT_DESC_CHALLENGE]      = "Enables Lives. Running out of lives will delete the save file. 1-UP mushrooms are removed, and lives may only be increased by collecting yellow stars.",
+    [GM_SELECT_DESC_HARDCORE]       = "Only One Life. Dying will result in an immediate game over, and permanently delete your save file.",
 };
 
 /*
@@ -40,8 +43,8 @@ void init_gamemode_select() {
     sGamemodeSelectMenu.menu.animFrames = -1;
     sGamemodeSelectMenu.menu.animId = 0;
     sGamemodeSelectMenu.menu.animPhase = 0;
-    sGamemodeSelectMenu.selectedDifficulty = 1;
-    sGamemodeSelectMenu.selectedChallenge = 0;
+    sGamemodeSelectMenu.selectedDifficulty = CHAOS_DIFFICULTY_NORMAL;
+    sGamemodeSelectMenu.selectedGameMode = CHAOS_GAMEMODE_CLASSIC;
     sGamemodeSelectMenu.prevSelection = 0;
 
     sGamemodeSelectMenu.diffPos[0] = DIFF_SELECT_X_START;
@@ -69,8 +72,8 @@ void handle_inputs_gamemode_select_state_default(u32 stickDir) {
                 sGamemodeSelectMenu.prevSelection = sGamemodeSelectMenu.selectedDifficulty;
                 break;
             case GM_SELECT_CHAL:
-                menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_CHANGE_CHALLENGE);
-                sGamemodeSelectMenu.prevSelection = sGamemodeSelectMenu.selectedChallenge;
+                menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_CHANGE_GAMEMODE);
+                sGamemodeSelectMenu.prevSelection = sGamemodeSelectMenu.selectedGameMode;
                 break;
             case GM_SELECT_START:
                 sGamemodeSelectMenu.prevSelection = selection;
@@ -136,10 +139,10 @@ void handle_inputs_gamemode_select_state_change_diff(u32 stickDir) {
         play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
     }
 
-    if(selection > 2) {
+    if(selection >= CHAOS_DIFFICULTY_COUNT) {
         selection = 0;
     } else if (selection < 0) {
-        selection = 2;
+        selection = CHAOS_DIFFICULTY_COUNT - 1;
     }
 
     sGamemodeSelectMenu.selectedDifficulty = selection;
@@ -149,7 +152,7 @@ void handle_inputs_gamemode_select_state_change_diff(u32 stickDir) {
     Handles inputs for the challenge selection menu
 */
 void handle_inputs_gamemode_select_state_change_challenge(u32 stickDir) {
-    s32 selection = sGamemodeSelectMenu.selectedChallenge;
+    s32 selection = sGamemodeSelectMenu.selectedGameMode;
     s32 prevSelection = sGamemodeSelectMenu.prevSelection;
 
     if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
@@ -167,13 +170,13 @@ void handle_inputs_gamemode_select_state_change_challenge(u32 stickDir) {
         play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
     }
 
-    if(selection > 1) {
+    if(selection >= CHAOS_GAMEMODE_COUNT) {
         selection = 0;
     } else if (selection < 0) {
-        selection = 1;
+        selection = CHAOS_GAMEMODE_COUNT - 1;
     }
 
-    sGamemodeSelectMenu.selectedChallenge = selection;
+    sGamemodeSelectMenu.selectedGameMode = selection;
 }
 
 /*
@@ -196,17 +199,18 @@ void handle_inputs_gamemode_select_state_confirm(u32 stickDir) {
         menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_DEFAULT);
         sGamemodeSelectMenu.menu.selectedMenuIndex = sGamemodeSelectMenu.prevSelection;
         menu_play_anim(&sGamemodeSelectMenu.menu, GM_SELECT_ANIM_SELECTING);
+        play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
     }
     else if(gPlayer1Controller->buttonPressed & R_JPAD || (stickDir & MENU_JOYSTICK_DIR_RIGHT)) {
         sGamemodeSelectMenu.menu.selectedMenuIndex++;
-        if(sGamemodeSelectMenu.menu.selectedMenuIndex > 1) {
+        if(sGamemodeSelectMenu.menu.selectedMenuIndex >= CHAOS_GAMEMODE_COUNT) {
             sGamemodeSelectMenu.menu.selectedMenuIndex = 0;
         }
         play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
     } else if(gPlayer1Controller->buttonPressed & L_JPAD || (stickDir & MENU_JOYSTICK_DIR_LEFT)) {
         sGamemodeSelectMenu.menu.selectedMenuIndex--;
         if(sGamemodeSelectMenu.menu.selectedMenuIndex < 0) {
-            sGamemodeSelectMenu.menu.selectedMenuIndex = 1;
+            sGamemodeSelectMenu.menu.selectedMenuIndex = CHAOS_GAMEMODE_COUNT - 1;
         }
         play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
     }
@@ -225,7 +229,7 @@ void handle_gamemode_select_inputs() {
         case GM_SELECT_STATE_CHANGE_DIFF:
             handle_inputs_gamemode_select_state_change_diff(stickDir);
             break;
-        case GM_SELECT_STATE_CHANGE_CHALLENGE:
+        case GM_SELECT_STATE_CHANGE_GAMEMODE:
             handle_inputs_gamemode_select_state_change_challenge(stickDir);
             break;
         case GM_SELECT_STATE_CONFIRM:
@@ -454,9 +458,10 @@ void render_difficulty_select() {
     gSPDisplayList(gDisplayListHead++, desc_bg_diff_diff_mesh_mesh);
 
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text(-18, 10, "Easy", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_draw_ortho_text(-18, -10, "Normal", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_draw_ortho_text(-18, -30, "Hard", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(-18,  10, "Easy",       FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(-18, -10, "Normal",     FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(-18, -30, "Hard",       FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(-18, -50, "Impossible", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
     slowtext_finished_rendering();
 
     cursorY = 15 - (20 * sGamemodeSelectMenu.selectedDifficulty);
@@ -489,11 +494,12 @@ void render_challenge_select() {
     gSPDisplayList(gDisplayListHead++, desc_bg_chal_chal_mesh_mesh);
 
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text(-18, 0, "Classic", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(-18,   0, "Classic",   FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
     slowtext_draw_ortho_text(-18, -20, "Challenge", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(-18, -40, "Hardcore",  FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
     slowtext_finished_rendering();
 
-    cursorY = 5 - (20 * sGamemodeSelectMenu.selectedChallenge);
+    cursorY = 5 - (20 * sGamemodeSelectMenu.selectedGameMode);
 
     guTranslate(transMtx, -27, cursorY, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
@@ -520,8 +526,8 @@ void render_menu_desc() {
             case GM_SELECT_STATE_CHANGE_DIFF:
                 desc = sGMSelectDescriptions[GM_SELECT_DESC_EASY + sGamemodeSelectMenu.selectedDifficulty];
                 break;
-            case GM_SELECT_STATE_CHANGE_CHALLENGE:
-                desc = sGMSelectDescriptions[GM_SELECT_DESC_CLASSIC + sGamemodeSelectMenu.selectedChallenge];
+            case GM_SELECT_STATE_CHANGE_GAMEMODE:
+                desc = sGMSelectDescriptions[GM_SELECT_DESC_CLASSIC + sGamemodeSelectMenu.selectedGameMode];
                 break;
     }
 
@@ -584,7 +590,7 @@ void render_desc_field() {
             break;
         case GM_SELECT_STATE_DEFAULT:
         case GM_SELECT_STATE_CHANGE_DIFF:
-        case GM_SELECT_STATE_CHANGE_CHALLENGE:
+        case GM_SELECT_STATE_CHANGE_GAMEMODE:
             render_menu_desc();
             break;
     }
@@ -612,7 +618,7 @@ void render_gm_select_button_prompts() {
             fasttext_finished_rendering();
             break;
         case GM_SELECT_STATE_CHANGE_DIFF:
-        case GM_SELECT_STATE_CHANGE_CHALLENGE:
+        case GM_SELECT_STATE_CHANGE_GAMEMODE:
         case GM_SELECT_STATE_CONFIRM:
             menu_start_button_prompt();
             menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 33, MENU_PROMPT_A_BUTTON);

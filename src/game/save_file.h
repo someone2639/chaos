@@ -48,7 +48,7 @@ struct SaveFile {
 
     s8 lives;
     u8 chaosDifficulty;
-    u8 chaosChallengeMode;
+    u8 chaosGameMode;
 
     s32 chaosEntryCount;
     struct ChaosActiveEntry chaosEntries[CHAOS_PATCH_ENTRIES];
@@ -183,7 +183,7 @@ s32 save_file_get_cap_pos(Vec3s capPos);
 void save_file_set_sound_mode(u16 mode);
 u16 save_file_get_sound_mode(void);
 void save_file_move_cap_to_default_location(void);
-void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount, enum ChaosDifficulty *gChaosDifficulty, u8 *gChaosLivesEnabled);
+void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount, enum ChaosDifficulty *gChaosDifficulty, enum ChaosGameMode *gChaosGameMode);
 
 void save_file_add_blue_star();
 u16 save_file_get_blue_stars();
@@ -220,7 +220,7 @@ u16 eu_get_language(void);
 #endif
 
 s32 save_file_get_difficulty(s32 fileIndex);
-s32 save_file_get_challenge_mode(s32 fileIndex);
-void save_file_set_gamemode(s32 fileIndex, s32 difficulty, s32 challenge);
+s32 save_file_get_game_mode(s32 fileIndex);
+void save_file_set_difficulty_game_mode(s32 fileIndex, s32 difficulty, s32 gameMode);
 
 #endif // SAVE_FILE_H

@@ -23,12 +23,12 @@ static u8 chs_cond_lives_check_negative_patch(void) {
                  || gNegativePatchCompare == CHAOS_PATCH_LIVES_DECREASE_LV3);
 }
 
-u8 chs_cond_lives_increase_lv1(void) { return (gChaosLivesEnabled && !chs_cond_lives_check_negative_patch() && gMarioState->numLives <= (100 - LV1_LIVES_POS)); }
-u8 chs_cond_lives_increase_lv2(void) { return (gChaosLivesEnabled && !chs_cond_lives_check_negative_patch() && gMarioState->numLives <= (100 - LV2_LIVES_POS)); }
-u8 chs_cond_lives_increase_lv3(void) { return (gChaosLivesEnabled && !chs_cond_lives_check_negative_patch() && gMarioState->numLives <= (100 - LV3_LIVES_POS)); }
-u8 chs_cond_lives_decrease_lv1(void) { return (gChaosLivesEnabled && gMarioState->numLives >= LV1_LIVES_NEG); }
-u8 chs_cond_lives_decrease_lv2(void) { return (gChaosLivesEnabled && gMarioState->numLives >= LV2_LIVES_NEG); }
-u8 chs_cond_lives_decrease_lv3(void) { return (gChaosLivesEnabled && gMarioState->numLives >= LV3_LIVES_NEG); }
+u8 chs_cond_lives_increase_lv1(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && !chs_cond_lives_check_negative_patch() && gMarioState->numLives <= (100 - LV1_LIVES_POS)); }
+u8 chs_cond_lives_increase_lv2(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && !chs_cond_lives_check_negative_patch() && gMarioState->numLives <= (100 - LV2_LIVES_POS)); }
+u8 chs_cond_lives_increase_lv3(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && !chs_cond_lives_check_negative_patch() && gMarioState->numLives <= (100 - LV3_LIVES_POS)); }
+u8 chs_cond_lives_decrease_lv1(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives >= LV1_LIVES_NEG); }
+u8 chs_cond_lives_decrease_lv2(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives >= LV2_LIVES_NEG); }
+u8 chs_cond_lives_decrease_lv3(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives >= LV3_LIVES_NEG); }
 
 void chs_act_lives_increase_lv1(void) {
     gMarioState->numLives += LV1_LIVES_POS;

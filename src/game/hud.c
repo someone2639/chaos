@@ -559,7 +559,7 @@ void render_hud(void) {
             render_hud_cannon_reticle();
         }
 
-        if (gChaosLivesEnabled && (hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES)) {
+        if ((gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) && (hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES)) {
             render_hud_mario_lives();
         }
 

@@ -5,7 +5,7 @@ void bhv_1up_interact(void) {
 
     if (obj_check_if_collided_with_object(o, gMarioObject) == TRUE) {
 //         play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
-//         if (gChaosLivesEnabled) {
+//         if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
 //             gMarioState->numLives++;
 //         }
 //         save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives, TRUE);

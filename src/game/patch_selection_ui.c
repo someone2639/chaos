@@ -1339,7 +1339,8 @@ void render_patch_select_button_prompts() {
 #define PATCH_HUD_Y        (7)
 
 void render_patch_hud_info() {
-    if(save_file_get_challenge_mode(gCurrSaveFileNum - 1)) {
+    enum ChaosGameMode gameMode = save_file_get_game_mode(gCurrSaveFileNum - 1);
+    if (gameMode == CHAOS_GAMEMODE_CHALLENGE) {
         print_text(PATCH_LIVES_X, PATCH_HUD_Y, ",");
         print_text(PATCH_LIVES_X + 16, PATCH_HUD_Y, "*");
         print_text_fmt_int(PATCH_LIVES_X + 32, PATCH_HUD_Y, "%d", gHudDisplay.lives);

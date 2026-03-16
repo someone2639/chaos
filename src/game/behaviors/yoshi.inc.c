@@ -147,7 +147,7 @@ void yoshi_finish_jumping_and_despawn_loop(void) {
 }
 
 void yoshi_give_present_loop(void) {
-    // if (gChaosLivesEnabled) {
+    // if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
     //     s32 globalTimer = gGlobalTimer;
 
     //     if (gHudDisplay.lives == 100) {

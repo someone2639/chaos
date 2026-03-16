@@ -334,7 +334,7 @@ s32 check_clicked_button(s16 x, s16 y, f32 depth) {
 */
 void menu_button_update_gamemode_colors_from_save(struct Object *button, s32 saveIndex) {
     button->oMenuButtonDiffCol = save_file_get_difficulty(saveIndex);
-    button->oMenuButtonChalCol = save_file_get_challenge_mode(saveIndex);
+    button->oMenuButtonGameModeCol = save_file_get_game_mode(saveIndex);
 }
 
 /**
@@ -352,11 +352,11 @@ void load_main_menu_save_file(struct Object *fileButton, s32 fileNum) {
 */
 static void bhv_menu_button_new_game_create(struct Object *button) {
     s32 fileNum = 0;
-    s32 difficulty = sGamemodeSelectMenu.selectedDifficulty;
-    s32 challenge = sGamemodeSelectMenu.selectedChallenge;
+    enum ChaosDifficulty difficulty = sGamemodeSelectMenu.selectedDifficulty;
+    enum ChaosGameMode gameMode = sGamemodeSelectMenu.selectedGameMode;
     s32 complete = 0;
     button->oMenuButtonDiffCol = difficulty;
-    button->oMenuButtonChalCol = challenge;
+    button->oMenuButtonGameModeCol = gameMode;
     switch(sSelectedButtonID) {
         case MENU_BUTTON_PLAY_FILE_A:
             fileNum = 1;
@@ -374,10 +374,10 @@ static void bhv_menu_button_new_game_create(struct Object *button) {
     sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_ACTIVE;
     complete = update_gamemode_select();
     if(complete == 1) {
-        save_file_set_gamemode((fileNum - 1), difficulty, challenge);
+        save_file_set_difficulty_game_mode((fileNum - 1), difficulty, gameMode);
         sSelectedFileNum = fileNum;
     } else if (complete == -1) {
-        sGamemodeSelectMenu.menu.flags  &= ~GAMEMODE_SELECT_FLAG_ACTIVE;
+        sGamemodeSelectMenu.menu.flags &= ~GAMEMODE_SELECT_FLAG_ACTIVE;
         button->oMenuButtonState = MENU_BUTTON_STATE_RETURN_NEW_GAME_ANIM;
         button->oMenuButtonTimer = 0;
         button->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MAIN_MENU_MARIO_NEW_BUTTON_FADE];
@@ -1562,8 +1562,8 @@ void check_main_menu_clicked_buttons(void) {
                         if(!save_file_exists(checkFile)) {
                             sMainMenuButtons[buttonID]->header.gfx.sharedChild =
                                 gLoadedGraphNodes[MODEL_CHAOS_SAVE_BUTTON];
-                            sMainMenuButtons[buttonID]->oMenuButtonDiffCol = 1;
-                            sMainMenuButtons[buttonID]->oMenuButtonChalCol = 0;
+                            sMainMenuButtons[buttonID]->oMenuButtonDiffCol = CHAOS_DIFFICULTY_NORMAL;
+                            sMainMenuButtons[buttonID]->oMenuButtonGameModeCol = CHAOS_GAMEMODE_CLASSIC;
                             sMainMenuButtons[buttonID]->oMenuButtonState = MENU_BUTTON_STATE_NEW_GAME_ANIM;
                             sSelectedButtonID = buttonID;
                             play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
@@ -3095,9 +3095,10 @@ s32 lvl_update_obj_and_load_file_selected(UNUSED s32 arg, UNUSED s32 unused) {
 }
 
 static u8 sDifficultyColors[][3] = {
-    {0x10, 0xF0, 0x20},         //Easy
-    {0xFF, 0xFF, 0xFF},         //Normal
-    {0xF0, 0x20, 0x10},         //Hard
+    {0x10, 0xF0, 0x20},         // Easy
+    {0xFF, 0xFF, 0xFF},         // Normal
+    {0xF0, 0x20, 0x10},         // Hard
+    {0x2F, 0x2F, 0x2F},         // Impossible
 };
 
 Gfx *geo_file_select_change_difficulty_color(s32 callContext, struct GraphNode *node, UNUSED Mat4 mtx) {
@@ -3126,9 +3127,11 @@ Gfx *geo_file_select_change_challenge_texture(s32 callContext, struct GraphNode 
     if(callContext == GEO_CONTEXT_RENDER) {
         struct GraphNodeGenerated *this = (struct GraphNodeGenerated *)node;
         struct Object *nodeObj = (struct Object *) gCurGraphNodeObject;
-        u8 challenge = nodeObj->oMenuButtonChalCol;
+        enum ChaosGameMode gameMode = nodeObj->oMenuButtonGameModeCol;
         u8 *texture;
-        if(challenge) {
+        if (gameMode == CHAOS_GAMEMODE_HARDCORE) {
+            texture = chaos_save_button_save_icon_mario_face_hardcore_rgba16;
+        } else if (gameMode == CHAOS_GAMEMODE_CHALLENGE) {
             texture = chaos_save_button_save_icon_mario_face_challenge_rgba16;
         } else {
             texture = chaos_save_button_save_icon_mario_face_rgba16;

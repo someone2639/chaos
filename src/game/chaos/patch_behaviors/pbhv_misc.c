@@ -74,5 +74,5 @@ void chs_update_noclip(void) {
 }
 
 u8 chs_cond_randomize_warps(void) {
-    return gChaosLivesEnabled;
+    return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE || gChaosGameMode == CHAOS_GAMEMODE_HARDCORE);
 }

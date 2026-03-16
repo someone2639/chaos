@@ -29,8 +29,10 @@ enum GamemodeSelectDescriptionID {
     GM_SELECT_DESC_EASY,
     GM_SELECT_DESC_NORMAL,
     GM_SELECT_DESC_HARD,
+    GM_SELECT_DESC_IMPOSSIBLE,
     GM_SELECT_DESC_CLASSIC,
     GM_SELECT_DESC_CHALLENGE,
+    GM_SELECT_DESC_HARDCORE,
 };
 
 enum GamemodeSelectFlags {
@@ -49,7 +51,7 @@ enum GamemodeSelectAnims {
 enum GamemodeSelectState {
     GM_SELECT_STATE_DEFAULT,
     GM_SELECT_STATE_CHANGE_DIFF,
-    GM_SELECT_STATE_CHANGE_CHALLENGE,
+    GM_SELECT_STATE_CHANGE_GAMEMODE,
     GM_SELECT_STATE_CONFIRM,
     GM_SELECT_STATE_TUTORIAL,
     GM_SELECT_STATE_ENDING,
@@ -59,7 +61,7 @@ enum GamemodeSelectState {
 struct GamemodeSelectMenu {
     struct ChaosMenu menu;
     u8 selectedDifficulty;
-    u8 selectedChallenge;
+    u8 selectedGameMode;
     u8 prevSelection;
     Vec2f diffPos;
     Vec2f chalPos;

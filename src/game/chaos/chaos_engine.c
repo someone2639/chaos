@@ -39,7 +39,7 @@ static const f32 difficultyWeights[CHAOS_DIFFICULTY_COUNT][CHAOS_PATCH_SEVERITY_
 enum ChaosPatchID gNegativePatchCompare = CHAOS_PATCH_NONE;
 
 enum ChaosDifficulty gChaosDifficulty = CHAOS_DIFFICULTY_NORMAL;
-u8 gChaosLivesEnabled = FALSE;
+enum ChaosGameMode gChaosGameMode = CHAOS_GAMEMODE_CLASSIC;
 
 static void chaos_recompute_active_patch_counts(void) {
     if (!gChaosActiveEntryCount) {
@@ -54,6 +54,18 @@ static void chaos_recompute_active_patch_counts(void) {
 
 u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId) {
     return (activePatchCounts[patchId] > 0 || patchId == gNegativePatchCompare);
+}
+
+static u8 chaos_check_conditional_func(const struct ChaosPatch *patch) {
+    if (gChaosGameMode == CHAOS_GAMEMODE_HARDCORE && patch->disableForHardcore) {
+        return FALSE;
+    }
+
+    if (patch->conditionalFunc) {
+        return patch->conditionalFunc();
+    }
+
+    return TRUE;
 }
 
 static void chaos_swap_active_entry_indexes(struct ChaosActiveEntry *first, struct ChaosActiveEntry *second) {
@@ -487,7 +499,7 @@ static void chaos_update_available_patches(void) {
     for (u32 i = 0; i < CHAOS_PATCH_COUNT; i++) {
         const struct ChaosPatch *patch = &gChaosPatches[i];
 
-        if (patch->conditionalFunc && !patch->conditionalFunc()) {
+        if (!chaos_check_conditional_func(patch)) {
             availablePatches[i] = FALSE;
             continue;
         }
@@ -570,7 +582,7 @@ void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_
             if (gChaosPatches[negativePatchId].negationId && gChaosPatches[negativePatchId].negationId == patchId) {
                 continue;
             }
-            if (gChaosPatches[patchId].conditionalFunc && !gChaosPatches[patchId].conditionalFunc()) {
+            if (!chaos_check_conditional_func(patch)) {
                 continue;
             }
 
@@ -589,7 +601,7 @@ void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_
                     if (gChaosPatches[negativePatchId].negationId && gChaosPatches[negativePatchId].negationId == patchId) {
                         continue;
                     }
-                    if (gChaosPatches[patchId].conditionalFunc && !gChaosPatches[patchId].conditionalFunc()) {
+                    if (!chaos_check_conditional_func(patch)) {
                         continue;
                     }
 
@@ -910,7 +922,7 @@ void chaos_select_patches(struct ChaosPatchSelection *patchSelection) {
 }
 
 void chaos_init(void) {
-    save_file_get_chaos_data(&gChaosActiveEntries, &gChaosActiveEntryCount, &gChaosDifficulty, &gChaosLivesEnabled);
+    save_file_get_chaos_data(&gChaosActiveEntries, &gChaosActiveEntryCount, &gChaosDifficulty, &gChaosGameMode);
     chaos_recompute_active_patch_counts();
 
     lastForcedDifficulty = -2;

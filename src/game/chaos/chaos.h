@@ -232,6 +232,14 @@ enum ChaosDifficulty {
     CHAOS_DIFFICULTY_COUNT,
 };
 
+enum ChaosGameMode {
+    CHAOS_GAMEMODE_CLASSIC,   // Default game mode, dying results in no additional punishment
+    CHAOS_GAMEMODE_CHALLENGE, // Enable lives. Running out of lives will delete the save file.
+    CHAOS_GAMEMODE_HARDCORE,  // Only one life. Dying even once will delete the save file.
+
+    CHAOS_GAMEMODE_COUNT,
+};
+
 enum ChaosPatchDurationType {
     CHAOS_DURATION_ONCE,      // Calls init function, then deactivates immediately
     CHAOS_DURATION_INFINITE,  // Activates forever and cannot be deactivated
@@ -256,6 +264,7 @@ struct ChaosPatch {
     const enum ChaosPatchID negationId;             // This is the exact opposite of what effect (if any)? This is useful for deactivating an infinite, opposite effect rather than creating a useless stack, which helps oppose theoretically infinite memory requirements.
     const u8 severity;           // Usefulness or severity impact of the patch (must be between 1 and CHAOS_PATCH_SEVERITY_MAX, excluding CHAOS_PATCH_NONE_*)
     const u8 isStackable;        // Can this patch be active more than once at a time?
+    const u8 disableForHardcore; // Should this patch type be disabled in hardcore mode?
     const u8 duration;           // Ignored for CHAOS_DURATION_ONCE and CHAOS_DURATION_INFINITE
     const u8 durationHard;       // Duration to be used in Hard mode (except when set to 0)
     const u8 durationImpossible; // Duration to be used in Impossible mode (except when set to 0)
@@ -301,7 +310,7 @@ extern struct ChaosActiveEntry *gChaosActiveEntries;
 extern u8 gChaosLevelWarped;
 extern u8 gChaosBlueStarLastCollected;
 extern enum ChaosDifficulty gChaosDifficulty;
-extern u8 gChaosLivesEnabled;
+extern enum ChaosGameMode gChaosGameMode;
 extern enum ChaosPatchID gNegativePatchCompare;
 
 // Check whether a particular chaos patch is active. Overall cheaper operation than the function below this one.

@@ -41,7 +41,7 @@ void cap_switch_act_2(void) {
 #endif
         }
     } else {
-        if (gChaosLivesEnabled) {
+        if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
             play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
             gMarioState->numLives++;
             save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives, FALSE);

@@ -2559,6 +2559,7 @@ void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) {
     u8 textContinue[] = { TEXT_CONTINUE };
     u8 textExitCourse[] = { TEXT_EXIT_COURSE };
     u8 textExitCourseWithDeath[] = { TEXT_EXIT_COURSE_WITH_DEATH };
+    u8 textResign[] = { TEXT_RESIGN };
     u8 textCameraAngleR[] = { TEXT_CAMERA_ANGLE_R };
     u8 textResetLevel[] = { TEXT_RESET_LEVEL };
 #endif
@@ -2583,8 +2584,18 @@ void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) {
     }
 
     print_generic_string(x + 10, y - 2, LANGUAGE_ARRAY(textContinue));
-    if (gChaosLivesEnabled) {
-        print_generic_string(x + 10, y - 17, LANGUAGE_ARRAY(textExitCourseWithDeath));
+    if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
+        if (gMarioState->numLives > 0 || chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE)) {
+            print_generic_string(x + 10, y - 17, LANGUAGE_ARRAY(textExitCourseWithDeath));
+        } else {
+            print_generic_string(x + 10, y - 17, LANGUAGE_ARRAY(textResign));
+        }
+    } else if (gChaosGameMode == CHAOS_GAMEMODE_HARDCORE) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE)) {
+            print_generic_string(x + 10, y - 17, LANGUAGE_ARRAY(textExitCourseWithDeath));
+        } else {
+            print_generic_string(x + 10, y - 17, LANGUAGE_ARRAY(textResign));
+        }
     } else {
         print_generic_string(x + 10, y - 17, LANGUAGE_ARRAY(textExitCourse));
     }

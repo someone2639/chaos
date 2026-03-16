@@ -643,7 +643,7 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
                 if (!(m->actionArg & 1)) {
                     level_trigger_warp(m, WARP_OP_STAR_EXIT);
                 } else {
-                    if (gChaosLivesEnabled && gShouldGive1UP) {
+                    if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gShouldGive1UP) {
                         play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
                         m->numLives++;
                         gShouldGive1UP = FALSE;
@@ -1082,7 +1082,7 @@ s32 act_exit_airborne(struct MarioState *m) {
         && launch_mario_until_land(m, ACT_EXIT_LAND_SAVE_DIALOG, MARIO_ANIM_GENERAL_FALL, -32.0f)) {
         // heal Mario
         m->healCounter = chs_calculate_max_heal_counter();
-        if (gChaosLivesEnabled && gShouldGive1UP) {
+        if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gShouldGive1UP) {
             play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
             m->numLives++;
             gShouldGive1UP = FALSE;
@@ -1103,7 +1103,7 @@ s32 act_falling_exit_airborne(struct MarioState *m) {
     if (launch_mario_until_land(m, ACT_EXIT_LAND_SAVE_DIALOG, MARIO_ANIM_GENERAL_FALL, 0.0f)) {
         // heal Mario
         m->healCounter = chs_calculate_max_heal_counter();
-        if (gChaosLivesEnabled && gShouldGive1UP) {
+        if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gShouldGive1UP) {
             play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
             m->numLives++;
             gShouldGive1UP = FALSE;
@@ -1215,7 +1215,7 @@ s32 act_death_exit(struct MarioState *m) {
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
-        if (gChaosLivesEnabled) {
+        if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
             m->numLives--;
         }
         save_file_add_death_count();
@@ -1235,7 +1235,7 @@ s32 act_unused_death_exit(struct MarioState *m) {
 #else
         play_sound(SOUND_MARIO_OOOF2, m->marioObj->header.gfx.cameraToObject);
 #endif
-        if (gChaosLivesEnabled) {
+        if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
             m->numLives--;
         }
         save_file_add_death_count();
@@ -1258,7 +1258,7 @@ s32 act_falling_death_exit(struct MarioState *m) {
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
-        if (gChaosLivesEnabled) {
+        if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
             m->numLives--;
         }
         save_file_add_death_count();
@@ -1299,7 +1299,7 @@ s32 act_special_exit_airborne(struct MarioState *m) {
         // heal Mario
         m->healCounter = chs_calculate_max_heal_counter();
         m->actionArg = 1;
-        if (gChaosLivesEnabled && gShouldGive1UP) {
+        if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gShouldGive1UP) {
             play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
             m->numLives++;
             gShouldGive1UP = FALSE;
@@ -1332,7 +1332,7 @@ s32 act_special_death_exit(struct MarioState *m) {
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
-        if (gChaosLivesEnabled) {
+        if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
             m->numLives--;
         }
         save_file_add_death_count();
