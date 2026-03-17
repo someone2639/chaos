@@ -287,10 +287,11 @@ static void level_cmd_load_yay0(void) {
 
 static void level_cmd_load_mario_head(void) {
 #ifdef GODDARD
-    // TODO: Fix these hardcoded sizes
-    void *addr = main_pool_alloc(DOUBLE_SIZE_ON_64_BIT(0xE1000), MEMORY_POOL_LEFT);
+    // NOTE: This graphically breaks the game with default allocation size of 0xE1000 for some unknown reason.
+    // Overallocating by a huge margin to get around this (and because there's no major downside to doing so, as it's deallocated during gameplay).
+    void *addr = main_pool_alloc(DOUBLE_SIZE_ON_64_BIT(0x180000), MEMORY_POOL_LEFT);
     if (addr != NULL) {
-        gdm_init(addr, DOUBLE_SIZE_ON_64_BIT(0xE1000));
+        gdm_init(addr, DOUBLE_SIZE_ON_64_BIT(0x180000));
         gd_add_to_heap(gZBuffer, sizeof(gZBuffer)); // 0x25800
         gd_add_to_heap(gFramebuffer0, 3 * sizeof(gFramebuffer0)); // 0x70800
         gdm_setup();
