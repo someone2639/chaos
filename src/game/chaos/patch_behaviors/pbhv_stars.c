@@ -276,7 +276,7 @@ static void print_star_collect_message(u8 shouldRemove, s32 courseNum, s32 starI
     u8 currentLevelStarFlags = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(courseNum));
     const char *act = starNames[courseNum][starId];
 
-    assert(starId < ARRAY_COUNT(starNames[0]), "print_star_collect_message:\nInvalid star index!");
+    assert(starId >= 0 && starId < ARRAY_COUNT(starNames[0]), "print_star_collect_message:\nInvalid star index!");
     if (act == NULL || act[0] == '\0') {
         assert(FALSE, "print_star_collect_message:\nEmpty star name detected!");
         return;

@@ -72,7 +72,7 @@ void bhv_cosmic_clones_loop(void) {
         return;
     }
 
-    if(!chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE)) {
+    if(!chs_is_miracle_active()) {
         switch(gMarioState->action) {
             //I think this is all of the death actions
             case ACT_DEATH_ON_BACK:

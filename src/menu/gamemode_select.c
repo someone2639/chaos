@@ -22,12 +22,12 @@ const char *sGMSelectDescriptions[] = {
     [GM_SELECT_DESC_GAMEMODE]       = "Select game mode.",
     [GM_SELECT_DESC_START]          = "Begin the game with the selected settings.",
     [GM_SELECT_DESC_EASY]           = "Patch cards will be more favorable. Cards will feature weaker negative effects.",
-    [GM_SELECT_DESC_NORMAL]         = "Patch cards will be evenly balanced. Cards will have equal positive and negative effects.",
+    [GM_SELECT_DESC_NORMAL]         = "Patch cards will be well balanced. Cards will have an even distribution of positive and negative effects.",
     [GM_SELECT_DESC_HARD]           = "Patch cards will be more punishing. Cards will feature weaker positive effects, and most negative patches will have a longer duration.",
-    [GM_SELECT_DESC_IMPOSSIBLE]     = "Patch cards will be extremely punishing. Cards will feature no positive effects whatsoever, and most negative patches will have brutal durations.",
-    [GM_SELECT_DESC_CLASSIC]        = "Infinite Lives. Dying will send you out of the course with no additional punishment.",
-    [GM_SELECT_DESC_CHALLENGE]      = "Enables Lives. Running out of lives will delete the save file. 1-UP mushrooms are removed, and lives may only be increased by collecting yellow stars.",
-    [GM_SELECT_DESC_HARDCORE]       = "Only One Life. Dying will result in an immediate game over, and permanently delete your save file.",
+    [GM_SELECT_DESC_IMPOSSIBLE]     = "Patch cards will be brutally unforgiving. Cards will feature no positive effects whatsoever, and most negative patches will be given relentless durations.",
+    [GM_SELECT_DESC_CLASSIC]        = "Infinite lives. Dying will send you out of the course with no additional punishment.",
+    [GM_SELECT_DESC_CHALLENGE]      = "Enables lives. Running out of lives will delete the save file. 1-UP mushrooms are removed, and lives may only be increased by collecting yellow stars.",
+    [GM_SELECT_DESC_HARDCORE]       = "Only one life. Dying will result in an immediate game over, and permanently delete your save file.",
 };
 
 /*
@@ -394,7 +394,7 @@ void scroll_gamemode_select_bg() {
 	int deltaX;
 	static int currentY = 0;
 	int deltaY;
-    Vtx *vertices = segmented_to_virtual(desc_bg_mesh_mesh_vtx_0);
+    Vtx *vertices = segmented_to_virtual(desc_bg_fileselect_mesh_mesh_vtx_0);
 	Vtx *verticesDiff = segmented_to_virtual(desc_bg_diff_diff_mesh_mesh_vtx_0);
 	Vtx *verticesChal = segmented_to_virtual(desc_bg_chal_chal_mesh_mesh_vtx_0);
     Vtx *verticesStart = segmented_to_virtual(desc_bg_start_start_mesh_mesh_vtx_0);
@@ -436,7 +436,7 @@ void render_gm_start_game() {
     gSPDisplayList(gDisplayListHead++, desc_bg_start_start_mesh_mesh);
 
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text(0, -10, "Start", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(-5, -10, "Start", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
     slowtext_finished_rendering();
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
@@ -458,15 +458,15 @@ void render_difficulty_select() {
     gSPDisplayList(gDisplayListHead++, desc_bg_diff_diff_mesh_mesh);
 
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text(-18,  10, "Easy",       FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_draw_ortho_text(-18, -10, "Normal",     FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_draw_ortho_text(-18, -30, "Hard",       FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_draw_ortho_text(-18, -50, "Impossible", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(-24,  10, "Easy",       FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(-24,  -3, "Normal",     FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(-24, -16, "Hard",       FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(-24, -29, "Impossible", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
     slowtext_finished_rendering();
 
-    cursorY = 15 - (20 * sGamemodeSelectMenu.selectedDifficulty);
+    cursorY = 15 - (13 * sGamemodeSelectMenu.selectedDifficulty);
 
-    guTranslate(transMtx, -27, cursorY, 0);
+    guTranslate(transMtx, -33, cursorY, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
             G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
     guScale(scaleMtx, 0.75f, 0.75f, 1.0f);
@@ -494,14 +494,14 @@ void render_challenge_select() {
     gSPDisplayList(gDisplayListHead++, desc_bg_chal_chal_mesh_mesh);
 
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text(-18,   0, "Classic",   FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_draw_ortho_text(-18, -20, "Challenge", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_draw_ortho_text(-18, -40, "Hardcore",  FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(-24,  7, "Classic",   FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(-24, -10, "Challenge", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(-24, -27, "Hardcore",  FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
     slowtext_finished_rendering();
 
-    cursorY = 5 - (20 * sGamemodeSelectMenu.selectedGameMode);
+    cursorY = 12 - (17 * sGamemodeSelectMenu.selectedGameMode);
 
-    guTranslate(transMtx, -27, cursorY, 0);
+    guTranslate(transMtx, -33, cursorY, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
             G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
     guScale(scaleMtx, 0.75f, 0.75f, 1.0f);
@@ -582,7 +582,7 @@ void render_desc_field() {
     guTranslate(transMtx, x, y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    gSPDisplayList(gDisplayListHead++, desc_bg_mesh_mesh);
+    gSPDisplayList(gDisplayListHead++, desc_bg_fileselect_mesh_mesh);
 
     switch(sGamemodeSelectMenu.menu.menuState) {
         case GM_SELECT_STATE_CONFIRM:
@@ -671,7 +671,7 @@ void render_gamemode_select() {
                 break;
         }
 
-        guTranslate(transMtx, (CHAL_SELECT_X - 45), cursorY, 0);
+        guTranslate(transMtx, (CHAL_SELECT_X - 55), cursorY, 0);
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
                 G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
         guScale(scaleMtx, 0.75f, 0.75f, 1.0f);

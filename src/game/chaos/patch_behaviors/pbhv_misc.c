@@ -17,9 +17,14 @@ u8 chs_cond_one_hit_wonder(void) {
     return(!chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_SHOCK) && !chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_BURN));
 }
 
-u8 chs_cond_miracle(void) {
+u8 chs_cond_miracle_normal(void) {
     struct ChaosActiveEntry *match;
-    chaos_find_first_active_patch(CHAOS_PATCH_MIRACLE, &match);
+
+    if (gChaosGameMode == CHAOS_GAMEMODE_HARDCORE) {
+        return FALSE;
+    }
+
+    chaos_find_first_active_patch(CHAOS_PATCH_MIRACLE_NORMAL, &match);
     if(match) {
         return (match->remainingDuration < 3);
     } else {
@@ -27,12 +32,28 @@ u8 chs_cond_miracle(void) {
     }
 }
 
+u8 chs_cond_miracle_hardcore(void) {
+    return (gChaosGameMode == CHAOS_GAMEMODE_HARDCORE);
+}
+
 void chs_update_miracle(void) {
     if (gMarioState->health <= 0xFF) {
         gMarioState->health = 0x100;
         gMarioState->hurtCounter = 0;
         gMarioState->healCounter = chs_calculate_max_heal_counter();
-        chaos_decrement_patch_usage(CHAOS_PATCH_MIRACLE);
+        chs_decrement_miracle();
+    }
+}
+
+u8 chs_is_miracle_active(void) {
+    return (chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE_NORMAL) || chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE_HARDCORE));
+}
+
+void chs_decrement_miracle(void) {
+    if (chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE_HARDCORE)) {
+        chaos_decrement_patch_usage(CHAOS_PATCH_MIRACLE_HARDCORE);
+    } else {
+        chaos_decrement_patch_usage(CHAOS_PATCH_MIRACLE_NORMAL);
     }
 }
 

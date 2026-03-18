@@ -195,7 +195,8 @@ enum ChaosPatchID {
     CHAOS_PATCH_BOWSER_THROWS,
     CHAOS_PATCH_AD_BREAK,
     CHAOS_PATCH_ALL_STARS_SELECTABLE,
-    CHAOS_PATCH_MIRACLE,
+    CHAOS_PATCH_MIRACLE_NORMAL,
+    CHAOS_PATCH_MIRACLE_HARDCORE,
     CHAOS_PATCH_DISABLE_FADE_WARPS,
     CHAOS_PATCH_LUIGI,
     CHAOS_PATCH_WEAK_BOSSES,
@@ -265,7 +266,7 @@ struct ChaosPatch {
     const u8 severity;           // Usefulness or severity impact of the patch (must be between 1 and CHAOS_PATCH_SEVERITY_MAX, excluding CHAOS_PATCH_NONE_*)
     const u8 isStackable;        // Can this patch be active more than once at a time?
     const u8 disableForHardcore; // Should this patch type be disabled in hardcore mode?
-    const u8 duration;           // Ignored for CHAOS_DURATION_ONCE and CHAOS_DURATION_INFINITE
+    const u8 duration;           // How long should the patch last, or how many uses are left? (Ignored for CHAOS_DURATION_ONCE and CHAOS_DURATION_INFINITE)
     const u8 durationHard;       // Duration to be used in Hard mode (except when set to 0)
     const u8 durationImpossible; // Duration to be used in Impossible mode (except when set to 0)
 

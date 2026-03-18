@@ -1796,19 +1796,33 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Sequence Break",
         .shortDescription   = "All course acts are now selectable, and may be completed in any order.",
     },
-    [CHAOS_PATCH_MIRACLE] = {
+    [CHAOS_PATCH_MIRACLE_NORMAL] = {
         .durationType       = CHAOS_DURATION_USE_COUNT,
         .effectType         = CHAOS_EFFECT_POSITIVE,
-        .severity           = 3,
+        .severity           = 2,
         .isStackable        = TRUE,
         .disableForHardcore = TRUE,
-        .duration           = 1,
+        .duration           = 2,
 
         .frameUpdateFunc    = chs_update_miracle,
-        .conditionalFunc    = chs_cond_miracle,
+        .conditionalFunc    = chs_cond_miracle_normal,
 
         .name               = "The Miracle Happened",
         .shortDescription   = "The next time Mario dies, he is revived as if nothing ever happened.",
+        .longDescription    = "On death, Mario will be instantly healed back to full health instead of being thrown out of the level. He will maintain his level and coin progress."
+    },
+    [CHAOS_PATCH_MIRACLE_HARDCORE] = {
+        .durationType       = CHAOS_DURATION_USE_COUNT,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 3,
+        .isStackable        = FALSE,
+        .duration           = 1,
+
+        .frameUpdateFunc    = chs_update_miracle,
+        .conditionalFunc    = chs_cond_miracle_hardcore,
+
+        .name               = "The Miracle Happened",
+        .shortDescription   = "The next time Mario dies, he is revived as if nothing ever happened. Essentially a free lifeline for your run!",
         .longDescription    = "On death, Mario will be instantly healed back to full health instead of being thrown out of the level. He will maintain his level and coin progress."
     },
     [CHAOS_PATCH_DISABLE_FADE_WARPS] = {

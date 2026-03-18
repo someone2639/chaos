@@ -44,12 +44,12 @@ void chs_update_time_limit(void) {
         }
 
         if(timeLeft == 0) {
-            if(chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE)) {
+            if(chs_is_miracle_active()) {
                 this->frameTimer = sTimeLimitOffset;
                 gMarioState->health = 0x100;
                 gMarioState->hurtCounter = 0;
                 gMarioState->healCounter = chs_calculate_max_heal_counter();
-                chaos_decrement_patch_usage(CHAOS_PATCH_MIRACLE);
+                chs_decrement_miracle();
             } else {
                 level_trigger_warp(gMarioState, WARP_OP_TIME_UP);
             }

@@ -316,8 +316,6 @@ void scroll_stats_bg() {
 }
 
 Gfx *geo_chaos_cake_stats(s32 callContext, UNUSED struct GraphNode *node, UNUSED f32 mtx[4][4]) {
-    enum ChaosGameMode gameMode;
-
     if(callContext == GEO_CONTEXT_RENDER) {
         scroll_stats_bg();
         if(sEndCakePhase >= 2) {
@@ -366,20 +364,24 @@ Gfx *geo_chaos_cake_stats(s32 callContext, UNUSED struct GraphNode *node, UNUSED
                         fasttext_draw_texrect(150, 40, "Hard", FT_FLAG_ALIGN_RIGHT, 0xFF, 0x15, 0x25, 0xFF);
                         break;
                     case CHAOS_DIFFICULTY_IMPOSSIBLE:
-                        fasttext_draw_texrect(150, 40, "Impoossible", FT_FLAG_ALIGN_RIGHT, 0xFF, 0x15, 0x25, 0xFF);
+                        fasttext_draw_texrect(150, 40, "Impoossible", FT_FLAG_ALIGN_RIGHT, 0x5F, 0x5F, 0x5F, 0xFF);
                         break;
                 }
             }
             if(sEndCakeTimer > 30) {
                 //Gamemode
                 fasttext_draw_texrect(16, 60, "Gamemode:", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-                gameMode = save_file_get_game_mode(gCurrSaveFileNum - 1);
-                if (gameMode == CHAOS_GAMEMODE_HARDCORE) {
-                    fasttext_draw_texrect(150, 60, "Hardcore", FT_FLAG_ALIGN_RIGHT, 0xBB, 0xA1, 0x24, 0xFF);
-                } else if (gameMode == CHAOS_GAMEMODE_CHALLENGE) {
-                    fasttext_draw_texrect(150, 60, "Challenge", FT_FLAG_ALIGN_RIGHT, 0xBB, 0xA1, 0x24, 0xFF);
-                } else {
-                    fasttext_draw_texrect(150, 60, "Classic", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                switch (save_file_get_game_mode(gCurrSaveFileNum - 1)) {
+                    case CHAOS_GAMEMODE_HARDCORE:
+                        fasttext_draw_texrect(150, 60, "Hardcore", FT_FLAG_ALIGN_RIGHT, 0xAF, 0x5F, 0xCF, 0xFF);
+                        break;
+                    case CHAOS_GAMEMODE_CHALLENGE:
+                        fasttext_draw_texrect(150, 60, "Challenge", FT_FLAG_ALIGN_RIGHT, 0xBB, 0xA1, 0x24, 0xFF);
+                        break;
+                    case CHAOS_GAMEMODE_CLASSIC:
+                    default:
+                        fasttext_draw_texrect(150, 60, "Classic", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                        break;
                 }
             }
             if(sEndCakeTimer > 45) {

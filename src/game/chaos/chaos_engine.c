@@ -660,6 +660,27 @@ void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_
 
         gNegativePatchCompare = CHAOS_PATCH_NONE;
 
+#ifdef CHAOS_FORCED_POSITIVE_CARD
+        if (index == 0
+         && (!chaos_check_if_patch_active(CHAOS_FORCED_POSITIVE_CARD) || gChaosPatches[CHAOS_FORCED_POSITIVE_CARD].isStackable)
+         && chaos_check_conditional_func(&gChaosPatches[CHAOS_FORCED_POSITIVE_CARD])
+        ) {
+            positivePatchId = CHAOS_FORCED_POSITIVE_CARD;
+            negativePatchId = CHAOS_PATCH_NONE_NEGATIVE;
+            generatedSeverity = 0;
+        }
+#endif
+#ifdef CHAOS_FORCED_NEGATIVE_CARD
+        if (index == 1
+         && (!chaos_check_if_patch_active(CHAOS_FORCED_NEGATIVE_CARD) || gChaosPatches[CHAOS_FORCED_NEGATIVE_CARD].isStackable)
+         && chaos_check_conditional_func(&gChaosPatches[CHAOS_FORCED_NEGATIVE_CARD])
+        ) {
+            positivePatchId = CHAOS_PATCH_NONE_POSITIVE;
+            negativePatchId = CHAOS_FORCED_NEGATIVE_CARD;
+            generatedSeverity = 0;
+        }
+#endif
+
         generatedPatches[index].positiveId = positivePatchId;
         generatedPatches[index].negativeId = negativePatchId;
         generatedPatches[index].positivePatch = &gChaosPatches[positivePatchId];

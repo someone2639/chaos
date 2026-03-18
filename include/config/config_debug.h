@@ -56,3 +56,16 @@
  * NOTE: Toggling this on an existing save file may trigger an assertion if patch counts have been meddled with already!
  */
 #define DISPLAY_MAX_PATCHES
+
+/**
+ * Activate a patch by pressing L on the controller. Will not apply if it's already active.
+ */
+// #define L_TO_ADD_PATCH CHAOS_PATCH_NONE_POSITIVE
+
+/**
+ * Force patch cards to show up for specifiable positive and negative effects.
+ * The positive patch will always show up on card 0, and the negative on card 1.
+ * These patches will only show up if they pass their conditional checks and aren't unstackable duplicates.
+ */
+// #define CHAOS_FORCED_POSITIVE_CARD CHAOS_PATCH_NONE_POSITIVE
+// #define CHAOS_FORCED_NEGATIVE_CARD CHAOS_PATCH_NONE_NEGATIVE
