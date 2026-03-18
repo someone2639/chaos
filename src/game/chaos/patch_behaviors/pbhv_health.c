@@ -74,7 +74,7 @@ void chs_deact_health_up(void) {
 */
 
 u8 chs_cond_health_down(void) {
-    return (gMarioState->maxHealth > 0x200);
+    return (gMarioState->maxHealth > 0x400);
 }
 
 void chs_act_health_down(void) {

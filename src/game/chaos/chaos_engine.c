@@ -12,8 +12,8 @@
 #include "game/level_update.h"
 
 #define WEIGHT_OFFSET 1.25f // Must be > 0!
-#define RETRY_ATTEMPTS_DUPLICATES 3
-#define DUPLICATE_ALLOWANCE 0.45f
+#define RETRY_ATTEMPTS_DUPLICATES 5
+#define DUPLICATE_ALLOWANCE 0.8f
 
 static u32 activePatchCounts[CHAOS_PATCH_COUNT];
 static u8 availablePatches[CHAOS_PATCH_COUNT];
@@ -553,6 +553,19 @@ void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_
                 negativeWeight--;
             }
 
+            // Drastically reduce likelihood of repeat negative cards from showing up
+            s32 foundRepeatGenerated = FALSE;
+            for (s32 previousGenIndex = index - 1; previousGenIndex >= 0; previousGenIndex--) {
+                if (generatedPatches[previousGenIndex].negativeId == negativePatchId) {
+                    foundRepeatGenerated = TRUE;
+                    break;
+                }
+            }
+
+            if (foundRepeatGenerated) {
+                continue;
+            }
+
             // Make duplicates of stackable patches less likely
             s32 patchDuplicates = chaos_count_active_instances(negativePatchId);
             f32 retryChance = 1.0f;
@@ -613,6 +626,19 @@ void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_
                     positiveWeight--;
                 }
 
+                // Drastically reduce likelihood of repeat positive cards from showing up
+                s32 foundRepeatGenerated = FALSE;
+                for (s32 previousGenIndex = index - 1; previousGenIndex >= 0; previousGenIndex--) {
+                    if (generatedPatches[previousGenIndex].positiveId == positivePatchId) {
+                        foundRepeatGenerated = TRUE;
+                        break;
+                    }
+                }
+
+                if (foundRepeatGenerated) {
+                    continue;
+                }
+
                 // Make duplicates of stackable patches less likely
                 s32 patchDuplicates = chaos_count_active_instances(positivePatchId);
                 f32 retryChance = 1.0f;
@@ -625,8 +651,10 @@ void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_
                     retryChance *= duplicateAllowance;
                 }
                 if (random_float() >= retryChance) {
-                    break;
+                    continue;
                 }
+
+                break;
             }
         }
 
@@ -843,27 +871,6 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
 
     // Compute weights for generation
     f32 totalWeight = 0.0f;
-
-    // NOTE: Comment out these weight calculations now that a different severity weighting system exists (so these weights are all even now)
-    // for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
-    //     struct ChaosActiveEntry *entry = &gChaosActiveEntries[i];
-    //     const struct ChaosPatch *patch = &gChaosPatches[entry->id];
-
-    //     if (patch->durationType == CHAOS_DURATION_ONCE) {
-    //         severityWeights[patch->severity] += 0.33f;
-    //         continue;
-    //     }
-    //     if (patch->durationType == CHAOS_DURATION_USE_COUNT) {
-    //         severityWeights[patch->severity] += 0.5f;
-    //         continue;
-    //     }
-    //     if (patch->durationType == CHAOS_DURATION_INFINITE) {
-    //         severityWeights[patch->severity] += 0.67f;
-    //         continue;
-    //     }
-
-    //     severityWeights[patch->severity] += 1.0f;
-    // }
 
     for (s32 i = 1; i < ARRAY_COUNT(severityWeights); i++) {
         severityWeights[i] += WEIGHT_OFFSET;
