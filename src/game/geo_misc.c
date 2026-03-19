@@ -358,7 +358,7 @@ Gfx *geo_chaos_cake_stats(s32 callContext, UNUSED struct GraphNode *node, UNUSED
                         break;
                     case CHAOS_DIFFICULTY_NORMAL:
                     default:
-                        fasttext_draw_texrect(150, 40, "Normal", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                        fasttext_draw_texrect(150, 40, "Normal", FT_FLAG_ALIGN_RIGHT, 0xAF, 0xAF, 0xAF, 0xFF);
                         break;
                     case CHAOS_DIFFICULTY_HARD:
                         fasttext_draw_texrect(150, 40, "Hard", FT_FLAG_ALIGN_RIGHT, 0xFF, 0x15, 0x25, 0xFF);
@@ -380,7 +380,7 @@ Gfx *geo_chaos_cake_stats(s32 callContext, UNUSED struct GraphNode *node, UNUSED
                         break;
                     case CHAOS_GAMEMODE_CLASSIC:
                     default:
-                        fasttext_draw_texrect(150, 60, "Classic", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+                        fasttext_draw_texrect(150, 60, "Classic", FT_FLAG_ALIGN_RIGHT, 0xAF, 0xAF, 0xAF, 0xFF);
                         break;
                 }
             }

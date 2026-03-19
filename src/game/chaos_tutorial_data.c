@@ -59,7 +59,7 @@ struct ChaosTutorialSlide gChaosTutorialSlides[] = {
     },
     {
         .imageAddress = chsTutDMA_0D_difficulty_selection,
-        .description = "This hack comes with an @1FAF1F--Easy@--------, @7F7F7F--Normal@--------, and @9F1F1F--Hard@-------- difficulty, as well as a special @FFBF00--Challenge Mode@--------.",
+        .description = "This hack comes with @1FAF1F--Easy@--------, @AFAFAF--Normal@--------, @9F1F1F--Hard@--------, and @5F5F5F--Impossible@-------- difficulties, as well as special @FFBF00--Challenge@-------- and @AF5FCF--Hardcore@-------- modes.",
     },
     {
         .imageAddress = chsTutDMA_0E_difficulty_easy,
@@ -67,14 +67,22 @@ struct ChaosTutorialSlide gChaosTutorialSlides[] = {
     },
     {
         .imageAddress = chsTutDMA_0F_difficulty_hard,
-        .description = "On @9F1F1F--Hard@-------- difficulty, you will need to endure brutal negative effects more frequently and for longer, with fewer offsetting benefits from positive effects. Recommended for experienced players only.",
+        .description = "On @9F1F1F--Hard@-------- difficulty, you will need to endure tough negative effects more frequently and for longer, with fewer offsetting benefits from positive effects. Recommended for experienced players only.",
     },
     {
-        .imageAddress = chsTutDMA_10_challenge_mode,
-        .description = "If you're feeling confident in your abilities, take on @FFBF00--Challenge Mode@--------! Your entire save file is on the line, and you must work to complete the game without running out of lives!",
+        .imageAddress = chsTutDMA_10_difficulty_impossible,
+        .description = "On @5F5F5F--Impossible@-------- difficulty, you will need to survive through the most brutal negative effects more frequently and for much longer, with no mercy from positive effects. Recommended for masochists only.",
     },
     {
-        .imageAddress = chsTutDMA_11_conclusion,
+        .imageAddress = chsTutDMA_11_challenge_mode,
+        .description = "If you're feeling confident in your abilities, take on @FFBF00--Challenge@-------- mode! Your entire save file is on the line, and you must work to complete the game without running out of lives!",
+    },
+    {
+        .imageAddress = chsTutDMA_12_hardcore_mode,
+        .description = "If you're feeling particularly ambitious, there is also @AF5FCF--Hardcore@-------- mode! You only have one life, and dying even once will put an end to your entire run!",
+    },
+    {
+        .imageAddress = chsTutDMA_13_conclusion,
         .description = "Your goal is to defeat @6F4F2F--Bowser@-------- and rescue the @FFFF00--Grand Star@--------. What kinds of unique effect combinations will you experience during your adventure?",
     },
 };

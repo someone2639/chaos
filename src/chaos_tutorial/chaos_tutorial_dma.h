@@ -23,7 +23,9 @@ extern u8 chsTutDMA_0C_star_duplicates[];
 extern u8 chsTutDMA_0D_difficulty_selection[];
 extern u8 chsTutDMA_0E_difficulty_easy[];
 extern u8 chsTutDMA_0F_difficulty_hard[];
-extern u8 chsTutDMA_10_challenge_mode[];
-extern u8 chsTutDMA_11_conclusion[];
+extern u8 chsTutDMA_10_difficulty_impossible[];
+extern u8 chsTutDMA_11_challenge_mode[];
+extern u8 chsTutDMA_12_hardcore_mode[];
+extern u8 chsTutDMA_13_conclusion[];
 
 #endif // CHAOS_TUTORIAL_DMA_H
