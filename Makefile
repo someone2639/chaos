@@ -508,7 +508,13 @@ else
   RSPASM              := $(TOOLS_DIR)/armips
 endif
 ENDIAN_BITWIDTH       := $(BUILD_DIR)/endian-and-bitwidth
-EMULATOR = parallel-launcher
+ifneq (,$(shell uname -r | grep WSL))
+  # WSL detected
+  EMULATOR = '/mnt/c/Program Files/parallel-launcher/parallel-launcher.exe'
+else
+  # Linux probably
+  EMULATOR = parallel-launcher
+endif
 SC64DEPLOYER = /mnt/c/sc64/sc64deployer.exe upload
 EMU_FLAGS =
 

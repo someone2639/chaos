@@ -26,7 +26,9 @@ typedef struct AudioRing {
     s16 (*samples)[PCMBUF_SIZE];
 } AudioRing;
 
-u32 audio_remain = 0;
+s32 audio_remain = 0;
+extern volatile s32 hvqm_video_done;
+volatile s32 hvqm_audio_done = FALSE;
 
 AudioRing rbuffer[NUM_PCMBUFs] = {
     {.next = &rbuffer[1]},
@@ -167,7 +169,7 @@ UNUSED static void reset_audio(void **streamp) {
 // }
 
 void AudioMain(void *arg) {
-    AudThreadParams *args = arg;
+    hvqmAudThreadParams *args = arg;
     void *streamp = audStreamPBase = args->streamp;
     audio_remain = audRemainBase = args->remain - NUM_PCMBUFs;
     num_channels = args->num_channels;
@@ -177,21 +179,35 @@ void AudioMain(void *arg) {
 
     init_audio(&streamp);
     playtime_us = 0;
+    hvqm_audio_done = FALSE;
 
     while (1) {
-        while (audio_remain > 0) {
+        while (audio_remain > 0 && !hvqm_video_done) {
             // osSyncPrintf("REMAIN %d\n", audio_remain);
             audio_remain -= process_audio(&streamp);
         }
 
         // osSyncPrintf("PLAYBACK DONE\n");
 
-        osSetEventMesg(OS_EVENT_AI, NULL, 0);
-        extern OSThread hvqmThread;;
-        osDestroyThread(&hvqmThread);
+        extern OSThread hvqmThread;
         extern OSMesgQueue gHVQM_SyncQueue;
-        osSendMesg(&gHVQM_SyncQueue, (OSMesg*)0, OS_MESG_BLOCK);
+        extern OSMesgQueue viMessageQ;
         // get_fps_vals("HVQM Part1 (CPU)", "HVQM Part2 (RSP)");
+
+        hvqm_audio_done = TRUE;
+
+        while (!hvqm_video_done) {
+            osYieldThread();
+        }
+
+        // Wait 2 frames just in case
+        osRecvMesg(&viMessageQ, NULL, OS_MESG_BLOCK);
+        osRecvMesg(&viMessageQ, NULL, OS_MESG_BLOCK);
+
+        osStopThread(&hvqmThread);
+        osSetEventMesg(OS_EVENT_AI, NULL, 0);
+        osSendMesg(&gHVQM_SyncQueue, (OSMesg*)0, OS_MESG_BLOCK);
+        osDestroyThread(NULL);
 
 #ifdef HVQM_VIDLOOP
         reset_audio(&streamp);

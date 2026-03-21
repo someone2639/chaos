@@ -131,7 +131,7 @@ void hvqm_drawHLE(void *buf) {
     osWritebackDCacheAll();
     create_gfx_task_structure();
     gGfxSPTask->task.t.data_ptr = (u64 *) gGfxPool->buffer;
-    gGfxSPTask->task.t.data_size = ((u32)gDisplayListHead - (u32)gGfxPool->buffer) * sizeof(Gfx);
+    gGfxSPTask->task.t.data_size = ((u32)video_glistp - (u32)gGfxPool->buffer) * sizeof(Gfx);
     osSpTaskStart(&gGfxSPTask->task);
     osRecvMesg(&spMesgQ, NULL, OS_MESG_BLOCK);
     osRecvMesg(&dpMesgQ, NULL, OS_MESG_BLOCK);

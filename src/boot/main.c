@@ -343,6 +343,10 @@ void handle_sp_complete(void) {
 }
 
 void handle_dp_complete(void) {
+    if (gHVQMPlaying) {
+        return;
+    }
+
     // Gfx SP task is completely done.
     if (sCurrentDisplaySPTask->msgqueue != NULL) {
         osSendMesg(sCurrentDisplaySPTask->msgqueue, sCurrentDisplaySPTask->msg, OS_MESG_NOBLOCK);

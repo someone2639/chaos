@@ -11,13 +11,15 @@ static OSMesg viMessages[VI_MSG_SIZE];
 
 HVQM2Header hvqm_header __attribute__((aligned(16)));
 
-static OSThread audThread;
-static u64 audThreadStack[STACKSIZE / 8];
+OSThread hvqmAudThread;
+static u64 hvqmAudThreadStack[STACKSIZE / 8];
 
 extern void AudioMain(void *arg);
 extern void VideoMain(void *arg);
 
 extern u64 disptime_us;
+volatile s32 hvqm_video_done = FALSE;
+extern volatile s32 hvqm_audio_done;
 
 void Main(void *video) {
     int h_offset, v_offset; // Position of image display
@@ -42,22 +44,29 @@ void Main(void *video) {
     u32 total_audio_records = load32(hvqm_header.total_audio_records);
 
     void *video_streamP = video + sizeof(HVQM2Header);
-    extern u32 video_remain;
+    extern volatile s32 video_remain;
     video_remain = total_frames - NUM_CFBs;
+    hvqm_audio_done = FALSE;
+    hvqm_video_done = FALSE;
 
     void *audio_streamP = video + sizeof(HVQM2Header);
-    u32 audio_remain = total_audio_records;
+    s32 audio_remain = total_audio_records;
 
-    AudThreadParams parms;
+    osSetTime(0);
+
+    hvqmAudThreadParams parms;
+    s32 startedAudioThread = FALSE;
+
     if (total_audio_records != 0) {
+        startedAudioThread = TRUE;
         parms.streamp = audio_streamP;
         parms.remain = audio_remain;
         parms.samples_per_sec = hvqm_header.samples_per_sec;
         parms.num_channels = hvqm_header.channels;
-        bzero(&audThread, sizeof(OSThread));
-        osCreateThread(&audThread, 8, AudioMain, &parms, audThreadStack + STACKSIZE / 8,
+        bzero(&hvqmAudThread, sizeof(OSThread));
+        osCreateThread(&hvqmAudThread, 8, AudioMain, &parms, hvqmAudThreadStack + STACKSIZE / 8,
                        AUD_PRIORITY);
-        osStartThread(&audThread);
+        osStartThread(&hvqmAudThread);
     }
 
     h_offset = (SCREEN_WD - hvqm_header.width) / 2;
@@ -69,8 +78,7 @@ void Main(void *video) {
     init_video(&video_streamP, screen_offset);
     extern OSMesgQueue gHVQM_SyncQueue;
 
-    osSetTime(0);
-    while (video_remain > 0) {
+    while (video_remain > 0 && !hvqm_audio_done) {
         VideoMain(&video_streamP);
 
         char t[50];
@@ -80,8 +88,20 @@ void Main(void *video) {
         disptime_us = OS_CYCLES_TO_USEC(osGetTime());
         osRecvMesg(&viMessageQ, NULL, OS_MESG_BLOCK);
     }
+
+    hvqm_video_done = TRUE;
+
+    if (startedAudioThread) {
+        // Allow audio thread to stop the main HQVM thread
+        while(1);
+    }
+
+    // Wait 2 frames just in case
+    osRecvMesg(&viMessageQ, NULL, OS_MESG_BLOCK);
+    osRecvMesg(&viMessageQ, NULL, OS_MESG_BLOCK);
+
     osSyncPrintf("before handback...");
     osSetEventMesg(OS_EVENT_AI, NULL, 0);
-    osJamMesg(&gHVQM_SyncQueue, (OSMesg*)0, OS_MESG_BLOCK);
+    osSendMesg(&gHVQM_SyncQueue, (OSMesg*)0, OS_MESG_BLOCK);
     osStopThread(NULL);
 }

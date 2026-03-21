@@ -144,7 +144,7 @@ typedef struct {
     u32 remain; // remaining audio frames
     u32 samples_per_sec;
     u32 num_channels;
-} AudThreadParams;
+} hvqmAudThreadParams;
 
 extern HVQM2Header hvqm_header;
 

@@ -36,6 +36,7 @@ extern OSThread gMainThread;
 extern OSThread gGameLoopThread;
 extern OSThread gSoundThread;
 extern OSThread hvqmThread;
+extern OSThread hvqmAudThread;
 #if ENABLE_RUMBLE
 extern OSThread gRumblePakThread;
 

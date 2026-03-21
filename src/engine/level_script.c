@@ -801,6 +801,7 @@ void hvqm_play(void *addr) {
     gHVQMPlaying = 1;
 
     bzero(_hvqmworkSegmentBssStart, (u32)_adpcmbufSegmentBssEnd - (u32)_hvqmworkSegmentBssStart);
+    bzero(gFramebuffers, sizeof(gFramebuffers));
 
     hvqm_reset_bss();
 

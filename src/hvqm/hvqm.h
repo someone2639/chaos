@@ -107,6 +107,7 @@ void hvqm_drawHLE(void*);
 
 extern OSThread daCounterThread;
 extern OSThread hvqmThread;
+extern OSThread hvqmAudThread;
 extern OSThread tkThread;
 
 extern OSMesgQueue spMesgQ;

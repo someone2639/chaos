@@ -34,7 +34,7 @@ VideoRing vbuffer[NUM_CFBs] = {
 };
 VideoRing *currVBuf;
 
-u32 video_remain = 0;
+volatile s32 video_remain = 0;
 u32 usec_per_frame = 0;
 u32 frames_elapsed = 0;
 

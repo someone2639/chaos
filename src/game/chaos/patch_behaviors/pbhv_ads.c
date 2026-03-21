@@ -52,29 +52,46 @@ u32 chsCurrentAd = 0;
 void chs_update_serve_ads(void) {
     struct ChaosActiveEntry *this;
     chaos_find_first_active_patch(CHAOS_PATCH_AD_BREAK, &this);
-    if (this->frameTimer < (AD_MINUTES * 60 * 30)) {
+    if (!this || (this->frameTimer < (AD_MINUTES * 60 * 30))) {
         return;
     }
 
     s32 adToPlay = 0;
-    do {
-        if (chsCurrentAd == 0) {
-            // Shuffle order of ads
-            for (s32 i = ARRAY_COUNT(chsHVQMTable) - 1; i >= 0; i--) {
-                s32 randIndex = random_float() * (i + 1);
-                u32 *tmp = chsHVQMTable[randIndex];
-                chsHVQMTable[randIndex] = chsHVQMTable[i];
-                chsHVQMTable[i] = tmp;
-            }
+    if (chsCurrentAd == 0) {
+        // Shuffle order of ads
+        for (s32 i = ARRAY_COUNT(chsHVQMTable) - 1; i >= 0; i--) {
+            s32 randIndex = random_float() * (i + 1);
+            u32 *tmp = chsHVQMTable[randIndex];
+            chsHVQMTable[randIndex] = chsHVQMTable[i];
+            chsHVQMTable[i] = tmp;
         }
+    }
 
-        adToPlay = chsCurrentAd++;
-        if (chsCurrentAd >= ARRAY_COUNT(chsHVQMTable)) {
-            chsCurrentAd = 0;
-        }
-
-    } while ((gEmulator & (EMU_CONSOLE | EMU_ARES | EMU_CEN64)) && chsHVQMTable[adToPlay] == HVQM_PTR(chaos3)); // Do not play fake crash on console when video is already unstable
+    adToPlay = chsCurrentAd++;
+    if (chsCurrentAd >= ARRAY_COUNT(chsHVQMTable)) {
+        chsCurrentAd = 0;
+    }
 
     hvqm_play(chsHVQMTable[adToPlay]);
     this->frameTimer = 0;
+}
+
+void chs_debug_serve_ads(void) {
+    s32 adToPlay = 0;
+    if (chsCurrentAd == 0) {
+        // Shuffle order of ads
+        for (s32 i = ARRAY_COUNT(chsHVQMTable) - 1; i >= 0; i--) {
+            s32 randIndex = random_float() * (i + 1);
+            u32 *tmp = chsHVQMTable[randIndex];
+            chsHVQMTable[randIndex] = chsHVQMTable[i];
+            chsHVQMTable[i] = tmp;
+        }
+    }
+
+    adToPlay = chsCurrentAd++;
+    if (chsCurrentAd >= ARRAY_COUNT(chsHVQMTable)) {
+        chsCurrentAd = 0;
+    }
+
+    hvqm_play(chsHVQMTable[adToPlay]);
 }
