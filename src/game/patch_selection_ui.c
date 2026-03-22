@@ -124,6 +124,7 @@ void load_new_patches() {
     assert(numPatches > 0 && numPatches <= MAX_CARDS, "Tried to load an invalid number of patch cards!");
 
     struct ChaosPatchSelection *patches = chaos_roll_for_new_patches();
+    aggress(patches, "Chaos patches uninitialized!");
     for (s32 i = 0; i < numPatches; i++) {
         gPatchSelectionMenu->patchCards[i].sel = &patches[i];
     }

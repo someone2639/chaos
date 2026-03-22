@@ -235,6 +235,13 @@ u32 pressed_pause(void) {
 }
 
 void set_play_mode(s16 playMode) {
+    if (playMode == PLAY_MODE_SELECT_PATCH && gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE && gChaosBlueStarLastCollected) {
+        chaosmsg_print(CHAOS_PATCH_NONE, "@AF4F4F--You collected a duplicate star or key on Impossible difficulty. Patches will not be cycled!@--------");
+        play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
+        gChaosBlueStarLastCollected = FALSE;
+        return;
+    }
+
     sCurrPlayMode = playMode;
     D_80339ECA = 0;
 }
@@ -1188,7 +1195,7 @@ s32 play_mode_normal(void) {
             set_play_mode(PLAY_MODE_PAUSED);
         }
 #ifdef DEBUG_PATCH_SELECT_MENU
-        else if (gPlayer1Controller->buttonPressed & R_TRIG && gPlayer1Controller->buttonDown & Z_TRIG) {
+        else if ((gPlayer1Controller->buttonPressed & (R_TRIG | Z_TRIG)) && ((gPlayer1Controller->buttonDown & (R_TRIG | Z_TRIG)) == (R_TRIG | Z_TRIG))) {
             set_play_mode(PLAY_MODE_SELECT_PATCH);
         }
 #endif
@@ -1270,11 +1277,7 @@ s32 play_mode_frame_advance(void) {
 s32 play_mode_select_patch(void) {
     if (gPatchSelectionMenu->menu.menuState != PATCH_SELECT_STATE_CLOSED) {
         if (!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_ACTIVE)) {
-            if (gChaosBlueStarLastCollected && gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE) {
-                chaosmsg_print(CHAOS_PATCH_NONE, "@AF4F4F--You collected a duplicate star or key on Impossible difficulty. Patch timers will not be decremented this time!@--------");
-            } else {
-                chaos_decrement_star_timers();
-            }
+            chaos_decrement_star_timers();
             load_new_patches();
             gPatchSelectionMenu->menu.flags |= PATCH_SELECT_FLAG_ACTIVE;
             chaosSeqVolSubtractable = FALSE;

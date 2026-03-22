@@ -19,6 +19,8 @@
 
 #define obj_and_int(object, offset, value) object->OBJECT_FIELD_S32(offset) &= (s32)(value)
 
+u16 get_active_rng_seed(void);
+void set_active_rng_seed(u16 seed);
 u16 random_u16(void);
 float random_float(void);
 s32 random_sign(void);

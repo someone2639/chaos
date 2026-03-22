@@ -883,13 +883,13 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
 
         if(!(m->numStars > previousStarCount || (newSaveFlags & ~previousSaveFlags)) && !grandStar) {
             gChaosBlueStarLastCollected = TRUE;
-            save_file_add_blue_star();
-        }
-
-        if ((gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) && (m->numStars > previousStarCount || (newSaveFlags & ~previousSaveFlags))) {
-            gShouldGive1UP = TRUE;
-        } else {
             gShouldGive1UP = FALSE;
+            save_file_add_blue_star();
+        } else {
+            gChaosBlueStarLastCollected = FALSE;
+            if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && !grandStar) {
+                gShouldGive1UP = TRUE;
+            }
         }
 
         if (!noExit) {

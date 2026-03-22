@@ -506,7 +506,7 @@ static void chaos_update_available_patches(void) {
     }
 }
 
-void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_EFFECT_COUNT],
+static void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_EFFECT_COUNT],
                           u8 posNegPairings[CHAOS_PATCH_SEVERITY_COUNT][CHAOS_EFFECT_COUNT], f32 severityWeights[CHAOS_PATCH_SEVERITY_COUNT]) {
     bzero(generatedPatches, sizeof(generatedPatches));
 
@@ -709,6 +709,21 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
     bzero(allowedSeverities, sizeof(allowedSeverities));
     bzero(severityWeights, sizeof(severityWeights));
 
+    // Update RNG based on value in the save file to prevent reset cheese; effectively, these rolls are predetermined based on the last collected star!
+    // Only exception here is the very first star, as otherwise that would too often return the exact same patch cards.
+    u16 activeSeed = get_active_rng_seed();
+    u16 savedSeed = save_file_get_rng_seed();
+#ifndef DEBUG_PATCH_SELECT_MENU
+    if (save_file_get_flags() & SAVE_FLAG_SET_RNG_SEED) {
+        // Except only actually enforce the RNG decheese on at least Impossible difficulty, in challenge (and at least hard mode), or in hardcore mode.
+        // This assumes most players are here to have fun, and less so to accomplish a painstaking challenge.
+        if (gChaosGameMode == CHAOS_GAMEMODE_HARDCORE || (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gChaosDifficulty >= CHAOS_DIFFICULTY_HARD) || gChaosDifficulty >= CHAOS_DIFFICULTY_IMPOSSIBLE) {
+            set_active_rng_seed(savedSeed);
+        }
+    }
+#endif
+    save_file_update_rng_seed(activeSeed ^ savedSeed);
+
     chaos_update_available_patches();
 
     // Determine how many of a patch currently exist
@@ -767,7 +782,6 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
         if (gChaosBlueStarLastCollected) {
             // Enforce CHAOS_SPECIAL_ZERO_POSITIVE upon collecting a repeat star
             specialEvent = CHAOS_SPECIAL_ZERO_POSITIVE;
-            gChaosBlueStarLastCollected = FALSE;
             chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9Fpos 0 (forced)");
         } else {
             if (offsetSeverityWeight < 0.15f) {
@@ -795,6 +809,7 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
             lastEventType = specialEvent; // Repeat stars also have no impact on star history for this
         }
     }
+    gChaosBlueStarLastCollected = FALSE;
 
     // Determine available severity combinations that may be used for selections
     for (s32 i = 1; i < ARRAY_COUNT(posNegPairings); i++) {
@@ -937,6 +952,8 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
         }
     }
 
+    save_file_set_new_chaos_gen_data(lastForcedDifficulty, lastEventType);
+
     return generatedPatches;
 }
 
@@ -950,11 +967,9 @@ void chaos_select_patches(struct ChaosPatchSelection *patchSelection) {
 }
 
 void chaos_init(void) {
-    save_file_get_chaos_data(&gChaosActiveEntries, &gChaosActiveEntryCount, &gChaosDifficulty, &gChaosGameMode);
+    save_file_get_chaos_data(&gChaosActiveEntries, &gChaosActiveEntryCount, &gChaosDifficulty, &gChaosGameMode, &lastForcedDifficulty, &lastEventType);
     chaos_recompute_active_patch_counts();
 
-    lastForcedDifficulty = -2;
-    lastEventType = CHAOS_SPECIAL_NONE;
     gChaosLevelWarped = FALSE;
     gChaosBlueStarLastCollected = FALSE;
 

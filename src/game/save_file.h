@@ -58,6 +58,11 @@ struct SaveFile {
     u16 gameLoads;
     u32 playTime;
     u16 totalPatches;
+    u16 rngSeed;
+    s8 lastForcedDifficulty;
+    u8 lastEventType;
+
+    u64 _SAVEFILE_PADDING;
 
     struct SaveBlockSignature signature;
 };
@@ -132,6 +137,7 @@ extern s8 gLevelToCourseNumTable[];
 #define SAVE_FLAG_CAP_ON_UKIKI           /* 0x00040000 */ (1 << 18)
 #define SAVE_FLAG_CAP_ON_MR_BLIZZARD     /* 0x00080000 */ (1 << 19)
 #define SAVE_FLAG_UNLOCKED_50_STAR_DOOR  /* 0x00100000 */ (1 << 20)
+#define SAVE_FLAG_SET_RNG_SEED           /* 0x00200000 */ (1 << 21)
 #define SAVE_FLAG_COLLECTED_TOAD_STAR_1  /* 0x01000000 */ (1 << 24)
 #define SAVE_FLAG_COLLECTED_TOAD_STAR_2  /* 0x02000000 */ (1 << 25)
 #define SAVE_FLAG_COLLECTED_TOAD_STAR_3  /* 0x04000000 */ (1 << 26)
@@ -183,8 +189,8 @@ s32 save_file_get_cap_pos(Vec3s capPos);
 void save_file_set_sound_mode(u16 mode);
 u16 save_file_get_sound_mode(void);
 void save_file_move_cap_to_default_location(void);
-void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount, enum ChaosDifficulty *gChaosDifficulty, enum ChaosGameMode *gChaosGameMode);
-
+void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount, enum ChaosDifficulty *gChaosDifficulty, enum ChaosGameMode *gChaosGameMode, s32 *lastForcedDifficulty, enum ChaosPatchSpecialEvent *lastEventType);
+void save_file_set_new_chaos_gen_data(s32 lastForcedDifficulty, enum ChaosPatchSpecialEvent lastEventType);
 void save_file_add_blue_star();
 u16 save_file_get_blue_stars();
 void save_file_add_death_count();
@@ -199,6 +205,8 @@ u16 save_file_get_total_patches();
 void disable_warp_checkpoint(void);
 void check_if_should_set_warp_checkpoint(struct WarpNode *warpNode);
 s32 check_warp_checkpoint(struct WarpNode *warpNode);
+u16 save_file_get_rng_seed(void);
+void save_file_update_rng_seed(u16 seed);
 
 u32 save_file_get_bg_music_disabled(void);
 void save_file_set_bg_music(u8 shouldDisable);

@@ -295,6 +295,8 @@ void save_file_populate_default_params(s32 fileIndex) {
     file->chaosDifficulty = CHAOS_DIFFICULTY_NORMAL;
     file->chaosGameMode = FALSE;
     file->chaosEntryCount = 0;
+    file->lastForcedDifficulty = -2;
+    file->lastEventType = CHAOS_SPECIAL_NONE;
 }
 
 void save_file_erase(s32 fileIndex) {
@@ -672,14 +674,22 @@ u16 eu_get_language(void) {
 }
 #endif
 
-void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount, enum ChaosDifficulty *gChaosDifficulty, enum ChaosGameMode *gChaosGameMode) {
+void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount, enum ChaosDifficulty *gChaosDifficulty, enum ChaosGameMode *gChaosGameMode, s32 *lastForcedDifficulty, enum ChaosPatchSpecialEvent *lastEventType) {
     *entryData = gSaveBuffer.files[gCurrSaveFileNum - 1].chaosEntries;
     *currentEntryCount = &gSaveBuffer.files[gCurrSaveFileNum - 1].chaosEntryCount;
     *gChaosDifficulty = save_file_get_difficulty(gCurrSaveFileNum - 1);
     *gChaosGameMode = save_file_get_game_mode(gCurrSaveFileNum - 1);
+    *lastForcedDifficulty = gSaveBuffer.files[gCurrSaveFileNum - 1].lastForcedDifficulty;
+    *lastEventType = gSaveBuffer.files[gCurrSaveFileNum - 1].lastEventType;
 
     gSaveBuffer.files[gCurrSaveFileNum - 1].flags |= SAVE_FLAG_FILE_EXISTS;
     gMainMenuDataModified = TRUE;
+}
+
+void save_file_set_new_chaos_gen_data(s32 lastForcedDifficulty, enum ChaosPatchSpecialEvent lastEventType) {
+    gSaveBuffer.files[gCurrSaveFileNum - 1].lastForcedDifficulty = lastForcedDifficulty;
+    gSaveBuffer.files[gCurrSaveFileNum - 1].lastEventType = lastEventType;
+    gSaveFileModified = TRUE;
 }
 
 void disable_warp_checkpoint(void) {
@@ -724,6 +734,17 @@ s32 check_warp_checkpoint(struct WarpNode *warpNode) {
     }
 
     return warpCheckpointActive;
+}
+
+
+u16 save_file_get_rng_seed(void) {
+    return gSaveBuffer.files[gCurrSaveFileNum - 1].rngSeed;
+}
+
+void save_file_update_rng_seed(u16 seed) {
+    gSaveBuffer.files[gCurrSaveFileNum - 1].rngSeed = seed;
+    save_file_set_flags(SAVE_FLAG_SET_RNG_SEED);
+    gSaveFileModified = TRUE;
 }
 
 /*

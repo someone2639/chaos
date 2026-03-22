@@ -39,6 +39,16 @@ UNUSED static void goto_behavior_unused(const BehaviorScript *bhvAddr) {
     gCurrentObject->bhvStackIndex = 0;
 }
 
+// Return the current seed used for random number generation in SM64
+u16 get_active_rng_seed(void) {
+    return gRandomSeed16;
+}
+
+// Override the seed used for random number generation in SM64
+void set_active_rng_seed(u16 seed) {
+    gRandomSeed16 = seed;
+}
+
 // Generate a pseudorandom integer from 0 to 65535 from the random seed, and update the seed.
 u16 random_u16(void) {
     u16 temp1, temp2;

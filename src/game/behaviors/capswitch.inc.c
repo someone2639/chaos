@@ -46,6 +46,7 @@ void cap_switch_act_2(void) {
             gMarioState->numLives++;
             save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives, FALSE);
         }
+        gChaosBlueStarLastCollected = FALSE;
         set_play_mode(PLAY_MODE_SELECT_PATCH);
         o->oAction = 3;
     }
