@@ -362,5 +362,6 @@ void chaos_area_update(void);
 void chaos_frame_update(void);
 
 
+#include "chaos_patch_shared_vars.h"
 #include "chaos_patch_behaviors.h"
 #include "chaos_message.h"

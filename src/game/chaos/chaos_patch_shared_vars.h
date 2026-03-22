@@ -1,0 +1,16 @@
+#pragma once
+
+#include <PR/ultratypes.h>
+#include <PR/gbi.h>
+#include "types.h"
+
+#include "chaos.h"
+
+/*******************
+ * Random Griefing *
+ *******************/
+
+// Blindfolded Speedrun
+#define BLIND_TIME_MAX (30 * 60 * 4) // 3 minutes max without blindness
+#define BLIND_TIME_END    (BLIND_TIME_MAX + (30 * 5)) // BLIND_TIME_MAX + 5 seconds
+#define BLIND_TIME_BUFFER (30 * 60 * 1) // At least 60 seconds of relief

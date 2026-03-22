@@ -416,7 +416,7 @@ void render_game(void) {
         if(chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_BLIND)) {
             struct ChaosActiveEntry *chaosBlind;
             chaos_find_first_active_patch(CHAOS_PATCH_RANDOM_BLIND, &chaosBlind);    
-            if(chaosBlind->frameTimer > 18000) {
+            if(chaosBlind->frameTimer > BLIND_TIME_MAX) {
                 clear_framebuffer(0);
             }
         }

@@ -49,6 +49,17 @@ u32 *chsHVQMTable[] = {
 };
 u32 chsCurrentAd = 0;
 
+void chs_act_serve_ads(void) {
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_AD_BREAK, &this);
+    if (!this) {
+        return;
+    }
+
+    // Extend chances of escaping the apparently still possible HVQM freeze
+    this->frameTimer = 0;
+}
+
 void chs_update_serve_ads(void) {
     struct ChaosActiveEntry *this;
     chaos_find_first_active_patch(CHAOS_PATCH_AD_BREAK, &this);

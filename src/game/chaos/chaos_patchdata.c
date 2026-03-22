@@ -675,17 +675,17 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_RANDOM_BLIND] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
-        .severity           = 3,
+        .severity           = 2,
         .isStackable        = FALSE,
-        .duration           = 8,
-        .durationHard       = 10,
-        .durationImpossible = 10,
+        .duration           = 6,
+        .durationHard       = 8,
+        .durationImpossible = 8,
 
         .activatedInitFunc  = chs_act_random_blind,
         .frameUpdateFunc    = chs_update_random_blind,
 
         .name               = "Blindfolded Speedrun",
-        .shortDescription   = "Get blinded for 10 seconds periodically."
+        .shortDescription   = "Get blinded for 5 seconds periodically."
     },
     [CHAOS_PATCH_RANDOM_DIALOGUE] = {
         .durationType       = CHAOS_DURATION_STARS,
@@ -883,9 +883,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 1,
         .isStackable        = FALSE,
-        .duration           = 12,
-        .durationHard       = 15,
-        .durationImpossible = 15,
+        .duration           = 9,
+        .durationHard       = 12,
+        .durationImpossible = 12,
 
         .frameUpdateFunc    = chs_update_brawl_tripping,
 
@@ -1783,6 +1783,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationImpossible = 15,
 
         .frameUpdateFunc    = chs_update_serve_ads,
+        .activatedInitFunc  = chs_act_serve_ads,
 
         .name               = "Ad Breaks",
         .shortDescription   = "As if the cash for making this romhack wasn't enough, have some ads too!",

@@ -15,7 +15,7 @@
 #include "game/mario.h"
 
 #define FRAMES_BETWEEN_TRIPS_MIN (30 * 45)
-#define TRIP_PROBABILITY 0.005f
+#define TRIP_PROBABILITY 0.003f
 
 void chs_update_brawl_tripping(void) {
     const s32 action = gMarioState->action;

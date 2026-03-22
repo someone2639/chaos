@@ -130,20 +130,17 @@ u8 chs_cond_random_burn(void) {
     Blinding
 */
 
-#define BLIND_TIME_MAX      18000
-#define BLIND_TIME_END      18300
-
 void chs_act_random_blind(void) {
     struct ChaosActiveEntry *this;
     chaos_find_first_active_patch(CHAOS_PATCH_RANDOM_BLIND, &this);
-    this->frameTimer = RAND(BLIND_TIME_MAX); //Get a random offset to start the timer at
+    this->frameTimer = RAND(BLIND_TIME_MAX - BLIND_TIME_BUFFER); //Get a random offset to start the timer at
 }
 
 void chs_update_random_blind(void) {
     struct ChaosActiveEntry *this;
     chaos_find_first_active_patch(CHAOS_PATCH_RANDOM_BLIND, &this);
     if(this->frameTimer > BLIND_TIME_END) {
-        this->frameTimer = RAND(BLIND_TIME_MAX); //Get a random offset to restart the timer at
+        this->frameTimer = RAND(BLIND_TIME_MAX - BLIND_TIME_BUFFER); // Get a random offset to restart the timer at
     }
 }
 
