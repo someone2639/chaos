@@ -15,6 +15,34 @@
 
 #define NUM_STARS 120
 
+const char *courseNames[COURSE_COUNT] = {
+    [COURSE_NONE]  = "Castle Inside",
+    [COURSE_BOB]   = "Bob-omb Battlefield",
+    [COURSE_WF]    = "Whomp's Fortress",
+    [COURSE_JRB]   = "Jolly Roger Bay",
+    [COURSE_CCM]   = "Cool, Cool Mountain",
+    [COURSE_BBH]   = "Big Boo's Haunt",
+    [COURSE_HMC]   = "Hazy Maze Cave",
+    [COURSE_LLL]   = "Lethal Lava Land",
+    [COURSE_SSL]   = "Shifting Sand Land",
+    [COURSE_DDD]   = "Dire, Dire Docks",
+    [COURSE_SL]    = "Snowman's Land",
+    [COURSE_WDW]   = "Wet-Dry World",
+    [COURSE_TTM]   = "Tall, Tall Mountain",
+    [COURSE_THI]   = "Tiny-Huge Island",
+    [COURSE_TTC]   = "Tick Tock Clock",
+    [COURSE_RR]    = "Rainbow Ride",
+    [COURSE_BITDW] = "Bowser in the Dark World",
+    [COURSE_BITFS] = "Bowser in the Fire Sea",
+    [COURSE_BITS]  = "Bowser in the Sky",
+    [COURSE_PSS]   = "The Princess's Secret Slide",
+    [COURSE_COTMC] = "Cavern of the Metal Cap",
+    [COURSE_TOTWC] = "Tower of the Wing Cap",
+    [COURSE_VCUTM] = "Vanish Cap Under the Moat",
+    [COURSE_WMOTR] = "Wing Mario Over the Rainbow",
+    [COURSE_SA]    = "The Secret Aquarium",
+};
+
 const char *starNames[COURSE_COUNT][7] = {
     [COURSE_NONE]  = {
         "Talk to Toad (1)",
@@ -32,7 +60,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "Find the 8 Red Coins",
         "Mario Wings to the Sky",
         "Behind Chain Chomp's Gate",
-        "100 Coins (BoB)",
+        "100 Coins",
     },
     [COURSE_WF]    = {
         "Chip Off Whomp's Block",
@@ -41,7 +69,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "Red Coins on the Floating Isle",
         "Fall onto the Caged Island",
         "Blast Away the Wall",
-        "100 Coins (WF)",
+        "100 Coins",
     },
     [COURSE_JRB]   = {
         "Plunder in the Sunken Ship",
@@ -50,7 +78,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "Red Coins on the Ship Afloat",
         "Blast to the Stone Pillar",
         "Through the Jet Stream",
-        "100 Coins (JRB)",
+        "100 Coins",
     },
     [COURSE_CCM]   = {
         "Slip Slidin' Away",
@@ -59,7 +87,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "Frosty Slide for 8 Red Coins",
         "Snowman's Lost His Head",
         "Wall Kicks Will Work",
-        "100 Coins (CCM)",
+        "100 Coins",
     },
     [COURSE_BBH]   = {
         "Go on a Ghost Hunt",
@@ -68,7 +96,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "Seek the 8 Red Coins",
         "Big Boo's Balcony",
         "Eye to Eye in the Secret Room",
-        "100 Coins (BBH)",
+        "100 Coins",
     },
     [COURSE_HMC]   = {
         "Swimming Beast in the Cavern",
@@ -77,7 +105,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "Navigating the Toxic Maze",
         "A-maze-ing Emergency Exit",
         "Watch for Rolling Rocks",
-        "100 Coins (HMC)",
+        "100 Coins",
     },
     [COURSE_LLL]   = {
         "Boil the Big Bully",
@@ -86,7 +114,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "Red-Hot Log Rolling",
         "Hot-Foot-It into the Volcano",
         "Elevator Tour in the Volcano",
-        "100 Coins (LLL)",
+        "100 Coins",
     },
     [COURSE_SSL]   = {
         "In the Talons of the Big Bird",
@@ -95,7 +123,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "Stand Tall on the Four Pillars",
         "Free Flying for 8 Red Coins",
         "Pyramid Puzzle",
-        "100 Coins (SSL)",
+        "100 Coins",
     },
     [COURSE_DDD]   = {
         "Board Bowser's Sub",
@@ -104,7 +132,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "Through the Jet Stream",
         "The Manta Ray's Reward",
         "Collect the Caps...",
-        "100 Coins (DDD)",
+        "100 Coins",
     },
     [COURSE_SL]    = {
         "Snowman's Big Head",
@@ -113,7 +141,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "Whirl from the Freezing Pond",
         "Shell Shreddin' for Red Coins",
         "Into the Igloo",
-        "100 Coins (SL)",
+        "100 Coins",
     },
     [COURSE_WDW]   = {
         "Shocking Arrow Lifts!",
@@ -122,7 +150,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "Express Elevator--Hurry Up!",
         "Go to Town for Red Coins",
         "Quick Race Through Downtown!",
-        "100 Coins (WDW)",
+        "100 Coins",
     },
     [COURSE_TTM]   = {
         "Scale the Mountain",
@@ -131,7 +159,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "Mysterious Mountainside",
         "Breathtaking View from Bridge",
         "Blast to the Lonely Mushroom",
-        "100 Coins (TTM)",
+        "100 Coins",
     },
     [COURSE_THI]   = {
         "Pluck the Piranha Flower",
@@ -140,7 +168,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "Five Itty Bitty Secrets",
         "Wiggler's Red Coins",
         "Make Wiggler Squirm",
-        "100 Coins (THI)",
+        "100 Coins",
     },
     [COURSE_TTC]   = {
         "Roll into the Cage",
@@ -149,7 +177,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "Stomp on the Thwomp",
         "Timed Jumps on Moving Bars",
         "Stop Time for Red Coins",
-        "100 Coins (TTC)",
+        "100 Coins",
     },
     [COURSE_RR]    = {
         "Cruiser Crossing the Rainbow",
@@ -158,10 +186,10 @@ const char *starNames[COURSE_COUNT][7] = {
         "Swingin' in the Breeze",
         "Tricky Triangles!",
         "Somewhere over the Rainbow",
-        "100 Coins (RR)",
+        "100 Coins",
     },
     [COURSE_BITDW] = {
-        "Red Coins (BitDW)",
+        "Red Coins",
         "",
         "",
         "",
@@ -170,7 +198,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "",
     },
     [COURSE_BITFS] = {
-        "Red Coins (BitFS)",
+        "Red Coins",
         "",
         "",
         "",
@@ -179,7 +207,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "",
     },
     [COURSE_BITS]  = {
-        "Red Coins (BitS)",
+        "Red Coins",
         "",
         "",
         "",
@@ -188,8 +216,8 @@ const char *starNames[COURSE_COUNT][7] = {
         "",
     },
     [COURSE_PSS]   = {
-        "Box Star (PSS)",
-        "Timer Star (PSS)",
+        "Box Star",
+        "Timer Star",
         "",
         "",
         "",
@@ -197,7 +225,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "",
     },
     [COURSE_COTMC] = {
-        "Red Coins (CotMC)",
+        "Red Coins",
         "",
         "",
         "",
@@ -206,7 +234,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "",
     },
     [COURSE_TOTWC] = {
-        "Red Coins (TotWC)",
+        "Red Coins",
         "",
         "",
         "",
@@ -215,7 +243,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "",
     },
     [COURSE_VCUTM] = {
-        "Red Coins (VCutM)",
+        "Red Coins",
         "",
         "",
         "",
@@ -224,7 +252,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "",
     },
     [COURSE_WMOTR] = {
-        "Red Coins (WMotR)",
+        "Red Coins",
         "",
         "",
         "",
@@ -233,7 +261,7 @@ const char *starNames[COURSE_COUNT][7] = {
         "",
     },
     [COURSE_SA]    = {
-        "Red Coins (SA)",
+        "Red Coins",
         "",
         "",
         "",
@@ -272,9 +300,12 @@ static const u8 starsPerCourse[COURSE_COUNT] = {
 };
 
 static void print_star_collect_message(u8 shouldRemove, s32 courseNum, s32 starId) {
+    char courseBuf[128];
     s32 possessed = FALSE;
     u8 currentLevelStarFlags = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(courseNum));
     const char *act = starNames[courseNum][starId];
+
+    courseBuf[0] = '\0'; // Linker complains if this is statically allocated to "\0" earlier...
 
     assert(starId >= 0 && starId < ARRAY_COUNT(starNames[0]), "print_star_collect_message:\nInvalid star index!");
     if (act == NULL || act[0] == '\0') {
@@ -286,17 +317,35 @@ static void print_star_collect_message(u8 shouldRemove, s32 courseNum, s32 starI
         possessed = TRUE;
     }
 
+    // If not empty string
+    if (courseNames[courseNum] && courseNames[courseNum][0] != '\0') {
+        char numBuf[3];
+        if (COURSE_IS_MAIN_COURSE(courseNum)) {
+            numBuf[0] = ' ';
+            numBuf[1] = '1' + starId;
+            numBuf[2] = '\0';
+        } else {
+            numBuf[0] = '\0';
+        }
+
+        if ((shouldRemove && possessed) || (!shouldRemove && !possessed)) {
+            sprintf(courseBuf, "@7FFF7F--[%s%s]@9F9F9F-- - @--------", courseNames[courseNum], numBuf);
+        } else {
+            sprintf(courseBuf, "@8F8FFF--[%s%s]@9F9F9F-- - @--------", courseNames[courseNum], numBuf);
+        }
+    }
+
     if (shouldRemove) {
         if (possessed) {
-            sprintf(gChaosInternalBuffer, "Star revoked: @FFFF00--%s@--------", act);
+            sprintf(gChaosInternalBuffer, "Star revoked:\n%s@FFFF00--%s@--------", courseBuf, act);
         } else {
-            sprintf(gChaosInternalBuffer, "Star revoked: @1F1FFF--%s@--------", act);
+            sprintf(gChaosInternalBuffer, "Star revoked:\n%s@1F1FFF--%s@--------", courseBuf, act);
         }
     } else {
         if (possessed) {
-            sprintf(gChaosInternalBuffer, "Star obtained: @1F1FFF--%s@--------", act);
+            sprintf(gChaosInternalBuffer, "Star obtained:\n%s@1F1FFF--%s@--------", courseBuf, act);
         } else {
-            sprintf(gChaosInternalBuffer, "Star obtained: @FFFF00--%s@--------", act);
+            sprintf(gChaosInternalBuffer, "Star obtained:\n%s@FFFF00--%s@--------", courseBuf, act);
         }
     }
 
@@ -369,26 +418,48 @@ static void remove_collected_star(void) {
     }
 }
 
-static void update_any_star(u8 shouldRemove) {
-    s32 starToUpdate = random_u16() % NUM_STARS;
+static void update_any_star(u8 shouldRemove, s8 negativeRetriesBias) {
+    s32 starToUpdate;
+    s32 course;
+    if (negativeRetriesBias < 0) {
+        negativeRetriesBias = 0;
+    }
 
-    for (s32 course = 0; course < ARRAY_COUNT(starsPerCourse); course++) {
-        s32 starsInCourse = starsPerCourse[course];
-        if (starsInCourse <= starToUpdate) {
+    while (TRUE) {
+        negativeRetriesBias--;
+        starToUpdate = random_u16() % NUM_STARS;
+
+        for (course = 0; course < ARRAY_COUNT(starsPerCourse); course++) {
+            s32 starsInCourse = starsPerCourse[course];
+            if (starsInCourse > starToUpdate) {
+                break;
+            }
+            
             starToUpdate -= starsInCourse;
-            continue;
         }
 
-        print_star_collect_message(shouldRemove, course, starToUpdate);
         if (shouldRemove) {
+            // If negativeRetriesBias is positive, try again if star not found for removal (this is bad for the player)
+            if (negativeRetriesBias >= 0 && !(save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(course)) & (1 << starToUpdate))) {
+                continue;
+            }
+
+            print_star_collect_message(shouldRemove, course, starToUpdate);
             save_file_remove_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(course), 1 << starToUpdate);
         } else {
+            // If negativeRetriesBias is positive, try again if star isn't collected for addition (this is also bad for the player)
+            if (negativeRetriesBias >= 0 && !(save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(course)) & (1 << starToUpdate))) {
+                continue;
+            }
+
+            print_star_collect_message(shouldRemove, course, starToUpdate);
             save_file_set_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(course), 1 << starToUpdate);
         }
-        gMarioState->numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
 
         break;
     }
+
+    gMarioState->numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
 }
 
 u8 chs_cond_star_shuffle(void) {
@@ -408,12 +479,12 @@ void chs_act_star_shuffle(void) {
     add_uncollected_star();
 }
 void chs_act_stars_increase_lv2(void) {
-    update_any_star(FALSE);
+    update_any_star(FALSE, 0);
     play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 }
 void chs_act_stars_increase_lv3(void) {
-    update_any_star(FALSE);
-    update_any_star(FALSE);
+    update_any_star(FALSE, 0);
+    update_any_star(FALSE, 0);
     play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 }
 void chs_act_stars_increase_guarantee(void) {
@@ -421,11 +492,11 @@ void chs_act_stars_increase_guarantee(void) {
     play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 }
 void chs_act_stars_decrease_lv2(void) {
-    update_any_star(TRUE);
+    update_any_star(TRUE, 1);
 }
 void chs_act_stars_decrease_lv3(void) {
-    update_any_star(TRUE);
-    update_any_star(TRUE);
+    update_any_star(TRUE, 1);
+    update_any_star(TRUE, 1);
 }
 void chs_act_stars_decrease_guarantee(void) {
     remove_collected_star();

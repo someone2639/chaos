@@ -82,6 +82,7 @@ u8 chs_pay2win_can_collect_star(void);
 u8 chs_cond_coin_size(void);
 
 // Movement Modifiers
+u8 chs_cond_brawl_tripping(void);
 void chs_update_brawl_tripping(void);
 void chs_update_galaxy_twirl(void);
 u8 chs_cond_no_fall_damage(void);
@@ -91,6 +92,7 @@ u8 chs_cond_losemove_longjump(void);
 u8 chs_cond_losemove_wall_kick(void);
 
 // Random Griefing
+u8 chs_cond_random_sleep(void);
 void chs_act_random_sleep(void);
 void chs_update_random_sleep(void);
 void chs_act_random_shock(void);
@@ -110,6 +112,7 @@ void chs_update_troll_sounds(void);
 void chs_act_red_light(void);
 u8 chs_cond_red_light(void);
 void chs_update_red_light(void);
+u8 chs_cond_cosmic_rays(void);
 void chs_act_cosmic_rays(void);
 void chs_update_cosmic_rays(void);
 
@@ -136,12 +139,11 @@ u8 chs_cond_low_resolution(void);
 u8 chs_cond_ortho(void);
 
 // Time Limit
-#define CHS_TIME_LIMIT_DURATION    12
 void chs_level_init_time_limit(void);
 void chs_update_time_limit(void);
-void chs_deact_time_limit(void);
 u8 chs_cond_lower_time_limit(void);
 void chs_act_lower_time_limit(void);
+void chs_deact_lower_time_limit(void);
 
 // Cheats
 void chs_update_l_to_levitate(void);

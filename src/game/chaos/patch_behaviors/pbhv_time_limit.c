@@ -11,6 +11,7 @@
 #include "game/area.h"
 #include "course_table.h"
 #include "audio/external.h"
+#include "game/debug.h"
 #include "game/object_list_processor.h"
 
 #define CHS_TIME_LIMIT                  (3 * 60 * 30)
@@ -37,7 +38,7 @@ void chs_update_time_limit(void) {
         s32 timeLeft = (CHS_TIME_LIMIT - this->frameTimer);
 
         //Play ringing sfx at level start, 1 minute, and 30 second marks
-        if(timeLeft == 900 || timeLeft == 1800 || this->frameTimer == sTimeLimitOffset) {
+        if(timeLeft == (30 * 30) || timeLeft == (60 * 30) || this->frameTimer == sTimeLimitOffset) {
             if(!(gTimeStopState & (TIME_STOP_ENABLED | TIME_STOP_DIALOG | TIME_STOP_ALL_OBJECTS)) && gMarioState->action != ACT_STAR_DANCE_NO_EXIT) {
                 play_sound(SOUND_MENU_TIMER_RING, gGlobalSoundSource);
             }
@@ -57,26 +58,52 @@ void chs_update_time_limit(void) {
     }
 }
 
-void chs_deact_time_limit(void) {
-    sTimeLimitOffset = 0;
-}
-
 u8 chs_cond_lower_time_limit(void) {
     return (chaos_check_if_patch_active(CHAOS_PATCH_TIME_LIMIT) && sTimeLimitOffset < CHS_TIME_LIMIT_OFFSET_MAX);
 }
 
 void chs_act_lower_time_limit(void) {
-    struct ChaosActiveEntry *chaosTimer;
-    chaos_find_first_active_patch(CHAOS_PATCH_TIME_LIMIT, &chaosTimer);
-    chaosTimer->remainingDuration = CHS_TIME_LIMIT_DURATION;
     sTimeLimitOffset += (30 * 30);
-    
-    //Refresh the remaining duration of all other lower time limit patches.
-    //This is mostly done so that the amount of time limit decrements
-    //can be saved to the file and all of the patches will expire at once.
+
+    // Identify longest remaining duration of the active lower time limit patches (and the original time limit patch).
+    // If the game save wasn't reloaded, it should always become the max duration value.
+    // If the game save WAS reloaded, everything below ideally wouldn't even execute, but at least this specific implementation won't break anything.
+    s32 longestRemainingDuration = 1;
     for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
         if (gChaosActiveEntries[i].id == CHAOS_PATCH_LOWER_TIME_LIMIT) {
-            gChaosActiveEntries[i].remainingDuration = CHS_TIME_LIMIT_DURATION;
+            longestRemainingDuration = MAX(longestRemainingDuration, gChaosActiveEntries[i].remainingDuration);
         }
     }
+
+    struct ChaosActiveEntry *chaosTimer;
+    chaos_find_first_active_patch(CHAOS_PATCH_TIME_LIMIT, &chaosTimer);
+    if (!chaosTimer) {
+        assert(FALSE, "chs_act_lower_time_limit: Could not find parent time limit patch!");
+
+        for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+            if (gChaosActiveEntries[i].id != CHAOS_PATCH_LOWER_TIME_LIMIT) {
+                continue;
+            }
+
+            chaos_remove_expired_entry(i, NULL);
+            i--;
+        }
+        return;
+    }
+
+    // Refresh the remaining duration of original time limit and other lower time limit patches.
+    // This is mostly done so that the amount of time limit decrements
+    // can be saved to the file and all of the patches will expire at once.
+    longestRemainingDuration = MAX(longestRemainingDuration, chaosTimer->remainingDuration);
+    chaosTimer->remainingDuration = longestRemainingDuration;
+
+    for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+        if (gChaosActiveEntries[i].id == CHAOS_PATCH_LOWER_TIME_LIMIT) {
+            gChaosActiveEntries[i].remainingDuration = longestRemainingDuration;
+        }
+    }
+}
+
+void chs_deact_lower_time_limit(void) {
+    sTimeLimitOffset = 0;
 }

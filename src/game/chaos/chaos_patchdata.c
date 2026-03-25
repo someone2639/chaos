@@ -278,8 +278,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .negationId         = CHAOS_PATCH_GRAVITY_DECREASE,
         .severity           = 3,
         .isStackable        = FALSE,
-        .duration           = 10,
-        .durationHard       = 12,
+        .duration           = 8,
+        .durationHard       = 10,
         .durationImpossible = 12,
 
         .activatedInitFunc  = chs_act_gravity_increase,
@@ -296,8 +296,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 1,
         .isStackable        = FALSE,
         .duration           = 15,
-        .durationHard       = 24,
-        .durationImpossible = 24,
+        .durationHard       = 20,
+        .durationImpossible = 25,
 
         .name               = "Heartbreak",
         .shortDescription   = "Spinning hearts no longer heal Mario.",
@@ -309,7 +309,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 15,
         .durationHard       = 18,
-        .durationImpossible = 18,
+        .durationImpossible = 22,
 
         .name               = "Watered Down",
         .shortDescription   = "Water no longer heals Mario.",
@@ -336,7 +336,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 7,
         .durationHard       = 8,
-        .durationImpossible = 8,
+        .durationImpossible = 10,
 
         .conditionalFunc    = chs_cond_health_drain,
         .frameUpdateFunc    = chs_update_health_drain,
@@ -440,8 +440,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 1,
         .isStackable        = TRUE,
-        .duration           = 20,
-        .durationHard       = 24,
+        .duration           = 16,
+        .durationHard       = 20,
         .durationImpossible = 24,
 
         .conditionalFunc    = chs_cond_extradamage_enemies,
@@ -456,8 +456,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 1,
         .isStackable        = TRUE,
-        .duration           = 20,
-        .durationHard       = 24,
+        .duration           = 16,
+        .durationHard       = 20,
         .durationImpossible = 24,
 
         .conditionalFunc    = chs_cond_extradamage_lava,
@@ -551,7 +551,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 7,
         .durationHard       = 8,
-        .durationImpossible = 8,
+        .durationImpossible = 10,
 
         .name               = "Pay to Win",
         .shortDescription   = "Stars are only collectible when Mario has at least 30 coins.",
@@ -573,7 +573,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 12,
         .durationHard       = 15,
-        .durationImpossible = 15,
+        .durationImpossible = 18,
 
         .name               = "Sonic Simulator",
         .shortDescription   = "Coins represent Mario's health. Just like in Sonic, Mario will drop all of his coins upon taking damage.",
@@ -607,7 +607,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 6,
         .durationHard       = 8,
-        .durationImpossible = 8,
+        .durationImpossible = 10,
 
         .name               = "Sca-red Coins",
         .shortDescription   = "Red coins will try to avoid being collected.",
@@ -630,10 +630,12 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 1,
         .isStackable        = FALSE,
-        .duration           = 16,
-        .durationHard       = 20,
+        .disableForHardcore = TRUE,
+        .duration           = 12,
+        .durationHard       = 16,
         .durationImpossible = 20,
 
+        .conditionalFunc    = chs_cond_random_sleep,
         .activatedInitFunc  = chs_act_random_sleep,
         .frameUpdateFunc    = chs_update_random_sleep,
 
@@ -645,13 +647,14 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 1,
         .isStackable        = FALSE,
-        .duration           = 12,
-        .durationHard       = 15,
-        .durationImpossible = 15,
+        .disableForHardcore = TRUE,
+        .duration           = 8,
+        .durationHard       = 10,
+        .durationImpossible = 12,
 
+        .conditionalFunc    = chs_cond_random_shock,
         .activatedInitFunc  = chs_act_random_shock,
         .frameUpdateFunc    = chs_update_random_shock,
-        .conditionalFunc    = chs_cond_random_shock,
 
         .name               = "Shocked to My Core",
         .shortDescription   = "Get shocked at random intervals."
@@ -661,9 +664,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
         .isStackable        = FALSE,
+        .disableForHardcore = TRUE,
         .duration           = 8,
         .durationHard       = 10,
-        .durationImpossible = 10,
+        .durationImpossible = 12,
 
         .activatedInitFunc  = chs_act_random_burn,
         .frameUpdateFunc    = chs_update_random_burn,
@@ -677,9 +681,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
         .isStackable        = FALSE,
+        .disableForHardcore = TRUE,
         .duration           = 6,
         .durationHard       = 8,
-        .durationImpossible = 8,
+        .durationImpossible = 10,
 
         .activatedInitFunc  = chs_act_random_blind,
         .frameUpdateFunc    = chs_update_random_blind,
@@ -709,7 +714,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 12,
         .durationHard       = 15,
-        .durationImpossible = 15,
+        .durationImpossible = 18,
 
         .activatedInitFunc  = chs_act_kaizo_blocks,
         .frameUpdateFunc    = chs_update_kaizo_blocks,
@@ -724,7 +729,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 20,
         .durationHard       = 25,
-        .durationImpossible = 25,
+        .durationImpossible = 30,
 
         .name               = "Bring Back Level Intro Text",
         .shortDescription   = "Wow! You're smack in the middle of the battlefield.",
@@ -736,7 +741,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 18,
         .durationHard       = 20,
-        .durationImpossible = 20,
+        .durationImpossible = 24,
 
         .activatedInitFunc  = chs_act_troll_sounds,
         .frameUpdateFunc    = chs_update_troll_sounds,
@@ -749,9 +754,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
         .isStackable        = FALSE,
+        .disableForHardcore = TRUE,
         .duration           = 8,
         .durationHard       = 10,
-        .durationImpossible = 10,
+        .durationImpossible = 12,
 
         .activatedInitFunc  = chs_act_red_light,
         .conditionalFunc    = chs_cond_red_light,
@@ -767,9 +773,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 8,
         .durationHard       = 10,
-        .durationImpossible = 10,
+        .durationImpossible = 12,
 
         .activatedInitFunc  = chs_act_cosmic_rays,
+        .conditionalFunc    = chs_cond_cosmic_rays,
         .frameUpdateFunc    = chs_update_cosmic_rays,
 
         .name               = "Cosmic Rays",
@@ -784,8 +791,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 1,
         .isStackable        = FALSE,
         .duration           = 20,
-        .durationHard       = 24,
-        .durationImpossible = 24,
+        .durationHard       = 25,
+        .durationImpossible = 30,
 
         .name               = "Dance Break",
         .shortDescription   = "Mario can no longer breakdance.",
@@ -795,8 +802,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 1,
         .isStackable        = FALSE,
-        .duration           = 12,
-        .durationHard       = 14,
+        .duration           = 10,
+        .durationHard       = 12,
         .durationImpossible = 14,
 
         .name               = "Sore Arms",
@@ -807,8 +814,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
         .isStackable        = FALSE,
-        .duration           = 12,
-        .durationHard       = 14,
+        .duration           = 10,
+        .durationHard       = 12,
         .durationImpossible = 14,
 
         .name               = "Leg Pain",
@@ -819,8 +826,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
         .isStackable        = FALSE,
-        .duration           = 12,
-        .durationHard       = 14,
+        .duration           = 10,
+        .durationHard       = 12,
         .durationImpossible = 14,
 
         .name               = "Unsimple Flips",
@@ -831,8 +838,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
         .isStackable        = FALSE,
-        .duration           = 12,
-        .durationHard       = 14,
+        .duration           = 10,
+        .durationHard       = 12,
         .durationImpossible = 14,
         
         .conditionalFunc    = chs_cond_losemove_longjump,
@@ -845,8 +852,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
         .isStackable        = FALSE,
-        .duration           = 12,
-        .durationHard       = 14,
+        .duration           = 10,
+        .durationHard       = 12,
         .durationImpossible = 14,
 
         .name               = "Flipped Off",
@@ -857,8 +864,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
         .isStackable        = FALSE,
-        .duration           = 12,
-        .durationHard       = 14,
+        .duration           = 10,
+        .durationHard       = 12,
         .durationImpossible = 14,
 
         .conditionalFunc    = chs_cond_losemove_wall_kick,
@@ -871,8 +878,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
         .isStackable        = FALSE,
-        .duration           = 10,
-        .durationHard       = 12,
+        .duration           = 8,
+        .durationHard       = 10,
         .durationImpossible = 12,
 
         .name               = "Double Trouble",
@@ -883,9 +890,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 1,
         .isStackable        = FALSE,
+        .disableForHardcore = TRUE,
         .duration           = 9,
         .durationHard       = 12,
-        .durationImpossible = 12,
+        .durationImpossible = 15,
 
         .frameUpdateFunc    = chs_update_brawl_tripping,
 
@@ -952,8 +960,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 1,
         .isStackable        = FALSE,
-        .duration           = 12,
-        .durationHard       = 15,
+        .duration           = 10,
+        .durationHard       = 12,
         .durationImpossible = 15,
 
         .conditionalFunc    = chs_cond_harder_longjumps,
@@ -986,7 +994,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 6,
         .durationHard       = 8,
-        .durationImpossible = 8,
+        .durationImpossible = 10,
 
         .areaInitFunc       = chs_area_init_bullet_hell,
         .frameUpdateFunc    = chs_update_bullet_hell,
@@ -1030,9 +1038,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
         .isStackable        = FALSE,
-        .duration           = 8,
-        .durationHard       = 10,
-        .durationImpossible = 10,
+        .duration           = 7,
+        .durationHard       = 9,
+        .durationImpossible = 11,
 
         .activatedInitFunc  = chs_act_cosmic_clones,
         .conditionalFunc    = chs_cond_cosmic_clones,
@@ -1052,7 +1060,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 3,
         .durationHard       = 4,
-        .durationImpossible = 4,
+        .durationImpossible = 5,
 
         .conditionalFunc    = chs_cond_no_zbuffer,
 
@@ -1066,7 +1074,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 2,
         .durationHard       = 3,
-        .durationImpossible = 3,
+        .durationImpossible = 4,
 
         .conditionalFunc    = chs_cond_inverted_zbuffer,
 
@@ -1080,7 +1088,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 2,
         .durationHard       = 3,
-        .durationImpossible = 3,
+        .durationImpossible = 4,
 
         .name               = "Australia Mode",
         .shortDescription   = "Flips the camera upside-down so you can experience what it's like to be from the land down under.",
@@ -1093,7 +1101,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 3,
         .durationHard       = 5,
-        .durationImpossible = 5,
+        .durationImpossible = 6,
 
         .conditionalFunc    = chs_cond_decreased_fov,
 
@@ -1108,7 +1116,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 3,
         .durationHard       = 5,
-        .durationImpossible = 5,
+        .durationImpossible = 6,
 
         .conditionalFunc    = chs_cond_increased_fov,
 
@@ -1122,7 +1130,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 6,
         .durationHard       = 8,
-        .durationImpossible = 8,
+        .durationImpossible = 10,
 
         .name               = "Confused Entities",
         .shortDescription   = "Most objects are (sometimes) facing the wrong way!",
@@ -1134,7 +1142,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 5,
         .durationHard       = 8,
-        .durationImpossible = 8,
+        .durationImpossible = 10,
 
         .name               = "The Sky is...Gone?",
         .shortDescription   = "Meh, who needed it anyway...",
@@ -1147,7 +1155,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 3,
         .durationHard       = 4,
-        .durationImpossible = 4,
+        .durationImpossible = 5,
 
         .conditionalFunc    = chs_cond_45_fps,
 
@@ -1163,7 +1171,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 2,
         .durationHard       = 3,
-        .durationImpossible = 3,
+        .durationImpossible = 4,
 
         .conditionalFunc    = chs_cond_20_fps,
 
@@ -1175,9 +1183,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
         .isStackable        = FALSE,
-        .duration           = 6,
-        .durationHard       = 8,
-        .durationImpossible = 8,
+        .duration           = 5,
+        .durationHard       = 7,
+        .durationImpossible = 9,
 
         .conditionalFunc    = chs_topdown_check,
 
@@ -1189,9 +1197,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
         .isStackable        = FALSE,
-        .duration           = 10,
+        .duration           = 9,
         .durationHard       = 12,
-        .durationImpossible = 12,
+        .durationImpossible = 15,
 
         .activatedInitFunc  = chs_mq_init,
         .deactivationFunc   = chs_mq_deinit,
@@ -1207,7 +1215,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 4,
         .durationHard       = 5,
-        .durationImpossible = 5,
+        .durationImpossible = 6,
 
         .conditionalFunc    = chs_cond_low_resolution,
 
@@ -1220,8 +1228,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 1,
         .isStackable        = FALSE,
         .duration           = 6,
-        .durationHard       = 8,
-        .durationImpossible = 8,
+        .durationHard       = 9,
+        .durationImpossible = 12,
 
         .name               = "Big Head Mode",
         .shortDescription   = "Mario might have a college degree, but now he looks the part!",
@@ -1229,11 +1237,11 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_ORTHO] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
-        .severity           = 2,
+        .severity           = 3,
         .isStackable        = FALSE,
-        .duration           = 5,
-        .durationHard       = 6,
-        .durationImpossible = 6,
+        .duration           = 6,
+        .durationHard       = 8,
+        .durationImpossible = 9,
 
         .conditionalFunc    = chs_cond_ortho,
 
@@ -1247,23 +1255,27 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 4,
         .durationHard       = 5,
-        .durationImpossible = 5,
+        .durationImpossible = 6,
 
         .name               = "Dizzy Objects",
         .shortDescription   = "Spins objects around in a circle (visuals only). I hope you don't get motion sick!",
     },
 
 // Time Limit
+#define CHS_TIME_LIMIT_DURATION            11
+#define CHS_TIME_LIMIT_DURATION_HARD       14
+#define CHS_TIME_LIMIT_DURATION_IMPOSSIBLE 16
     [CHAOS_PATCH_TIME_LIMIT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
         .isStackable        = FALSE,
-        .duration           = CHS_TIME_LIMIT_DURATION, // TODO: define here, redefine lower time limit durations elsewhere to allow for easier configurability for harder difficulties
+        .duration           = CHS_TIME_LIMIT_DURATION,
+        .durationHard       = CHS_TIME_LIMIT_DURATION_HARD,
+        .durationImpossible = CHS_TIME_LIMIT_DURATION_IMPOSSIBLE,
 
         .levelInitFunc      = chs_level_init_time_limit,
         .frameUpdateFunc    = chs_update_time_limit,
-        .deactivationFunc   = chs_deact_time_limit,
 
         .name               = "Speedy Comet",
         .shortDescription   = "Better hurry up! You now have 3 minutes to collect each star.",
@@ -1271,12 +1283,15 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_LOWER_TIME_LIMIT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
-        .severity           = 1,
+        .severity           = 2,
         .isStackable        = TRUE,
         .duration           = CHS_TIME_LIMIT_DURATION,
+        .durationHard       = CHS_TIME_LIMIT_DURATION_HARD,
+        .durationImpossible = CHS_TIME_LIMIT_DURATION_IMPOSSIBLE,
 
         .conditionalFunc    = chs_cond_lower_time_limit,
         .activatedInitFunc  = chs_act_lower_time_limit,
+        .deactivationFunc   = chs_deact_lower_time_limit,
 
         .name               = "Speedy Comet++",
         .shortDescription   = "Reset the active duration for the Speedy Comet patch, and lower the time limit by 30 seconds.",
@@ -1358,7 +1373,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = TRUE,
         .duration           = 5,
         .durationHard       = 6,
-        .durationImpossible = 6,
+        .durationImpossible = 7,
         
         .conditionalFunc    = chs_cond_remove_selectable_patch,
 
@@ -1374,7 +1389,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = TRUE,
         .duration           = 4,
         .durationHard       = 5,
-        .durationImpossible = 5,
+        .durationImpossible = 6,
 
         .frameUpdateFunc    = chs_update_push_back,
         .conditionalFunc    = chs_cond_push_back,
@@ -1389,7 +1404,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 3,
         .durationHard       = 4,
-        .durationImpossible = 4,
+        .durationImpossible = 5,
 
         .conditionalFunc    = chs_cond_walkies,
 
@@ -1404,7 +1419,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 5,
         .durationHard       = 7,
-        .durationImpossible = 7,
+        .durationImpossible = 9,
 
         .activatedInitFunc  = chs_act_speed_tax,
         .frameUpdateFunc    = chs_update_speed_tax,
@@ -1456,7 +1471,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 5,
         .durationHard       = 7,
-        .durationImpossible = 7,
+        .durationImpossible = 9,
 
         .conditionalFunc    = chs_cond_disable_caps,
 
@@ -1472,7 +1487,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 4,
         .durationHard       = 5,
-        .durationImpossible = 5,
+        .durationImpossible = 6,
         
         .conditionalFunc    = chs_cond_button_broken_a,
 
@@ -1486,7 +1501,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 5,
         .durationHard       = 6,
-        .durationImpossible = 6,
+        .durationImpossible = 7,
         
         .conditionalFunc    = chs_cond_button_broken_b,
 
@@ -1500,7 +1515,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 5,
         .durationHard       = 6,
-        .durationImpossible = 6,
+        .durationImpossible = 7,
         
         .conditionalFunc    = chs_cond_button_broken_z,
 
@@ -1514,7 +1529,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 5,
         .durationHard       = 6,
-        .durationImpossible = 6,
+        .durationImpossible = 7,
 
         .conditionalFunc    = chs_cond_button_broken_c,
 
@@ -1528,7 +1543,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 3,
         .durationHard       = 4,
-        .durationImpossible = 4,
+        .durationImpossible = 5,
         
         .conditionalFunc    = chs_cond_swapped_zr_ab,
 
@@ -1541,8 +1556,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 2,
         .isStackable        = FALSE,
         .duration           = 6,
-        .durationHard       = 6,
-        .durationImpossible = 6,
+        .durationHard       = 8,
+        .durationImpossible = 10,
 
         .conditionalFunc    = chs_cam_invert_x_check,
 
@@ -1554,7 +1569,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
         .isStackable        = FALSE,
-        .duration           = 2,
+        .duration           = 1,
         .durationHard       = 2,
         .durationImpossible = 2,
 
@@ -1566,7 +1581,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
         .isStackable        = FALSE,
-        .duration           = 3,
+        .duration           = 2,
         .durationHard       = 3,
         .durationImpossible = 3,
 
@@ -1580,7 +1595,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 3,
         .durationHard       = 4,
-        .durationImpossible = 4,
+        .durationImpossible = 5,
 
         .activatedInitFunc  = chs_act_input_lag,
 
@@ -1594,7 +1609,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 8,
         .durationHard       = 10,
-        .durationImpossible = 10,
+        .durationImpossible = 12,
 
         .name               = "Super Mario 64 DS",
         .shortDescription   = "Locks analog input to 8 directions. It's beans for your mouth, for your floor!",
@@ -1636,7 +1651,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 5,
         .durationHard       = 7,
-        .durationImpossible = 7,
+        .durationImpossible = 8,
 
         .name               = "Realistic Concussions",
         .shortDescription   = "Careful not to hit your head! Bonking now results in severe brain trauma.",
@@ -1648,7 +1663,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 5,
         .durationHard       = 7,
-        .durationImpossible = 7,
+        .durationImpossible = 8,
 
         .conditionalFunc    = chs_cond_lethal_fall_damage,
 
@@ -1664,7 +1679,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 6,
         .durationHard       = 8,
-        .durationImpossible = 8,
+        .durationImpossible = 10,
 
         .name               = "Audio Inversion",
         .shortDescription   = "The game will sound upside-down!",
@@ -1689,7 +1704,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 20,
         .durationHard       = 24,
-        .durationImpossible = 24,
+        .durationImpossible = 28,
 
         .conditionalFunc    = chs_cond_randomized_music,
 
@@ -1705,7 +1720,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 7,
         .durationHard       = 9,
-        .durationImpossible = 9,
+        .durationImpossible = 10,
 
         .conditionalFunc    = chs_cond_invisible,
 
@@ -1719,7 +1734,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 5,
         .durationHard       = 7,
-        .durationImpossible = 7,
+        .durationImpossible = 9,
 
         .name               = "Tutorial Mode",
         .shortDescription   = "New to SM64? We'll make extra sure you don't miss any tutorial signs by increasing their range!",
@@ -1731,7 +1746,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 4,
         .durationHard       = 5,
-        .durationImpossible = 5,
+        .durationImpossible = 6,
 
         .conditionalFunc    = chs_cond_one_hit_wonder,
 
@@ -1743,8 +1758,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 1,
         .isStackable        = FALSE,
-        .duration           = 10,
-        .durationHard       = 12,
+        .duration           = 8,
+        .durationHard       = 10,
         .durationImpossible = 12,
 
         .name               = "Cinematic Mode",
@@ -1757,7 +1772,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 5,
         .durationHard       = 6,
-        .durationImpossible = 6,
+        .durationImpossible = 7,
 
         .conditionalFunc    = chs_cond_forced_mario_cam,
 
@@ -1780,7 +1795,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 10,
         .durationHard       = 15,
-        .durationImpossible = 15,
+        .durationImpossible = 18,
 
         .frameUpdateFunc    = chs_update_serve_ads,
         .activatedInitFunc  = chs_act_serve_ads,
@@ -1867,8 +1882,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
         .isStackable        = FALSE,
-        .duration           = 12,
-        .durationHard       = 15,
+        .duration           = 10,
+        .durationHard       = 12,
         .durationImpossible = 15,
 
         .conditionalFunc    = chs_cond_quicktime,
@@ -1881,11 +1896,11 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_PLATFORM_MISPLACEMENT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
-        .severity           = 2,
+        .severity           = 1,
         .isStackable        = FALSE,
-        .duration           = 24,
-        .durationHard       = 30,
-        .durationImpossible = 30,
+        .duration           = 12,
+        .durationHard       = 18,
+        .durationImpossible = 24,
 
         .name               = "Platform Misplacement",
         .shortDescription   = "Moving platforms will move Mario more than usual.",
@@ -1897,7 +1912,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 4,
         .durationHard       = 5,
-        .durationImpossible = 5,
+        .durationImpossible = 6,
 
         .name               = "Wet Floor",
         .shortDescription   = "All floors will be slippery.",
@@ -1919,7 +1934,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 5,
         .durationHard       = 7,
-        .durationImpossible = 7,
+        .durationImpossible = 9,
         
         .frameUpdateFunc    = chs_update_noclip,
 
@@ -1943,7 +1958,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 6,
         .durationHard       = 7,
-        .durationImpossible = 7,
+        .durationImpossible = 8,
 
         .areaInitFunc       = chs_start_shuffle,
         .frameUpdateFunc    = chs_shuffle_objects,
@@ -1956,9 +1971,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
         .isStackable        = FALSE,
-        .duration           = 4,
-        .durationHard       = 5,
-        .durationImpossible = 5,
+        .duration           = 5,
+        .durationHard       = 6,
+        .durationImpossible = 8,
 
         .conditionalFunc    = chs_cond_randomize_warps,
 

@@ -137,7 +137,8 @@ u8 chs_cond_quicktime(void) {
             !chaos_check_if_patch_active(CHAOS_PATCH_BUTTON_BROKEN_B) &&
             !chaos_check_if_patch_active(CHAOS_PATCH_BUTTON_BROKEN_Z) &&
             !chaos_check_if_patch_active(CHAOS_PATCH_BUTTON_BROKEN_C) &&
-            !chaos_check_if_patch_active(CHAOS_PATCH_RED_LIGHT)
+            !chaos_check_if_patch_active(CHAOS_PATCH_RED_LIGHT) &&
+            !chaos_check_if_patch_active(CHAOS_PATCH_45_FPS)
         );
 }
 

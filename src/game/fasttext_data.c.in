@@ -59,7 +59,7 @@ static const u8 kerning_fnt_small_bold[FASTTEXT_CHAR_COUNT] = {
     /* */ 3, /*!*/ 3, /*"*/ 6, /*#*/ 0, /*$*/ 0, /*%*/ 7, /*&*/ 8, /*'*/ 3, /*(*/ 5, /*)*/ 5, /***/ 0, /*+*/ 6, /*,*/ 3, /*-*/ 4, /*.*/ 3, /*/*/ 6,
     /*0*/ 6, /*1*/ 6, /*2*/ 6, /*3*/ 6, /*4*/ 6, /*5*/ 6, /*6*/ 6, /*7*/ 6, /*8*/ 6, /*9*/ 6, /*:*/ 3, /*;*/ 3, /*<*/ 0, /*=*/ 0, /*>*/ 0, /*?*/ 6,
     /*@*/ 0, /*A*/ 6, /*B*/ 6, /*C*/ 6, /*D*/ 6, /*E*/ 6, /*F*/ 6, /*G*/ 7, /*H*/ 7, /*I*/ 5, /*J*/ 5, /*K*/ 7, /*L*/ 6, /*M*/ 8, /*N*/ 7, /*O*/ 8,
-    /*P*/ 7, /*Q*/ 8, /*R*/ 7, /*S*/ 6, /*T*/ 7, /*U*/ 7, /*V*/ 7, /*W*/ 8, /*X*/ 7, /*Y*/ 7, /*Z*/ 6, /*[*/ 0, /*\*/ 0, /*]*/ 0, /*^*/ 7, /*_*/ 0,
+    /*P*/ 7, /*Q*/ 8, /*R*/ 7, /*S*/ 6, /*T*/ 7, /*U*/ 7, /*V*/ 7, /*W*/ 8, /*X*/ 7, /*Y*/ 7, /*Z*/ 6, /*[*/ 4, /*\*/ 0, /*]*/ 4, /*^*/ 7, /*_*/ 0,
     /*`*/ 0, /*a*/ 6, /*b*/ 6, /*c*/ 5, /*d*/ 6, /*e*/ 6, /*f*/ 6, /*g*/ 6, /*h*/ 6, /*i*/ 3, /*j*/ 4, /*k*/ 6, /*l*/ 3, /*m*/ 8, /*n*/ 6, /*o*/ 6,
     /*p*/ 6, /*q*/ 6, /*r*/ 5, /*s*/ 5, /*t*/ 6, /*u*/ 6, /*v*/ 6, /*w*/ 8, /*x*/ 6, /*y*/ 6, /*z*/ 5, /*{*/ 0, /*|*/ 0, /*}*/ 0, /*~*/ 8, /*DEL*/ 0,
 };
@@ -376,9 +376,9 @@ static const struct OffsetProps offset_table_fnt_small_bold[FASTTEXT_CHAR_COUNT]
     /*X*/ {.horizontalOffset = 332, .renderWidth = 7},
     /*Y*/ {.horizontalOffset = 340, .renderWidth = 7},
     /*Z*/ {.horizontalOffset = 348, .renderWidth = 6},
-    /*[*/ {.horizontalOffset =   0, .renderWidth = 0},
+    /*[*/ {.horizontalOffset = 546, .renderWidth = 4},
     /*\*/ {.horizontalOffset =   0, .renderWidth = 0},
-    /*]*/ {.horizontalOffset =   0, .renderWidth = 0},
+    /*]*/ {.horizontalOffset = 551, .renderWidth = 4},
     /*^*/ {.horizontalOffset = 355, .renderWidth = 7},
     /*_*/ {.horizontalOffset =   0, .renderWidth = 0},
     /*`*/ {.horizontalOffset =   0, .renderWidth = 0},
@@ -411,7 +411,7 @@ static const struct OffsetProps offset_table_fnt_small_bold[FASTTEXT_CHAR_COUNT]
     /*{*/ {.horizontalOffset =   0, .renderWidth = 0},
     /*|*/ {.horizontalOffset =   0, .renderWidth = 0},
     /*}*/ {.horizontalOffset =   0, .renderWidth = 0},
-    /*~*/ {.horizontalOffset = 536, .renderWidth = 8},
+    /*~*/ {.horizontalOffset = 537, .renderWidth = 8},
   /*DEL*/ {.horizontalOffset =   0, .renderWidth = 0},
 };
 

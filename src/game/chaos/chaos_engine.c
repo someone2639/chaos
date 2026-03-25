@@ -236,7 +236,7 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
 
     // If an active patch is negatable, remove that instead of adding a new one.
     // This is the means of combatting theoretically infinite memory and save file requirements.
-    if (patch->negationId && patch->durationType == CHAOS_DURATION_INFINITE) {
+    if (patch->negationId && (patch->durationType == CHAOS_DURATION_INFINITE || patch->durationType == CHAOS_DURATION_ONCE)) {
         for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
             if (gChaosActiveEntries[i].id != patch->negationId) {
                 continue;
@@ -254,7 +254,8 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
             assert_args(size < ARRAY_COUNT(gChaosInternalBuffer), "chaos_add_new_entry:\nString too long:\n 0x%08X", size);
             (void) size; // Remove compiler warning
 
-            // Deactivate negated action, and also instantly activate and deactivate the new function (deactivate will not ever execute for ONCE entries that aren't stackable)
+            // Deactivate negated action, and also instantly activate and deactivate the new function (deactivate will not ever execute for ONCE entries that aren't stackable).
+            // This is not added to the patch array (in general do not rely on this for stackable, negatable infinite, or negatable once patches!)
             chaos_remove_expired_entry(i--, gChaosInternalBuffer);
             if (patch->activatedInitFunc) {
                 patch->activatedInitFunc();
@@ -276,7 +277,8 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
 
     if (patch->isStackable) {
         if (patch->durationType == CHAOS_DURATION_ONCE) {
-            // Activate init func, deactivate, and return immediately, do not add to patch array
+            // Activate init func, deactivate, and return immediately.
+            // This is not added to the patch array (in general do not rely on this for stackable, negatable infinite, or negatable once patches!)
             assert_args(patch->activatedInitFunc || patch->deactivationFunc
                         || (patchId == CHAOS_PATCH_NONE_POSITIVE || patchId == CHAOS_PATCH_NONE_NEGATIVE),
                         "%s%08X", "chaos_add_new_entry\nAttempted to add stackable ONCE patch\nwithout a callback: 0x", patchId);
@@ -329,6 +331,7 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
                 // Overflow detected!
                 gChaosActiveEntries[matchingIndex].remainingDuration = -1;
             }
+            // This is not added to the patch array (in general do not rely on this for stackable, negatable infinite, or negatable once patches!)
             if (patch->activatedInitFunc) {
                 patch->activatedInitFunc();
             }
@@ -986,6 +989,8 @@ void chaos_init(void) {
             patch->activatedInitFunc();
         }
     }
+
+    chaos_sort_active_patches();
 }
 
 void chaos_area_update(void) {

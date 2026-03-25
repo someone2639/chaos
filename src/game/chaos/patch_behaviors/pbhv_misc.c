@@ -14,7 +14,10 @@
 #include "game/emutest.h"
 
 u8 chs_cond_one_hit_wonder(void) {
-    return(!chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_SHOCK) && !chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_BURN));
+    return (!chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_SHOCK)
+         && !chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_BURN)
+         && !chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_RAYS)
+    );
 }
 
 u8 chs_cond_miracle_normal(void) {
@@ -73,14 +76,14 @@ void chs_deact_luigi(void) {
     gMarioState->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO];
 }
 
-u8 chs_cond_45_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_20_FPS)); }
+u8 chs_cond_45_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_20_FPS) && !chaos_check_if_patch_active(CHAOS_PATCH_QUICKTIME)); }
 u8 chs_cond_20_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_45_FPS)); }
 
 void chs_act_reverb(void) { init_reverb_us(1U << 31); }
 void chs_deact_reverb(void) { init_reverb_us(1U << 31); }
 
-u8 chs_cond_lethal_fall_damage() {
-    return (!chaos_check_if_patch_active(CHAOS_PATCH_NO_FALL_DAMAGE));
+u8 chs_cond_lethal_fall_damage(void) {
+    return (!(chaos_check_if_patch_active(CHAOS_PATCH_NO_FALL_DAMAGE) || chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_RAYS)));
 }
 
 u8 chs_cond_randomized_music(void) {
@@ -95,5 +98,5 @@ void chs_update_noclip(void) {
 }
 
 u8 chs_cond_randomize_warps(void) {
-    return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE || gChaosGameMode == CHAOS_GAMEMODE_HARDCORE);
+    return (gChaosGameMode != CHAOS_GAMEMODE_CLASSIC && gChaosDifficulty != CHAOS_DIFFICULTY_IMPOSSIBLE);
 }

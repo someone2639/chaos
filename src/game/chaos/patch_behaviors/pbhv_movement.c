@@ -17,6 +17,10 @@
 #define FRAMES_BETWEEN_TRIPS_MIN (30 * 45)
 #define TRIP_PROBABILITY 0.003f
 
+u8 chs_cond_brawl_tripping(void) {
+    return (!chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_CLONES));
+}
+
 void chs_update_brawl_tripping(void) {
     const s32 action = gMarioState->action;
     const s32 goodflags = (ACT_FLAG_MOVING);
