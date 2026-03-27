@@ -33,6 +33,18 @@ struct ButtonTexturePair {
     u8 *down;
 };
 
+struct ButtonPrompt {
+    enum MenuButtonPrompt button;
+    char *text;
+    s32 offset;
+    struct ButtonPrompt *next;
+};
+
+struct ButtonPromptList {
+    struct ButtonPrompt *head;
+    struct ButtonPrompt *tail;
+};
+
 //Generic menu handler
 struct ChaosMenu {
     u32 flags;
@@ -51,7 +63,11 @@ void menu_play_anim(struct ChaosMenu *menu, s32 animId);
 void menu_set_state(struct ChaosMenu *menu, u32 state);
 u32 menu_update_joystick_dir(struct ChaosMenu *menu);
 s32 menu_update_anims(struct ChaosMenu *menu, s32 (*animFunctions[])(void));
-void menu_start_button_prompt();
-void menu_end_button_prompt();
-void menu_button_prompt(s32 x, s32 y, s32 button);
-void menu_static_button_prompt(s32 x, s32 y, s32 button, s32 pressed);
+
+void menu_add_button_prompt(struct ButtonPromptList *list, enum MenuButtonPrompt button, char *text);
+void menu_render_button_prompt_list(s32 x, s32 y, struct ButtonPromptList *list);
+void menu_single_button_prompt(s32 x, s32 y, enum MenuButtonPrompt button, char *text, s32 alignLeft);
+
+void menu_start_button();
+void menu_end_button();
+void menu_draw_button(s32 x, s32 y, s32 button, s32 pressed);

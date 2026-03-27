@@ -602,34 +602,24 @@ void render_desc_field() {
     Draws the appropriate button prompts for the menu state
 */
 void render_gm_select_button_prompts() {
+    struct ButtonPromptList prompts = {0};
+
     switch(sGamemodeSelectMenu.menu.menuState) {
         case GM_SELECT_STATE_DEFAULT:
-            menu_start_button_prompt();
-            menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 33, MENU_PROMPT_A_BUTTON);
-            menu_button_prompt(SCREEN_WIDTH - 77, SCREEN_HEIGHT - 33, MENU_PROMPT_START_BUTTON);
-            menu_button_prompt(SCREEN_WIDTH - 119, SCREEN_HEIGHT - 33, MENU_PROMPT_B_BUTTON);
-            menu_button_prompt(SCREEN_WIDTH - 157, SCREEN_HEIGHT - 33, MENU_PROMPT_Z_TRIG);
-            menu_end_button_prompt();
-            fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-            fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 33, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-            fasttext_draw_texrect(SCREEN_WIDTH - 78, SCREEN_HEIGHT - 33, "Begin", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-            fasttext_draw_texrect(SCREEN_WIDTH - 120, SCREEN_HEIGHT - 33, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-            fasttext_draw_texrect(SCREEN_WIDTH - 158, SCREEN_HEIGHT - 33, "Tutorial", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-            fasttext_finished_rendering();
+            menu_add_button_prompt(&prompts, MENU_PROMPT_A_BUTTON, "Select");
+            menu_add_button_prompt(&prompts, MENU_PROMPT_START_BUTTON, "Begin");
+            menu_add_button_prompt(&prompts, MENU_PROMPT_B_BUTTON, "Back");
+            menu_add_button_prompt(&prompts, MENU_PROMPT_Z_TRIG, "Tutorial");
             break;
         case GM_SELECT_STATE_CHANGE_DIFF:
         case GM_SELECT_STATE_CHANGE_GAMEMODE:
         case GM_SELECT_STATE_CONFIRM:
-            menu_start_button_prompt();
-            menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 33, MENU_PROMPT_A_BUTTON);
-            menu_button_prompt(SCREEN_WIDTH - 82, SCREEN_HEIGHT - 33, MENU_PROMPT_B_BUTTON);
-            menu_end_button_prompt();
-            fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-            fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 33, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-            fasttext_draw_texrect(SCREEN_WIDTH - 83, SCREEN_HEIGHT - 33, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-            fasttext_finished_rendering();
+            menu_add_button_prompt(&prompts, MENU_PROMPT_A_BUTTON, "Select");
+            menu_add_button_prompt(&prompts, MENU_PROMPT_B_BUTTON, "Back");
             break;
     }
+
+    menu_render_button_prompt_list(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 33, &prompts);
 }
 
 /*

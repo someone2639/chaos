@@ -492,15 +492,10 @@ void chstut_render_tutorial(void) {
     chstut_render_tutorial_description(&gDisplayListHead);
 
     if(sChsTutState == CHS_TUT_STATE_DEFAULT) {
-        menu_start_button_prompt();
-        menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 23, MENU_PROMPT_A_BUTTON);
-        menu_button_prompt(SCREEN_WIDTH - 70, SCREEN_HEIGHT - 23, MENU_PROMPT_B_BUTTON);
-        menu_button_prompt(SCREEN_WIDTH - 112, SCREEN_HEIGHT - 23, MENU_PROMPT_START_BUTTON);
-        menu_end_button_prompt();
-        fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-        fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 23, "Next", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-        fasttext_draw_texrect(SCREEN_WIDTH - 72, SCREEN_HEIGHT - 23, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-        fasttext_draw_texrect(SCREEN_WIDTH - 114, SCREEN_HEIGHT - 23, "Return", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-        fasttext_finished_rendering();
+        struct ButtonPromptList prompts = {0};
+        menu_add_button_prompt(&prompts, MENU_PROMPT_A_BUTTON, "Next");
+        menu_add_button_prompt(&prompts, MENU_PROMPT_B_BUTTON, "Back");
+        menu_add_button_prompt(&prompts, MENU_PROMPT_START_BUTTON, "Return");
+        menu_render_button_prompt_list(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 23, &prompts);
     }
 }

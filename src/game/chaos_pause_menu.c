@@ -410,10 +410,6 @@ void render_active_patches() {
     scroll_mini_patch_cards();
     scroll_act_desc_bg();
 
-    if(!(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_HALT_INPUT)) {
-        render_active_patches_menu_button_prompts();
-    }
-
     //Draw default message if no patches available
     if (gChaosActiveEntryCount == NULL || *gChaosActiveEntryCount == 0) {
         draw_default_patch_desc(gChaosPauseMenu->descX, ACTIVE_PATCH_DESC_Y);
@@ -457,6 +453,10 @@ void render_active_patches() {
             gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
             gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
         }
+    }
+
+    if(!(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_HALT_INPUT)) {
+        render_active_patches_menu_button_prompts();
     }
 }
 
@@ -504,37 +504,23 @@ void render_active_patches_menu_button_prompts() {
     s32 selection = gChaosPauseMenu->activePatchesMenu.selectedMenuIndex;
     struct ChaosActiveEntry *patch = &gChaosActiveEntries[selection];
     const struct ChaosPatch *patchInfo = &gChaosPatches[patch->id];
+    struct ButtonPromptList prompts = {0};
+    s32 yPos = PAUSE_BUTTON_PROMPTS_Y;
 
     switch(gChaosPauseMenu->activePatchesMenu.menuState) {
         case ACTIVE_PATCHES_MENU_STATE_DEFAULT:
-            //Draw extra prompt if there's an extended description
+            menu_add_button_prompt(&prompts, MENU_PROMPT_B_BUTTON, "Back");
             if(patchInfo->longDescription){
-                menu_start_button_prompt();
-                menu_button_prompt(SCREEN_WIDTH - 32, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_B_BUTTON);
-                menu_button_prompt(SCREEN_WIDTH - 82, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_Z_TRIG);
-                menu_end_button_prompt();
-                fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-                fasttext_draw_texrect(SCREEN_WIDTH - 33, PAUSE_BUTTON_PROMPTS_Y, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_draw_texrect(SCREEN_WIDTH - 82, PAUSE_BUTTON_PROMPTS_Y, "Details", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_finished_rendering();
-            } else {
-                menu_start_button_prompt();
-                menu_button_prompt(SCREEN_WIDTH - 32, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_B_BUTTON);
-                menu_end_button_prompt();
-                fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-                fasttext_draw_texrect(SCREEN_WIDTH - 33, PAUSE_BUTTON_PROMPTS_Y, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_finished_rendering();
+                menu_add_button_prompt(&prompts, MENU_PROMPT_Z_TRIG, "Details");
             }
             break;
         case ACTIVE_PATCHES_MENU_STATE_SHOW_EXT_DESC:
-            menu_start_button_prompt();
-            menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 30, MENU_PROMPT_B_BUTTON);
-            menu_end_button_prompt();
-            fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-            fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 30, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-            fasttext_finished_rendering();
+            menu_add_button_prompt(&prompts, MENU_PROMPT_B_BUTTON, "Back");
+            yPos -= 7;
             break;
     }
+
+    menu_render_button_prompt_list(SCREEN_WIDTH - 33, yPos, &prompts);
 }
 
 /*
@@ -870,14 +856,10 @@ void render_settings_panel() {
     Button prompts for the settings panel
 */
 void render_settings_panel_button_prompts() {
-    menu_start_button_prompt();
-    menu_button_prompt(SCREEN_WIDTH - 32, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_A_BUTTON);
-    menu_button_prompt(SCREEN_WIDTH - 82, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_B_BUTTON);
-    menu_end_button_prompt();
-    fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-    fasttext_draw_texrect(SCREEN_WIDTH - 33, PAUSE_BUTTON_PROMPTS_Y, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-    fasttext_draw_texrect(SCREEN_WIDTH - 83, PAUSE_BUTTON_PROMPTS_Y, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-    fasttext_finished_rendering();
+    struct ButtonPromptList prompts = {0};
+    menu_add_button_prompt(&prompts, MENU_PROMPT_A_BUTTON, "Select");
+    menu_add_button_prompt(&prompts, MENU_PROMPT_B_BUTTON, "Back");
+    menu_render_button_prompt_list(SCREEN_WIDTH - 32, PAUSE_BUTTON_PROMPTS_Y, &prompts);
 }
 
 /*
@@ -1004,14 +986,7 @@ void update_settings_panel() {
     Button prompts for the vanilla pause screen
 */
 void render_pause_screen_button_prompts() {
-    menu_start_button_prompt();
-    menu_button_prompt(SCREEN_WIDTH - 32, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_R_TRIG);
-    menu_button_prompt(SCREEN_WIDTH - 144, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_Z_TRIG);
-    menu_button_prompt(15, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_L_TRIG);
-    menu_end_button_prompt();
-    fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-    fasttext_draw_texrect(SCREEN_WIDTH - 35, PAUSE_BUTTON_PROMPTS_Y, "Active Patches", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-    fasttext_draw_texrect(SCREEN_WIDTH - 144, PAUSE_BUTTON_PROMPTS_Y, "Message Log", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-    fasttext_draw_texrect(33, PAUSE_BUTTON_PROMPTS_Y, "Settings", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    fasttext_finished_rendering();
+    menu_single_button_prompt(SCREEN_WIDTH - 32, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_R_TRIG, "Active Patches", FALSE);
+    menu_single_button_prompt(SCREEN_WIDTH - 144, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_Z_TRIG, "Message Log", FALSE);
+    menu_single_button_prompt(15, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_L_TRIG, "Settings", TRUE);
 }

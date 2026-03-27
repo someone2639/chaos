@@ -5,8 +5,8 @@
 #include "sm64.h"
 #include "game_init.h"
 #include "segment2.h"
-
-static u8 sDisplayButtonsDown = FALSE;
+#include "fasttext.h"
+#include "debug.h"
 
 struct ButtonTexturePair sButtonTextureTable[MENU_PROMPT_COUNT] = {
     [MENU_PROMPT_A_BUTTON]      = {.up = texture_icon_a_button,     .down = texture_icon_a_button_down},
@@ -108,13 +108,9 @@ s32 menu_update_anims(struct ChaosMenu *menu, s32 (*animFunctions[])(void)) {
 }
 
 /*
-    Sets up to draw a button prompt
+    Sets up to draw a button texture
 */
-void menu_start_button_prompt() {
-    //Alternate between showing the button sprite pressed and up every second
-    if(!(gGlobalTimer % 30)) {
-        sDisplayButtonsDown = !sDisplayButtonsDown;
-    }
+void menu_start_button() {
     gDPPipeSync(gDisplayListHead++);
 	gDPSetCycleType(gDisplayListHead++, G_CYC_COPY);
     gDPSetRenderMode(gDisplayListHead++, G_RM_NOOP, G_RM_NOOP2);
@@ -126,9 +122,9 @@ void menu_start_button_prompt() {
 }
 
 /*
-    Resets everything after drawing a button prompt
+    Resets everything after drawing a button texture
 */
-void menu_end_button_prompt() {
+void menu_end_button() {
     gDPPipeSync(gDisplayListHead++);
 	gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
 	gSPTexture(gDisplayListHead++, 65535, 65535, 0, G_TX_RENDERTILE, G_OFF);
@@ -137,26 +133,9 @@ void menu_end_button_prompt() {
 }
 
 /*
-    Draws a button prompt
+    Draws a button texture
 */
-void menu_button_prompt(s32 x, s32 y, s32 button) {
-    u8 *buttonTexture = (sDisplayButtonsDown) ? sButtonTextureTable[button].down : sButtonTextureTable[button].up;
-    buttonTexture = segmented_to_virtual(buttonTexture);
-
-    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, buttonTexture);
-	gDPSetTile(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0);
-	gDPLoadBlock(gDisplayListHead++, 7, 0, 0, 255, 512);
-	gDPSetTile(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 4, 0, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 4, 0, G_TX_WRAP | G_TX_NOMIRROR, 4, 0);
-	gDPSetTileSize(gDisplayListHead++, 0, 0, 0, 60, 60);
-    gSPTextureRectangle(gDisplayListHead++, x << 2, y << 2, (x + 15) << 2, (y + 15) << 2,
-                        G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10);
-    gDPPipeSync(gDisplayListHead++);
-}
-
-/*
-    Draws a button prompt that is always either pressed up or down
-*/
-void menu_static_button_prompt(s32 x, s32 y, s32 button, s32 pressed) {
+void menu_draw_button(s32 x, s32 y, s32 button, s32 pressed) {
     u8 *buttonTexture = (pressed) ? sButtonTextureTable[button].down : sButtonTextureTable[button].up;
     buttonTexture = segmented_to_virtual(buttonTexture);
 
@@ -168,4 +147,110 @@ void menu_static_button_prompt(s32 x, s32 y, s32 button, s32 pressed) {
     gSPTextureRectangle(gDisplayListHead++, x << 2, y << 2, (x + 15) << 2, (y + 15) << 2,
                         G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10);
     gDPPipeSync(gDisplayListHead++);
+}
+
+/*
+    Adds a button prompt to the button prompt list
+*/
+void menu_add_button_prompt(struct ButtonPromptList *list, enum MenuButtonPrompt button, char *text) {
+    struct ButtonPrompt *prompt = alloc_display_list(sizeof(struct ButtonPrompt));
+    prompt->button = button;
+    prompt->text = text;
+    prompt->next = NULL;
+
+    // Get width of text
+    int xPos = 0;
+    int i = 0;
+
+    if (!text) {
+        assert(FALSE, "Attempted to pass NULL string to button prompt func!");
+    }
+
+    const struct FastTextProps *fontProps = &gFasttextFonts[FT_FONT_SMALL_THIN];
+    const unsigned char *kerningTable = fontProps->kerningTable;
+
+    while (text[i] != '\0' && text[i] != '\n') {
+        int curChar = text[i];
+        int charIndex = curChar - ' ';
+        int tabCount;
+
+        switch (curChar) {
+            case '\t': // tab
+                tabCount = (xPos + FT_TAB_WIDTH) / FT_TAB_WIDTH;
+                xPos = tabCount * FT_TAB_WIDTH;
+                break;
+            case '@': // string color
+                i += 8;
+                break;
+            default:
+                xPos += kerningTable[charIndex];
+                break;
+        }
+
+        i++;
+    }
+
+    xPos -= fontProps->subFromLength;
+    if (xPos < 0) {
+        xPos = 0;
+    }
+
+    prompt->offset = xPos + 22;
+
+    if(list->tail) {
+        list->tail->next = prompt;
+    }
+    if(!list->head) {
+        list->head = prompt;
+    }
+    list->tail = prompt;
+}
+
+/*
+    Renders the contents of a button prompt list. First draws all the buttons, then all the text.
+    Always draws right aligned button prompts, going horizontally to the left.
+*/
+void menu_render_button_prompt_list(s32 x, s32 y, struct ButtonPromptList *list) {
+    s32 pressed = ((gGlobalTimer % 60) > 30);
+    // Draw buttons
+    menu_start_button();
+    s32 offset = 0;
+    for(struct ButtonPrompt *prompt = list->head; prompt != NULL; prompt = prompt->next) {
+        menu_draw_button(x + offset, y, prompt->button, pressed);
+        offset -= prompt->offset;
+    }
+    menu_end_button();
+
+    // Draw text
+    fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
+    offset = -2;
+    for(struct ButtonPrompt *prompt = list->head; prompt != NULL; prompt = prompt->next) {
+        fasttext_draw_texrect(x + offset, y, prompt->text, FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+        offset -= prompt->offset;
+    }
+    fasttext_finished_rendering();
+}
+
+/*
+    Draws a single button prompt
+*/
+void menu_single_button_prompt(s32 x, s32 y, enum MenuButtonPrompt button, char *text, s32 alignLeft) {
+    s32 pressed = ((gGlobalTimer % 60) > 30);
+
+    menu_start_button();
+    menu_draw_button(x, y, button, pressed);
+    menu_end_button();
+
+    s32 offset, align;
+    if(alignLeft) {
+        offset = 18;
+        align = FT_FLAG_ALIGN_LEFT;
+    } else {
+        offset = -2;
+        align = FT_FLAG_ALIGN_RIGHT;
+    }
+
+    fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
+    fasttext_draw_texrect(x + offset, y, text, align, 0xFF, 0xFF, 0xFF, 0xFF);
+    fasttext_finished_rendering();
 }

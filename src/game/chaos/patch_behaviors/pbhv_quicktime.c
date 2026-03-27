@@ -68,21 +68,21 @@ void draw_quicktime_event_prompts() {
     
     shade_screen();
 
-    menu_start_button_prompt();
+    menu_start_button();
     f32 startX = SCREEN_CENTER_X - ((sQTEQueueLength * QTE_PADDING) / 2);
     f32 timerBarWidth = (((SCREEN_WIDTH - startX) - startX) / sQTETimeTotal) * sQTETimeLeft;
     s32 prevIndex = sQTECurrentIndex - 1;
 
     for(int i = sQTECurrentIndex; i < sQTEQueueLength; i++) {
-        menu_static_button_prompt(startX + (QTE_PADDING * i), SCREEN_CENTER_Y, sQTEPromptQueue[i].prompt, FALSE);
+        menu_draw_button(startX + (QTE_PADDING * i), SCREEN_CENTER_Y, sQTEPromptQueue[i].prompt, FALSE);
     }
 
     if(sQTECurrentIndex > 0 && sQTEPrevDisplayTimer > 0) {
-        menu_static_button_prompt(startX + (QTE_PADDING * prevIndex), SCREEN_CENTER_Y, sQTEPromptQueue[prevIndex].prompt, TRUE);
+        menu_draw_button(startX + (QTE_PADDING * prevIndex), SCREEN_CENTER_Y, sQTEPromptQueue[prevIndex].prompt, TRUE);
         sQTEPrevDisplayTimer--;
     }
 
-    menu_end_button_prompt();
+    menu_end_button();
 
     gDPPipeSync(gDisplayListHead++);
     gDPSetCombineLERP(gDisplayListHead++, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT);

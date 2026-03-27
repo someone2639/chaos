@@ -1285,55 +1285,27 @@ void render_patch_select_button_prompts() {
     struct ChaosPatchSelection *sel = gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].sel;
     const struct ChaosPatch *pos = sel->positivePatch;
     const struct ChaosPatch *neg = sel->negativePatch;
-
+    struct ButtonPromptList prompts = {0};
+    s32 yPos = PATCH_SEL_BUTTON_Y;
     switch(gPatchSelectionMenu->menu.menuState) {
         case PATCH_SELECT_STATE_SELECT:
-            if(pos->longDescription || 
-                neg->longDescription) {
-                menu_start_button_prompt();
-                menu_button_prompt(SCREEN_WIDTH - 32, PATCH_SEL_BUTTON_Y, MENU_PROMPT_A_BUTTON);
-                menu_button_prompt(SCREEN_WIDTH - 80, PATCH_SEL_BUTTON_Y, MENU_PROMPT_R_TRIG);
-                menu_button_prompt(SCREEN_WIDTH - 162, PATCH_SEL_BUTTON_Y, MENU_PROMPT_START_BUTTON);
-                menu_button_prompt(SCREEN_WIDTH - 199, PATCH_SEL_BUTTON_Y, MENU_PROMPT_Z_TRIG);
-                menu_end_button_prompt();
-                fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-                fasttext_draw_texrect(SCREEN_WIDTH - 33, PATCH_SEL_BUTTON_Y, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_draw_texrect(SCREEN_WIDTH - 82, PATCH_SEL_BUTTON_Y, "Active Patches", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_draw_texrect(SCREEN_WIDTH - 164, PATCH_SEL_BUTTON_Y, "Help", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_draw_texrect(SCREEN_WIDTH - 199, PATCH_SEL_BUTTON_Y, "Details", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_finished_rendering();
-            } else {
-                menu_start_button_prompt();
-                menu_button_prompt(SCREEN_WIDTH - 32, PATCH_SEL_BUTTON_Y, MENU_PROMPT_A_BUTTON);
-                menu_button_prompt(SCREEN_WIDTH - 80, PATCH_SEL_BUTTON_Y, MENU_PROMPT_R_TRIG);
-                menu_button_prompt(SCREEN_WIDTH - 162, PATCH_SEL_BUTTON_Y, MENU_PROMPT_START_BUTTON);
-                menu_end_button_prompt();
-                fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-                fasttext_draw_texrect(SCREEN_WIDTH - 33, PATCH_SEL_BUTTON_Y, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_draw_texrect(SCREEN_WIDTH - 82, PATCH_SEL_BUTTON_Y, "Active Patches", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_draw_texrect(SCREEN_WIDTH - 164, PATCH_SEL_BUTTON_Y, "Help", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_finished_rendering();
+            menu_add_button_prompt(&prompts, MENU_PROMPT_A_BUTTON, "Select");
+            menu_add_button_prompt(&prompts, MENU_PROMPT_R_TRIG, "Active Patches");
+            menu_add_button_prompt(&prompts, MENU_PROMPT_START_BUTTON, "Help");
+            if(pos->longDescription || neg->longDescription) {
+                menu_add_button_prompt(&prompts, MENU_PROMPT_Z_TRIG, "Details");
             }
             break;
         case PATCH_SELECT_STATE_CONFIRMATION:
-            menu_start_button_prompt();
-            menu_button_prompt(SCREEN_WIDTH - 32, PATCH_SEL_BUTTON_Y, MENU_PROMPT_A_BUTTON);
-            menu_button_prompt(SCREEN_WIDTH - 82, PATCH_SEL_BUTTON_Y, MENU_PROMPT_B_BUTTON);
-            menu_end_button_prompt();
-            fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-            fasttext_draw_texrect(SCREEN_WIDTH - 33, PATCH_SEL_BUTTON_Y, "Select", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-            fasttext_draw_texrect(SCREEN_WIDTH - 83, PATCH_SEL_BUTTON_Y, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-            fasttext_finished_rendering();
+            menu_add_button_prompt(&prompts, MENU_PROMPT_A_BUTTON, "Select");
+            menu_add_button_prompt(&prompts, MENU_PROMPT_B_BUTTON, "Back");
             break;
         case PATCH_SELECT_STATE_SHOW_EXTENDED_DESC:
-            menu_start_button_prompt();
-            menu_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 30, MENU_PROMPT_B_BUTTON);
-            menu_end_button_prompt();
-            fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-            fasttext_draw_texrect(SCREEN_WIDTH - 33, SCREEN_HEIGHT - 30, "Back", FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-            fasttext_finished_rendering();
+            menu_add_button_prompt(&prompts, MENU_PROMPT_B_BUTTON, "Back");
+            yPos -= 7;
             break;
     }
+    menu_render_button_prompt_list(SCREEN_WIDTH - 32, yPos, &prompts);
 }
 
 #define PATCH_LIVES_X      (12)
