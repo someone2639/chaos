@@ -174,10 +174,10 @@ static const Vtx bitfs_seg7_vertex_07003340[] = {
     {{{   -81,   1536,   -511}, 0, {     0,  -8208}, {0xac, 0x9d, 0x52, 0xff}}},
 };
 
-// TODO: what is this?
+// DECOMP_DO: what is this?
 // Possibly vertices for a perfect triangle, but flag seems to be used here.
 // 0x070033B0 - 0x070033E0
-UNUSED static const s16 bitfs_seg7_todo_070033B0[] = {
+UNUSED static const s16 bitfs_seg7_decomp_do_070033B0[] = {
     0x0080, 0x0100, 0x0000, 0x0000, 0x03de, 0x0000, 0xFFFF, 0xFFFF,
     0xFF81, 0x0100, 0x0000, 0x0000, 0xFBE4, 0x0000, 0xFFFF, 0xFFFF,
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x07DA, 0xFFFF, 0xFFFF,

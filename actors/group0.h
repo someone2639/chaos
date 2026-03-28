@@ -285,7 +285,7 @@ extern const Gfx sparkles_animation_seg4_dl_04035360[];
 
 // stomp_smoke
 extern const GeoLayout small_water_splash_geo[];
-extern const GeoLayout mario_TODO_geo_0000E0[];
+extern const GeoLayout mario_DECOMP_DO_geo_0000E0[];
 extern const Gfx stomp_smoke_seg4_dl_04025148[];
 extern const Gfx stomp_smoke_seg4_dl_04025190[];
 extern const Gfx stomp_smoke_seg4_dl_040251C8[];

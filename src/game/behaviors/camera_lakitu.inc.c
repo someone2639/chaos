@@ -2,7 +2,7 @@
 /**
  * Behavior for bhvCameraLakitu. This includes both the intro lakitu and the
  * lakitu visible in the mirror room.
- * TODO: Processing order relative to bhvCloud
+ * DECOMP_DO: Processing order relative to bhvCloud
  */
 
 /**
@@ -37,7 +37,7 @@ static void camera_lakitu_intro_act_trigger_cutscene(void) {
 }
 
 /**
- * Warp up into the air and spawn cloud, then enter the TODO action.
+ * Warp up into the air and spawn cloud, then enter the to-do action.
  */
 static void camera_lakitu_intro_act_spawn_cloud(void) {
     if (set_mario_npc_dialog(MARIO_DIALOG_LOOK_UP) == MARIO_DIALOG_STATUS_SPEAK) {

@@ -738,7 +738,7 @@ size = ALIGN16(size);
         }
     }
 
-    // TODO: why is this guaranteed to write <= 32 entries...?
+    // DECOMP_DO: why is this guaranteed to write <= 32 entries...?
     // Because the buffer is small enough that more don't fit?
     arg0->persistent.entries[arg0->persistent.numEntries].id = id;
     arg0->persistent.entries[arg0->persistent.numEntries].size = size;
@@ -1017,11 +1017,11 @@ void init_reverb_eu(void) {
             reverb->unk28 = soundAlloc(&gNotesAndBuffersPool, (16 * sizeof(s16)));
             for (i = 0; i < gAudioBufferParameters.updatesPerFrame; i++) {
                 mem = soundAlloc(&gNotesAndBuffersPool, DEFAULT_LEN_2CH);
-                reverb->items[0][i].toDownsampleLeft  = mem;
-                reverb->items[0][i].toDownsampleRight = (mem + (DEFAULT_LEN_1CH / sizeof(s16)));
+                reverb->items[0][i].toBeDownsampledLeft  = mem;
+                reverb->items[0][i].toBeDownsampledRight = (mem + (DEFAULT_LEN_1CH / sizeof(s16)));
                 mem = soundAlloc(&gNotesAndBuffersPool, DEFAULT_LEN_2CH);
-                reverb->items[1][i].toDownsampleLeft  = mem;
-                reverb->items[1][i].toDownsampleRight = (mem + (DEFAULT_LEN_1CH / sizeof(s16)));
+                reverb->items[1][i].toBeDownsampledLeft  = mem;
+                reverb->items[1][i].toBeDownsampledRight = (mem + (DEFAULT_LEN_1CH / sizeof(s16)));
             }
         }
 
@@ -1040,7 +1040,7 @@ void init_reverb_eu(void) {
                 bzero(reverb->unk28, (16 * sizeof(s16)));
 
                 // All reverb downsample buffers are adjacent in memory, so clear them all in a single call
-                bzero(reverb->items[0][0].toDownsampleLeft, (DEFAULT_LEN_1CH * 4 * gAudioBufferParameters.updatesPerFrame));
+                bzero(reverb->items[0][0].toBeDownsampledLeft, (DEFAULT_LEN_1CH * 4 * gAudioBufferParameters.updatesPerFrame));
             }
         }
     }
@@ -1156,11 +1156,11 @@ void init_reverb_us(u32 presetId) {
         gSynthesisReverb.unk28 = soundAlloc(&gNotesAndBuffersPool, (16 * sizeof(s16)));
         for (i = 0; i < gAudioUpdatesPerFrame; i++) {
             mem = soundAlloc(&gNotesAndBuffersPool, DEFAULT_LEN_2CH);
-            gSynthesisReverb.items[0][i].toDownsampleLeft  = mem;
-            gSynthesisReverb.items[0][i].toDownsampleRight = (mem + (DEFAULT_LEN_1CH / sizeof(s16)));
+            gSynthesisReverb.items[0][i].toBeDownsampledLeft  = mem;
+            gSynthesisReverb.items[0][i].toBeDownsampledRight = (mem + (DEFAULT_LEN_1CH / sizeof(s16)));
             mem = soundAlloc(&gNotesAndBuffersPool, DEFAULT_LEN_2CH);
-            gSynthesisReverb.items[1][i].toDownsampleLeft  = mem;
-            gSynthesisReverb.items[1][i].toDownsampleRight = (mem + (DEFAULT_LEN_1CH / sizeof(s16)));
+            gSynthesisReverb.items[1][i].toBeDownsampledLeft  = mem;
+            gSynthesisReverb.items[1][i].toBeDownsampledRight = (mem + (DEFAULT_LEN_1CH / sizeof(s16)));
         }
     } else { 
         if (reinitBetterReverbBuffers) {
@@ -1194,7 +1194,7 @@ void init_reverb_us(u32 presetId) {
             bzero(gSynthesisReverb.unk28, (16 * sizeof(s16)));
 
             // All reverb downsample buffers are adjacent in memory, so clear them all in a single call
-            bzero(gSynthesisReverb.items[0][0].toDownsampleLeft, (DEFAULT_LEN_1CH * 4 * gAudioUpdatesPerFrame));
+            bzero(gSynthesisReverb.items[0][0].toBeDownsampledLeft, (DEFAULT_LEN_1CH * 4 * gAudioUpdatesPerFrame));
         }
     }
 

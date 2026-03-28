@@ -756,7 +756,7 @@ void func_801A3370(f32, f32, f32);
 void gd_put_sprite(u16 *, s32, s32, s32, s32);
 void reset_cur_dl_indices(void);
 
-// TODO: make a gddl_num_t?
+// DECOMP_DO: make a gddl_num_t?
 
 u32 get_alloc_mem_amt(void) {
     return sAllocMemory;
@@ -1135,7 +1135,7 @@ void Unknown8019C288(s32 stickX, s32 stickY) {
 
 /* 24AAA8 -> 24AAE0; orig name: func_8019C2D8 */
 void gd_add_to_heap(void *addr, u32 size) {
-    // TODO: is this `1` for permanence special?
+    // DECOMP_DO: is this `1` for permanence special?
     gd_add_mem_to_heap(size, addr, 1);
 }
 

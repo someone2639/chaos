@@ -1,5 +1,5 @@
 // corkbox.inc.c
-// TODO: This split seems weird. Investigate further?
+// DECOMP_DO: This split seems weird. Investigate further?
 
 void bhv_bobomb_bully_death_smoke_init(void) {
     o->oPosY -= 300.0f;

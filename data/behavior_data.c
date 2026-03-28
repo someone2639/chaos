@@ -151,7 +151,7 @@
 #define BIT_CLEAR(field, value) \
     BC_BBH(0x12, field, value)
 
-// TODO: this one needs a better name / labelling
+// DECOMP_DO: this one needs a better name / labelling
 // Gets a random short, right shifts it the specified amount and adds min to it, then sets the specified field to that value.
 #define SET_INT_RAND_RSHIFT(field, min, rshift) \
     BC_BBH(0x13, field, min), \
@@ -172,7 +172,7 @@
     BC_BBH(0x16, field, min), \
     BC_H(range)
 
-// TODO: better name (unused anyway)
+// DECOMP_DO: better name (unused anyway)
 // Gets a random short, right shifts it the specified amount and adds min to it, then adds the value to the specified field. Unused.
 #define ADD_INT_RAND_RSHIFT(field, min, rshift) \
     BC_BBH(0x17, field, min), \

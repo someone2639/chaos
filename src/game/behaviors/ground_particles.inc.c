@@ -56,7 +56,7 @@ void spawn_smoke_with_velocity(void) {
     obj_translate_xyz_random(smoke, sSmokeMovementParams[3]);
 }
 
-// TODO Fix name
+// DECOMP_DO Fix name
 void clear_particle_flags(u32 flags) {
     o->parentObj->oActiveParticleFlags &= flags ^ 0xFFFFFFFF; // Clear the flags given (could just be ~flags)
 }

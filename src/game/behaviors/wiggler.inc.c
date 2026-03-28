@@ -74,7 +74,7 @@ void bhv_wiggler_body_part_update(void) {
     o->oFaceAnglePitch = segment->pitch;
     o->oFaceAngleYaw = segment->yaw;
 
-    // TODO: What is this for?
+    // DECOMP_DO: What is this for?
     posOffset = -37.5f * o->header.gfx.scale[0];
     dy = posOffset * coss(o->oFaceAnglePitch) - posOffset;
     dxz = posOffset * sins(o->oFaceAnglePitch);
@@ -91,7 +91,7 @@ void bhv_wiggler_body_part_update(void) {
         //  the floor
         o->oPosY += -30.0f;
         cur_obj_update_floor_height();
-        if (o->oFloorHeight > o->oPosY) { // TODO: Check ineq swap
+        if (o->oFloorHeight > o->oPosY) { // DECOMP_DO: Check ineq swap
             o->oPosY = o->oFloorHeight;
         }
     }

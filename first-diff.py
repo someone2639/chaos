@@ -3,7 +3,7 @@ import os.path
 import argparse
 from subprocess import check_call
 
-# TODO: -S argument for shifted ROMs
+# DECOMP_DO: -S argument for shifted ROMs
 
 parser = argparse.ArgumentParser(
     description="find the first difference(s) between the compiled ROM and the baserom"

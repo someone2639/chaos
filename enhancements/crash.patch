@@ -317,7 +317,7 @@ index 00000000..716adfbd
 +
 +void fb_swap() {
 +    // update VI frame buffer register
-+    // todo other registers
++    // decomp_do other registers
 +    *(u32 *) (0xA4400004) = (u32) fbAddress & 0x00FFFFFF;
 +}
 +

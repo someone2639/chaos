@@ -1994,7 +1994,7 @@ void print_save_file_star_count(s8 fileIndex, s16 x, s16 y) {
 void print_main_menu_strings(void) {
 #ifdef VERSION_SH
     // The current sound mode is automatically centered on US and Shindou.
-    static s16 sSoundTextX; // TODO: There should be a way to make this match on both US and Shindou.
+    static s16 sSoundTextX; // DECOMP_DO: There should be a way to make this match on both US and Shindou.
 #endif
     // Print "SELECT FILE" text
     gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);

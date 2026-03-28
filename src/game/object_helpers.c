@@ -41,7 +41,7 @@ Gfx *geo_update_projectile_pos_from_parent(s32 callContext, UNUSED struct GraphN
     struct Object *sp1C;
 
     if (callContext == GEO_CONTEXT_RENDER) {
-        sp1C = (struct Object *) gCurGraphNodeObject; // TODO: change global type to Object pointer
+        sp1C = (struct Object *) gCurGraphNodeObject; // DECOMP_DO: change global type to Object pointer
         if (sp1C->prevObj) {
             create_transformation_from_matrices(sp20, mtx, *gCurGraphNodeCamera->matrixPtr);
             obj_update_pos_from_parent_transformation(sp20, sp1C->prevObj);
@@ -61,7 +61,7 @@ Gfx *geo_update_layer_transparency(s32 callContext, struct GraphNode *node, UNUS
     dlStart = NULL;
 
     if (callContext == GEO_CONTEXT_RENDER) {
-        objectGraphNode = (struct Object *) gCurGraphNodeObject; // TODO: change this to object pointer?
+        objectGraphNode = (struct Object *) gCurGraphNodeObject; // DECOMP_DO: change this to object pointer?
         currentGraphNode = (struct GraphNodeGenerated *) node;
         sp2C = (struct GraphNodeGenerated *) node;
 
@@ -143,7 +143,7 @@ Gfx *geo_switch_anim_state(s32 callContext, struct GraphNode *node) {
     struct GraphNodeSwitchCase *switchCase;
 
     if (callContext == GEO_CONTEXT_RENDER) {
-        obj = (struct Object *) gCurGraphNodeObject; // TODO: change global type to Object pointer
+        obj = (struct Object *) gCurGraphNodeObject; // DECOMP_DO: change global type to Object pointer
 
         // move to a local var because GraphNodes are passed in all geo functions.
         // cast the pointer.
@@ -175,7 +175,7 @@ Gfx *geo_switch_area(s32 callContext, struct GraphNode *node) {
     s16 sp26;
     struct Surface *sp20;
     UNUSED struct Object *sp1C =
-        (struct Object *) gCurGraphNodeObject; // TODO: change global type to Object pointer
+        (struct Object *) gCurGraphNodeObject; // DECOMP_DO: change global type to Object pointer
     struct GraphNodeSwitchCase *switchCase = (struct GraphNodeSwitchCase *) node;
 
     if (callContext == GEO_CONTEXT_RENDER) {

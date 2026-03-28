@@ -701,7 +701,7 @@ $(BUILD_DIR)/%.ci4.inc.c: %.ci4.png
 #==============================================================================#
 
 # Link segment file to resolve external labels
-# TODO: ideally this would be `-Trodata-segment=0x07000000` but that doesn't set the address
+# DECOMP_DO: ideally this would be `-Trodata-segment=0x07000000` but that doesn't set the address
 $(BUILD_DIR)/%.elf: $(BUILD_DIR)/%.o
 	$(call print,Linking ELF file:,$<,$@)
 	$(V)$(LD) -e 0 -Ttext=$(SEGMENT_ADDRESS) -Map $@.map -o $@ $<

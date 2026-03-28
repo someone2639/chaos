@@ -2682,7 +2682,7 @@ void d_set_id(s32 id) {
     }
 }
 
-// TODO: enumerate colors?
+// DECOMP_DO: enumerate colors?
 /**
  * Set the colour of the current dynamic object. The input color is an index
  * for `gd_get_colour()`
@@ -2973,7 +2973,7 @@ Mat4f *d_get_rot_mtx_ptr(void) {
 
 /**
  * Copy `src` into the matrix of the current dynamic object.
- * TODO: What is an IMatrix?
+ * DECOMP_DO: What is an IMatrix?
  */
 void d_set_i_matrix(Mat4f *src) {
     struct GdObj *dynobj;
@@ -3031,7 +3031,7 @@ Mat4f *d_get_matrix_ptr(void) {
 
 /**
  * Get a pointer to the current dynamic object's matrix.
- * TODO: What is an IMatrix?
+ * DECOMP_DO: What is an IMatrix?
  */
 Mat4f *d_get_i_mtx_ptr(void) {
     struct GdObj *dynobj; // sp24

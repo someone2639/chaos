@@ -362,7 +362,7 @@ void patch_sound(UNUSED struct AudioBankSound *sound, UNUSED u8 *memBase, UNUSED
 #if defined(VERSION_EU)
         else if (sample->loaded == 0x80) {
             PATCH(sample->sampleAddr, offsetBase);
-            u8 *mem = soundAlloc(&gNotesAndBuffersPool, sample->sampleSize); // TODO: Memory issue most likely!
+            u8 *mem = soundAlloc(&gNotesAndBuffersPool, sample->sampleSize); // HACKERSM64_DO: Memory issue most likely!
             if (mem == NULL) {
                 sample->sampleAddr = patched;
                 sample->loaded = 1;

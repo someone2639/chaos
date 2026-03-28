@@ -59,7 +59,7 @@ s8 sDebugSysCursor = 0;
 s8 sDebugInfoButtonSeqID = 0;
 s16 sDebugInfoButtonSeq[] = { U_CBUTTONS, L_CBUTTONS, D_CBUTTONS, R_CBUTTONS, -1 };
 
-// most likely present in an ifdef DEBUG build. TODO: check DD version?
+// most likely present in an ifdef DEBUG build. DECOMP_DO: check DD version?
 void stub_debug_1(void) {
 }
 
@@ -405,7 +405,7 @@ void try_modify_debug_controls(void) {
     }
 }
 
-// possibly a removed debug control (TODO: check DD)
+// possibly a removed debug control (DECOMP_DO: check DD)
 void stub_debug_5(void) {
 }
 
@@ -490,9 +490,9 @@ void try_do_mario_debug_object_spawn(void) {
     }
 }
 
-// TODO: figure out what this is
+// DECOMP_DO: figure out what this is
 void debug_print_obj_move_flags(void) {
-#ifndef VERSION_EU // TODO: Is there a better way to diff this? static EU doesn't seem to work.
+#ifndef VERSION_EU // DECOMP_DO: Is there a better way to diff this? static EU doesn't seem to work.
     if (gCurrentObject->oMoveFlags & OBJ_MOVE_LANDED) {
         print_debug_top_down_objectinfo("BOUND   %x", gCurrentObject->oMoveFlags);
     }

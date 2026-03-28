@@ -76,7 +76,7 @@ index d550b846..bbaf2bcc 100644
  #include "libultra_internal.h"
 +#include <PR/console_type.h>
  
- // TODO: merge with osEepromWrite
+ // DECOMP_DO: merge with osEepromWrite
  typedef struct {
 @@ -13,11 +14,23 @@ s32 osEepromProbe(OSMesgQueue *mq) {
      unkStruct sp18;

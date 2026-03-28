@@ -681,7 +681,7 @@ def process_mips_reloc(row: str, prev: str) -> str:
         # If there is an immediate, show it as part of the relocation. Ideally
         # we'd show this addend in both %lo/%hi, but annoyingly objdump's output
         # doesn't include enough information to pair up %lo's and %hi's...
-        # TODO: handle unambiguous cases where all addends for a symbol are the
+        # DECOMP_DO: handle unambiguous cases where all addends for a symbol are the
         # same, or show "+???".
         mnemonic = prev.split()[0]
         if mnemonic in instructions_with_address_immediates and not imm.startswith(
@@ -813,7 +813,7 @@ def process(lines: List[str]) -> List[Line]:
             continue
 
         if "R_AARCH64_" in row:
-            # TODO: handle relocation
+            # DECOMP_DO: handle relocation
             continue
 
         if "R_MIPS_" in row:
@@ -1246,7 +1246,7 @@ def format_diff(
             # differ in color. Use the new version.
             output.append((new_chunk.base, old_chunk, new_chunk))
 
-    # TODO: status line, with e.g. approximate permuter score?
+    # DECOMP_DO: status line, with e.g. approximate permuter score?
     width = args.column_width
     if args.threeway:
         header_line = "TARGET".ljust(width) + "  CURRENT".ljust(width) + "  PREVIOUS"

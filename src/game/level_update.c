@@ -64,7 +64,7 @@ static const struct ChaosPatchSeq chaosSeqArray[] = {
     {SEQ_CHAOSEVENT_HGSS_GAME_CORNER,   0x58},
 };
 
-// TODO: Make these ifdefs better
+// DECOMP_DO: Make these ifdefs better
 const char *credits01[] = { "1GAME DIRECTOR", "SHIGERU MIYAMOTO" };
 const char *credits02[] = { "2ASSISTANT DIRECTORS", "YOSHIAKI KOIZUMI", "TAKASHI TEZUKA" };
 const char *credits03[] = { "2SYSTEM PROGRAMMERS", "YASUNARI NISHIDA", "YOSHINORI TANIMOTO" };

@@ -41,7 +41,7 @@ Gfx *geo_update_projectile_pos_from_parent_copy(s32 run,UNUSED struct GraphNode 
     Mat4 mtx2;
 
     if (run == TRUE) {
-        // TODO: change global type to Object pointer
+        // DECOMP_DO: change global type to Object pointer
         struct Object *obj = (struct Object *) gCurGraphNodeObject;
 
         if (obj->prevObj != NULL) {

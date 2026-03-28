@@ -85,7 +85,7 @@ enum DialogBoxType {
 #define DEFAULT_DIALOG_BOX_SCALE 19.0f
 
 #if defined(VERSION_US) || defined(VERSION_EU)
-u8 gDialogCharWidths[256] = { // TODO: Is there a way to auto generate this?
+u8 gDialogCharWidths[256] = { // DECOMP_DO: Is there a way to auto generate this?
     7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  6,  6,  6,  6,  6,  6,
     6,  6,  5,  6,  6,  5,  8,  8,  6,  6,  6,  6,  6,  5,  6,  6,
     8,  7,  6,  6,  6,  5,  5,  6,  5,  5,  6,  5,  4,  5,  5,  3,

@@ -211,7 +211,7 @@
 #define SetCenterOfGravity(x, y, z) \
     { 27, {0}, {0}, {(x), (y), (z)} }
 
-// TODO:
+// DECOMP_DO:
 
 /* Link Object ID to the current dynobj */
 /* Supported Objs: groups, bones, faces, cameras, views, labels, animators */

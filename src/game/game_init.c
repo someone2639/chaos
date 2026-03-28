@@ -882,7 +882,7 @@ void init_controllers(void) {
     // save pak detection?
 
     gEepromProbe = osEepromProbe(&gSIEventMesgQueue);
-    // TODO: VC eeprom stuffs instead of the above
+    // HACKERSM64_DO: VC eeprom stuffs instead of the above
     // gEepromProbe = (gIsVC)
     //              ? osEepromProbeVC(&gSIEventMesgQueue)
     //              : osEepromProbe  (&gSIEventMesgQueue);
