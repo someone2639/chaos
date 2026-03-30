@@ -18,6 +18,8 @@
 #include "chaos_menus.h"
 #include "chaos_pause_menu.h"
 #include "chaos_tutorial.h"
+#include "emutest.h"
+#include "geo_misc.h"
 
 u8 sQualityColors[CHAOS_PATCH_SEVERITY_COUNT][3] = {
     {0x9F, 0x9F, 0x9F}, //Lvl 0
@@ -820,6 +822,39 @@ void render_select_patch_text(enum ChaosPatchSpecialEvent event) {
 
 }
 
+/*
+    Renders black bars on the side of the patch select menu so youtubers will stop uploading playthroughs featuring extremely broken graphics
+*/
+void render_cringe_blinders() {
+    if(gIsConsole) return; // There's no good way to test for viewport hack as far as I'm aware, but we can at least avoid wasting time on console.
+    Vtx *blinderVtx = alloc_display_list(sizeof(Vtx) * 8);
+    Vec2s pos[8] = {
+        {-70, SCREEN_HEIGHT},
+        {0, SCREEN_HEIGHT},
+        {-70, 0},
+        {0, 0},
+
+        {SCREEN_WIDTH, SCREEN_HEIGHT},
+        {SCREEN_WIDTH + 70, SCREEN_HEIGHT},
+        {SCREEN_WIDTH, 0},
+        {SCREEN_WIDTH + 70, 0},
+    };
+
+    for(int i = 0; i < ARRAY_COUNT(pos); i++) {
+        make_vertex(blinderVtx, i, pos[i][0], pos[i][1], 0, 0, 0, 0x0, 0x0, 0x0, 0xFF);
+    }
+
+    gDPPipeSync(gDisplayListHead++);
+    gDPSetCombineMode(gDisplayListHead++, G_CC_SHADE, G_CC_SHADE);
+    gSPClearGeometryMode(gDisplayListHead++, G_LIGHTING);
+    gSPVertex(gDisplayListHead++, blinderVtx, 8, 0);
+    gSP2Triangles(gDisplayListHead++, 2, 1, 0, 0, 1, 2, 3, 0);
+    gSP2Triangles(gDisplayListHead++, 6, 5, 4, 0, 5, 6, 7, 0);
+    gDPSetCombineMode(gDisplayListHead++, G_CC_SHADE, G_CC_SHADE);
+    gSPSetGeometryMode(gDisplayListHead++, G_LIGHTING);
+    gDPPipeSync(gDisplayListHead++);
+}
+
 void render_curtain_bg() {
     Mtx *transMtx = alloc_display_list(sizeof(Mtx));
     guTranslate(transMtx, gPatchSelectionMenu->curtainPos[0], gPatchSelectionMenu->curtainPos[1], 0);
@@ -1321,6 +1356,7 @@ void display_patch_selection_ui() {
         patch_bg_scroll();
         create_dl_ortho_matrix(&gDisplayListHead);
 
+        render_cringe_blinders();
         render_curtain_bg();
 
         if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) {
