@@ -6,7 +6,7 @@
 
 
 #define GM_SELECT_DESC_Y        49
-#define GM_START_GAME_X         (SCREEN_WIDTH - 43)
+#define GM_START_GAME_X         (SCREEN_WIDTH - 48)
 #define GM_START_GAME_Y         (GM_SELECT_DESC_Y + 45)
 #define CHAL_SELECT_X           GM_START_GAME_X
 #define CHAL_SELECT_Y           (GM_START_GAME_Y + 39)

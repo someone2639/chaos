@@ -382,47 +382,6 @@ s32 update_gamemode_select() {
 }
 
 /*
-    Scrolls the vertices for the ui elements
-*/
-void scroll_gamemode_select_bg() {
-    int i = 0;
-	int count = 4;
-	int width = 64 * 0x20;
-	int height = 32 * 0x20;
-
-	static int currentX = 0;
-	int deltaX;
-	static int currentY = 0;
-	int deltaY;
-    Vtx *vertices = segmented_to_virtual(desc_bg_fileselect_mesh_mesh_vtx_0);
-	Vtx *verticesDiff = segmented_to_virtual(desc_bg_diff_diff_mesh_mesh_vtx_0);
-	Vtx *verticesChal = segmented_to_virtual(desc_bg_chal_chal_mesh_mesh_vtx_0);
-    Vtx *verticesStart = segmented_to_virtual(desc_bg_start_start_mesh_mesh_vtx_0);
-
-	deltaX = (int)(0.1 * 0x20) % width;
-	deltaY = (int)(0.1 * 0x20) % height;
-
-	if (absi(currentX) > width) {
-		deltaX -= (int)(absi(currentX) / width) * width * signum_positive(deltaX);
-	}
-	if (absi(currentY) > height) {
-		deltaY -= (int)(absi(currentY) / height) * height * signum_positive(deltaY);
-	}
-
-	for (i = 0; i < count; i++) {
-		vertices[i].n.tc[0] += deltaX;
-		vertices[i].n.tc[1] += deltaY;
-		verticesDiff[i].n.tc[0] += deltaX;
-		verticesDiff[i].n.tc[1] += deltaY;
-		verticesChal[i].n.tc[0] += deltaX;
-		verticesChal[i].n.tc[1] += deltaY;
-		verticesStart[i].n.tc[0] += deltaX;
-		verticesStart[i].n.tc[1] += deltaY;
-	}
-	currentX += deltaX;	currentY += deltaY;
-}
-
-/*
     Draws the "Start" option on the menu
 */
 void render_gm_start_game() {
@@ -433,7 +392,8 @@ void render_gm_start_game() {
     guTranslate(transMtx, x, y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    gSPDisplayList(gDisplayListHead++, desc_bg_start_start_mesh_mesh);
+    Gfx *bg = menu_create_chaos_text_bg(GM_START_GAME_X, GM_START_GAME_Y, 74, 20, 217);
+    gSPDisplayList(gDisplayListHead++, bg);
 
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
     slowtext_draw_ortho_text(-5, -10, "Start", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -455,7 +415,8 @@ void render_difficulty_select() {
     guTranslate(transMtx, x, y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    gSPDisplayList(gDisplayListHead++, desc_bg_diff_diff_mesh_mesh);
+    Gfx *bg = menu_create_chaos_text_bg(DIFF_SELECT_X, DIFF_SELECT_Y, 74, 62, 217);
+    gSPDisplayList(gDisplayListHead++, bg);
 
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
     slowtext_draw_ortho_text(-24,  10, "Easy",       FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -491,7 +452,8 @@ void render_challenge_select() {
     guTranslate(transMtx, x, y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    gSPDisplayList(gDisplayListHead++, desc_bg_chal_chal_mesh_mesh);
+    Gfx *bg = menu_create_chaos_text_bg(CHAL_SELECT_X, CHAL_SELECT_Y, 74, 62, 217);
+    gSPDisplayList(gDisplayListHead++, bg);
 
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
     slowtext_draw_ortho_text(-24,  7, "Classic",   FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -582,7 +544,8 @@ void render_desc_field() {
     guTranslate(transMtx, x, y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    gSPDisplayList(gDisplayListHead++, desc_bg_fileselect_mesh_mesh);
+    Gfx *bg = menu_create_chaos_text_bg(SCREEN_CENTER_X, GM_SELECT_DESC_Y, 298, 70, 217);
+    gSPDisplayList(gDisplayListHead++, bg);
 
     switch(sGamemodeSelectMenu.menu.menuState) {
         case GM_SELECT_STATE_CONFIRM:
@@ -673,7 +636,6 @@ void render_gamemode_select() {
         gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
     }
     
-    scroll_gamemode_select_bg();
     render_difficulty_select();
     render_challenge_select();
     render_gm_start_game();

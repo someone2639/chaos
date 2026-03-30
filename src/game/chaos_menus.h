@@ -68,6 +68,8 @@ void menu_add_button_prompt(struct ButtonPromptList *list, enum MenuButtonPrompt
 void menu_render_button_prompt_list(s32 x, s32 y, struct ButtonPromptList *list);
 void menu_single_button_prompt(s32 x, s32 y, enum MenuButtonPrompt button, char *text, s32 alignLeft);
 
+Gfx *menu_create_chaos_text_bg(s32 bgx, s32 bgy, s32 width, s32 height, u8 opacity);
+
 void menu_start_button();
 void menu_end_button();
 void menu_draw_button(s32 x, s32 y, s32 button, s32 pressed);

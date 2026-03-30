@@ -765,41 +765,6 @@ void patch_bg_scroll() {
 	currentX += deltaX;	currentY += deltaY;
 }
 
-/*
-    Scrolls the vertex uvs for the descripton and extended description background meshes
-*/
-void desc_bg_scroll() {
-	int i = 0;
-	int count = 4;
-	int width = 64 * 0x20;
-	int height = 32 * 0x20;
-
-	static int currentX = 0;
-	int deltaX;
-	static int currentY = 0;
-	int deltaY;
-	Vtx *vertices = segmented_to_virtual(desc_bg_mesh_mesh_vtx_0);
-	Vtx *ext_vertices = segmented_to_virtual(ext_desc_bg_ext_mesh_mesh_vtx_0);
-
-	deltaX = (int)(0.1 * 0x20) % width;
-	deltaY = (int)(0.1 * 0x20) % height;
-
-	if (absi(currentX) > width) {
-		deltaX -= (int)(absi(currentX) / width) * width * signum_positive(deltaX);
-	}
-	if (absi(currentY) > height) {
-		deltaY -= (int)(absi(currentY) / height) * height * signum_positive(deltaY);
-	}
-
-	for (i = 0; i < count; i++) {
-		vertices[i].n.tc[0] += deltaX;
-		vertices[i].n.tc[1] += deltaY;
-		ext_vertices[i].n.tc[0] += deltaX;
-		ext_vertices[i].n.tc[1] += deltaY;
-	}
-	currentX += deltaX;	currentY += deltaY;
-}
-
 void render_select_patch_text(enum ChaosPatchSpecialEvent event) {
     f32 scale = gPatchSelectionMenu->selectPatchTextScale;
     f32 posX = gPatchSelectionMenu->selectPatchTextPos[0];
@@ -1201,7 +1166,8 @@ void render_lower_box(f32 x, f32 y) {
     guTranslate(transMtx, x, y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    gSPDisplayList(gDisplayListHead++, desc_bg_mesh_mesh);
+    Gfx *bg = menu_create_chaos_text_bg(PATCH_DESC_X, PATCH_DESC_Y, 298, 70, 217);
+    gSPDisplayList(gDisplayListHead++, bg);
 
     if(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_DRAW_LOWER_TEXT) {
         switch(gPatchSelectionMenu->menu.menuState) {
@@ -1256,7 +1222,8 @@ void render_extended_description() {
     guScale(scaleMtx, 1.0f, scale, 1.0f);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx),
             G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-    gSPDisplayList(gDisplayListHead++, ext_desc_bg_ext_mesh_mesh);
+    Gfx *bg = menu_create_chaos_text_bg(SCREEN_CENTER_X, SCREEN_CENTER_Y, 298, 218, 255);
+    gSPDisplayList(gDisplayListHead++, bg);
 
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
     if(pos->longDescription) {
@@ -1352,7 +1319,6 @@ void display_patch_selection_ui() {
         gDPSetRenderMode(gDisplayListHead++, G_RM_OPA_SURF, G_RM_OPA_SURF2);
         
         patch_bg_scroll();
-        desc_bg_scroll();
         create_dl_ortho_matrix(&gDisplayListHead);
 
         render_curtain_bg();

@@ -34,7 +34,7 @@
 
 #define TUTORIAL_ANIM_FRAMES    9
 #define TUTORIAL_DESC_START_Y   (-50)
-#define TUTORIAL_DESC_END_Y     (SCREEN_CENTER_Y + 5)
+#define TUTORIAL_DESC_END_Y     (46)
 
 static u8 inputStickFlags = 0;
 static s8 stickHistoryFrames = 0;
@@ -288,43 +288,13 @@ static void chstut_load_image(u8 *imgAddress) {
     dma_read(gChaosTutorialImgBuffer, (u8 *) imgAddress, (u8 *) imgAddress + (size_t) CHAOS_TUTORIAL_IMG_SIZE);
 }
 
-void chstut_bg_scroll(void) {
-	int i = 0;
-	int count = 4;
-	int width = 64 * 0x20;
-	int height = 32 * 0x20;
-
-	static int currentX = 0;
-	int deltaX;
-	static int currentY = 0;
-	int deltaY;
-	Vtx *vertices = segmented_to_virtual(chstut_bg_mesh_mesh_vtx_0);
-
-	deltaX = (int)(0.1 * 0x20) % width;
-	deltaY = (int)(0.1 * 0x20) % height;
-
-	if (absi(currentX) > width) {
-		deltaX -= (int)(absi(currentX) / width) * width * signum_positive(deltaX);
-	}
-	if (absi(currentY) > height) {
-		deltaY -= (int)(absi(currentY) / height) * height * signum_positive(deltaY);
-	}
-
-	for (i = 0; i < count; i++) {
-		vertices[i].n.tc[0] += deltaX;
-		vertices[i].n.tc[1] += deltaY;
-	}
-	currentX += deltaX;	currentY += deltaY;
-}
-
 static void chstut_render_tutorial_description(Gfx** dl) {
     Gfx* dlHead = *dl;
-    f32 scale = 1.0f;
     enum FastTextFont font = FT_FONT_SMALL_THIN;
 
     create_dl_translation_matrix(&dlHead, MENU_MTX_PUSH, SCREEN_CENTER_X, sTutorialDescY, 0.0f);
-    create_dl_scale_matrix(&dlHead, MENU_MTX_NOPUSH, 1.0f, scale, 1.0f);
-    gSPDisplayList(dlHead++, chstut_bg_mesh_mesh);
+    Gfx *bg = menu_create_chaos_text_bg(SCREEN_CENTER_X, TUTORIAL_DESC_END_Y, 298, 44, 217);
+    gSPDisplayList(dlHead++, bg);
 
     if (*dl == gDisplayListHead) {
         *dl = dlHead;
@@ -332,7 +302,7 @@ static void chstut_render_tutorial_description(Gfx** dl) {
 
     if (gChaosTutorialSlides[gChaosTutorialSlideIndex].description != NULL) {
         slowtext_setup_ortho_rendering(font);
-        slowtext_draw_ortho_text_linebreaks(-142, -77, DESC_STRING_WIDTH, gChaosTutorialSlides[gChaosTutorialSlideIndex].description,
+        slowtext_draw_ortho_text_linebreaks(-142, 3, DESC_STRING_WIDTH, gChaosTutorialSlides[gChaosTutorialSlideIndex].description,
             FT_FLAG_ALIGN_LEFT, 0xDF, 0xDF, 0xDF, 0xFF);
         slowtext_finished_rendering();
     }
@@ -488,7 +458,6 @@ void chstut_render_tutorial(void) {
     }
     chstut_render_scroll_arrows(&gDisplayListHead);
 
-    chstut_bg_scroll();
     chstut_render_tutorial_description(&gDisplayListHead);
 
     if(sChsTutState == CHS_TUT_STATE_DEFAULT) {

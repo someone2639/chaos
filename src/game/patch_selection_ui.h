@@ -18,7 +18,7 @@
 #define CARD_Y_BOTTOM       ((SCREEN_HEIGHT / 2) + 11)
 #define CARD_Y_MID          (CARD_Y_BOTTOM + ((CARD_Y_TOP - CARD_Y_BOTTOM) / 2))
 #define PATCH_DESC_X        (SCREEN_WIDTH / 2)
-#define PATCH_DESC_Y        58
+#define PATCH_DESC_Y        59
 #define PATCH_SEL_BUTTON_Y  (SCREEN_HEIGHT - 23)
 
 #define CARD_X_LEFT_START -85

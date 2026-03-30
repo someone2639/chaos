@@ -21,6 +21,7 @@
 #include "ingame_menu.h"
 #include "game_init.h"
 #include "object_helpers.h"
+#include "chaos_menus.h"
 
 /**
  * @file geo_misc.c
@@ -286,38 +287,8 @@ Gfx *geo_exec_cake_end_screen(s32 callContext, struct GraphNode *node, UNUSED f3
     return displayList;
 }
 
-void scroll_stats_bg() {
-	int i = 0;
-	int count = 4;
-	int width = 64 * 0x20;
-	int height = 32 * 0x20;
-
-	static int currentX = 0;
-	int deltaX;
-	static int currentY = 0;
-	int deltaY;
-	Vtx *vertices = segmented_to_virtual(stats_bg_stats_mesh_mesh_vtx_0);
-
-	deltaX = (int)(0.1 * 0x20) % width;
-	deltaY = (int)(0.1 * 0x20) % height;
-
-	if (absi(currentX) > width) {
-		deltaX -= (int)(absi(currentX) / width) * width * signum_positive(deltaX);
-	}
-	if (absi(currentY) > height) {
-		deltaY -= (int)(absi(currentY) / height) * height * signum_positive(deltaY);
-	}
-
-	for (i = 0; i < count; i++) {
-		vertices[i].n.tc[0] += deltaX;
-		vertices[i].n.tc[1] += deltaY;
-	}
-	currentX += deltaX;	currentY += deltaY;
-}
-
 Gfx *geo_chaos_cake_stats(s32 callContext, UNUSED struct GraphNode *node, UNUSED f32 mtx[4][4]) {
     if(callContext == GEO_CONTEXT_RENDER) {
-        scroll_stats_bg();
         if(sEndCakePhase >= 2) {
             create_dl_ortho_matrix(&gDisplayListHead);
 
@@ -335,13 +306,14 @@ Gfx *geo_chaos_cake_stats(s32 callContext, UNUSED struct GraphNode *node, UNUSED
             Mtx *transMtx = alloc_display_list(sizeof(Mtx));
             Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
 
-            guTranslate(transMtx, (SCREEN_WIDTH / 4), SCREEN_CENTER_Y, 0);
+            guTranslate(transMtx, (SCREEN_WIDTH / 4) + 4, SCREEN_CENTER_Y, 0);
             gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
                           G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
             guScale(scaleMtx, 1.0f, scale, 1.0f);
             gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx),
                     G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-            gSPDisplayList(gDisplayListHead++, stats_bg_stats_mesh_mesh);
+            Gfx *bg = menu_create_chaos_text_bg((SCREEN_WIDTH / 4) + 4, SCREEN_CENTER_Y, 150, 163, 217);
+            gSPDisplayList(gDisplayListHead++, bg);
             gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
             fasttext_setup_textrect_rendering(FT_FONT_VANILLA_SHADOW);

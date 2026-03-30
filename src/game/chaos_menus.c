@@ -7,6 +7,9 @@
 #include "segment2.h"
 #include "fasttext.h"
 #include "debug.h"
+#include "geo_misc.h"
+#include "engine/math_util.h"
+#include "object_helpers.h"
 
 struct ButtonTexturePair sButtonTextureTable[MENU_PROMPT_COUNT] = {
     [MENU_PROMPT_A_BUTTON]      = {.up = texture_icon_a_button,     .down = texture_icon_a_button_down},
@@ -253,4 +256,133 @@ void menu_single_button_prompt(s32 x, s32 y, enum MenuButtonPrompt button, char 
     fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
     fasttext_draw_texrect(x + offset, y, text, align, 0xFF, 0xFF, 0xFF, 0xFF);
     fasttext_finished_rendering();
+}
+
+Gfx chaos_text_bg_start[] = {
+	gsDPPipeSync(),
+	gsSPLoadGeometryMode(G_CULL_BACK | G_SHADING_SMOOTH),
+	gsDPSetCombineLERP(TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE, TEXEL0, 0, PRIMITIVE, 0, 0, 0, 0, PRIMITIVE),
+	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_DISABLE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 32, G_AC_NONE | G_ZS_PIXEL | AA_EN | IM_RD | CLR_ON_CVG | CVG_DST_WRAP | ZMODE_XLU | FORCE_BL | GBL_c1(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_MEM, G_BL_1MA) | GBL_c2(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_MEM, G_BL_1MA)),
+	gsSPTexture(65535, 65535, 0, 0, 1),
+	gsDPSetTextureImage(G_IM_FMT_I, G_IM_SIZ_8b_LOAD_BLOCK, 1, desc_bg_desc_bg_i8),
+	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_8b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
+	gsDPLoadBlock(7, 0, 0, 1023, 256),
+	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_8b, 8, 0, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 5, 0, G_TX_WRAP | G_TX_NOMIRROR, 6, 0),
+	gsDPSetTileSize(0, 0, 0, 252, 124),
+    gsSPEndDisplayList(),
+};
+
+Gfx chaos_text_bg_outer[] = {
+    gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_SHADING_SMOOTH),
+	gsDPPipeSync(),
+	gsDPSetCombineLERP(SHADE, 0, PRIMITIVE, 0, 0, 0, 0, 1, SHADE, 0, PRIMITIVE, 0, 0, 0, 0, 1),
+	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
+	gsDPSetPrimColor(0, 0, 255, 255, 255, 255),
+    gsSPEndDisplayList(),
+};
+
+Gfx chaos_text_bg_end[] = {
+	gsDPPipeSync(),
+	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_CD_MAGICSQ | G_AD_DISABLE | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
+	gsSPEndDisplayList(),
+};
+
+void scroll_chaos_text_bg_uvs(Vec2s uvlr, Vec2s uvur, Vec2s uvul, Vec2s uvll) {
+    int width = 128 * 0x20;
+	int height = 64 * 0x20;
+	int deltaX;
+	int deltaY;
+
+    deltaX = ((int)(0.05f * 0x20) % width) * gGlobalTimer;
+	deltaY = ((int)(0.1f * 0x20) % height) * gGlobalTimer;
+
+    if (absi(deltaX) > width) {
+		deltaX -= (int)(absi(deltaX) / width) * width * signum_positive(deltaX);
+	}
+	if (absi(deltaY) > height) {
+		deltaY -= (int)(absi(deltaY) / height) * height * signum_positive(deltaY);
+	}
+
+    uvlr[0] += deltaX;
+    uvlr[1] += deltaY;
+
+    uvur[0] += deltaX;
+    uvur[1] += deltaY;
+
+    uvul[0] += deltaX;
+    uvul[1] += deltaY;
+
+    uvll[0] += deltaX;
+    uvll[1] += deltaY;
+
+}
+
+/*
+    Calculates where the uvs of the chaos text background vertices should be
+*/
+void calc_chaos_text_bg_uv(Vec2s uv, s32 x, s32 y) {
+    f32 uvx, uvy;
+    f32 angSin = sins(((16) * 0x10000 / 360));
+    f32 angCos = coss(((16) * 0x10000 / 360));
+    
+    uvx = (x * angCos) - (-y * angSin);
+    uvy = (-y * angCos) + (x * angSin);
+
+    uvx *= 0.8f;
+    uvy *= 0.6f;
+
+    uv[0] = ((s16)(uvx * 32.f));
+    uv[1] = ((s16)(uvy * 32.f));
+}
+
+/*
+    Create the background box used for most text display in the Rogue Chaos menus. Centered on 0, 0.
+    The x/y coordinates are used to create a tiling effect when multiple backgrounds are
+    used in conjunction. These should be set to the final resting position of the background, though this
+    is only important if multiple backgrounds are used in the same menu scene.
+*/
+Gfx *menu_create_chaos_text_bg(s32 bgx, s32 bgy, s32 width, s32 height, u8 opacity) {
+    Vtx *vtxBuf = alloc_display_list(sizeof(Vtx) * 8);
+    s32 halfw = width / 2;
+    s32 halfh = height / 2;
+
+    Vec2s uvlr; calc_chaos_text_bg_uv(uvlr, bgx - halfw + 3, bgy + halfh - 2);
+    Vec2s uvur; calc_chaos_text_bg_uv(uvur, bgx - halfw + 3, bgy - halfh + 2);
+    Vec2s uvul; calc_chaos_text_bg_uv(uvul, bgx + halfw - 3, bgy - halfh + 2);
+    Vec2s uvll; calc_chaos_text_bg_uv(uvll, bgx + halfw - 3, bgy + halfh - 2);
+
+    scroll_chaos_text_bg_uvs(uvlr, uvur, uvul, uvll);
+    
+    // Inner
+    make_vertex(vtxBuf, 0, -halfw + 3, halfh - 2, 0, uvlr[0], uvlr[1], 0xFF, 0xFF, 0xFF, 0xFF);
+    make_vertex(vtxBuf, 1, -halfw + 3, -halfh + 2, 0, uvur[0], uvur[1], 0xFF, 0xFF, 0xFF, 0xFF);
+    make_vertex(vtxBuf, 2, halfw - 3, -halfh + 2, 0, uvul[0], uvul[1], 0xFF, 0xFF, 0xFF, 0xFF);
+    make_vertex(vtxBuf, 3, halfw - 3, halfh - 2, 0, uvll[0], uvll[1], 0xFF, 0xFF, 0xFF, 0xFF);
+
+    // Outer
+    make_vertex(vtxBuf, 4, -halfw, halfh, 0, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF);
+    make_vertex(vtxBuf, 5, halfw, halfh, 0, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF);
+    make_vertex(vtxBuf, 6, halfw, -halfh, 0, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF);
+    make_vertex(vtxBuf, 7, -halfw, -halfh, 0, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF);
+
+    Gfx *bg = alloc_display_list(sizeof(Gfx) * 11);
+    Gfx *head = bg;
+
+    // Draw border
+	gDPSetPrimColor(head++, 0, 0, 25, 25, 25, opacity);
+    gSPDisplayList(head++, chaos_text_bg_start);
+    gSPVertex(head++, vtxBuf, 8, 0);
+    gSP2Triangles(head++, 0, 1, 2, 0, 0, 2, 3, 0);
+
+    // Draw inner rectangle
+    gSPDisplayList(head++, chaos_text_bg_outer);
+    gSP2Triangles(head++, 1, 0, 4, 0, 0, 5, 4, 0);
+    gSP2Triangles(head++, 0, 3, 5, 0, 3, 6, 5, 0);
+    gSP2Triangles(head++, 3, 2, 6, 0, 2, 7, 6, 0);
+    gSP2Triangles(head++, 2, 1, 7, 0, 1, 4, 7, 0);
+    gSPDisplayList(head++, chaos_text_bg_end);
+    gSPEndDisplayList(head++);
+
+    return bg;
 }

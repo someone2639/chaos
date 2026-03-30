@@ -175,42 +175,6 @@ void scroll_mini_patch_cards() {
 }
 
 /*
-    Scrolls the backgrounds for the selected patch description and 
-    the extended descripton in the active patch menu.
-*/
-void scroll_act_desc_bg() {
-    int i = 0;
-	int count = 4;
-	int width = 64 * 0x20;
-	int height = 32 * 0x20;
-
-	static int currentX = 0;
-	int deltaX;
-	static int currentY = 0;
-	int deltaY;
-	Vtx *vertices = segmented_to_virtual(act_desc_bg_act_desc_mesh_mesh_vtx_0);
-	Vtx *ext_vertices = segmented_to_virtual(ext_desc_bg_ext_mesh_mesh_vtx_0);
-
-	deltaX = (int)(0.1 * 0x20) % width;
-	deltaY = (int)(0.1 * 0x20) % height;
-
-	if (absi(currentX) > width) {
-		deltaX -= (int)(absi(currentX) / width) * width * signum_positive(deltaX);
-	}
-	if (absi(currentY) > height) {
-		deltaY -= (int)(absi(currentY) / height) * height * signum_positive(deltaY);
-	}
-
-	for (i = 0; i < count; i++) {
-		vertices[i].n.tc[0] += deltaX;
-		vertices[i].n.tc[1] += deltaY;
-		ext_vertices[i].n.tc[0] += deltaX;
-		ext_vertices[i].n.tc[1] += deltaY;
-	}
-	currentX += deltaX;	currentY += deltaY;
-}
-
-/*
     Sets the default settings for the active patches menu
 */
 void init_active_patches_menu() {
@@ -246,7 +210,8 @@ void draw_active_patch_ext_desc(struct ChaosActiveEntry *patch) {
     guScale(scaleMtx, 1.0f, scale, 1.0f);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx),
             G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-    gSPDisplayList(gDisplayListHead++, ext_desc_bg_ext_mesh_mesh);
+    Gfx *bg = menu_create_chaos_text_bg(SCREEN_CENTER_X, SCREEN_CENTER_Y, 298, 218, 255);
+    gSPDisplayList(gDisplayListHead++, bg);
 
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
     slowtext_draw_ortho_text_linebreaks(-142, 87, DESC_STRING_WIDTH, patchDesc, FT_FLAG_ALIGN_LEFT, 
@@ -264,7 +229,8 @@ void draw_default_patch_desc(f32 x, f32 y) {
     guTranslate(transMtx, x, y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    gSPDisplayList(gDisplayListHead++, act_desc_bg_act_desc_mesh_mesh);
+    Gfx *bg = menu_create_chaos_text_bg(ACTIVE_PATCH_DESC_X, ACTIVE_PATCH_DESC_Y, 136, 152, 217);
+    gSPDisplayList(gDisplayListHead++, bg);
 
     slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
     slowtext_draw_ortho_text_linebreaks(-62, 55, ACT_DESC_WIDTH, "Erm... why don't you play the game first, buddy?", FT_FLAG_ALIGN_LEFT, 
@@ -332,7 +298,8 @@ void draw_active_patch_desc(f32 x, f32 y, struct ChaosActiveEntry *patch) {
     guTranslate(transMtx, x, y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    gSPDisplayList(gDisplayListHead++, act_desc_bg_act_desc_mesh_mesh);
+    Gfx *bg = menu_create_chaos_text_bg(ACTIVE_PATCH_DESC_X, ACTIVE_PATCH_DESC_Y, 136, 152, 217);
+    gSPDisplayList(gDisplayListHead++, bg);
 
     draw_patch_quality(patchInfo->severity);
 
@@ -408,7 +375,6 @@ void render_active_patches() {
     }
 
     scroll_mini_patch_cards();
-    scroll_act_desc_bg();
 
     //Draw default message if no patches available
     if (gChaosActiveEntryCount == NULL || *gChaosActiveEntryCount == 0) {
@@ -741,38 +707,6 @@ void update_active_patches_menu() {
 */
 
 /*
-    Scrolls the background for the settings panel
-*/
-void scroll_settings_panel() {
-    int i = 0;
-	int count = 4;
-	int width = 64 * 0x20;
-	int height = 32 * 0x20;
-
-	static int currentX = 0;
-	int deltaX;
-	static int currentY = 0;
-	int deltaY;
-	Vtx *vertices = segmented_to_virtual(opt_bg_opt_mesh_mesh_vtx_0);
-
-	deltaX = (int)(0.1 * 0x20) % width;
-	deltaY = (int)(0.1 * 0x20) % height;
-
-	if (absi(currentX) > width) {
-		deltaX -= (int)(absi(currentX) / width) * width * signum_positive(deltaX);
-	}
-	if (absi(currentY) > height) {
-		deltaY -= (int)(absi(currentY) / height) * height * signum_positive(deltaY);
-	}
-
-	for (i = 0; i < count; i++) {
-		vertices[i].n.tc[0] += deltaX;
-		vertices[i].n.tc[1] += deltaY;
-	}
-	currentX += deltaX;	currentY += deltaY;
-}
-
-/*
     Sets the default settings for the settings panel
 */
 void init_setings_panel() {
@@ -788,8 +722,6 @@ void init_setings_panel() {
     Main rendering function for the settings panel
 */
 void render_settings_panel() {
-    scroll_settings_panel();
-
     Mtx *transMtx = alloc_display_list(sizeof(Mtx) * 2);
     Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
     f32 x = 42;
@@ -822,7 +754,8 @@ void render_settings_panel() {
     guTranslate(transMtx, x, y, 0);
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    gSPDisplayList(gDisplayListHead++, opt_bg_opt_mesh_mesh);
+    Gfx *bg = menu_create_chaos_text_bg(x, SETTINGS_PANEL_Y, 74, 92, 217);
+    gSPDisplayList(gDisplayListHead++, bg);
 
     slowtext_setup_ortho_rendering(FT_FONT_SMALL_BOLD);
     slowtext_draw_ortho_text(0, 25, "Aspect\nRatio:", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
