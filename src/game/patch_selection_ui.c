@@ -1343,20 +1343,9 @@ void display_patch_selection_ui() {
     cursorY = gPatchSelectionMenu->patchCards[selectedPatch].layoutPos[1];
 
     if(gPatchSelectionMenu->menu.menuState != PATCH_SELECT_STATE_CLOSED) {
-        // Coverage meme
-        gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
-        gDPSetRenderMode(gDisplayListHead++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
-        gDPSetCombineLERP(gDisplayListHead++, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT);
-        gDPSetFillColor(gDisplayListHead++, (GPACK_RGBA5551(0, 0, 0, 1) << 16) | GPACK_RGBA5551(0, 0, 0, 1));
-        gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 0);
-        gDPFillRectangle(gDisplayListHead++, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        gDPPipeSync(gDisplayListHead++);
-        gDPSetRenderMode(gDisplayListHead++, G_RM_OPA_SURF, G_RM_OPA_SURF2);
-        
         patch_bg_scroll();
         create_dl_ortho_matrix(&gDisplayListHead);
 
-        render_cringe_blinders();
         render_curtain_bg();
 
         if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) {
@@ -1391,6 +1380,8 @@ void display_patch_selection_ui() {
         if(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_DRAW_CURSOR) {
             render_patch_selection_cursor(cursorX, cursorY);
         }
+        
+        render_cringe_blinders();
 
         if(!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_HALT_INPUT)) {
             render_patch_select_button_prompts();

@@ -12,7 +12,7 @@
 #define EFFECT_COLOR_BAD 1
 
 #define CARD_X_LEFT         ((SCREEN_WIDTH / 3) - 25)
-#define CARD_X_RIGHT        (((SCREEN_WIDTH / 3) * 2) + 25)
+#define CARD_X_RIGHT        (((SCREEN_WIDTH / 3) * 2) + 26)
 #define CARD_X_MID          (CARD_X_LEFT + ((CARD_X_RIGHT - CARD_X_LEFT) / 2))
 #define CARD_Y_TOP          (SCREEN_HEIGHT - 42)
 #define CARD_Y_BOTTOM       ((SCREEN_HEIGHT / 2) + 11)
@@ -21,8 +21,8 @@
 #define PATCH_DESC_Y        59
 #define PATCH_SEL_BUTTON_Y  (SCREEN_HEIGHT - 23)
 
-#define CARD_X_LEFT_START -85
-#define CARD_X_RIGHT_START (SCREEN_WIDTH + 85)
+#define CARD_X_LEFT_START -87
+#define CARD_X_RIGHT_START (SCREEN_WIDTH + 87)
 #define CARD_1_X_START      CARD_X_LEFT_START
 #define CARD_2_X_START      (CARD_X_RIGHT_START + 100)
 #define CARD_3_X_START      (CARD_X_LEFT_START - 200)
