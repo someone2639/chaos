@@ -12,6 +12,7 @@
 #include "object_list_processor.h"
 #include "spawn_object.h"
 #include "types.h"
+#include "debug.h"
 
 /**
  * An unused linked list struct that seems to have been replaced by ObjectNode.
@@ -219,8 +220,7 @@ struct Object *allocate_object(struct ObjectNode *objList) {
         // If no unimportant object exists, then the object pool is exhausted.
         if (unimportantObj == NULL) {
             // We've met with a terrible fate.
-            while (TRUE) {
-            }
+            error("No unallocated objects remaining in object pool!");
         } else {
             // If an unimportant object does exist, unload it and take its slot.
             unload_object(unimportantObj);
@@ -243,13 +243,13 @@ struct Object *allocate_object(struct ObjectNode *objList) {
     obj->numCollidedObjs = 0;
 
 #if IS_64_BIT
-    for (i = 0; i < 0x50; i++) {
+    for (i = 0; i < ARRAY_COUNT(obj->rawData.asS32); i++) {
         obj->rawData.asS32[i] = 0;
         obj->ptrData.asVoidPtr[i] = NULL;
     }
 #else
     // -O2 needs everything until = on the same line
-    for (i = 0; i < 0x50; i++) obj->rawData.asS32[i] = 0;
+    for (i = 0; i < ARRAY_COUNT(obj->rawData.asS32); i++) obj->rawData.asS32[i] = 0;
 #endif
 
     obj->unused1 = 0;

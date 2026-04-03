@@ -39,6 +39,8 @@ void chs_act_unlock_cannons(void);
 u8 chs_cond_unlock_cannons(void);
 
 // Gravity Modifiers
+u8 chs_cond_gravity_decrease(void);
+u8 chs_cond_gravity_increase(void);
 void chs_act_gravity_decrease(void);
 void chs_act_gravity_increase(void);
 void chs_deact_gravity_decrease(void);

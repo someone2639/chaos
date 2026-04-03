@@ -266,6 +266,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 10,
 
+        .conditionalFunc    = chs_cond_gravity_decrease,
         .activatedInitFunc  = chs_act_gravity_decrease,
         .deactivationFunc   = chs_deact_gravity_decrease,
 
@@ -282,6 +283,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 10,
         .durationImpossible = 12,
 
+        .conditionalFunc    = chs_cond_gravity_increase,
         .activatedInitFunc  = chs_act_gravity_increase,
         .deactivationFunc   = chs_deact_gravity_increase,
 
