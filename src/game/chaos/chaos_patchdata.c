@@ -1311,8 +1311,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc    = chs_update_l_to_levitate,
 
         .name               = "L to Levitate",
-        .shortDescription   = "Press L to levitate! Each L press counts as a separate use.",
-        .longDescription    = "While levitating, Mario may only barely move horizontally until the L button has been released. Make sure to line Mario up before carelessly wasting an L press!"
+        .shortDescription   = "Press L to levitate! Each use lasts until the next time Mario touches the ground.",
     },
     [CHAOS_PATCH_DEBUG_FREE_MOVE] = {
         .durationType       = CHAOS_DURATION_USE_COUNT,
@@ -1326,7 +1325,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Debug Free Move",
         .shortDescription   = "Enables one use of debug free move. Press D-Pad Up to activate, and A to exit.",
-        .longDescription    = "While using debug free move, D-Pad Up and D-Pad Down may be used to move up or down. Hold B to increase your movement speed, or Z to decrease it. Mario is (mostly) invulnerable while this mode is active!"
+        .longDescription    = "While using debug free move, D-Pad Up and D-Pad Down may be used to move up or down. Hold B to increase your movement speed, or Z to decrease it. Mario is (mostly) invulnerable while this mode is active!",
     },
 
 // Chaos Modifiers

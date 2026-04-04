@@ -1890,6 +1890,17 @@ s32 execute_mario_action(UNUSED struct Object *o) {
         mario_handle_special_floors(gMarioState);
         mario_process_interactions(gMarioState);
 
+        // L to levitate
+        if (gMarioState->chaosStateFlags & CHAOS_STATE_L_TO_LEVITATE) {
+            if (!chs_can_mario_levitate()) { 
+                gMarioState->chaosStateFlags &= ~CHAOS_STATE_L_TO_LEVITATE;
+            } else if (gPlayer1Controller->buttonDown & L_TRIG) {
+                gMarioState->vel[1] = 25.0f;
+            } else if (!(gMarioState->action & ACT_FLAG_AIR)) {
+                gMarioState->chaosStateFlags &= ~CHAOS_STATE_L_TO_LEVITATE;
+            }
+        }
+
         // If Mario is OOB, stop executing actions.
         if (gMarioState->floor == NULL) {
             gMarioState->controller->stickX = tmpStickX;
@@ -2059,6 +2070,7 @@ void init_mario(void) {
 
     gMarioState->bonkKill = FALSE;
     gMarioState->bonkKillTimer = 0;
+    gMarioState->chaosStateFlags = CHAOS_STATE_NONE;
     gChsTrollDialog = FALSE;
 
     chaos_area_update();
@@ -2098,6 +2110,7 @@ void init_mario_from_save_file(void) {
     gMarioState->size = 1.0f;
     gMarioState->bonkKill = FALSE;
     gMarioState->bonkKillTimer = 0;
+    gMarioState->chaosStateFlags = CHAOS_STATE_NONE;
 
     save_file_add_game_load();
 }

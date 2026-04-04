@@ -148,6 +148,7 @@ void chs_act_lower_time_limit(void);
 void chs_deact_lower_time_limit(void);
 
 // Cheats
+u8 chs_can_mario_levitate(void);
 void chs_update_l_to_levitate(void);
 u8 chs_cond_l_to_levitate(void);
 void chs_update_debug_free_move(void);

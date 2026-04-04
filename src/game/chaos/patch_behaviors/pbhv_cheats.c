@@ -21,18 +21,26 @@ u8 chs_cond_l_to_levitate(void) {
     }
 }
 
-void chs_update_l_to_levitate(void) {
+u8 chs_can_mario_levitate(void) {
     s32 group = (gMarioState->action & ACT_GROUP_MASK);
-    if (gPlayer1Controller->buttonPressed & L_TRIG 
-            && !(gMarioState->action & ACT_FLAG_INTANGIBLE)
+    if (!(gMarioState->action & ACT_FLAG_INTANGIBLE)
             && group != ACT_GROUP_CUTSCENE
             && group != ACT_GROUP_SUBMERGED) {
-        if (gMarioState->action != ACT_JUMP) {
-            set_mario_action(gMarioState, ACT_JUMP, 1);
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+void chs_update_l_to_levitate(void) {
+    if ((gPlayer1Controller->buttonPressed & L_TRIG) && chs_can_mario_levitate() && !(gMarioState->action & ACT_FLAG_INVULNERABLE)) {
+        if (!(gMarioState->chaosStateFlags & CHAOS_STATE_L_TO_LEVITATE)) {
+            gMarioState->chaosStateFlags |= CHAOS_STATE_L_TO_LEVITATE;
             chaos_decrement_patch_usage(CHAOS_PATCH_L_TO_LEVITATE);
-        } else if (gMarioState->actionArg != 1) {
-            gMarioState->actionArg = 1;
-            chaos_decrement_patch_usage(CHAOS_PATCH_L_TO_LEVITATE);
+
+            if (!(gMarioState->action & ACT_FLAG_AIR)) {
+                set_mario_action(gMarioState, ACT_JUMP, 0);
+            }
         }
     }
 }

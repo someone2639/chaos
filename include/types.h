@@ -74,6 +74,11 @@ enum SpTaskState {
     SPTASK_STATE_FINISHED_DP
 };
 
+enum ChaosStateFlags {
+    CHAOS_STATE_NONE = 0u,
+    CHAOS_STATE_L_TO_LEVITATE = (1u << 0),
+};
+
 struct SPTask {
     /*0x00*/ OSTask task;
     /*0x40*/ OSMesgQueue *msgqueue;
@@ -324,17 +329,18 @@ struct MarioState {
     /*0xC4*/ f32 unkC4;
 
     // CUSTOM
-    /*0xC8*/ f32 gravity;
-    /*0xCC*/ s8 hundredCoinOffset;
-    /*0xCD*/ u8 usedSpin;
-    /*0xCE*/ u8 spinTimer;
-    /*0xCF*/ s8 extraDamageEnemy;
-    /*0xF0*/ s8 extraDamageLava;
-    /*0xF2*/ s16 maxHealth;
-    /*0xF6*/ f32 size;
-             Vec3f safePos;
-             u8 bonkKill;
-             u8 bonkKillTimer;
+    /*0xC8*/ enum ChaosStateFlags chaosStateFlags;
+    /*0xCC*/ f32 gravity;
+    /*0xD0*/ s8 hundredCoinOffset;
+    /*0xD1*/ u8 usedSpin;
+    /*0xD2*/ u8 spinTimer;
+    /*0xD3*/ s8 extraDamageEnemy;
+    /*0xD4*/ s8 extraDamageLava;
+    /*0xD6*/ s16 maxHealth;
+    /*0xD8*/ f32 size;
+    /*0xDC*/ Vec3f safePos;
+    /*0xE8*/ u8 bonkKill;
+    /*0xE9*/ u8 bonkKillTimer;
 };
 
 #endif // TYPES_H
