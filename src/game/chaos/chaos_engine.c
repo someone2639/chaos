@@ -991,6 +991,7 @@ void chaos_init(void) {
     }
 
     chaos_sort_active_patches();
+    chaosmsg_init();
 }
 
 void chaos_area_update(void) {

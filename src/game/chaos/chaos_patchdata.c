@@ -1328,18 +1328,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription   = "Enables one use of debug free move. Press D-Pad Up to activate, and A to exit.",
         .longDescription    = "While using debug free move, D-Pad Up and D-Pad Down may be used to move up or down. Hold B to increase your movement speed, or Z to decrease it. Mario is (mostly) invulnerable while this mode is active!"
     },
-    [CHAOS_PATCH_LEVEL_RESET] = {
-        .durationType       = CHAOS_DURATION_USE_COUNT,
-        .effectType         = CHAOS_EFFECT_POSITIVE,
-        .severity           = 1,
-        .isStackable        = TRUE,
-        .duration           = 1,
-
-        .conditionalFunc    = chs_cond_level_reset,
-
-        .name               = "Get Out of GBJ Free Card",
-        .shortDescription   = "Gain an on-command level reset. Accessible from the pause menu while in a course.",
-    },
 
 // Chaos Modifiers
     [CHAOS_PATCH_REMOVE_NEGATIVE_PATCH] = {

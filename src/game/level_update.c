@@ -236,7 +236,7 @@ u32 pressed_pause(void) {
 
 void set_play_mode(s16 playMode) {
     if (playMode == PLAY_MODE_SELECT_PATCH && gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE && gChaosBlueStarLastCollected) {
-        chaosmsg_print(CHAOS_PATCH_NONE, "@AF4F4F--You collected a duplicate star or key on Impossible difficulty. Patches will not be cycled!@--------");
+        chaosmsg_print(CHAOS_PATCH_NONE, "@BF5F5F--You collected a duplicate star or key on @5F5F5F--Impossible@BF5F5F-- difficulty. Patches will not be cycled!@--------");
         play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
         gChaosBlueStarLastCollected = FALSE;
         return;
@@ -1222,7 +1222,6 @@ s32 play_mode_paused(void) {
         gCameraMovementFlags &= ~CAM_MOVE_PAUSE_SCREEN;
         set_play_mode(PLAY_MODE_NORMAL);
     } else if (gMenuOptSelectIndex == MENU_OPT_RESET) {
-        chaos_decrement_patch_usage(CHAOS_PATCH_LEVEL_RESET);
         level_trigger_warp(gMarioState, WARP_OP_LEVEL_RESET);
         raise_background_noise(1);
         gCameraMovementFlags &= ~CAM_MOVE_PAUSE_SCREEN;

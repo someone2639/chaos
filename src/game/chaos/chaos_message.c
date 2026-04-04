@@ -171,7 +171,17 @@ void chaosmsg_render(void) {
     }
 }
 
-void render_message_log_recap() {
+void chaosmsg_init(void) {
+    bzero(chsStrParams, sizeof(chsStrParams));
+    chsStrIter = 0;
+    waitFrames = 0;
+
+    chaosmsg_print(CHAOS_PATCH_NONE, "@AFAFAF--No messages.@--------");
+    chsStrIter = 0;
+    chsStrParams[chsStrIter].status = CHSMSG_INACTIVE;
+}
+
+void chaosmsg_display_log_recap(void) {
     s32 printX = BASE_X;
     s32 printY;
     struct ChaosMessageParams *params;

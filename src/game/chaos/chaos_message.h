@@ -15,6 +15,9 @@
 #define chaosmsg_print_debug(...)
 #endif
 
+// Initialize chaos message system
+void chaosmsg_init(void);
+
 // Print a persistent chaos-related message alert to the screen. This only needs to be invoked once (i.e. not every frame).
 // A patch ID may optionally be passed as an argument, along with a string that contains an instance of "%s" in it.
 // Passing "%s" will apply the name and positive/negative color of the input patch ID appropriately.
@@ -25,4 +28,4 @@ void chaosmsg_print(enum ChaosPatchID patchId, const char *str);
 void chaosmsg_render(void);
 
 // Show recap of previous messages
-void render_message_log_recap();
+void chaosmsg_display_log_recap(void);

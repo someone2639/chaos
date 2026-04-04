@@ -2324,11 +2324,6 @@ void render_bgmusic_setting(void) {
     }
 }
 
-void render_view_patches_prompt(void) {
-
-    
-}
-
 void handle_page_switch_inputs(void) {
     if (gPlayer1Controller->buttonPressed & L_TRIG) {
         init_setings_panel();
@@ -2336,12 +2331,14 @@ void handle_page_switch_inputs(void) {
         init_active_patches_menu();
     } else if (gPlayer1Controller->buttonPressed & Z_TRIG) {
         sShowMessageLogRecap = TRUE;
+        play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
     }
 }
 
-void handle_mesage_log_inputs() {
+void handle_message_log_inputs() {
     if (gPlayer1Controller->buttonPressed & (Z_TRIG | B_BUTTON | A_BUTTON | START_BUTTON)) {
         sShowMessageLogRecap = FALSE;
+        play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
     }
 }
 
@@ -2561,23 +2558,23 @@ void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) {
     u8 textExitCourseWithDeath[] = { TEXT_EXIT_COURSE_WITH_DEATH };
     u8 textResign[] = { TEXT_RESIGN };
     u8 textCameraAngleR[] = { TEXT_CAMERA_ANGLE_R };
-    u8 textResetLevel[] = { TEXT_RESET_LEVEL };
+    // u8 textResetLevel[] = { TEXT_RESET_LEVEL };
 #endif
 
     s32 lvlResetOffset = 0;
     s32 numPauseOptions = 3;
     s32 camAngleIndex = MENU_OPT_3;
-    s32 lvlResetActive = chaos_check_if_patch_active(CHAOS_PATCH_LEVEL_RESET);
+    // s32 lvlResetActive;
     
     gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
 
-    if(lvlResetActive) {
-        lvlResetOffset = 15;
-        numPauseOptions = 4;
-        camAngleIndex = MENU_OPT_4;
-        print_generic_string(x + 10, y - 33, LANGUAGE_ARRAY(textResetLevel));
-    }
+    // if(lvlResetActive) {
+    //     lvlResetOffset = 15;
+    //     numPauseOptions = 4;
+    //     camAngleIndex = MENU_OPT_4;
+    //     print_generic_string(x + 10, y - 33, LANGUAGE_ARRAY(textResetLevel));
+    // }
 
     if(!(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE) && !(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE)) {
         handle_menu_scrolling(MENU_SCROLL_VERTICAL, index, 1, numPauseOptions);
@@ -2619,11 +2616,11 @@ void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) {
 
     if (*index == camAngleIndex) {
         render_pause_camera_options(x - 42, y - 42 - lvlResetOffset, &gDialogCameraAngleIndex, 110);
-        if(lvlResetActive) {
-            sPauseShowVerText = FALSE;
-        } else {
+        // if(lvlResetActive) {
+        //     sPauseShowVerText = FALSE;
+        // } else {
             sPauseShowVerText = TRUE;
-        }
+        // }
     } else {
         sPauseShowVerText = TRUE;
     }
@@ -2847,8 +2844,8 @@ s16 render_pause_courses_and_castle(void) {
 
     if (sShowMessageLogRecap) {
         shade_screen();
-        render_message_log_recap();
-        handle_mesage_log_inputs();
+        chaosmsg_display_log_recap();
+        handle_message_log_inputs();
         return 0;
     }
 
@@ -2901,8 +2898,8 @@ s16 render_pause_courses_and_castle(void) {
 
                 if (gDialogLineNum == MENU_OPT_EXIT_COURSE) {
                     index = gDialogLineNum;
-                } else if (gDialogLineNum == MENU_OPT_RESET && chaos_check_if_patch_active(CHAOS_PATCH_LEVEL_RESET)) {
-                    index = gDialogLineNum;
+                // } else if (gDialogLineNum == MENU_OPT_RESET) {
+                //     index = gDialogLineNum;
                 } else { // MENU_OPT_CONTINUE or MENU_OPT_CAMERA_ANGLE_R
                     index = MENU_OPT_DEFAULT;
                 }
