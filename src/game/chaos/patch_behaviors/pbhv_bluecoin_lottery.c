@@ -25,12 +25,13 @@ u32 slot_nextstate = 0;
 u32 slot_timer = 0;
 struct Object *currCoin = NULL;
 
-static f32 chanceroll = 0;
-#define CHANCE 0.03f
+static s32 shouldWinSlots = FALSE;
+#define WIN_CHANCE 0.04f
 
 #define OFFSCREEN_POS -50.0f
 static f32 globalY = OFFSCREEN_POS;
-u32 timers[NUM_SLOTS] = {15, 23, 31};
+u32 timers[NUM_SLOTS] = {16, 24, 32};
+u32 speeds[NUM_SLOTS];
 u16 rotations[NUM_SLOTS];
 
 enum SlotStates {
@@ -84,19 +85,20 @@ u32 interact_coin_delayed(struct MarioState *m, struct Object *obj) {
 void init_slots(struct Object *oo, f32 chance) {
     globalY = OFFSCREEN_POS;
     currCoin = oo;
-    chanceroll = chance;
+    shouldWinSlots = (chance < WIN_CHANCE);
 
     if (!currCoin) {
         return;
     }
 
     if (!COURSE_IS_MAIN_COURSE(gCurrCourseNum)) {
-        chanceroll = 1;
+        shouldWinSlots = FALSE;
     }
 
     slot_nextstate = S_GO;
     for (int i = 0; i < NUM_SLOTS; i++) {
-        rotations[i] = 0;
+        rotations[i] = 30;
+        speeds[i] = (random_u16() % 12) + 26;
     }
 }
 
@@ -130,6 +132,9 @@ void slot_draw(int timer, int x, int y) {
 }
 
 void drawslots() {
+    s32 win;
+    s32 winningNumber;
+
     switch (slot_state) {
         case S_STANDBY: break;
         case S_GO:
@@ -137,31 +142,71 @@ void drawslots() {
             slot_nextstate = S_SHOWUP;
             break;
         case S_SHOWUP:
+            if (slot_timer == 0) {
+                play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
+            }
             globalY = approach_f32_asymptotic(globalY, 30.0f, 0.25f);
             if (slot_timer > 10) {
                 slot_nextstate = S_ROLL;
             }
             break;
         case S_ROLL:
-            for (int i = 0; i < NUM_SLOTS; i++) {
-                if (slot_timer > timers[i]) {
-                    if (chanceroll < CHANCE) {
-                        rotations[i] = 90;
+            if (slot_timer == 0) {
+                win = TRUE;
+
+                for (int i = 0; i < NUM_SLOTS; i++) {
+                    s32 generatedNumber = (random_u16() % 6); // Generate landing number at random
+                    if (i == 0) {
+                        winningNumber = generatedNumber;
+                    } else if (generatedNumber != winningNumber) {
+                        win = FALSE;
+                    }
+
+                    // Precalculation to determine exactly where final slots will land
+                    rotations[i] = 360 - ((speeds[i] * timers[i]) % 360);
+
+                    if (shouldWinSlots) {
+                        winningNumber = 1; // Blue coin number (but the rewrite will allow this to just be anything; remove this line if ever desirable)
+                        generatedNumber = winningNumber;
                     } else {
-                        if (((rotations[i] + 30) % 60) > 0) {
-                            rotations[i] -= ((rotations[i] + 30) % 60);
-                        } 
+                        // Rig the slots for guaranteed loss
+                        if (win && i == NUM_SLOTS - 1) {
+                            if (random_u16() % 2 == 0) {
+                                generatedNumber = (generatedNumber + 1) % 6;
+                            } else {
+                                generatedNumber = (generatedNumber + (6 - 1)) % 6;
+                            }
+                        }
                     }
-                    if (i == NUM_SLOTS - 1) {
-                        slot_nextstate = S_STOP;
-                    }
-                } else {
-                    rotations[i] = (60 * i) + (gGlobalTimer * 32);
+
+                    rotations[i] = (rotations[i] + (generatedNumber * 60) + 30) % 360;
                 }
             }
+
+            for (int i = 0; i < NUM_SLOTS; i++) {
+                if (slot_timer < timers[i]) {
+                    rotations[i] = (rotations[i] + speeds[i]) % 360;
+                    if (slot_timer == (timers[i] - 1)) {
+                        play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
+                    }
+                } else if (i == NUM_SLOTS - 1) {
+                    slot_nextstate = S_STOP;
+                }
+            }
+
             break;
         case S_STOP:
-            if (rotations[NUM_SLOTS - 1] == 90) {
+            // Determine if slots were won (in the unlikely case rigging logic is somehow broken)
+            win = TRUE;
+            winningNumber = (rotations[0] / 60) % 6;
+            for (int i = 1; i < NUM_SLOTS; i++) {
+                if (winningNumber != (rotations[i] / 60) % 6) {
+                    win = FALSE;
+                    break;
+                }
+            }
+
+            if (win) {
                 currCoin->oDamageOrCoinValue = 100;
                 if (slot_timer == 0) {
                     play_sound(SOUND_GENERAL2_RIGHT_ANSWER, gGlobalSoundSource);
@@ -169,7 +214,7 @@ void drawslots() {
             } else {
                 currCoin->oDamageOrCoinValue = 5;
                 if (slot_timer == 0) {
-                    play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
+                    play_sound(SOUND_GENERAL2_CAMERA_BUZZ, gGlobalSoundSource);
                 }
             }
 
@@ -178,6 +223,9 @@ void drawslots() {
             }
             break;
         case S_SHOWDOWN:
+            if (slot_timer == 0) {
+                play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
+            }
             globalY = approach_f32_asymptotic(globalY, OFFSCREEN_POS, 0.25f);
             if (slot_timer > 10) {
                 slot_nextstate = S_FINISH;

@@ -2851,7 +2851,7 @@ sound_ref .sound_general_grand_star
 sound_ref .sound_general_grand_star_jump
 sound_ref .sound_general_boat_rock
 sound_ref .sound_general_vanish_sfx
-sound_ref .sound_menu_enter_hole
+sound_ref .sound_menu_camera_buzz
 sound_ref .sound_general_red_coin
 sound_ref .sound_general_birds_fly_away
 sound_ref .sound_general_right_answer
