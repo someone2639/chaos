@@ -53,20 +53,32 @@ u8 chs_calculate_max_heal_counter(void) {
 }
 
 u8 chs_cond_health_up(void) {
-    return (gMarioState->maxHealth < 0x1000);
+    return (gMarioState->maxHealth < 0x1080);
 }
 
 void chs_act_health_up(void) {
+    if (gChaosImmediateActDeact) {
+        return;
+    }
+
     gMarioState->maxHealth += 0x100;
     gMarioState->health += 0x100;
-    gHudDisplay.wedges++;
+
+    gHudDisplay.wedges = (gMarioState->health > 0) ? (gMarioState->health >> 8) : 0;
 }
 
 void chs_deact_health_up(void) {
-    gMarioState->maxHealth -= 0x100;
-    if (gMarioState->health > gMarioState->maxHealth) {
-        gMarioState->health = gMarioState->maxHealth;
+    if (gChaosImmediateActDeact) {
+        return;
     }
+
+    gMarioState->maxHealth -= 0x100;
+    gMarioState->health -= 0x100;
+    if (gMarioState->health < 0xFF) {
+        gMarioState->health = 0xFF;
+    }
+
+    gHudDisplay.wedges = (gMarioState->health > 0) ? (gMarioState->health >> 8) : 0;
 }
 
 /*
@@ -74,19 +86,32 @@ void chs_deact_health_up(void) {
 */
 
 u8 chs_cond_health_down(void) {
-    return (gMarioState->maxHealth > 0x400);
+    return (gMarioState->maxHealth > 0x480);
 }
 
 void chs_act_health_down(void) {
-    gMarioState->maxHealth -= 0x100;
-    gHudDisplay.wedges--;
-    if (gMarioState->health > gMarioState->maxHealth) {
-        gMarioState->health = gMarioState->maxHealth;
+    if (gChaosImmediateActDeact) {
+        return;
     }
+
+    gMarioState->maxHealth -= 0x100;
+    gMarioState->health -= 0x100;
+    if (gMarioState->health < 0xFF) {
+        gMarioState->health = 0xFF;
+    }
+
+    gHudDisplay.wedges = (gMarioState->health > 0) ? (gMarioState->health >> 8) : 0;
 }
 
 void chs_deact_health_down(void) {
+    if (gChaosImmediateActDeact) {
+        return;
+    }
+
     gMarioState->maxHealth += 0x100;
+    gMarioState->health += 0x100;
+
+    gHudDisplay.wedges = (gMarioState->health > 0) ? (gMarioState->health >> 8) : 0;
 }
 
 /*

@@ -28,6 +28,7 @@ s32 *gChaosActiveEntryCount = NULL;
 struct ChaosActiveEntry *gChaosActiveEntries = NULL;
 u8 gChaosLevelWarped = FALSE;
 u8 gChaosBlueStarLastCollected = FALSE;
+u8 gChaosImmediateActDeact = FALSE;
 
 static const f32 difficultyWeights[CHAOS_DIFFICULTY_COUNT][CHAOS_PATCH_SEVERITY_COUNT - 1] = {
     [CHAOS_DIFFICULTY_EASY      ] = { 0.12f, 0.25f, 0.38f }, // Difficulty offset should make highest level more common
@@ -254,12 +255,15 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
             // Deactivate negated action, and also instantly activate and deactivate the new function (deactivate will not ever execute for ONCE entries that aren't stackable).
             // This is not added to the patch array (in general do not rely on this for stackable, negatable infinite, or negatable once patches!)
             chaos_remove_expired_entry(i--, gChaosInternalBuffer);
+
+            gChaosImmediateActDeact = TRUE;
             if (patch->activatedInitFunc) {
                 patch->activatedInitFunc();
             }
             if (patch->deactivationFunc) {
                 patch->deactivationFunc();
             }
+            gChaosImmediateActDeact = FALSE;
             return;
         }
     }
@@ -279,12 +283,15 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
             assert_args(patch->activatedInitFunc || patch->deactivationFunc
                         || (patchId == CHAOS_PATCH_NONE_POSITIVE || patchId == CHAOS_PATCH_NONE_NEGATIVE),
                         "%s%08X", "chaos_add_new_entry\nAttempted to add stackable ONCE patch\nwithout a callback: 0x", patchId);
+
+            gChaosImmediateActDeact = TRUE;
             if (patch->activatedInitFunc) {
                 patch->activatedInitFunc();
             }
             if (patch->deactivationFunc) {
                 patch->deactivationFunc();
             }
+            gChaosImmediateActDeact = FALSE;
             return;
         }
 

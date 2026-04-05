@@ -310,6 +310,7 @@ extern s32 *gChaosActiveEntryCount;
 extern struct ChaosActiveEntry *gChaosActiveEntries;
 extern u8 gChaosLevelWarped;
 extern u8 gChaosBlueStarLastCollected;
+extern u8 gChaosImmediateActDeact;
 extern enum ChaosDifficulty gChaosDifficulty;
 extern enum ChaosGameMode gChaosGameMode;
 extern enum ChaosPatchID gNegativePatchCompare;

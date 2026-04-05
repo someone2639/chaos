@@ -369,6 +369,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .conditionalFunc    = chs_cond_health_up,
         .activatedInitFunc  = chs_act_health_up,
+        .deactivationFunc   = chs_deact_health_up,
 
         .name               = "Health Up",
         .shortDescription   = "Health maximum increases by one.",
@@ -382,6 +383,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .conditionalFunc    = chs_cond_health_down,
         .activatedInitFunc  = chs_act_health_down,
+        .deactivationFunc   = chs_deact_health_down,
 
         .name               = "Health Down",
         .shortDescription   = "Health maximum decreases by one.",
