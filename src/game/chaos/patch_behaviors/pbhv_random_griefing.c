@@ -19,7 +19,7 @@
 #define SLEEP_TIME_RAND (5 * 60 * 30)
 
 #define SHOCK_TIME_MIN  (1 * 60 * 30)
-#define SHOCK_TIME_RAND (2 * 60 * 30)
+#define SHOCK_TIME_RAND (5 * 30 * 30) /* 2.5 minutes */
 
 #define BURN_TIME_MIN  (1 * 60 * 30)
 #define BURN_TIME_RAND (4 * 60 * 30)

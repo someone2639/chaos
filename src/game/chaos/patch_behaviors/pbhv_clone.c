@@ -10,20 +10,12 @@
 #include "game/object_list_processor.h"
 #include "game/object_helpers.h"
 #include "game/level_update.h"
-#include "game/chaos/chaos_clone.h"
 #include "engine/math_util.h"
 
-struct Object *gMarioObjs[100];
-struct MarioState *gMarioClones[100];
-
-struct MarioState *gMarioSoul = &gMarioStates[0];
-// struct Object *gMarioSoulObj = gMarioObject;
-
-u32 gMarioCloneCount = 0;
 u32 cspawnlock = 0;
 
-s16 set_obj_animation(struct Object *o, s32 targetAnimID) {
-    struct MarioState *m = gMarioSoul;
+s16 set_cherry_animation(struct Object *o, s32 targetAnimID) {
+    struct MarioState *m = gMarioState;
     // struct Object *
     struct Animation *targetAnim = m->animList->bufTarget;
 
@@ -50,7 +42,7 @@ s16 set_obj_animation(struct Object *o, s32 targetAnimID) {
 u32 cloneCount = 0;
 
 u8 chs_cond_cherry_clone(void) {
-    return (cloneCount < 10);
+    return (cloneCount < 5);
 }
 
 void chs_create_cherry_clone(void) {
@@ -58,8 +50,13 @@ void chs_create_cherry_clone(void) {
 }
 
 void chs_remove_cherry_clone(void) {
-    // TODO: despawn random clone
     cloneCount --;
+
+    f32 dist;
+    struct Object *obj = cur_obj_find_nearest_object_with_behavior(bhvMarioClone, &dist);
+    if (obj) {
+        delete_cherry_clone(obj);
+    }
 }
 
 void chs_init_cherry_clones_after_warp(void) {

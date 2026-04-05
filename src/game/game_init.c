@@ -554,14 +554,16 @@ void display() {
         if ((gGlobalTimer % 3 == 0)) {
             vsync();
         }
-    } else {
+    } else if (!chaos_check_if_patch_active(CHAOS_PATCH_60_FPS)) {
         vsync();
     }
+
     if (chaos_check_if_patch_active(CHAOS_PATCH_20_FPS)) {
         vsync();
     }
+
     osViSwapBuffer((void *) PHYSICAL_TO_VIRTUAL(gPhysicalFramebuffers[sRenderedFramebuffer]));
-    osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
+    vsync();
     profiler_log_thread5_time(THREAD5_END);
 }
 

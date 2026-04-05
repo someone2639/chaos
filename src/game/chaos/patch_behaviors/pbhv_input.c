@@ -82,6 +82,9 @@ u8 chs_cond_swapped_zr_ab(void) {
     if (chaos_check_if_patch_active(CHAOS_PATCH_BUTTON_BROKEN_Z)) {
         return FALSE;
     }
+    if (chaos_check_if_patch_active(CHAOS_PATCH_QUICKTIME)) {
+        return FALSE;
+    }
 
     return TRUE;
 }

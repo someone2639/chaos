@@ -183,10 +183,12 @@ u8 chs_cond_remove_cap(void);
 u8 chs_cond_disable_caps(void);
 
 // Size Modifiers
-void chs_act_mario_big(void);
 u8 chs_cond_mario_big(void);
-void chs_act_mario_small(void);
+void chs_act_mario_big(void);
+void chs_deact_mario_big(void);
 u8 chs_cond_mario_small(void);
+void chs_act_mario_small(void);
+void chs_deact_mario_small(void);
 
 // Misc
 u8 chs_cond_one_hit_wonder(void);
@@ -201,8 +203,9 @@ u8 chs_cond_invisible(void);
 u8 chs_cond_luigi(void);
 void chs_update_luigi(void);
 void chs_deact_luigi(void);
-u8 chs_cond_45_fps(void);
 u8 chs_cond_20_fps(void);
+u8 chs_cond_45_fps(void);
+u8 chs_cond_60_fps(void);
 void chs_act_reverb(void);
 void chs_deact_reverb(void);
 void chs_mq_init(void);
@@ -214,6 +217,7 @@ void chs_start_shuffle(void);
 u8 chs_cond_quicktime(void);
 void chs_update_quicktime(void);
 void chs_act_quicktime(void);
+u8 chs_cond_marth_grab(void);
 u8 chs_cond_lethal_fall_damage(void);
 u8 chs_cond_cherry_clone(void);
 void chs_create_cherry_clone(void);

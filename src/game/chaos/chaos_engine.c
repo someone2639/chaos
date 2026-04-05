@@ -139,11 +139,11 @@ static void chaos_sort_active_patches(void) {
 #undef NO_SWAP
 
 u8 chaos_find_first_active_patch(const enum ChaosPatchID patchId, struct ChaosActiveEntry **firstFoundMatch) {
-    if (!gChaosActiveEntryCount) {
-        if (firstFoundMatch) {
-            *firstFoundMatch = NULL;
-        }
+    if (firstFoundMatch) {
+        *firstFoundMatch = NULL;
+    }
 
+    if (!gChaosActiveEntryCount) {
         return FALSE;
     }
 
@@ -157,9 +157,6 @@ u8 chaos_find_first_active_patch(const enum ChaosPatchID patchId, struct ChaosAc
         }
     }
 
-    if (firstFoundMatch) {
-        *firstFoundMatch = NULL;
-    }
     return FALSE;
 }
 

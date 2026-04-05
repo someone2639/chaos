@@ -127,8 +127,9 @@ enum ChaosPatchID {
     CHAOS_PATCH_INCREASED_FOV,
     CHAOS_PATCH_CONFUSED_OBJECTS,
     CHAOS_PATCH_NO_SKYBOX,
-    CHAOS_PATCH_45_FPS,
     CHAOS_PATCH_20_FPS,
+    CHAOS_PATCH_45_FPS,
+    CHAOS_PATCH_60_FPS,
     CHAOS_PATCH_TOP_DOWN_CAMERA,
     CHAOS_PATCH_MIRROR_MODE,
     CHAOS_PATCH_LOW_RESOLUTION,
@@ -293,7 +294,7 @@ struct ChaosPatchSelection {
 
 // This represents the modifiable chaos patch data that ultimately gets saved to the save file.
 // Anything not represented here needs to be kept track of and/or saved separately.
-// Because these are saved, any property modification that gets negated via deactivation func SHOULD NOT BE be saved to the save file, even for stacking patches!
+// Because these are saved, any property modification that gets negated via deactivation func SHOULD NOT be saved to the save file, even for stacking patches!
 // Similarly, DO NOT track CHAOS_DURATION_USE_COUNT patches with separate variables!
 // Adding manual save data is best reserved for tracking any variables with unrelated outside influence, such as Mario's lives.
 // Lives are applied with a stackable CHAOS_DURATION_ONCE instead of CHAOS_DURATION_USE_COUNT for this reason.
@@ -331,13 +332,13 @@ void chaos_remove_expired_entry(const s32 patchIndex, const char *msg);
 // Activate a new chaos patch.
 void chaos_add_new_entry(const enum ChaosPatchID patchId);
 
-// Decrement all of durations of each pass using a star timer (i.e. CHAOS_DURATION_STARS).
+// Decrement all durations for each patch using a star timer (i.e. CHAOS_DURATION_STARS).
 // Additionally deconstructs any applicable patches if their duration hits 0.
 void chaos_decrement_star_timers(void);
 
 // Handles behavior for decrementing consumable patches (i.e. CHAOS_DURATION_USE_COUNT).
 // This does NOT invoke a callback for what it should do when the patch is consumed,
-// however it will invoke the deactivation callback if remaining uses hit 0.
+// however it will invoke the deactivation callback if remaining uses hits 0.
 void chaos_decrement_patch_usage(const enum ChaosPatchID patchId);
 
 // Generates a list of CHAOS_PATCH_MAX_GENERATABLE patch combinations for selection use.

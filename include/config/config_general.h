@@ -19,6 +19,11 @@
 #define COMPLETE_EN_US_SEGMENT2
 
 /**
+ * Star requirement for getting into Bowser in the Sky
+ */
+#define BITS_STAR_REQUIREMENT 70
+
+/**
  * If A and Z are pressed on the same frame while running, Mario will long jump instead of ground pound.
  */
 // #define EASIER_LONG_JUMPS

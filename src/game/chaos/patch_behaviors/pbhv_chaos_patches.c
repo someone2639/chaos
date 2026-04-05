@@ -16,6 +16,7 @@ static const enum ChaosPatchID patchBlacklist[] = {
     CHAOS_PATCH_LOWER_TIME_LIMIT,
     CHAOS_PATCH_MARIO_BIG,
     CHAOS_PATCH_MARIO_SMALL,
+    CHAOS_PATCH_AD_BREAK,
 };
 
 u8 chs_cond_remove_negative_patch(void) {

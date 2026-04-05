@@ -12,7 +12,11 @@ u8 chs_cam_invert_x_check(void) {
 }
 
 u8 chs_topdown_check(void) {
-    return (!chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_CAMERA_X) && !chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM));
+    return (!chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_CAMERA_X)
+         && !chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM)
+         && !chaos_check_if_patch_active(CHAOS_PATCH_DECREASED_FOV)
+         && !chaos_check_if_patch_active(CHAOS_PATCH_INCREASED_FOV)
+    );
 }
 
 u8 chs_cond_forced_mario_cam(void) {

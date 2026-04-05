@@ -4,14 +4,15 @@
 #include "sm64.h"
 #include "audio/heap.h"
 #include "game/chaos/chaos.h"
+#include "game/emutest.h"
 #include "game/level_update.h"
 #include "game/area.h"
 #include "game/main.h"
 #include "game/object_helpers.h"
+#include "game/save_file.h"
 #include "course_table.h"
 #include "behavior_data.h"
 #include "engine/surface_collision.h"
-#include "game/emutest.h"
 
 u8 chs_cond_one_hit_wonder(void) {
     return (!chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_SHOCK)
@@ -27,9 +28,8 @@ u8 chs_cond_miracle_normal(void) {
         return FALSE;
     }
 
-    chaos_find_first_active_patch(CHAOS_PATCH_MIRACLE_NORMAL, &match);
-    if(match) {
-        return (match->remainingDuration < 3);
+    if(chaos_find_first_active_patch(CHAOS_PATCH_MIRACLE_NORMAL, &match)) {
+        return (match->remainingDuration + gChaosPatches[match->id].duration <= 4);
     } else {
         return TRUE;
     }
@@ -76,8 +76,9 @@ void chs_deact_luigi(void) {
     gMarioState->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO];
 }
 
-u8 chs_cond_45_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_20_FPS) && !chaos_check_if_patch_active(CHAOS_PATCH_QUICKTIME)); }
-u8 chs_cond_20_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_45_FPS)); }
+u8 chs_cond_20_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_45_FPS) && !chaos_check_if_patch_active(CHAOS_PATCH_60_FPS)); }
+u8 chs_cond_45_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_20_FPS) && !chaos_check_if_patch_active(CHAOS_PATCH_60_FPS)); }
+u8 chs_cond_60_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_20_FPS) && !chaos_check_if_patch_active(CHAOS_PATCH_45_FPS)); }
 
 void chs_act_reverb(void) { init_reverb_us(1U << 31); }
 void chs_deact_reverb(void) { init_reverb_us(1U << 31); }
@@ -88,6 +89,10 @@ u8 chs_cond_lethal_fall_damage(void) {
 
 u8 chs_cond_randomized_music(void) {
     return (!gConfig.disableBGMusic);
+}
+
+u8 chs_cond_marth_grab(void) {
+    return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) <= (BITS_STAR_REQUIREMENT - 10);
 }
 
 void chs_update_noclip(void) {

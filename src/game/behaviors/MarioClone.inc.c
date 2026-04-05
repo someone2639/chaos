@@ -1,5 +1,3 @@
-
-#include "game/chaos/chaos_clone.h"
 #include "game/interaction.h"
 
 static struct ObjectHitbox sCloneHitbox = {
@@ -82,10 +80,10 @@ void update_clone_animation() {
 
 void bhv_MarioClone_init(void) {
     cspawnlock = 0;
-	set_obj_animation(o, MARIO_ANIM_IDLE_HEAD_LEFT);
+	set_cherry_animation(o, MARIO_ANIM_IDLE_HEAD_LEFT);
 }
 
-void delete_clone(struct Object *obj) {
+void delete_cherry_clone(struct Object *obj) {
     obj_mark_for_deletion(obj);
     spawn_mist_particles();
 }
@@ -97,7 +95,7 @@ void bhv_MarioClone_loop(void) {
     obj_set_hitbox(o, &sCloneHitbox);
 
     if (o->oAction == 50) {
-        delete_clone(o);
+        delete_cherry_clone(o);
     }
 
     if (obj_attack_collided_from_other_object(o)) {
@@ -109,11 +107,11 @@ void bhv_MarioClone_loop(void) {
             m->interactObj = coll;
             force_mario_interaction(m, m->interactObj);
             if ((coll->oDamageOrCoinValue > 0) && (coll->oInteractType != INTERACT_COIN)) {
-                delete_clone(o);
+                delete_cherry_clone(o);
             } else if ((coll->oInteractType == INTERACT_TEXT)) {
                 // do nothing
             } else if (coll->oInteractType == INTERACT_WHIRLPOOL) {
-                delete_clone(o);
+                delete_cherry_clone(o);
             } else {
                 swap(m, o);
             }
@@ -151,20 +149,20 @@ void bhv_MarioClone_loop(void) {
         wasOOB = TRUE;
         floorheight = find_floor(o->oPosX, o->oPosY + 100.0f, o->oPosZ, &floor);
         if (!floor) {
-            delete_clone(o);
+            delete_cherry_clone(o);
         } else {
             o->oPosY = floorheight;
         }
     } else {
         if (floor->type == SURFACE_BURNING) {
             if ((ABS(o->oPosY - floorheight) < 10)) {
-                delete_clone(o);
+                delete_cherry_clone(o);
             }
         }
 
         if (floor->type == SURFACE_DEATH_PLANE) {
             if (o->oPosY < (floorheight + 2048.0f)) {
-                delete_clone(o);
+                delete_cherry_clone(o);
             }
         }
     }
@@ -178,7 +176,7 @@ void bhv_MarioClone_loop(void) {
     }
     if (ceil && floor) {
         if ((floorheight + 160.0f) > ceilheight) {
-            delete_clone(o);
+            delete_cherry_clone(o);
         }
     }
 

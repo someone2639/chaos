@@ -47,6 +47,13 @@ void generate_qte() {
     sQTEPrevDisplayTimer = 0;
     sQTEQueueLength = MIN_PROMPTS + RAND((MAX_PROMPTS - MIN_PROMPTS + 1));
     sQTETimeTotal = QTE_INPUT_TIME_PER_INPUT * sQTEQueueLength;
+    if (chaos_check_if_patch_active(CHAOS_PATCH_60_FPS)) {
+        sQTETimeTotal *= (60.0f / 30.0f);
+    } else if (chaos_check_if_patch_active(CHAOS_PATCH_45_FPS)) {
+        sQTETimeTotal *= (45.0f / 30.0f);
+    } else if (chaos_check_if_patch_active(CHAOS_PATCH_20_FPS)) {
+        sQTETimeTotal *= (20.0f / 30.0f);
+    }
     sQTETimeLeft = sQTETimeTotal;
 
     s32 qte = 0;
@@ -137,8 +144,8 @@ u8 chs_cond_quicktime(void) {
             !chaos_check_if_patch_active(CHAOS_PATCH_BUTTON_BROKEN_B) &&
             !chaos_check_if_patch_active(CHAOS_PATCH_BUTTON_BROKEN_Z) &&
             !chaos_check_if_patch_active(CHAOS_PATCH_BUTTON_BROKEN_C) &&
-            !chaos_check_if_patch_active(CHAOS_PATCH_RED_LIGHT) &&
-            !chaos_check_if_patch_active(CHAOS_PATCH_45_FPS)
+            !chaos_check_if_patch_active(CHAOS_PATCH_SWAPPED_ZR_AB) &&
+            !chaos_check_if_patch_active(CHAOS_PATCH_RED_LIGHT)
         );
 }
 
