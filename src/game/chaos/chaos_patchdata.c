@@ -400,6 +400,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Long Fall Boots",
         .shortDescription   = "Mario is immune to fall damage.",
     },
+    [CHAOS_PATCH_NO_LAVA_DAMAGE] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 3,
+        .isStackable        = FALSE,
+        .duration           = 4,
+
+        .conditionalFunc    = chs_cond_no_lava_damage,
+
+        .name               = "Extreme Thermal Shoes",
+        .shortDescription   = "Mario is immune to lava and freezing water (and may run on it normally).",
+    },
     [CHAOS_PATCH_TEMPORARY_INVINCIBILITY] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
@@ -435,6 +447,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
         .isStackable        = FALSE,
+
+        .conditionalFunc    = chs_cond_instakill_lava,
 
         .name               = "The Lavas of Hell",
         .shortDescription   = "Mario will instantly die upon touching lava or freezing water.",
@@ -1785,7 +1799,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc    = chs_cond_forced_mario_cam,
 
         .name               = "Up Close and Personal",
-        .shortDescription   = "Forces Mario Cam.",
+        .shortDescription   = "Forces Mario Cam (close-up view).",
     },
     [CHAOS_PATCH_BOWSER_THROWS] = {
         .durationType       = CHAOS_DURATION_INFINITE,

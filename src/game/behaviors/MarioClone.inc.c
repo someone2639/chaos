@@ -154,7 +154,7 @@ void bhv_MarioClone_loop(void) {
             o->oPosY = floorheight;
         }
     } else {
-        if (floor->type == SURFACE_BURNING) {
+        if (floor->type == SURFACE_BURNING && !chaos_check_if_patch_active(CHAOS_PATCH_NO_LAVA_DAMAGE)) {
             if ((ABS(o->oPosY - floorheight) < 10)) {
                 delete_cherry_clone(o);
             }

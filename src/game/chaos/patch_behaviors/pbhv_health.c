@@ -143,6 +143,11 @@ void chs_lvlinit_temporary_invincibility(void) {
     Extra damage patches
 */
 
+u8 chs_cond_instakill_lava(void) {
+    return TRUE;
+    // return(!chaos_check_if_patch_active(CHAOS_PATCH_NO_LAVA_DAMAGE));
+}
+
 u8 chs_cond_extradamage_enemies(void) {
     return (gMarioState->extraDamageEnemy < (4 * 4));
 }

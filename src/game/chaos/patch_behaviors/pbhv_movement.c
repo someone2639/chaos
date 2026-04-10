@@ -77,6 +77,11 @@ u8 chs_cond_no_fall_damage(void) {
     return(!chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_FALL_DAMAGE));
 }
 
+u8 chs_cond_no_lava_damage(void) {
+    return TRUE;
+    // return(!chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_LAVA));
+}
+
 u8 chs_cond_harder_longjumps(void) {
     return(!chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_LONG_JUMP));
 }

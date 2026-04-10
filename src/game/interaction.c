@@ -2022,7 +2022,9 @@ void mario_handle_special_floors(struct MarioState *m) {
         if (!(m->action & ACT_FLAG_AIR) && !(m->action & ACT_FLAG_SWIMMING)) {
             switch (floorType) {
                 case SURFACE_BURNING:
-                    check_lava_boost(m);
+                    if (!chaos_check_if_patch_active(CHAOS_PATCH_NO_LAVA_DAMAGE)) {
+                        check_lava_boost(m);
+                    }
                     break;
             }
         }

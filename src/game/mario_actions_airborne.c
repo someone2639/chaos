@@ -85,7 +85,7 @@ s32 check_fall_damage(struct MarioState *m, u32 hardFallAction) {
 
 #pragma GCC diagnostic pop
 
-    if (m->action != ACT_TWIRLING && m->floor->type != SURFACE_BURNING) {
+    if (m->action != ACT_TWIRLING && (m->floor->type != SURFACE_BURNING || chaos_check_if_patch_active(CHAOS_PATCH_NO_LAVA_DAMAGE))) {
         if (m->vel[1] < (-55.0f * gravity)) {
             if (fallHeight > (3000.0f / gravity)) {
                 if(chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_FALL_DAMAGE)) {
@@ -151,7 +151,7 @@ s32 should_get_stuck_in_ground(struct MarioState *m) {
     s32 type = floor->type;
 
     if (floor != NULL && (terrainType == TERRAIN_SNOW || terrainType == TERRAIN_SAND)
-        && type != SURFACE_BURNING && SURFACE_IS_NOT_HARD(type)) {
+        && (type != SURFACE_BURNING || chaos_check_if_patch_active(CHAOS_PATCH_NO_LAVA_DAMAGE)) && SURFACE_IS_NOT_HARD(type)) {
         if (!(flags & 0x01) && m->peakHeight - m->pos[1] > 1000.0f && floor->normal.y >= 0.8660254f) {
             return TRUE;
         }
@@ -1684,7 +1684,7 @@ s32 act_lava_boost(struct MarioState *m) {
 
     switch (perform_air_step(m, 0)) {
         case AIR_STEP_LANDED:
-            if (m->floor->type == SURFACE_BURNING) {
+            if (m->floor->type == SURFACE_BURNING && !chaos_check_if_patch_active(CHAOS_PATCH_NO_LAVA_DAMAGE)) {
                 m->actionState = 0;
                 if (!(m->flags & MARIO_METAL_CAP)) {
                     if (chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_LAVA)) {
