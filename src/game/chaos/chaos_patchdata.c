@@ -1928,6 +1928,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Platform Misplacement",
         .shortDescription   = "Moving platforms will move Mario more than usual.",
     },
+    [CHAOS_PATCH_CLIMBING_BOOTS] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 2,
+        .isStackable        = FALSE,
+        .duration           = 5,
+
+        .conditionalFunc    = chs_cond_slippery_floors,
+
+        .name               = "Climbing Boots",
+        .shortDescription   = "Mario can run on slippery floors and up steep slopes without sliding.",
+    },
     [CHAOS_PATCH_SLIPPERY_FLOORS] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
@@ -1936,6 +1948,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration           = 4,
         .durationHard       = 5,
         .durationImpossible = 6,
+
+        .conditionalFunc    = chs_cond_slippery_floors,
 
         .name               = "Wet Floor",
         .shortDescription   = "All floors will be slippery.",

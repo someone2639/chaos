@@ -402,6 +402,10 @@ void mario_set_forward_vel(struct MarioState *m, f32 forwardVel) {
 s32 mario_get_floor_class(struct MarioState *m) {
     s32 floorClass;
 
+    if(chaos_check_if_patch_active(CHAOS_PATCH_CLIMBING_BOOTS)) {
+        return SURFACE_CLASS_NOT_SLIPPERY;
+    }
+
     if(chaos_check_if_patch_active(CHAOS_PATCH_SLIPPERY_FLOORS)) {
         return SURFACE_CLASS_VERY_SLIPPERY;
     }
@@ -596,6 +600,10 @@ s32 mario_facing_downhill(struct MarioState *m, s32 turnYaw) {
  */
 u32 mario_floor_is_slippery(struct MarioState *m) {
     f32 normY;
+    
+    if (chaos_check_if_patch_active(CHAOS_PATCH_CLIMBING_BOOTS)) {
+        return FALSE;
+    }
 
     if ((m->area->terrainType & TERRAIN_MASK) == TERRAIN_SLIDE
         && m->floor->normal.y < 0.9998477f //~cos(1 deg)
@@ -630,6 +638,10 @@ u32 mario_floor_is_slippery(struct MarioState *m) {
 s32 mario_floor_is_slope(struct MarioState *m) {
     f32 normY;
 
+    if (chaos_check_if_patch_active(CHAOS_PATCH_CLIMBING_BOOTS)) {
+        return FALSE;
+    }
+
     if ((m->area->terrainType & TERRAIN_MASK) == TERRAIN_SLIDE
         && m->floor->normal.y < 0.9998477f) { // ~cos(1 deg)
         return TRUE;
@@ -662,6 +674,10 @@ s32 mario_floor_is_slope(struct MarioState *m) {
 s32 mario_floor_is_steep(struct MarioState *m) {
     f32 normY;
     s32 result = FALSE;
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_CLIMBING_BOOTS)) {
+        return FALSE;
+    }
 
     // Interestingly, this function does not check for the
     // slide terrain type. This means that steep behavior persists for

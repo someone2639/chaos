@@ -91,6 +91,14 @@ u8 chs_cond_randomized_music(void) {
     return (!gConfig.disableBGMusic);
 }
 
+u8 chs_cond_climbing_boots(void) {
+    return (!chaos_check_if_patch_active(CHAOS_PATCH_SLIPPERY_FLOORS));
+}
+
+u8 chs_cond_slippery_floors(void) {
+    return (!chaos_check_if_patch_active(CHAOS_PATCH_CLIMBING_BOOTS));
+}
+
 u8 chs_cond_marth_grab(void) {
     return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) <= (BITS_STAR_REQUIREMENT - 10);
 }
