@@ -132,6 +132,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Life Apocalypse",
         .shortDescription   = "Decrease Mario's remaining lives by 10.",
     },
+    [CHAOS_PATCH_INSTANT_GAME_OVER] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 3,
+        .isStackable        = FALSE,
+        .duration           = 3,
+        .durationHard       = 4,
+        .durationImpossible = 5,
+
+        .conditionalFunc    = chs_cond_instant_game_over,
+
+        .name               = "All In",
+        .shortDescription   = "Trigger a game over if you die, no matter how many lives you have remaining. Better be careful!",
+    },
 
 // Star/Save Modifiers
     [CHAOS_PATCH_STARS_SHUFFLE_STARS] = {

@@ -521,6 +521,7 @@ static void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT]
     for (s32 index = 0; index < CHAOS_PATCH_MAX_GENERATABLE; index++) {
         enum ChaosPatchID positivePatchId = CHAOS_PATCH_NONE_POSITIVE;
         enum ChaosPatchID negativePatchId = CHAOS_PATCH_NONE_NEGATIVE;
+        s32 attempts;
 
         f32 totalWeight = 0.0f;
         s32 generatedSeverity = 0;
@@ -543,7 +544,7 @@ static void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT]
         s32 negativeSeverity = posNegPairings[generatedSeverity][CHAOS_EFFECT_NEGATIVE];
         s32 positiveSeverity = posNegPairings[generatedSeverity][CHAOS_EFFECT_POSITIVE];
 
-        for (s32 attempts = 0; attempts < RETRY_ATTEMPTS_DUPLICATES; attempts++) {
+        for (attempts = 0; attempts < RETRY_ATTEMPTS_DUPLICATES; attempts++) {
             s32 negativeWeight = (s32) (random_float() * (f32) severityCounts[negativeSeverity][CHAOS_EFFECT_NEGATIVE]);
 
             for (enum ChaosPatchID patchId = 0; patchId < CHAOS_PATCH_COUNT; patchId++) {
@@ -590,6 +591,10 @@ static void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT]
 
             break;
         }
+        if (attempts >= RETRY_ATTEMPTS_DUPLICATES) {
+            chaosmsg_print_debug("@AFAFAF--Negative attempt tries exceeded!@--------");
+            break;
+        }
 
         gNegativePatchCompare = negativePatchId;
 
@@ -610,7 +615,7 @@ static void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT]
         }
 
         if (applicablePositiveCount > 0) {
-            for (s32 attempts = 0; attempts < RETRY_ATTEMPTS_DUPLICATES; attempts++) {
+            for (attempts = 0; attempts < RETRY_ATTEMPTS_DUPLICATES; attempts++) {
                 s32 positiveWeight = (s32) (random_float() * applicablePositiveCount);
 
                 for (enum ChaosPatchID patchId = 0; patchId < CHAOS_PATCH_COUNT; patchId++) {
@@ -661,6 +666,10 @@ static void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT]
                     continue;
                 }
 
+                break;
+            }
+            if (attempts >= RETRY_ATTEMPTS_DUPLICATES) {
+                chaosmsg_print_debug("@AFAFAF--Positive attempt tries exceeded!@--------");
                 break;
             }
         }
@@ -747,7 +756,7 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
         }
     }
 
-    // Lessen likelihood of repeat aeverity randomization types in a row via attempts
+    // Lessen likelihood of repeat severity randomization types in a row via attempts
     for (s32 attempts = 0; attempts < 2; attempts++) {
         f32 weight = 0.0f;
         forcedDifficulty = -1;
@@ -765,6 +774,7 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
             lastForcedDifficulty = forcedDifficulty;
             break;
         } else if (random_float() < 0.33f) {
+            // 33% chance to allow generated repeat here before retrying severity generation
             break;
         }
     }

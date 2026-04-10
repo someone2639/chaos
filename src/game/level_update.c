@@ -871,7 +871,10 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 break;
 
             case WARP_OP_DEATH:
-                if ((gChaosGameMode == CHAOS_GAMEMODE_HARDCORE || (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && m->numLives <= 0)) && !chs_is_miracle_active()) {
+                if ((chaos_check_if_patch_active(CHAOS_PATCH_INSTANT_GAME_OVER)
+                    || gChaosGameMode == CHAOS_GAMEMODE_HARDCORE
+                    || (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && m->numLives <= 0)
+                ) && !chs_is_miracle_active()) {
                     sDelayedWarpOp = WARP_OP_GAME_OVER;
                 }
                 sDelayedWarpTimer = 48;
@@ -885,7 +888,10 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
             case WARP_OP_WARP_FLOOR:
                 sSourceWarpNodeId = WARP_NODE_WARP_FLOOR;
                 if (area_get_warp_node(sSourceWarpNodeId) == NULL || (gCurrLevelNum == LEVEL_JRB && m->floor->type == SURFACE_DEATH_PLANE)) { // epic hard coded level check
-                    if ((gChaosGameMode == CHAOS_GAMEMODE_HARDCORE || (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && m->numLives <= 0)) && !chs_is_miracle_active()) {
+                    if ((chaos_check_if_patch_active(CHAOS_PATCH_INSTANT_GAME_OVER)
+                        || gChaosGameMode == CHAOS_GAMEMODE_HARDCORE
+                        || (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && m->numLives <= 0)
+                    ) && !chs_is_miracle_active()) {
                         sDelayedWarpOp = WARP_OP_GAME_OVER;
                     } else {
                         sSourceWarpNodeId = WARP_NODE_DEATH;
@@ -948,7 +954,10 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 val04 = FALSE;
                 break;
             case WARP_OP_TIME_UP:
-                if ((gChaosGameMode == CHAOS_GAMEMODE_HARDCORE || (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && m->numLives <= 0)) && !chs_is_miracle_active()) {
+                if ((chaos_check_if_patch_active(CHAOS_PATCH_INSTANT_GAME_OVER)
+                    || gChaosGameMode == CHAOS_GAMEMODE_HARDCORE
+                    || (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && m->numLives <= 0)
+                ) && !chs_is_miracle_active()) {
                     sDelayedWarpOp = WARP_OP_GAME_OVER;
                 }
                 sDelayedWarpTimer = 60;
@@ -1231,12 +1240,12 @@ s32 play_mode_paused(void) {
             fade_into_special_warp(-9, 1);
         } else {
             gSavedCourseNum = COURSE_NONE;
-            if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE || gChaosGameMode == CHAOS_GAMEMODE_HARDCORE) {
+            if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE || gChaosGameMode == CHAOS_GAMEMODE_HARDCORE || chaos_check_if_patch_active(CHAOS_PATCH_INSTANT_GAME_OVER)) {
                 if (chs_is_miracle_active()) {
                     initiate_warp(LEVEL_CASTLE, 1, 0x1F, 0);
                     fade_into_special_warp(0, 0);
                     chs_decrement_miracle();
-                } else if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives > 0) {
+                } else if (!chaos_check_if_patch_active(CHAOS_PATCH_INSTANT_GAME_OVER) && (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives > 0)) {
                     initiate_warp(LEVEL_CASTLE, 1, 0x29, 0);
                     fade_into_special_warp(0, 0);
                 } else {
