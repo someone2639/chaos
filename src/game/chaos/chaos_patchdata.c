@@ -1949,7 +1949,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 5,
 
-        .conditionalFunc    = chs_cond_slippery_floors,
+        .conditionalFunc    = chs_cond_climbing_boots,
 
         .name               = "Climbing Boots",
         .shortDescription   = "Mario can run on slippery floors and up steep slopes without sliding.",

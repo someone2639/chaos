@@ -593,7 +593,6 @@ static void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT]
         }
         if (attempts >= RETRY_ATTEMPTS_DUPLICATES) {
             chaosmsg_print_debug("@AFAFAF--Negative attempt tries exceeded!@--------");
-            break;
         }
 
         gNegativePatchCompare = negativePatchId;
@@ -670,7 +669,6 @@ static void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT]
             }
             if (attempts >= RETRY_ATTEMPTS_DUPLICATES) {
                 chaosmsg_print_debug("@AFAFAF--Positive attempt tries exceeded!@--------");
-                break;
             }
         }
 
