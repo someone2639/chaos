@@ -73,6 +73,7 @@ void chs_deact_extradamage_lava(void);
 u8 chs_cond_shield(void);
 void chs_update_random_invincibility(void);
 void chs_act_random_invincibility(void);
+u8 chs_cond_a_button_challenge(void);
 
 // Coin Modifiers
 u8 chs_double_coins_under_30s(void); // Check whether double coins should remain in effect

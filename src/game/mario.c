@@ -1392,6 +1392,10 @@ void update_mario_button_inputs(struct MarioState *m) {
     } else if (m->framesSinceB < 0xFF) {
         m->framesSinceB++;
     }
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_A_BUTTON_CHALLENGE) && (m->input & INPUT_A_PRESSED)) {
+        m->hurtCounter += (1 * 4);
+    }
 }
 
 /**

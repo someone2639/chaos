@@ -545,6 +545,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Windfall",
         .shortDescription   = "At random, gain 20 seconds of invincibility (watch for Mario's flashing animation!)",
     },
+    [CHAOS_PATCH_A_BUTTON_CHALLENGE] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 3,
+        .isStackable        = FALSE,
+        .duration           = 4,
+        .durationHard       = 6,
+        .durationImpossible = 7,
+
+        .conditionalFunc    = chs_cond_a_button_challenge,
+
+        .name               = "A Button Challenge",
+        .shortDescription   = "Lose 1 slice of health each time the A button is pressed. How many A presses do you really need to win?",
+    },
 
 // Coin Modifiers
     [CHAOS_PATCH_DOUBLE_COINS] = {
@@ -1530,9 +1544,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
         .isStackable        = FALSE,
-        .duration           = 4,
-        .durationHard       = 5,
-        .durationImpossible = 6,
+        .duration           = 5,
+        .durationHard       = 6,
+        .durationImpossible = 7,
         
         .conditionalFunc    = chs_cond_button_broken_a,
 

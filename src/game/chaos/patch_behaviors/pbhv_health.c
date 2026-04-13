@@ -15,7 +15,7 @@
     Health Drain
 */
 
-u8 chs_cond_noheal_coins(void) {return !chaos_check_if_patch_active(CHAOS_PATCH_HEALTH_DRAIN);}
+u8 chs_cond_noheal_coins(void) {return !(chaos_check_if_patch_active(CHAOS_PATCH_HEALTH_DRAIN) || chaos_check_if_patch_active(CHAOS_PATCH_A_BUTTON_CHALLENGE));}
 u8 chs_cond_health_drain(void) {return !(chaos_check_if_patch_active(CHAOS_PATCH_HEALTH_GAIN) || chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_COINS) || chaos_check_if_patch_active(CHAOS_PATCH_WALKIES));}
 
 void chs_update_health_drain(void) {
@@ -205,4 +205,12 @@ void chs_update_random_invincibility(void) {
         gMarioState->invincTimer = 600;
         this->frameTimer = RAND(INVINCIBILITY_TIME_MAX); //Get a random offset to restart the timer at
     }
+}
+
+/*
+    A Button Challenge
+*/
+
+u8 chs_cond_a_button_challenge(void) {
+    return (!chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_COINS));
 }
