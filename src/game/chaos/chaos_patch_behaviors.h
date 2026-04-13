@@ -38,6 +38,7 @@ void chs_act_get_key_2(void);
 u8 chs_cond_get_key_2(void);
 void chs_act_unlock_cannons(void);
 u8 chs_cond_unlock_cannons(void);
+s32 chs_get_yellow_star_in_course(s32 courseNum, s32 collectedStarId);
 
 // Gravity Modifiers
 u8 chs_cond_gravity_decrease(void);

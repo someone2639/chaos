@@ -270,6 +270,17 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "1812 Overture",
         .shortDescription   = "Unlock all cannons in the game!",
     },
+    [CHAOS_PATCH_CLONING_DEVICE] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 3,
+        .isStackable        = FALSE,
+        .duration           = 2,
+
+        .name               = "Cloning Device",
+        .shortDescription   = "When collected, blue stars will be replaced by other random uncollected stars in the same course (if applicable).",
+        .longDescription    = "This will act like collecting a yellow star normally, and not punish the player with the effects of collecting a blue star (unless there are no yellow stars remaining in the course).",
+    },
 
 // Gravity Modifiers
     [CHAOS_PATCH_GRAVITY_DECREASE] = {

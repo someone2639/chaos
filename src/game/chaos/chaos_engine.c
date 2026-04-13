@@ -591,7 +591,7 @@ static void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT]
 
             break;
         }
-        if (attempts >= RETRY_ATTEMPTS_DUPLICATES) {
+        if (attempts >= RETRY_ATTEMPTS_DUPLICATES && negativeSeverity > 0) {
             chaosmsg_print_debug("@AFAFAF--Negative attempt tries exceeded!@--------");
         }
 
@@ -667,7 +667,7 @@ static void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT]
 
                 break;
             }
-            if (attempts >= RETRY_ATTEMPTS_DUPLICATES) {
+            if (attempts >= RETRY_ATTEMPTS_DUPLICATES && positiveSeverity > 0) {
                 chaosmsg_print_debug("@AFAFAF--Positive attempt tries exceeded!@--------");
             }
         }
@@ -939,6 +939,16 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
 
     if (forcedDifficulty >= 0) {
         for (s32 index = 0; index < CHAOS_PATCH_MAX_GENERATABLE; index++) {
+#ifdef CHAOS_FORCED_POSITIVE_CARD
+            if (index == 0 && generatedPatches[index].positiveId == CHAOS_FORCED_POSITIVE_CARD && generatedPatches[index].severityLevel == 0) {
+                continue;
+            }
+#endif
+#ifdef CHAOS_FORCED_NEGATIVE_CARD
+            if (index == 1 && generatedPatches[index].negativeId == CHAOS_FORCED_NEGATIVE_CARD && generatedPatches[index].severityLevel == 0) {
+                continue;
+            }
+#endif
             generatedPatches[index].severityLevel = forcedDifficulty;
         }
     }

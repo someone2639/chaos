@@ -534,3 +534,35 @@ u8 chs_cond_unlock_cannons(void) {
 
     return FALSE;
 }
+
+s32 chs_get_yellow_star_in_course(s32 courseNum, s32 collectedStarId) {
+    u8 currentLevelStarFlags = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(courseNum));
+    if (!(currentLevelStarFlags & (1u << collectedStarId))) {
+        return collectedStarId;
+    }
+
+    u8 starsInCourse = starsPerCourse[courseNum];
+    u8 uncollectedStarCount = 0;
+    for (s32 i = 0; i < starsInCourse; i++) {
+        if (!(currentLevelStarFlags & (1u << i))) {
+            uncollectedStarCount++;
+        }
+    }
+    if (uncollectedStarCount == 0) {
+        return collectedStarId;
+    }
+
+    s32 newStarIndex = random_u16() % uncollectedStarCount;
+    for (s32 i = 0; i < starsInCourse; i++) {
+        if (!(currentLevelStarFlags & (1u << i))) {
+            if (newStarIndex == 0) {
+                print_star_collect_message(FALSE, courseNum, i);
+                return i;
+            } else {
+                newStarIndex--;
+            }
+        }
+    }
+
+    return collectedStarId;
+}
