@@ -804,7 +804,11 @@ u32 interact_coin(struct MarioState *m, UNUSED u32 interactType, struct Object *
 
     if (!chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_COINS)) {
         if (!(obj_has_behavior(o, bhvYellowCoin) && o->oDroppedCoinBounce)) {
-            m->healCounter += 4 * coinCount;
+            u8 healingMult = 4;
+            if (chaos_check_if_patch_active(CHAOS_PATCH_HEALING_BONUS)) {
+                healingMult *= 2;
+            }
+            m->healCounter += (healingMult * coinCount);
         }
     }
 

@@ -355,6 +355,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Unaffordable Health Care",
         .shortDescription   = "Coins no longer heal Mario.",
     },
+    [CHAOS_PATCH_HEALING_BONUS] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 1,
+        .isStackable        = FALSE,
+        .duration           = 7,
+
+        .conditionalFunc    = chs_cond_healing_bonus,
+
+        .name               = "Healing Bonus",
+        .shortDescription   = "Coins heal twice as much health.",
+    },
     [CHAOS_PATCH_HEALTH_DRAIN] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,

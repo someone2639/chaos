@@ -55,13 +55,17 @@ u32 interact_coin_delayed(struct MarioState *m, struct Object *obj) {
 
     if (!chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_COINS)) {
         if (!(obj_has_behavior(obj, bhvYellowCoin) && obj->oDroppedCoinBounce)) {
-            healCount += 4 * coinCount;
+            u8 healingMult = 4;
+            if (chaos_check_if_patch_active(CHAOS_PATCH_HEALING_BONUS)) {
+                healingMult *= 2;
+            }
+            healCount += (healingMult * coinCount);
         }
     }
 
     m->healCounter += healCount;
     if (healCount > m->healCounter) {
-        healCount = U8_MAX;
+        m->healCounter = U8_MAX;
     }
 
     obj->oInteractStatus = INT_STATUS_INTERACTED;
