@@ -881,7 +881,7 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
         previousStarCount = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
         previousSaveFlags = save_file_get_flags();
         starIndex = (o->oBehParams >> 24) & 0x1F;
-        if (chaos_check_if_patch_active(CHAOS_PATCH_CLONING_DEVICE)) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_STAR_CLONING_DEVICE)) {
             starIndex = chs_get_yellow_star_in_course(gCurrCourseNum, starIndex);
         }
         save_file_collect_star_or_key(m->numCoins, starIndex);

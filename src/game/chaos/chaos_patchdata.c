@@ -138,8 +138,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 3,
         .isStackable        = FALSE,
         .duration           = 3,
-        .durationHard       = 4,
-        .durationImpossible = 5,
+        .durationHard       = 3,
+        .durationImpossible = 4,
 
         .conditionalFunc    = chs_cond_instant_game_over,
 
@@ -270,16 +270,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "1812 Overture",
         .shortDescription   = "Unlock all cannons in the game!",
     },
-    [CHAOS_PATCH_CLONING_DEVICE] = {
-        .durationType       = CHAOS_DURATION_STARS,
+    [CHAOS_PATCH_STAR_CLONING_DEVICE] = {
+        .durationType       = CHAOS_DURATION_USE_COUNT,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 3,
-        .isStackable        = FALSE,
+        .isStackable        = TRUE,
         .duration           = 2,
 
-        .name               = "Cloning Device",
-        .shortDescription   = "When collected, blue stars will be replaced by other random uncollected stars in the same course (if applicable).",
-        .longDescription    = "This will act like collecting a yellow star normally, and not punish the player with the effects of collecting a blue star (unless there are no yellow stars remaining in the course).",
+        .conditionalFunc    = chs_cond_star_cloning_device,
+
+        .name               = "Star Cloning Device",
+        .shortDescription   = "When collected, a blue star will be swapped with another random uncollected star in the course (if applicable).",
+        .longDescription    = "This will act like collecting a yellow star normally, and will not punish the player with the effects of collecting a blue star (as long as there are still yellow stars remaining in the course). This patch will take effect only when a star swap can been made.",
     },
 
 // Gravity Modifiers
@@ -1250,13 +1252,13 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
         .isStackable        = FALSE,
-        .duration           = 4,
-        .durationHard       = 5,
-        .durationImpossible = 6,
+        .duration           = 5,
+        .durationHard       = 6,
+        .durationImpossible = 7,
 
         .conditionalFunc    = chs_cond_60_fps,
 
-        .name               = "60 FPS",
+        .name               = "60 FPS (Double Time!)",
         .shortDescription   = "It's like playing the game two times at the same time!",
         .longDescription    = "This will probably not be hitting 60 FPS most of the time while running on hardware...hopefully console players enjoy the choppy framerates!",
     },

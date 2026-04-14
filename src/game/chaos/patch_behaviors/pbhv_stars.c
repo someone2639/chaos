@@ -535,6 +535,16 @@ u8 chs_cond_unlock_cannons(void) {
     return FALSE;
 }
 
+u8 chs_cond_star_cloning_device(void) {
+    struct ChaosActiveEntry *match;
+    if (chaos_find_first_active_patch(CHAOS_PATCH_STAR_CLONING_DEVICE, &match)) {
+        // return (match->remainingDuration + gChaosPatches[match->id].duration <= 2);
+        return FALSE; // Above is always FALSE anyway
+    } else {
+        return TRUE;
+    }
+}
+
 s32 chs_get_yellow_star_in_course(s32 courseNum, s32 collectedStarId) {
     u8 currentLevelStarFlags = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(courseNum));
     if (!(currentLevelStarFlags & (1u << collectedStarId))) {
@@ -556,6 +566,7 @@ s32 chs_get_yellow_star_in_course(s32 courseNum, s32 collectedStarId) {
     for (s32 i = 0; i < starsInCourse; i++) {
         if (!(currentLevelStarFlags & (1u << i))) {
             if (newStarIndex == 0) {
+                chaos_decrement_patch_usage(CHAOS_PATCH_STAR_CLONING_DEVICE);
                 print_star_collect_message(FALSE, courseNum, i);
                 return i;
             } else {
