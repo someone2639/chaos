@@ -285,7 +285,7 @@ void geo_process_perspective(struct GraphNodePerspective *node) {
         Mtx *mtx = alloc_display_list(sizeof(*mtx));
 
 #ifdef WIDE
-        if (gConfig.widescreen && gCurrLevelNum != 0x01){
+        if ((gConfig.widescreen & WIDE_SCREEN_ENABLED) && gCurrLevelNum != 0x01){
             sAspectRatio = 16.0f / 9.0f; // 1.775f
         } else {
             sAspectRatio = 4.0f / 3.0f; // 1.33333f
@@ -572,8 +572,9 @@ void geo_process_generated_list(struct GraphNodeGenerated *node) {
  */
 void geo_process_background(struct GraphNodeBackground *node) {
     Gfx *list = NULL;
+    s32 drawBG = (gConfig.disableHarshVisuals) ? TRUE : !chaos_check_if_patch_active(CHAOS_PATCH_NO_SKYBOX);
 
-    if (!chaos_check_if_patch_active(CHAOS_PATCH_NO_SKYBOX)) {
+    if (drawBG) {
         if (node->fnNode.func != NULL) {
             list = node->fnNode.func(GEO_CONTEXT_RENDER, &node->fnNode.node,
                                     (struct AllocOnlyPool *) gMatStack[gMatStackIndex]);
@@ -1148,7 +1149,7 @@ void geo_process_root(struct GraphNodeRoot *node, Vp *b, Vp *c, s32 clearColor) 
         gMatStackIndex = 0;
         gCurrAnimType = 0;
 
-        if (chaos_check_if_patch_active(CHAOS_PATCH_NO_Z_BUFFER)) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_NO_Z_BUFFER) && !gConfig.disableHarshVisuals) {
             vec3s_set(viewport->vp.vtrans, node->x * 4, node->y * 4, -511);
             vec3s_set(viewport->vp.vscale, node->width * 4, node->height * 4, 511);
         } else if (chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_Z_BUFFER)) {

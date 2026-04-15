@@ -5,6 +5,7 @@
 #include "src/engine/math_util.h"
 #include "chaos_menus.h"
 #include "chaos/chaos.h"
+#include "chaos_settings.h"
 
 #define MAX_CARDS   (CHAOS_PATCH_MAX_GENERATABLE)
 #define MAX_QUALITY (CHAOS_PATCH_SEVERITY_MAX)
@@ -21,8 +22,8 @@
 #define PATCH_DESC_Y        59
 #define PATCH_SEL_BUTTON_Y  (SCREEN_HEIGHT - 23)
 
-#define CARD_X_LEFT_START -87
-#define CARD_X_RIGHT_START (SCREEN_WIDTH + 87)
+#define CARD_X_LEFT_START   (-87 - WIDE_UI_EDGE_OFFSET)
+#define CARD_X_RIGHT_START  (SCREEN_WIDTH + 87 + WIDE_UI_EDGE_OFFSET)
 #define CARD_1_X_START      CARD_X_LEFT_START
 #define CARD_2_X_START      (CARD_X_RIGHT_START + 100)
 #define CARD_3_X_START      (CARD_X_LEFT_START - 200)

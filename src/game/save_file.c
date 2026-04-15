@@ -662,6 +662,17 @@ void save_file_set_widescreen_mode(u8 mode) {
 }
 #endif
 
+u32 save_file_get_harsh_visuals_mode(void) {
+    return gSaveBuffer.menuData.disableHarshVisuals;
+}
+
+void save_file_set_harsh_visuals_mode(u8 mode) {
+    gSaveBuffer.menuData.disableHarshVisuals = mode;
+
+    gMainMenuDataModified = TRUE;
+    save_main_menu_data();
+}
+
 #ifdef VERSION_EU
 void eu_set_language(u16 language) {
     gSaveBuffer.menuData.language = language;

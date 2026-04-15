@@ -27,6 +27,7 @@
 #include "game/rendering_graph_node.h"
 #include "game/debug.h"
 #include "levels/menu/chaos_save_button/geo_header.h"
+#include "game/chaos_settings.h"
 #ifdef VERSION_EU
 #undef LANGUAGE_FUNCTION
 #define LANGUAGE_FUNCTION sLanguageMode
@@ -39,10 +40,6 @@
  * special menu messages and phases, button states and button clicked checks.
  */
 
-#ifdef VERSION_US
-// The current sound mode is automatically centered on US and Shindou.
-static s16 sSoundTextX;
-#endif
 
 //! @Bug (UB Array Access) For EU, more buttons were added than the array was extended.
 //! This causes no currently known issues on console (as the other variables are not changed
@@ -291,6 +288,8 @@ static unsigned char textNew[][5] = {{ TEXT_NEW }, { TEXT_NEW_FR }, { TEXT_NEW_D
 static unsigned char starIcon[] = { GLYPH_STAR, GLYPH_SPACE };
 static unsigned char xIcon[] = { GLYPH_MULTIPLY, GLYPH_SPACE };
 #endif
+
+static unsigned char sSettingsText[] = { TEXT_SETTINGS };
 
 /**
  * Yellow Background Menu Initial Action
@@ -1171,52 +1170,21 @@ void check_erase_menu_clicked_buttons(struct Object *eraseButton) {
  * Render buttons for the sound mode menu.
  */
 void render_sound_mode_menu_buttons(struct Object *soundModeButton) {
-#ifdef ENABLE_STEREO_HEADSET_EFFECTS
     // Stereo option button
     sMainMenuButtons[MENU_BUTTON_STEREO] = spawn_object_rel_with_rot(
-        soundModeButton, MODEL_MAIN_MENU_GENERIC_BUTTON, bhvMenuButton, 533, SOUND_BUTTON_Y, -100, 0, -0x8000, 0);
+        soundModeButton, MODEL_NONE, bhvMenuButton, 533, SOUND_BUTTON_Y, -100, 0, -0x8000, 0);
     sMainMenuButtons[MENU_BUTTON_STEREO]->oMenuButtonScale = 0.11111111f;
     // Mono option button
     sMainMenuButtons[MENU_BUTTON_MONO] = spawn_object_rel_with_rot(
-        soundModeButton, MODEL_MAIN_MENU_GENERIC_BUTTON, bhvMenuButton, 0, SOUND_BUTTON_Y, -100, 0, -0x8000, 0);
+        soundModeButton, MODEL_NONE, bhvMenuButton, 0, SOUND_BUTTON_Y, -100, 0, -0x8000, 0);
     sMainMenuButtons[MENU_BUTTON_MONO]->oMenuButtonScale = 0.11111111f;
     // Headset option button
     sMainMenuButtons[MENU_BUTTON_HEADSET] = spawn_object_rel_with_rot(
-        soundModeButton, MODEL_MAIN_MENU_GENERIC_BUTTON, bhvMenuButton, -533, SOUND_BUTTON_Y, -100, 0, -0x8000, 0);
+        soundModeButton, MODEL_NONE, bhvMenuButton, -533, SOUND_BUTTON_Y, -100, 0, -0x8000, 0);
     sMainMenuButtons[MENU_BUTTON_HEADSET]->oMenuButtonScale = 0.11111111f;
-#else
-    // Stereo option button
-    sMainMenuButtons[MENU_BUTTON_STEREO] = spawn_object_rel_with_rot(
-        soundModeButton, MODEL_MAIN_MENU_GENERIC_BUTTON, bhvMenuButton, 355, SOUND_BUTTON_Y, -100, 0, -0x8000, 0);
-    sMainMenuButtons[MENU_BUTTON_STEREO]->oMenuButtonScale = 0.11111111f;
-    // Mono option button
-    sMainMenuButtons[MENU_BUTTON_MONO] = spawn_object_rel_with_rot(
-        soundModeButton, MODEL_MAIN_MENU_GENERIC_BUTTON, bhvMenuButton, -355, SOUND_BUTTON_Y, -100, 0, -0x8000, 0);
-    sMainMenuButtons[MENU_BUTTON_MONO]->oMenuButtonScale = 0.11111111f;
-#endif
 
-#ifdef VERSION_EU
-    // English option button
-    sMainMenuButtons[MENU_BUTTON_LANGUAGE_ENGLISH] = spawn_object_rel_with_rot(
-        soundModeButton, MODEL_MAIN_MENU_GENERIC_BUTTON, bhvMenuButton, 533, -111, -100, 0, -0x8000, 0);
-    sMainMenuButtons[MENU_BUTTON_LANGUAGE_ENGLISH]->oMenuButtonScale = 0.11111111f;
-    // French option button
-    sMainMenuButtons[MENU_BUTTON_LANGUAGE_FRENCH] = spawn_object_rel_with_rot(
-        soundModeButton, MODEL_MAIN_MENU_GENERIC_BUTTON, bhvMenuButton, 0, -111, -100, 0, -0x8000, 0);
-    sMainMenuButtons[MENU_BUTTON_LANGUAGE_FRENCH]->oMenuButtonScale = 0.11111111f;
-    // German option button
-    sMainMenuButtons[MENU_BUTTON_LANGUAGE_GERMAN] = spawn_object_rel_with_rot(
-        soundModeButton, MODEL_MAIN_MENU_GENERIC_BUTTON, bhvMenuButton, -533, -111, -100, 0, -0x8000, 0);
-    sMainMenuButtons[MENU_BUTTON_LANGUAGE_GERMAN]->oMenuButtonScale = 0.11111111f;
-
-    // Return button
-    sMainMenuButtons[MENU_BUTTON_LANGUAGE_RETURN] = spawn_object_rel_with_rot(
-        soundModeButton, MODEL_MAIN_MENU_YELLOW_FILE_BUTTON, bhvMenuButton, 0, -533, -100, 0, -0x8000, 0);
-    sMainMenuButtons[MENU_BUTTON_LANGUAGE_RETURN]->oMenuButtonScale = 0.11111111f;
-#else
     // Zoom in current selection
     sMainMenuButtons[MENU_BUTTON_SOUND_OPTION_MIN + sSoundMode]->oMenuButtonState = MENU_BUTTON_STATE_ZOOM_IN;
-#endif
 }
 
 #undef SOUND_BUTTON_Y
@@ -1226,54 +1194,12 @@ void render_sound_mode_menu_buttons(struct Object *soundModeButton) {
  */
 void check_sound_mode_menu_clicked_buttons(struct Object *soundModeButton) {
     if (soundModeButton->oMenuButtonState == MENU_BUTTON_STATE_FULLSCREEN) {
-        s32 buttonID;
-        // Configure sound mode menu button group
-        for (buttonID = MENU_BUTTON_OPTION_MIN; buttonID < MENU_BUTTON_OPTION_MAX; buttonID++) {
-            s16 buttonX = sMainMenuButtons[buttonID]->oPosX;
-            s16 buttonY = sMainMenuButtons[buttonID]->oPosY;
-
-            if (check_clicked_button(buttonX, buttonY, 22.0f) == TRUE) {
-                // If sound mode button clicked, select it and define sound mode
-                // The check will always be true because of the group configured above (In JP & US)
-                if (buttonID >= MENU_BUTTON_SOUND_OPTION_MIN && buttonID < MENU_BUTTON_SOUND_OPTION_MAX) {
-                    if (soundModeButton->oMenuButtonActionPhase == SOUND_MODE_PHASE_MAIN) {
-                        play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
-#if ENABLE_RUMBLE
-                        queue_rumble_data(5, 80);
-#endif
-                        sMainMenuButtons[buttonID]->oMenuButtonState = MENU_BUTTON_STATE_ZOOM_IN_OUT;
-#ifndef VERSION_EU
-                        // Sound menu buttons don't return to Main Menu in EU
-                        // because they don't have a case in bhv_menu_button_manager_loop
-                        sSelectedButtonID = buttonID;
-#endif
-                        sSoundMode = buttonID - MENU_BUTTON_SOUND_OPTION_MIN;
-                        save_file_set_sound_mode(sSoundMode);
-                    }
-                }
-#ifdef VERSION_EU
-                // If language mode button clicked, select it and change language
-                if (buttonID == MENU_BUTTON_LANGUAGE_ENGLISH || buttonID == MENU_BUTTON_LANGUAGE_FRENCH
-                         || buttonID == MENU_BUTTON_LANGUAGE_GERMAN) {
-                    if (soundModeButton->oMenuButtonActionPhase == SOUND_MODE_PHASE_MAIN) {
-                        play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
-                        sMainMenuButtons[buttonID]->oMenuButtonState = MENU_BUTTON_STATE_ZOOM_IN_OUT;
-                        sLanguageMode = buttonID - MENU_BUTTON_LANGUAGE_MIN;
-                        eu_set_language(sLanguageMode);
-                    }
-                }
-                // If neither of the buttons above are pressed, return to main menu
-                if (buttonID == MENU_BUTTON_LANGUAGE_RETURN) {
-                    play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
-                    sMainMenuButtons[buttonID]->oMenuButtonState = MENU_BUTTON_STATE_ZOOM_IN_OUT;
-                    sSelectedButtonID = buttonID;
-                }
-#endif
-                sCurrentMenuLevel = MENU_LAYER_SUBMENU;
-
-                break;
-            }
+        update_settings_menu();
+        if(!(gChaosSettingsMenu.menu.flags & CHAOS_SETTINGS_ACTIVE)) {
+            // Hacky way to return to the main file select screen that doesn't require me to rewrite the entire menu code.
+            sSelectedButtonID = MENU_BUTTON_STEREO;
         }
+        sCurrentMenuLevel = MENU_LAYER_SUBMENU;
     }
 }
 
@@ -1531,8 +1457,11 @@ void check_main_menu_clicked_buttons(void) {
         // is not grouped with the IDs of the other submenus.
         if (check_clicked_button(sMainMenuButtons[MENU_BUTTON_SOUND_MODE]->oPosX,
                                 sMainMenuButtons[MENU_BUTTON_SOUND_MODE]->oPosY, 200.0f) == TRUE) {
+
             sMainMenuButtons[MENU_BUTTON_SOUND_MODE]->oMenuButtonState = MENU_BUTTON_STATE_GROWING;
             sSelectedButtonID = MENU_BUTTON_SOUND_MODE;
+            init_settings_menu();
+                    
         } else {
             // Main Menu buttons
             s8 buttonID;
@@ -2015,10 +1944,8 @@ void print_main_menu_strings(void) {
     print_generic_string(SCORE_X, 39, textScore);
     print_generic_string(COPY_X, 39, textCopy);
     print_generic_string(ERASE_X, 39, textErase);
-#ifndef VERSION_JP
-    sSoundTextX = get_str_x_pos_from_center(254, textSoundModes[sSoundMode], 10.0f);
-#endif
-    print_generic_string(SOUNDMODE_X1, 39, textSoundModes[sSoundMode]);
+
+    print_generic_string(230, 39, sSettingsText);
     gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
 #endif
     // Print file names
@@ -2650,85 +2577,9 @@ void print_erase_menu_strings(void) {
     #define SOUND_HUD_X 88
 #endif
 
-/**
- * Prints sound mode menu strings that shows on the purple background menu screen.
- *
- * In EU, this function acts like "print_option_mode_menu_strings" because of languages.
- */
+
 void print_sound_mode_menu_strings(void) {
-    s32 mode;
-
-#if defined(VERSION_US) || defined(VERSION_SH)
-    s16 textX;
-#elif defined(VERSION_EU)
-    s32 textX;
-#endif
-
-#ifndef VERSION_EU
-    unsigned char textSoundSelect[] = { TEXT_SOUND_SELECT };
-#endif
-
-    // Print "SOUND SELECT" text
-    gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
-    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
-
-#ifdef VERSION_EU
-    print_hud_lut_string(HUD_LUT_DIFF, 47, 32, textSoundSelect[sLanguageMode]);
-    print_hud_lut_string(HUD_LUT_DIFF, 47, 101, textLanguageSelect[sLanguageMode]);
-#else
-    print_hud_lut_string(HUD_LUT_DIFF, SOUND_HUD_X, 35, textSoundSelect);
-#endif
-
-    gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
-
-    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
-
-#ifdef VERSION_EU // In EU their X position get increased each string
-    // Print sound mode names
-    for (mode = 0, textX = 90; mode < 3; textX += 70, mode++) {
-        if (mode == sSoundMode) {
-            gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
-        } else {
-            gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, sTextBaseAlpha);
-        }
-        print_generic_string(
-            get_str_x_pos_from_center(textX, textSoundModes[sLanguageMode * 3 + mode], 10.0f),
-            141, textSoundModes[sLanguageMode * 3 + mode]);
-    }
-
-    // In EU, print language mode names
-    for (mode = 0, textX = 90; mode < 3; textX += 70, mode++) {
-        if (mode == sLanguageMode) {
-            gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
-        } else {
-            gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, sTextBaseAlpha);
-        }
-        print_generic_string(
-            get_str_x_pos_from_center(textX, textLanguage[mode], 10.0f),
-            72, textLanguage[mode]);
-    }
-
-    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
-    print_generic_string(182, 29, textReturn[sLanguageMode]);
-#else
-    // Print sound mode names
-#ifdef ENABLE_STEREO_HEADSET_EFFECTS
-    for (mode = 0, textX = 87; mode < ARRAY_COUNT(textSoundModes); textX += 74, mode++) {
-#else
-    for (mode = 0, textX = 111; mode < ARRAY_COUNT(textSoundModes); textX += 99, mode++) {
-#endif
-        if (mode == sSoundMode) {
-            gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
-        } else {
-            gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, sTextBaseAlpha);
-        }
-        print_generic_string(
-            get_str_x_pos_from_center(textX, LANGUAGE_ARRAY(textSoundModes[mode]), 10.0f),
-            87, LANGUAGE_ARRAY(textSoundModes[mode]));
-    }
-#endif
-
-    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
+    render_settings_menu();
 }
 
 unsigned char textStarX[] = { TEXT_STAR_X };
@@ -3015,7 +2866,9 @@ Gfx *geo_file_select_strings_and_menu_cursor(s32 callContext, UNUSED struct Grap
             render_gamemode_select();
         } else {
             print_file_select_strings();
-            print_menu_cursor();
+            if(!(gChaosSettingsMenu.menu.flags & CHAOS_SETTINGS_ACTIVE)) {
+                print_menu_cursor();
+            }
         }
     }
     return NULL;

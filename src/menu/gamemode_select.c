@@ -36,9 +36,7 @@ const char *sGMSelectDescriptions[] = {
 void init_gamemode_select() {
     sGamemodeSelectMenu.menu.flags = GAMEMODE_SELECT_FLAG_HALT_INPUT;
     sGamemodeSelectMenu.menu.menuState = GM_SELECT_STATE_DEFAULT;
-    sGamemodeSelectMenu.menu.selectedMenuIndex = 0;
-    sGamemodeSelectMenu.menu.framesSinceLastStickInput = 0;
-    sGamemodeSelectMenu.menu.lastStickDir = MENU_JOYSTICK_DIR_NONE;
+    sGamemodeSelectMenu.menu.index = 0;
     sGamemodeSelectMenu.menu.animTimer = 0;
     sGamemodeSelectMenu.menu.animFrames = -1;
     sGamemodeSelectMenu.menu.animId = 0;
@@ -60,10 +58,8 @@ void init_gamemode_select() {
 /*
     Handles inputs for the main selection menu
 */
-void handle_inputs_gamemode_select_state_default(u32 stickDir) {
-    s32 selection = sGamemodeSelectMenu.menu.selectedMenuIndex;
-    s32 prevSelection = selection;
-    s32 playCursorSound = FALSE;
+void handle_inputs_gamemode_select_state_default() {
+    s32 selection = sGamemodeSelectMenu.menu.index;
 
     if(gPlayer1Controller->buttonPressed & A_BUTTON) {
         switch(selection) {
@@ -97,30 +93,17 @@ void handle_inputs_gamemode_select_state_default(u32 stickDir) {
         chstut_tutorial_init();
         menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_TUTORIAL);
         sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_HALT_INPUT;
-    } else if(gPlayer1Controller->buttonPressed & D_JPAD || (stickDir == MENU_JOYSTICK_DIR_DOWN)) {
-        selection++;
-        playCursorSound = TRUE;
-    } else if (gPlayer1Controller->buttonPressed & U_JPAD || (stickDir == MENU_JOYSTICK_DIR_UP)) {
-        selection--;
-        playCursorSound = TRUE;
-    }
-
-    if(selection < 0 || selection > 2) {
-        selection = prevSelection;
-        playCursorSound = FALSE;
-    }
-
-    if(playCursorSound) {
+    } else if (menu_navigate_vertical(&selection, 0, 3, FALSE)) {
         play_sound(SOUND_MENU_MESSAGE_NEXT_PAGE, gGlobalSoundSource);
     }
-
-    sGamemodeSelectMenu.menu.selectedMenuIndex = selection;
+    
+    sGamemodeSelectMenu.menu.index = selection;
 }
 
 /*
     Handles inputs for the difficulty selection submenu
 */
-void handle_inputs_gamemode_select_state_change_diff(u32 stickDir) {
+void handle_inputs_gamemode_select_state_change_diff() {
     s32 selection = sGamemodeSelectMenu.selectedDifficulty;
     s32 prevSelection = sGamemodeSelectMenu.prevSelection;
 
@@ -131,18 +114,8 @@ void handle_inputs_gamemode_select_state_change_diff(u32 stickDir) {
         menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_DEFAULT);
         selection = prevSelection;
         play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
-    } else if(gPlayer1Controller->buttonPressed & D_JPAD || (stickDir == MENU_JOYSTICK_DIR_DOWN)) {
-        selection++;
+    } else if (menu_navigate_vertical(&selection, 0, CHAOS_DIFFICULTY_COUNT, TRUE)) {
         play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
-    } else if (gPlayer1Controller->buttonPressed & U_JPAD || (stickDir == MENU_JOYSTICK_DIR_UP)) {
-        selection--;
-        play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
-    }
-
-    if(selection >= CHAOS_DIFFICULTY_COUNT) {
-        selection = 0;
-    } else if (selection < 0) {
-        selection = CHAOS_DIFFICULTY_COUNT - 1;
     }
 
     sGamemodeSelectMenu.selectedDifficulty = selection;
@@ -151,7 +124,7 @@ void handle_inputs_gamemode_select_state_change_diff(u32 stickDir) {
 /*
     Handles inputs for the challenge selection menu
 */
-void handle_inputs_gamemode_select_state_change_challenge(u32 stickDir) {
+void handle_inputs_gamemode_select_state_change_challenge() {
     s32 selection = sGamemodeSelectMenu.selectedGameMode;
     s32 prevSelection = sGamemodeSelectMenu.prevSelection;
 
@@ -162,18 +135,8 @@ void handle_inputs_gamemode_select_state_change_challenge(u32 stickDir) {
         menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_DEFAULT);
         selection = prevSelection;
         play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
-    } else if(gPlayer1Controller->buttonPressed & D_JPAD || (stickDir == MENU_JOYSTICK_DIR_DOWN)) {
-        selection++;
+    } else if (menu_navigate_vertical(&selection, 0, CHAOS_GAMEMODE_COUNT, TRUE)) {
         play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
-    } else if (gPlayer1Controller->buttonPressed & U_JPAD || (stickDir == MENU_JOYSTICK_DIR_UP)) {
-        selection--;
-        play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
-    }
-
-    if(selection >= CHAOS_GAMEMODE_COUNT) {
-        selection = 0;
-    } else if (selection < 0) {
-        selection = CHAOS_GAMEMODE_COUNT - 1;
     }
 
     sGamemodeSelectMenu.selectedGameMode = selection;
@@ -182,12 +145,14 @@ void handle_inputs_gamemode_select_state_change_challenge(u32 stickDir) {
 /*
     Handles inputs for the confirmation dialogue
 */
-void handle_inputs_gamemode_select_state_confirm(u32 stickDir) {
+void handle_inputs_gamemode_select_state_confirm() {
+    s32 selection = sGamemodeSelectMenu.menu.index;
+
     if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
-        if(sGamemodeSelectMenu.menu.selectedMenuIndex) {
+        if(selection) {
             //No
             menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_DEFAULT);
-            sGamemodeSelectMenu.menu.selectedMenuIndex = sGamemodeSelectMenu.prevSelection;
+            selection = sGamemodeSelectMenu.prevSelection;
             menu_play_anim(&sGamemodeSelectMenu.menu, GM_SELECT_ANIM_SELECTING);
             play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
         } else {
@@ -197,43 +162,32 @@ void handle_inputs_gamemode_select_state_confirm(u32 stickDir) {
         }
     } else if(gPlayer1Controller->buttonPressed & B_BUTTON) {
         menu_set_state(&sGamemodeSelectMenu.menu, GM_SELECT_STATE_DEFAULT);
-        sGamemodeSelectMenu.menu.selectedMenuIndex = sGamemodeSelectMenu.prevSelection;
+        selection = sGamemodeSelectMenu.prevSelection;
         menu_play_anim(&sGamemodeSelectMenu.menu, GM_SELECT_ANIM_SELECTING);
         play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
-    }
-    else if(gPlayer1Controller->buttonPressed & R_JPAD || (stickDir & MENU_JOYSTICK_DIR_RIGHT)) {
-        sGamemodeSelectMenu.menu.selectedMenuIndex++;
-        if(sGamemodeSelectMenu.menu.selectedMenuIndex >= CHAOS_GAMEMODE_COUNT) {
-            sGamemodeSelectMenu.menu.selectedMenuIndex = 0;
-        }
-        play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
-    } else if(gPlayer1Controller->buttonPressed & L_JPAD || (stickDir & MENU_JOYSTICK_DIR_LEFT)) {
-        sGamemodeSelectMenu.menu.selectedMenuIndex--;
-        if(sGamemodeSelectMenu.menu.selectedMenuIndex < 0) {
-            sGamemodeSelectMenu.menu.selectedMenuIndex = CHAOS_GAMEMODE_COUNT - 1;
-        }
+    } else if (menu_navigate_horizontal(&selection, 0, 2, TRUE)) {
         play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
     }
+
+    sGamemodeSelectMenu.menu.index = selection;
 }
 
 /*
     Handles inputs for game select menu
 */
 void handle_gamemode_select_inputs() {
-    u32 stickDir = menu_update_joystick_dir(&sGamemodeSelectMenu.menu);
-
     switch(sGamemodeSelectMenu.menu.menuState) {
         case GM_SELECT_STATE_DEFAULT:
-            handle_inputs_gamemode_select_state_default(stickDir);
+            handle_inputs_gamemode_select_state_default();
             break;
         case GM_SELECT_STATE_CHANGE_DIFF:
-            handle_inputs_gamemode_select_state_change_diff(stickDir);
+            handle_inputs_gamemode_select_state_change_diff();
             break;
         case GM_SELECT_STATE_CHANGE_GAMEMODE:
-            handle_inputs_gamemode_select_state_change_challenge(stickDir);
+            handle_inputs_gamemode_select_state_change_challenge();
             break;
         case GM_SELECT_STATE_CONFIRM:
-            handle_inputs_gamemode_select_state_confirm(stickDir);
+            handle_inputs_gamemode_select_state_confirm();
             break;
     }
 }
@@ -244,40 +198,36 @@ void handle_gamemode_select_inputs() {
 #define GM_SELECT_STARTUP_FRAMES       7
 
 s32 gm_select_anim_startup() {
-    s32 phase = sGamemodeSelectMenu.menu.animPhase;
-    s32 animTimer = sGamemodeSelectMenu.menu.animTimer;
+    struct ChaosMenu *menu = &sGamemodeSelectMenu.menu;
 
-    if(phase) {
-        sGamemodeSelectMenu.menu.flags &= ~GAMEMODE_SELECT_FLAG_HALT_INPUT;
-        sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR;
+    if(menu->animPhase == 0) {
+        menu->animFrames = GM_SELECT_STARTUP_FRAMES;
+        
+        f32 prog = ((f32)menu->animTimer / (f32)menu->animFrames);
+        
+        //Slide elements on screen
+        sGamemodeSelectMenu.startGamePos[0] = menu_anim_f32(prog, MENU_EASE_OUT, GM_START_GAME_X_START, GM_START_GAME_X);
+        sGamemodeSelectMenu.chalPos[0] = menu_anim_f32(prog, MENU_EASE_OUT, CHAL_SELECT_X_START, CHAL_SELECT_X);
+        sGamemodeSelectMenu.diffPos[0] = menu_anim_f32(prog, MENU_EASE_OUT, DIFF_SELECT_X_START, (DIFF_SELECT_X - 5)); //Offset by 5 so it isn't jarring when the selection animation starts playing
+        sGamemodeSelectMenu.descPos[1] = menu_anim_f32(prog, MENU_EASE_OUT, GM_SELECT_DESC_Y_START, GM_SELECT_DESC_Y);
+
+        return FALSE;
+    } else {
+        menu->flags &= ~GAMEMODE_SELECT_FLAG_HALT_INPUT;
+        menu->flags |= GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR;
         return TRUE;
     }
-    
-    sGamemodeSelectMenu.menu.animFrames = GM_SELECT_STARTUP_FRAMES;
-    f32 animPercent = sins((0x3FFF / sGamemodeSelectMenu.menu.animFrames) * animTimer);
-
-    //Slide elements on screen
-    f32 startGameX = menu_translate_percentage(GM_START_GAME_X_START, GM_START_GAME_X, animPercent);
-    f32 challX = menu_translate_percentage(CHAL_SELECT_X_START, CHAL_SELECT_X, animPercent);
-    f32 diffX = menu_translate_percentage(DIFF_SELECT_X_START, (DIFF_SELECT_X - 5), animPercent); //Offset by 5 so it isn't jarring when the selection animation starts playing
-    f32 descY = menu_translate_percentage(GM_SELECT_DESC_Y_START, GM_SELECT_DESC_Y, animPercent);
-
-    sGamemodeSelectMenu.diffPos[0] = diffX;
-    sGamemodeSelectMenu.chalPos[0] = challX;
-    sGamemodeSelectMenu.startGamePos[0] = startGameX;
-    sGamemodeSelectMenu.descPos[1] = descY;
-    
-    return FALSE;
 }
 
 /*
     Plays a selection animation
 */
 s32 gm_select_anim_selecting() {
-    s32 selected = sGamemodeSelectMenu.menu.selectedMenuIndex;
+    struct ChaosMenu *menu = &sGamemodeSelectMenu.menu;
+    s32 selected = menu->index;
 
-    sGamemodeSelectMenu.menu.animFrames = MENU_ANIM_LOOP;
-    sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR;
+    menu->animFrames = MENU_ANIM_LOOP;
+    menu->flags |= GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR;
 
     sGamemodeSelectMenu.diffPos[0] = DIFF_SELECT_X;
     sGamemodeSelectMenu.chalPos[0] = CHAL_SELECT_X;
@@ -303,8 +253,10 @@ s32 gm_select_anim_selecting() {
     Plays the confirmation animation
 */
 s32 gm_select_anim_confirmation() {
-    sGamemodeSelectMenu.menu.animFrames = MENU_ANIM_LOOP;
-    sGamemodeSelectMenu.menu.flags &= ~GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR;
+    struct ChaosMenu *menu = &sGamemodeSelectMenu.menu;
+
+    menu->animFrames = MENU_ANIM_LOOP;
+    menu->flags &= ~GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR;
 
     sGamemodeSelectMenu.diffPos[0] = DIFF_SELECT_X;
     sGamemodeSelectMenu.chalPos[0] = CHAL_SELECT_X;
@@ -319,30 +271,25 @@ s32 gm_select_anim_confirmation() {
 #define GM_SELECT_RETURN_FRAMES       7
 
 s32 gm_select_anim_return() {
-    s32 phase = sGamemodeSelectMenu.menu.animPhase;
-    s32 animTimer = sGamemodeSelectMenu.menu.animTimer;
+    struct ChaosMenu *menu = &sGamemodeSelectMenu.menu;
 
-    if(phase) {
-        sGamemodeSelectMenu.menu.flags &= ~GAMEMODE_SELECT_FLAG_HALT_INPUT;
-        sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR;
+    if(menu->animPhase == 0) {
+        menu->animFrames = GM_SELECT_RETURN_FRAMES;
+
+        f32 prog = ((f32)menu->animTimer / (f32)menu->animFrames);
+
+        //Slide elements on screen
+        sGamemodeSelectMenu.startGamePos[0] = menu_anim_f32(prog, MENU_EASE_IN, GM_START_GAME_X, GM_START_GAME_X_START);
+        sGamemodeSelectMenu.chalPos[0] = menu_anim_f32(prog, MENU_EASE_IN, CHAL_SELECT_X, CHAL_SELECT_X_START);
+        sGamemodeSelectMenu.diffPos[0] = menu_anim_f32(prog, MENU_EASE_IN, DIFF_SELECT_X, DIFF_SELECT_X_START);
+        sGamemodeSelectMenu.descPos[1] = menu_anim_f32(prog, MENU_EASE_IN, GM_SELECT_DESC_Y, GM_SELECT_DESC_Y_START);
+
+        return FALSE;
+    } else {
+        menu->flags &= ~GAMEMODE_SELECT_FLAG_HALT_INPUT;
+        menu->flags |= GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR;
         return TRUE;
     }
-    
-    sGamemodeSelectMenu.menu.animFrames = GM_SELECT_RETURN_FRAMES;
-    f32 animPercent = sins((0x3FFF / sGamemodeSelectMenu.menu.animFrames) * animTimer);
-
-    //Slide elements on screen
-    f32 startGameX = menu_translate_percentage(GM_START_GAME_X, GM_START_GAME_X_START, animPercent);
-    f32 challX = menu_translate_percentage(CHAL_SELECT_X, CHAL_SELECT_X_START, animPercent);
-    f32 diffX = menu_translate_percentage(DIFF_SELECT_X, DIFF_SELECT_X_START, animPercent);
-    f32 descY = menu_translate_percentage(GM_SELECT_DESC_Y, GM_SELECT_DESC_Y_START, animPercent);
-
-    sGamemodeSelectMenu.diffPos[0] = diffX;
-    sGamemodeSelectMenu.chalPos[0] = challX;
-    sGamemodeSelectMenu.startGamePos[0] = startGameX;
-    sGamemodeSelectMenu.descPos[1] = descY;
-    
-    return FALSE;
 }
 
 s32 (*sGMSelectAnims[])(void) = {
@@ -483,7 +430,7 @@ void render_menu_desc() {
     switch(sGamemodeSelectMenu.menu.menuState) {
             case GM_SELECT_STATE_DEFAULT:
             default:
-                desc = sGMSelectDescriptions[GM_SELECT_DESC_DIFFICULTY + sGamemodeSelectMenu.menu.selectedMenuIndex];
+                desc = sGMSelectDescriptions[GM_SELECT_DESC_DIFFICULTY + sGamemodeSelectMenu.menu.index];
                 break;
             case GM_SELECT_STATE_CHANGE_DIFF:
                 desc = sGMSelectDescriptions[GM_SELECT_DESC_EASY + sGamemodeSelectMenu.selectedDifficulty];
@@ -511,7 +458,7 @@ void render_gm_confirmation_dialog() {
     slowtext_draw_ortho_text(30, -20, "No", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
     slowtext_finished_rendering();
 
-    s32 selected = sGamemodeSelectMenu.menu.selectedMenuIndex;
+    s32 selected = sGamemodeSelectMenu.menu.index;
     f32 xPos;
 
     if(selected) {
@@ -608,7 +555,7 @@ void render_gamemode_select() {
     create_dl_ortho_matrix(&gDisplayListHead);
 
     if(flags & GAMEMODE_SELECT_FLAG_DRAW_MAIN_CURSOR) {
-        switch(sGamemodeSelectMenu.menu.selectedMenuIndex) {
+        switch(sGamemodeSelectMenu.menu.index) {
             case GM_SELECT_DIFF:
                 //Difficulty selection
                 cursorY = DIFF_SELECT_Y - 5;

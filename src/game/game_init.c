@@ -546,7 +546,7 @@ void display() {
     exec_display_list(&gGfxPool->spTask);
     profiler_log_thread5_time(AFTER_DISPLAY_LISTS);
 
-    if (chaos_check_if_patch_active(CHAOS_PATCH_LOW_RESOLUTION)) {
+    if (chaos_check_if_patch_active(CHAOS_PATCH_LOW_RESOLUTION) && !gConfig.disableHarshVisuals) {
         render_low_resolution();
     }
 
@@ -1001,6 +1001,7 @@ void thread5_game_loop(UNUSED void *arg) {
 #ifdef WIDE
     gConfig.widescreen = save_file_get_widescreen_mode();
 #endif
+    gConfig.disableHarshVisuals = save_file_get_harsh_visuals_mode();
     render_init();
     reset_patch_selection_menu();
 
@@ -1028,6 +1029,7 @@ void thread5_game_loop(UNUSED void *arg) {
         select_gfx_pool();
         read_controller_inputs();
         profiler_update(PROFILER_TIME_CONTROLLERS);
+        menu_update_input_dir();
         addr = level_script_execute(addr);
 
 #ifdef SOMEONE2639_CRAZY_EXPERIMENTS

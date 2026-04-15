@@ -25,14 +25,6 @@ struct ButtonTexturePair sButtonTextureTable[MENU_PROMPT_COUNT] = {
 };
 
 /*
-    Returns the point a percentage of the way from start to end, used for menu anims
-*/
-f32 menu_translate_percentage(f32 start, f32 end, f32 percent) {
-    f32 point = start + (end - start) * percent;
-    return point;
-}
-
-/*
     Sets the menu anim id and resets timer and phase
 */
 void menu_play_anim(struct ChaosMenu *menu, s32 animId){
@@ -48,45 +40,137 @@ void menu_set_state(struct ChaosMenu *menu, u32 state) {
     menu->menuState = state;
 }
 
-#define MENU_JOYSTICK_IGNORE_FRAMES         15      //Frames to wait before reading the same joystick input again
-#define MENU_JOYSTICK_HOLD_SKIP_FRAMES      3       //Frames to skip reading the same joystick input while it is held
+struct {
+    u8 holdTimer;
+    u8 lastDir : 4;
+    u8 currentDir : 4;
+} sMenuInputHandler;
 
 /*
-    Handles joystick navigation for menus. Updates the last held stick direction and returns either 
-    the stick direction or MENU_JOYSTICK_DIR_NONE if the direction is the same as the 
-    last direction, unless a certain number of frames has passed.
+    Updates the last held directional input for menu navigation. Prioritizes joystick input over dpad input.
+    Skips joystick input when held on consecutive frames, unless joystick is held for a certain amount of time,
+    at which point it will skip every few frames instead.
 */
-u32 menu_update_joystick_dir(struct ChaosMenu *menu) {
+void menu_update_input_dir() {
     f32 stickX = gPlayer1Controller->rawStickX;
     f32 stickY = gPlayer1Controller->rawStickY;
-    u32 stickDir = MENU_JOYSTICK_DIR_NONE;
+    u32 pressed = gPlayer1Controller->buttonPressed;
+    u32 dir = MENU_DIR_NONE;
 
+    // Check stick inputs first
+
+    // Check up/down
     if(stickY > 60) {
-        stickDir |= MENU_JOYSTICK_DIR_UP;
+        dir |= MENU_DIR_U;
     } else if(stickY < -60) {
-        stickDir |= MENU_JOYSTICK_DIR_DOWN;
-    } else if (stickX > 60) {
-        stickDir |= MENU_JOYSTICK_DIR_RIGHT;
+        dir |= MENU_DIR_D;
+    }
+
+    // Check left/right
+    if (stickX > 60) {
+        dir |= MENU_DIR_R;
     } else if (stickX < -60) {
-        stickDir |= MENU_JOYSTICK_DIR_LEFT;
-    } else {
-        menu->framesSinceLastStickInput = 0;
+        dir |= MENU_DIR_L;
     }
 
-    if(menu->framesSinceLastStickInput >= MENU_JOYSTICK_IGNORE_FRAMES 
-        || stickDir != menu->lastStickDir)
-    {
-        menu->lastStickDir = stickDir;
-        menu->framesSinceLastStickInput -= MENU_JOYSTICK_HOLD_SKIP_FRAMES;
+    if (dir != MENU_DIR_NONE) {
+        // Determine if stick input should be read again, otherwise increase hold timer
+        if (dir != sMenuInputHandler.lastDir) {
+            sMenuInputHandler.lastDir = dir;
+            sMenuInputHandler.holdTimer = 0;
+        } else if (sMenuInputHandler.holdTimer >= MENU_INPUT_IGNORE_FRAMES) {
+            sMenuInputHandler.lastDir = dir;
+            sMenuInputHandler.holdTimer -= MENU_INPUT_HOLD_SKIP_FRAMES;
+        } else {
+            dir = MENU_DIR_NONE;
+            sMenuInputHandler.holdTimer++;
+        }
     } else {
-        stickDir = MENU_JOYSTICK_DIR_NONE;
-    }
-    
-    if(menu->framesSinceLastStickInput < MENU_JOYSTICK_IGNORE_FRAMES) {
-        menu->framesSinceLastStickInput++;
+        sMenuInputHandler.holdTimer = 0;
+        sMenuInputHandler.lastDir = MENU_DIR_NONE;
+
+        // If no joystick input was read, check dpad inputs
+
+        // Check up/down
+        if(pressed & U_JPAD) {
+            dir |= MENU_DIR_U;
+        } else if (pressed & D_JPAD) {
+            dir |= MENU_DIR_D;
+        }
+
+        // Check left/right
+        if (pressed & R_JPAD) {
+            dir |= MENU_DIR_R;
+        } else if (pressed & L_JPAD) {
+            dir |= MENU_DIR_L;
+        }
     }
 
-    return stickDir;
+    sMenuInputHandler.currentDir = dir;
+}
+
+u32 menu_get_input_dir() {
+    return sMenuInputHandler.currentDir;
+}
+
+/*
+    Navigates a horizontal menu scheme from min to max. Returns TRUE if index changed.
+*/
+s32 menu_navigate_horizontal(s32 *curIndex, s32 min, s32 max, s32 wrap) {
+    u32 dir = menu_get_input_dir();
+    s32 newIndex = *curIndex;
+    s32 oldIndex = *curIndex;
+
+    if(dir & MENU_DIR_R) {
+        if(++newIndex > (max - 1)) {
+            if(wrap) {
+                newIndex = min;
+            } else {
+                newIndex = (max - 1);
+            }
+        }
+    } else if (dir & MENU_DIR_L) {
+        if(--newIndex < min) {
+            if(wrap) {
+                newIndex = (max - 1);
+            } else {
+                newIndex = min;
+            }
+        }
+    }
+
+    *curIndex = newIndex;
+    return (newIndex != oldIndex);
+}
+
+/*
+    Navigates a vertical menu scheme from min to max. Returns TRUE if index changed.
+*/
+s32 menu_navigate_vertical(s32 *curIndex, s32 min, s32 max, s32 wrap) {
+    u32 dir = menu_get_input_dir();
+    s32 newIndex = *curIndex;
+    s32 oldIndex = *curIndex;
+
+    if(dir & MENU_DIR_D) {
+        if(++newIndex > (max - 1)) {
+            if(wrap) {
+                newIndex = min;
+            } else {
+                newIndex = (max - 1);
+            }
+        }
+    } else if (dir & MENU_DIR_U) {
+        if(--newIndex < min) {
+            if(wrap) {
+                newIndex = (max - 1);
+            } else {
+                newIndex = min;
+            }
+        }
+    }
+
+    *curIndex = newIndex;
+    return (newIndex != oldIndex);
 }
 
 /*
@@ -108,6 +192,49 @@ s32 menu_update_anims(struct ChaosMenu *menu, s32 (*animFunctions[])(void)) {
         }
         return FALSE;
     }
+}
+
+ALWAYS_INLINE f32 menu_calc_anim_percent(f32 prog, s32 easeType) {
+    if(prog > 1.0f) return 1.0f;
+    if(prog < 0.0f) return 0.0f;
+    
+    switch(easeType) {
+        case MENU_EASE_NONE:
+        default:
+            return (prog);
+            break;
+        case MENU_EASE_IN:
+            return (1.0f - coss((0x4000) * prog));
+            break;
+        case MENU_EASE_OUT:
+            return (sins((0x4000) * prog));
+            break;
+        case MENU_EASE_BOTH:
+            return ((coss((0x8000) * prog) / -2.0f) + 0.5f);
+            break;
+    }
+}
+
+s32 menu_anim_s32(f32 prog, s32 easeType, s32 start, s32 end) {
+    s32 value;
+
+    f32 animPercent = menu_calc_anim_percent(prog, easeType);
+    s32 diff = end - start;
+
+    value = start + (diff * animPercent);
+
+    return value;
+}
+
+f32 menu_anim_f32(f32 prog, s32 easeType, f32 start, f32 end) {
+    f32 value;
+
+    f32 animPercent = menu_calc_anim_percent(prog, easeType);
+    f32 diff = end - start;
+
+    value = start + (diff * animPercent);
+
+    return value;
 }
 
 /*
@@ -385,4 +512,29 @@ Gfx *menu_create_chaos_text_bg(s32 bgx, s32 bgy, s32 width, s32 height, u8 opaci
     gSPEndDisplayList(head++);
 
     return bg;
+}
+
+/*
+    Creates a cursor graphic, centered on the passed x, y, coordinates.
+*/
+Gfx *menu_create_cursor(s32 x, s32 y, f32 scale, u8 r, u8 g, u8 b, u8 a) {
+    Mtx *transMtx = alloc_display_list(sizeof(Mtx));
+    Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
+    Gfx *cursor = alloc_display_list(sizeof(Gfx) * 6);
+    Gfx *head = cursor;
+
+    guTranslate(transMtx, x, y, 0);
+    gSPMatrix(head++, VIRTUAL_TO_PHYSICAL(transMtx),
+            G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+
+    guScale(scaleMtx, scale, scale, 1.0f);
+    gSPMatrix(head++, VIRTUAL_TO_PHYSICAL(scaleMtx),
+            G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+
+    gDPSetEnvColor(head++, r, g, b, a);
+    gSPDisplayList(head++, dl_draw_triangle_centered);
+    gSPPopMatrix(head++, G_MTX_MODELVIEW);
+    gSPEndDisplayList(head++);
+
+    return cursor;
 }

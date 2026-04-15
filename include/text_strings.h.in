@@ -20,6 +20,7 @@
 // File Select
 #define TEXT_NEW _("NEW") // New File Text
 #define TEXT_4DASHES _("----") // Used in Score File Menu
+#define TEXT_SETTINGS _("SETTINGS")
 
 // Ingame Menu
 #define TEXT_PAUSE _("PAUSE") // Pause text, Castle Courses

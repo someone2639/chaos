@@ -35,6 +35,7 @@
 #include "chaos_pause_menu.h"
 #include "object_helpers.h"
 #include "behavior_data.h"
+#include "chaos_settings.h"
 
 #define WARP_NODE_F0 0xF0
 #define WARP_NODE_DEATH 0xF1
@@ -1214,8 +1215,8 @@ s32 play_mode_normal(void) {
 }
 
 s32 play_mode_paused(void) {
-    if(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_ACTIVE) {
-        update_settings_panel();
+    if(gChaosSettingsMenu.menu.flags & CHAOS_SETTINGS_ACTIVE) {
+        update_settings_menu();
         return 0;
     }
 
@@ -1300,7 +1301,7 @@ s32 play_mode_select_patch(void) {
     } else {
         stop_secondary_music(75);
         reset_patch_selection_menu();
-        gChaosPauseMenu->activePatchesMenu.selectedMenuIndex = 0;
+        gChaosPauseMenu->activePatchesMenu.index = 0;
         gChaosPauseMenu->chaosListStart = 0;
         set_play_mode(PLAY_MODE_NORMAL);
     }

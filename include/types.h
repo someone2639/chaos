@@ -22,12 +22,19 @@
 #define SCREEN_CENTER_X (SCREEN_WIDTH  / 2)
 #define SCREEN_CENTER_Y (SCREEN_HEIGHT / 2)
 
+enum WideScreenFlags {
+    WIDE_SCREEN_DISABLED        = 0,
+    WIDE_SCREEN_ENABLED         = (1 << 0),
+    WIDE_SCREEN_UI              = (1 << 1),
+};
+
 struct Config {
     f32 audioFrequency;
 #ifdef WIDE
     s16 widescreen;
 #endif
     u8 disableBGMusic;
+    u8 disableHarshVisuals;
     u8 tvType;
 };
 

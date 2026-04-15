@@ -1215,6 +1215,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 8,
         .durationImpossible = 10,
 
+        .conditionalFunc    = chs_cond_no_skybox,
+
         .name               = "The Sky is...Gone?",
         .shortDescription   = "Meh, who needed it anyway...",
     },

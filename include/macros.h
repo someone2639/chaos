@@ -26,6 +26,12 @@
 #endif
 
 #ifdef __GNUC__
+#define ALWAYS_INLINE inline __attribute__((always_inline))
+#else
+#define ALWAYS_INLINE inline
+#endif
+
+#ifdef __GNUC__
 #define FALL_THROUGH __attribute__((fallthrough))
 #else
 #define FALL_THROUGH

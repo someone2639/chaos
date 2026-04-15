@@ -87,8 +87,9 @@ struct MainMenuSaveData {
     u8 soundMode: 2;
     u8 disableBGMusic: 1;
 #ifdef WIDE
-    u8 wideMode: 1;
+    u8 wideMode: 2;
 #endif
+    u8 disableHarshVisuals: 1;
 
     u8 padding[8];
 
@@ -215,6 +216,9 @@ void save_file_set_bg_music(u8 shouldDisable);
 u32 save_file_get_widescreen_mode(void);
 void save_file_set_widescreen_mode(u8 mode);
 #endif
+
+u32 save_file_get_harsh_visuals_mode(void);
+void save_file_set_harsh_visuals_mode(u8 mode);
 
 #ifdef VERSION_EU
 enum EuLanguages {

@@ -12,8 +12,9 @@
 #include "game/emutest.h"
 #include "game/game_init.h"
 #include "game/level_update.h"
+#include "game/main.h"
 
-u8 chs_cond_no_zbuffer(void)       { return !chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_Z_BUFFER); }
+u8 chs_cond_no_zbuffer(void)       { return (!chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_Z_BUFFER) && !gConfig.disableHarshVisuals); }
 u8 chs_cond_inverted_zbuffer(void) { return !chaos_check_if_patch_active(CHAOS_PATCH_NO_Z_BUFFER      ); }
 
 u8 chs_cond_decreased_fov(void) {
@@ -41,7 +42,7 @@ u8 chs_cond_increased_fov(void) {
     return TRUE;
 }
 
-u8 chs_cond_low_resolution(void) { return (!(gEmulator & (EMU_CONSOLE | EMU_ARES)) && gFBEEnabled); }
+u8 chs_cond_low_resolution(void) { return (!(gEmulator & (EMU_CONSOLE | EMU_ARES)) && gFBEEnabled && (!gConfig.disableHarshVisuals)); }
 
 u8 chs_cond_ortho(void) {
     if (chaos_check_if_patch_active(CHAOS_PATCH_INCREASED_FOV)) {
@@ -57,3 +58,5 @@ u8 chs_cond_ortho(void) {
 
     return TRUE;
 }
+
+u8 chs_cond_no_skybox(void) { return !gConfig.disableHarshVisuals; }

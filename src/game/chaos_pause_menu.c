@@ -19,128 +19,14 @@
 #include "main.h"
 #include "chaos/chaos.h"
 #include "patch_selection_ui.h"
-#include "buffers/framebuffers.h"
 #include "emutest.h"
+#include "chaos_settings.h"
 
 #define PATCH_LIST_SIZE     6
 #define ACT_DESC_WIDTH      126
 struct ChaosPauseMenu sChaosPauseMenu = {.chaosListStart = 0};
 struct ChaosPauseMenu *gChaosPauseMenu = &sChaosPauseMenu;
 s16 sPrevHudFlags = HUD_DISPLAY_DEFAULT;
-u16 sPauseScreenBuffer[SCREEN_WIDTH * SCREEN_HEIGHT];
-
-/*
-    Draws a copy of the pause screen as the background. Improves performance on console.
-    Mostly copied from the crash screen lol
-*/
-void draw_pause_screen_framebuffer_bg() {
-    Texture *image = (Texture * )sPauseScreenBuffer;
-    s32 width = SCREEN_WIDTH;
-    s32 height = SCREEN_HEIGHT;
-    s32 posW, posH, imW, imH;
-    s32 i     = 0;
-    s32 num   = 256;
-    s32 maskW = 1;
-    s32 maskH = 1;
-
-    gDPPipeSync(gDisplayListHead++);
-    gDPSetTexturePersp(gDisplayListHead++, G_TP_NONE);
-
-    gDPSetCycleType( gDisplayListHead++, G_CYC_COPY);
-    gDPSetRenderMode(gDisplayListHead++, G_RM_NOOP, G_RM_NOOP2);
-
-    // Find how best to seperate the horizontal. Keep going until it finds a whole value.
-    while (TRUE) {
-        f32 val = (f32)width / (f32)num;
-
-        if ((s32)val == val && (s32) val >= 1) {
-            imW = num;
-            break;
-        }
-        num /= 2;
-        if (num == 1) {
-            return;
-        }
-    }
-    // Find the tile height
-    imH = 64 / (imW / 32); // This gets the vertical amount.
-
-    num = 2;
-    // Find the width mask
-    while (TRUE) {
-        if ((s32) num == imW) {
-            break;
-        }
-        num *= 2;
-        maskW++;
-        if (maskW == 9) {
-            return;
-        }
-    }
-    num = 2;
-    // Find the height mask
-    while (TRUE) {
-        if ((s32) num == imH) {
-            break;
-        }
-        num *= 2;
-        maskH++;
-        if (maskH == 9) {
-            return;
-        }
-    }
-    num = height;
-    // Find the height remainder
-    s32 peakH  = height - (height % imH);
-    s32 cycles = (width * peakH) / (imW * imH);
-
-    // Pass 1
-    for (i = 0; i < cycles; i++) {
-        posW = 0;
-        posH = i * imH;
-        while (posH >= peakH) {
-            posW += imW;
-            posH -= peakH;
-        }
-
-        gDPLoadSync(gDisplayListHead++);
-        gDPLoadTextureTile(gDisplayListHead++,
-            image, G_IM_FMT_RGBA, G_IM_SIZ_16b, width, height, posW, posH, ((posW + imW) - 1), ((posH + imH) - 1), 0, (G_TX_NOMIRROR | G_TX_WRAP), (G_TX_NOMIRROR | G_TX_WRAP), maskW, maskH, 0, 0);
-        gSPScisTextureRectangle(gDisplayListHead++,
-            ((posW) << 2),
-            ((posH) << 2),
-            (((posW + imW) - 1) << 2),
-            (((posH + imH) - 1) << 2),
-            G_TX_RENDERTILE, 0, 0, (4 << 10), (1 << 10));
-    }
-    // If there's a remainder on the vertical side, then it will cycle through that too.
-    if (height-peakH != 0) {
-        posW = 0;
-        posH = peakH;
-        for (i = 0; i < (width / imW); i++) {
-            posW = i * imW;
-            gDPLoadSync(gDisplayListHead++);
-            gDPLoadTextureTile(gDisplayListHead++,
-                image, G_IM_FMT_RGBA, G_IM_SIZ_16b, width, height, posW, posH, ((posW + imW) - 1), (height - 1), 0, (G_TX_NOMIRROR | G_TX_WRAP), (G_TX_NOMIRROR | G_TX_WRAP), maskW, maskH, 0, 0);
-            gSPScisTextureRectangle(gDisplayListHead++,
-                (posW) << 2,
-                (posH) << 2,
-                ((posW + imW) - 1) << 2,
-                ((posH + imH) - 1) << 2,
-                G_TX_RENDERTILE, 0, 0, (4 << 10), (1 << 10));
-        }
-    }
-}
-
-/*
-    Creates a copy of the framebuffer and stores it in sPauseScreenBuffer to render later (console only)
-*/
-void copy_pause_screen_framebuffer() {
-    if(gIsConsole) {
-        gChaosPauseMenu->activePatchesMenu.flags |= ACTIVE_PATCHES_MENU_STOP_GAME_RENDER;
-        bcopy(gFramebuffers[sRenderingFramebuffer], sPauseScreenBuffer, sizeof(gFramebuffers[0]));
-    }
-}
 
 /*
     Scrolls the background for the mini patch cards in the active patch menu
@@ -368,13 +254,10 @@ void draw_mini_patch_card(f32 x, f32 y, struct ChaosActiveEntry *patch) {
     Main rendering function for the active patches menu
 */
 void render_active_patches() {
-    if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_STOP_GAME_RENDER) {
-        draw_pause_screen_framebuffer_bg();
-    } else {
-        shade_screen();
-    }
-
+    create_dl_ortho_matrix(&gDisplayListHead);
+    shade_screen();
     scroll_mini_patch_cards();
+    squish_ui(&gDisplayListHead);
 
     //Draw default message if no patches available
     if (gChaosActiveEntryCount == NULL || *gChaosActiveEntryCount == 0) {
@@ -384,7 +267,7 @@ void render_active_patches() {
 
     f32 cardX = gChaosPauseMenu->cardX;
     f32 descX = gChaosPauseMenu->descX;
-    s32 selection = gChaosPauseMenu->activePatchesMenu.selectedMenuIndex;
+    s32 selection = gChaosPauseMenu->activePatchesMenu.index;
     s32 numPatches = *gChaosActiveEntryCount;
     s32 listStart = gChaosPauseMenu->chaosListStart;
     s32 listEnd = (numPatches > PATCH_LIST_SIZE) ? (listStart + PATCH_LIST_SIZE) : numPatches;
@@ -432,7 +315,7 @@ void render_active_patches() {
     to ensure that the menu scrolls correctly.
 */
 void update_active_patch_list_bounds() {
-    s32 selection = gChaosPauseMenu->activePatchesMenu.selectedMenuIndex;
+    s32 selection = gChaosPauseMenu->activePatchesMenu.index;
     s32 start = gChaosPauseMenu->chaosListStart;
     s32 numPatches = *gChaosActiveEntryCount;
     s32 end = start + PATCH_LIST_SIZE;
@@ -467,7 +350,7 @@ void update_active_patch_list_bounds() {
     Button prompts for the active patches menu
 */
 void render_active_patches_menu_button_prompts() {
-    s32 selection = gChaosPauseMenu->activePatchesMenu.selectedMenuIndex;
+    s32 selection = gChaosPauseMenu->activePatchesMenu.index;
     struct ChaosActiveEntry *patch = &gChaosActiveEntries[selection];
     const struct ChaosPatch *patchInfo = &gChaosPatches[patch->id];
     struct ButtonPromptList prompts = {0};
@@ -492,20 +375,14 @@ void render_active_patches_menu_button_prompts() {
 /*
     Handles input for the active patches menu's default state
 */
-void handle_active_patches_inputs_state_default(u32 stickDir) { 
-    s32 prevSelection = gChaosPauseMenu->activePatchesMenu.selectedMenuIndex;
-    s32 selection = prevSelection;
-    s32 allowScroll = TRUE;
-
-    if (gChaosActiveEntryCount == NULL || *gChaosActiveEntryCount == 0) {
-        allowScroll = FALSE;
-    }
+void handle_active_patches_inputs_state_default() {
+    s32 listEmpty = (gChaosActiveEntryCount == NULL || *gChaosActiveEntryCount == 0);
+    s32 selection = gChaosPauseMenu->activePatchesMenu.index;
 
     if(gPlayer1Controller->buttonPressed & (R_TRIG | B_BUTTON | A_BUTTON | START_BUTTON)) {
         menu_play_anim(&gChaosPauseMenu->activePatchesMenu, ACTIVE_PATCHES_MENU_ANIM_ENDING);
-        gChaosPauseMenu->activePatchesMenu.flags &= ~ACTIVE_PATCHES_MENU_STOP_GAME_RENDER;
         gPlayer1Controller->buttonPressed &= ~R_TRIG;
-    } else if((gPlayer1Controller->buttonPressed & (L_TRIG | Z_TRIG)) && allowScroll) {
+    } else if((gPlayer1Controller->buttonPressed & (L_TRIG | Z_TRIG)) && !listEmpty) {
         struct ChaosActiveEntry *patch = &gChaosActiveEntries[selection];
         const struct ChaosPatch *patchInfo = &gChaosPatches[patch->id];
         //Only transition to extended description state if an extended description exists
@@ -516,21 +393,9 @@ void handle_active_patches_inputs_state_default(u32 stickDir) {
         } else {
             play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
         }
-    } else if((gPlayer1Controller->buttonPressed & U_JPAD || stickDir & MENU_JOYSTICK_DIR_UP) && allowScroll) {
-        selection--;
-    } else if ((gPlayer1Controller->buttonPressed & D_JPAD || stickDir & MENU_JOYSTICK_DIR_DOWN) && allowScroll) {
-        selection++;
-    }
-
-    if(selection < 0) {
-        selection = *gChaosActiveEntryCount - 1;
-    } else if (selection >= *gChaosActiveEntryCount) {
-        selection = 0;
-    }
-
-    if(selection != prevSelection) {
+    } else if(!listEmpty && menu_navigate_vertical(&selection, 0, *gChaosActiveEntryCount, TRUE)) {
         play_sound(SOUND_MENU_MESSAGE_NEXT_PAGE, gGlobalSoundSource);
-        gChaosPauseMenu->activePatchesMenu.selectedMenuIndex = selection;
+        gChaosPauseMenu->activePatchesMenu.index = selection;
         update_active_patch_list_bounds();
     }
 }
@@ -552,12 +417,10 @@ void handle_active_patches_inputs() {
     if(!gChaosActiveEntryCount) {
         return;
     }
-
-    u32 stickDir = menu_update_joystick_dir(&gChaosPauseMenu->activePatchesMenu);
     
     switch(gChaosPauseMenu->activePatchesMenu.menuState) {
         case ACTIVE_PATCHES_MENU_STATE_DEFAULT:
-            handle_active_patches_inputs_state_default(stickDir);
+            handle_active_patches_inputs_state_default();
             break;
         case ACTIVE_PATCHES_MENU_STATE_SHOW_EXT_DESC:
             handle_active_patches_inputs_state_show_ext_desc();
@@ -568,36 +431,27 @@ void handle_active_patches_inputs() {
 /*
     Startup animation for the active patches menu
 */
-#define ACTIVE_PATCH_MENU_WAIT_FB_FRAMES    3
 #define ACTIVE_PATCH_MENU_START_FRAMES      7
 s32 active_patches_menu_anim_startup() {
-    s32 phase = gChaosPauseMenu->activePatchesMenu.animPhase;
-    s32 animTimer = gChaosPauseMenu->activePatchesMenu.animTimer;
-    f32 animPercent;
-    switch(phase) {
-        case 0:
-            gHudDisplay.flags = HUD_DISPLAY_NONE;
-            
-            gChaosPauseMenu->activePatchesMenu.animFrames = ACTIVE_PATCH_MENU_WAIT_FB_FRAMES;
-            //Waits a few frames then copies the framebuffer (for console)
-            if(animTimer == ACTIVE_PATCH_MENU_WAIT_FB_FRAMES) {
-                copy_pause_screen_framebuffer();
-            }
-            break;
-        case 1:
-            if(animTimer == 0) {
-                play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
-            }
-            gChaosPauseMenu->activePatchesMenu.flags |= ACTIVE_PATCHES_MENU_HALT_INPUT;
-            gChaosPauseMenu->activePatchesMenu.animFrames = ACTIVE_PATCH_MENU_START_FRAMES;
-            animPercent = sins((0x3FFF / gChaosPauseMenu->activePatchesMenu.animFrames) * animTimer);
-            gChaosPauseMenu->descX = menu_translate_percentage(ACTIVE_PATCH_DESC_X_START, ACTIVE_PATCH_DESC_X, animPercent);
-            gChaosPauseMenu->cardX = menu_translate_percentage(MINI_CARD_X_START, MINI_CARD_X, animPercent);
-            break;
-        default:
-            gChaosPauseMenu->activePatchesMenu.flags &= ~ACTIVE_PATCHES_MENU_HALT_INPUT;
-            gChaosPauseMenu->activePatchesMenu.animFrames = MENU_ANIM_LOOP;
-            break;
+    struct ChaosMenu *menu = &gChaosPauseMenu->activePatchesMenu;
+
+    if(menu->animPhase == 0) {
+        gHudDisplay.flags = HUD_DISPLAY_NONE;
+        menu->flags |= ACTIVE_PATCHES_MENU_HALT_INPUT;
+        menu->animFrames = ACTIVE_PATCH_MENU_START_FRAMES;
+        
+        s32 animTimer = menu->animTimer;
+        f32 prog = ((f32)animTimer / (f32)menu->animFrames);
+
+        gChaosPauseMenu->descX = menu_anim_s32(prog, MENU_EASE_OUT, ACTIVE_PATCH_DESC_X_START, ACTIVE_PATCH_DESC_X);
+        gChaosPauseMenu->cardX = menu_anim_s32(prog, MENU_EASE_OUT, MINI_CARD_X_START, MINI_CARD_X);
+
+        if(animTimer == 0) {
+            play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
+        }
+    } else {
+        menu->flags &= ~ACTIVE_PATCHES_MENU_HALT_INPUT;
+        menu->animFrames = MENU_ANIM_LOOP;
     }
     
     return FALSE;
@@ -608,21 +462,24 @@ s32 active_patches_menu_anim_startup() {
 */
 #define ACTIVE_PATCH_MENU_END_FRAMES  7
 s32 active_patches_menu_anim_ending() {
-    s32 phase = gChaosPauseMenu->activePatchesMenu.animPhase;
-    s32 animTimer = gChaosPauseMenu->activePatchesMenu.animTimer;
-    f32 animPercent;
-    if(!phase) {
+    struct ChaosMenu *menu = &gChaosPauseMenu->activePatchesMenu;
+
+    if(menu->animPhase == 0) {
+        menu->flags |= ACTIVE_PATCHES_MENU_HALT_INPUT;
+        menu->animFrames = ACTIVE_PATCH_MENU_END_FRAMES;
+
+        s32 animTimer = menu->animTimer;
+        f32 prog = ((f32)animTimer / (f32)menu->animFrames);
+
+        gChaosPauseMenu->descX = menu_anim_s32(prog, MENU_EASE_IN, ACTIVE_PATCH_DESC_X, ACTIVE_PATCH_DESC_X_START);
+        gChaosPauseMenu->cardX = menu_anim_s32(prog, MENU_EASE_IN, MINI_CARD_X, MINI_CARD_X_START);
+
         if(animTimer == 0) {
             play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
         }
-        gChaosPauseMenu->activePatchesMenu.flags |= ACTIVE_PATCHES_MENU_HALT_INPUT;
-        gChaosPauseMenu->activePatchesMenu.animFrames = ACTIVE_PATCH_MENU_END_FRAMES;
-        animPercent = 1.0f - coss((0x3FFF / gChaosPauseMenu->activePatchesMenu.animFrames) * animTimer);
-        gChaosPauseMenu->descX = menu_translate_percentage(ACTIVE_PATCH_DESC_X, ACTIVE_PATCH_DESC_X_START, animPercent);
-        gChaosPauseMenu->cardX = menu_translate_percentage(MINI_CARD_X, MINI_CARD_X_START, animPercent);
     } else {
-        gChaosPauseMenu->activePatchesMenu.flags &= ~ACTIVE_PATCHES_MENU_ACTIVE;
-        gChaosPauseMenu->activePatchesMenu.animFrames = MENU_ANIM_LOOP;
+        menu->flags &= ~ACTIVE_PATCHES_MENU_ACTIVE;
+        menu->animFrames = MENU_ANIM_LOOP;
         gHudDisplay.flags = sPrevHudFlags;
     }
     return FALSE;
@@ -633,24 +490,23 @@ s32 active_patches_menu_anim_ending() {
 */
 #define ACTIVE_PATCHES_MENU_EXT_DESC_APPEAR_ANIM_FRAMES   7
 s32 active_patches_menu_anim_ext_desc_appear() {
-    s32 animTimer = gChaosPauseMenu->activePatchesMenu.animTimer;
-    f32 animPhase = gChaosPauseMenu->activePatchesMenu.animPhase;
+    struct ChaosMenu *menu = &gChaosPauseMenu->activePatchesMenu;
 
-    if(animPhase) {
-        gChaosPauseMenu->activePatchesMenu.flags &= ~ACTIVE_PATCHES_MENU_HALT_INPUT;
+    if(menu->animPhase == 0) {
+        menu->animFrames = ACTIVE_PATCHES_MENU_EXT_DESC_APPEAR_ANIM_FRAMES;
+        menu->flags |= ACTIVE_PATCHES_MENU_HALT_INPUT;
+        menu->flags |= ACTIVE_PATCHES_MENU_DRAW_EXT_DESC;
+
+        s32 animTimer = menu->animTimer;
+        f32 prog = ((f32)animTimer / (f32)menu->animFrames);
+
+        gChaosPauseMenu->extDescScale = menu_anim_f32(prog, MENU_EASE_NONE, 0.0f, 1.0f);
+
+        return FALSE;
+    } else {
+        menu->flags &= ~ACTIVE_PATCHES_MENU_HALT_INPUT;
         return TRUE;
     }
-
-    gChaosPauseMenu->activePatchesMenu.animFrames = ACTIVE_PATCHES_MENU_EXT_DESC_APPEAR_ANIM_FRAMES;
-    f32 animPercent = (1.0f / gChaosPauseMenu->activePatchesMenu.animFrames) * animTimer;
-    gChaosPauseMenu->activePatchesMenu.flags |= ACTIVE_PATCHES_MENU_HALT_INPUT;
-
-    gChaosPauseMenu->activePatchesMenu.flags |= ACTIVE_PATCHES_MENU_DRAW_EXT_DESC;
-
-    f32 scale = menu_translate_percentage(0.0f, 1.0f, animPercent);
-    gChaosPauseMenu->extDescScale = scale;
-
-    return FALSE;
 }
 
 /*
@@ -658,27 +514,26 @@ s32 active_patches_menu_anim_ext_desc_appear() {
 */
 #define ACTIVE_PATCHES_MENU_EXT_DESC_DISAPPEAR_ANIM_FRAMES   7
 s32 active_patches_menu_anim_ext_desc_disappear() {
-    s32 animTimer = gChaosPauseMenu->activePatchesMenu.animTimer;
-    f32 animPhase = gChaosPauseMenu->activePatchesMenu.animPhase;
+    struct ChaosMenu *menu = &gChaosPauseMenu->activePatchesMenu;
 
-    if(animPhase) {
-        gChaosPauseMenu->activePatchesMenu.flags &= ~ACTIVE_PATCHES_MENU_DRAW_EXT_DESC;
-        gChaosPauseMenu->activePatchesMenu.flags &= ~ACTIVE_PATCHES_MENU_HALT_INPUT;
+    if(menu->animPhase == 0) {
+        menu->animFrames = ACTIVE_PATCHES_MENU_EXT_DESC_DISAPPEAR_ANIM_FRAMES;
+        menu->flags |= ACTIVE_PATCHES_MENU_HALT_INPUT;
+
+        s32 animTimer = menu->animTimer;
+        f32 prog = ((f32)animTimer / (f32)menu->animFrames);
+
+        gChaosPauseMenu->extDescScale = menu_anim_f32(prog, MENU_EASE_NONE, 1.0f, 0.0f);
+
+        if(animTimer == 0) {
+            play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
+        }
+        return FALSE;
+    } else {
+        menu->flags &= ~ACTIVE_PATCHES_MENU_DRAW_EXT_DESC;
+        menu->flags &= ~ACTIVE_PATCHES_MENU_HALT_INPUT;
         return TRUE;
     }
-
-    if(animTimer == 0) {
-        play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
-    }
-
-    gChaosPauseMenu->activePatchesMenu.animFrames = ACTIVE_PATCHES_MENU_EXT_DESC_DISAPPEAR_ANIM_FRAMES;
-    f32 animPercent = (1.0f / gChaosPauseMenu->activePatchesMenu.animFrames) * animTimer;
-    gChaosPauseMenu->activePatchesMenu.flags |= ACTIVE_PATCHES_MENU_HALT_INPUT;
-
-    f32 scale = menu_translate_percentage(1.0f, 0.0f, animPercent);
-    gChaosPauseMenu->extDescScale = scale;
-
-    return FALSE;
 }
 
 /*
@@ -700,215 +555,6 @@ void update_active_patches_menu() {
     }
 
     menu_update_anims(&gChaosPauseMenu->activePatchesMenu, sActivePatchesMenuAnims);
-}
-
-/*
-    SETTINGS PANEL
-*/
-
-/*
-    Sets the default settings for the settings panel
-*/
-void init_setings_panel() {
-    gChaosPauseMenu->settingsMenu.flags |= (CHAOS_SETTINGS_ACTIVE | CHAOS_SETTINGS_HALT_INPUT);
-    gChaosPauseMenu->settingsMenu.animTimer = 0;
-    gChaosPauseMenu->settingsMenu.animFrames = MENU_ANIM_LOOP;
-    gChaosPauseMenu->settingsMenu.animId = CHAOS_SETTINGS_ANIM_APPEAR;
-    gChaosPauseMenu->settingsMenu.animPhase = 0;
-    gChaosPauseMenu->settingsPanelY = SETTINGS_PANEL_Y_START;
-}
-
-/*
-    Main rendering function for the settings panel
-*/
-void render_settings_panel() {
-    Mtx *transMtx = alloc_display_list(sizeof(Mtx) * 2);
-    Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
-    f32 x = 42;
-    f32 y = gChaosPauseMenu->settingsPanelY;
-
-    u8 aspRatCol43;
-    u8 aspRatCol169;
-    u8 musColOn;
-    u8 musColOff;
-    s32 cursorX = (gChaosPauseMenu->settingsMenu.selectedMenuIndex % 2) ? 0 : -30;
-    s32 cursorY = (gChaosPauseMenu->settingsMenu.selectedMenuIndex < 2) ? 5 : -35;
-
-    //Color widescreen and bg music options based on currently applied settings
-    if(gConfig.widescreen) {
-        aspRatCol43 = 0x7F;
-        aspRatCol169 = 0xFF;
-    } else {
-        aspRatCol43 = 0xFF;
-        aspRatCol169 = 0x7F;
-    }
-
-    if(gConfig.disableBGMusic) {
-        musColOn = 0x7F;
-        musColOff = 0xFF;
-    } else {
-        musColOn = 0xFF;
-        musColOff = 0x7F;
-    }
-
-    guTranslate(transMtx, x, y, 0);
-    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
-              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    Gfx *bg = menu_create_chaos_text_bg(x, SETTINGS_PANEL_Y, 74, 92, 217);
-    gSPDisplayList(gDisplayListHead++, bg);
-
-    slowtext_setup_ortho_rendering(FT_FONT_SMALL_BOLD);
-    slowtext_draw_ortho_text(0, 25, "Aspect\nRatio:", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_draw_ortho_text(0, -25, "Music:", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_setup_ortho_rendering(FT_FONT_SMALL_THIN);
-    slowtext_draw_ortho_text(-15, 0, "4:3", FT_FLAG_ALIGN_CENTER, aspRatCol43, aspRatCol43, aspRatCol43, 0xFF);
-    slowtext_draw_ortho_text(15, 0, "16:9", FT_FLAG_ALIGN_CENTER, aspRatCol169, aspRatCol169, aspRatCol169, 0xFF);
-    slowtext_draw_ortho_text(-15, -40, "On", FT_FLAG_ALIGN_CENTER, musColOn, musColOn, musColOn, 0xFF);
-    slowtext_draw_ortho_text(15, -40, "Off", FT_FLAG_ALIGN_CENTER, musColOff, musColOff, musColOff, 0xFF);
-    slowtext_finished_rendering();
-
-    //Cursor
-    guTranslate(transMtx, cursorX, cursorY, 0);
-    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
-            G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-    guScale(scaleMtx, 0.5f, 0.5f, 1.0f);
-    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx),
-            G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-    gDPSetEnvColor(gDisplayListHead++, 0xFF, 0xFF, 0xFF, 0xFF);
-    gSPDisplayList(gDisplayListHead++, dl_draw_triangle);
-    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
-
-    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
-
-    if(!(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_HALT_INPUT)) {
-        render_settings_panel_button_prompts();
-    }
-}
-
-/*
-    Button prompts for the settings panel
-*/
-void render_settings_panel_button_prompts() {
-    struct ButtonPromptList prompts = {0};
-    menu_add_button_prompt(&prompts, MENU_PROMPT_A_BUTTON, "Select");
-    menu_add_button_prompt(&prompts, MENU_PROMPT_B_BUTTON, "Back");
-    menu_render_button_prompt_list(SCREEN_WIDTH - 32, PAUSE_BUTTON_PROMPTS_Y, &prompts);
-}
-
-/*
-    Main input handling function for the settings panel
-*/
-void handle_settings_inputs() {
-    u32 stickDir = menu_update_joystick_dir(&gChaosPauseMenu->settingsMenu);
-    s32 prevSelection = gChaosPauseMenu->settingsMenu.selectedMenuIndex;
-    s32 selection = prevSelection;
-    s32 pressedUpDown = ((gPlayer1Controller->buttonPressed & (D_JPAD | U_JPAD)) || stickDir & (MENU_JOYSTICK_DIR_DOWN | MENU_JOYSTICK_DIR_UP));
-    s32 pressedLeftRight = ((gPlayer1Controller->buttonPressed & (L_JPAD | R_JPAD)) || stickDir & (MENU_JOYSTICK_DIR_LEFT | MENU_JOYSTICK_DIR_RIGHT));
-
-    if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
-        switch(selection) {
-            //4:3
-            case 0:
-                gConfig.widescreen = 0;
-                break;
-            //16:9
-            case 1:
-                gConfig.widescreen = 1;
-                break;
-            //On
-            case 2:
-                gConfig.disableBGMusic = 0;
-                break;
-            //Off
-            case 3:
-                gConfig.disableBGMusic = 1;
-                break;
-        }
-        save_file_set_widescreen_mode(gConfig.widescreen);
-        save_file_set_bg_music(gConfig.disableBGMusic);
-    } else if (gPlayer1Controller->buttonPressed & (B_BUTTON | L_TRIG)) {
-        menu_play_anim(&gChaosPauseMenu->settingsMenu, CHAOS_SETTINGS_ANIM_DISAPPEAR);
-    } else if(pressedUpDown) {
-        selection += 2;
-        if(selection > 3) {
-            selection = prevSelection - 2;
-        }
-    } else if (pressedLeftRight) {
-        selection++;
-        if(selection > 3 || !(selection % 2)) {
-            selection = prevSelection - 1;
-        }
-    }
-
-    if(selection != prevSelection) {
-        play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
-        gChaosPauseMenu->settingsMenu.selectedMenuIndex = selection;
-    }
-}
-
-/*
-    Starting animation for the settings panel
-*/
-#define SETTINGS_PANEL_START_FRAMES   10
-s32 chaos_settings_anim_appear() {
-    s32 phase = gChaosPauseMenu->settingsMenu.animPhase;
-    s32 animTimer = gChaosPauseMenu->settingsMenu.animTimer;
-    f32 animPercent;
-    if(!phase) {
-        if(animTimer == 0) {
-            play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
-        }
-        gChaosPauseMenu->settingsMenu.flags |= CHAOS_SETTINGS_HALT_INPUT;
-        gChaosPauseMenu->settingsMenu.animFrames = SETTINGS_PANEL_START_FRAMES;
-        animPercent = sins((0x3FFF / gChaosPauseMenu->settingsMenu.animFrames) * animTimer);
-        gChaosPauseMenu->settingsPanelY = menu_translate_percentage(SETTINGS_PANEL_Y_START, SETTINGS_PANEL_Y, animPercent);
-    } else {
-        gChaosPauseMenu->settingsMenu.flags &= ~CHAOS_SETTINGS_HALT_INPUT;
-        gChaosPauseMenu->settingsMenu.animFrames = MENU_ANIM_LOOP;
-    }
-    return FALSE;
-}
-
-/*
-    Ending animation for the settings panel
-*/
-#define SETTINGS_PANEL_END_FRAMES   10
-s32 chaos_settings_anim_disappear() {
-    s32 phase = gChaosPauseMenu->settingsMenu.animPhase;
-    s32 animTimer = gChaosPauseMenu->settingsMenu.animTimer;
-    f32 animPercent;
-    if(!phase) {
-        if(animTimer == 0) {
-            play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
-        }
-        gChaosPauseMenu->settingsMenu.flags |= CHAOS_SETTINGS_HALT_INPUT;
-        gChaosPauseMenu->settingsMenu.animFrames = SETTINGS_PANEL_END_FRAMES;
-        animPercent = 1.0f - coss((0x3FFF / gChaosPauseMenu->settingsMenu.animFrames) * animTimer);
-        gChaosPauseMenu->settingsPanelY = menu_translate_percentage(SETTINGS_PANEL_Y, SETTINGS_PANEL_Y_START, animPercent);
-    } else {
-        gChaosPauseMenu->settingsMenu.flags &= ~CHAOS_SETTINGS_ACTIVE;
-        gChaosPauseMenu->settingsMenu.animFrames = MENU_ANIM_LOOP;
-    }
-    return FALSE;
-}
-
-/*
-    Settings panel animations
-*/
-s32 (*sSettingsPanelAnims[])(void) = {
-    &chaos_settings_anim_appear,
-    &chaos_settings_anim_disappear,
-};
-
-/*
-    Main update function for the settings panel
-*/
-void update_settings_panel() {
-    if(!(gChaosPauseMenu->settingsMenu.flags & CHAOS_SETTINGS_HALT_INPUT)) {
-        handle_settings_inputs();
-    }
-
-    menu_update_anims(&gChaosPauseMenu->settingsMenu, sSettingsPanelAnims);
 }
 
 /*
