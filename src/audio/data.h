@@ -141,11 +141,11 @@ extern s32 gRefreshRate;
 extern s16 *gAiBuffers[NUMAIBUFFERS];
 extern s16 gAiBufferLengths[NUMAIBUFFERS];
 #if defined(VERSION_SH)
-#define AIBUFFER_LEN 0xb00
+#define AIBUFFER_LEN ALIGN16(0xb00)
 #elif defined(VERSION_EU)
-#define AIBUFFER_LEN (0xa0 * 17)
+#define AIBUFFER_LEN ALIGN16(0xa0 * 17)
 #else
-#define AIBUFFER_LEN (0xa0 * 16)
+#define AIBUFFER_LEN ALIGN16(0xa0 * 16)
 #endif
 
 extern u32 gAudioRandom;

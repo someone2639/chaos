@@ -36,8 +36,6 @@
 #define L_CBUTTONS chCheckCLeft()
 #define R_CBUTTONS chCheckCRight()
 
-s32 badCameraIndex = -1;
-
 int chCheckCLeft() {
     if (isGameFlipped) {
         return CONT_F;

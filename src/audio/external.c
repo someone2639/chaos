@@ -348,6 +348,10 @@ extern OSMesgQueue *D_SH_80350F88;
 extern OSMesgQueue *D_SH_80350FA8;
 #endif
 
+ALIGNED16 static u8 sLagAudioBuffer[ALIGN16((32000 * sizeof(s16) * SYNTH_CHANNEL_STEREO_COUNT) + (AIBUFFER_LEN * NUMAIBUFFERS))];
+s32 sLagAudioBufStart = -1;
+s32 sLagProcessingIndex = 0;
+
 typedef s32 FadeT;
 
 // some sort of main thread -> sound thread dispatchers
@@ -583,6 +587,34 @@ struct SPTask *create_next_audio_frame_task(void) {
     //   on to the AI
     // Here we thus send to the AI the sound that was generated two frames ago.
     if (gAiBufferLengths[index] != 0) {
+        if (!chaos_check_if_patch_active(CHAOS_PATCH_AUDIO_DELAY)) {
+            sLagAudioBufStart = -1;
+            sLagProcessingIndex = 0;
+        } else {
+            const u32 lengthToCopy_u32 = gAiBufferLengths[index];
+            u32 *sLagAudioBuffer_u32 = (u32*) &sLagAudioBuffer[0];
+            u32 *gAiBuffer_u32 = (u32*) &gAiBuffers[index][0];
+
+            // Init buffers if applicable
+            if (sLagAudioBufStart < 0) {
+                bzero(sLagAudioBuffer, sizeof(sLagAudioBuffer));
+                sLagAudioBufStart = ALIGN16((AIBUFFER_LEN * NUMAIBUFFERS) / sizeof(u32));
+                sLagProcessingIndex = 0;
+            }
+
+            // Copy audio buffer to backup
+            for (u32 processedLength = 0; processedLength < lengthToCopy_u32; processedLength++) {
+                sLagAudioBuffer_u32[sLagProcessingIndex] = gAiBuffer_u32[processedLength];
+                sLagProcessingIndex = (sLagProcessingIndex + 1) % (sizeof(sLagAudioBuffer) / sizeof(u32));
+            }
+
+            // Copy audio back into AI buffer
+            for (u32 processedLength = 0; processedLength < lengthToCopy_u32; processedLength++) {
+                gAiBuffer_u32[processedLength] = sLagAudioBuffer_u32[sLagAudioBufStart];
+                sLagAudioBufStart = (sLagAudioBufStart + 1) % (sizeof(sLagAudioBuffer) / sizeof(u32));
+            }
+        }
+
         osAiSetNextBuffer(gAiBuffers[index], gAiBufferLengths[index] * 4);
     }
 

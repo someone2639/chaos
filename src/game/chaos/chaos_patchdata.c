@@ -1802,6 +1802,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Randomize Music",
         .shortDescription   = "Let's listen to something else.",
     },
+    [CHAOS_PATCH_AUDIO_DELAY] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 1,
+        .isStackable        = FALSE,
+        .duration           = 5,
+        .durationHard       = 7,
+        .durationImpossible = 9,
+
+        .name               = "Bluetooth Lag",
+        .shortDescription   = "The game's audio response will be substantially delayed.",
+    },
 
 // Miscellaneous Modifiers
     [CHAOS_PATCH_MARIO_INVISIBLE] = {
