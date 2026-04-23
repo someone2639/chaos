@@ -43,6 +43,9 @@
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
 
+#define WIDESCREEN_HACK_WIDTH_START -54
+#define WIDESCREEN_HACK_WIDTH_END 374
+
 // Border Height Define for NTSC Versions
 #ifdef TARGET_N64
 #ifndef VERSION_EU

@@ -498,7 +498,7 @@ static void render_low_resolution(void) {
     // 2 pixels at a time!
     u32 *fb = (u32 *) gFramebuffers[sRenderedFramebuffer];
 
-    if (sCurrPlayMode == PLAY_MODE_PAUSED || sCurrPlayMode == PLAY_MODE_SELECT_PATCH || sCurrPlayMode == PLAY_MODE_QUICKTIME || gInActSelect) {
+    if (!check_moving_play_mode(sCurrPlayMode) || gInActSelect) {
         return;
     }
 

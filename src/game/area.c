@@ -444,6 +444,14 @@ void render_game(void) {
             gSaveOptSelectIndex = gMenuOptSelectIndex;
         }
 
+        if (chaos_check_if_patch_active(CHAOS_PATCH_BLUECOIN_LOTTERY)) {
+            drawslots();
+        }
+
+        if (chaos_check_if_patch_active(CHAOS_PATCH_DARKNESS) && check_moving_play_mode(sCurrPlayMode) && !gInActSelect) {
+            chstut_draw_shaded_background(&gDisplayListHead, WIDESCREEN_HACK_WIDTH_START, WIDESCREEN_HACK_WIDTH_END, 0, SCREEN_HEIGHT, 0, 0, 0, 183);
+        }
+
 #ifdef CHAOS_ENGINE_DEBUG
         static u8 chaosDebugRender = FALSE;
         if (gPlayer1Controller->buttonPressed & R_JPAD) {
@@ -485,10 +493,6 @@ void render_game(void) {
             } else {
                 gWarpTransDelay--;
             }
-        }
-
-        if (chaos_check_if_patch_active(CHAOS_PATCH_BLUECOIN_LOTTERY)) {
-            drawslots();
         }
 
         if(!sShowMessageLogRecap) {

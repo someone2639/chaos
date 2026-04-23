@@ -131,6 +131,7 @@ enum HUDDisplayFlag {
 };
 
 
+u8 check_moving_play_mode(s16 playMode);
 void set_play_mode(s16 playMode);
 u16 level_control_timer(s32 timerOp);
 void fade_into_special_warp(u32 arg, u32 color);

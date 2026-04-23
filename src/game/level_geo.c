@@ -2,6 +2,7 @@
 
 #include "sm64.h"
 #include "rendering_graph_node.h"
+#include "main.h"
 #include "mario_misc.h"
 #include "skybox.h"
 #include "engine/math_util.h"
@@ -72,7 +73,7 @@ Gfx *geo_skybox_main(s32 callContext, struct GraphNode *node, UNUSED Mat4 *mtx) 
             (struct GraphNodePerspective *) camNode->fnNode.node.parent;
 
 #ifndef L3DEX2_ALONE
-        if (chaos_check_if_patch_active(CHAOS_PATCH_CAMERA_LAG) && camNode->lakituLagFrame >= 0) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_CAMERA_LAG) && !gConfig.disableHarshVisuals && camNode->lakituLagFrame >= 0) {
             gfx = create_skybox_facing_camera(0, backgroundNode->background, camFrustum->fov,
                                 camNode->camHistory[camNode->lakituLagFrame].pos[0],
                                 camNode->camHistory[camNode->lakituLagFrame].pos[1],

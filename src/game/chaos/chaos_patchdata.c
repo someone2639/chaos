@@ -1360,6 +1360,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Lakitu's Bad Hangover",
         .shortDescription   = "Lakitu had a little too much to drink last night. He may struggle to keep up with Mario!",
     },
+    [CHAOS_PATCH_DARKNESS] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 2,
+        .isStackable        = FALSE,
+        .duration           = 4,
+        .durationHard       = 5,
+        .durationImpossible = 6,
+
+        .conditionalFunc    = chs_cond_darkness,
+
+        .name               = "Hello Darkness, My Old Friend",
+        .shortDescription   = "Dim the screen substantially.",
+    },
 
 // Time Limit
 #define CHS_TIME_LIMIT_DURATION            10

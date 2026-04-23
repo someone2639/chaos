@@ -148,6 +148,7 @@ u8 chs_cond_low_resolution(void);
 u8 chs_cond_ortho(void);
 u8 chs_cond_no_skybox(void);
 u8 chs_cond_camera_lag(void);
+u8 chs_cond_darkness(void);
 
 // Time Limit
 void chs_level_init_time_limit(void);

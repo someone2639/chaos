@@ -5,6 +5,7 @@
 #include "prevent_bss_reordering.h"
 #include "sm64.h"
 #include "camera.h"
+#include "main.h"
 #include "seq_ids.h"
 #include "dialog_ids.h"
 #include "audio/external.h"
@@ -3655,7 +3656,7 @@ void create_camera(struct GraphNodeCamera *gc, struct AllocOnlyPool *pool) {
 }
 
 static void process_lag_camera(struct GraphNodeCamera *gc) {
-    if (chaos_check_if_patch_active(CHAOS_PATCH_CAMERA_LAG)) {
+    if (chaos_check_if_patch_active(CHAOS_PATCH_CAMERA_LAG) && !gConfig.disableHarshVisuals) {
         // Preemtively fill buffer when buffer data doesn't exist
         if (gc->lakituLagFrame == -1) {
             for (s32 i = 0; i < ARRAY_COUNT(gc->camHistory); i++) {
@@ -3672,7 +3673,7 @@ static void process_lag_camera(struct GraphNodeCamera *gc) {
         vec3f_copy(gc->pos, gc->camHistory[gc->lakituLagFrame].pos);
         vec3f_copy(gc->focus, gc->camHistory[gc->lakituLagFrame].focus);
 
-        if (sCurrPlayMode == PLAY_MODE_NORMAL) {
+        if (check_moving_play_mode(sCurrPlayMode) && !gInActSelect) {
             // Buffer actual camera input for future
             gc->camHistory[gc->lakituLagFrame].roll = gLakituState.roll;
             vec3f_copy(gc->camHistory[gc->lakituLagFrame].pos, gLakituState.pos);

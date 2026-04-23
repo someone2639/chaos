@@ -982,6 +982,7 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
         }
     }
 
+    s32 overruledSpecialEvent = TRUE;
     for (s32 index = 0; index < CHAOS_PATCH_MAX_GENERATABLE; index++) {
         generatedPatches[index].specialEvent = specialEvent;
         if (specialEvent == CHAOS_SPECIAL_PLUS1_POSITIVE &&
@@ -1004,16 +1005,11 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
         ) {
             generatedPatches[index].specialEvent = CHAOS_SPECIAL_NONE;
         }
-    }
 
-    s32 overruledSpecialEvent = TRUE;
-    for (s32 index = 0; index < CHAOS_PATCH_MAX_GENERATABLE; index++) {
         if (generatedPatches[index].specialEvent == specialEvent) {
             overruledSpecialEvent = FALSE;
-            break;
         }
     }
-
     if (overruledSpecialEvent) {
         chaosmsg_print_debug("@FFFF009FAll generated patch events overridden to no event, discounting event...");
         lastEventType = CHAOS_SPECIAL_NONE;

@@ -149,7 +149,7 @@ static void chstut_render_tiled_image(Gfx **dl, Texture *image, s32 x, s32 y, s3
     *dl = dlHead;
 }
 
-static void chstut_draw_shaded_background(Gfx** dl, s32 x1, s32 x2, s32 y1, s32 y2, u8 r, u8 g, u8 b, u8 a) {
+void chstut_draw_shaded_background(Gfx** dl, s32 x1, s32 x2, s32 y1, s32 y2, u8 r, u8 g, u8 b, u8 a) {
     Gfx* dlHead = *dl;
 
     if (a == 0) {

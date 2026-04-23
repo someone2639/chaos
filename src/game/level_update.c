@@ -235,6 +235,18 @@ u32 pressed_pause(void) {
     return FALSE;
 }
 
+u8 check_moving_play_mode(s16 playMode) {
+    if (
+        playMode == PLAY_MODE_NORMAL ||
+        playMode == PLAY_MODE_CHANGE_AREA ||
+        playMode == PLAY_MODE_CHANGE_LEVEL
+    ) {
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
 void set_play_mode(s16 playMode) {
     if (playMode == PLAY_MODE_SELECT_PATCH && gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE && gChaosBlueStarLastCollected) {
         chaosmsg_print(CHAOS_PATCH_NONE, "@BF5F5F--You collected a duplicate star or key on @5F5F5F--Impossible@BF5F5F-- difficulty. Patches will not be cycled!@--------");

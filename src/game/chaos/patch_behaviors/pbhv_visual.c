@@ -67,5 +67,9 @@ u8 chs_cond_no_skybox(void) {
 }
 
 u8 chs_cond_camera_lag(void) {
-    return !(chaos_check_if_patch_active(CHAOS_PATCH_DECREASED_FOV) || chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM));
+    return !(chaos_check_if_patch_active(CHAOS_PATCH_DECREASED_FOV) || chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM) || gConfig.disableHarshVisuals);
+}
+
+u8 chs_cond_darkness(void) {
+    return !(gEmulator & (EMU_CONSOLE | EMU_ARES)); // Probably laggy
 }
