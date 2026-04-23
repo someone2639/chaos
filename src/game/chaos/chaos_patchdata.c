@@ -1346,6 +1346,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Dizzy Objects",
         .shortDescription   = "Spins objects around in a circle (visuals only). I hope you don't get motion sick!",
     },
+    [CHAOS_PATCH_CAMERA_LAG] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 2,
+        .isStackable        = FALSE,
+        .duration           = 3,
+        .durationHard       = 4,
+        .durationImpossible = 5,
+
+        .conditionalFunc    = chs_cond_camera_lag,
+
+        .name               = "Lakitu's Bad Hangover",
+        .shortDescription   = "Lakitu had a little too much to drink last night. He may struggle to keep up with Mario!",
+    },
 
 // Time Limit
 #define CHS_TIME_LIMIT_DURATION            10

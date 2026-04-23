@@ -1153,10 +1153,7 @@ void update_hud_values(void) {
 void basic_update(UNUSED s16 *arg) {
     area_update_objects();
     update_hud_values();
-
-    if (gCurrentArea != NULL) {
-        update_camera(gCurrentArea->camera);
-    }
+    update_area_camera();
 }
 
 s32 play_mode_normal(void) {
@@ -1181,10 +1178,7 @@ s32 play_mode_normal(void) {
 
     area_update_objects();
     update_hud_values();
-
-    if (gCurrentArea != NULL) {
-        update_camera(gCurrentArea->camera);
-    }
+    update_area_camera();
 
     initiate_painting_warp();
     initiate_delayed_warp();
@@ -1326,7 +1320,7 @@ s32 play_mode_change_area(void) {
     //! This maybe was supposed to be sTransitionTimer == -1? sTransitionUpdate
     // is never set to -1.
     if (sTransitionUpdate == (void (*)(s16 *)) -1) {
-        update_camera(gCurrentArea->camera);
+        update_area_camera();
     } else if (sTransitionUpdate != NULL) {
         sTransitionUpdate(&sTransitionTimer);
     }

@@ -147,6 +147,7 @@ u8 chs_cond_increased_fov(void);
 u8 chs_cond_low_resolution(void);
 u8 chs_cond_ortho(void);
 u8 chs_cond_no_skybox(void);
+u8 chs_cond_camera_lag(void);
 
 // Time Limit
 void chs_level_init_time_limit(void);

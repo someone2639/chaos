@@ -28,12 +28,15 @@
 #include "paintings.h"
 #include "engine/graph_node.h"
 #include "level_table.h"
+#include "level_update.h"
 #include "game/rendering_graph_node.h"
 
 #undef L_CBUTTONS
 #undef R_CBUTTONS
 #define L_CBUTTONS chCheckCLeft()
 #define R_CBUTTONS chCheckCRight()
+
+s32 badCameraIndex = -1;
 
 int chCheckCLeft() {
     if (isGameFlipped) {
@@ -3337,6 +3340,15 @@ void update_camera(struct Camera *c) {
 }
 
 /**
+ * Entry point for most all vanilla cases of update_camera()
+ */
+void update_area_camera(void) {
+    if (gCurrentArea != NULL) {
+        update_camera(gCurrentArea->camera);
+    }
+}
+
+/**
  * Reset all the camera variables to their arcane defaults
  */
 void reset_camera(struct Camera *c) {
@@ -3630,6 +3642,7 @@ void create_camera(struct GraphNodeCamera *gc, struct AllocOnlyPool *pool) {
     s16 mode = gc->config.mode;
     struct Camera *c = alloc_only_pool_alloc(pool, sizeof(struct Camera));
 
+    gc->lakituLagFrame = -1;
     gc->config.camera = c;
     c->mode = mode;
     c->defMode = mode;
@@ -3643,6 +3656,41 @@ void create_camera(struct GraphNodeCamera *gc, struct AllocOnlyPool *pool) {
     vec3f_copy(c->focus, gc->focus);
 }
 
+static void process_lag_camera(struct GraphNodeCamera *gc) {
+    if (chaos_check_if_patch_active(CHAOS_PATCH_CAMERA_LAG)) {
+        // Preemtively fill buffer when buffer data doesn't exist
+        if (gc->lakituLagFrame == -1) {
+            for (s32 i = 0; i < ARRAY_COUNT(gc->camHistory); i++) {
+                gc->camHistory[i].roll = gLakituState.roll;
+                vec3f_copy(gc->camHistory[i].pos, gLakituState.pos);
+                vec3f_copy(gc->camHistory[i].focus, gLakituState.focus);
+            }
+
+            gc->lakituLagFrame = 0;
+        }
+
+        // Update camera with applied lag
+        gc->rollScreen = gc->camHistory[gc->lakituLagFrame].roll;
+        vec3f_copy(gc->pos, gc->camHistory[gc->lakituLagFrame].pos);
+        vec3f_copy(gc->focus, gc->camHistory[gc->lakituLagFrame].focus);
+
+        if (sCurrPlayMode == PLAY_MODE_NORMAL) {
+            // Buffer actual camera input for future
+            gc->camHistory[gc->lakituLagFrame].roll = gLakituState.roll;
+            vec3f_copy(gc->camHistory[gc->lakituLagFrame].pos, gLakituState.pos);
+            vec3f_copy(gc->camHistory[gc->lakituLagFrame].focus, gLakituState.focus);
+
+            // Update active patch frame index
+            gc->lakituLagFrame = (gc->lakituLagFrame + 1) % ARRAY_COUNT(gc->camHistory);
+        }
+    } else {
+        gc->lakituLagFrame = -1;
+        gc->rollScreen = gLakituState.roll;
+        vec3f_copy(gc->pos, gLakituState.pos);
+        vec3f_copy(gc->focus, gLakituState.focus);
+    }
+}
+
 /**
  * Copy Lakitu's pos and foc into `gc`
  */
@@ -3650,9 +3698,7 @@ void update_graph_node_camera(struct GraphNodeCamera *gc) {
     UNUSED u8 filler[8];
     UNUSED struct Camera *c = gc->config.camera;
 
-    gc->rollScreen = gLakituState.roll;
-    vec3f_copy(gc->pos, gLakituState.pos);
-    vec3f_copy(gc->focus, gLakituState.focus);
+    process_lag_camera(gc);
     zoom_out_if_paused_and_outside(gc);
 }
 

@@ -27,6 +27,9 @@ u8 chs_cond_decreased_fov(void) {
     if (chaos_check_if_patch_active(CHAOS_PATCH_ORTHO)) {
         return FALSE;
     }
+    if (chaos_check_if_patch_active(CHAOS_PATCH_CAMERA_LAG)) {
+        return FALSE;
+    }
     return TRUE;
 }
 u8 chs_cond_increased_fov(void) {
@@ -59,4 +62,10 @@ u8 chs_cond_ortho(void) {
     return TRUE;
 }
 
-u8 chs_cond_no_skybox(void) { return !gConfig.disableHarshVisuals; }
+u8 chs_cond_no_skybox(void) {
+    return !gConfig.disableHarshVisuals;
+}
+
+u8 chs_cond_camera_lag(void) {
+    return !(chaos_check_if_patch_active(CHAOS_PATCH_DECREASED_FOV) || chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM));
+}

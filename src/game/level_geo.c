@@ -8,6 +8,7 @@
 #include "camera.h"
 #include "envfx_snow.h"
 #include "level_geo.h"
+#include "chaos/chaos.h"
 
 /**
  * Geo function that generates a displaylist for environment effects such as
@@ -71,9 +72,20 @@ Gfx *geo_skybox_main(s32 callContext, struct GraphNode *node, UNUSED Mat4 *mtx) 
             (struct GraphNodePerspective *) camNode->fnNode.node.parent;
 
 #ifndef L3DEX2_ALONE
-        gfx = create_skybox_facing_camera(0, backgroundNode->background, camFrustum->fov, gLakituState.pos[0],
-                            gLakituState.pos[1], gLakituState.pos[2], gLakituState.focus[0],
-                            gLakituState.focus[1], gLakituState.focus[2]);
+        if (chaos_check_if_patch_active(CHAOS_PATCH_CAMERA_LAG) && camNode->lakituLagFrame >= 0) {
+            gfx = create_skybox_facing_camera(0, backgroundNode->background, camFrustum->fov,
+                                camNode->camHistory[camNode->lakituLagFrame].pos[0],
+                                camNode->camHistory[camNode->lakituLagFrame].pos[1],
+                                camNode->camHistory[camNode->lakituLagFrame].pos[2], 
+                                camNode->camHistory[camNode->lakituLagFrame].focus[0],
+                                camNode->camHistory[camNode->lakituLagFrame].focus[1],
+                                camNode->camHistory[camNode->lakituLagFrame].focus[2]
+            );
+        } else {
+            gfx = create_skybox_facing_camera(0, backgroundNode->background, camFrustum->fov, gLakituState.pos[0],
+                                gLakituState.pos[1], gLakituState.pos[2], gLakituState.focus[0],
+                                gLakituState.focus[1], gLakituState.focus[2]);
+        }
 #endif
     }
 

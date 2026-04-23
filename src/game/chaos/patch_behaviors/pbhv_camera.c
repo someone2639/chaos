@@ -20,5 +20,5 @@ u8 chs_topdown_check(void) {
 }
 
 u8 chs_cond_forced_mario_cam(void) {
-    return (!chaos_check_if_patch_active(CHAOS_PATCH_TOP_DOWN_CAMERA));
+    return !(chaos_check_if_patch_active(CHAOS_PATCH_TOP_DOWN_CAMERA) || chaos_check_if_patch_active(CHAOS_PATCH_CAMERA_LAG));
 }

@@ -67,11 +67,6 @@ struct SaveFile {
     struct SaveBlockSignature signature;
 };
 
-enum SaveFileChallenge {
-    CHALLENGE_MODE_OFF,
-    CHALLENGE_MODE_ON,
-};
-
 enum SaveFileIndex {
     SAVE_FILE_A,
     SAVE_FILE_B,

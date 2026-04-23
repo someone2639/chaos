@@ -7,6 +7,8 @@
 #include "types.h"
 #include "game/memory.h"
 
+#define LAKITU_LAG_FRAMES 12
+
 #define GRAPH_RENDER_ACTIVE         (1 << 0)
 #define GRAPH_RENDER_CHILDREN_FIRST (1 << 1)
 #define GRAPH_RENDER_BILLBOARD      (1 << 2)
@@ -159,6 +161,12 @@ struct GraphNodeSwitchCase {
     /*0x1E*/ s16 selectedCase;
 };
 
+struct LakituLagHistory {
+    /*0x00*/ Vec3f pos;
+    /*0x0C*/ Vec3f focus;
+    /*0x18*/ s16 roll;
+};
+
 /**
  * GraphNode that specifies the location and aim of the camera.
  * When the roll is 0, the up vector is (0, 1, 0).
@@ -178,6 +186,9 @@ struct GraphNodeCamera {
     /*0x34*/ Mat4 *matrixPtr; // pointer to look-at matrix of this camera as a Mat4
     /*0x38*/ s16 roll; // roll in look at matrix. Doesn't account for light direction unlike rollScreen.
     /*0x3A*/ s16 rollScreen; // rolls screen while keeping the light direction consistent
+
+    /*0x3C*/ s16 lakituLagFrame;
+    /*0x40*/ struct LakituLagHistory camHistory[LAKITU_LAG_FRAMES];
 };
 
 /** GraphNode that translates and rotates its children.
