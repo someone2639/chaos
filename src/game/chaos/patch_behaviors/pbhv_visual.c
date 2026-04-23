@@ -66,6 +66,10 @@ u8 chs_cond_no_skybox(void) {
     return !gConfig.disableHarshVisuals;
 }
 
+u8 chs_cond_dizzy_objects(void) {
+    return !gConfig.disableHarshVisuals;
+}
+
 u8 chs_cond_camera_lag(void) {
     return !(chaos_check_if_patch_active(CHAOS_PATCH_DECREASED_FOV) || chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM) || gConfig.disableHarshVisuals);
 }

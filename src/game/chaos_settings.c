@@ -137,12 +137,12 @@ void chaos_settings_set_harsh_visuals(s32 selected) {
 struct ChaosSettingsOption sVisualsOptions[] = {
     {
         .option = "Enable",
-        .description = "Certain patches that can cause flashing or flickering lights can appear as options in the patch selection menu.",
+        .description = "Certain patches that could cause flashing, flickering lights, or are prone to motion sickness may appear as options in the patch selection menu.",
     },
     {
         .option = "Disable",
-        .description = "Patches that could cause flashing or flickering lights will no longer appear as options in the patch selection menu. "
-        "Any currently applied patch that could cause flashing or flickering lights will have their effects disabled.",
+        .description = "Patches that could cause flashing, flickering lights, or are prone to motion sickness will no longer appear as options in the patch selection menu. "
+        "Any currently applied patch that matches this criteria will have its effects disabled.",
     },
 };
 
@@ -177,7 +177,7 @@ struct ChaosSettingsCategory gSettingsOptions[] = {
     {
         .display = "Harsh Visuals Settings",
         .shortName = "Harsh Visuals",
-        .description = "Turn off some patch effects that may cause flashing or flickering lights.",
+        .description = "Turn off some patch effects that may cause flashing, flickering lights, or are prone to motion sickness.",
         .options = sVisualsOptions,
         .numOptions = ARRAY_COUNT(sVisualsOptions),
         .getConfig = chaos_settings_get_harsh_visuals,

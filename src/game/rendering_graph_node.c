@@ -892,7 +892,7 @@ void geo_process_object(struct Object *node) {
             }
         }
 
-        if (chaos_check_if_patch_active(CHAOS_PATCH_DIZZY_OBJECTS)){
+        if (chaos_check_if_patch_active(CHAOS_PATCH_DIZZY_OBJECTS) && !gConfig.disableHarshVisuals){
             struct Object *obj = (struct Object *) node;
             if(obj->behavior != segmented_to_virtual(bhvMario)) {
                 s16 phase = (0xFFFF / 60) * (gGlobalTimer % 60);
@@ -901,7 +901,7 @@ void geo_process_object(struct Object *node) {
             }
         }
 
-        if (node->header.gfx.throwMatrix != NULL && !chaos_check_if_patch_active(CHAOS_PATCH_DIZZY_OBJECTS) && !chaos_check_if_patch_active(CHAOS_PATCH_CONFUSED_OBJECTS)) {
+        if (node->header.gfx.throwMatrix != NULL && (!chaos_check_if_patch_active(CHAOS_PATCH_DIZZY_OBJECTS) || gConfig.disableHarshVisuals) && !chaos_check_if_patch_active(CHAOS_PATCH_CONFUSED_OBJECTS)) {
             mtxf_mul(gMatStack[gMatStackIndex + 1], *node->header.gfx.throwMatrix,
                      gMatStack[gMatStackIndex]);
         } else if (node->header.gfx.node.flags & GRAPH_RENDER_BILLBOARD) {

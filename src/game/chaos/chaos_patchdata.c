@@ -1343,6 +1343,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 5,
         .durationImpossible = 6,
 
+        .conditionalFunc    = chs_cond_dizzy_objects,
+
         .name               = "Dizzy Objects",
         .shortDescription   = "Spins objects around in a circle (visuals only). I hope you don't get motion sick!",
     },
