@@ -1446,6 +1446,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .negationId         = CHAOS_PATCH_REMOVE_SELECTABLE_PATCH,
         .severity           = 3,
         .isStackable        = TRUE,
+        .affectsPatchSelect = TRUE,
         .duration           = 8,
         
         .conditionalFunc    = chs_cond_add_selectable_patch,
@@ -1459,6 +1460,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .negationId         = CHAOS_PATCH_ADD_SELECTABLE_PATCH,
         .severity           = 3,
         .isStackable        = TRUE,
+        .affectsPatchSelect = TRUE,
         .duration           = 5,
         .durationHard       = 6,
         .durationImpossible = 7,
@@ -1467,6 +1469,47 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Little Choice",
         .shortDescription   = "Remove an option from the patch selection menu.",
+    },
+    [CHAOS_PATCH_LUCKY_CHARM] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 2,
+        .isStackable        = FALSE,
+        .affectsPatchSelect = TRUE,
+        .duration           = 7,
+        
+        .conditionalFunc    = chs_cond_lucky_charm,
+
+        .name               = "Lucky Charm",
+        .shortDescription   = "Doubles chances of encountering a Lucky event.",
+    },
+    [CHAOS_PATCH_UNLUCKY_CHARM] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 2,
+        .isStackable        = FALSE,
+        .affectsPatchSelect = TRUE,
+        .duration           = 5,
+        .durationHard       = 7,
+        .durationImpossible = 7,
+        
+        .conditionalFunc    = chs_cond_unlucky_charm,
+
+        .name               = "Unlucky Charm",
+        .shortDescription   = "Doubles chances of encountering Bad Luck and Chaos events.",
+    },
+    [CHAOS_PATCH_UNEVENTFUL] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 2,
+        .isStackable        = FALSE,
+        .affectsPatchSelect = TRUE,
+        .duration           = 8,
+        
+        .conditionalFunc    = chs_cond_uneventful,
+
+        .name               = "Uneventful",
+        .shortDescription   = "Bad Luck and Chaos events will no longer show up (except for duplicate stars).",
     },
 
 // Speed Modifiers

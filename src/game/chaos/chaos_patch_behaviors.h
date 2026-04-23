@@ -168,6 +168,9 @@ u8 chs_cond_remove_negative_patch(void);
 void chs_act_remove_negative_patch(void);
 u8 chs_cond_add_selectable_patch(void);
 u8 chs_cond_remove_selectable_patch(void);
+u8 chs_cond_lucky_charm(void);
+u8 chs_cond_unlucky_charm(void);
+u8 chs_cond_uneventful(void);
 
 // Speed Modifiers
 u8 chs_cond_push_back(void);

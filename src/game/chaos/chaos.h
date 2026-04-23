@@ -23,6 +23,9 @@
 
 #define CHAOS_PATCH_ENTRIES 0x100
 
+#define CHAOS_MIN_STARS_FOR_FORCED_DIFFICULTIES 3
+#define CHAOS_MIN_STARS_FOR_EVENTS 5
+
 enum ChaosPatchID {
 // Empty Modifiers
     CHAOS_PATCH_NONE_POSITIVE,
@@ -155,6 +158,9 @@ enum ChaosPatchID {
     CHAOS_PATCH_REMOVE_NEGATIVE_PATCH,
     CHAOS_PATCH_ADD_SELECTABLE_PATCH,
     CHAOS_PATCH_REMOVE_SELECTABLE_PATCH,
+    CHAOS_PATCH_LUCKY_CHARM,
+    CHAOS_PATCH_UNLUCKY_CHARM,
+    CHAOS_PATCH_UNEVENTFUL,
 
 // Speed Modifiers
     CHAOS_PATCH_PUSH_BACK,
@@ -265,6 +271,12 @@ enum ChaosPatchSpecialEvent {
     CHAOS_SPECIAL_COUNT,
 };
 
+enum ChaosStarDecrementType {
+    CHAOS_STAR_DECREMENT_ALL,
+    CHAOS_STAR_DECREMENT_STANDARD,
+    CHAOS_STAR_DECREMENT_MENU_IMPACTING,
+};
+
 // Remaining Duration and Patch ID will be tracked within a separate array of active patch data (to be defined later). Memory behind said array should also be copied to the save file.
 // Any uses of activatedInitFunc should also consider save file reloads appropriately and never touch duration directly.
 struct ChaosPatch {
@@ -273,6 +285,7 @@ struct ChaosPatch {
     const enum ChaosPatchID negationId;             // This is the exact opposite of what effect (if any)? This is useful for deactivating an infinite, opposite effect rather than creating a useless stack, which helps oppose theoretically infinite memory requirements.
     const u8 severity;           // Usefulness or severity impact of the patch (must be between 1 and CHAOS_PATCH_SEVERITY_MAX, excluding CHAOS_PATCH_NONE_*)
     const u8 isStackable;        // Can this patch be active more than once at a time?
+    const u8 affectsPatchSelect; // Directly impacts patch generation; star index should be decremented only after a new patch has been selected.
     const u8 disableForHardcore; // Should this patch type be disabled in hardcore mode?
     const u8 duration;           // How long should the patch last, or how many uses are left? (Ignored for CHAOS_DURATION_ONCE and CHAOS_DURATION_INFINITE)
     const u8 durationHard;       // Duration to be used in Hard mode (except when set to 0)
@@ -343,7 +356,7 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId);
 
 // Decrement all durations for each patch using a star timer (i.e. CHAOS_DURATION_STARS).
 // Additionally deconstructs any applicable patches if their duration hits 0.
-void chaos_decrement_star_timers(void);
+void chaos_decrement_star_timers(enum ChaosStarDecrementType decrementType);
 
 // Handles behavior for decrementing consumable patches (i.e. CHAOS_DURATION_USE_COUNT).
 // This does NOT invoke a callback for what it should do when the patch is consumed,

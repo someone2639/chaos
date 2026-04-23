@@ -1280,7 +1280,6 @@ s32 play_mode_frame_advance(void) {
 s32 play_mode_select_patch(void) {
     if (gPatchSelectionMenu->menu.menuState != PATCH_SELECT_STATE_CLOSED) {
         if (!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_ACTIVE)) {
-            chaos_decrement_star_timers();
             load_new_patches();
             gPatchSelectionMenu->menu.flags |= PATCH_SELECT_FLAG_ACTIVE;
             chaosSeqVolSubtractable = FALSE;

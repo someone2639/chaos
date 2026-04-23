@@ -15,6 +15,10 @@
 #define RETRY_ATTEMPTS_DUPLICATES 5
 #define DUPLICATE_ALLOWANCE 0.8f
 
+#define EVENT_ODDS_LUCKY   0.175f
+#define EVENT_ODDS_UNLUCKY 0.175f
+#define EVENT_ODDS_CHAOS   0.125f
+
 static u32 activePatchCounts[CHAOS_PATCH_COUNT];
 static u8 availablePatches[CHAOS_PATCH_COUNT];
 static struct ChaosPatchSelection generatedPatches[CHAOS_PATCH_MAX_GENERATABLE];
@@ -409,7 +413,7 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
     chaos_sort_active_patches();
 }
 
-void chaos_decrement_star_timers(void) {
+void chaos_decrement_star_timers(enum ChaosStarDecrementType decrementType) {
     if (!gChaosActiveEntryCount) {
         return;
     }
@@ -419,6 +423,14 @@ void chaos_decrement_star_timers(void) {
     for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
         struct ChaosActiveEntry *entry = &gChaosActiveEntries[i];
         if (gChaosPatches[entry->id].durationType != CHAOS_DURATION_STARS) {
+            continue;
+        }
+        if (decrementType == CHAOS_STAR_DECREMENT_STANDARD && gChaosPatches[entry->id].affectsPatchSelect) {
+            // Skip patches that affect chaos patch generation / patch select menu
+            continue;
+        }
+        if (decrementType == CHAOS_STAR_DECREMENT_MENU_IMPACTING && !gChaosPatches[entry->id].affectsPatchSelect) {
+            // Skip patches that do not affect chaos patch generation / patch select menu
             continue;
         }
 
@@ -779,11 +791,11 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
 
     offsetSeverityWeight = random_float();
 
-    if (starCount < 3) {
+    if (starCount < CHAOS_MIN_STARS_FOR_FORCED_DIFFICULTIES) {
         forcedDifficulty = -1;
     }
-    if (starCount < 5) {
-        offsetSeverityWeight = 1.0f;
+    if (starCount < CHAOS_MIN_STARS_FOR_EVENTS) {
+        offsetSeverityWeight = 100.0f;
     }
 
     chaosmsg_print_debug("@FFFF009FforcedDifficulty: "
@@ -799,16 +811,33 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
             specialEvent = CHAOS_SPECIAL_ZERO_POSITIVE;
             chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9Fpos 0 (forced)");
         } else {
-            if (offsetSeverityWeight < 0.15f) {
-                // 15% chance to globally increase negative severity
-                specialEvent = CHAOS_SPECIAL_PLUS1_NEGATIVE;
-                chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9Fneg++");
-            } else if (offsetSeverityWeight < 0.30f) {
-                // 15% chance to globally increase positive severity
+            f32 luckyEventFactor = EVENT_ODDS_LUCKY;
+            f32 unluckyEventFactor = EVENT_ODDS_UNLUCKY;
+            f32 chaosEventFactor = EVENT_ODDS_CHAOS;
+            if (chaos_check_if_patch_active(CHAOS_PATCH_LUCKY_CHARM)) {
+                luckyEventFactor *= 2.0f;
+            }
+            if (chaos_check_if_patch_active(CHAOS_PATCH_UNLUCKY_CHARM)) {
+                unluckyEventFactor *= 2.0f;
+                chaosEventFactor *= 2.0f;
+            }
+            if (chaos_check_if_patch_active(CHAOS_PATCH_UNEVENTFUL)) {
+                unluckyEventFactor = 0.0f;
+                chaosEventFactor = 0.0f;
+            }
+            unluckyEventFactor += luckyEventFactor;
+            chaosEventFactor += unluckyEventFactor;
+
+            if (offsetSeverityWeight < luckyEventFactor) {
+                // 17.5% chance to globally increase positive severity
                 specialEvent = CHAOS_SPECIAL_PLUS1_POSITIVE;
                 chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9Fpos++");
-            } else if (offsetSeverityWeight < 0.40f) {
-                // 10% chance to eliminate all positive patches
+            } else if (offsetSeverityWeight < unluckyEventFactor) {
+                // 17.5% chance to globally increase negative severity
+                specialEvent = CHAOS_SPECIAL_PLUS1_NEGATIVE;
+                chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9Fneg++");
+            } else if (offsetSeverityWeight < chaosEventFactor) {
+                // 12.5% chance to eliminate all positive patches
                 specialEvent = CHAOS_SPECIAL_ZERO_POSITIVE;
                 chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9Fpos 0");
             } else {
@@ -975,6 +1004,19 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
         ) {
             generatedPatches[index].specialEvent = CHAOS_SPECIAL_NONE;
         }
+    }
+
+    s32 overruledSpecialEvent = TRUE;
+    for (s32 index = 0; index < CHAOS_PATCH_MAX_GENERATABLE; index++) {
+        if (generatedPatches[index].specialEvent == specialEvent) {
+            overruledSpecialEvent = FALSE;
+            break;
+        }
+    }
+
+    if (overruledSpecialEvent) {
+        chaosmsg_print_debug("@FFFF009FAll generated patch events overridden to no event, discounting event...");
+        lastEventType = CHAOS_SPECIAL_NONE;
     }
 
     save_file_set_new_chaos_gen_data(lastForcedDifficulty, lastEventType);

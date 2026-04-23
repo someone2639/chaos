@@ -127,6 +127,7 @@ void load_new_patches() {
     // Generate new patches
     assert(numPatches > 0 && numPatches <= MAX_CARDS, "Tried to load an invalid number of patch cards!");
 
+    chaos_decrement_star_timers(CHAOS_STAR_DECREMENT_STANDARD);
     struct ChaosPatchSelection *patches = chaos_roll_for_new_patches();
     aggress(patches, "Chaos patches uninitialized!");
     for (s32 i = 0; i < numPatches; i++) {
@@ -688,6 +689,7 @@ void update_patch_selection_menu() {
             case PATCH_SELECT_STATE_CLOSING:
                 //When the closing animation is finished, the menu should close
                 menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_CLOSED);
+                chaos_decrement_star_timers(CHAOS_STAR_DECREMENT_MENU_IMPACTING);
                 chaos_select_patches(gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].sel);
                 save_file_do_save(gCurrSaveFileNum - 1);
                 break;

@@ -118,3 +118,28 @@ u8 chs_cond_add_selectable_patch(void) {
 u8 chs_cond_remove_selectable_patch(void) {
     return (DEFAULT_PATCH_DISPLAY_QUANTITY - chaos_count_active_instances(CHAOS_PATCH_REMOVE_SELECTABLE_PATCH) > 1);
 }
+
+u8 chs_cond_lucky_charm(void) {
+    return !(
+        gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE ||
+        chaos_check_if_patch_active(CHAOS_PATCH_UNLUCKY_CHARM) ||
+        save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) < CHAOS_MIN_STARS_FOR_EVENTS
+    );
+}
+
+u8 chs_cond_unlucky_charm(void) {
+    return !(
+        gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE ||
+        chaos_check_if_patch_active(CHAOS_PATCH_LUCKY_CHARM) ||
+        chaos_check_if_patch_active(CHAOS_PATCH_UNEVENTFUL) ||
+        save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) < CHAOS_MIN_STARS_FOR_EVENTS
+    );
+}
+
+u8 chs_cond_uneventful(void) {
+    return !(
+        gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE ||
+        chaos_check_if_patch_active(CHAOS_PATCH_UNLUCKY_CHARM) ||
+        save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) < CHAOS_MIN_STARS_FOR_EVENTS
+    );
+}
