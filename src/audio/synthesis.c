@@ -1103,11 +1103,19 @@ void note_set_vel_pan_reverb(struct Note *note, f32 velocity, f32 pan, u8 reverb
 }
 
 void note_set_frequency(struct Note *note, f32 frequency) {
-    if (chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_SOUND) && note->frequency > 0.01f) {
-        note->frequency = 1.0f / frequency;
-    } else {
-        note->frequency = frequency;
+    if (chaos_check_if_patch_active(CHAOS_PATCH_CHILL_OUT)
+     && note->seqPlayer
+     && note->seqPlayer != &gSequencePlayers[SEQ_PLAYER_SFX]
+     && note->seqPlayer->seqId > 0
+    ) {
+        frequency *= CHAOS_SLOWDOWN_MULT;
     }
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_SOUND) && note->frequency > 0.01f) {
+        frequency = 1.0f / frequency;
+    }
+    
+    note->frequency = frequency;
 }
 
 void note_enable(struct Note *note) {
@@ -1138,5 +1146,6 @@ void note_disable(struct Note *note) {
     note->finished = FALSE;
     note->parentLayer = NO_LAYER;
     note->prevParentLayer = NO_LAYER;
+    note->seqPlayer = NULL;
 }
 #endif

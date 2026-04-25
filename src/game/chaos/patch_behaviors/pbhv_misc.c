@@ -80,15 +80,8 @@ u8 chs_cond_20_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_45_F
 u8 chs_cond_45_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_20_FPS) && !chaos_check_if_patch_active(CHAOS_PATCH_60_FPS)); }
 u8 chs_cond_60_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_20_FPS) && !chaos_check_if_patch_active(CHAOS_PATCH_45_FPS)); }
 
-void chs_act_reverb(void) { init_reverb_us(1U << 31); }
-void chs_deact_reverb(void) { init_reverb_us(1U << 31); }
-
 u8 chs_cond_lethal_fall_damage(void) {
     return (!(chaos_check_if_patch_active(CHAOS_PATCH_NO_FALL_DAMAGE) || chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_RAYS)));
-}
-
-u8 chs_cond_randomized_music(void) {
-    return (!gConfig.disableBGMusic);
 }
 
 u8 chs_cond_climbing_boots(void) {

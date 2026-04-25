@@ -204,6 +204,13 @@ u8 chs_cond_mario_small(void);
 void chs_act_mario_small(void);
 void chs_deact_mario_small(void);
 
+// Audio
+void chs_act_reverb(void);
+void chs_deact_reverb(void);
+u8 chs_cond_randomized_music(void);
+u8 chs_cond_chill_out(void);
+u8 chs_cond_mad_musical_mess(void);
+
 // Misc
 u8 chs_cond_one_hit_wonder(void);
 void chs_act_serve_ads(void);
@@ -220,8 +227,6 @@ void chs_deact_luigi(void);
 u8 chs_cond_20_fps(void);
 u8 chs_cond_45_fps(void);
 u8 chs_cond_60_fps(void);
-void chs_act_reverb(void);
-void chs_deact_reverb(void);
 void chs_mq_init(void);
 void chs_mq_deinit(void);
 u8 chs_topdown_check(void);
@@ -240,6 +245,5 @@ void chs_create_cherry_clone(void);
 void chs_remove_cherry_clone(void);
 void chs_init_cherry_clones_after_warp(void);
 u8 chs_cond_forced_mario_cam(void);
-u8 chs_cond_randomized_music(void);
 void chs_update_noclip(void);
 u8 chs_cond_randomize_warps(void);

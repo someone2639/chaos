@@ -1849,12 +1849,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     },
     [CHAOS_PATCH_RANDOMIZED_MUSIC] = {
         .durationType       = CHAOS_DURATION_STARS,
-        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 1,
         .isStackable        = FALSE,
-        .duration           = 20,
-        .durationHard       = 24,
-        .durationImpossible = 28,
+        .duration           = 15,
 
         .conditionalFunc    = chs_cond_randomized_music,
 
@@ -1872,6 +1870,30 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Bluetooth Lag",
         .shortDescription   = "The game's audio response will be substantially delayed.",
+    },
+    [CHAOS_PATCH_CHILL_OUT] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 1,
+        .isStackable        = FALSE,
+        .duration           = 5,
+
+        .conditionalFunc    = chs_cond_chill_out,
+
+        .name               = "Chill Out!",
+        .shortDescription   = "Reduce your stress levels by slowing/pitching down the background music. That's so chill!",
+    },
+    [CHAOS_PATCH_MAD_MUSICAL_MESS] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 1,
+        .isStackable        = FALSE,
+        .duration           = 6,
+
+        .conditionalFunc    = chs_cond_mad_musical_mess,
+
+        .name               = "Mad Musical Mess",
+        .shortDescription   = "The seasoned musicians behind SM64 want a break. We pulled in some random fellas off the streets to sub in!",
     },
 
 // Miscellaneous Modifiers

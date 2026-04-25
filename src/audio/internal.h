@@ -714,7 +714,8 @@ struct Note {
     /*0xA2*/ u16 headsetPanLeft;
     /*0xA4*/ u16 prevHeadsetPanRight;
     /*0xA6*/ u16 prevHeadsetPanLeft;
-    /*    */ u8 align16Padding[0x08];
+    /*0xA8*/ struct SequencePlayer *seqPlayer;
+    /*    */ u8 align16Padding[0x04];
 #endif
 }; // size = 0xA0, 0xB0
 #endif

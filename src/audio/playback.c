@@ -1145,6 +1145,7 @@ s32 note_init_for_layer(struct Note *note, struct SequenceChannelLayer *seqLayer
     note->prevParentLayer = NO_LAYER;
     note->parentLayer = seqLayer;
     note->priority = seqLayer->seqChannel->notePriority;
+    note->seqPlayer = seqLayer->seqChannel->seqPlayer;
     if (!IS_BANK_LOAD_COMPLETE(seqLayer->seqChannel->bankId)) {
         return TRUE;
     }

@@ -1496,7 +1496,18 @@ void sequence_channel_process_script(struct SequenceChannel *seqChannel) {
                 break;
             }
             if (cmd == 0xfd) { // chan_delay
-                seqChannel->delay = m64_read_compressed_u16(state);
+                if (chaos_check_if_patch_active(CHAOS_PATCH_MAD_MUSICAL_MESS)
+                 && seqChannel->seqPlayer
+                 && seqChannel->seqPlayer != &gSequencePlayers[SEQ_PLAYER_SFX]
+                ) {
+                    // Avoid random_u16() and random_float() in audio threads!
+                    s32 tmp = (s32) (m64_read_compressed_u16(state) + ((gAudioRandom + osGetCount()) % 7)) - 3;
+                    if (tmp < 1)
+                        tmp = 1;
+                    seqChannel->delay = tmp;
+                } else {
+                    seqChannel->delay = m64_read_compressed_u16(state);
+                }
                 break;
             }
             if (cmd == 0xf3) { // chan_hang
@@ -2296,11 +2307,18 @@ void sequence_player_process_sequence(struct SequencePlayer *seqPlayer) {
         return;
     }
 
-    // Check if we surpass the number of ticks needed for a tatum, else stop.
-    seqPlayer->tempoAcc += seqPlayer->tempo;
+    if (chaos_check_if_patch_active(CHAOS_PATCH_CHILL_OUT)
+     && seqPlayer != &gSequencePlayers[SEQ_PLAYER_SFX]
+     && seqPlayer->seqId > 0
+    ) {
+        seqPlayer->tempoAcc += seqPlayer->tempo * CHAOS_SLOWDOWN_MULT;
+    } else {
+        seqPlayer->tempoAcc += seqPlayer->tempo;
+    }
 #ifdef VERSION_SH
     seqPlayer->tempoAcc += seqPlayer->tempoAdd;
 #endif
+    // Check if we surpass the number of ticks needed for a tatum, else stop.
     if (seqPlayer->tempoAcc < gTempoInternalToExternal) {
         return;
     }

@@ -330,8 +330,19 @@ l1090:
                     goto l1138;
             }
 l1138:
-
             cmdSemitone = cmd - (cmd & 0xc0);
+        }
+
+        if (chaos_check_if_patch_active(CHAOS_PATCH_MAD_MUSICAL_MESS)
+         && seqChannel->seqPlayer
+         && seqChannel->seqPlayer != &gSequencePlayers[SEQ_PLAYER_SFX]
+        ) {
+            // Avoid random_u16() and random_float() in audio threads!
+            s32 tmp = (s32) (sp3A + ((gAudioRandom + osGetCount()) % 7)) - 3;
+            if (tmp < 1)
+                tmp = 1;
+            sp3A = tmp;
+            layer->playPercentage = sp3A;
         }
 
         layer->delay = sp3A;
@@ -369,6 +380,19 @@ l1138:
             skip:;
             } else { // instrument
                 cmdSemitone += (*seqPlayer).transposition + (*seqChannel).transposition + (*layer).transposition;
+
+                // Avoid random_u16() and random_float() in audio threads!
+                if (chaos_check_if_patch_active(CHAOS_PATCH_MAD_MUSICAL_MESS)
+                 && seqChannel->seqPlayer
+                 && seqChannel->seqPlayer != &gSequencePlayers[SEQ_PLAYER_SFX]
+                 && ((osGetCount() % 100) >= 92)
+                ) {
+                    s16 badTranspose = ((gAudioRandom + osGetCount()) % 7) - 3;
+                    if (cmdSemitone >= badTranspose && cmdSemitone - badTranspose < 0x80) {
+                        cmdSemitone -= badTranspose;
+                    }
+                }
+
                 if (cmdSemitone >= 0x80) {
                     layer->stopSomething = TRUE;
                 } else {
