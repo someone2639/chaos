@@ -466,6 +466,10 @@ void bowser_act_idle(void) {
  * Default Bowser act that doesn't last very long
  */
 void bowser_act_default(void) {
+#ifdef BOWSER_FIGHT_SKIP
+    o->oAction = BOWSER_ACT_DEAD;
+    return;
+#endif
     // Set eye state
     o->oBowserEyesShut = FALSE;
     // Set idle animation

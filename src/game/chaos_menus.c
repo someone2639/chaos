@@ -237,6 +237,15 @@ f32 menu_anim_f32(f32 prog, s32 easeType, f32 start, f32 end) {
     return value;
 }
 
+f32 menu_get_anim_prog(struct ChaosMenu *menu) {
+    s32 animTimer = menu->animTimer;
+    f32 animFrames = menu->animFrames;
+
+    assert(menu->animFrames != 0, "menu_get_anim_prog:\nanimFrames not set!");
+    
+    return animTimer / animFrames;
+}
+
 /*
     Sets up to draw a button texture
 */
@@ -537,4 +546,18 @@ Gfx *menu_create_cursor(s32 x, s32 y, f32 scale, u8 r, u8 g, u8 b, u8 a) {
     gSPEndDisplayList(head++);
 
     return cursor;
+}
+
+/*
+    Draws a fully transparent texrect across the entire screen to strip all coverage and avoid scummy edges of menu elements due to anti-aliasing.
+*/
+void menu_strip_coverage() {
+    gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
+    gDPSetRenderMode(gDisplayListHead++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
+    gDPSetCombineLERP(gDisplayListHead++, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT);
+    gDPSetFillColor(gDisplayListHead++, (GPACK_RGBA5551(0, 0, 0, 1) << 16) | GPACK_RGBA5551(0, 0, 0, 1));
+    gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 0);
+    gDPFillRectangle(gDisplayListHead++, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    gDPPipeSync(gDisplayListHead++);
+    gDPSetRenderMode(gDisplayListHead++, G_RM_OPA_SURF, G_RM_OPA_SURF2);
 }

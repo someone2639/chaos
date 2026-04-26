@@ -897,6 +897,9 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
             if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && !grandStar) {
                 gShouldGive1UP = TRUE;
             }
+            if(!grandStar) {
+                save_file_add_yellow_star();
+            }
         }
 
         if (!noExit) {
@@ -910,6 +913,7 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
 #endif
 
         if (grandStar) {
+            save_file_update_clears();
             return set_mario_action(m, ACT_JUMBO_STAR_CUTSCENE, 0);
         }
 

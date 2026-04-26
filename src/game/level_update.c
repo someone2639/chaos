@@ -1425,7 +1425,9 @@ s32 update_level(void) {
         enable_background_sound();
     }
 
-    save_file_update_play_time();
+    if(gMarioState->action != ACT_JUMBO_STAR_CUTSCENE) {
+        save_file_update_play_time();
+    }
 
     chaosShouldProcessFrameUpdate = FALSE;
     return changeLevel;

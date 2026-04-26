@@ -772,6 +772,10 @@ s32 save_file_get_game_mode(s32 fileIndex) {
     return gSaveBuffer.files[fileIndex].chaosGameMode;
 }
 
+s32 save_file_get_cleared(s32 fileIndex) {
+    return (gSaveBuffer.files[fileIndex].flags & SAVE_FLAG_GAME_CLEARED);
+}
+
 /*
     Sets the gamemode of the save file in fileindex
 */
@@ -784,10 +788,18 @@ void save_file_set_difficulty_game_mode(s32 fileIndex, s32 difficulty, s32 gameM
     save_file_do_save(fileIndex);
 }
 
+void save_file_add_yellow_star() {
+    struct ScoreData *scoreData = &gSaveBuffer.menuData.scoreData;
+    scoreData->totalStars++;
+    gMainMenuDataModified = TRUE;
+}
+
 void save_file_add_blue_star() {
     struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
     saveFile->blueStars++;
+    gSaveBuffer.menuData.scoreData.totalBlueStars++;
     gSaveFileModified = TRUE;
+    gMainMenuDataModified = TRUE;
 }
 
 u16 save_file_get_blue_stars() {
@@ -798,7 +810,9 @@ u16 save_file_get_blue_stars() {
 void save_file_add_death_count() {
     struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
     saveFile->deaths++;
+    gSaveBuffer.menuData.scoreData.totalDeaths++;
     gSaveFileModified = TRUE;
+    gMainMenuDataModified = TRUE;
 }
 
 u16 save_file_get_death_count() {
@@ -821,6 +835,15 @@ u16 save_file_get_game_loads() {
 void save_file_update_play_time() {
     struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
     saveFile->playTime++;
+    gSaveBuffer.menuData.scoreData.totalPlayTime++;
+    gSaveFileModified = TRUE;
+    gMainMenuDataModified = TRUE;
+}
+
+void save_file_update_attempts() {
+    struct ScoreData *scoreData = &gSaveBuffer.menuData.scoreData;
+    scoreData->totalAttempts++;
+    gMainMenuDataModified = TRUE;
 }
 
 u32 save_file_get_play_time() {
@@ -828,10 +851,33 @@ u32 save_file_get_play_time() {
     return saveFile->playTime;
 }
 
-void save_file_update_total_patches() {
+void save_file_update_total_patches(u32 patchId) {
     struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
+    struct ScoreData *scoreData = &gSaveBuffer.menuData.scoreData;
+    const struct ChaosPatch *patch = &gChaosPatches[patchId];
+
     saveFile->totalPatches++;
+    scoreData->totalPatches++;
+
+    switch(patch->effectType) {
+        case CHAOS_EFFECT_POSITIVE:
+            scoreData->totalPositive++;
+            if(++scoreData->picked[patchId] > scoreData->picked[scoreData->favoritePositive]) {
+                scoreData->favoritePositive = patchId;
+            }
+            break;
+        case CHAOS_EFFECT_NEGATIVE:
+            scoreData->totalNegative++;
+            if(++scoreData->picked[patchId] > scoreData->picked[scoreData->favoriteNegative]) {
+                scoreData->favoriteNegative = patchId;
+            }
+            break;
+        default:
+            break;
+    }
+
     gSaveFileModified = TRUE;
+    gMainMenuDataModified = TRUE;
 }
 
 u16 save_file_get_total_patches() {
@@ -839,3 +885,129 @@ u16 save_file_get_total_patches() {
     return saveFile->totalPatches;
 }
 
+void save_file_update_most_active() {
+    struct ScoreData *scoreData = &gSaveBuffer.menuData.scoreData;
+
+    if(*gChaosActiveEntryCount > scoreData->mostActive) {
+        scoreData->mostActive = *gChaosActiveEntryCount;
+        gMainMenuDataModified = TRUE;
+    }
+}
+
+void save_file_update_best_clear() {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
+    struct ScoreData *scoreData = &gSaveBuffer.menuData.scoreData;
+    s32 stars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
+
+    scoreData->bestDifficulty = saveFile->chaosDifficulty;
+    scoreData->bestGameMode = saveFile->chaosGameMode;
+    scoreData->bestStars = stars;
+    scoreData->bestBlueStars = saveFile->blueStars;
+    scoreData->bestDeaths = saveFile->deaths;
+    scoreData->bestPlayTime = saveFile->playTime;
+    scoreData->bestGameLoads = saveFile->gameLoads;
+    scoreData->bestTotalPatches = saveFile->totalPatches;
+    scoreData->isBestClear = TRUE;
+
+    gMainMenuDataModified = TRUE;
+}
+
+/*
+    Checks the current file against the saved best clear.
+    Updates the best clear based on the following priority:
+        1. difficulty (impossible > hard > normal > easy)
+		2. game mode (hardcore > challenge > classic)
+		3. yellow stars (most)
+		4. blue stars (least)
+		5. deaths (fewest)
+		6. play time (lowest)
+
+    In the unlikely event that all of the above are exactly equal, the older save will be prioritized.
+*/
+void save_file_check_best_clear() {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
+    struct ScoreData *scoreData = &gSaveBuffer.menuData.scoreData;
+    s32 stars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
+
+    // If the game hasn't been cleared yet, automatically update
+    if(!scoreData->isBestClear) {
+        save_file_update_best_clear();
+        return;
+    }
+
+    // Evaluate difficulty
+    if (saveFile->chaosDifficulty > scoreData->bestDifficulty) {
+        save_file_update_best_clear();
+        return;
+    }
+    if (saveFile->chaosDifficulty < scoreData->bestDifficulty) return;
+
+    // Evaluate game mode
+    if (saveFile->chaosGameMode > scoreData->bestGameMode) {
+        save_file_update_best_clear();
+        return;
+    }
+    if (saveFile->chaosGameMode < scoreData->bestGameMode) return;
+
+    // Evaluate stars
+    if (stars > scoreData->bestStars) {
+        save_file_update_best_clear();
+        return;
+    }
+    if (stars < scoreData->bestStars) return;
+
+    // Evaluate blue stars
+    if (saveFile->blueStars < scoreData->bestBlueStars) {
+        save_file_update_best_clear();
+        return;
+    }
+    if (saveFile->blueStars > scoreData->bestBlueStars) return;
+
+    // Evaluate deaths
+    if (saveFile->deaths < scoreData->bestDeaths) {
+        save_file_update_best_clear();
+        return;
+    }
+    if (saveFile->deaths > scoreData->bestDeaths) return;
+
+    // Evaluate play time
+    if (saveFile->playTime < scoreData->bestPlayTime) {
+        save_file_update_best_clear();
+        return;
+    }
+}
+
+void save_file_update_clears() {
+    save_file_check_best_clear();
+
+    // The total clears stat will only update the first time a file is cleared.
+    if(!(save_file_get_flags() & SAVE_FLAG_GAME_CLEARED)) {
+        gSaveBuffer.menuData.scoreData.totalClears++;
+        gMainMenuDataModified = TRUE;
+    }
+
+    save_file_set_flags(SAVE_FLAG_GAME_CLEARED);
+    save_file_do_save(gCurrSaveFileNum - 1);
+}
+
+void save_file_update_hardcore_score() {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
+    struct ScoreData *scoreData = &gSaveBuffer.menuData.scoreData;
+    s32 stars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
+
+    if(saveFile->chaosGameMode == CHAOS_GAMEMODE_HARDCORE) {
+        if ((saveFile->chaosDifficulty > scoreData->bestHardcoreDifficulty) ||
+            ((saveFile->chaosDifficulty == scoreData->bestHardcoreDifficulty) && (stars > scoreData->bestHardcoreStars))) {
+            scoreData->bestHardcoreDifficulty = saveFile->chaosDifficulty;
+            scoreData->bestHardcoreStars = stars;
+            gMainMenuDataModified = TRUE;
+        }
+    }
+}
+
+void save_file_delete_stats() {
+    struct ScoreData *scoreData = &gSaveBuffer.menuData.scoreData;
+    bzero(scoreData, sizeof(struct ScoreData));
+    gMainMenuDataModified = TRUE;
+    save_main_menu_data();
+}

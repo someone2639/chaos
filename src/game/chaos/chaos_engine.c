@@ -228,7 +228,7 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
     }
     
     if(patchId != CHAOS_PATCH_NONE_POSITIVE && patchId != CHAOS_PATCH_NONE_NEGATIVE) {
-        save_file_update_total_patches();
+        save_file_update_total_patches(patchId);
     }
 
     const struct ChaosPatch *patch = &gChaosPatches[patchId];
@@ -411,6 +411,8 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
 
     // Sort patch order
     chaos_sort_active_patches();
+
+    save_file_update_most_active();
 }
 
 void chaos_decrement_star_timers(enum ChaosStarDecrementType decrementType) {

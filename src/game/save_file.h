@@ -74,6 +74,41 @@ enum SaveFileIndex {
     SAVE_FILE_D
 };
 
+struct ScoreData {
+    // Play stats
+    u32 totalPlayTime;
+    u16 totalClears;
+    u16 totalAttempts;
+    u16 totalDeaths;
+    u16 totalStars;
+    u16 totalBlueStars;
+
+    // Patch stats
+    u16 totalPatches;
+    u16 totalPositive;
+    u16 totalNegative;
+    u16 mostActive;
+    u16 picked[CHAOS_PATCH_COUNT]; // Saves the number of times each patch is chosen
+    u16 favoritePositive;
+    u16 favoriteNegative;
+
+    // Best clear stats
+    u8 isBestClear;
+    u8 bestDifficulty;
+    u8 bestGameMode;
+    u16 bestStars;
+    u16 bestBlueStars;
+    u16 bestDeaths;
+    u16 bestGameLoads;
+    u32 bestPlayTime;
+    u16 bestTotalPatches;
+
+    u16 bestHardcoreStars;
+    u8 bestHardcoreDifficulty;
+
+    u8 padding[1];
+};
+
 struct MainMenuSaveData {
     // Each save file has a 2 bit "age" for each course. The higher this value,
     // the older the high score is. This is used for tie-breaking when displaying
@@ -85,6 +120,8 @@ struct MainMenuSaveData {
     u8 wideMode: 2;
 #endif
     u8 disableHarshVisuals: 1;
+    
+    struct ScoreData scoreData;
 
     u8 padding[8];
 
@@ -92,14 +129,13 @@ struct MainMenuSaveData {
 };
 
 struct SaveBuffer {
-    // Each of the four save files has two copies. If one is bad, the other is used as a backup.
     struct SaveFile files[NUM_SAVE_FILES];
-    // The main menu data has two copies. If one is bad, the other is used as a backup.
     struct MainMenuSaveData menuData;
 };
 
 STATIC_ASSERT(sizeof(struct SaveFile) % 16 == 0, "ERROR: SaveFile struct must be multiple of 16!");
 STATIC_ASSERT(sizeof(struct MainMenuSaveData) % 16 == 0, "ERROR: MainMenuSaveData struct must be multiple of 16!");
+STATIC_ASSERT(sizeof(struct ScoreData) % 16 == 0, "ERROR: ScoreData struct must be multiple of 16!");
 STATIC_ASSERT(sizeof(struct SaveBuffer) % 16 == 0, "ERROR: SaveBuffer should be multiple of 16!");
 STATIC_ASSERT(sizeof(struct SaveBuffer) <= EEPROM_SIZE, "ERROR: Save file too large!");
 
@@ -134,6 +170,7 @@ extern s8 gLevelToCourseNumTable[];
 #define SAVE_FLAG_CAP_ON_MR_BLIZZARD     /* 0x00080000 */ (1 << 19)
 #define SAVE_FLAG_UNLOCKED_50_STAR_DOOR  /* 0x00100000 */ (1 << 20)
 #define SAVE_FLAG_SET_RNG_SEED           /* 0x00200000 */ (1 << 21)
+#define SAVE_FLAG_GAME_CLEARED           /* 0x00400000 */ (1 << 22)
 #define SAVE_FLAG_COLLECTED_TOAD_STAR_1  /* 0x01000000 */ (1 << 24)
 #define SAVE_FLAG_COLLECTED_TOAD_STAR_2  /* 0x02000000 */ (1 << 25)
 #define SAVE_FLAG_COLLECTED_TOAD_STAR_3  /* 0x04000000 */ (1 << 26)
@@ -187,16 +224,21 @@ u16 save_file_get_sound_mode(void);
 void save_file_move_cap_to_default_location(void);
 void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount, enum ChaosDifficulty *gChaosDifficulty, enum ChaosGameMode *gChaosGameMode, s32 *lastForcedDifficulty, enum ChaosPatchSpecialEvent *lastEventType);
 void save_file_set_new_chaos_gen_data(s32 lastForcedDifficulty, enum ChaosPatchSpecialEvent lastEventType);
+void save_file_add_yellow_star();
 void save_file_add_blue_star();
 u16 save_file_get_blue_stars();
 void save_file_add_death_count();
 u16 save_file_get_death_count();
 void save_file_add_game_load();
 u16 save_file_get_game_loads();
+void save_file_update_attempts();
 void save_file_update_play_time();
 u32 save_file_get_play_time();
-void save_file_update_total_patches();
+void save_file_update_total_patches(u32 patchId);
 u16 save_file_get_total_patches();
+void save_file_update_most_active();
+void save_file_update_clears();
+void save_file_update_hardcore_score();
 
 void disable_warp_checkpoint(void);
 void check_if_should_set_warp_checkpoint(struct WarpNode *warpNode);
@@ -228,6 +270,9 @@ u16 eu_get_language(void);
 
 s32 save_file_get_difficulty(s32 fileIndex);
 s32 save_file_get_game_mode(s32 fileIndex);
+s32 save_file_get_cleared(s32 fileIndex);
 void save_file_set_difficulty_game_mode(s32 fileIndex, s32 difficulty, s32 gameMode);
+
+void save_file_delete_stats();
 
 #endif // SAVE_FILE_H

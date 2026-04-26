@@ -691,6 +691,7 @@ void update_patch_selection_menu() {
                 menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_CLOSED);
                 chaos_decrement_star_timers(CHAOS_STAR_DECREMENT_MENU_IMPACTING);
                 chaos_select_patches(gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].sel);
+                save_file_update_hardcore_score();
                 save_file_do_save(gCurrSaveFileNum - 1);
                 break;
             case PATCH_SELECT_STATE_SHOW_ACTIVE_PATCHES:

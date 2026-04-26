@@ -28,6 +28,8 @@
 #include "game/debug.h"
 #include "levels/menu/chaos_save_button/geo_header.h"
 #include "game/chaos_settings.h"
+#include "game/stats_menu.h"
+
 #ifdef VERSION_EU
 #undef LANGUAGE_FUNCTION
 #define LANGUAGE_FUNCTION sLanguageMode
@@ -334,6 +336,7 @@ s32 check_clicked_button(s16 x, s16 y, f32 depth) {
 void menu_button_update_gamemode_colors_from_save(struct Object *button, s32 saveIndex) {
     button->oMenuButtonDiffCol = save_file_get_difficulty(saveIndex);
     button->oMenuButtonGameModeCol = save_file_get_game_mode(saveIndex);
+    button->oMenuButtonCleared = save_file_get_cleared(saveIndex);
 }
 
 /**
@@ -373,6 +376,7 @@ static void bhv_menu_button_new_game_create(struct Object *button) {
     sGamemodeSelectMenu.menu.flags |= GAMEMODE_SELECT_FLAG_ACTIVE;
     complete = update_gamemode_select();
     if(complete == 1) {
+        save_file_update_attempts();
         save_file_set_difficulty_game_mode((fileNum - 1), difficulty, gameMode);
         sSelectedFileNum = fileNum;
     } else if (complete == -1) {
@@ -683,59 +687,55 @@ void render_score_menu_buttons(struct Object *scoreButton) {
     // File A
     if (save_file_exists(SAVE_FILE_A) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_A] =
-            spawn_object_rel_with_rot(scoreButton, MODEL_CHAOS_SCORE_BUTTON, bhvMenuButton,
+            spawn_object_rel_with_rot(scoreButton, MODEL_NONE, bhvMenuButton,
                                       711, 311, -100, 0, -0x8000, 0);
-        menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_SCORE_FILE_A], 0);
     } else {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_A] =
-            spawn_object_rel_with_rot(scoreButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, 711,
+            spawn_object_rel_with_rot(scoreButton, MODEL_NONE, bhvMenuButton, 711,
                                       311, -100, 0, -0x8000, 0);
     }
     sMainMenuButtons[MENU_BUTTON_SCORE_FILE_A]->oMenuButtonScale = 0.11111111f;
     // File B
     if (save_file_exists(SAVE_FILE_B) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_B] =
-            spawn_object_rel_with_rot(scoreButton, MODEL_CHAOS_SCORE_BUTTON, bhvMenuButton,
+            spawn_object_rel_with_rot(scoreButton, MODEL_NONE, bhvMenuButton,
                                       -166, 311, -100, 0, -0x8000, 0);
-        menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_SCORE_FILE_B], 1);
     } else {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_B] =
-            spawn_object_rel_with_rot(scoreButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton,
+            spawn_object_rel_with_rot(scoreButton, MODEL_NONE, bhvMenuButton,
                                       -166, 311, -100, 0, -0x8000, 0);
     }
     sMainMenuButtons[MENU_BUTTON_SCORE_FILE_B]->oMenuButtonScale = 0.11111111f;
     // File C
     if (save_file_exists(SAVE_FILE_C) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_C] = spawn_object_rel_with_rot(
-            scoreButton, MODEL_CHAOS_SCORE_BUTTON, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
-        menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_SCORE_FILE_C], 2);
+            scoreButton, MODEL_NONE, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
     } else {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_C] = spawn_object_rel_with_rot(
-            scoreButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
+            scoreButton, MODEL_NONE, bhvMenuButton, 711, 0, -100, 0, -0x8000, 0);
     }
     sMainMenuButtons[MENU_BUTTON_SCORE_FILE_C]->oMenuButtonScale = 0.11111111f;
     // File D
     if (save_file_exists(SAVE_FILE_D) == TRUE) {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_D] =
-            spawn_object_rel_with_rot(scoreButton, MODEL_CHAOS_SCORE_BUTTON, bhvMenuButton,
+            spawn_object_rel_with_rot(scoreButton, MODEL_NONE, bhvMenuButton,
                                       -166, 0, -100, 0, -0x8000, 0);
-        menu_button_update_gamemode_colors_from_save(sMainMenuButtons[MENU_BUTTON_SCORE_FILE_D], 3);
     } else {
         sMainMenuButtons[MENU_BUTTON_SCORE_FILE_D] = spawn_object_rel_with_rot(
-            scoreButton, MODEL_MAIN_MENU_MARIO_NEW_BUTTON, bhvMenuButton, -166, 0, -100, 0, -0x8000, 0);
+            scoreButton, MODEL_NONE, bhvMenuButton, -166, 0, -100, 0, -0x8000, 0);
     }
     sMainMenuButtons[MENU_BUTTON_SCORE_FILE_D]->oMenuButtonScale = 0.11111111f;
     // Return to main menu button
     sMainMenuButtons[MENU_BUTTON_SCORE_RETURN] = spawn_object_rel_with_rot(
-        scoreButton, MODEL_MAIN_MENU_YELLOW_FILE_BUTTON, bhvMenuButton, 711, -388, -100, 0, -0x8000, 0);
+        scoreButton, MODEL_NONE, bhvMenuButton, 711, -388, -100, 0, -0x8000, 0);
     sMainMenuButtons[MENU_BUTTON_SCORE_RETURN]->oMenuButtonScale = 0.11111111f;
     // Switch to copy menu button
     sMainMenuButtons[MENU_BUTTON_SCORE_COPY_FILE] = spawn_object_rel_with_rot(
-        scoreButton, MODEL_MAIN_MENU_BLUE_COPY_BUTTON, bhvMenuButton, 0, -388, -100, 0, -0x8000, 0);
+        scoreButton, MODEL_NONE, bhvMenuButton, 0, -388, -100, 0, -0x8000, 0);
     sMainMenuButtons[MENU_BUTTON_SCORE_COPY_FILE]->oMenuButtonScale = 0.11111111f;
     // Switch to erase menu button
     sMainMenuButtons[MENU_BUTTON_SCORE_ERASE_FILE] = spawn_object_rel_with_rot(
-        scoreButton, MODEL_MAIN_MENU_RED_ERASE_BUTTON, bhvMenuButton, -711, -388, -100, 0, -0x8000, 0);
+        scoreButton, MODEL_NONE, bhvMenuButton, -711, -388, -100, 0, -0x8000, 0);
     sMainMenuButtons[MENU_BUTTON_SCORE_ERASE_FILE]->oMenuButtonScale = 0.11111111f;
 }
 
@@ -750,53 +750,12 @@ void render_score_menu_buttons(struct Object *scoreButton) {
  */
 void check_score_menu_clicked_buttons(struct Object *scoreButton) {
     if (scoreButton->oMenuButtonState == MENU_BUTTON_STATE_FULLSCREEN) {
-        s32 buttonID;
-        // Configure score menu button group
-        for (buttonID = MENU_BUTTON_SCORE_MIN; buttonID < MENU_BUTTON_SCORE_MAX; buttonID++) {
-            s16 buttonX = sMainMenuButtons[buttonID]->oPosX;
-            s16 buttonY = sMainMenuButtons[buttonID]->oPosY;
-
-            if (check_clicked_button(buttonX, buttonY, 22.0f) == TRUE && sMainMenuTimer >= SCORE_TIMER) {
-                // If menu button clicked, select it
-                if (buttonID == MENU_BUTTON_SCORE_RETURN || buttonID == MENU_BUTTON_SCORE_COPY_FILE
-                    || buttonID == MENU_BUTTON_SCORE_ERASE_FILE) {
-                    play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
-#if ENABLE_RUMBLE
-                    queue_rumble_data(5, 80);
-#endif
-                    sMainMenuButtons[buttonID]->oMenuButtonState = MENU_BUTTON_STATE_ZOOM_IN_OUT;
-                    sSelectedButtonID = buttonID;
-                }
-                else { // Check if a save file is clicked
-                    if (sMainMenuTimer >= SCORE_TIMER) {
-                        // If clicked in a existing save file, select it too see it's score
-                        if (save_file_exists(buttonID - MENU_BUTTON_SCORE_MIN) == TRUE) {
-                            play_sound(SOUND_MENU_CAMERA_ZOOM_IN, gGlobalSoundSource);
-#if ENABLE_RUMBLE
-                            queue_rumble_data(5, 80);
-#endif
-                            sMainMenuButtons[buttonID]->oMenuButtonState = MENU_BUTTON_STATE_GROWING;
-                            sSelectedButtonID = buttonID;
-                        }
-                        else {
-                            // If clicked in a non-existing save file, play buzz sound
-                            play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
-#if ENABLE_RUMBLE
-                            queue_rumble_data(5, 80);
-#endif
-                            sMainMenuButtons[buttonID]->oMenuButtonState =
-                                MENU_BUTTON_STATE_ZOOM_IN_OUT;
-                            if (sMainMenuTimer >= SCORE_TIMER) {
-                                sFadeOutText = TRUE;
-                                sMainMenuTimer = 0;
-                            }
-                        }
-                    }
-                }
-                sCurrentMenuLevel = MENU_LAYER_SUBMENU;
-                break;
-            }
+        update_stats_menu();
+        if(!(gChaosStatsMenu.menu.flags & CHAOS_STATS_ACTIVE)) {
+            // Hacky way to return to the main file select screen that doesn't require me to rewrite the entire menu code.
+            sSelectedButtonID = MENU_BUTTON_SCORE_RETURN;
         }
+        sCurrentMenuLevel = MENU_LAYER_SUBMENU;
     }
 }
 
@@ -974,6 +933,9 @@ void check_copy_menu_clicked_buttons(struct Object *copyButton) {
 #endif
                         sMainMenuButtons[buttonID]->oMenuButtonState = MENU_BUTTON_STATE_ZOOM_IN_OUT;
                         sSelectedButtonID = buttonID;
+                        if(buttonID == MENU_BUTTON_COPY_CHECK_SCORE) {
+                            init_stats_menu();
+                        }
                     }
                 }
                 else {
@@ -1135,6 +1097,9 @@ void check_erase_menu_clicked_buttons(struct Object *eraseButton) {
 #endif
                         sMainMenuButtons[buttonID]->oMenuButtonState = MENU_BUTTON_STATE_ZOOM_IN_OUT;
                         sSelectedButtonID = buttonID;
+                        if(buttonID == MENU_BUTTON_ERASE_CHECK_SCORE) {
+                            init_stats_menu();
+                        }
                     }
                 }
                 else {
@@ -1494,6 +1459,7 @@ void check_main_menu_clicked_buttons(void) {
                             sMainMenuButtons[buttonID]->oMenuButtonDiffCol = CHAOS_DIFFICULTY_NORMAL;
                             sMainMenuButtons[buttonID]->oMenuButtonGameModeCol = CHAOS_GAMEMODE_CLASSIC;
                             sMainMenuButtons[buttonID]->oMenuButtonState = MENU_BUTTON_STATE_NEW_GAME_ANIM;
+                            sMainMenuButtons[buttonID]->oMenuButtonCleared = FALSE;
                             sSelectedButtonID = buttonID;
                             play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
                             return; //Return early to skip playing the regular sound effect
@@ -1503,6 +1469,9 @@ void check_main_menu_clicked_buttons(void) {
                     // If menu button clicked, select it
                     sMainMenuButtons[buttonID]->oMenuButtonState = MENU_BUTTON_STATE_GROWING;
                     sSelectedButtonID = buttonID;
+                    if(buttonID == MENU_BUTTON_SCORE) {
+                        init_stats_menu();
+                    }
                     break;
                 }
             }
@@ -2050,64 +2019,7 @@ void score_menu_display_message(s8 messageID) {
  * Prints score menu strings that shows on the green background menu screen.
  */
 void print_score_menu_strings(void) {
-#ifdef VERSION_EU
-    s16 centeredX;
-#endif
-
-    // Update and print the message at the top of the menu.
-    if (sMainMenuTimer == FADEOUT_TIMER) {
-        sFadeOutText = TRUE;
-    }
-    if (update_text_fade_out() == TRUE) {
-        if (sStatusMessageID == SCORE_MSG_CHECK_FILE) {
-            sStatusMessageID = SCORE_MSG_NOSAVE_DATA;
-        } else {
-            sStatusMessageID = SCORE_MSG_CHECK_FILE;
-        }
-    }
-    // Print messageID called above
-    score_menu_display_message(sStatusMessageID);
-
-#ifndef VERSION_EU
-    // Print file star counts
-    gSPDisplayList(gDisplayListHead++, dl_rgba16_text_begin);
-    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
-    print_save_file_star_count(SAVE_FILE_A, 90, 76);
-    print_save_file_star_count(SAVE_FILE_B, 211, 76);
-    print_save_file_star_count(SAVE_FILE_C, 90, 119);
-    print_save_file_star_count(SAVE_FILE_D, 211, 119);
-    gSPDisplayList(gDisplayListHead++, dl_rgba16_text_end);
-#endif
-
-    // Print menu names
-    gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
-    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
-#ifdef VERSION_EU
-    centeredX = get_str_x_pos_from_center(69, textReturn[sLanguageMode], 10.0f);
-#endif
-    print_generic_string(RETURN_X, 35, LANGUAGE_ARRAY(textReturn));
-#ifdef VERSION_EU
-    centeredX = get_str_x_pos_from_center(159, textCopyFileButton[sLanguageMode], 10.0f);
-#endif
-    print_generic_string(COPYFILE_X1, 35, LANGUAGE_ARRAY(textCopyFileButton));
-#ifdef VERSION_EU
-    centeredX = get_str_x_pos_from_center(249, textEraseFileButton[sLanguageMode], 10.0f);
-#endif
-    print_generic_string(ERASEFILE_X1, 35, LANGUAGE_ARRAY(textEraseFileButton));
-    gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
-
-#ifdef VERSION_EU
-    print_main_menu_strings();
-#else
-    // Print file names
-    gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_begin);
-    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, sTextBaseAlpha);
-    print_menu_generic_string(89, 62, textMarioA);
-    print_menu_generic_string(211, 62, textMarioB);
-    print_menu_generic_string(89, 105, textMarioC);
-    print_menu_generic_string(211, 105, textMarioD);
-    gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_end);
-#endif
+    render_stats_menu();
 }
 
 #if defined(VERSION_JP) || defined(VERSION_SH)
@@ -2866,7 +2778,7 @@ Gfx *geo_file_select_strings_and_menu_cursor(s32 callContext, UNUSED struct Grap
             render_gamemode_select();
         } else {
             print_file_select_strings();
-            if(!(gChaosSettingsMenu.menu.flags & CHAOS_SETTINGS_ACTIVE)) {
+            if(!(gChaosSettingsMenu.menu.flags & CHAOS_SETTINGS_ACTIVE) && !(gChaosStatsMenu.menu.flags & CHAOS_STATS_ACTIVE)) {
                 print_menu_cursor();
             }
         }
@@ -2981,14 +2893,22 @@ Gfx *geo_file_select_change_challenge_texture(s32 callContext, struct GraphNode 
         struct GraphNodeGenerated *this = (struct GraphNodeGenerated *)node;
         struct Object *nodeObj = (struct Object *) gCurGraphNodeObject;
         enum ChaosGameMode gameMode = nodeObj->oMenuButtonGameModeCol;
+        s32 cleared = nodeObj->oMenuButtonCleared;
+
         u8 *texture;
-        if (gameMode == CHAOS_GAMEMODE_HARDCORE) {
-            texture = chaos_save_button_save_icon_mario_face_hardcore_rgba16;
-        } else if (gameMode == CHAOS_GAMEMODE_CHALLENGE) {
-            texture = chaos_save_button_save_icon_mario_face_challenge_rgba16;
-        } else {
-            texture = chaos_save_button_save_icon_mario_face_rgba16;
+        switch(gameMode) {
+            case CHAOS_GAMEMODE_CLASSIC:
+            default:
+                texture = (cleared) ? chaos_save_button_save_icon_clear_rgba16 : chaos_save_button_save_icon_mario_face_rgba16;
+                break;
+            case CHAOS_GAMEMODE_CHALLENGE:
+                texture = (cleared) ? chaos_save_button_save_icon_clear_challenge_rgba16 : chaos_save_button_save_icon_mario_face_challenge_rgba16;
+                break;
+            case CHAOS_GAMEMODE_HARDCORE:
+                texture = (cleared) ? chaos_save_button_save_icon_clear_hardcore_rgba16 : chaos_save_button_save_icon_mario_face_hardcore_rgba16;
+                break;
         }
+
         Gfx* dl = alloc_display_list(sizeof(Gfx) * 3);
         Gfx* head = dl;
 

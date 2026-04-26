@@ -321,6 +321,20 @@ u8 chaos_save_button_save_icon_mario_face_hardcore_rgba16[] = {
 #include "levels/menu/custom_save_icon_mario_face_hardcore.rgba16.inc.c"
 };
 
+Gfx chaos_save_button_save_icon_clear_rgba16_aligner[] = {gsSPEndDisplayList()};
+u8 chaos_save_button_save_icon_clear_rgba16[] = {
+#include "levels/menu/custom_save_icon_clear.rgba16.inc.c"
+};
+
+Gfx chaos_save_button_save_icon_clear_challenge_rgba16_aligner[] = {gsSPEndDisplayList()};
+u8 chaos_save_button_save_icon_clear_challenge_rgba16[] = {
+#include "levels/menu/custom_save_icon_clear_challenge.rgba16.inc.c"
+};
+
+Gfx chaos_save_button_save_icon_clear_hardcore_rgba16_aligner[] = {gsSPEndDisplayList()};
+u8 chaos_save_button_save_icon_clear_hardcore_rgba16[] = {
+#include "levels/menu/custom_save_icon_clear_hardcore.rgba16.inc.c"
+};
 
 Vtx chaos_save_button_save_button_mesh_layer_1_vtx_0[20] = {
 	{{ {163, -122, 0}, 0, {1166, 1242}, {0, 181, 102, 255} }},

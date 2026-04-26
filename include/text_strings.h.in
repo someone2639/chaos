@@ -156,7 +156,7 @@
 #define TEXT_FILE_MARIO_D _("MARIO D")
 
 // Menu Options
-#define TEXT_SCORE _("SCORE")
+#define TEXT_SCORE _("STATS")
 #define TEXT_COPY _("COPY")
 #define TEXT_ERASE _("ERASE")
 
@@ -171,7 +171,7 @@
 
 // Inside a Menu
 #define TEXT_RETURN _("RETURN")
-#define TEXT_CHECK_SCORE _("CHECK SCORE")
+#define TEXT_CHECK_SCORE _("CHECK STATS")
 #define TEXT_COPY_FILE_BUTTON _("COPY FILE")
 #define TEXT_ERASE_FILE_BUTTON _("ERASE FILE")
 
