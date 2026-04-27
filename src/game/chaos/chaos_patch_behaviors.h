@@ -25,6 +25,8 @@ s32 chs_life_gambler_get_lives_lost(void);
 
 // Star/Save Modifiers
 u8 chs_cond_star_shuffle(void);
+u8 chs_cond_stars_increase_lv2(void);
+u8 chs_cond_stars_increase_lv3(void);
 u8 chs_cond_stars_increase_guarantee(void);
 u8 chs_cond_stars_decrease_guarantee(void);
 void chs_act_star_shuffle(void);

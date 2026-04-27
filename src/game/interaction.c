@@ -842,7 +842,7 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
     u32 previousSaveFlags;
     u32 newSaveFlags;
 
-    if (m->health >= 0x100) {
+    if (m->health >= 0x100 || chaos_check_if_patch_active(CHAOS_PATCH_FROM_BEYOND_THE_GRAVE)) {
         mario_stop_riding_and_holding(m);
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);

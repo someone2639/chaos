@@ -1586,8 +1586,10 @@ void set_submerged_cam_preset_and_spawn_bubbles(struct MarioState *m) {
  */
 void update_mario_health(struct MarioState *m) {
     s32 terrainIsSnow;
+    s16 wasDead = (!(m->health >= 0x100)) ? TRUE : FALSE;
+    s16 isDead = FALSE;
 
-    if (m->health >= 0x100) {
+    if (!wasDead || chaos_check_if_patch_active(CHAOS_PATCH_FROM_BEYOND_THE_GRAVE)) {
         // When already healing or hurting Mario, Mario's HP is not changed any more here.
         if (((u32) m->healCounter | (u32) m->hurtCounter) == 0) {
             if ((m->input & INPUT_IN_POISON_GAS) && !(m->action & ACT_FLAG_INTANGIBLE)) {
@@ -1631,11 +1633,14 @@ void update_mario_health(struct MarioState *m) {
             m->health = m->maxHealth;
         }
         if (m->health < 0x100) {
+            isDead = TRUE;
             m->health = 0xFF;
+            m->healCounter = 0;
+            m->hurtCounter = 0;
         }
 
         // Play a noise to alert the player when Mario is close to drowning.
-        if (((m->action & ACT_GROUP_MASK) == ACT_GROUP_SUBMERGED) && (m->health < 0x300)) {
+        if (((m->action & ACT_GROUP_MASK) == ACT_GROUP_SUBMERGED) && (m->health < 0x300) && !(isDead && wasDead)) {
             play_sound(SOUND_MOVING_ALMOST_DROWNING, gGlobalSoundSource);
 #if ENABLE_RUMBLE
             if (gRumblePakTimer == 0) {

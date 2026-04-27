@@ -181,6 +181,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 2,
         .isStackable        = TRUE,
 
+        .conditionalFunc    = chs_cond_stars_increase_lv2,
         .activatedInitFunc  = chs_act_stars_increase_lv2,
 
         .name               = "One-Star Offer",
@@ -193,6 +194,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 3,
         .isStackable        = TRUE,
 
+        .conditionalFunc    = chs_cond_stars_increase_lv3,
         .activatedInitFunc  = chs_act_stars_increase_lv3,
 
         .name               = "Two-Star Treat",
@@ -2197,5 +2199,15 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Randomize Warps",
         .shortDescription   = "I'm bored of this level. Can we go to a different one?",
+    },
+    [CHAOS_PATCH_FROM_BEYOND_THE_GRAVE] = {
+        .durationType       = CHAOS_DURATION_INFINITE,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 1,
+        .isStackable        = FALSE,
+
+        .name               = "From Beyond the Grave",
+        .shortDescription   = "Mario may still recover from coins or collect stars, even when he has no health left (pre-death animation only).",
+        .longDescription    = "This may be useful in specific situations, such as flying around with the wing cap while dead."
     },
 };
