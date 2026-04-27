@@ -274,6 +274,42 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Free Key 2",
         .shortDescription   = "Unlock the upstairs key for free!",
     },
+    [CHAOS_PATCH_GET_WING_CAP] = {
+        .durationType       = CHAOS_DURATION_ONCE,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 1,
+        .isStackable        = FALSE,
+
+        .activatedInitFunc  = chs_act_get_wing_cap,
+        .conditionalFunc    = chs_cond_get_wing_cap,
+
+        .name               = "Free Wing Cap",
+        .shortDescription   = "Unlock the wing cap for free!",
+    },
+    [CHAOS_PATCH_GET_METAL_CAP] = {
+        .durationType       = CHAOS_DURATION_ONCE,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 1,
+        .isStackable        = FALSE,
+
+        .activatedInitFunc  = chs_act_get_metal_cap,
+        .conditionalFunc    = chs_cond_get_metal_cap,
+
+        .name               = "Free Metal Cap",
+        .shortDescription   = "Unlock the metal cap for free!",
+    },
+    [CHAOS_PATCH_GET_VANISH_CAP] = {
+        .durationType       = CHAOS_DURATION_ONCE,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 1,
+        .isStackable        = FALSE,
+
+        .activatedInitFunc  = chs_act_get_vanish_cap,
+        .conditionalFunc    = chs_cond_get_vanish_cap,
+
+        .name               = "Free Vanish Cap",
+        .shortDescription   = "Unlock the vanish cap for free!",
+    },
     [CHAOS_PATCH_UNLOCK_CANNONS] = {
         .durationType       = CHAOS_DURATION_ONCE,
         .effectType         = CHAOS_EFFECT_POSITIVE,

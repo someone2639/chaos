@@ -530,6 +530,30 @@ u8 chs_cond_get_key_2(void) {
     return (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_2 | SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR)));
 }
 
+void chs_act_get_wing_cap(void) {
+    save_file_set_flags(SAVE_FLAG_HAVE_WING_CAP);
+}
+
+u8 chs_cond_get_wing_cap(void) {
+    return (!(save_file_get_flags() & SAVE_FLAG_HAVE_WING_CAP));
+}
+
+void chs_act_get_metal_cap(void) {
+    save_file_set_flags(SAVE_FLAG_HAVE_METAL_CAP);
+}
+
+u8 chs_cond_get_metal_cap(void) {
+    return (!(save_file_get_flags() & SAVE_FLAG_HAVE_METAL_CAP));
+}
+
+void chs_act_get_vanish_cap(void) {
+    save_file_set_flags(SAVE_FLAG_HAVE_VANISH_CAP);
+}
+
+u8 chs_cond_get_vanish_cap(void) {
+    return (!(save_file_get_flags() & SAVE_FLAG_HAVE_VANISH_CAP));
+}
+
 void chs_act_unlock_cannons(void) {
     for(int i = 0; i < COURSE_COUNT; i++) {
         gSaveBuffer.files[gCurrSaveFileNum - 1].courseStars[i] |= (1 << 7);
