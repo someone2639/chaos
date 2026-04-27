@@ -74,22 +74,26 @@ void chs_update_galaxy_twirl(void) {
 }
 
 u8 chs_cond_no_fall_damage(void) {
-    return(!chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_FALL_DAMAGE));
+    return !chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_FALL_DAMAGE);
 }
 
 u8 chs_cond_no_lava_damage(void) {
     return TRUE;
-    // return(!chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_LAVA));
+    // return !chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_LAVA);
 }
 
 u8 chs_cond_harder_longjumps(void) {
-    return(!chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_LONG_JUMP));
+    return !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_LONG_JUMP);
+}
+
+u8 chs_cond_forwards_blj(void) {
+    return !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_LONG_JUMP);
 }
 
 u8 chs_cond_losemove_longjump(void) {
-    return(!chaos_check_if_patch_active(CHAOS_PATCH_HARDER_LONG_JUMPS));
+    return !(chaos_check_if_patch_active(CHAOS_PATCH_HARDER_LONG_JUMPS) || chaos_check_if_patch_active(CHAOS_PATCH_FORWARDS_BLJ));
 }
 
 u8 chs_cond_losemove_wall_kick(void) {
-    return(!chaos_check_if_patch_active(CHAOS_PATCH_STICKY_WALL_JUMP));
+    return !chaos_check_if_patch_active(CHAOS_PATCH_STICKY_WALL_JUMP);
 }

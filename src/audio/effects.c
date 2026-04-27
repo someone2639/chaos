@@ -67,7 +67,10 @@ static void sequence_channel_process_sound(struct SequenceChannel *seqChannel) {
             if (!hasProcessedChannel) {
                 hasProcessedChannel = TRUE;
 
-                if (gConfig.disableBGMusic &&
+                if (
+#if !defined(MUTE_MUSIC_PLAYERS)
+                    gConfig.disableBGMusic &&
+#endif
                     (seqChannel->seqPlayer == &gSequencePlayers[SEQ_PLAYER_LEVEL]
                     || seqChannel->seqPlayer == &gSequencePlayers[SEQ_PLAYER_ENV])) {
                     channelVolume = 0;

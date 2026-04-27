@@ -1056,6 +1056,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Long Jump Lottery",
         .shortDescription   = "Get a Ground Pound instead of a Long Jump at random!",
     },
+    [CHAOS_PATCH_FORWARDS_BLJ] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 1,
+        .isStackable        = FALSE,
+        .duration           = 10,
+
+        .conditionalFunc    = chs_cond_forwards_blj,
+
+        .name               = "Forwards BLJ",
+        .shortDescription   = "Uncap the speed of the long jump, even while moving forwards. It's just like a BLJ, but without the B!",
+    },
 
 // Object Spawners
     [CHAOS_PATCH_GREEN_DEMON] = {

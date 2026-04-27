@@ -907,8 +907,11 @@ static u32 set_mario_action_airborne(struct MarioState *m, u32 action, u32 actio
 
             //! (BLJ's) This properly handles long jumps from getting forward speed with
             //  too much velocity, but misses backwards longs allowing high negative speeds.
-            if ((m->forwardVel *= 1.5f) > 48.0f) {
-                m->forwardVel = 48.0f;
+            m->forwardVel *= 1.5f;
+            if (!chaos_check_if_patch_active(CHAOS_PATCH_FORWARDS_BLJ)) {
+                if (m->forwardVel > 48.0f) {
+                    m->forwardVel = 48.0f;
+                }
             }
             break;
 
@@ -1142,7 +1145,7 @@ s32 set_jumping_action(struct MarioState *m, u32 action, u32 actionArg) {
         }
     }
 
-    if (mario_floor_is_steep(m)) {
+    if (mario_floor_is_steep(m) && !(m->action == ACT_LONG_JUMP_LAND && action == ACT_LONG_JUMP && chaos_check_if_patch_active(CHAOS_PATCH_FORWARDS_BLJ))) {
         set_steep_jump_action(m);
     } else {
         set_mario_action(m, action, actionArg);
