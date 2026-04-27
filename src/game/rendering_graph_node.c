@@ -13,6 +13,7 @@
 #include "sm64.h"
 #include "chaos/chaos.h"
 #include "behavior_data.h"
+#include "level_update.h"
 
 u8 isGameFlipped = FALSE;
 
@@ -885,23 +886,37 @@ void geo_process_object(struct Object *node) {
     if (node->header.gfx.areaIndex == gCurGraphNodeRoot->areaIndex) {
         s16 angleTmp = node->header.gfx.angle[1];
 
-        if (chaos_check_if_patch_active(CHAOS_PATCH_CONFUSED_OBJECTS)){
-            struct Object *obj = (struct Object *) node;
-            if(obj->behavior != segmented_to_virtual(bhvStaticObject) && obj->behavior != segmented_to_virtual(bhvBowsersSub) && obj->behavior != segmented_to_virtual(bhvSquishablePlatform)) {
-                node->header.gfx.angle[1] += 0x8000;
+        if (!(node->header.gfx.node.flags & GRAPH_RENDER_BILLBOARD)) {
+            if (chaos_check_if_patch_active(CHAOS_PATCH_CONFUSED_OBJECTS)) {
+                struct Object *obj = (struct Object *) node;
+                if(obj->behavior != segmented_to_virtual(bhvStaticObject) && obj->behavior != segmented_to_virtual(bhvBowsersSub) && obj->behavior != segmented_to_virtual(bhvSquishablePlatform)) {
+                    node->header.gfx.angle[1] = obj->oFaceAngleRoll + 0x8000;
+                }
+            }
+
+            if (chaos_check_if_patch_active(CHAOS_PATCH_UPSIDE_DOWN_OBJECTS)) {
+                struct Object *obj = (struct Object *) node;
+                if(obj->behavior != segmented_to_virtual(bhvStaticObject) && obj->behavior != segmented_to_virtual(bhvBowsersSub) && obj->behavior != segmented_to_virtual(bhvSquishablePlatform)) {
+                    node->header.gfx.angle[2] = obj->oFaceAngleRoll + 0x8000;
+                    node->header.gfx.pos[1] = obj->oPosY + 150.0f;
+                }
             }
         }
 
         if (chaos_check_if_patch_active(CHAOS_PATCH_DIZZY_OBJECTS) && !gConfig.disableHarshVisuals){
             struct Object *obj = (struct Object *) node;
             if(obj->behavior != segmented_to_virtual(bhvMario)) {
-                s16 phase = (0xFFFF / 60) * (gGlobalTimer % 60);
+                s16 phase = (0x10000 / 60) * (gGlobalTimer % 60);
                 node->header.gfx.pos[0] = obj->oPosX + (100 * sins(phase));
                 node->header.gfx.pos[2] = obj->oPosZ + (100 * coss(phase));
             }
         }
 
-        if (node->header.gfx.throwMatrix != NULL && (!chaos_check_if_patch_active(CHAOS_PATCH_DIZZY_OBJECTS) || gConfig.disableHarshVisuals) && !chaos_check_if_patch_active(CHAOS_PATCH_CONFUSED_OBJECTS)) {
+        if (node->header.gfx.throwMatrix != NULL
+                && (!chaos_check_if_patch_active(CHAOS_PATCH_DIZZY_OBJECTS) || gConfig.disableHarshVisuals)
+                && !chaos_check_if_patch_active(CHAOS_PATCH_CONFUSED_OBJECTS)
+                && !chaos_check_if_patch_active(CHAOS_PATCH_UPSIDE_DOWN_OBJECTS)
+        ) {
             mtxf_mul(gMatStack[gMatStackIndex + 1], *node->header.gfx.throwMatrix,
                      gMatStack[gMatStackIndex]);
         } else if (node->header.gfx.node.flags & GRAPH_RENDER_BILLBOARD) {

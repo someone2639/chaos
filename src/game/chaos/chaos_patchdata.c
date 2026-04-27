@@ -1270,6 +1270,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Confused Entities",
         .shortDescription   = "Most objects are (sometimes) facing the wrong way!",
     },
+    [CHAOS_PATCH_UPSIDE_DOWN_OBJECTS] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 2,
+        .isStackable        = FALSE,
+        .duration           = 5,
+        .durationHard       = 7,
+        .durationImpossible = 9,
+
+        .name               = "Upside-Down Entities",
+        .shortDescription   = "Most objects are (sometimes) floating upside down!",
+    },
     [CHAOS_PATCH_NO_SKYBOX] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
