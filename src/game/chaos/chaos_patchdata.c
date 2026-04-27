@@ -132,6 +132,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Life Apocalypse",
         .shortDescription   = "Decrease Mario's remaining lives by 10.",
     },
+    [CHAOS_PATCH_LIFE_GAMBLER] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 2,
+        .isStackable        = TRUE,
+        .duration           = 6,
+        .durationHard       = 8,
+        .durationImpossible = 10,
+
+        .conditionalFunc    = chs_cond_life_gambler,
+
+        .name               = "Life Gambler",
+        .shortDescription   = "Lose twice as many lives when dying.",
+    },
     [CHAOS_PATCH_INSTANT_GAME_OVER] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,

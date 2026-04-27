@@ -334,6 +334,8 @@ void fasttext_draw_texrect(int x, int y, const char* string, enum FastTextFlags 
 void fasttext_draw_texrect_linebreaks(int x, int y, int width, const char* string, enum FastTextFlags flags, int r, int g, int b, int a) {
     int lines = 0;
     int length = 0;
+
+    assert(string != gFasttextTmpBuffer, "fasttext_draw_texrect_linebreaks:\nInput may not use gFasttextTmpBuffer!");
     fasttext_compute_print_text_with_line_breaks(fasttextCachedFontId, width, &lines, &length, gFasttextTmpBuffer, string);
 
     assert(length + 1 < (s32) sizeof(gFasttextTmpBuffer), "fasttext_draw_texrect_linebreaks:\nstring is too long!");

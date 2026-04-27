@@ -13,5 +13,6 @@ enum LevelScriptIntroArgs {
 };
 
 s32 lvl_intro_update(s16 arg, UNUSED s32 unusedArg);
+s32 intro_delete_chaos_save_file(s16 arg, UNUSED s32 unusedArg);
 
 #endif // TITLE_SCREEN_H

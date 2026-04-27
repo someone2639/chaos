@@ -1216,7 +1216,7 @@ s32 act_death_exit(struct MarioState *m) {
         queue_rumble_data(5, 80);
 #endif
         if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
-            m->numLives--;
+            m->numLives -= chs_life_gambler_get_lives_lost();
         }
         save_file_add_death_count();
         save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, TRUE);
@@ -1236,7 +1236,7 @@ s32 act_unused_death_exit(struct MarioState *m) {
         play_sound(SOUND_MARIO_OOOF2, m->marioObj->header.gfx.cameraToObject);
 #endif
         if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
-            m->numLives--;
+            m->numLives -= chs_life_gambler_get_lives_lost();
         }
         save_file_add_death_count();
         save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, TRUE);
@@ -1259,7 +1259,7 @@ s32 act_falling_death_exit(struct MarioState *m) {
         queue_rumble_data(5, 80);
 #endif
         if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
-            m->numLives--;
+            m->numLives -= chs_life_gambler_get_lives_lost();
         }
         save_file_add_death_count();
         save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, TRUE);
@@ -1333,7 +1333,7 @@ s32 act_special_death_exit(struct MarioState *m) {
         queue_rumble_data(5, 80);
 #endif
         if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
-            m->numLives--;
+            m->numLives -= chs_life_gambler_get_lives_lost();
         }
         save_file_add_death_count();
         save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, TRUE);

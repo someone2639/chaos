@@ -215,10 +215,6 @@ s32 intro_game_over(void) {
 
 #ifndef VERSION_JP
     if (sPlayMarioGameOver == TRUE) {
-        // Wipe save file
-        save_file_erase(gCurrSaveFileNum - 1);
-        save_file_load_all();
-
         play_sound(SOUND_MARIO_GAME_OVER, gGlobalSoundSource);
         sPlayMarioGameOver = FALSE;
     }
@@ -272,4 +268,23 @@ s32 lvl_intro_update(s16 arg, UNUSED s32 unusedArg) {
             break;
     }
     return retVar;
+}
+
+/**
+ * Delete the most recently used chaos save file.
+ */
+s32 intro_delete_chaos_save_file(UNUSED s16 arg, UNUSED s32 unusedArg) {
+    // Deactivate all patches
+    while (*gChaosActiveEntryCount > 0) {
+        chaos_remove_expired_entry(0, NULL);
+    }
+
+    // Clear out any other in-game properties
+    chaos_init();
+
+    // Wipe save file
+    save_file_erase(gCurrSaveFileNum - 1);
+    save_file_load_all();
+
+    return 1;
 }

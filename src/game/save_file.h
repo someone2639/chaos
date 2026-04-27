@@ -34,7 +34,7 @@ struct SaveFile {
             u8 capArea;
             Vec3s capPos;
         };
-        u64 FORCED_ALIGNMENT;
+        u64 __FORCED_ALIGNMENT;
     };
 
     u32 flags;
@@ -76,9 +76,14 @@ enum SaveFileIndex {
 
 struct ScoreData {
     // Play stats
-    u32 totalPlayTime;
-    u16 totalClears;
-    u16 totalAttempts;
+    union {
+        struct {
+            u32 totalPlayTime;
+            u16 totalClears;
+            u16 totalAttempts;
+        };
+        u64 __FORCED_ALIGNMENT;
+    };
     u16 totalDeaths;
     u16 totalStars;
     u16 totalBlueStars;
@@ -88,7 +93,6 @@ struct ScoreData {
     u16 totalPositive;
     u16 totalNegative;
     u16 mostActive;
-    u16 picked[CHAOS_PATCH_COUNT]; // Saves the number of times each patch is chosen
     u16 favoritePositive;
     u16 favoriteNegative;
 
@@ -96,20 +100,23 @@ struct ScoreData {
     u8 isBestClear;
     u8 bestDifficulty;
     u8 bestGameMode;
+    u8 bestHardcoreDifficulty;
+    u16 bestHardcoreStars;
     u16 bestStars;
     u16 bestBlueStars;
     u16 bestDeaths;
     u16 bestGameLoads;
-    u32 bestPlayTime;
     u16 bestTotalPatches;
+    u8  __U16_PADDING[2];
+    u32 bestPlayTime;
 
-    u16 bestHardcoreStars;
-    u8 bestHardcoreDifficulty;
-
-    u8 padding[1];
+    u16 picked[CHAOS_PATCH_COUNT]; // Saves the number of times each patch is chosen
+    u8 __PATCH_COUNT_PADDING[((16 / sizeof(u16)) - 1) - ((CHAOS_PATCH_COUNT - 1) % (16 / sizeof(u16)))]; // 7 - ((patch_count - 1) % 8)
 };
 
 struct MainMenuSaveData {
+    struct ScoreData scoreData;
+
     // Each save file has a 2 bit "age" for each course. The higher this value,
     // the older the high score is. This is used for tie-breaking when displaying
     // on the high score screen.
@@ -120,10 +127,8 @@ struct MainMenuSaveData {
     u8 wideMode: 2;
 #endif
     u8 disableHarshVisuals: 1;
-    
-    struct ScoreData scoreData;
 
-    u8 padding[8];
+    u8 __PADDING[11];
 
     struct SaveBlockSignature signature;
 };

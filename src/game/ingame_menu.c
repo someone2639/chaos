@@ -2547,7 +2547,7 @@ void render_pause_course_options(s16 x, s16 y, s8 *index, s16 yIndex) {
 
     print_generic_string(x + 10, y - 2, LANGUAGE_ARRAY(textContinue));
     if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
-        if ((!chaos_check_if_patch_active(CHAOS_PATCH_INSTANT_GAME_OVER) && gMarioState->numLives > 0) || chs_is_miracle_active()) {
+        if ((!chaos_check_if_patch_active(CHAOS_PATCH_INSTANT_GAME_OVER) && gMarioState->numLives >= chs_life_gambler_get_lives_lost()) || chs_is_miracle_active()) {
             gDPSetEnvColor(gDisplayListHead++, 255, 255, 63, gDialogTextAlpha);
             print_generic_string(x + 10, y - 17, LANGUAGE_ARRAY(textExitCourseWithDeath));
         } else {

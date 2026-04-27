@@ -886,7 +886,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
             case WARP_OP_DEATH:
                 if ((chaos_check_if_patch_active(CHAOS_PATCH_INSTANT_GAME_OVER)
                     || gChaosGameMode == CHAOS_GAMEMODE_HARDCORE
-                    || (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && m->numLives <= 0)
+                    || (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && m->numLives < chs_life_gambler_get_lives_lost())
                 ) && !chs_is_miracle_active()) {
                     sDelayedWarpOp = WARP_OP_GAME_OVER;
                 }
@@ -903,7 +903,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 if (area_get_warp_node(sSourceWarpNodeId) == NULL || (gCurrLevelNum == LEVEL_JRB && m->floor->type == SURFACE_DEATH_PLANE)) { // epic hard coded level check
                     if ((chaos_check_if_patch_active(CHAOS_PATCH_INSTANT_GAME_OVER)
                         || gChaosGameMode == CHAOS_GAMEMODE_HARDCORE
-                        || (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && m->numLives <= 0)
+                        || (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && m->numLives < chs_life_gambler_get_lives_lost())
                     ) && !chs_is_miracle_active()) {
                         sDelayedWarpOp = WARP_OP_GAME_OVER;
                     } else {
@@ -969,7 +969,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
             case WARP_OP_TIME_UP:
                 if ((chaos_check_if_patch_active(CHAOS_PATCH_INSTANT_GAME_OVER)
                     || gChaosGameMode == CHAOS_GAMEMODE_HARDCORE
-                    || (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && m->numLives <= 0)
+                    || (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && m->numLives < chs_life_gambler_get_lives_lost())
                 ) && !chs_is_miracle_active()) {
                     sDelayedWarpOp = WARP_OP_GAME_OVER;
                 }
@@ -1042,10 +1042,6 @@ void initiate_delayed_warp(void) {
         } else {
             switch (sDelayedWarpOp) {
                 case WARP_OP_GAME_OVER:
-                    // Deactivate all chaos patches
-                    while (*gChaosActiveEntryCount > 0) {
-                        chaos_remove_expired_entry(0, NULL);
-                    }
                     isInMenu = TRUE;
                     warp_special(-3);
                     break;
@@ -1252,7 +1248,7 @@ s32 play_mode_paused(void) {
                     initiate_warp(LEVEL_CASTLE, 1, 0x1F, 0);
                     fade_into_special_warp(0, 0);
                     chs_decrement_miracle();
-                } else if (!chaos_check_if_patch_active(CHAOS_PATCH_INSTANT_GAME_OVER) && (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives > 0)) {
+                } else if (!chaos_check_if_patch_active(CHAOS_PATCH_INSTANT_GAME_OVER) && (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives >= chs_life_gambler_get_lives_lost())) {
                     initiate_warp(LEVEL_CASTLE, 1, 0x29, 0);
                     fade_into_special_warp(0, 0);
                 } else {

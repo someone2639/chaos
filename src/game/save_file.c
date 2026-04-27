@@ -293,7 +293,7 @@ void save_file_populate_default_params(s32 fileIndex) {
 
     file->lives = 4;
     file->chaosDifficulty = CHAOS_DIFFICULTY_NORMAL;
-    file->chaosGameMode = FALSE;
+    file->chaosGameMode = CHAOS_GAMEMODE_CLASSIC;
     file->chaosEntryCount = 0;
     file->lastForcedDifficulty = -2;
     file->lastEventType = CHAOS_SPECIAL_NONE;

@@ -188,6 +188,8 @@ void slowtext_draw_ortho_text(s32 x, s32 y, const char* string, enum FastTextFla
 void slowtext_draw_ortho_text_linebreaks(s32 x, s32 y, s32 width, const char* string, enum FastTextFlags flags, s32 r, s32 g, s32 b, s32 a) {
     s32 lines = 0;
     s32 length = 0;
+
+    assert(string != gFasttextTmpBuffer, "slowtext_draw_ortho_text_linebreaks:\nInput may not use gFasttextTmpBuffer!");
     fasttext_compute_print_text_with_line_breaks(fasttextCachedFontId, width, &lines, &length, gFasttextTmpBuffer, string);
 
     assert(length + 1 < (s32) sizeof(gFasttextTmpBuffer), "slowtext_draw_ortho_text_linebreaks:\nstring is too long!");

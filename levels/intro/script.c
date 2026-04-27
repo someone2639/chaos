@@ -101,6 +101,7 @@ const LevelScript level_intro_mario_head_dizzy[] = {
     SLEEP(/*frames*/ 2),
     BLACKOUT(/*active*/ FALSE),
     LOAD_AREA(/*area*/ 1),
+    CALL(/*arg*/ 0, /*func*/ intro_delete_chaos_save_file),
     SET_MENU_MUSIC(/*seq*/ SEQ_MENU_GAME_OVER),
     TRANSITION(/*transType*/ WARP_TRANSITION_FADE_FROM_STAR, /*time*/ 20, /*color*/ 0x00, 0x00, 0x00),
     SLEEP(/*frames*/ 20),
