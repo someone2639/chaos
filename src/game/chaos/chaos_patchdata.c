@@ -1483,6 +1483,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Hello Darkness, My Old Friend",
         .shortDescription   = "Dim the screen substantially.",
     },
+    [CHAOS_PATCH_CLOWN_VOMIT] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 1,
+        .isStackable        = FALSE,
+        .duration           = 6,
+        .durationHard       = 7,
+        .durationImpossible = 8,
+
+        .name               = "Clown Vomit",
+        .shortDescription   = "Makes the world a bit more colorful.",
+    },
 
 // Time Limit
 #define CHS_TIME_LIMIT_DURATION            10

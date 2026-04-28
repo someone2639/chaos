@@ -196,6 +196,9 @@ void geo_process_master_list_sub(struct GraphNodeMasterList *node) {
                 if (isGameFlipped) {
                     gSPGeometryMode(gDisplayListHead++, G_CULL_BACK, G_CULL_FRONT);
                 }
+                if(chaos_check_if_patch_active(CHAOS_PATCH_CLOWN_VOMIT)) {
+                    gSPClearGeometryMode(gDisplayListHead++, G_LIGHTING);
+                }
                 gSPDisplayList(gDisplayListHead++, currList->displayList);
                 if (isGameFlipped) {
                     gSPGeometryMode(gDisplayListHead++, G_CULL_FRONT, G_CULL_BACK);
