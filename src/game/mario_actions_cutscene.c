@@ -1604,7 +1604,7 @@ s32 act_squished(struct MarioState *m) {
                 if (!(m->flags & MARIO_METAL_CAP) && m->invincTimer == 0) {
                     // cap on: 3 units; cap off: 4.5 units
                     if (chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_SQUISH)) {
-                        set_hurt_counter(m, -1);
+                        set_hurt_counter(m, U8_MAX);
                     } else {
                         set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
                     }

@@ -689,10 +689,12 @@ void update_patch_selection_menu() {
             case PATCH_SELECT_STATE_CLOSING:
                 //When the closing animation is finished, the menu should close
                 menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_CLOSED);
+
                 gChaosCancelOutLostDuration = TRUE;
                 chaos_select_patches(gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].sel);
                 chaos_decrement_star_timers(CHAOS_STAR_DECREMENT_MENU_IMPACTING);
                 gChaosCancelOutLostDuration = FALSE;
+
                 save_file_update_hardcore_score();
                 save_file_do_save(gCurrSaveFileNum - 1);
                 break;

@@ -1167,7 +1167,11 @@ s32 drop_and_set_mario_action(struct MarioState *m, u32 action, u32 actionArg) {
  * Hurt Mario
  */
 void set_hurt_counter(struct MarioState *m, u8 additionalDamage) {
-    m->hurtCounter += additionalDamage;
+    if (additionalDamage == U8_MAX) {
+        m->hurtCounter = U8_MAX;
+    } else {
+        m->hurtCounter += additionalDamage;
+    }
     if (chs_check_temporary_invincibility()) {
         m->hurtCounter = 0;
     } else if(chaos_check_if_patch_active(CHAOS_PATCH_SHIELD)) {
@@ -1180,13 +1184,15 @@ void set_hurt_counter(struct MarioState *m, u8 additionalDamage) {
     }
 
     if (chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER)) {
-        m->hurtCounter = 255;
+        m->hurtCounter = U8_MAX;
+    } else if (chaos_check_if_patch_active(CHAOS_PATCH_DAMAGE_LOTTERY) && m->hurtCounter != U8_MAX) {
+        m->hurtCounter = random_u16() % (chs_calculate_max_heal_counter() + 1);
     }
 
     if (chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) && gCurrCourseNum != COURSE_NONE) {
         if (m->numCoins > 0 && m->marioObj) {
             // For insta-kill patches (which shouldn't be using 32 to begin with due to health modifiers)
-            if (m->hurtCounter < (8 * 4)) {
+            if (m->hurtCounter != U8_MAX) {
                 m->hurtCounter = 0;
             }
             s32 coins = MIN(m->numCoins, 32);
@@ -1200,7 +1206,7 @@ void set_hurt_counter(struct MarioState *m, u8 additionalDamage) {
             gHudDisplay.coins = m->numCoins;
             play_sound(SOUND_MENU_SONIC_LOSE_RINGS, gGlobalSoundSource);
         } else {
-            m->hurtCounter = 255;
+            m->hurtCounter = U8_MAX;
         }
     }
 }

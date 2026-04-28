@@ -52,7 +52,7 @@ s32 lava_boost_on_wall(struct MarioState *m) {
 
     if (!(m->flags & MARIO_METAL_CAP)) {
         if (chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_LAVA)) {
-            set_hurt_counter(m, -1);
+            set_hurt_counter(m, U8_MAX);
         } else {
             set_hurt_counter(m, ((m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18) + m->extraDamageLava);
         }
@@ -89,7 +89,7 @@ s32 check_fall_damage(struct MarioState *m, u32 hardFallAction) {
         if (m->vel[1] < (-55.0f * gravity)) {
             if (fallHeight > (3000.0f / gravity)) {
                 if(chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_FALL_DAMAGE)) {
-                    set_hurt_counter(m, 255);
+                    set_hurt_counter(m, U8_MAX);
                 } else {
                     set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 16 : 24);
                 }
@@ -101,7 +101,7 @@ s32 check_fall_damage(struct MarioState *m, u32 hardFallAction) {
                 return drop_and_set_mario_action(m, hardFallAction, 4);
             } else if (fallHeight > (1150.0f / gravity) && !mario_floor_is_slippery(m)) {
                 if(chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_FALL_DAMAGE)) {
-                    set_hurt_counter(m, 255);
+                    set_hurt_counter(m, U8_MAX);
                 } else {
                     set_hurt_counter(m, (m->flags & MARIO_CAP_ON_HEAD) ? 8 : 12);
                 }
@@ -1105,7 +1105,7 @@ s32 act_burning_jump(struct MarioState *m) {
             m->health -= 10;
         }
         if (chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER)) {
-            m->hurtCounter = 255;
+            m->hurtCounter = U8_MAX;
         }
 
         if (m->health < 0x100) {
@@ -1134,7 +1134,7 @@ s32 act_burning_fall(struct MarioState *m) {
             m->health -= 10;
         }
         if (chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER)) {
-            m->hurtCounter = 255;
+            m->hurtCounter = U8_MAX;
         }
 
         if (m->health < 0x100) {
@@ -1688,7 +1688,7 @@ s32 act_lava_boost(struct MarioState *m) {
                 m->actionState = 0;
                 if (!(m->flags & MARIO_METAL_CAP)) {
                     if (chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_LAVA)) {
-                        set_hurt_counter(m, -1);
+                        set_hurt_counter(m, U8_MAX);
                     } else {
                         set_hurt_counter(m, ((m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18) + m->extraDamageLava);
                     }

@@ -86,6 +86,7 @@ u8 chs_cond_shield(void);
 void chs_update_random_invincibility(void);
 void chs_act_random_invincibility(void);
 u8 chs_cond_a_button_challenge(void);
+u8 chs_cond_damage_lottery(void);
 
 // Coin Modifiers
 u8 chs_double_coins_under_30s(void); // Check whether double coins should remain in effect
@@ -97,6 +98,7 @@ void chs_act_100c_decrease_lv3(void);
 void chs_deact_100c_decrease_lv2(void);
 void chs_deact_100c_decrease_lv3(void);
 u8 chs_pay2win_can_collect_star(void);
+u8 chs_cond_sonic_simulator(void);
 u8 chs_cond_coin_size(void);
 
 // Movement Modifiers

@@ -215,3 +215,11 @@ void chs_update_random_invincibility(void) {
 u8 chs_cond_a_button_challenge(void) {
     return (!chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_COINS));
 }
+
+/*
+    Damage Lottery
+*/
+
+u8 chs_cond_damage_lottery(void) {
+    return !(chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) || chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER));
+}

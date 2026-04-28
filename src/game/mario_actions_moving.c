@@ -1374,7 +1374,7 @@ s32 act_burning_ground(struct MarioState *m) {
             m->health -= 10;
         }
         if (chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER)) {
-            m->hurtCounter = 255;
+            m->hurtCounter = U8_MAX;
         }
 
         if (m->health < 0x100) {

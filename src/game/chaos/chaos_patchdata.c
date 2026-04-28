@@ -625,6 +625,21 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "A Button Challenge",
         .shortDescription   = "Lose 1 slice of health each time the A button is pressed. How many A presses do you really need to win?",
     },
+    [CHAOS_PATCH_DAMAGE_LOTTERY] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 2,
+        .isStackable        = FALSE,
+        .duration           = 6,
+        .durationHard       = 8,
+        .durationImpossible = 10,
+
+        .conditionalFunc    = chs_cond_damage_lottery,
+
+        .name               = "Damage Lottery",
+        .shortDescription   = "Lose a random amount of health whenever Mario takes damage, between 0 and the max number of health slices.",
+        .longDescription    = "Insta-kill patches are given priority over this patch, but this overrides other health-related patches. This patch ignores damage from water or poison.",
+    },
 
 // Coin Modifiers
     [CHAOS_PATCH_DOUBLE_COINS] = {
@@ -697,6 +712,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration           = 10,
         .durationHard       = 12,
         .durationImpossible = 15,
+
+        .conditionalFunc    = chs_cond_sonic_simulator,
 
         .name               = "Sonic Simulator",
         .shortDescription   = "Coins represent Mario's health. Just like in Sonic, Mario will drop all of his coins upon taking damage.",

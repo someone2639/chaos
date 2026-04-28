@@ -727,7 +727,7 @@ u32 take_damage_from_interact_object(struct MarioState *m) {
     }
 
     if (obj_has_behavior(m->interactObj, bhvGoomba) && chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_GOOMBA)) {
-        set_hurt_counter(m, -1);
+        set_hurt_counter(m, U8_MAX);
     } else {
         if (damage > 0) {
             set_hurt_counter(m, MIN((4 * damage) + m->extraDamageEnemy, (u8) -1));
@@ -1972,7 +1972,7 @@ void check_lava_boost(struct MarioState *m) {
     if (!(m->action & ACT_FLAG_RIDING_SHELL) && m->pos[1] < m->floorHeight + 10.0f) {
         if (!(m->flags & MARIO_METAL_CAP)) {
             if (chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_LAVA)) {
-                set_hurt_counter(m, -1);
+                set_hurt_counter(m, U8_MAX);
             } else {
                 set_hurt_counter(m, ((m->flags & MARIO_CAP_ON_HEAD) ? 12 : 18) + m->extraDamageLava);
             }
