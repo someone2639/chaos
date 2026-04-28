@@ -2006,6 +2006,8 @@ s32 execute_mario_action(UNUSED struct Object *o) {
         func_sh_8025574C();
 #endif
 
+        update_mario_safe_pos();
+
         gMarioState->controller->stickX = tmpStickX;
         gMarioState->controller->stickY = tmpStickY;
         return gMarioState->particleFlags;
@@ -2088,8 +2090,6 @@ void init_mario(void) {
     vec3f_copy(gMarioState->marioObj->header.gfx.pos, gMarioState->pos);
     vec3s_set(gMarioState->marioObj->header.gfx.angle, 0, gMarioState->faceAngle[1], 0);
 
-    vec3f_copy(gMarioState->safePos, gMarioState->pos);
-
     if (save_file_get_cap_pos(capPos)) {
         capObject = spawn_object(gMarioState->marioObj, MODEL_MARIOS_CAP, bhvNormalCap);
 
@@ -2106,6 +2106,10 @@ void init_mario(void) {
     gMarioState->bonkKillTimer = 0;
     gMarioState->chaosStateFlags = CHAOS_STATE_NONE;
     gChsTrollDialog = FALSE;
+    
+    gMarioState->safePosUpdatedLastFrame = FALSE;
+    gMarioState->lastSafePosIndex = 0;
+    bzero(gMarioState->lastSafePos, sizeof(gMarioState->lastSafePos));
 
     chaos_area_update();
 }
@@ -2145,17 +2149,27 @@ void init_mario_from_save_file(void) {
     gMarioState->bonkKill = FALSE;
     gMarioState->bonkKillTimer = 0;
     gMarioState->chaosStateFlags = CHAOS_STATE_NONE;
+    
+    gMarioState->safePosUpdatedLastFrame = FALSE;
+    gMarioState->lastSafePosIndex = 0;
+    bzero(gMarioState->lastSafePos, sizeof(gMarioState->lastSafePos));
 
     save_file_add_game_load();
 }
 
 void update_mario_safe_pos(void) {
     struct MarioState *m = gMarioState;
+    u8 safePosLastFrame = m->safePosUpdatedLastFrame;
+    m->safePosUpdatedLastFrame = FALSE;
+
+    if (!m->floor) {
+        return;
+    }
     s32 floorType = m->floor->type;
     s32 actGroup = (m->action & ACT_GROUP_MASK);
 
     //Check action to make sure it's safe
-    if((actGroup == ACT_GROUP_CUTSCENE) || (actGroup == ACT_GROUP_AUTOMATIC) || (m->action & ACT_FLAG_INTANGIBLE)) {
+    if(!(actGroup == ACT_GROUP_STATIONARY || actGroup == ACT_GROUP_MOVING || actGroup == ACT_GROUP_SUBMERGED) || (m->action & ACT_FLAG_INTANGIBLE)) {
         return;
     }
 
@@ -2182,6 +2196,20 @@ void update_mario_safe_pos(void) {
         case SURFACE_NOISE_VERY_SLIPPERY:
             return;
     }
+
+    // if (mario_floor_is_slippery(m)) {
+    //     return;
+    // }
     
-    vec3f_copy(m->safePos, m->pos);
+    if (safePosLastFrame) {
+        vec3f_copy(m->lastSafePos[m->lastSafePosIndex], m->pos);
+        m->lastSafePosIndex = (m->lastSafePosIndex + 1) % ARRAY_COUNT(m->lastSafePos);
+    } else {
+        m->lastSafePosIndex = 0;
+        for (s32 i = 0; i < ARRAY_COUNT(m->lastSafePos); i++) {
+            vec3f_copy(m->lastSafePos[i], m->pos);
+        }
+    }
+
+    m->safePosUpdatedLastFrame = TRUE;
 }

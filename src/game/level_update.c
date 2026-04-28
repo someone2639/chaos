@@ -441,6 +441,16 @@ void init_mario_after_warp(void) {
 
         gMarioState->interactObj = object;
         gMarioState->usedObj = object;
+        
+        struct Surface *floor;
+        gMarioState->lastSafePos[0][0] = object->oPosX;
+        gMarioState->lastSafePos[0][1] = find_floor(object->oPosX, object->oPosY, object->oPosZ, &floor);
+        gMarioState->lastSafePos[0][2] = object->oPosZ;
+        for (s32 i = 1; i < ARRAY_COUNT(gMarioState->lastSafePos); i++) {
+            gMarioState->lastSafePos[i][0] = gMarioState->lastSafePos[0][0];
+            gMarioState->lastSafePos[i][1] = gMarioState->lastSafePos[0][1];
+            gMarioState->lastSafePos[i][2] = gMarioState->lastSafePos[0][2];
+        }
     }
 
     reset_camera(gCurrentArea->camera);
@@ -993,20 +1003,28 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 sDelayedWarpOp = WARP_OP_NONE;
                 gWarpTransition.isActive = FALSE;
                 gCamera->cutscene = 0;
-                vec3f_copy(gMarioState->pos, gMarioState->safePos);
-                gMarioState->pos[1] += 500.0f;
-                gMarioState->invincTimer = 30;
-                gMarioState->quicksandDepth = 0.0f;
-                gMarioState->marioObj->header.gfx.pos[1] = gMarioState->pos[1];
-                gMarioState->health = 0x100;
-                gMarioState->hurtCounter = 0;
-                gMarioState->healCounter = chs_calculate_max_heal_counter();
+                vec3f_copy(m->pos, m->lastSafePos[m->lastSafePosIndex]);
+                m->pos[1] += 500.0f;
+                m->invincTimer = 30;
+                m->quicksandDepth = 0.0f;
+                m->marioObj->header.gfx.pos[1] = m->pos[1];
+                m->health = 0x100;
+                m->hurtCounter = 0;
+                m->healCounter = chs_calculate_max_heal_counter();
                 sDelayedWarpTimer = 0;
                 val04 = FALSE;
                 if(m->action & ACT_FLAG_SWIMMING) {
-                    set_mario_action(gMarioState, ACT_WATER_IDLE, 0);
+                    set_mario_action(m, ACT_WATER_IDLE, 0);
                 } else {
-                    set_mario_action(gMarioState, ACT_MIRACLE_RESPAWN, 0);
+                    struct Surface *floor;
+                    find_floor(m->pos[0], m->pos[1], m->pos[2], &floor);
+                    if (floor) {
+                        m->floor = floor;
+                        if (mario_floor_is_slippery(m)) {
+                            m->faceAngle[1] = atan2s(m->floor->normal.z, m->floor->normal.x);
+                        }
+                    }
+                    set_mario_action(m, ACT_MIRACLE_RESPAWN, 0);
                 }
                 
                 chs_decrement_miracle();

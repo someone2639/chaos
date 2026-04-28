@@ -1754,7 +1754,11 @@ s32 act_ground_bonk(struct MarioState *m) {
 s32 act_death_exit_land(struct MarioState *m) {
     s32 animFrame;
 
-    apply_landing_accel(m, 0.9f);
+    if (m->actionArg == 1) {
+        m->forwardVel = 0;
+    } else {
+        apply_landing_accel(m, 0.9f);
+    }
     play_mario_heavy_landing_sound_once(m, SOUND_ACTION_TERRAIN_BODY_HIT_GROUND);
 
     animFrame = set_mario_animation(m, MARIO_ANIM_FALL_OVER_BACKWARDS);

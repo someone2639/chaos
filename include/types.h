@@ -345,9 +345,11 @@ struct MarioState {
     /*0xD4*/ s8 extraDamageLava;
     /*0xD6*/ s16 maxHealth;
     /*0xD8*/ f32 size;
-    /*0xDC*/ Vec3f safePos;
-    /*0xE8*/ u8 bonkKill;
-    /*0xE9*/ u8 bonkKillTimer;
+    /*0xDC*/ u8 bonkKill;
+    /*0xDD*/ u8 bonkKillTimer;
+    /*0xDE*/ u8 safePosUpdatedLastFrame;
+    /*0xDF*/ u8 lastSafePosIndex;
+    /*0xE0*/ Vec3f lastSafePos[8];
 };
 
 #endif // TYPES_H

@@ -1278,6 +1278,7 @@ s32 act_miracle_respawn(struct MarioState *m) {
         queue_rumble_data(5, 80);
 #endif
         m->healCounter = chs_calculate_max_heal_counter();
+        m->actionArg = 1;
     }
     // one unit of health
     m->health = 0x0100;
