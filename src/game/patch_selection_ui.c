@@ -689,8 +689,10 @@ void update_patch_selection_menu() {
             case PATCH_SELECT_STATE_CLOSING:
                 //When the closing animation is finished, the menu should close
                 menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_CLOSED);
-                chaos_decrement_star_timers(CHAOS_STAR_DECREMENT_MENU_IMPACTING);
+                gChaosCancelOutLostDuration = TRUE;
                 chaos_select_patches(gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].sel);
+                chaos_decrement_star_timers(CHAOS_STAR_DECREMENT_MENU_IMPACTING);
+                gChaosCancelOutLostDuration = FALSE;
                 save_file_update_hardcore_score();
                 save_file_do_save(gCurrSaveFileNum - 1);
                 break;
@@ -899,38 +901,7 @@ void draw_single_patch_info(const struct ChaosPatch *patch) {
     gSPDisplayList(gDisplayListHead++, patch_use_type_start);
     if (patch->durationType == CHAOS_DURATION_STARS || patch->durationType == CHAOS_DURATION_USE_COUNT) {
         draw_patch_type(42, 8, patch->durationType);
-        s32 duration = patch->duration;
-        if (gChaosDifficulty == CHAOS_DIFFICULTY_HARD) {
-            if (patch->durationHard > 0) {
-                duration = patch->durationHard;
-            } else if (patch->durationType == CHAOS_DURATION_STARS) {
-                if (patch->effectType == CHAOS_EFFECT_POSITIVE) {
-                    duration += HARD_DURATION_DEFAULT_OFFSET_POSITIVE;
-                } else if (patch->effectType == CHAOS_EFFECT_NEGATIVE) {
-                    duration += HARD_DURATION_DEFAULT_OFFSET_NEGATIVE;
-                }
-
-                if (duration <= 0) {
-                    duration = 1;
-                }
-            }
-        } else if (gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE) {
-            if (patch->durationImpossible > 0) {
-                duration = patch->durationImpossible;
-            } else if (patch->durationHard > 0) {
-                duration = patch->durationHard;
-            } else if (patch->durationType == CHAOS_DURATION_STARS) {
-                if (patch->effectType == CHAOS_EFFECT_POSITIVE) {
-                    duration += IMPOSSIBLE_DURATION_DEFAULT_OFFSET_POSITIVE;
-                } else if (patch->effectType == CHAOS_EFFECT_NEGATIVE) {
-                    duration += IMPOSSIBLE_DURATION_DEFAULT_OFFSET_NEGATIVE;
-                }
-
-                if (duration <= 0) {
-                    duration = 1;
-                }
-            }
-        }
+        s32 duration = chaos_calculate_patch_duration(patch);
 
         assert(duration < 1000, "render_patch_card:\nduration out of range!");
         sprintf(timerText, "%d", duration);
@@ -963,38 +934,7 @@ void draw_double_patch_info(const struct ChaosPatch *pos, const struct ChaosPatc
     gSPDisplayList(gDisplayListHead++, patch_use_type_start);
     if (pos->durationType == CHAOS_DURATION_STARS || pos->durationType == CHAOS_DURATION_USE_COUNT) {
         draw_patch_type(42, 8, pos->durationType);
-        s32 duration = pos->duration;
-        if (gChaosDifficulty == CHAOS_DIFFICULTY_HARD) {
-            if (pos->durationHard > 0) {
-                duration = pos->durationHard;
-            } else if (pos->durationType == CHAOS_DURATION_STARS) {
-                if (pos->effectType == CHAOS_EFFECT_POSITIVE) {
-                    duration += HARD_DURATION_DEFAULT_OFFSET_POSITIVE;
-                } else if (pos->effectType == CHAOS_EFFECT_NEGATIVE) {
-                    duration += HARD_DURATION_DEFAULT_OFFSET_NEGATIVE;
-                }
-
-                if (duration <= 0) {
-                    duration = 1;
-                }
-            }
-        } else if (gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE) {
-            if (pos->durationImpossible > 0) {
-                duration = pos->durationImpossible;
-            } else if (pos->durationHard > 0) {
-                duration = pos->durationHard;
-            } else if (pos->durationType == CHAOS_DURATION_STARS) {
-                if (pos->effectType == CHAOS_EFFECT_POSITIVE) {
-                    duration += IMPOSSIBLE_DURATION_DEFAULT_OFFSET_POSITIVE;
-                } else if (pos->effectType == CHAOS_EFFECT_NEGATIVE) {
-                    duration += IMPOSSIBLE_DURATION_DEFAULT_OFFSET_NEGATIVE;
-                }
-
-                if (duration <= 0) {
-                    duration = 1;
-                }
-            }
-        }
+        s32 duration = chaos_calculate_patch_duration(pos);
 
         assert(duration < 1000, "render_patch_card:\nduration out of range!");
         sprintf(timer1Text, "%d", duration);
@@ -1006,38 +946,7 @@ void draw_double_patch_info(const struct ChaosPatch *pos, const struct ChaosPatc
     }
     if (neg->durationType == CHAOS_DURATION_STARS || neg->durationType == CHAOS_DURATION_USE_COUNT) {
         draw_patch_type(42, -16, neg->durationType);
-        s32 duration = neg->duration;
-        if (gChaosDifficulty == CHAOS_DIFFICULTY_HARD) {
-            if (neg->durationHard > 0) {
-                duration = neg->durationHard;
-            } else if (neg->durationType == CHAOS_DURATION_STARS) {
-                if (neg->effectType == CHAOS_EFFECT_POSITIVE) {
-                    duration += HARD_DURATION_DEFAULT_OFFSET_POSITIVE;
-                } else if (neg->effectType == CHAOS_EFFECT_NEGATIVE) {
-                    duration += HARD_DURATION_DEFAULT_OFFSET_NEGATIVE;
-                }
-
-                if (duration <= 0) {
-                    duration = 1;
-                }
-            }
-        } else if (gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE) {
-            if (neg->durationImpossible > 0) {
-                duration = neg->durationImpossible;
-            } else if (neg->durationHard > 0) {
-                duration = neg->durationHard;
-            } else if (neg->durationType == CHAOS_DURATION_STARS) {
-                if (neg->effectType == CHAOS_EFFECT_POSITIVE) {
-                    duration += IMPOSSIBLE_DURATION_DEFAULT_OFFSET_POSITIVE;
-                } else if (neg->effectType == CHAOS_EFFECT_NEGATIVE) {
-                    duration += IMPOSSIBLE_DURATION_DEFAULT_OFFSET_NEGATIVE;
-                }
-
-                if (duration <= 0) {
-                    duration = 1;
-                }
-            }
-        }
+        s32 duration = chaos_calculate_patch_duration(neg);
 
         assert(duration < 1000, "render_patch_card:\nduration out of range!");
         sprintf(timer2Text, "%d", duration);

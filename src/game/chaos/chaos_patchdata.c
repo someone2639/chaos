@@ -1436,7 +1436,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc    = chs_cond_camera_lag,
 
         .name               = "Lakitu's Bad Hangover",
-        .shortDescription   = "Lakitu had a little too much to drink last night. He may struggle to keep up with Mario!",
+        .shortDescription   = "Lakitu had a little too much to drink last night. He may struggle to keep the camera on Mario!",
     },
     [CHAOS_PATCH_DARKNESS] = {
         .durationType       = CHAOS_DURATION_STARS,
@@ -1531,7 +1531,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Show Me Mercy",
         .shortDescription   = "Deactivate one of the currently active negative patches at random.",
     },
-    // TODO: Decrement specifically these two patches only after a selection has been made (add a struct field for this behavior?)
     [CHAOS_PATCH_ADD_SELECTABLE_PATCH] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
@@ -1602,6 +1601,32 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Uneventful",
         .shortDescription   = "Bad Luck and Chaos events will no longer show up (except for duplicate stars).",
+    },
+    [CHAOS_PATCH_POSITIVE_EXTENSION] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 3,
+        .isStackable        = FALSE,
+        .affectsPatchSelect = TRUE,
+        .duration           = 6,
+        
+        .conditionalFunc    = chs_cond_positive_extension,
+
+        .name               = "Positive Extension",
+        .shortDescription   = "New positive effects will last 50% longer (rounded up).",
+    },
+    [CHAOS_PATCH_NEGATIVE_EXTENSION] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 3,
+        .isStackable        = FALSE,
+        .affectsPatchSelect = TRUE,
+        .duration           = 6,
+        
+        .conditionalFunc    = chs_cond_negative_extension,
+
+        .name               = "Negative Extension",
+        .shortDescription   = "New negative effects will last 50% longer (rounded up).",
     },
 
 // Speed Modifiers

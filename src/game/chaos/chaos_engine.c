@@ -33,6 +33,7 @@ struct ChaosActiveEntry *gChaosActiveEntries = NULL;
 u8 gChaosLevelWarped = FALSE;
 u8 gChaosBlueStarLastCollected = FALSE;
 u8 gChaosImmediateActDeact = FALSE;
+u8 gChaosCancelOutLostDuration = FALSE;
 
 static const f32 difficultyWeights[CHAOS_DIFFICULTY_COUNT][CHAOS_PATCH_SEVERITY_COUNT - 1] = {
     [CHAOS_DIFFICULTY_EASY      ] = { 0.12f, 0.25f, 0.38f }, // Difficulty offset should make highest level more common
@@ -181,6 +182,52 @@ u32 chaos_count_active_instances(const enum ChaosPatchID patchId) {
     return count;
 }
 
+u32 chaos_calculate_patch_duration(const struct ChaosPatch *patch) {
+    assert(patch != NULL, "chaos_calculate_patch_duration: patch is NULL!");
+
+    s32 duration = patch->duration;
+    if (gChaosDifficulty == CHAOS_DIFFICULTY_HARD) {
+        if (patch->durationHard > 0) {
+            duration = patch->durationHard;
+        } else if (patch->durationType == CHAOS_DURATION_STARS) {
+            if (patch->effectType == CHAOS_EFFECT_POSITIVE) {
+                duration += HARD_DURATION_DEFAULT_OFFSET_POSITIVE;
+            } else if (patch->effectType == CHAOS_EFFECT_NEGATIVE) {
+                duration += HARD_DURATION_DEFAULT_OFFSET_NEGATIVE;
+            }
+        }
+    } else if (gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE) {
+        if (patch->durationImpossible > 0) {
+            duration = patch->durationImpossible;
+        } else if (patch->durationHard > 0) {
+            duration = patch->durationHard;
+        } else if (patch->durationType == CHAOS_DURATION_STARS) {
+            if (patch->effectType == CHAOS_EFFECT_POSITIVE) {
+                duration += IMPOSSIBLE_DURATION_DEFAULT_OFFSET_POSITIVE;
+            } else if (patch->effectType == CHAOS_EFFECT_NEGATIVE) {
+                duration += IMPOSSIBLE_DURATION_DEFAULT_OFFSET_NEGATIVE;
+            }
+        }
+    }
+
+    if (patch->durationType == CHAOS_DURATION_STARS && (
+                (patch->effectType == CHAOS_EFFECT_POSITIVE && chaos_check_if_patch_active(CHAOS_PATCH_POSITIVE_EXTENSION)) ||
+                (patch->effectType == CHAOS_EFFECT_NEGATIVE && chaos_check_if_patch_active(CHAOS_PATCH_NEGATIVE_EXTENSION))
+    )) {
+        duration += (duration + 1) / 2;
+    }
+
+    if (duration <= 0) {
+        duration = 1;
+    }
+
+    if (gChaosCancelOutLostDuration && patch->affectsPatchSelect) {
+        duration++;
+    }
+
+    return duration;
+}
+
 void chaos_remove_expired_entry(const s32 patchIndex, const char *msg) {
     if (!gChaosActiveEntryCount) {
         return;
@@ -300,38 +347,7 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
         }
 
         if (patch->durationType == CHAOS_DURATION_USE_COUNT && matchingIndex >= 0) {
-            s32 duration = patch->duration;
-            if (gChaosDifficulty == CHAOS_DIFFICULTY_HARD) {
-                if (patch->durationHard > 0) {
-                    duration = patch->durationHard;
-                } else if (patch->durationType == CHAOS_DURATION_STARS) {
-                    if (patch->effectType == CHAOS_EFFECT_POSITIVE) {
-                        duration += HARD_DURATION_DEFAULT_OFFSET_POSITIVE;
-                    } else if (patch->effectType == CHAOS_EFFECT_NEGATIVE) {
-                        duration += HARD_DURATION_DEFAULT_OFFSET_NEGATIVE;
-                    }
-
-                    if (duration <= 0) {
-                        duration = 1;
-                    }
-                }
-            } else if (gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE) {
-                if (patch->durationImpossible > 0) {
-                    duration = patch->durationImpossible;
-                } else if (patch->durationHard > 0) {
-                    duration = patch->durationHard;
-                } else if (patch->durationType == CHAOS_DURATION_STARS) {
-                    if (patch->effectType == CHAOS_EFFECT_POSITIVE) {
-                        duration += IMPOSSIBLE_DURATION_DEFAULT_OFFSET_POSITIVE;
-                    } else if (patch->effectType == CHAOS_EFFECT_NEGATIVE) {
-                        duration += IMPOSSIBLE_DURATION_DEFAULT_OFFSET_NEGATIVE;
-                    }
-
-                    if (duration <= 0) {
-                        duration = 1;
-                    }
-                }
-            }
+            s32 duration = chaos_calculate_patch_duration(patch);
 
             // Invoke activation function, add duration to existing patch, and return early
             gChaosActiveEntries[matchingIndex].remainingDuration += duration;
@@ -357,51 +373,20 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
 
     // Allocate new patch entry
     struct ChaosActiveEntry *newEntry = &gChaosActiveEntries[*gChaosActiveEntryCount];
-    (*gChaosActiveEntryCount)++;
-    activePatchCounts[patchId]++;
 
     // Set values for new entry appropriately
-    newEntry->id = patchId;
-    newEntry->frameTimer = 0;
     if (patch->durationType == CHAOS_DURATION_ONCE || patch->durationType == CHAOS_DURATION_INFINITE) {
         newEntry->remainingDuration = 0;
     } else {
-        s32 duration = patch->duration;
-        if (gChaosDifficulty == CHAOS_DIFFICULTY_HARD) {
-            if (patch->durationHard > 0) {
-                duration = patch->durationHard;
-            } else if (patch->durationType == CHAOS_DURATION_STARS) {
-                if (patch->effectType == CHAOS_EFFECT_POSITIVE) {
-                    duration += HARD_DURATION_DEFAULT_OFFSET_POSITIVE;
-                } else if (patch->effectType == CHAOS_EFFECT_NEGATIVE) {
-                    duration += HARD_DURATION_DEFAULT_OFFSET_NEGATIVE;
-                }
-
-                if (duration <= 0) {
-                    duration = 1;
-                }
-            }
-        } else if (gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE) {
-            if (patch->durationImpossible > 0) {
-                duration = patch->durationImpossible;
-            } else if (patch->durationHard > 0) {
-                duration = patch->durationHard;
-            } else if (patch->durationType == CHAOS_DURATION_STARS) {
-                if (patch->effectType == CHAOS_EFFECT_POSITIVE) {
-                    duration += IMPOSSIBLE_DURATION_DEFAULT_OFFSET_POSITIVE;
-                } else if (patch->effectType == CHAOS_EFFECT_NEGATIVE) {
-                    duration += IMPOSSIBLE_DURATION_DEFAULT_OFFSET_NEGATIVE;
-                }
-
-                if (duration <= 0) {
-                    duration = 1;
-                }
-            }
-        }
-
-        newEntry->remainingDuration = duration;
+        newEntry->remainingDuration = chaos_calculate_patch_duration(patch);
         assert_args(newEntry->remainingDuration > 0, "%s%08X", "chaos_add_new_entry:\nDuration-type patch contains duration of 0: 0x", patchId);
     }
+
+    // Check patch duration first, before adding these properties (CHAOS_PATCH_POSITIVE_EXTENSION and CHAOS_PATCH_NEGATIVE_EXTENSION rely on this!)
+    newEntry->id = patchId;
+    newEntry->frameTimer = 0;
+    (*gChaosActiveEntryCount)++;
+    activePatchCounts[patchId]++;
 
     // Activate init func for new entry
     if (patch->activatedInitFunc) {

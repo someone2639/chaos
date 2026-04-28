@@ -168,6 +168,8 @@ enum ChaosPatchID {
     CHAOS_PATCH_LUCKY_CHARM,
     CHAOS_PATCH_UNLUCKY_CHARM,
     CHAOS_PATCH_UNEVENTFUL,
+    CHAOS_PATCH_POSITIVE_EXTENSION,
+    CHAOS_PATCH_NEGATIVE_EXTENSION,
 
 // Speed Modifiers
     CHAOS_PATCH_PUSH_BACK,
@@ -342,6 +344,7 @@ extern struct ChaosActiveEntry *gChaosActiveEntries;
 extern u8 gChaosLevelWarped;
 extern u8 gChaosBlueStarLastCollected;
 extern u8 gChaosImmediateActDeact;
+extern u8 gChaosCancelOutLostDuration;
 extern enum ChaosDifficulty gChaosDifficulty;
 extern enum ChaosGameMode gChaosGameMode;
 extern enum ChaosPatchID gNegativePatchCompare;
@@ -354,6 +357,9 @@ u8 chaos_find_first_active_patch(const enum ChaosPatchID patchId, struct ChaosAc
 
 // Get the number of active instances for a particular patch.
 u32 chaos_count_active_instances(const enum ChaosPatchID patchId);
+
+// Get the computed patch duration to apply for a particular patch, based on difficulty and other altering patches.
+u32 chaos_calculate_patch_duration(const struct ChaosPatch *patch);
 
 // Deactivate an old chaos patch, based on its current index.
 // Be careful when invoking this with stackable patches, as it may cause undesirable behavior if used incorrectly.

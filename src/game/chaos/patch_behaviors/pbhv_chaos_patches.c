@@ -143,3 +143,11 @@ u8 chs_cond_uneventful(void) {
         save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) < CHAOS_MIN_STARS_FOR_EVENTS
     );
 }
+
+u8 chs_cond_positive_extension(void) {
+    return !chaos_check_if_patch_active(CHAOS_PATCH_NEGATIVE_EXTENSION);
+}
+
+u8 chs_cond_negative_extension(void) {
+    return !chaos_check_if_patch_active(CHAOS_PATCH_POSITIVE_EXTENSION);
+}
