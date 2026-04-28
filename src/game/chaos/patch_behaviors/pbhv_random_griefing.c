@@ -3,6 +3,7 @@
 #include "types.h"
 #include "course_table.h"
 #include "sm64.h"
+#include "engine/behavior_script.h"
 #include "game/area.h"
 #include "game/level_update.h"
 #include "game/mario.h"
@@ -374,4 +375,52 @@ void chs_update_cosmic_rays(void) {
         gMarioState->peakHeight = gMarioState->pos[1];
         this->frameTimer = RAND(COSMIC_RAYS_TIME_MAX);
     }
+}
+
+// #define FRAMES_BETWEEN_BUTTON_PRESSES_MIN (30 * 5)
+#define RANDOM_BUTTON_PRESS_PROBABILITY 0.004f
+
+void chs_update_random_button_presses(void) {
+    struct ButtonWeight {
+        u16 button;
+        f32 weight;
+    };
+
+    const struct ButtonWeight buttonPressTable[] = {
+        { .button = R_CBUTTONS,   .weight = 0.3f, },
+        { .button = L_CBUTTONS,   .weight = 0.4f, },
+        { .button = D_CBUTTONS,   .weight = 0.4f, },
+        { .button = U_CBUTTONS,   .weight = 0.3f, },
+        { .button = R_TRIG,       .weight = 0.7f, },
+        { .button = START_BUTTON, .weight = 0.2f, },
+        { .button = Z_TRIG,       .weight = 2.0f, },
+        { .button = B_BUTTON,     .weight = 2.0f, },
+        { .button = A_BUTTON,     .weight = 2.0f, },
+    };
+    
+    if (random_float() > RANDOM_BUTTON_PRESS_PROBABILITY) {
+        return;
+    }
+
+    struct ChaosActiveEntry *match;
+    chaos_find_first_active_patch(CHAOS_PATCH_RANDOM_BUTTON_PRESSES, &match);
+    if (!match /* || match->frameTimer < FRAMES_BETWEEN_BUTTON_PRESSES_MIN */) {
+        return;
+    }
+
+    f32 weightTotal = 0.0f;
+    for (s32 i = 0; i < ARRAY_COUNT(buttonPressTable); i++) {
+        weightTotal += buttonPressTable[i].weight;
+    }
+
+    f32 newWeight = random_float() * weightTotal;
+    for (s32 i = 0; i < ARRAY_COUNT(buttonPressTable); i++) {
+        newWeight -= buttonPressTable[i].weight;
+        if (newWeight < 0) {
+            gRandomButtonInputs = buttonPressTable[i].button;
+            break;
+        }
+    }
+
+    match->frameTimer = 0;
 }

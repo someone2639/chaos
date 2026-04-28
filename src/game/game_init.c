@@ -115,6 +115,7 @@ static u8 checkingFBE = 0;
 static u8 fbeCheckFinished = FALSE;
 
 struct Controller chaosControllerLag[MAX_NUM_PLAYERS][7];
+u16 gRandomButtonInputs = 0;
 
 // Display
 // ----------------------------------------------------------------------------------------------------
@@ -750,6 +751,9 @@ void read_controller_inputs(void) {
                 }
                 controller->controllerData->button = newButton;
             }
+
+            controller->controllerData->button |= gRandomButtonInputs;
+            gRandomButtonInputs = 0;
 
             if (chaos_check_if_patch_active(CHAOS_PATCH_SWAPPED_ZR_AB)) {
                 s32 newButtons = 0;

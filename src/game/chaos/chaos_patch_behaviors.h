@@ -137,6 +137,7 @@ void chs_update_red_light(void);
 u8 chs_cond_cosmic_rays(void);
 void chs_act_cosmic_rays(void);
 void chs_update_cosmic_rays(void);
+void chs_update_random_button_presses(void);
 
 // Object Spawners
 u8 chs_cond_green_demon(void);

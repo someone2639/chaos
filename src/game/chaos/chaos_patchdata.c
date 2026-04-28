@@ -923,6 +923,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription   = "Now you too can experience the famous TTC upwarp!",
         .longDescription    = "Was it a solar flare? A tilted cartridge? A one in a million glitch? Probably not!",
     },
+    [CHAOS_PATCH_RANDOM_BUTTON_PRESSES] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 2,
+        .isStackable        = FALSE,
+        .duration           = 7,
+        .durationHard       = 9,
+        .durationImpossible = 11,
+
+        .frameUpdateFunc    = chs_update_random_button_presses,
+
+        .name               = "Random Button Presses",
+        .shortDescription   = "Periodically trigger a random button press.",
+    },
 
 // Movement Modifiers
     [CHAOS_PATCH_LOSEMOVE_BREAKDANCE] = {

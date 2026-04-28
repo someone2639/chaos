@@ -81,6 +81,7 @@ extern OSMesg gHVQM_SyncMesg;
 
 extern u8 gFBEEnabled;
 extern struct Controller chaosControllerLag[MAX_NUM_PLAYERS][7];
+extern u16 gRandomButtonInputs;
 
 s32 check_fbe(s16 arg0, s32 arg1);
 void setup_game_memory(void);
