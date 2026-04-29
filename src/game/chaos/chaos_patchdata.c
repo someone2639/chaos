@@ -2338,4 +2338,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription   = "Mario may still recover from coins or collect stars, even when he has no health left (pre-death animation only).",
         .longDescription    = "This may be useful in specific situations, such as flying around with the wing cap while dead."
     },
+    [CHAOS_PATCH_DVD] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 1,
+        .isStackable        = FALSE,
+        .duration           = 6,
+        .durationHard       = 8,
+        .durationImpossible = 10,
+
+        .activatedInitFunc  = chs_init_dvd,
+        .frameUpdateFunc    = chs_update_dvd,
+
+        .name               = "DVD Logo",
+        .shortDescription   = "Maybe this time it will hit the corner?",
+    },
 };

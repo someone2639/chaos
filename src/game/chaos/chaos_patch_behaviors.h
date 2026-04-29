@@ -263,3 +263,5 @@ void chs_init_cherry_clones_after_warp(void);
 u8 chs_cond_forced_mario_cam(void);
 void chs_update_noclip(void);
 u8 chs_cond_randomize_warps(void);
+void chs_init_dvd(void);
+void chs_update_dvd(void);

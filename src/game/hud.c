@@ -479,6 +479,7 @@ void render_hud_camera_status(void) {
 }
 
 void draw_quicktime_event_prompts(void);
+void draw_dvd_logo(void);
 
 /*
     Renders the time limit display for the "Speedy Comet" patch
@@ -591,5 +592,9 @@ void render_hud(void) {
 
     if(chaos_check_if_patch_active(CHAOS_PATCH_QUICKTIME)) {
         draw_quicktime_event_prompts();
+    }
+
+    if(chaos_check_if_patch_active(CHAOS_PATCH_DVD)) {
+        draw_dvd_logo();
     }
 }

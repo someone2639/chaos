@@ -4063,3 +4063,37 @@ ALIGNED8 u8 texture_icon_c_r_button[] = {
 ALIGNED8 u8 texture_icon_c_r_button_down[] = {
 #include "textures/segment2/c_r_button_down_custom.rgba16.inc.c"
 };
+
+ALIGNED8 u8 texture_dvd_logo[] = {
+#include "textures/segment2/custom_dvd_logo.ia8.inc.c"    
+};
+
+Vtx dvd_logo_vtx[4] = {
+	{{ {-32, -16, 0}, 0, {-16, 1008}, {255, 255, 255, 255} }},
+	{{ {32, -16, 0}, 0, {2032, 1008}, {255, 255, 255, 255} }},
+	{{ {32, 16, 0}, 0, {2032, -16}, {255, 255, 255, 255} }},
+	{{ {-32, 16, 0}, 0, {-16, -16}, {255, 255, 255, 255} }},
+};
+
+Gfx dvd_logo[] = {
+	gsSPClearGeometryMode(G_SHADE | G_LIGHTING),
+	gsDPPipeSync(),
+	gsDPSetCombineLERP(PRIMITIVE, 0, TEXEL0, 0, 0, 0, 0, TEXEL0, PRIMITIVE, 0, TEXEL0, 0, 0, 0, 0, TEXEL0),
+	gsDPSetAlphaDither(G_AD_NOISE),
+	gsDPSetRenderMode(G_RM_AA_ZB_XLU_SURF, G_RM_AA_ZB_XLU_SURF2),
+	gsSPTexture(65535, 65535, 0, 0, 1),
+	gsDPSetTextureImage(G_IM_FMT_IA, G_IM_SIZ_8b_LOAD_BLOCK, 1, texture_dvd_logo),
+	gsDPSetTile(G_IM_FMT_IA, G_IM_SIZ_8b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
+	gsDPLoadBlock(7, 0, 0, 1023, 256),
+	gsDPSetTile(G_IM_FMT_IA, G_IM_SIZ_8b, 8, 0, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 5, 0, G_TX_WRAP | G_TX_NOMIRROR, 6, 0),
+	gsDPSetTileSize(0, 0, 0, 252, 124),
+	gsSPVertex(dvd_logo_vtx + 0, 4, 0),
+	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
+	gsDPPipeSync(),
+    gsDPSetPrimColor(0, 0, 255, 255, 255, 255),
+	gsDPSetCombineLERP(0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT, 0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT),
+	gsSPTexture(65535, 65535, 0, 0, 0),
+	gsSPSetGeometryMode(G_SHADE | G_LIGHTING),
+	gsDPSetAlphaDither(G_AD_DISABLE),
+	gsSPEndDisplayList(),
+};
