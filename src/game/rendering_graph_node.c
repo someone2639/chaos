@@ -893,7 +893,7 @@ void geo_process_object(struct Object *node) {
             if (chaos_check_if_patch_active(CHAOS_PATCH_CONFUSED_OBJECTS)) {
                 struct Object *obj = (struct Object *) node;
                 if(obj->behavior != segmented_to_virtual(bhvStaticObject) && obj->behavior != segmented_to_virtual(bhvBowsersSub) && obj->behavior != segmented_to_virtual(bhvSquishablePlatform)) {
-                    node->header.gfx.angle[1] = obj->oFaceAngleRoll + 0x8000;
+                    node->header.gfx.angle[1] = obj->oFaceAngleYaw + 0x8000;
                 }
             }
 
@@ -901,7 +901,7 @@ void geo_process_object(struct Object *node) {
                 struct Object *obj = (struct Object *) node;
                 if(obj->behavior != segmented_to_virtual(bhvStaticObject) && obj->behavior != segmented_to_virtual(bhvBowsersSub) && obj->behavior != segmented_to_virtual(bhvSquishablePlatform)) {
                     node->header.gfx.angle[2] = obj->oFaceAngleRoll + 0x8000;
-                    node->header.gfx.pos[1] = obj->oPosY + 150.0f;
+                    node->header.gfx.pos[1] = obj->oPosY + obj->oGraphYOffset + 150.0f;
                 }
             }
         }

@@ -1,6 +1,8 @@
 #include "engine/math_util.h"
+#include "game/area.h"
 #include "game/segment2.h"
 #include "game/ingame_menu.h"
+#include "game/level_update.h"
 #include "game/game_init.h"
 #include "engine/behavior_script.h"
 #include "game/chaos_settings.h"
@@ -10,24 +12,17 @@ static Vec2f sDVDLogoPos;
 static s16 sDVDLogoAngle;
 static f32 sDVDColor; // This is an HSV angle so we only get bright colors
 
-void chs_init_dvd(void) {
-    sDVDLogoPos[0] = SCREEN_CENTER_X;
-    sDVDLogoPos[1] = SCREEN_CENTER_Y;
-    sDVDLogoAngle = RAND(0xFFFF);
-    sDVDColor = random_float() * 360;
-}
-
-void dvd_bounce(s16 sideAngle) {
+static void dvd_bounce(s16 sideAngle) {
     sDVDLogoAngle = (sideAngle - (sDVDLogoAngle - sideAngle));
     sDVDColor = random_float() * 360;
 }
 
-void chs_update_dvd(void) {
+static void update_dvd_position(void) {
     f32 velX = coss(sDVDLogoAngle) * 3.0f;
     f32 velY = sins(sDVDLogoAngle) * 3.0f;
 
     if(gConfig.widescreen & WIDE_SCREEN_UI) {
-        velY *= 0.75f;
+        velX *= (4.0f / 3.0f) * (9.0f / 16.0f); // 0.75f
     }
 
     f32 x = sDVDLogoPos[0] + velX;
@@ -39,7 +34,8 @@ void chs_update_dvd(void) {
     } else if (x < 32) {
         dvd_bounce(0xC000);
         x = 32;
-    } else if (y > SCREEN_HEIGHT - 16) {
+    }
+    if (y > SCREEN_HEIGHT - 16) {
         dvd_bounce(0x0000);
         y = SCREEN_HEIGHT - 16;
     } else if (y < 16) {
@@ -52,6 +48,12 @@ void chs_update_dvd(void) {
 }
 
 void draw_dvd_logo(void) {
+    update_dvd_position();
+
+    if (!check_moving_play_mode(sCurrPlayMode) || gInActSelect) {
+        return;
+    }
+
     // Convert the color from hsv to rgb
     f32 r = 0;
     f32 g = 0;
@@ -122,4 +124,19 @@ void draw_dvd_logo(void) {
     gDPSetPrimColor(gDisplayListHead++, 0, 0, finalR, finalG, finalB, 0xFF);
     gSPDisplayList(gDisplayListHead++, dvd_logo);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+}
+
+void chs_init_dvd(void) {
+    sDVDLogoPos[0] = random_u16() % (SCREEN_WIDTH - 32);
+    sDVDLogoPos[1] = random_u16() % (SCREEN_HEIGHT - 16);
+    sDVDLogoAngle = 0xD874;
+    sDVDColor = random_float() * 360;
+
+    s32 rand = random_u16() % 4;
+    if (rand < 2) {
+        dvd_bounce(0x0000);
+    }
+    if (rand % 2 == 0) {
+        dvd_bounce(0x4000);
+    }
 }

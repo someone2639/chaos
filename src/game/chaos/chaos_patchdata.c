@@ -2347,7 +2347,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationImpossible = 10,
 
         .activatedInitFunc  = chs_init_dvd,
-        .frameUpdateFunc    = chs_update_dvd,
 
         .name               = "DVD Logo",
         .shortDescription   = "Maybe this time it will hit the corner?",
