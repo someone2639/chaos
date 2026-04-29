@@ -461,7 +461,7 @@ C_DEFINES := $(foreach d,$(DEFINES),-D$(d))
 DEF_INC_CFLAGS := $(foreach i,$(INCLUDE_DIRS),-I$(i)) $(C_DEFINES)
 
 # C compiler options
-CFLAGS = -G 0 $(OPT_FLAGS) $(TARGET_CFLAGS) $(MIPSISET) $(DEF_INC_CFLAGS)
+CFLAGS = -G 0 $(OPT_FLAGS) $(TARGET_CFLAGS) $(MIPSISET) $(DEF_INC_CFLAGS) -gdwarf-4
 ifeq ($(COMPILER),gcc)
   CFLAGS += -mno-shared -march=vr4300 -mfix4300 -mabi=32 -mhard-float -mdivide-breaks -fno-stack-protector -fno-common -fno-zero-initialized-in-bss -fno-PIC -mno-abicalls -fno-strict-aliasing -fno-inline-functions -ffreestanding -fwrapv -Wall -Wextra
 else ifeq ($(COMPILER),clang)
@@ -508,13 +508,6 @@ else
   RSPASM              := $(TOOLS_DIR)/armips
 endif
 ENDIAN_BITWIDTH       := $(BUILD_DIR)/endian-and-bitwidth
-ifneq (,$(shell uname -r | grep WSL))
-  # WSL detected
-  EMULATOR = '/mnt/c/Program Files/parallel-launcher/parallel-launcher.exe'
-else
-  # Linux probably
-  EMULATOR = parallel-launcher
-endif
 SC64DEPLOYER = /mnt/c/sc64/sc64deployer.exe upload
 EMU_FLAGS =
 
@@ -527,9 +520,14 @@ LOADER_DIR = ./$(TOOLS_DIR)
 ifneq (,$(wildcard $(LOADER_DIR_FILE_SPECIFICATION_PATH)))
   LOADER_DIR = $(shell cat $(LOADER_DIR_FILE_SPECIFICATION_PATH))
 endif
-ifneq (,$(call find-command,wslview))
+
+ifneq (,$(shell uname -r | grep WSL))
+  # WSL detected
+  EMULATOR = '/mnt/c/Program Files/parallel-launcher/parallel-launcher.exe'
   UNFLOADER_EXEC = $(LOADER_DIR)/UNFLoader.exe
 else
+  # Linux probably
+  EMULATOR = parallel-launcher
   UNFLOADER_EXEC = $(LOADER_DIR)/UNFLoader
 endif
 
