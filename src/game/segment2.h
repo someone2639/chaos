@@ -111,5 +111,6 @@ extern u8 texture_icon_c_r_button_down[];
 extern u8 desc_bg_desc_bg_i8[];
 extern u8 texture_dvd_logo[];
 extern Gfx dvd_logo[];
+extern Gfx coin_flip_coin_mesh[];
 
 #endif // SEGMENT2_H

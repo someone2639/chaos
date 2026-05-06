@@ -50,6 +50,9 @@ void chs_act_unlock_cannons(void);
 u8 chs_cond_unlock_cannons(void);
 u8 chs_cond_star_cloning_device(void);
 s32 chs_get_yellow_star_in_course(s32 courseNum, s32 collectedStarId);
+void chs_act_coin_flip(void);
+u8 chs_cond_coin_flip(void);
+void draw_coin_flip(void);
 
 // Gravity Modifiers
 u8 chs_cond_gravity_decrease(void);

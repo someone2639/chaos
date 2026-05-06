@@ -6981,6 +6981,7 @@ sound_ref .sound_menu_troll_alarm
 sound_ref .sound_menu_troll_join
 sound_ref .sound_menu_troll_click
 sound_ref .sound_menu_troll_notif
+sound_ref .sound_menu_coin_flip
 
 .sound_menu_change_select:
 chan_setbank 9
@@ -7471,6 +7472,17 @@ layer_end
 .layer_troll_notif_r:
 layer_setpan 127
 layer_note1 39, 0xCE, 127
+layer_end
+
+.sound_menu_coin_flip:
+chan_setbank 9
+chan_setinstr 25
+chan_setlayer 0, .layer_coin_flip
+chan_end
+
+.layer_coin_flip:
+layer_setpan 0
+layer_note1 39, 0x72, 127
 layer_end
 
 .sound_menu_click_file_select:

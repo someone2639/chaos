@@ -151,6 +151,11 @@
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "13_troll_notif_custom_R"
+        },
+        "inst25": {
+            "release_rate": 208,
+            "envelope": "envelope0",
+            "sound": "14_coin_flip_custom"
         }
     },
     "instrument_list": [
@@ -178,6 +183,7 @@
         "inst21",
         "inst22",
         "inst23",
-        "inst24"
+        "inst24",
+        "inst25"
     ]
 }

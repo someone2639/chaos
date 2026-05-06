@@ -335,6 +335,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription   = "When collected, a blue star will be swapped with another random uncollected star in the course (if applicable).",
         .longDescription    = "This will act like collecting a yellow star normally, and will not punish the player with the effects of collecting a blue star (as long as there are still yellow stars remaining in the course). This patch will take effect only when a star swap can been made.",
     },
+    [CHAOS_PATCH_COIN_FLIP] = {
+        .durationType       = CHAOS_DURATION_ONCE,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 1,
+        .isStackable        = TRUE,
+
+        .activatedInitFunc  = chs_act_coin_flip,
+        .conditionalFunc    = chs_cond_coin_flip,
+
+        .name               = "One-Star Coin Flip",
+        .shortDescription   = "Flip a coin! If heads, gain a random unobtained star. If tails, lose a star in your possession...",
+    },
 
 // Gravity Modifiers
     [CHAOS_PATCH_GRAVITY_DECREASE] = {

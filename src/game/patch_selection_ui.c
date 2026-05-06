@@ -22,6 +22,7 @@
 #include "geo_misc.h"
 #include "chaos_settings.h"
 #include "main.h"
+#include "chaos/chaos_patch_behaviors.h"
 
 u8 sQualityColors[CHAOS_PATCH_SEVERITY_COUNT][3] = {
     {0x9F, 0x9F, 0x9F}, //Lvl 0
@@ -162,143 +163,22 @@ void reset_patch_selection_menu() {
     gPatchSelectionMenu->eventTextScale = 0.0f;
 }
 
-/*
-    Handles the player inputs for the patch selection state in the patch selection menu
-*/
-void handle_inputs_patch_select_state_select() {
-    s32 previousSelection = gPatchSelectionMenu->selectedPatch;
-    s32 selection = previousSelection;
-    s32 numPatches = gPatchSelectionMenu->numPatches;
-    s32 navDir = menu_get_input_dir();
+void patch_select_start_coin_flip() {
+    struct ChaosMenu *menu = &gPatchSelectionMenu->menu;
 
-    if(gPlayer1Controller->buttonPressed & (A_BUTTON)) {
-        menu_play_anim(&gPatchSelectionMenu->menu, PATCH_SELECT_ANIM_CONFIRMATION);
-        menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_CONFIRMATION);
-        play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
-    } else if (gPlayer1Controller->buttonPressed & (Z_TRIG | L_TRIG)) {
-        struct PatchCard *selectedCard = &gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch];
-        aggress(selectedCard, "render_patch_card:\ncard is NULL!");
-        aggress(selectedCard->sel, "render_patch_card:\ncard->sel is NULL!");
-        struct ChaosPatchSelection *sel = selectedCard->sel;
-        const struct ChaosPatch *pos = sel->positivePatch;
-        const struct ChaosPatch *neg = sel->negativePatch;
+    assert(menu->menuState == PATCH_SELECT_STATE_START_CLOSING, "patch_select_start_coin_flip:\ntriggered from wrong menu state!");
 
-        if(pos->longDescription || neg->longDescription) {
-            menu_play_anim(&gPatchSelectionMenu->menu, PATCH_SELECT_ANIM_EXT_DESC);
-            menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_SHOW_EXTENDED_DESC);
-            play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
-        } else {
-            play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
-        }
-    } else if (gPlayer1Controller->buttonPressed & R_TRIG) {
-        init_active_patches_menu();
-        menu_play_anim(&gPatchSelectionMenu->menu, PATCH_SELECT_ANIM_ACTIVE_PATCHES);
-        menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_SHOW_ACTIVE_PATCHES);
-    } else if (gPlayer1Controller->buttonPressed & START_BUTTON) {
-        chstut_tutorial_init();
-        menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_TUTORIAL);
-        gPatchSelectionMenu->menu.flags |= PATCH_SELECT_FLAG_HALT_INPUT;
-    } else if(navDir & (MENU_DIR_U | MENU_DIR_D)) {
-        if(numPatches > 2) {
-            selection += 2;
-            if(selection > numPatches - 1) {
-                selection = previousSelection - 2;
-            }
-        }
-    } else if(navDir & (MENU_DIR_L | MENU_DIR_R)) {
-        selection++;
-        if(selection > numPatches - 1 || !(selection % 2)) {
-            //Hard coded check to make menu navigation feel more natural with 3 patches
-            if(numPatches == 3 && previousSelection == 2) {
-                selection = previousSelection;
-            } else {
-                selection = previousSelection - 1;
-            }
-        }
-    }
-
-    if(selection >= numPatches || selection < 0) {
-        selection = numPatches - 1;
-    }
-
-    if(selection != previousSelection) {
-        play_sound(SOUND_MENU_MESSAGE_NEXT_PAGE, gGlobalSoundSource);
-    }
-
-    gPatchSelectionMenu->selectedPatch = selection;
+    menu->menuState = PATCH_SELECT_STATE_COIN_FLIP;
+    menu->flags |= PATCH_SELECT_FLAG_HALT_INPUT;
 }
 
-/*
-    Handles the player inputs for the extended description state in the patch selection menu
-*/
-void handle_inputs_patch_select_state_show_extended_desc() {
-    if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON | B_BUTTON | Z_TRIG | L_TRIG)) {
-        menu_play_anim(&gPatchSelectionMenu->menu, PATCH_SELECT_ANIM_EXT_DESC_RETURN);
-        menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_SELECT);
-        play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
-    }
-}
+void patch_select_end_coin_flip() {
+    struct ChaosMenu *menu = &gPatchSelectionMenu->menu;
 
-/*
-    Handles the player inputs for the confirmation dialog state in the patch selection menu
-*/
-void handle_inputs_patch_select_state_confirmation() {
-    s32 selection = gPatchSelectionMenu->menu.index;
+    assert(menu->menuState == PATCH_SELECT_STATE_COIN_FLIP, "patch_select_end_coin_flip:\ntriggered from wrong menu state!");
 
-    if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
-        if(selection) {
-            //No
-            menu_play_anim(&gPatchSelectionMenu->menu, PATCH_SELECT_ANIM_CONFIRMATION_RETURN);
-            menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_SELECT);
-            play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
-            selection = 0;
-        } else {
-            //Yes
-            menu_play_anim(&gPatchSelectionMenu->menu, PATCH_SELECT_ANIM_ENDING);
-            menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_CLOSING);
-
-            //Play increasingly distressed Mario sounds based on severity of patches
-            aggress(gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].sel,
-                    "handle_inputs_patch_select_state_confirmation:\nsel undefined!");
-            switch(gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].sel->severityLevel) {
-                case 1:
-                    play_sound(SOUND_MARIO_HERE_WE_GO, gGlobalSoundSource);
-                    break;
-                case 2:
-                    play_sound(SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x21, 0x00, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE), gGlobalSoundSource); //okey dokey sound
-                    break;
-                case 3:
-                    play_sound(SOUND_MARIO_OOOF, gGlobalSoundSource);
-                    break;
-            }
-        }
-    } else if(gPlayer1Controller->buttonPressed & B_BUTTON) {
-        menu_play_anim(&gPatchSelectionMenu->menu, PATCH_SELECT_ANIM_CONFIRMATION_RETURN);
-        menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_SELECT);
-        play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
-        selection = 0;
-    } else if (menu_navigate_horizontal(&selection, 0, 2, TRUE)) {
-        play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
-    }
-
-    gPatchSelectionMenu->menu.index = selection;
-}
-
-/*
-    Handles the player inputs for the patch selection menu
-*/
-void handle_patch_selection_inputs() {
-    switch(gPatchSelectionMenu->menu.menuState) {
-        case PATCH_SELECT_STATE_SELECT:
-            handle_inputs_patch_select_state_select();
-            break;
-        case PATCH_SELECT_STATE_CONFIRMATION:
-            handle_inputs_patch_select_state_confirmation();
-            break;
-        case PATCH_SELECT_STATE_SHOW_EXTENDED_DESC:
-            handle_inputs_patch_select_state_show_extended_desc();
-            break;
-    }
+    menu->menuState = PATCH_SELECT_STATE_CLOSING;
+    menu_play_anim(menu, PATCH_SELECT_ANIM_ENDING_2);
 }
 
 #define PATCH_SELECT_STARTUP_CURTAIN_DROP_FRAMES        20
@@ -372,46 +252,56 @@ s32 patch_select_anim_startup() {
 }
 
 #define PATCH_SELECT_ENDING_CARDS_SLIDE_FRAMES 9
-#define PATCH_SELECT_ENDING_CURTAIN_RAISE_FRAMES 15
 
 /*
-    Positions the menu elements to play the ending animation. Returns true when finished.
+    Positions the menu elements to play the part 1 of the ending animation. Returns true when finished.
 */
-s32 patch_select_anim_ending() {
+s32 patch_select_anim_ending_1() {
     struct ChaosMenu *menu = &gPatchSelectionMenu->menu;
     s32 animTimer = menu->animTimer;
     f32 prog;
 
-    switch(menu->animPhase) {
-        case 0:
-            //Card and description box slides off of the screen and block input
-            menu->animFrames = PATCH_SELECT_ENDING_CARDS_SLIDE_FRAMES;
-            menu->flags |= PATCH_SELECT_FLAG_HALT_INPUT;
+    if(!menu->animPhase) {
+        //Card and description box slides off of the screen and block input
+        menu->animFrames = PATCH_SELECT_ENDING_CARDS_SLIDE_FRAMES;
+        menu->flags |= PATCH_SELECT_FLAG_HALT_INPUT;
 
-            prog = ((f32)animTimer / (f32)menu->animFrames);
+        prog = ((f32)animTimer / (f32)menu->animFrames);
 
-            gPatchSelectionMenu->descPos[1] = menu_anim_f32(prog, MENU_EASE_IN, PATCH_DESC_Y, PATCH_DESC_Y_START);
-            gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].pos[0] = menu_anim_f32(prog, MENU_EASE_IN, PATCH_SELECTED_X, CARD_X_END);
-            break;
-        case 1:
-            //Curtain raises and turn on game rendering
-            menu->animFrames = PATCH_SELECT_ENDING_CURTAIN_RAISE_FRAMES;
-            menu->flags &= ~PATCH_SELECT_FLAG_STOP_GAME_RENDER;
-
-            prog = ((f32)animTimer / (f32)menu->animFrames);
-            gPatchSelectionMenu->curtainPos[1] = menu_anim_f32(prog, MENU_EASE_IN, CURTAIN_Y_POS, CURTAIN_Y_START);
-
-            if(animTimer == 0) {
-                play_sound(SOUND_MENU_CURTAIN_RAISE, gGlobalSoundSource);
-            }
-            break;
-        default:
-            //End animation and go to the next state
-            return TRUE;
-            break;
+        gPatchSelectionMenu->descPos[1] = menu_anim_f32(prog, MENU_EASE_IN, PATCH_DESC_Y, PATCH_DESC_Y_START);
+        gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].pos[0] = menu_anim_f32(prog, MENU_EASE_IN, PATCH_SELECTED_X, CARD_X_END);
+        return FALSE;
     }
 
-    return FALSE;
+    return TRUE;
+}
+
+#define PATCH_SELECT_ENDING_CURTAIN_RAISE_FRAMES 15
+
+/*
+    Positions the menu elements to play the part 2 of the ending animation. Returns true when finished.
+*/
+s32 patch_select_anim_ending_2() {
+    struct ChaosMenu *menu = &gPatchSelectionMenu->menu;
+    s32 animTimer = menu->animTimer;
+    f32 prog;
+
+    if(!menu->animPhase) {
+        //Curtain raises and turn on game rendering
+        menu->animFrames = PATCH_SELECT_ENDING_CURTAIN_RAISE_FRAMES;
+        menu->flags &= ~PATCH_SELECT_FLAG_STOP_GAME_RENDER;
+
+        prog = ((f32)animTimer / (f32)menu->animFrames);
+        gPatchSelectionMenu->curtainPos[1] = menu_anim_f32(prog, MENU_EASE_IN, CURTAIN_Y_POS, CURTAIN_Y_START);
+
+        if(animTimer == 0) {
+            play_sound(SOUND_MENU_CURTAIN_RAISE, gGlobalSoundSource);
+        }
+
+        return FALSE;
+    }
+
+    return TRUE;
 }
 
 /*
@@ -656,45 +546,194 @@ s32 patch_select_menu_anim_active_patches_return() {
 }
 
 s32 (*sPatchSelectMenuAnims[])(void) = {
-    &patch_select_anim_startup,
-    &patch_select_anim_select,
-    &patch_select_anim_confirmation,
-    &patch_select_anim_confirmation_return,
-    &patch_select_anim_ext_desc,
-    &patch_select_menu_anim_ext_desc_return,
-    &patch_select_menu_anim_active_patches,
-    &patch_select_menu_anim_active_patches_return,
-    &patch_select_anim_ending,
+    [PATCH_SELECT_ANIM_STARTUP]                 = &patch_select_anim_startup,
+    [PATCH_SELECT_ANIM_SELECT]                  = &patch_select_anim_select,
+    [PATCH_SELECT_ANIM_CONFIRMATION]            = &patch_select_anim_confirmation,
+    [PATCH_SELECT_ANIM_CONFIRMATION_RETURN]     = &patch_select_anim_confirmation_return,
+    [PATCH_SELECT_ANIM_EXT_DESC]                = &patch_select_anim_ext_desc,
+    [PATCH_SELECT_ANIM_EXT_DESC_RETURN]         = &patch_select_menu_anim_ext_desc_return,
+    [PATCH_SELECT_ANIM_ACTIVE_PATCHES]          = &patch_select_menu_anim_active_patches,
+    [PATCH_SELECT_ANIM_ACTIVE_PATCHES_RETURN]   = &patch_select_menu_anim_active_patches_return,
+    [PATCH_SELECT_ANIM_ENDING_1]                = &patch_select_anim_ending_1,
+    [PATCH_SELECT_ANIM_ENDING_2]                = &patch_select_anim_ending_2,
 };
+
+/*
+    Handles the player inputs for the patch selection state in the patch selection menu
+*/
+void patch_select_state_select() {
+    struct ChaosMenu *menu = &gPatchSelectionMenu->menu;
+    if(menu->flags & PATCH_SELECT_FLAG_HALT_INPUT) return;
+
+    s32 previousSelection = gPatchSelectionMenu->selectedPatch;
+    s32 selection = previousSelection;
+    s32 numPatches = gPatchSelectionMenu->numPatches;
+    s32 navDir = menu_get_input_dir();
+
+    if(gPlayer1Controller->buttonPressed & (A_BUTTON)) {
+        menu_play_anim(menu, PATCH_SELECT_ANIM_CONFIRMATION);
+        menu_set_state(menu, PATCH_SELECT_STATE_CONFIRMATION);
+        play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
+    } else if (gPlayer1Controller->buttonPressed & (Z_TRIG | L_TRIG)) {
+        struct PatchCard *selectedCard = &gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch];
+        aggress(selectedCard, "render_patch_card:\ncard is NULL!");
+        aggress(selectedCard->sel, "render_patch_card:\ncard->sel is NULL!");
+        struct ChaosPatchSelection *sel = selectedCard->sel;
+        const struct ChaosPatch *pos = sel->positivePatch;
+        const struct ChaosPatch *neg = sel->negativePatch;
+
+        if(pos->longDescription || neg->longDescription) {
+            menu_play_anim(menu, PATCH_SELECT_ANIM_EXT_DESC);
+            menu_set_state(menu, PATCH_SELECT_STATE_SHOW_EXTENDED_DESC);
+            play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
+        } else {
+            play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
+        }
+    } else if (gPlayer1Controller->buttonPressed & R_TRIG) {
+        init_active_patches_menu();
+        menu_play_anim(menu, PATCH_SELECT_ANIM_ACTIVE_PATCHES);
+        menu_set_state(menu, PATCH_SELECT_STATE_SHOW_ACTIVE_PATCHES);
+    } else if (gPlayer1Controller->buttonPressed & START_BUTTON) {
+        chstut_tutorial_init();
+        menu_set_state(menu, PATCH_SELECT_STATE_TUTORIAL);
+        menu->flags |= PATCH_SELECT_FLAG_HALT_INPUT;
+    } else if(navDir & (MENU_DIR_U | MENU_DIR_D)) {
+        if(numPatches > 2) {
+            selection += 2;
+            if(selection > numPatches - 1) {
+                selection = previousSelection - 2;
+            }
+        }
+    } else if(navDir & (MENU_DIR_L | MENU_DIR_R)) {
+        selection++;
+        if(selection > numPatches - 1 || !(selection % 2)) {
+            //Hard coded check to make menu navigation feel more natural with 3 patches
+            if(numPatches == 3 && previousSelection == 2) {
+                selection = previousSelection;
+            } else {
+                selection = previousSelection - 1;
+            }
+        }
+    }
+
+    if(selection >= numPatches || selection < 0) {
+        selection = numPatches - 1;
+    }
+
+    if(selection != previousSelection) {
+        play_sound(SOUND_MENU_MESSAGE_NEXT_PAGE, gGlobalSoundSource);
+    }
+
+    gPatchSelectionMenu->selectedPatch = selection;
+}
+
+/*
+    Handles the player inputs for the extended description state in the patch selection menu
+*/
+void patch_select_state_show_extended_desc() {
+    struct ChaosMenu *menu = &gPatchSelectionMenu->menu;
+    if(menu->flags & PATCH_SELECT_FLAG_HALT_INPUT) return;
+
+    if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON | B_BUTTON | Z_TRIG | L_TRIG)) {
+        menu_play_anim(menu, PATCH_SELECT_ANIM_EXT_DESC_RETURN);
+        menu_set_state(menu, PATCH_SELECT_STATE_SELECT);
+        play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
+    }
+}
+
+/*
+    Handles the player inputs for the confirmation dialog state in the patch selection menu
+*/
+void patch_select_state_confirmation() {
+    struct ChaosMenu *menu = &gPatchSelectionMenu->menu;
+    if(menu->flags & PATCH_SELECT_FLAG_HALT_INPUT) return;
+
+    s32 selection = menu->index;
+
+    if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
+        if(selection) {
+            //No
+            menu_play_anim(menu, PATCH_SELECT_ANIM_CONFIRMATION_RETURN);
+            menu_set_state(menu, PATCH_SELECT_STATE_SELECT);
+            play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
+            selection = 0;
+        } else {
+            //Yes
+            menu_play_anim(menu, PATCH_SELECT_ANIM_ENDING_1);
+            menu_set_state(menu, PATCH_SELECT_STATE_START_CLOSING);
+
+            //Play increasingly distressed Mario sounds based on severity of patches
+            aggress(gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].sel,
+                    "patch_select_state_confirmation:\nsel undefined!");
+            switch(gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].sel->severityLevel) {
+                case 1:
+                    play_sound(SOUND_MARIO_HERE_WE_GO, gGlobalSoundSource);
+                    break;
+                case 2:
+                    play_sound(SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x21, 0x00, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE), gGlobalSoundSource); //okey dokey sound
+                    break;
+                case 3:
+                    play_sound(SOUND_MARIO_OOOF, gGlobalSoundSource);
+                    break;
+            }
+        }
+    } else if(gPlayer1Controller->buttonPressed & B_BUTTON) {
+        menu_play_anim(menu, PATCH_SELECT_ANIM_CONFIRMATION_RETURN);
+        menu_set_state(menu, PATCH_SELECT_STATE_SELECT);
+        play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
+        selection = 0;
+    } else if (menu_navigate_horizontal(&selection, 0, 2, TRUE)) {
+        play_sound(SOUND_MENU_CHANGE_SELECT, gGlobalSoundSource);
+    }
+
+    menu->index = selection;
+}
 
 /*
     Updates the patch selection menu
 */
 void update_patch_selection_menu() {
-    if(!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_HALT_INPUT)) {
-        handle_patch_selection_inputs();
-    } else if (gPatchSelectionMenu->menu.menuState == PATCH_SELECT_STATE_TUTORIAL) {
-        if(chstut_update_tutorial()) {
-            menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_SELECT);
-            gPatchSelectionMenu->menu.flags &= ~PATCH_SELECT_FLAG_HALT_INPUT;
-        }
+    struct ChaosMenu *menu = &gPatchSelectionMenu->menu;
+
+    switch(menu->menuState) {
+        case PATCH_SELECT_STATE_SELECT:
+            patch_select_state_select();
+            break;
+        case PATCH_SELECT_STATE_CONFIRMATION:
+            patch_select_state_confirmation();
+            break;
+        case PATCH_SELECT_STATE_SHOW_EXTENDED_DESC:
+            patch_select_state_show_extended_desc();
+            break;
+        case PATCH_SELECT_STATE_TUTORIAL:
+            if(chstut_update_tutorial()) {
+                menu_set_state(menu, PATCH_SELECT_STATE_SELECT);
+                menu->flags &= ~PATCH_SELECT_FLAG_HALT_INPUT;
+            }
+            break;
     }
 
-    if(menu_update_anims(&gPatchSelectionMenu->menu, sPatchSelectMenuAnims)) {
-        switch(gPatchSelectionMenu->menu.menuState) {
+    if(menu_update_anims(menu, sPatchSelectMenuAnims)) {
+        switch(menu->menuState) {
             case PATCH_SELECT_STATE_SELECT:
-                //If animation is finished in the patch select state, we should start the patch select animation
-                menu_play_anim(&gPatchSelectionMenu->menu, PATCH_SELECT_ANIM_SELECT);
+                menu_play_anim(menu, PATCH_SELECT_ANIM_SELECT);
                 break;
-            case PATCH_SELECT_STATE_CLOSING:
-                //When the closing animation is finished, the menu should close
-                menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_CLOSED);
-
+            case PATCH_SELECT_STATE_START_CLOSING:
+                // Some patches want to activate a bonus event after the menu is expired
+                // So we have this in-between state that allows a patch to trigger an event (by changing the menu state) before the curtain rises.
                 gChaosCancelOutLostDuration = TRUE;
                 chaos_select_patches(gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].sel);
                 chaos_decrement_star_timers(CHAOS_STAR_DECREMENT_MENU_IMPACTING);
                 gChaosCancelOutLostDuration = FALSE;
-
+                
+                // If no event was triggered, then continue to close the menu
+                if(menu->menuState == PATCH_SELECT_STATE_START_CLOSING) {
+                    menu_set_state(menu, PATCH_SELECT_STATE_CLOSING);
+                    menu_play_anim(menu, PATCH_SELECT_ANIM_ENDING_2);
+                }
+                break;
+            case PATCH_SELECT_STATE_CLOSING:
+                menu_set_state(menu, PATCH_SELECT_STATE_CLOSED);
                 save_file_update_hardcore_score();
                 save_file_do_save(gCurrSaveFileNum - 1);
                 break;
@@ -702,8 +741,8 @@ void update_patch_selection_menu() {
                 if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) {
                     update_active_patches_menu();
                 } else {
-                    menu_play_anim(&gPatchSelectionMenu->menu, PATCH_SELECT_ANIM_ACTIVE_PATCHES_RETURN);    
-                    menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_SELECT);
+                    menu_play_anim(menu, PATCH_SELECT_ANIM_ACTIVE_PATCHES_RETURN);    
+                    menu_set_state(menu, PATCH_SELECT_STATE_SELECT);
                 }
                 break;
         }
@@ -1232,6 +1271,11 @@ void display_patch_selection_ui() {
         create_dl_ortho_matrix(&gDisplayListHead);
 
         render_curtain_bg();
+
+        if(gPatchSelectionMenu->menu.menuState == PATCH_SELECT_STATE_COIN_FLIP) {
+            draw_coin_flip();
+        }
+
         squish_ui(&gDisplayListHead);
 
         if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) {

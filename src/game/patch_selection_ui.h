@@ -63,17 +63,23 @@ enum PatchSelectMenuAnim {
     PATCH_SELECT_ANIM_EXT_DESC_RETURN,
     PATCH_SELECT_ANIM_ACTIVE_PATCHES,
     PATCH_SELECT_ANIM_ACTIVE_PATCHES_RETURN,
-    PATCH_SELECT_ANIM_ENDING,
+    PATCH_SELECT_ANIM_ENDING_1,
+    PATCH_SELECT_ANIM_ENDING_2,
 };
 
 enum PatchSelectMenuState {
+    // Normal states
     PATCH_SELECT_STATE_SELECT,
     PATCH_SELECT_STATE_CONFIRMATION,
     PATCH_SELECT_STATE_SHOW_EXTENDED_DESC,
     PATCH_SELECT_STATE_SHOW_ACTIVE_PATCHES,
     PATCH_SELECT_STATE_TUTORIAL,
+    PATCH_SELECT_STATE_START_CLOSING,
     PATCH_SELECT_STATE_CLOSING,
     PATCH_SELECT_STATE_CLOSED,
+
+    // Bonus event states
+    PATCH_SELECT_STATE_COIN_FLIP,
 };
 
 enum PatchSelectionMenuFlags {
@@ -108,3 +114,6 @@ void update_patch_selection_menu();
 void reset_patch_selection_menu();
 void load_new_patches();
 void draw_patch_type(f32 x, f32 y, enum ChaosPatchDurationType type);
+
+void patch_select_start_coin_flip();
+void patch_select_end_coin_flip();

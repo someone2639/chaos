@@ -12,6 +12,9 @@
 #include "game/level_update.h"
 #include "game/save_file.h"
 #include "buffers/buffers.h"
+#include "game/segment2.h"
+#include "game/patch_selection_ui.h"
+#include "game/ingame_menu.h"
 
 #define NUM_STARS 120
 
@@ -612,4 +615,162 @@ s32 chs_get_yellow_star_in_course(s32 courseNum, s32 collectedStarId) {
     }
 
     return collectedStarId;
+}
+
+#define COIN_FLIP_FALL_FRAMES   30
+#define COIN_FLIP_FLIP_FRAMES   100
+#define COIN_FLIP_LINGER_FRAMES 20
+#define COIN_FLIP_SCALE_FRAMES  15
+#define COIN_FLIP_ROLL_FRAMES   15
+
+#define COIN_FLIP_RAISE_FRAMES  7
+#define COIN_FLIP_LOWER_FRAMES  15
+
+#define COIN_FLIP_TILT          65
+#define COIN_FLIP_REST_ROT      (360 - COIN_FLIP_TILT)
+#define COIN_FLIP_REST_Y        -25
+#define COIN_FLIP_PEAK_Y        75
+
+static struct {
+    s16 timer;
+    u8 result : 1; // Heads = 0, Tails = 1
+    u8 phase : 7;
+    s16 x;
+    s16 y;
+    f32 flip;
+    f32 roll;
+    f32 scale;
+} sCoinFlip;
+
+void chs_act_coin_flip(void) {
+    sCoinFlip.timer = 0;
+    sCoinFlip.phase = 0;
+    sCoinFlip.result = (random_u16() % 2);
+    sCoinFlip.roll = 0;
+    sCoinFlip.x = 0;
+    sCoinFlip.scale = 1;
+    patch_select_start_coin_flip();
+}
+
+u8 chs_cond_coin_flip(void) {
+    s32 totalStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
+    return ((totalStars > 0) && (totalStars < 120));
+}
+
+void draw_coin_flip(void) {
+    f32 prog = 0;
+    f32 target = (((15 * 360) + (sCoinFlip.result * 180)) - COIN_FLIP_TILT); // 15 flips, plus an additional half flip based on the generated result
+
+    switch(sCoinFlip.phase) {
+        case 0:
+            // Fall on screen
+            prog = ((f32)sCoinFlip.timer / (f32)COIN_FLIP_FALL_FRAMES);
+            sCoinFlip.y = menu_anim_f32(prog, MENU_EASE_IN, 150, COIN_FLIP_REST_Y);
+            sCoinFlip.flip = menu_anim_f32(prog, MENU_EASE_OUT, (-4 * 360), COIN_FLIP_REST_ROT);
+            if(++sCoinFlip.timer > COIN_FLIP_FALL_FRAMES) {
+                sCoinFlip.phase++;
+                sCoinFlip.timer = 0;
+                play_sound(SOUND_GENERAL_COIN_DROP, gGlobalSoundSource);
+            }
+            break;
+        case 1:
+            // Wait for button press
+            if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
+                sCoinFlip.phase++;
+                play_sound(SOUND_MENU_COIN_FLIP, gGlobalSoundSource);
+            }
+            menu_single_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 23, MENU_PROMPT_A_BUTTON, "Flip Coin", FALSE);
+            break;
+        case 2:
+            // Flip coin
+            prog = ((f32)sCoinFlip.timer / (f32)COIN_FLIP_FLIP_FRAMES);
+            sCoinFlip.flip = menu_anim_f32(prog, MENU_EASE_OUT, COIN_FLIP_REST_ROT, target);
+            
+            if(sCoinFlip.timer < COIN_FLIP_RAISE_FRAMES) {
+                sCoinFlip.y = menu_anim_f32(((f32)sCoinFlip.timer / (f32)COIN_FLIP_RAISE_FRAMES), MENU_EASE_OUT, COIN_FLIP_REST_Y, COIN_FLIP_PEAK_Y);
+            } else if (sCoinFlip.timer > COIN_FLIP_FLIP_FRAMES - COIN_FLIP_LOWER_FRAMES) {
+                sCoinFlip.y = menu_anim_f32(((f32)(sCoinFlip.timer - (COIN_FLIP_FLIP_FRAMES - COIN_FLIP_LOWER_FRAMES)) / (f32)COIN_FLIP_LOWER_FRAMES), MENU_EASE_IN, COIN_FLIP_PEAK_Y, COIN_FLIP_REST_Y);
+            }
+
+            if(++sCoinFlip.timer > COIN_FLIP_FLIP_FRAMES) {
+                sCoinFlip.timer = 0;
+                sCoinFlip.phase++;
+                play_sound(SOUND_GENERAL_COIN_DROP, gGlobalSoundSource);
+            }
+            break;
+        case 3:
+            // Linger on result
+            if(++sCoinFlip.timer > COIN_FLIP_LINGER_FRAMES) {
+                sCoinFlip.phase++;
+                sCoinFlip.timer = 0;
+                play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
+            }
+            break;
+        case 4:
+            // Scale up and center coin
+            prog = ((f32)sCoinFlip.timer / (f32)COIN_FLIP_SCALE_FRAMES);
+            sCoinFlip.scale = menu_anim_f32(prog, MENU_EASE_OUT, 1.0f, 1.5f);
+            sCoinFlip.y = menu_anim_f32(prog, MENU_EASE_OUT, COIN_FLIP_REST_Y, 0.0f);
+            sCoinFlip.flip = menu_anim_f32(prog, MENU_EASE_OUT, target, target + COIN_FLIP_TILT);
+
+            if(++sCoinFlip.timer > COIN_FLIP_SCALE_FRAMES) {
+                sCoinFlip.phase++;
+                if(sCoinFlip.result == 0) {
+                    add_uncollected_star();
+                    play_sound(SOUND_MARIO_HERE_WE_GO, gGlobalSoundSource);
+                } else {
+                    remove_collected_star();
+                    play_sound(SOUND_MENU_BOWSER_LAUGH, gGlobalSoundSource);
+                }
+            }
+            break;
+        case 5:
+            // Wait for button press
+            if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
+                sCoinFlip.phase++;
+                sCoinFlip.timer = 0;
+            }
+            menu_single_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 23, MENU_PROMPT_A_BUTTON, "Next", FALSE);
+            break;
+        case 6:
+            // Roll off screen, then end
+            prog = ((f32)sCoinFlip.timer / (f32)COIN_FLIP_ROLL_FRAMES);
+
+            // The rolling needs to be reversed based on which side the coin lands
+            // Heads goes from 1440 to 720 degrees, and tails goes from 0 to 720 degrees
+            sCoinFlip.roll = menu_anim_f32(prog, MENU_EASE_IN, ((!sCoinFlip.result) * 1440.0f), 720.0f);
+            sCoinFlip.x = menu_anim_f32(prog, MENU_EASE_IN, 0.0f, 240);
+            if(++sCoinFlip.timer > COIN_FLIP_ROLL_FRAMES) {
+                patch_select_end_coin_flip();
+            }
+
+            play_sound(SOUND_GENERAL_ROLLING_LOG, gGlobalSoundSource);
+            break;
+    }
+
+    // Draw coin
+    Gfx *dlHead = gDisplayListHead;
+    Mtx *matrix = (Mtx *) alloc_display_list(sizeof(Mtx));
+
+    if (!matrix) {
+        return;
+    }
+
+    create_dl_identity_matrix(&dlHead);
+    guOrtho(matrix, 0.0f, SCREEN_WIDTH, 0.0f, SCREEN_HEIGHT, -30.0f, 30.0f, 1.0f);
+    gSPPerspNormalize(dlHead++, 0xFFFF);
+    gSPMatrix(dlHead++, VIRTUAL_TO_PHYSICAL(matrix), G_MTX_PROJECTION | G_MTX_MUL | G_MTX_NOPUSH);
+
+    create_dl_translation_matrix(&dlHead, MENU_MTX_PUSH, SCREEN_CENTER_X + sCoinFlip.x, SCREEN_CENTER_Y + sCoinFlip.y, 0);
+
+    f32 xScale = (gConfig.widescreen & WIDE_SCREEN_ENABLED) ? sCoinFlip.scale * 0.75f : sCoinFlip.scale;
+    create_dl_scale_matrix(&dlHead, MENU_MTX_NOPUSH, xScale, sCoinFlip.scale, sCoinFlip.scale);
+
+    create_dl_rotation_matrix(&dlHead, MENU_MTX_NOPUSH, sCoinFlip.flip, 1, 0, 0);
+    create_dl_rotation_matrix(&dlHead, MENU_MTX_NOPUSH, sCoinFlip.roll, 0, 0, 1);
+
+    gSPDisplayList(dlHead++, coin_flip_coin_mesh);
+    gSPPopMatrix(dlHead++, G_MTX_MODELVIEW);
+
+    gDisplayListHead = dlHead;
 }
