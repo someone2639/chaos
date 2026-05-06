@@ -7,6 +7,7 @@
 #include "ingame_menu.h"
 #include "memory.h"
 #include "fasttext.h"
+#include "chaos/chaos.h"
 
 #define TEX_ASCII_START '!'
 
@@ -171,7 +172,11 @@ void slowtext_draw_ortho_text(s32 x, s32 y, const char* string, enum FastTextFla
                 break;
             default:
                 xPos += kerningTable[curChar - ' '];
-                slowtext_draw_char(&dlHead, fontProps, curChar);
+                if(chaos_check_if_patch_active(CHAOS_PATCH_NUMBER_BLINDNESS) && (curChar >= '0' && curChar <= '9')) {
+                    slowtext_draw_char(&dlHead, fontProps, '?');
+                } else {
+                    slowtext_draw_char(&dlHead, fontProps, curChar);
+                }
                 break;
         }
 

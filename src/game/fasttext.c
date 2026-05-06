@@ -8,6 +8,7 @@
 #include "debug.h"
 #include "game_init.h"
 #include "fasttext.h"
+#include "chaos/chaos.h"
 
 #define TEX_ASCII_START '!'
 
@@ -312,6 +313,10 @@ void fasttext_draw_texrect(int x, int y, const char* string, enum FastTextFlags 
                 xPos += kerningTable[charIndex];
                 break;
             default:
+                if(chaos_check_if_patch_active(CHAOS_PATCH_NUMBER_BLINDNESS) && (curChar >= '0' && curChar <= '9')) {
+                    charIndex = '?' - ' ';
+                }
+
                 s = fontProps->offsetTable[charIndex].horizontalOffset << 5;
                 if ((s & (0x200 - 1)) == 0) {
                     s++;

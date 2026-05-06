@@ -569,7 +569,12 @@ void print_generic_string(s16 x, s16 y, const u8 *str) {
                 render_generic_char_at_pos(xCoord, yCoord, str[strPos]);
                 xCoord += gDialogCharWidths[str[strPos]];
 #else
-                render_generic_char(str[strPos]);
+                if(chaos_check_if_patch_active(CHAOS_PATCH_NUMBER_BLINDNESS) && (str[strPos] <= 9)) {
+                    render_generic_char(0xF4); // '?' symbol
+                } else {
+                    render_generic_char(str[strPos]);
+                }
+                
                 if (mark != DIALOG_MARK_NONE) {
                     create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_PUSH, 5.0f, 5.0f, 0.0f);
                     render_generic_char(DIALOG_CHAR_MARK_START + mark);
@@ -662,7 +667,11 @@ void print_hud_lut_string(s8 hudLUT, s16 x, s16 y, const u8 *str) {
                 }
 
                 if (hudLUT == HUD_LUT_GLOBAL) {
-                    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, hudLUT2[str[strPos]]);
+                    if (chaos_check_if_patch_active(CHAOS_PATCH_NUMBER_BLINDNESS) && (str[strPos] <= 9)) {
+                        gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, hudLUT2[38]); // '?' symbol
+                    } else {
+                        gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, hudLUT2[str[strPos]]);
+                    }
                 }
 
                 gSPDisplayList(gDisplayListHead++, dl_rgba16_load_tex_block);
@@ -727,7 +736,11 @@ void print_menu_generic_string(s16 x, s16 y, const u8 *str) {
                 curX += 4;
                 break;
             default:
-                gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_IA, G_IM_SIZ_8b, 1, fontLUT[str[strPos]]);
+                if (chaos_check_if_patch_active(CHAOS_PATCH_NUMBER_BLINDNESS) && (str[strPos] <= 9)) {
+                    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_IA, G_IM_SIZ_8b, 1, fontLUT[0xF4]); // '?' symbol
+                } else {
+                    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_IA, G_IM_SIZ_8b, 1, fontLUT[str[strPos]]);
+                }
                 gDPLoadSync(gDisplayListHead++);
                 gDPLoadBlock(gDisplayListHead++, G_TX_LOADTILE, 0, 0, 8 * 8 - 1, CALC_DXT(8, G_IM_SIZ_8b_BYTES));
                 gSPTextureRectangle(gDisplayListHead++, curX << 2, curY << 2, (curX + 8) << 2,
@@ -1165,8 +1178,14 @@ void render_star_count_dialog_text(s8 *xMatrix, s16 *linePos)
                 MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * *xMatrix), 0, 0);
         }
 
-        render_generic_char(tensDigit);
-        create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, (f32) gDialogCharWidths[tensDigit], 0, 0);
+        if(chaos_check_if_patch_active(CHAOS_PATCH_NUMBER_BLINDNESS)) {
+            render_generic_char(0xF4); // '?' symbol
+            create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[0xF4]), 0, 0);
+        } else {
+            render_generic_char(tensDigit);
+            create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, (f32) gDialogCharWidths[tensDigit], 0, 0);
+        }
+        
         *xMatrix = 1;
         (*linePos)++;
 #elif defined(VERSION_EU)
@@ -1193,8 +1212,13 @@ void render_star_count_dialog_text(s8 *xMatrix, s16 *linePos)
             MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (*xMatrix - 1)), 0, 0);
     }
 
-    render_generic_char(onesDigit);
-    create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, (f32) gDialogCharWidths[onesDigit], 0, 0);
+    if(chaos_check_if_patch_active(CHAOS_PATCH_NUMBER_BLINDNESS)) {
+        render_generic_char(0xF4); // '?' symbol
+        create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[0xF4]), 0, 0);
+    } else {
+        render_generic_char(onesDigit);
+        create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, (f32) gDialogCharWidths[onesDigit], 0, 0);
+    }
 #endif
     (*linePos)++;
     *xMatrix = 1;
@@ -1523,8 +1547,13 @@ void handle_dialog_text_and_pages(s8 colorMode, struct DialogEntry *dialog, s8 l
                             MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
                     }
 
-                    render_generic_char(strChar);
-                    create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    if(chaos_check_if_patch_active(CHAOS_PATCH_NUMBER_BLINDNESS) && strChar <= 9) {
+                        render_generic_char(0xF4); // '?' symbol
+                        create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[0xF4]), 0, 0);
+                    } else {
+                        render_generic_char(strChar);
+                        create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[strChar]), 0, 0);
+                    }
                     xMatrix = 1;
                     linePos++;
                 }

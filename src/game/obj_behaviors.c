@@ -767,6 +767,10 @@ void spawn_orange_number(s8 behParam, s16 relX, s16 relY, s16 relZ) {
         return;
     }
 
+    if(chaos_check_if_patch_active(CHAOS_PATCH_NUMBER_BLINDNESS)) {
+        behParam = 10; // '?' Symbol
+    }
+
     orangeNumber = spawn_object_relative(behParam, relX, relY, relZ, o, MODEL_NUMBER, bhvOrangeNumber);
     orangeNumber->oPosY += 25.0f;
 }

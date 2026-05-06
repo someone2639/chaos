@@ -5,6 +5,7 @@
 #include "memory.h"
 #include "print.h"
 #include "segment2.h"
+#include "chaos/chaos.h"
 
 /**
  * This file handles printing and formatting the colorful text that
@@ -291,7 +292,11 @@ s8 char_to_glyph_index(char c) {
     }
 
     if (c >= '0' && c <= '9') {
-        return c - 48;
+        if(chaos_check_if_patch_active(CHAOS_PATCH_NUMBER_BLINDNESS)) {
+            return 38; // '?' symbol
+        } else {
+            return c - 48;
+        }
     }
 
     if (c == ' ') {

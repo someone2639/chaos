@@ -2363,4 +2363,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "DVD Logo",
         .shortDescription   = "Maybe this time it will hit the corner?",
     },
+    [CHAOS_PATCH_NUMBER_BLINDNESS] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 2,
+        .isStackable        = FALSE,
+        .duration           = 10,
+        .durationHard       = 12,
+        .durationImpossible = 14,
+
+        .name               = "Number Blindness",
+        .shortDescription   = "All numbers will display as '?'. Hope you remember those patch durations!",
+    },
 };
