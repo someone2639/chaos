@@ -3,6 +3,7 @@
 #include "sm64.h"
 #include "game_init.h"
 #include "level_update.h"
+#include "ingame_menu.h"
 #include "camera.h"
 
 #include "profiling.h"
@@ -272,6 +273,9 @@ void profiler_print_times() {
             microseconds[PROFILER_TIME_RSP_AUDIO] * 2
         );
 
+        u8 lastNumBlindness = gChsNumberBlindness;
+        gChsNumberBlindness = FALSE;
+
         fasttext_setup_textrect_rendering(FT_FONT_OUTLINE);
         fasttext_draw_texrect(10, 10, text_buffer, FT_FLAG_ALIGN_LEFT, 255, 255, 255, 255);
 
@@ -324,6 +328,8 @@ void profiler_print_times() {
         fasttext_draw_texrect(112, 214, text_buffer, FT_FLAG_ALIGN_LEFT, 255, 255, 255, 255);
 
         fasttext_finished_rendering();
+
+        gChsNumberBlindness = lastNumBlindness;
     }
 }
 

@@ -767,7 +767,7 @@ void spawn_orange_number(s8 behParam, s16 relX, s16 relY, s16 relZ) {
         return;
     }
 
-    if(chaos_check_if_patch_active(CHAOS_PATCH_NUMBER_BLINDNESS)) {
+    if(gChsNumberBlindness) {
         behParam = 10; // '?' Symbol
     }
 

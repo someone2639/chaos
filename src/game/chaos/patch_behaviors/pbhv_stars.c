@@ -654,7 +654,7 @@ void chs_act_coin_flip(void) {
 
 u8 chs_cond_coin_flip(void) {
     s32 totalStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
-    return ((totalStars > 0) && (totalStars < 120));
+    return ((totalStars > 0) && (totalStars < NUM_STARS));
 }
 
 void draw_coin_flip(void) {

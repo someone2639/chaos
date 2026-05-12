@@ -452,27 +452,6 @@ void render_game(void) {
             chstut_draw_shaded_background(&gDisplayListHead, WIDESCREEN_HACK_WIDTH_START, WIDESCREEN_HACK_WIDTH_END, 0, SCREEN_HEIGHT, 0, 0, 0, 183);
         }
 
-#ifdef CHAOS_ENGINE_DEBUG
-        static u8 chaosDebugRender = FALSE;
-        if (gPlayer1Controller->buttonPressed & R_JPAD) {
-            chaosDebugRender ^= TRUE;
-        }
-
-        if (chaosDebugRender && gChaosActiveEntryCount) {
-            gFasttextTmpBuffer[0] = '\0';
-            s32 length = 0;
-            for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
-                struct ChaosActiveEntry *entry = &gChaosActiveEntries[i];
-
-                length += sprintf(&gFasttextTmpBuffer[length], "%d, 0x%06X, %s\n", entry->remainingDuration, entry->frameTimer, gChaosPatches[entry->id].name);
-            }
-
-            fasttext_setup_textrect_rendering(FT_FONT_SMALL_BOLD);
-            fasttext_draw_texrect(16, 32, gFasttextTmpBuffer, FT_FLAG_ALIGN_LEFT, 255, 255, 255, 255);
-            fasttext_finished_rendering();
-        }
-#endif
-
         if (D_8032CE78 != NULL) {
             make_viewport_clip_rect(D_8032CE78);
         } else

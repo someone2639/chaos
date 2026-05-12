@@ -649,6 +649,7 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
                         gShouldGive1UP = FALSE;
                         save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, FALSE);
                     }
+                    enable_background_sound();
                     set_play_mode(PLAY_MODE_SELECT_PATCH);
                     m->actionState = 2;
                 }

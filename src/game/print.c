@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game_init.h"
+#include "ingame_menu.h"
 #include "memory.h"
 #include "print.h"
 #include "segment2.h"
@@ -292,7 +293,7 @@ s8 char_to_glyph_index(char c) {
     }
 
     if (c >= '0' && c <= '9') {
-        if(chaos_check_if_patch_active(CHAOS_PATCH_NUMBER_BLINDNESS)) {
+        if(gChsNumberBlindness) {
             return 38; // '?' symbol
         } else {
             return c - 48;

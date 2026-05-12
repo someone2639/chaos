@@ -2368,9 +2368,13 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
         .isStackable        = FALSE,
-        .duration           = 10,
-        .durationHard       = 12,
-        .durationImpossible = 14,
+        .affectsPatchSelect = TRUE,
+        .duration           = 8,
+        .durationHard       = 10,
+        .durationImpossible = 12,
+
+        .activatedInitFunc  = chs_act_number_blindness,
+        .deactivationFunc   = chs_deact_number_blindness,
 
         .name               = "Number Blindness",
         .shortDescription   = "All numbers will display as '?'. Hope you remember those patch durations!",

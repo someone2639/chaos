@@ -58,6 +58,7 @@ u8 textPressL[] = { TEXT_HUD_PRESS_L };
 #endif
 u8 sPauseShowVerText = TRUE;
 s8 gChsTrollDialog = FALSE;
+u8 gChsNumberBlindness = FALSE;
 
 extern u8 gLastCompletedCourseNum;
 extern u8 gLastCompletedStarNum;
@@ -569,7 +570,7 @@ void print_generic_string(s16 x, s16 y, const u8 *str) {
                 render_generic_char_at_pos(xCoord, yCoord, str[strPos]);
                 xCoord += gDialogCharWidths[str[strPos]];
 #else
-                if(chaos_check_if_patch_active(CHAOS_PATCH_NUMBER_BLINDNESS) && (str[strPos] <= 9)) {
+                if(gChsNumberBlindness && (str[strPos] <= 9)) {
                     render_generic_char(0xF4); // '?' symbol
                 } else {
                     render_generic_char(str[strPos]);
@@ -667,7 +668,7 @@ void print_hud_lut_string(s8 hudLUT, s16 x, s16 y, const u8 *str) {
                 }
 
                 if (hudLUT == HUD_LUT_GLOBAL) {
-                    if (chaos_check_if_patch_active(CHAOS_PATCH_NUMBER_BLINDNESS) && (str[strPos] <= 9)) {
+                    if (gChsNumberBlindness && (str[strPos] <= 9)) {
                         gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, hudLUT2[38]); // '?' symbol
                     } else {
                         gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, hudLUT2[str[strPos]]);
@@ -736,7 +737,7 @@ void print_menu_generic_string(s16 x, s16 y, const u8 *str) {
                 curX += 4;
                 break;
             default:
-                if (chaos_check_if_patch_active(CHAOS_PATCH_NUMBER_BLINDNESS) && (str[strPos] <= 9)) {
+                if (gChsNumberBlindness && (str[strPos] <= 9)) {
                     gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_IA, G_IM_SIZ_8b, 1, fontLUT[0xF4]); // '?' symbol
                 } else {
                     gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_IA, G_IM_SIZ_8b, 1, fontLUT[str[strPos]]);
@@ -1178,7 +1179,7 @@ void render_star_count_dialog_text(s8 *xMatrix, s16 *linePos)
                 MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * *xMatrix), 0, 0);
         }
 
-        if(chaos_check_if_patch_active(CHAOS_PATCH_NUMBER_BLINDNESS)) {
+        if(gChsNumberBlindness) {
             render_generic_char(0xF4); // '?' symbol
             create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[0xF4]), 0, 0);
         } else {
@@ -1212,7 +1213,7 @@ void render_star_count_dialog_text(s8 *xMatrix, s16 *linePos)
             MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (*xMatrix - 1)), 0, 0);
     }
 
-    if(chaos_check_if_patch_active(CHAOS_PATCH_NUMBER_BLINDNESS)) {
+    if(gChsNumberBlindness) {
         render_generic_char(0xF4); // '?' symbol
         create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[0xF4]), 0, 0);
     } else {
@@ -1547,7 +1548,7 @@ void handle_dialog_text_and_pages(s8 colorMode, struct DialogEntry *dialog, s8 l
                             MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[DIALOG_CHAR_SPACE] * (xMatrix - 1)), 0, 0);
                     }
 
-                    if(chaos_check_if_patch_active(CHAOS_PATCH_NUMBER_BLINDNESS) && strChar <= 9) {
+                    if(gChsNumberBlindness && strChar <= 9) {
                         render_generic_char(0xF4); // '?' symbol
                         create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, (f32)(gDialogCharWidths[0xF4]), 0, 0);
                     } else {

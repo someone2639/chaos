@@ -10,6 +10,7 @@
 #include "engine/math_util.h"
 #include "game/debug.h"
 #include "game/fasttext.h"
+#include "game/ingame_menu.h"
 #include "game/object_list_processor.h"
 #include "game/chaos_menus.h"
 
@@ -116,6 +117,11 @@ void chaosmsg_render(void) {
         waitFrames--;
     }
 
+#ifdef CHAOS_ENGINE_DEBUG
+    u8 lastNumBlindness = gChsNumberBlindness;
+    gChsNumberBlindness = FALSE;
+#endif
+
     do {
         index = (index + 1) % MSGBUF_COUNT;
 
@@ -169,6 +175,10 @@ void chaosmsg_render(void) {
     if (ftInitialized) {
         fasttext_finished_rendering();
     }
+
+#ifdef CHAOS_ENGINE_DEBUG
+    gChsNumberBlindness = lastNumBlindness;
+#endif
 }
 
 void chaosmsg_init(void) {
@@ -188,6 +198,11 @@ void chaosmsg_display_log_recap(void) {
 
     menu_single_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 23, MENU_PROMPT_B_BUTTON, "Back", FALSE);
 
+#ifdef CHAOS_ENGINE_DEBUG
+    u8 lastNumBlindness = gChsNumberBlindness;
+    gChsNumberBlindness = FALSE;
+#endif
+
     fasttext_setup_textrect_rendering(FT_FONT);
     for(int i = 0; i < MSGBUF_COUNT; i++) {
         if(chsStrParams[i].status != CHSMSG_UNINITIALIZED) {
@@ -204,4 +219,8 @@ void chaosmsg_display_log_recap(void) {
         }
     }
     fasttext_finished_rendering();
+
+#ifdef CHAOS_ENGINE_DEBUG
+    gChsNumberBlindness = lastNumBlindness;
+#endif
 }

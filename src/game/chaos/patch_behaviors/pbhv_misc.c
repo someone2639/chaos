@@ -5,6 +5,7 @@
 #include "audio/heap.h"
 #include "game/chaos/chaos.h"
 #include "game/emutest.h"
+#include "game/ingame_menu.h"
 #include "game/level_update.h"
 #include "game/area.h"
 #include "game/main.h"
@@ -106,4 +107,12 @@ void chs_update_noclip(void) {
 
 u8 chs_cond_randomize_warps(void) {
     return (gChaosGameMode != CHAOS_GAMEMODE_CLASSIC && gChaosDifficulty != CHAOS_DIFFICULTY_IMPOSSIBLE);
+}
+
+void chs_act_number_blindness(void) {
+    gChsNumberBlindness = TRUE;
+}
+
+void chs_deact_number_blindness(void) {
+    gChsNumberBlindness = FALSE;
 }

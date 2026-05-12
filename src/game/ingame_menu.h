@@ -133,6 +133,7 @@ extern s16 gCutsceneMsgXOffset;
 extern s16 gCutsceneMsgYOffset;
 extern s8 gRedCoinsCollected;
 extern s8 gChsTrollDialog;
+extern u8 gChsNumberBlindness;
 
 void create_dl_identity_matrix(Gfx **dl);
 void create_dl_translation_matrix(Gfx **dl, s8 pushOp, f32 x, f32 y, f32 z);
