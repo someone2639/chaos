@@ -942,6 +942,10 @@
 #define RM_CUSTOM_AA_ZB_XLU_SURF(clk)				\
 	RM_AA_ZB_XLU_SURF(clk) | Z_UPD
 
+/* Custom version of RM_XLU_SURF for drawing semitransparent menu elements that strip coverage underneath */
+#define RM_CUSTOM_XLU_MENU(clk)					\
+	CVG_DST_FULL | FORCE_BL | ZMODE_OPA |		\
+	GBL_c##clk(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_MEM, G_BL_1MA)
 
 #define	G_RM_AA_ZB_OPA_SURF	RM_AA_ZB_OPA_SURF(1)
 #define	G_RM_AA_ZB_OPA_SURF2	RM_AA_ZB_OPA_SURF(2)
@@ -1042,6 +1046,8 @@
 #define G_RM_CUSTOM_AA_ZB_XLU_SURF	RM_CUSTOM_AA_ZB_XLU_SURF(1)
 #define G_RM_CUSTOM_AA_ZB_XLU_SURF2	RM_CUSTOM_AA_ZB_XLU_SURF(2)
 
+#define G_RM_CUSTOM_XLU_MENU	RM_CUSTOM_XLU_MENU(1)
+#define G_RM_CUSTOM_XLU_MENU2	RM_CUSTOM_XLU_MENU(2)
 
 #define	G_RM_FOG_SHADE_A	GBL_c1(G_BL_CLR_FOG, G_BL_A_SHADE, G_BL_CLR_IN, G_BL_1MA)
 #define	G_RM_FOG_PRIM_A		GBL_c1(G_BL_CLR_FOG, G_BL_A_FOG, G_BL_CLR_IN, G_BL_1MA)

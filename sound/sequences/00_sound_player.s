@@ -6982,6 +6982,9 @@ sound_ref .sound_menu_troll_join
 sound_ref .sound_menu_troll_click
 sound_ref .sound_menu_troll_notif
 sound_ref .sound_menu_coin_flip
+sound_ref .sound_menu_tetris_rotate
+sound_ref .sound_menu_tetris_lock
+sound_ref .sound_menu_tetris_clear_line
 
 .sound_menu_change_select:
 chan_setbank 9
@@ -7483,6 +7486,37 @@ chan_end
 .layer_coin_flip:
 layer_setpan 0
 layer_note1 39, 0x72, 127
+layer_end
+
+.sound_menu_tetris_rotate:
+chan_setbank 9
+chan_setinstr 5
+chan_setlayer 0, .layer_tetris_rotate
+chan_end
+
+.layer_tetris_rotate:
+layer_note1 50, 0x30, 127
+layer_end
+
+.sound_menu_tetris_lock:
+chan_setbank 9
+chan_setinstr 5
+chan_setlayer 0, .layer_tetris_lock
+chan_end
+
+.layer_tetris_lock:
+layer_note1 20, 0x5, 127
+layer_end
+
+.sound_menu_tetris_clear_line:
+chan_setbank 4
+chan_setinstr 14
+chan_setlayer 0, .layer_tetris_clear_line
+chan_end
+
+.layer_tetris_clear_line:
+layer_portamento 0x81, 40, 60
+layer_note1 60, 0x30, 127
 layer_end
 
 .sound_menu_click_file_select:

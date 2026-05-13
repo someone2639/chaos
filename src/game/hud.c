@@ -597,6 +597,10 @@ void render_hud(void) {
         draw_quicktime_event_prompts();
     }
 
+    if(chaos_check_if_patch_active(CHAOS_PATCH_TETRIS)) {
+        draw_tetris();
+    }
+
     if(chaos_check_if_patch_active(CHAOS_PATCH_DVD)) {
         draw_dvd_logo();
     }

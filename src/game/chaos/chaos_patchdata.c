@@ -2406,4 +2406,27 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Number Blindness",
         .shortDescription   = "All numbers will display as '?'. Hope you remember those patch durations!",
     },
+    [CHAOS_PATCH_TETRIS] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 3,
+        .isStackable        = FALSE,
+        .duration           = 10,
+        .durationHard       = 12,
+        .durationImpossible = 15,
+
+        .conditionalFunc    = chs_cond_tetris,
+        .activatedInitFunc  = chs_act_tetris,
+        .frameUpdateFunc    = chs_update_tetris,
+
+        .name               = "Tetris Effect",
+        .shortDescription   = "Control a simultaneous game of Tetris. If you lose, Mario dies! Press Z to see controls.",
+        .longDescription    =   "D-Pad Left -- Move left\n"
+                                "D-Pad Right -- Move right\n"
+                                "D-Pad Up -- Hard Drop\n"
+                                "D-Pad Down -- Soft Drop\n"
+                                "Hold L + D-Pad Left -- Rotate Left\n"
+                                "Hold L + D-Pad Right -- Rotate Right\n"
+                                "Hold L + D-Pad Up -- Hold/Switch",
+    },
 };
