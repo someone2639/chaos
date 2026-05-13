@@ -1216,11 +1216,15 @@ s32 act_death_exit(struct MarioState *m) {
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
-        if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
+        if (chs_is_miracle_active()) {
+            chs_decrement_miracle();
+        } else if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
             m->numLives -= chs_life_gambler_get_lives_lost();
+            save_file_add_death_count();
+            save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, TRUE);
+        } else {
+            save_file_add_death_count();
         }
-        save_file_add_death_count();
-        save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, TRUE);
 
         m->healCounter = chs_calculate_max_heal_counter();
     }
@@ -1236,11 +1240,15 @@ s32 act_unused_death_exit(struct MarioState *m) {
 #else
         play_sound(SOUND_MARIO_OOOF2, m->marioObj->header.gfx.cameraToObject);
 #endif
-        if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
+        if (chs_is_miracle_active()) {
+            chs_decrement_miracle();
+        } else if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
             m->numLives -= chs_life_gambler_get_lives_lost();
+            save_file_add_death_count();
+            save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, TRUE);
+        } else {
+            save_file_add_death_count();
         }
-        save_file_add_death_count();
-        save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, TRUE);
 
         m->healCounter = chs_calculate_max_heal_counter();
     }
@@ -1259,11 +1267,15 @@ s32 act_falling_death_exit(struct MarioState *m) {
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
-        if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
+        if (chs_is_miracle_active()) {
+            chs_decrement_miracle();
+        } else if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
             m->numLives -= chs_life_gambler_get_lives_lost();
+            save_file_add_death_count();
+            save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, TRUE);
+        } else {
+            save_file_add_death_count();
         }
-        save_file_add_death_count();
-        save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, TRUE);
 
         m->healCounter = chs_calculate_max_heal_counter();
     }
@@ -1334,11 +1346,15 @@ s32 act_special_death_exit(struct MarioState *m) {
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
-        if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
+        if (chs_is_miracle_active()) {
+            chs_decrement_miracle();
+        } else if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) {
             m->numLives -= chs_life_gambler_get_lives_lost();
+            save_file_add_death_count();
+            save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, TRUE);
+        } else {
+            save_file_add_death_count();
         }
-        save_file_add_death_count();
-        save_file_set_life_count(gCurrSaveFileNum - 1, m->numLives, TRUE);
 
         m->healCounter = chs_calculate_max_heal_counter();
     }

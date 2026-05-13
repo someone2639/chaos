@@ -1600,6 +1600,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Show Me Mercy",
         .shortDescription   = "Deactivate one of the currently active negative patches at random.",
     },
+    [CHAOS_PATCH_ADD_RANDOM_BUFF] = {
+        .durationType       = CHAOS_DURATION_ONCE,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 2,
+        .isStackable        = TRUE,
+        
+        .conditionalFunc    = chs_cond_add_random_buff,
+        .activatedInitFunc  = chs_act_add_random_buff,
+
+        .name               = "Random Buff",
+        .shortDescription   = "Activate a positive patch of any rank at random.",
+    },
     [CHAOS_PATCH_ADD_SELECTABLE_PATCH] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,

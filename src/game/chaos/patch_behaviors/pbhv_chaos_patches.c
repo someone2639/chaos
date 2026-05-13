@@ -12,6 +12,8 @@
 #include "game/level_update.h"
 #include "game/save_file.h"
 
+static u8 inRandomBuffActivationFunc = FALSE;
+
 static const enum ChaosPatchID patchBlacklist[] = {
     CHAOS_PATCH_LOWER_TIME_LIMIT,
     CHAOS_PATCH_MARIO_BIG,
@@ -45,6 +47,27 @@ u8 chs_cond_remove_negative_patch(void) {
     }
 
     return FALSE;
+}
+
+u8 chs_cond_add_random_buff(void) {
+    // This is not an eligible patch if it's already in the process of being activated (recursion moment).
+    return (!inRandomBuffActivationFunc);
+}
+
+void chs_act_add_random_buff(void) {
+    inRandomBuffActivationFunc = TRUE;
+
+    // Generate random severity override, to better balance potential patch distribution
+    s32 patchSeverity = (random_u16() % CHAOS_PATCH_SEVERITY_MAX) + 1;
+
+    // Generate new patches, with new rank override and explicitly without any special event
+    const struct ChaosPatchSelection *generatedPatches = chaos_roll_for_new_patches(patchSeverity, CHAOS_SPECIAL_NONE);
+
+    // Select first generated patch card's positive entry
+    chaos_add_new_entry(generatedPatches[0].positiveId);
+    chaosmsg_print(generatedPatches[0].positiveId, "New patch activated: %s");
+    
+    inRandomBuffActivationFunc = FALSE;
 }
 
 void chs_act_remove_negative_patch(void) {

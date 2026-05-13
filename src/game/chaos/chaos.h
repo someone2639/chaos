@@ -168,6 +168,7 @@ enum ChaosPatchID {
 
 // Chaos Modifiers
     CHAOS_PATCH_REMOVE_NEGATIVE_PATCH,
+    CHAOS_PATCH_ADD_RANDOM_BUFF,
     CHAOS_PATCH_ADD_SELECTABLE_PATCH,
     CHAOS_PATCH_REMOVE_SELECTABLE_PATCH,
     CHAOS_PATCH_LUCKY_CHARM,
@@ -353,6 +354,8 @@ extern u8 gChaosLevelWarped;
 extern u8 gChaosBlueStarLastCollected;
 extern u8 gChaosImmediateActDeact;
 extern u8 gChaosCancelOutLostDuration;
+extern s32 gChaosLastForcedSeverity;
+extern enum ChaosPatchSpecialEvent gChaosLastEventType;
 extern enum ChaosDifficulty gChaosDifficulty;
 extern enum ChaosGameMode gChaosGameMode;
 extern enum ChaosPatchID gNegativePatchCompare;

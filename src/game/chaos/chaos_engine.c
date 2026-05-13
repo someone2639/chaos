@@ -801,9 +801,28 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(s32 forcedSeverityOverrid
             specialEvent = CHAOS_SPECIAL_NONE;
         }
         // Skip update for gChaosLastEventType here so future generation isn't influenced by override
+
+#ifdef CHAOS_ENGINE_DEBUG
+        switch (specialEvent) {
+            case CHAOS_SPECIAL_NONE:
+            default:
+                chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9FN/A (forced)");
+                break;
+            case CHAOS_SPECIAL_PLUS1_POSITIVE:
+                chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9Fpos++ (forced)");
+                break;
+            case CHAOS_SPECIAL_PLUS1_NEGATIVE:
+                chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9Fneg++ (forced)");
+                break;
+            case CHAOS_SPECIAL_ZERO_POSITIVE:
+                chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9Fpos 0 (forced)");
+                break;
+        }
+#endif
     } else if (gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE) {
         specialEvent = CHAOS_SPECIAL_NONE;
         gChaosLastEventType = CHAOS_SPECIAL_NONE;
+        chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9FN/A (impossible)");
     } else {
         f32 luckyEventFactor = EVENT_ODDS_LUCKY;
         f32 unluckyEventFactor = EVENT_ODDS_UNLUCKY;
