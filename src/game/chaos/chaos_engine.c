@@ -23,9 +23,6 @@ static u32 activePatchCounts[CHAOS_PATCH_COUNT];
 static u8 availablePatches[CHAOS_PATCH_COUNT];
 static struct ChaosPatchSelection generatedPatches[CHAOS_PATCH_MAX_GENERATABLE];
 
-static s32 lastForcedDifficulty = -2;
-static enum ChaosPatchSpecialEvent lastEventType = CHAOS_SPECIAL_NONE;
-
 char gChaosInternalBuffer[0x1000];
 
 s32 *gChaosActiveEntryCount = NULL;
@@ -34,6 +31,8 @@ u8 gChaosLevelWarped = FALSE;
 u8 gChaosBlueStarLastCollected = FALSE;
 u8 gChaosImmediateActDeact = FALSE;
 u8 gChaosCancelOutLostDuration = FALSE;
+s32 gChaosLastForcedSeverity = -2;
+enum ChaosPatchSpecialEvent gChaosLastEventType = CHAOS_SPECIAL_NONE;
 
 static const f32 difficultyWeights[CHAOS_DIFFICULTY_COUNT][CHAOS_PATCH_SEVERITY_COUNT - 1] = {
     [CHAOS_DIFFICULTY_EASY      ] = { 0.12f, 0.25f, 0.38f }, // Difficulty offset should make highest level more common
@@ -702,12 +701,12 @@ static void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT]
     }
 }
 
-struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
+struct ChaosPatchSelection *chaos_roll_for_new_patches(s32 forcedSeverityOverride, enum ChaosPatchSpecialEvent forcedEventOverride) {
     if (!gChaosActiveEntryCount) {
         return NULL;
     }
 
-    s32 forcedDifficulty;
+    s32 forcedSeverity = -1;
     f32 offsetSeverityWeight;
     f32 generatedDifficultyWeight;
     s32 starCount = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
@@ -754,93 +753,99 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
     }
 
     // Lessen likelihood of repeat severity randomization types in a row via attempts
-    for (s32 attempts = 0; attempts < 2; attempts++) {
-        f32 weight = 0.0f;
-        forcedDifficulty = -1;
-        generatedDifficultyWeight = random_float();
-        for (s32 i = 0; i < ARRAY_COUNT(difficultyWeights[0]); i++) {
-            weight += difficultyWeights[gChaosDifficulty][i];
-            if (generatedDifficultyWeight < weight) {
-                forcedDifficulty = i + 1;
+    if (forcedSeverityOverride >= -1) {
+        forcedSeverity = forcedSeverityOverride;
+        if (forcedSeverityOverride >= CHAOS_PATCH_SEVERITY_COUNT) {
+            assert_args(FALSE, "chaos_roll_for_new_patches:\nBad forced severity override: %d", forcedSeverityOverride);
+            forcedSeverity = -1;
+        }
+        // Skip update for gChaosLastForcedSeverity here so future generation isn't influenced by override
+    } else if (starCount < CHAOS_MIN_STARS_FOR_FORCED_DIFFICULTIES) {
+        forcedSeverity = -1;
+        gChaosLastForcedSeverity = -2;
+    } else {
+        for (s32 attempts = 0; attempts < 2; attempts++) {
+            f32 weight = 0.0f;
+            forcedSeverity = -1;
+            generatedDifficultyWeight = random_float();
+            for (s32 i = 0; i < ARRAY_COUNT(difficultyWeights[0]); i++) {
+                weight += difficultyWeights[gChaosDifficulty][i];
+                if (generatedDifficultyWeight < weight) {
+                    forcedSeverity = i + 1;
+                    break;
+                }
+            }
+
+            // Check if repeat or should break early.
+            // 33% chance to allow generated repeat here before retrying severity generation.
+            if (forcedSeverity != gChaosLastForcedSeverity || random_float() < 0.33f) {
                 break;
             }
         }
-
-        // Check if repeat or should break early
-        if (forcedDifficulty != lastForcedDifficulty) {
-            lastForcedDifficulty = forcedDifficulty;
-            break;
-        } else if (random_float() < 0.33f) {
-            // 33% chance to allow generated repeat here before retrying severity generation
-            break;
-        }
+        gChaosLastForcedSeverity = forcedSeverity;
     }
 
     offsetSeverityWeight = random_float();
-
-    if (starCount < CHAOS_MIN_STARS_FOR_FORCED_DIFFICULTIES) {
-        forcedDifficulty = -1;
-    }
     if (starCount < CHAOS_MIN_STARS_FOR_EVENTS) {
         offsetSeverityWeight = 100.0f;
     }
 
-    chaosmsg_print_debug("@FFFF009FforcedDifficulty: "
+    chaosmsg_print_debug("@FFFF009FforcedSeverity: "
                          "@FF3F3F9F%d",
-                         forcedDifficulty);
+                         forcedSeverity);
 
-    if (gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE) {
-        specialEvent = CHAOS_SPECIAL_NONE;
-        lastEventType = specialEvent;
-    } else {
-        if (gChaosBlueStarLastCollected) {
-            // Enforce CHAOS_SPECIAL_ZERO_POSITIVE upon collecting a repeat star
-            specialEvent = CHAOS_SPECIAL_ZERO_POSITIVE;
-            chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9Fpos 0 (forced)");
-        } else {
-            f32 luckyEventFactor = EVENT_ODDS_LUCKY;
-            f32 unluckyEventFactor = EVENT_ODDS_UNLUCKY;
-            f32 chaosEventFactor = EVENT_ODDS_CHAOS;
-            if (chaos_check_if_patch_active(CHAOS_PATCH_LUCKY_CHARM)) {
-                luckyEventFactor *= 2.0f;
-            }
-            if (chaos_check_if_patch_active(CHAOS_PATCH_UNLUCKY_CHARM)) {
-                unluckyEventFactor *= 2.0f;
-                chaosEventFactor *= 2.0f;
-            }
-            if (chaos_check_if_patch_active(CHAOS_PATCH_UNEVENTFUL)) {
-                unluckyEventFactor = 0.0f;
-                chaosEventFactor = 0.0f;
-            }
-            unluckyEventFactor += luckyEventFactor;
-            chaosEventFactor += unluckyEventFactor;
-
-            if (offsetSeverityWeight < luckyEventFactor) {
-                // 17.5% chance to globally increase positive severity
-                specialEvent = CHAOS_SPECIAL_PLUS1_POSITIVE;
-                chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9Fpos++");
-            } else if (offsetSeverityWeight < unluckyEventFactor) {
-                // 17.5% chance to globally increase negative severity
-                specialEvent = CHAOS_SPECIAL_PLUS1_NEGATIVE;
-                chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9Fneg++");
-            } else if (offsetSeverityWeight < chaosEventFactor) {
-                // 12.5% chance to eliminate all positive patches
-                specialEvent = CHAOS_SPECIAL_ZERO_POSITIVE;
-                chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9Fpos 0");
-            } else {
-                specialEvent = CHAOS_SPECIAL_NONE;
-                chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9FN/A");
-            }
-
-            // No repeat event types in a row
-            if (lastEventType == specialEvent && specialEvent != CHAOS_SPECIAL_NONE) {
-                specialEvent = CHAOS_SPECIAL_NONE;
-                chaosmsg_print_debug("@FFFF009FDuplicate event detected, overruled to N/A!");
-            }
-            lastEventType = specialEvent; // Repeat stars also have no impact on star history for this
+    if (forcedEventOverride != CHAOS_SPECIAL_DO_NOT_FORCE) {
+        specialEvent = forcedEventOverride;
+        if (forcedEventOverride < 0 || forcedEventOverride >= CHAOS_SPECIAL_COUNT) {
+            assert_args(FALSE, "chaos_roll_for_new_patches:\nBad forced event override: %d", forcedEventOverride);
+            specialEvent = CHAOS_SPECIAL_NONE;
         }
+        // Skip update for gChaosLastEventType here so future generation isn't influenced by override
+    } else if (gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE) {
+        specialEvent = CHAOS_SPECIAL_NONE;
+        gChaosLastEventType = CHAOS_SPECIAL_NONE;
+    } else {
+        f32 luckyEventFactor = EVENT_ODDS_LUCKY;
+        f32 unluckyEventFactor = EVENT_ODDS_UNLUCKY;
+        f32 chaosEventFactor = EVENT_ODDS_CHAOS;
+        if (chaos_check_if_patch_active(CHAOS_PATCH_LUCKY_CHARM)) {
+            luckyEventFactor *= 2.0f;
+        }
+        if (chaos_check_if_patch_active(CHAOS_PATCH_UNLUCKY_CHARM)) {
+            unluckyEventFactor *= 2.0f;
+            chaosEventFactor *= 2.0f;
+        }
+        if (chaos_check_if_patch_active(CHAOS_PATCH_UNEVENTFUL)) {
+            unluckyEventFactor = 0.0f;
+            chaosEventFactor = 0.0f;
+        }
+        unluckyEventFactor += luckyEventFactor;
+        chaosEventFactor += unluckyEventFactor;
+
+        if (offsetSeverityWeight < luckyEventFactor) {
+            // 17.5% chance to globally increase positive severity
+            specialEvent = CHAOS_SPECIAL_PLUS1_POSITIVE;
+            chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9Fpos++");
+        } else if (offsetSeverityWeight < unluckyEventFactor) {
+            // 17.5% chance to globally increase negative severity
+            specialEvent = CHAOS_SPECIAL_PLUS1_NEGATIVE;
+            chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9Fneg++");
+        } else if (offsetSeverityWeight < chaosEventFactor) {
+            // 12.5% chance to eliminate all positive patches
+            specialEvent = CHAOS_SPECIAL_ZERO_POSITIVE;
+            chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9Fpos 0");
+        } else {
+            specialEvent = CHAOS_SPECIAL_NONE;
+            chaosmsg_print_debug("@FFFF009FEVENT: @FF3F3F9FN/A");
+        }
+
+        // No repeat event types in a row
+        if (gChaosLastEventType == specialEvent && specialEvent != CHAOS_SPECIAL_NONE) {
+            specialEvent = CHAOS_SPECIAL_NONE;
+            chaosmsg_print_debug("@FFFF009FDuplicate event detected, overruled to N/A!");
+        }
+        gChaosLastEventType = specialEvent; // Repeat stars also have no impact on star history for this
     }
-    gChaosBlueStarLastCollected = FALSE;
 
     // Determine available severity combinations that may be used for selections
     for (s32 i = 1; i < ARRAY_COUNT(posNegPairings); i++) {
@@ -851,9 +856,9 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
         posNegPairings[i][CHAOS_EFFECT_NEGATIVE] = 0;
         allowedSeverities[i] = FALSE;
 
-        if (forcedDifficulty >= 0) {
-            pos = forcedDifficulty;
-            neg = forcedDifficulty;
+        if (forcedSeverity >= 0) {
+            pos = forcedSeverity;
+            neg = forcedSeverity;
         }
 
         switch (specialEvent) {
@@ -953,7 +958,7 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
 
     chaos_generate_patches(severityCounts, posNegPairings, severityWeights);
 
-    if (forcedDifficulty >= 0) {
+    if (forcedSeverity >= 0) {
         for (s32 index = 0; index < CHAOS_PATCH_MAX_GENERATABLE; index++) {
 #ifdef CHAOS_FORCED_POSITIVE_CARD
             if (index == 0 && generatedPatches[index].positiveId == CHAOS_FORCED_POSITIVE_CARD && generatedPatches[index].severityLevel == 0) {
@@ -965,7 +970,7 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
                 continue;
             }
 #endif
-            generatedPatches[index].severityLevel = forcedDifficulty;
+            generatedPatches[index].severityLevel = forcedSeverity;
         }
     }
 
@@ -999,10 +1004,10 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(void) {
     }
     if (overruledSpecialEvent) {
         chaosmsg_print_debug("@FFFF009FAll generated patch events overridden to no event, discounting event...");
-        lastEventType = CHAOS_SPECIAL_NONE;
+        gChaosLastEventType = CHAOS_SPECIAL_NONE;
     }
 
-    save_file_set_new_chaos_gen_data(lastForcedDifficulty, lastEventType);
+    save_file_set_new_chaos_gen_data(gChaosLastForcedSeverity, gChaosLastEventType);
 
     return generatedPatches;
 }
@@ -1017,7 +1022,7 @@ void chaos_select_patches(struct ChaosPatchSelection *patchSelection) {
 }
 
 void chaos_init(void) {
-    save_file_get_chaos_data(&gChaosActiveEntries, &gChaosActiveEntryCount, &gChaosDifficulty, &gChaosGameMode, &lastForcedDifficulty, &lastEventType);
+    save_file_get_chaos_data(&gChaosActiveEntries, &gChaosActiveEntryCount, &gChaosDifficulty, &gChaosGameMode, &gChaosLastForcedSeverity, &gChaosLastEventType);
     chaos_recompute_active_patch_counts();
 
     gChaosLevelWarped = FALSE;

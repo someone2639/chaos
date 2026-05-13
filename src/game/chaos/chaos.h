@@ -282,10 +282,11 @@ enum ChaosPatchDurationType {
 };
 
 enum ChaosPatchSpecialEvent {
-    CHAOS_SPECIAL_NONE,           // No special effect
-    CHAOS_SPECIAL_PLUS1_POSITIVE, // Add +1 severity to each positive listing only
-    CHAOS_SPECIAL_PLUS1_NEGATIVE, // Add +1 severity to each negative listing only
-    CHAOS_SPECIAL_ZERO_POSITIVE,  // Floor positive severity to 0, effectively eliminating any positive effect
+    CHAOS_SPECIAL_DO_NOT_FORCE = -1, // Used to specify no event override for patch generation
+    CHAOS_SPECIAL_NONE = 0,          // No special effect
+    CHAOS_SPECIAL_PLUS1_POSITIVE,    // Add +1 severity to each positive listing only
+    CHAOS_SPECIAL_PLUS1_NEGATIVE,    // Add +1 severity to each negative listing only
+    CHAOS_SPECIAL_ZERO_POSITIVE,     // Floor positive severity to 0, effectively eliminating any positive effect
 
     CHAOS_SPECIAL_COUNT,
 };
@@ -387,7 +388,17 @@ void chaos_decrement_star_timers(enum ChaosStarDecrementType decrementType);
 void chaos_decrement_patch_usage(const enum ChaosPatchID patchId);
 
 // Generates a list of CHAOS_PATCH_MAX_GENERATABLE patch combinations for selection use.
-struct ChaosPatchSelection *chaos_roll_for_new_patches(void);
+// Optionally a forced severity or event type may be passed in, which may potentially be useful for re-rolling
+// patches or for reusing the same generation logic to determine random patch activations.
+//     forcedSeverityOverride:
+//         -2:                             Determine internally based on patches/history [DEFAULT]
+//         -1:                             Explicitly do not force severity on any of the generated patches
+//         [0 - CHAOS_PATCH_SEVERITY_MAX]: Force to that severity for all generated patches
+//     forcedEventOverride:
+//         CHAOS_SPECIAL_DO_NOT_FORCE: Determine internally based on patches/history [DEFAULT]
+//         CHAOS_SPECIAL_NONE:         Explicitly do not activate an event for patch generation
+//         CHAOS_SPECIAL_[OTHER]:      Force patch generation with specified event type
+struct ChaosPatchSelection *chaos_roll_for_new_patches(s32 forcedSeverityOverride, enum ChaosPatchSpecialEvent forcedEventOverride);
 
 // Send a new patch selection to be applied.
 void chaos_select_patches(struct ChaosPatchSelection *patchSelection);

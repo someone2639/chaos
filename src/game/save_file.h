@@ -59,8 +59,8 @@ struct SaveFile {
     u32 playTime;
     u16 totalPatches;
     u16 rngSeed;
-    s8 lastForcedDifficulty;
-    u8 lastEventType;
+    s8 lastForcedSeverity;
+    s8 lastEventType;
 
     u64 _SAVEFILE_PADDING;
 
@@ -227,8 +227,8 @@ s32 save_file_get_cap_pos(Vec3s capPos);
 void save_file_set_sound_mode(u16 mode);
 u16 save_file_get_sound_mode(void);
 void save_file_move_cap_to_default_location(void);
-void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount, enum ChaosDifficulty *gChaosDifficulty, enum ChaosGameMode *gChaosGameMode, s32 *lastForcedDifficulty, enum ChaosPatchSpecialEvent *lastEventType);
-void save_file_set_new_chaos_gen_data(s32 lastForcedDifficulty, enum ChaosPatchSpecialEvent lastEventType);
+void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount, enum ChaosDifficulty *gChaosDifficulty, enum ChaosGameMode *gChaosGameMode, s32 *lastForcedSeverity, enum ChaosPatchSpecialEvent *lastEventType);
+void save_file_set_new_chaos_gen_data(s32 lastForcedSeverity, enum ChaosPatchSpecialEvent lastEventType);
 void save_file_add_yellow_star();
 void save_file_add_blue_star();
 u16 save_file_get_blue_stars();

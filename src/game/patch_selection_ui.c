@@ -24,6 +24,8 @@
 #include "main.h"
 #include "chaos/chaos_patch_behaviors.h"
 
+static struct ChaosPatchSelection patches[CHAOS_PATCH_MAX_GENERATABLE];
+
 u8 sQualityColors[CHAOS_PATCH_SEVERITY_COUNT][3] = {
     {0x9F, 0x9F, 0x9F}, //Lvl 0
     {0x47, 0x8D, 0xCE}, //Lvl 1
@@ -124,13 +126,20 @@ void init_patch_selection_layout() {
 */
 void load_new_patches() {
     s32 numPatches = get_num_patches();
+    enum ChaosPatchSpecialEvent forcedChaosEvent = CHAOS_SPECIAL_DO_NOT_FORCE;
+
+    // Enforce CHAOS_SPECIAL_ZERO_POSITIVE upon collecting a repeat star
+    if (gChaosBlueStarLastCollected) {
+        forcedChaosEvent = CHAOS_SPECIAL_ZERO_POSITIVE;
+    }
 
     // Generate new patches
     assert(numPatches > 0 && numPatches <= MAX_CARDS, "Tried to load an invalid number of patch cards!");
-
     chaos_decrement_star_timers(CHAOS_STAR_DECREMENT_STANDARD);
-    struct ChaosPatchSelection *patches = chaos_roll_for_new_patches();
-    aggress(patches, "Chaos patches uninitialized!");
+    const struct ChaosPatchSelection *generatedPatches = chaos_roll_for_new_patches(-2, forcedChaosEvent);
+    aggress(generatedPatches, "Chaos patches uninitialized!");
+    bcopy(generatedPatches, patches, sizeof(patches));
+
     for (s32 i = 0; i < numPatches; i++) {
         gPatchSelectionMenu->patchCards[i].sel = &patches[i];
     }
@@ -721,6 +730,7 @@ void update_patch_selection_menu() {
             case PATCH_SELECT_STATE_START_CLOSING:
                 // Some patches want to activate a bonus event after the menu is expired
                 // So we have this in-between state that allows a patch to trigger an event (by changing the menu state) before the curtain rises.
+                gChaosBlueStarLastCollected = FALSE;
                 gChaosCancelOutLostDuration = TRUE;
                 chaos_select_patches(gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].sel);
                 chaos_decrement_star_timers(CHAOS_STAR_DECREMENT_MENU_IMPACTING);

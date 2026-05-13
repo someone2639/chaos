@@ -8,7 +8,6 @@
 #include "chaos_settings.h"
 
 #define MAX_CARDS   (CHAOS_PATCH_MAX_GENERATABLE)
-#define MAX_QUALITY (CHAOS_PATCH_SEVERITY_MAX)
 #define EFFECT_COLOR_GOOD 0
 #define EFFECT_COLOR_BAD 1
 

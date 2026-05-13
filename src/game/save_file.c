@@ -295,7 +295,7 @@ void save_file_populate_default_params(s32 fileIndex) {
     file->chaosDifficulty = CHAOS_DIFFICULTY_NORMAL;
     file->chaosGameMode = CHAOS_GAMEMODE_CLASSIC;
     file->chaosEntryCount = 0;
-    file->lastForcedDifficulty = -2;
+    file->lastForcedSeverity = -2;
     file->lastEventType = CHAOS_SPECIAL_NONE;
 }
 
@@ -685,20 +685,20 @@ u16 eu_get_language(void) {
 }
 #endif
 
-void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount, enum ChaosDifficulty *gChaosDifficulty, enum ChaosGameMode *gChaosGameMode, s32 *lastForcedDifficulty, enum ChaosPatchSpecialEvent *lastEventType) {
+void save_file_get_chaos_data(struct ChaosActiveEntry **entryData, s32 **currentEntryCount, enum ChaosDifficulty *gChaosDifficulty, enum ChaosGameMode *gChaosGameMode, s32 *lastForcedSeverity, enum ChaosPatchSpecialEvent *lastEventType) {
     *entryData = gSaveBuffer.files[gCurrSaveFileNum - 1].chaosEntries;
     *currentEntryCount = &gSaveBuffer.files[gCurrSaveFileNum - 1].chaosEntryCount;
     *gChaosDifficulty = save_file_get_difficulty(gCurrSaveFileNum - 1);
     *gChaosGameMode = save_file_get_game_mode(gCurrSaveFileNum - 1);
-    *lastForcedDifficulty = gSaveBuffer.files[gCurrSaveFileNum - 1].lastForcedDifficulty;
+    *lastForcedSeverity = gSaveBuffer.files[gCurrSaveFileNum - 1].lastForcedSeverity;
     *lastEventType = gSaveBuffer.files[gCurrSaveFileNum - 1].lastEventType;
 
     gSaveBuffer.files[gCurrSaveFileNum - 1].flags |= SAVE_FLAG_FILE_EXISTS;
     gMainMenuDataModified = TRUE;
 }
 
-void save_file_set_new_chaos_gen_data(s32 lastForcedDifficulty, enum ChaosPatchSpecialEvent lastEventType) {
-    gSaveBuffer.files[gCurrSaveFileNum - 1].lastForcedDifficulty = lastForcedDifficulty;
+void save_file_set_new_chaos_gen_data(s32 lastForcedSeverity, enum ChaosPatchSpecialEvent lastEventType) {
+    gSaveBuffer.files[gCurrSaveFileNum - 1].lastForcedSeverity = lastForcedSeverity;
     gSaveBuffer.files[gCurrSaveFileNum - 1].lastEventType = lastEventType;
     gSaveFileModified = TRUE;
 }
