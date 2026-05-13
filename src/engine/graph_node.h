@@ -173,22 +173,18 @@ struct LakituLagHistory {
  */
 struct GraphNodeCamera {
     /*0x00*/ struct FnGraphNode fnNode;
-    /*0x18*/ union {
-        // When the node is created, a mode is assigned to the node.
-        // Later in geo_camera_main a Camera is allocated,
-        // the mode is passed to the struct, and the field is overridden
-        // by a pointer to the struct. Gotta save those 4 bytes.
-        s32 mode;
-        struct Camera *camera;
-    } config;
-    /*0x1C*/ Vec3f pos;
-    /*0x28*/ Vec3f focus;
-    /*0x34*/ Mat4 *matrixPtr; // pointer to look-at matrix of this camera as a Mat4
-    /*0x38*/ s16 roll; // roll in look at matrix. Doesn't account for light direction unlike rollScreen.
-    /*0x3A*/ s16 rollScreen; // rolls screen while keeping the light direction consistent
+    /*0x18*/ u8 mode;
+    /*0x19*/ u8 collision45Deg;
+    /*0x1A*/ u8 __PADDING[2];
+    /*0x1C*/ struct Camera *camera;
+    /*0x20*/ Vec3f pos;
+    /*0x2C*/ Vec3f focus;
+    /*0x38*/ Mat4 *matrixPtr; // pointer to look-at matrix of this camera as a Mat4
+    /*0x3C*/ s16 roll; // roll in look at matrix. Doesn't account for light direction unlike rollScreen.
+    /*0x3E*/ s16 rollScreen; // rolls screen while keeping the light direction consistent
 
-    /*0x3C*/ s16 lakituLagFrame;
-    /*0x40*/ struct LakituLagHistory camHistory[LAKITU_LAG_FRAMES];
+    /*0x40*/ s16 lakituLagFrame;
+    /*0x44*/ struct LakituLagHistory camHistory[LAKITU_LAG_FRAMES];
 };
 
 /** GraphNode that translates and rotates its children.
@@ -365,7 +361,7 @@ struct GraphNodeLevelOfDetail *init_graph_node_render_range(struct AllocOnlyPool
 struct GraphNodeSwitchCase *init_graph_node_switch_case(struct AllocOnlyPool *pool, struct GraphNodeSwitchCase *graphNode,
                                                         s16 numCases, s16 selectedCase, GraphNodeFunc nodeFunc, s32 unused);
 struct GraphNodeCamera *init_graph_node_camera(struct AllocOnlyPool *pool, struct GraphNodeCamera *graphNode,
-                                               f32 *pos, f32 *focus, GraphNodeFunc func, s32 mode);
+                                               f32 *pos, f32 *focus, GraphNodeFunc func, s32 mode, s32 collision45Deg);
 struct GraphNodeTranslationRotation *init_graph_node_translation_rotation(struct AllocOnlyPool *pool, struct GraphNodeTranslationRotation *graphNode,
                                                                           s32 drawingLayer, void *displayList, Vec3s translation, Vec3s rotation);
 struct GraphNodeTranslation *init_graph_node_translation(struct AllocOnlyPool *pool, struct GraphNodeTranslation *graphNode,

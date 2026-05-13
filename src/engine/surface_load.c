@@ -86,28 +86,6 @@ static struct Surface *alloc_surface(void) {
 }
 
 /**
- * Iterates through the entire partition, clearing the surfaces.
- */
-static void clear_spatial_partition(SpatialPartitionCell *cells) {
-    register s32 i = NUM_CELLS * NUM_CELLS;
-
-    while (i--) {
-        (*cells)[SPATIAL_PARTITION_FLOORS].next = NULL;
-        (*cells)[SPATIAL_PARTITION_CEILS].next = NULL;
-        (*cells)[SPATIAL_PARTITION_WALLS].next = NULL;
-
-        cells++;
-    }
-}
-
-/**
- * Clears the static (level) surface partitions for new use.
- */
-static void clear_static_surfaces(void) {
-    clear_spatial_partition(&gStaticSurfacePartition[0][0]);
-}
-
-/**
  * Add a surface to the correct cell list of surfaces.
  * @param dynamic Determines whether the surface is static or dynamic
  * @param cellX The X position of the cell in which the surface resides
@@ -115,9 +93,7 @@ static void clear_static_surfaces(void) {
  * @param surface The surface to add
  */
 static void add_surface_to_cell(s16 dynamic, s16 cellX, s16 cellZ, struct Surface *surface) {
-    struct SurfaceNode *newNode = alloc_surface_node();
-    struct SurfaceNode *list;
-    s16 surfacePriority;
+    struct SurfaceNode **list;
     s16 priority;
     s16 sortDir;
     s16 listIndex;
@@ -143,8 +119,9 @@ static void add_surface_to_cell(s16 dynamic, s16 cellX, s16 cellZ, struct Surfac
     //  many functions only use the first triangle in surface order that fits,
     //  missing higher surfaces.
     //  upperY would be a better sort method.
-    surfacePriority = surface->vertex1[1] * sortDir;
+    s32 surfacePriority = surface->vertex1[1] * sortDir;
 
+    struct SurfaceNode *newNode = alloc_surface_node();
     newNode->surface = surface;
 
     if (dynamic) {
@@ -152,7 +129,7 @@ static void add_surface_to_cell(s16 dynamic, s16 cellX, s16 cellZ, struct Surfac
         if (sNumCellsUsed >= sizeof(sCellsUsed) / sizeof(struct CellCoords)) {
             sClearAllCells = TRUE;
         } else {
-            if (list->next == NULL) {
+            if (*list == NULL) {
                 sCellsUsed[sNumCellsUsed].z = cellZ;
                 sCellsUsed[sNumCellsUsed].x = cellX;
                 sCellsUsed[sNumCellsUsed].partition = listIndex;
@@ -163,19 +140,34 @@ static void add_surface_to_cell(s16 dynamic, s16 cellX, s16 cellZ, struct Surfac
         list = &gStaticSurfacePartition[cellZ][cellX][listIndex];
     }
 
+    if (*list == NULL) {
+        *list = newNode;
+        return;
+    }
+
+    struct SurfaceNode *curNode = *list;
+
+    // Check if surface should be placed at the beginning of the list.
+    priority = curNode->surface->vertex1[1] * sortDir;
+    if (surfacePriority > priority) {
+        *list = newNode;
+        newNode->next = curNode;
+        return;
+    }
+
     // Loop until we find the appropriate place for the surface in the list.
-    while (list->next != NULL) {
-        priority = list->next->surface->vertex1[1] * sortDir;
+    while (curNode->next != NULL) {
+        priority = curNode->next->surface->vertex1[1] * sortDir;
 
         if (surfacePriority > priority) {
             break;
         }
 
-        list = list->next;
+        curNode = curNode->next;
     }
 
-    newNode->next = list->next;
-    list->next = newNode;
+    newNode->next = curNode->next;
+    curNode->next = newNode;
 }
 
 /**
@@ -616,7 +608,8 @@ void load_area_terrain(s16 index, s16 *data, s8 *surfaceRooms, s16 *macroObjects
     sNumCellsUsed = 0;
     sClearAllCells = TRUE;
 
-    clear_static_surfaces();
+    // Clear the static (level) surface partitions for new use.
+    bzero(gStaticSurfacePartition, sizeof(gStaticSurfacePartition));
 
     // A while loop iterating through each section of the level data. Sections of data
     // are prefixed by a terrain "type." This type is reused for surfaces as the surface
@@ -667,10 +660,10 @@ void clear_dynamic_surfaces(void) {
         gSurfacesAllocated = gNumStaticSurfaces;
         gSurfaceNodesAllocated = gNumStaticSurfaceNodes;
         if (sClearAllCells) {
-            clear_spatial_partition(&gDynamicSurfacePartition[0][0]);
+            bzero(gDynamicSurfacePartition, sizeof(gDynamicSurfacePartition));
         } else {
             for (u32 i = 0; i < sNumCellsUsed; i++) {
-                gDynamicSurfacePartition[sCellsUsed[i].z][sCellsUsed[i].x][sCellsUsed[i].partition].next = NULL;
+                gDynamicSurfacePartition[sCellsUsed[i].z][sCellsUsed[i].x][sCellsUsed[i].partition] = NULL;
             }
         }
         sNumCellsUsed = 0;

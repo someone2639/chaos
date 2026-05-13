@@ -13,7 +13,7 @@ const GeoLayout rr_geo_0009D0[] = {
       GEO_OPEN_NODE(),
          GEO_CAMERA_FRUSTUM_WITH_FUNC(45, 100, 20000, geo_camera_fov),
          GEO_OPEN_NODE(),
-            GEO_CAMERA(14, 0, 2000, 6000, 0, 0, -8000, geo_camera_main),
+            GEO_CAMERA_45_DEG_COLLISION(CAMERA_MODE_8_DIRECTIONS, TRUE, 0, 2000, 6000, 0, 0, -8000, geo_camera_main), // Already 8-dir cam, but collision helps with bypassed fixed cam moments
             GEO_OPEN_NODE(),
                GEO_ASM(0, geo_exec_flying_carpet_timer_update),
                GEO_DISPLAY_LIST(LAYER_ALPHA, dl_cruiser_metal_holes),

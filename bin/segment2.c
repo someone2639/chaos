@@ -1864,6 +1864,10 @@ ALIGNED8 static const Texture texture_hud_char_lakitu[] = {
 #include "textures/segment2/segment2.07D50.rgba16.inc.c"
 };
 
+ALIGNED8 static const Texture texture_hud_char_45deg[] = {
+#include "textures/segment2/custom.segment2.45deg.rgba16.inc.c"
+};
+
 ALIGNED8 static const Texture texture_hud_char_no_camera[] = {
 #include "textures/segment2/segment2.07F50.rgba16.inc.c"
 };
@@ -2148,7 +2152,7 @@ const Texture *const main_credits_font_lut[] = {
 // HUD camera table 0x020087CC-0x020087E3
 const Texture *const main_hud_camera_lut[] = {
     texture_hud_char_camera, texture_hud_char_mario_head, texture_hud_char_lakitu, texture_hud_char_no_camera,
-    texture_hud_char_arrow_up, texture_hud_char_arrow_down,
+    texture_hud_char_arrow_up, texture_hud_char_arrow_down, texture_hud_char_45deg,
 };
 
 // If you change the language here, the following Makefile rule also needs to

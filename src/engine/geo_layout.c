@@ -368,7 +368,7 @@ void geo_layout_cmd_node_camera(void) {
     cmdPos = read_vec3s_to_vec3f(focus, cmdPos);
 
     graphNode = init_graph_node_camera(gGraphNodePool, NULL, pos, focus,
-                                       (GraphNodeFunc) cur_geo_cmd_ptr(0x10), cur_geo_cmd_s16(0x02));
+                                       (GraphNodeFunc) cur_geo_cmd_ptr(0x10), cur_geo_cmd_s16(0x02), cur_geo_cmd_u8(0x01));
 
     register_scene_graph_node(&graphNode->fnNode.node);
 

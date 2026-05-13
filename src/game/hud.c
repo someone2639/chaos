@@ -443,7 +443,7 @@ void set_hud_camera_status(s16 status) {
  * the camera status called, a defined glyph is rendered.
  */
 void render_hud_camera_status(void) {
-    u8 *(*cameraLUT)[6] = segmented_to_virtual(&main_hud_camera_lut);
+    u8 *(*cameraLUT)[] = segmented_to_virtual(&main_hud_camera_lut);
     s32 x = GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(54);
     s32 y = 205;
 
@@ -460,6 +460,9 @@ void render_hud_camera_status(void) {
             break;
         case CAM_STATUS_LAKITU:
             render_hud_tex_lut(x + 16, y, (*cameraLUT)[GLYPH_CAM_LAKITU_HEAD]);
+            break;
+        case CAM_STATUS_8_DIR:
+            render_hud_tex_lut(x + 16, y, (*cameraLUT)[GLYPH_CAM_45_DEGREES]);
             break;
         case CAM_STATUS_FIXED:
             render_hud_tex_lut(x + 16, y, (*cameraLUT)[GLYPH_CAM_FIXED]);

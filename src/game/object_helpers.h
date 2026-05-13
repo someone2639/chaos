@@ -111,8 +111,6 @@ void obj_copy_pos_and_angle(struct Object *dst, struct Object *src);
 void obj_copy_pos(struct Object *dst, struct Object *src);
 void obj_copy_angle(struct Object *dst, struct Object *src);
 void obj_set_gfx_pos_from_pos(struct Object *obj);
-void linear_mtxf_mul_vec3f(Mat4 m, Vec3f dst, Vec3f v);
-void linear_mtxf_transpose_mul_vec3f(Mat4 m, Vec3f dst, Vec3f v);
 void obj_apply_scale_to_transform(struct Object *obj);
 void obj_copy_scale(struct Object *dst, struct Object *src);
 void obj_scale_xyz(struct Object *obj, f32 xScale, f32 yScale, f32 zScale);
@@ -223,7 +221,6 @@ s16 cur_obj_reflect_move_angle_off_wall(void);
 #define PATH_REACHED_WAYPOINT 1
 
 void obj_set_hitbox(struct Object *obj, struct ObjectHitbox *hitbox);
-s32 signum_positive(s32 x);
 f32 absf(f32 x);
 s32 absi(s32 a0);
 s32 cur_obj_wait_then_blink(s32 timeUntilBlinking, s32 numBlinks);

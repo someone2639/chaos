@@ -14,6 +14,14 @@
 #define FLOOR_LOWER_LIMIT           -11000
 #define FLOOR_LOWER_LIMIT_MISC      (FLOOR_LOWER_LIMIT + 1000)
 
+enum RaycastFlags {
+    RAYCAST_FIND_FLOOR      = (1 << 0),
+    RAYCAST_FIND_WALL       = (1 << 1),
+    RAYCAST_FIND_CEIL       = (1 << 2),
+    RAYCAST_CHECK_MISC_WALL = (1 << 3),
+    RAYCAST_FIND_ALL        = (0xFFFFFFFF)
+};
+
 struct WallCollisionData {
     /*0x00*/ f32 x, y, z;
     /*0x0C*/ f32 offsetY;

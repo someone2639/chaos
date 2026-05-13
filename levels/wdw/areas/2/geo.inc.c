@@ -13,7 +13,7 @@ const GeoLayout wdw_geo_000724[] = {
       GEO_OPEN_NODE(),
          GEO_CAMERA_FRUSTUM_WITH_FUNC(45, 100, 12800, geo_camera_fov),
          GEO_OPEN_NODE(),
-            GEO_CAMERA(1, 0, 2000, 6000, -4352, 0, -4352, geo_camera_main),
+            GEO_CAMERA_45_DEG_COLLISION(CAMERA_MODE_RADIAL, FALSE, 0, 2000, 6000, -4352, 0, -4352, geo_camera_main), // No collision, Vanish Cap star is a pain
             GEO_OPEN_NODE(),
                GEO_DISPLAY_LIST(LAYER_OPAQUE, wdw_seg7_dl_07011E48),
                GEO_DISPLAY_LIST(LAYER_ALPHA, wdw_seg7_dl_07012258),

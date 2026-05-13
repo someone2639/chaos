@@ -13,7 +13,7 @@ const GeoLayout totwc_geo_000188[] = {
       GEO_OPEN_NODE(),
          GEO_CAMERA_FRUSTUM_WITH_FUNC(45, 100, 25000, geo_camera_fov),
          GEO_OPEN_NODE(),
-            GEO_CAMERA(16, 0, 2000, 6000, 0, 0, 0, geo_camera_main),
+            GEO_CAMERA_45_DEG_COLLISION(CAMERA_MODE_FREE_ROAM, FALSE, 0, 2000, 6000, 0, 0, 0, geo_camera_main), // No collision, doesn't really have a use for it
             GEO_OPEN_NODE(),
                GEO_DISPLAY_LIST(LAYER_OPAQUE, totwc_seg7_dl_07005D28),
                GEO_DISPLAY_LIST(LAYER_TRANSPARENT, totwc_seg7_dl_07007048),

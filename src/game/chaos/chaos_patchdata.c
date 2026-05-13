@@ -1506,6 +1506,21 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Clown Vomit",
         .shortDescription   = "Makes the world a bit more colorful.",
     },
+    [CHAOS_PATCH_45_DEGREE_CAM] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 1,
+        .isStackable        = FALSE,
+        .duration           = 15,
+
+        .conditionalFunc    = chs_cond_45_degree_camera,
+        .activatedInitFunc  = chs_act_45_degree_camera,
+        .deactivationFunc   = chs_deact_45_degree_camera,
+
+        .name               = "45-Degree Camera",
+        .shortDescription   = "Add a third camera option in addition to Lakitu Cam and Mario Cam (see details screen for more info).",
+        .longDescription    = "The 45-Degree Camera will snap to 8 directions nearly at all times, and override most camera-following behaviors. This mode also supports Parallel Lakitu Cam, which allows the player to use D-Pad buttons for precise camera angle adjustments.",
+    },
 
 // Time Limit
 #define CHS_TIME_LIMIT_DURATION            10

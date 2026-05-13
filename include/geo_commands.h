@@ -160,7 +160,7 @@
 
 /**
  * 0x0F: Create a camera scene graph node.
- *   0x01: unused
+ *   0x01: u8 whether or not to use 45 degree camera collision
  *   0x02: s16 camera type
  *   0x04: s16 posX
  *   0x06: s16 posY
@@ -170,10 +170,13 @@
  *   0x0E: s16 focusZ
  *   0x10: GraphNodeFunc function
  */
-#define GEO_CAMERA(type, x1, y1, z1, x2, y2, z2, function) \
-    CMD_BBH(0x0F, 0x00, type), \
+#define GEO_CAMERA_45_DEG_COLLISION(type, collision45Deg, x1, y1, z1, x2, y2, z2, function) \
+    CMD_BBH(0x0F, collision45Deg, type), \
     CMD_HHHHHH(x1, y1, z1, x2, y2, z2), \
     CMD_PTR(function)
+
+#define GEO_CAMERA(type, x1, y1, z1, x2, y2, z2, function) \
+    GEO_CAMERA_45_DEG_COLLISION(type, FALSE, x1, y1, z1, x2, y2, z2, function)
 
 /**
  * 0x10: Create translation & rotation scene graph node with optional display list

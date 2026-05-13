@@ -18,7 +18,8 @@ enum CameraHUDLut {
     GLYPH_CAM_LAKITU_HEAD,
     GLYPH_CAM_FIXED,
     GLYPH_CAM_ARROW_UP,
-    GLYPH_CAM_ARROW_DOWN
+    GLYPH_CAM_ARROW_DOWN,
+    GLYPH_CAM_45_DEGREES,
 };
 
 void set_hud_camera_status(s16 status);

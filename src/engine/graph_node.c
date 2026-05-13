@@ -188,7 +188,8 @@ struct GraphNodeSwitchCase *init_graph_node_switch_case(struct AllocOnlyPool *po
  */
 struct GraphNodeCamera *init_graph_node_camera(struct AllocOnlyPool *pool,
                                                struct GraphNodeCamera *graphNode, f32 *pos,
-                                               f32 *focus, GraphNodeFunc func, s32 mode) {
+                                               f32 *focus, GraphNodeFunc func, s32 mode,
+                                               s32 collision45Deg) {
     if (pool != NULL) {
         graphNode = alloc_only_pool_alloc(pool, sizeof(struct GraphNodeCamera));
     }
@@ -198,7 +199,8 @@ struct GraphNodeCamera *init_graph_node_camera(struct AllocOnlyPool *pool,
         vec3f_copy(graphNode->pos, pos);
         vec3f_copy(graphNode->focus, focus);
         graphNode->fnNode.func = func;
-        graphNode->config.mode = mode;
+        graphNode->mode = mode;
+        graphNode->collision45Deg = collision45Deg;
         graphNode->roll = 0;
         graphNode->rollScreen = 0;
 

@@ -17,10 +17,12 @@ struct SurfaceNode {
 enum {
     SPATIAL_PARTITION_FLOORS,
     SPATIAL_PARTITION_CEILS,
-    SPATIAL_PARTITION_WALLS
+    SPATIAL_PARTITION_WALLS,
+
+    NUM_SPATIAL_PARTITIONS
 };
 
-typedef struct SurfaceNode SpatialPartitionCell[3];
+typedef struct SurfaceNode* SpatialPartitionCell[NUM_SPATIAL_PARTITIONS];
 
 // Needed for bs bss reordering memes.
 extern s32 unused8038BE90;

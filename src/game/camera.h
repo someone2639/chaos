@@ -90,12 +90,14 @@
 #define CAM_MODE_MARIO_ACTIVE           0x01
 #define CAM_MODE_LAKITU_WAS_ZOOMED_OUT  0x02
 #define CAM_MODE_MARIO_SELECTED         0x04
+#define CAM_MODE_8_DIR_ACTIVE           0x08
 
 #define CAM_SELECTION_MARIO 1
 #define CAM_SELECTION_FIXED 2
 
 #define CAM_ANGLE_MARIO  1
 #define CAM_ANGLE_LAKITU 2
+#define CAM_ANGLE_8_DIR  3
 
 #define CAMERA_MODE_NONE              0x00
 #define CAMERA_MODE_RADIAL            0x01
@@ -136,8 +138,7 @@
 #define CAM_MOVE_RESTRICT /**/ (CAM_MOVE_ENTERED_ROTATE_SURFACE | CAM_MOVE_METAL_BELOW_WATER | CAM_MOVE_FIX_IN_PLACE | CAM_MOVE_UNKNOWN_8)
 
 #define CAM_SOUND_C_UP_PLAYED            0x01
-#define CAM_SOUND_MARIO_ACTIVE           0x02
-#define CAM_SOUND_NORMAL_ACTIVE          0x04
+#define CAM_SOUND_CHANGED_ANGLE          0x02
 #define CAM_SOUND_UNUSED_SELECT_MARIO    0x08
 #define CAM_SOUND_UNUSED_SELECT_FIXED    0x10
 #define CAM_SOUND_FIXED_ACTIVE           0x20
@@ -165,8 +166,9 @@
 #define CAM_STATUS_FIXED  1 << 2
 #define CAM_STATUS_C_DOWN 1 << 3
 #define CAM_STATUS_C_UP   1 << 4
+#define CAM_STATUS_8_DIR  1 << 5
 
-#define CAM_STATUS_MODE_GROUP   (CAM_STATUS_MARIO | CAM_STATUS_LAKITU | CAM_STATUS_FIXED)
+#define CAM_STATUS_MODE_GROUP   (CAM_STATUS_MARIO | CAM_STATUS_LAKITU | CAM_STATUS_FIXED | CAM_STATUS_8_DIR)
 #define CAM_STATUS_C_MODE_GROUP (CAM_STATUS_C_DOWN | CAM_STATUS_C_UP)
 
 #define SHAKE_ATTACK         1
@@ -294,6 +296,12 @@
 #define CAM_EVENT_START_END_WAVING    12
 #define CAM_EVENT_START_CREDITS       13
 #define CAM_EVENT_SHUFFLE             14
+
+enum ChsForced8DirFlags {
+    FORCED_8DIR_FLAGS_NONE      = 0,
+    FORCED_8DIR_FLAGS_45DEG_CAM = (1 << 0),
+    // TODO: Slot reserved for smooth camera patch
+};
 
 /**
  * A copy of player information that is relevant to the camera.
@@ -542,13 +550,12 @@ struct Camera {
     /// For example, this is what makes the camera rotate around the hill in BoB
     /*0x2C*/ f32 areaCenZ;
     /*0x30*/ u8 cutscene;
-    /*0x31*/ u8 filler1[8];
-    /*0x3A*/ s16 nextYaw;
-    /*0x3C*/ u8 filler2[40];
-    /*0x64*/ u8 doorStatus;
+    /*0x31*/ u8 collision45Deg;
+    /*0x32*/ s16 nextYaw;
+    /*0x34*/ u8 doorStatus;
     /// The y coordinate of the "center" of the area. Unlike areaCenX and areaCenZ, this is only used
     /// when paused. See zoom_out_if_paused_and_outside
-    /*0x68*/ f32 areaCenY;
+    /*0x38*/ f32 areaCenY;
 };
 
 /**
@@ -660,6 +667,7 @@ extern struct Camera *gCamera;
 extern struct Object *gCutsceneFocus;
 extern struct Object *gSecondCameraFocus;
 extern u8 gRecentCutscene;
+extern enum ChsForced8DirFlags gChsForced8DirCam;
 
 // DECOMP_DO: sort all of this extremely messy shit out after the split
 
@@ -677,12 +685,11 @@ void select_mario_cam_mode(void);
 Gfx *geo_camera_main(s32 callContext, struct GraphNode *g, void *context);
 void stub_camera_2(UNUSED struct Camera *c);
 void stub_camera_3(UNUSED struct Camera *c);
-void vec3f_sub(Vec3f dst, Vec3f src);
 void object_pos_to_vec3f(Vec3f dst, struct Object *o);
 void vec3f_to_object_pos(struct Object *o, Vec3f src);
 s32 move_point_along_spline(Vec3f p, struct CutsceneSplinePoint spline[], s16 *splineSegment, f32 *progress);
 s32 cam_select_alt_mode(s32 angle);
-s32 set_cam_angle(s32 mode);
+s32 set_cam_angle(struct Camera *c, s32 mode);
 void set_handheld_shake(u8 mode);
 void shake_camera_handheld(Vec3f pos, Vec3f focus);
 s32 find_c_buttons_pressed(u16 currentState, u16 buttonsPressed, u16 buttonsDown);
@@ -728,7 +735,6 @@ void play_sound_cbutton_down(void);
 void play_sound_cbutton_side(void);
 void play_sound_button_change_blocked(void);
 void play_sound_rbutton_changed(void);
-void play_sound_if_cam_switched_to_lakitu_or_mario(void);
 s32 radial_camera_input(struct Camera *c, UNUSED f32 unused);
 s32 trigger_cutscene_dialog(s32 trigger);
 void handle_c_button_movement(struct Camera *c);
