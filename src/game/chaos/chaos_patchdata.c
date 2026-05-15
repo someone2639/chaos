@@ -1050,6 +1050,22 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Double Trouble",
         .shortDescription   = "Mario can no longer double jump (and by extension, triple jump).",
     },
+    [CHAOS_PATCH_CANT_STOP_WONT_STOP] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 2,
+        .isStackable        = FALSE,
+        .duration           = 5,
+        .durationHard       = 7,
+        .durationImpossible = 8,
+
+        .conditionalFunc    = chs_cond_cant_stop_wont_stop,
+        .activatedInitFunc  = chs_act_cant_stop_wont_stop,
+
+        .name               = "Can't Stop, Won't Stop",
+        .shortDescription   = "Mario will always be moving at full speed, even if you let go of the analog stick!",
+        .longDescription    = "This will essentially act as if the joystick is always pointed in the held direction at the maximum magnitude. If the joystick is not being held, it will reuse the most recently held direction."
+    },
     [CHAOS_PATCH_BRAWL_TRIPPING] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,

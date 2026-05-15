@@ -115,6 +115,8 @@ u8 chs_cond_harder_longjumps(void);
 u8 chs_cond_forwards_blj(void);
 u8 chs_cond_losemove_longjump(void);
 u8 chs_cond_losemove_wall_kick(void);
+u8 chs_cond_cant_stop_wont_stop(void);
+void chs_act_cant_stop_wont_stop(void);
 
 // Random Griefing
 u8 chs_cond_random_sleep(void);

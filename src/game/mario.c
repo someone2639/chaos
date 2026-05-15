@@ -1859,8 +1859,9 @@ s32 execute_mario_action(UNUSED struct Object *o) {
     s32 inLoop = TRUE;
 
     if (gMarioState->action) {
-        s32 tmpStickX = gMarioState->controller->stickX;
-        s32 tmpStickY = gMarioState->controller->stickY;
+        f32 tmpStickX = gMarioState->controller->stickX;
+        f32 tmpStickY = gMarioState->controller->stickY;
+        f32 tmpStickMag = gMarioState->controller->stickMag;
         s32 tmpButtonDown = gMarioState->controller->buttonDown;
         s32 tmpButtonPressed = gMarioState->controller->buttonPressed;
 
@@ -1869,9 +1870,26 @@ s32 execute_mario_action(UNUSED struct Object *o) {
             gMarioState->controller->buttonPressed &= ~(L_TRIG | R_TRIG | Z_TRIG | A_BUTTON | B_BUTTON | L_JPAD | R_JPAD | U_JPAD | D_JPAD | L_CBUTTONS | R_CBUTTONS | U_CBUTTONS | D_CBUTTONS);
         }
 
+        if (chaos_check_if_patch_active(CHAOS_PATCH_CANT_STOP_WONT_STOP)) {
+            if (gMarioState->controller->stickMag <= 0.0f) {
+                // Run in same direction as last frame if no stick direction is held
+                gMarioState->controller->stickX = gMarioState->csws_lastStickX;
+                gMarioState->controller->stickY = gMarioState->csws_lastStickY;
+                gMarioState->controller->stickMag = gMarioState->csws_lastStickMag;
+            } else {
+                f32 mult = 64.0f / gMarioState->controller->stickMag; // Div by 0 handled by above
+                gMarioState->controller->stickX *= mult;
+                gMarioState->controller->stickY *= mult;
+                gMarioState->controller->stickMag *= mult;
+
+                gMarioState->csws_lastStickX = gMarioState->controller->stickX;
+                gMarioState->csws_lastStickY = gMarioState->controller->stickY;
+                gMarioState->csws_lastStickMag = gMarioState->controller->stickMag;
+            }
+        }
         if(chaos_check_if_patch_active(CHAOS_PATCH_SM64_DS)) {
-            s32 adjustedX;
-            s32 adjustedY;
+            f32 adjustedX;
+            f32 adjustedY;
             f32 magX;
             f32 magY;
             f32 mag = ((gMarioState->controller->stickMag / 64.0f) * (gMarioState->controller->stickMag / 64.0f)) * 64.0f;
@@ -1946,6 +1964,9 @@ s32 execute_mario_action(UNUSED struct Object *o) {
         if (gMarioState->floor == NULL) {
             gMarioState->controller->stickX = tmpStickX;
             gMarioState->controller->stickY = tmpStickY;
+            gMarioState->controller->stickMag = tmpStickMag;
+            gMarioState->controller->buttonDown = tmpButtonDown;
+            gMarioState->controller->buttonPressed = tmpButtonPressed;
             return 0;
         }
 
@@ -2017,6 +2038,7 @@ s32 execute_mario_action(UNUSED struct Object *o) {
 
         gMarioState->controller->stickX = tmpStickX;
         gMarioState->controller->stickY = tmpStickY;
+        gMarioState->controller->stickMag = tmpStickMag;
         gMarioState->controller->buttonDown = tmpButtonDown;
         gMarioState->controller->buttonPressed = tmpButtonPressed;
 

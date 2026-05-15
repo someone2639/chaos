@@ -97,3 +97,13 @@ u8 chs_cond_losemove_longjump(void) {
 u8 chs_cond_losemove_wall_kick(void) {
     return !chaos_check_if_patch_active(CHAOS_PATCH_STICKY_WALL_JUMP);
 }
+
+u8 chs_cond_cant_stop_wont_stop(void) {
+    return !(chaos_check_if_patch_active(CHAOS_PATCH_WALKIES) || chaos_check_if_patch_active(CHAOS_PATCH_SPEED_TAX));
+}
+
+void chs_act_cant_stop_wont_stop(void) {
+    gMarioState->csws_lastStickX = 0.0f;
+    gMarioState->csws_lastStickY = 64.0f;
+    gMarioState->csws_lastStickMag = 64.0f;
+}

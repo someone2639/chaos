@@ -42,6 +42,7 @@ u8 chs_cond_walkies(void) {
          && !chaos_check_if_patch_active(CHAOS_PATCH_HEALTH_DRAIN)
          && !chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_CLONES)
          && !chaos_check_if_patch_active(CHAOS_PATCH_PUSH_BACK)
+         && !chaos_check_if_patch_active(CHAOS_PATCH_CANT_STOP_WONT_STOP)
     );
 }
 
@@ -56,7 +57,7 @@ void chs_act_speed_tax(void) {
 }
 
 u8 chs_cond_speed_tax(void) {
-    return (!chaos_check_if_patch_active(CHAOS_PATCH_WALKIES));
+    return !(chaos_check_if_patch_active(CHAOS_PATCH_WALKIES) || chaos_check_if_patch_active(CHAOS_PATCH_CANT_STOP_WONT_STOP));
 }
 
 void chs_update_speed_tax(void) {
