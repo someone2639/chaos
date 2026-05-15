@@ -80,6 +80,7 @@ enum ChaosPatchID {
     CHAOS_PATCH_EXTRADAMAGE_ENEMIES,
     CHAOS_PATCH_EXTRADAMAGE_LAVA,
     CHAOS_PATCH_BREATH_BOOST,
+    CHAOS_PATCH_OXYGEN_TANK,
     CHAOS_PATCH_SHIELD,
     CHAOS_PATCH_RANDOM_INVINCIBILITY,
     CHAOS_PATCH_A_BUTTON_CHALLENGE,
@@ -249,7 +250,7 @@ enum ChaosPatchID {
     CHAOS_PATCH_COUNT,
 
 // NOTE: Only to be used for comparisons, there are not indexing safeguards in place here!
-    CHAOS_PATCH_NONE = 0xFFFFFFFF,
+    CHAOS_PATCH_NONE = 0xFFFFFFFFu,
 };
 
 enum ChaosPatchEffectType {

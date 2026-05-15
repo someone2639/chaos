@@ -22,6 +22,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .negationId         = 0,
         .severity           = 0,
         .isStackable        = TRUE,
+        .affectsPatchSelect = FALSE,
         .disableForHardcore = FALSE,
         .duration           = 0,
         .durationHard       = 0,
@@ -30,6 +31,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         INCOMPATIBLE(),
         .conditionalFunc    = NULL,
         .activatedInitFunc  = NULL,
+        .levelInitFunc      = NULL,
         .areaInitFunc       = NULL,
         .frameUpdateFunc    = NULL,
         .deactivationFunc   = NULL,
@@ -44,6 +46,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .negationId         = 0,
         .severity           = 0,
         .isStackable        = TRUE,
+        .affectsPatchSelect = FALSE,
         .disableForHardcore = FALSE,
         .duration           = 0,
         .durationHard       = 0,
@@ -52,6 +55,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         INCOMPATIBLE(),
         .conditionalFunc    = NULL,
         .activatedInitFunc  = NULL,
+        .levelInitFunc      = NULL,
         .areaInitFunc       = NULL,
         .frameUpdateFunc    = NULL,
         .deactivationFunc   = NULL,
@@ -71,6 +75,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 1,
         .isStackable        = TRUE,
 
+        // NOTE: Negative patch generation happens first, so conflicting immediate-use positive patches can be checked against negatives at generation time, but not the reverse.
         INCOMPATIBLE(CHAOS_PATCH_LIVES_DECREASE_LV1, CHAOS_PATCH_LIVES_DECREASE_LV2, CHAOS_PATCH_LIVES_DECREASE_LV3),
         .conditionalFunc    = chs_cond_lives_increase_lv1,
         .activatedInitFunc  = chs_act_lives_increase_lv1,
@@ -85,6 +90,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 2,
         .isStackable        = TRUE,
 
+        // NOTE: Negative patch generation happens first, so conflicting immediate-use positive patches can be checked against negatives at generation time, but not the reverse.
         INCOMPATIBLE(CHAOS_PATCH_LIVES_DECREASE_LV1, CHAOS_PATCH_LIVES_DECREASE_LV2, CHAOS_PATCH_LIVES_DECREASE_LV3),
         .conditionalFunc    = chs_cond_lives_increase_lv2,
         .activatedInitFunc  = chs_act_lives_increase_lv2,
@@ -99,6 +105,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 3,
         .isStackable        = TRUE,
 
+        // NOTE: Negative patch generation happens first, so conflicting immediate-use positive patches can be checked against negatives at generation time, but not the reverse.
         INCOMPATIBLE(CHAOS_PATCH_LIVES_DECREASE_LV1, CHAOS_PATCH_LIVES_DECREASE_LV2, CHAOS_PATCH_LIVES_DECREASE_LV3),
         .conditionalFunc    = chs_cond_lives_increase_lv3,
         .activatedInitFunc  = chs_act_lives_increase_lv3,
@@ -113,6 +120,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 1,
         .isStackable        = TRUE,
     
+        // NOTE: Negative patch generation happens first, so conflicting immediate-use positive patches can be checked against negatives at generation time, but not the reverse.
         .conditionalFunc    = chs_cond_lives_decrease_lv1,
         .activatedInitFunc  = chs_act_lives_decrease_lv1,
 
@@ -126,6 +134,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 2,
         .isStackable        = TRUE,
 
+        // NOTE: Negative patch generation happens first, so conflicting immediate-use positive patches can be checked against negatives at generation time, but not the reverse.
         .conditionalFunc    = chs_cond_lives_decrease_lv2,
         .activatedInitFunc  = chs_act_lives_decrease_lv2,
 
@@ -139,6 +148,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 3,
         .isStackable        = TRUE,
 
+        // NOTE: Negative patch generation happens first, so conflicting immediate-use positive patches can be checked against negatives at generation time, but not the reverse.
         .conditionalFunc    = chs_cond_lives_decrease_lv3,
         .activatedInitFunc  = chs_act_lives_decrease_lv3,
 
@@ -195,6 +205,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 2,
         .isStackable        = TRUE,
 
+        // NOTE: Negative patch generation happens first, so conflicting immediate-use positive patches can be checked against negatives at generation time, but not the reverse.
         INCOMPATIBLE(CHAOS_PATCH_STARS_DECREASE_LV2, CHAOS_PATCH_STARS_DECREASE_LV3, CHAOS_PATCH_STARS_DECREASE_GUARANTEE),
         .activatedInitFunc  = chs_act_stars_increase_lv2,
 
@@ -208,6 +219,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 3,
         .isStackable        = TRUE,
 
+        // NOTE: Negative patch generation happens first, so conflicting immediate-use positive patches can be checked against negatives at generation time, but not the reverse.
         INCOMPATIBLE(CHAOS_PATCH_STARS_DECREASE_LV2, CHAOS_PATCH_STARS_DECREASE_LV3, CHAOS_PATCH_STARS_DECREASE_GUARANTEE),
         .activatedInitFunc  = chs_act_stars_increase_lv3,
 
@@ -221,6 +233,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 3,
         .isStackable        = TRUE,
 
+        // NOTE: Negative patch generation happens first, so conflicting immediate-use positive patches can be checked against negatives at generation time, but not the reverse.
         INCOMPATIBLE(CHAOS_PATCH_STARS_DECREASE_LV2, CHAOS_PATCH_STARS_DECREASE_LV3, CHAOS_PATCH_STARS_DECREASE_GUARANTEE),
         .conditionalFunc    = chs_cond_stars_increase_guarantee,
         .activatedInitFunc  = chs_act_stars_increase_guarantee,
@@ -235,6 +248,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 2,
         .isStackable        = TRUE,
 
+        // NOTE: Negative patch generation happens first, so conflicting immediate-use positive patches can be checked against negatives at generation time, but not the reverse.
         .activatedInitFunc  = chs_act_stars_decrease_lv2,
 
         .name               = "One-Star Risk",
@@ -247,6 +261,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 3,
         .isStackable        = TRUE,
 
+        // NOTE: Negative patch generation happens first, so conflicting immediate-use positive patches can be checked against negatives at generation time, but not the reverse.
         .activatedInitFunc  = chs_act_stars_decrease_lv3,
 
         .name               = "Two-Star Trick",
@@ -259,6 +274,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 3,
         .isStackable        = TRUE,
 
+        // NOTE: Negative patch generation happens first, so conflicting immediate-use positive patches can be checked against negatives at generation time, but not the reverse.
         .conditionalFunc    = chs_cond_stars_decrease_guarantee,
         .activatedInitFunc  = chs_act_stars_decrease_guarantee,
 
@@ -611,8 +627,22 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = FALSE,
         .duration           = 12,
 
+        INCOMPATIBLE(CHAOS_PATCH_OXYGEN_TANK),
+
         .name               = "Breath Boost",
         .shortDescription   = "Mario loses health more slowly underwater.",
+    },
+    [CHAOS_PATCH_OXYGEN_TANK] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 2,
+        .isStackable        = FALSE,
+        .duration           = 10,
+
+        INCOMPATIBLE(CHAOS_PATCH_BREATH_BOOST),
+
+        .name               = "Oxygen Tank",
+        .shortDescription   = "Mario won't lose any health underwater, from cold water, or from toxic gas.",
     },
     [CHAOS_PATCH_SHIELD] = {
         .durationType       = CHAOS_DURATION_USE_COUNT,

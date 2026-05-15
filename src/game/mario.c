@@ -1478,7 +1478,7 @@ void update_mario_geometry_inputs(struct MarioState *m) {
             m->input |= INPUT_IN_WATER;
         }
 
-        if (m->pos[1] < (gasLevel - 100.0f)) {
+        if (m->pos[1] < (gasLevel - 100.0f) && !chaos_check_if_patch_active(CHAOS_PATCH_OXYGEN_TANK)) {
             m->input |= INPUT_IN_POISON_GAS;
         }
 
@@ -1616,7 +1616,7 @@ void update_mario_health(struct MarioState *m) {
                         if (!(chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_WATER))) {
                             m->health += 0x1A;
                         }
-                    } else if (!gDebugLevelSelect) {
+                    } else if (!chaos_check_if_patch_active(CHAOS_PATCH_OXYGEN_TANK) && !gDebugLevelSelect) {
                         if (terrainIsSnow) {
                             m->health -= (!chs_check_temporary_invincibility()) ? 3 : 0;
                         } else {
