@@ -558,6 +558,10 @@ s32 save_file_is_cannon_unlocked(void) {
 #ifdef UNLOCK_ALL
     return TRUE;
 #else
+    if (chaos_check_if_patch_active(CHAOS_PATCH_UNLOCK_CANNONS)) {
+        return TRUE;
+    }
+
     return (gSaveBuffer.files[gCurrSaveFileNum - 1].courseStars[gCurrCourseNum] & (1 << 7)) != 0;
 #endif
 }

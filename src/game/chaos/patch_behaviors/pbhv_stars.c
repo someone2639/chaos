@@ -509,12 +509,20 @@ void chs_act_get_key_1(void) {
     save_file_set_flags(SAVE_FLAG_HAVE_KEY_1);
 }
 
+void chs_deact_get_key_1(void) {
+    save_file_clear_flags(SAVE_FLAG_HAVE_KEY_1);
+}
+
 u8 chs_cond_get_key_1(void) {
     return (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_1 | SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)));
 }
 
 void chs_act_get_key_2(void) {
     save_file_set_flags(SAVE_FLAG_HAVE_KEY_2);
+}
+
+void chs_deact_get_key_2(void) {
+    save_file_clear_flags(SAVE_FLAG_HAVE_KEY_2);
 }
 
 u8 chs_cond_get_key_2(void) {
@@ -525,12 +533,20 @@ void chs_act_get_wing_cap(void) {
     save_file_set_flags(SAVE_FLAG_HAVE_WING_CAP);
 }
 
+void chs_deact_get_wing_cap(void) {
+    save_file_clear_flags(SAVE_FLAG_HAVE_WING_CAP);
+}
+
 u8 chs_cond_get_wing_cap(void) {
     return (!(save_file_get_flags() & SAVE_FLAG_HAVE_WING_CAP));
 }
 
 void chs_act_get_metal_cap(void) {
     save_file_set_flags(SAVE_FLAG_HAVE_METAL_CAP);
+}
+
+void chs_deact_get_metal_cap(void) {
+    save_file_clear_flags(SAVE_FLAG_HAVE_METAL_CAP);
 }
 
 u8 chs_cond_get_metal_cap(void) {
@@ -541,25 +557,12 @@ void chs_act_get_vanish_cap(void) {
     save_file_set_flags(SAVE_FLAG_HAVE_VANISH_CAP);
 }
 
+void chs_deact_get_vanish_cap(void) {
+    save_file_clear_flags(SAVE_FLAG_HAVE_VANISH_CAP);
+}
+
 u8 chs_cond_get_vanish_cap(void) {
     return (!(save_file_get_flags() & SAVE_FLAG_HAVE_VANISH_CAP));
-}
-
-void chs_act_unlock_cannons(void) {
-    for(int i = 0; i < COURSE_COUNT; i++) {
-        gSaveBuffer.files[gCurrSaveFileNum - 1].courseStars[i] |= (1 << 7);
-    }
-    gSaveFileModified = TRUE;
-}
-
-u8 chs_cond_unlock_cannons(void) {
-    for(int i = 0; i < COURSE_COUNT; i++) {
-        if((gSaveBuffer.files[gCurrSaveFileNum - 1].courseStars[i] & (1 << 7)) == 0){
-            return TRUE;
-        }
-    }
-
-    return FALSE;
 }
 
 u8 chs_cond_star_cloning_device(void) {
