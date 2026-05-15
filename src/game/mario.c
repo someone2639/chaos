@@ -1858,8 +1858,6 @@ void func_sh_8025574C(void) {
 s32 execute_mario_action(UNUSED struct Object *o) {
     s32 inLoop = TRUE;
 
-    print_text_fmt_int(16, 16, "%d", gChaosPatches[CHAOS_PATCH_LIVES_INCREASE_LV1].incompatibleCount);
-
     if (gMarioState->action) {
         f32 tmpStickX = gMarioState->controller->stickX;
         f32 tmpStickY = gMarioState->controller->stickY;
