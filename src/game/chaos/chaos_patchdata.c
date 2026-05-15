@@ -2411,22 +2411,22 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
         .isStackable        = FALSE,
-        .duration           = 10,
-        .durationHard       = 12,
-        .durationImpossible = 15,
+        .duration           = 6,
+        .durationHard       = 7,
+        .durationImpossible = 8,
 
-        .conditionalFunc    = chs_cond_tetris,
         .activatedInitFunc  = chs_act_tetris,
+        .deactivationFunc   = chs_deact_tetris,
         .frameUpdateFunc    = chs_update_tetris,
 
         .name               = "Tetris Effect",
         .shortDescription   = "Control a simultaneous game of Tetris. If you lose, Mario dies! Press Z to see controls.",
-        .longDescription    =   "D-Pad Left -- Move left\n"
-                                "D-Pad Right -- Move right\n"
-                                "D-Pad Up -- Hard Drop\n"
-                                "D-Pad Down -- Soft Drop\n"
-                                "Hold L + D-Pad Left -- Rotate Left\n"
-                                "Hold L + D-Pad Right -- Rotate Right\n"
-                                "Hold L + D-Pad Up -- Hold/Switch",
+        .longDescription    = "Hold R to control Tetris and lock Mario's inputs.\n"
+                              "D-Pad/C Left/Right -- Move Piece\n"
+                              "D-Pad/C Up -- Hard Drop\n"
+                              "D-Pad/C Down -- Soft Drop\n"
+                              "A -- Rotate Left\n"
+                              "B -- Rotate Right\n"
+                              "Z/L -- Hold"
     },
 };

@@ -32,6 +32,7 @@
 #include "level_table.h"
 #include "level_update.h"
 #include "game/rendering_graph_node.h"
+#include "game/chaos/patch_behaviors/pbhv_tetris.h"
 
 #undef L_CBUTTONS
 #undef R_CBUTTONS
@@ -3393,6 +3394,19 @@ void update_camera(struct Camera *c) {
     u16 temporaryButtonDown = gPlayer1Controller->buttonDown;
     u16 temporaryButtonPressed = gPlayer1Controller->buttonPressed;
     s32 forceMarioCam = chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM);
+
+    if(chaos_check_if_patch_active(CHAOS_PATCH_TETRIS)) {
+        if(gTetrisTriggerCameraR) {
+            gPlayer1Controller->buttonPressed |= R_TRIG;
+        } else {
+            gPlayer1Controller->buttonPressed &= ~R_TRIG;
+        }
+
+        if(gMarioState->chaosStateFlags & CHAOS_STATE_CONTROLLING_TETRIS) {
+            gPlayer1Controller->buttonDown &= ~(R_CBUTTONS | L_CBUTTONS | U_CBUTTONS | D_CBUTTONS | R_JPAD | L_JPAD | U_JPAD | D_JPAD);
+            gPlayer1Controller->buttonPressed &= ~(R_CBUTTONS | L_CBUTTONS | U_CBUTTONS | D_CBUTTONS | R_JPAD | L_JPAD | U_JPAD | D_JPAD);
+        }
+    }
 
     if (chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_CAMERA_X)) {
         gPlayer1Controller->buttonDown &= ~(R_CBUTTONS | L_CBUTTONS | R_JPAD | L_JPAD);

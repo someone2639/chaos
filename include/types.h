@@ -84,6 +84,7 @@ enum SpTaskState {
 enum ChaosStateFlags {
     CHAOS_STATE_NONE = 0u,
     CHAOS_STATE_L_TO_LEVITATE = (1u << 0),
+    CHAOS_STATE_CONTROLLING_TETRIS = (1u << 1),
 };
 
 struct SPTask {

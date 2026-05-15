@@ -145,3 +145,8 @@ struct Tetris {
     // Repeats movement if a direction is held
     u8 autoRepeatTimer;
 };
+
+
+// Number of frames to hold R before camera input is skipped and tetris is controllable
+#define TETRIS_HOLD_R_FRAMES    5
+extern s8 gTetrisTriggerCameraR;

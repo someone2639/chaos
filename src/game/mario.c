@@ -1861,6 +1861,13 @@ s32 execute_mario_action(UNUSED struct Object *o) {
     if (gMarioState->action) {
         s32 tmpStickX = gMarioState->controller->stickX;
         s32 tmpStickY = gMarioState->controller->stickY;
+        s32 tmpButtonDown = gMarioState->controller->buttonDown;
+        s32 tmpButtonPressed = gMarioState->controller->buttonPressed;
+
+        if((gMarioState->chaosStateFlags & CHAOS_STATE_CONTROLLING_TETRIS)) {
+            gMarioState->controller->buttonDown &= ~(L_TRIG | R_TRIG | Z_TRIG | A_BUTTON | B_BUTTON | L_JPAD | R_JPAD | U_JPAD | D_JPAD | L_CBUTTONS | R_CBUTTONS | U_CBUTTONS | D_CBUTTONS);
+            gMarioState->controller->buttonPressed &= ~(L_TRIG | R_TRIG | Z_TRIG | A_BUTTON | B_BUTTON | L_JPAD | R_JPAD | U_JPAD | D_JPAD | L_CBUTTONS | R_CBUTTONS | U_CBUTTONS | D_CBUTTONS);
+        }
 
         if(chaos_check_if_patch_active(CHAOS_PATCH_SM64_DS)) {
             s32 adjustedX;
@@ -2010,6 +2017,9 @@ s32 execute_mario_action(UNUSED struct Object *o) {
 
         gMarioState->controller->stickX = tmpStickX;
         gMarioState->controller->stickY = tmpStickY;
+        gMarioState->controller->buttonDown = tmpButtonDown;
+        gMarioState->controller->buttonPressed = tmpButtonPressed;
+
         return gMarioState->particleFlags;
     }
 

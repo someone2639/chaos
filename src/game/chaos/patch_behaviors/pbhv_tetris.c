@@ -16,6 +16,11 @@
 #include "audio/external.h"
 #include "sounds.h"
 
+static s8 sTetrisHoldRTimer  =   0;
+
+// Swaps the R button input to change camera mode from a button press to a button release
+s8 gTetrisTriggerCameraR = FALSE;
+
 // Tetrimino shape
 #define TET_SHP(_1, _2, _3, _4) \
     ((_4 << 12) | (_3 << 8) | (_2 << 4) | _1)
@@ -679,22 +684,23 @@ void tetris_state_default(void) {
     
     s32 autoRepeat = 0;
 
-    if((down & (L_JPAD | R_JPAD))) {
-        if(sTetris.autoRepeatTimer++ > 5) {
-            autoRepeat |= (down & (L_JPAD | R_JPAD));
-            sTetris.autoRepeatTimer -= 2;
+    if(gMarioState->chaosStateFlags & CHAOS_STATE_CONTROLLING_TETRIS) {
+        if((down & (L_JPAD | R_JPAD | L_CBUTTONS | R_CBUTTONS))) {
+            if(sTetris.autoRepeatTimer++ > 5) {
+                autoRepeat |= (down & (L_JPAD | R_JPAD | L_CBUTTONS | R_CBUTTONS));
+                sTetris.autoRepeatTimer -= 2;
+            }
+        } else {
+            sTetris.autoRepeatTimer = 0;
         }
-    } else {
-        sTetris.autoRepeatTimer = 0;
-    }
 
-    if(down & L_TRIG) {
-        // Handle rotation
-        if(pressed & L_JPAD) {
+        if(pressed & B_BUTTON) {
+            // Rotate counterclockwise
             tetris_rotate_piece(piece, -1);
-        } else if(pressed & R_JPAD) {
+        } else if(pressed & A_BUTTON) {
+            // Rotate clockwise
             tetris_rotate_piece(piece, 1);
-        } else if(pressed & U_JPAD && !sTetris.usedHold) {
+        } else if(pressed & (Z_TRIG | L_TRIG) && !sTetris.usedHold) {
             s32 held = sTetris.held;
 
             sTetris.held = sTetris.piece.type;
@@ -708,30 +714,30 @@ void tetris_state_default(void) {
 
             sTetris.usedHold = TRUE;
             play_sound(SOUND_MENU_TETRIS_ROTATE, gGlobalSoundSource);
+        } else if ((autoRepeat & (L_JPAD | L_CBUTTONS)) || (pressed & (L_JPAD | L_CBUTTONS))) {
+            // Move left
+            tetris_move_piece(piece, -1, 0);
+        } else if ((autoRepeat & (R_JPAD | R_CBUTTONS)) || (pressed & (R_JPAD | L_CBUTTONS))) {
+            // Move right
+            tetris_move_piece(piece, 1, 0);
+        } else if (pressed & (U_JPAD | U_CBUTTONS)) {
+            // Hard drop
+            s32 lines = piece->y;
+            piece->y = sTetris.floor;
+            lines = piece->y - lines;
+            
+            piece->lockDownTimer = 15;
+            piece->lockDownSteps = 15;
+            piece->lastManeuver = TET_MV_DROP;
+
+            tetris_score_action(TET_ACT_HARD_DROP, lines);
+        } else if (down & (D_JPAD | D_CBUTTONS)) {
+            // Soft drop
+            sTetris.gravity += 1.0f;
+            tetris_score_action(TET_ACT_SOFT_DROP, 1);
         }
-
+    } else {
         sTetris.autoRepeatTimer = 0;
-    } else if ((autoRepeat & L_JPAD) || (pressed & L_JPAD)) {
-        // Move left
-        tetris_move_piece(piece, -1, 0);
-    } else if ((autoRepeat & R_JPAD) || (pressed & R_JPAD)) {
-        // Move right
-        tetris_move_piece(piece, 1, 0);
-    } else if (pressed & U_JPAD) {
-        // Hard drop
-        s32 lines = piece->y;
-        piece->y = sTetris.floor;
-        lines = piece->y - lines;
-        
-        piece->lockDownTimer = 15;
-        piece->lockDownSteps = 15;
-        piece->lastManeuver = TET_MV_DROP;
-
-        tetris_score_action(TET_ACT_HARD_DROP, lines);
-    } else if (down & D_JPAD) {
-        // Soft drop
-        sTetris.gravity += 1.0f;
-        tetris_score_action(TET_ACT_SOFT_DROP, 1);
     }
 
     // Handle gravity
@@ -786,17 +792,37 @@ void tetris_state_game_over(void) {
     }
 }
 
-u8 chs_cond_tetris(void) {
-    return !chaos_check_if_patch_active(CHAOS_PATCH_DEBUG_FREE_MOVE);
-}
-
 void chs_act_tetris(void) {
     tetris_reset();
+}
+
+void chs_deact_tetris(void) {
+    gMarioStates->chaosStateFlags &= ~CHAOS_STATE_CONTROLLING_TETRIS;
+    sTetrisHoldRTimer = 0;
+    gTetrisTriggerCameraR = FALSE;
 }
 
 void chs_update_tetris(void) {
     if (!check_moving_play_mode(sCurrPlayMode) || gInActSelect) {
         return;
+    }
+
+    // Keeps track of how long the R trigger was held for, so that it doesn't interfere with the player control of the camera
+    if(gPlayer1Controller->buttonDown & R_TRIG) {
+        gTetrisTriggerCameraR = FALSE;
+        if(sTetrisHoldRTimer++ > TETRIS_HOLD_R_FRAMES) {
+            sTetrisHoldRTimer = TETRIS_HOLD_R_FRAMES;
+            gMarioStates->chaosStateFlags |= CHAOS_STATE_CONTROLLING_TETRIS;
+        }
+    } else {
+        if((sTetrisHoldRTimer > 0) && (sTetrisHoldRTimer < TETRIS_HOLD_R_FRAMES)) {
+            gTetrisTriggerCameraR = TRUE;
+        } else {
+            gTetrisTriggerCameraR = FALSE;
+        }
+
+        gMarioStates->chaosStateFlags &= ~CHAOS_STATE_CONTROLLING_TETRIS;
+        sTetrisHoldRTimer = 0;
     }
 
     s32 prev = sTetris.state;
@@ -838,14 +864,17 @@ void tetris_draw_tetrimino(s32 startX, s32 startY, u16 shape, u16 col, s32 clear
 }
 
 void tetris_draw_grid(void) {
-    s32 imgX = 20;
-    s32 imgY = SCREEN_HEIGHT - 22 - (TETRIS_VISIBLE_HEIGHT * 4);
+    s32 x = 20;
+    s32 y = 36;
+
+    s32 imgX = x;
+    s32 imgY = SCREEN_HEIGHT - y - (TETRIS_VISIBLE_HEIGHT * 4);
 
     s32 gridW = (TETRIS_GRID_WIDTH * 4) + 6;
-    s32 gridX = ((TETRIS_GRID_WIDTH * 4) / 2) + imgX;
+    s32 gridX = ((TETRIS_GRID_WIDTH * 4) / 2) + x;
 
     s32 gridH = (TETRIS_VISIBLE_HEIGHT * 4) + 6;
-    s32 gridY = ((TETRIS_VISIBLE_HEIGHT * 4) / 2) + 23;
+    s32 gridY = ((TETRIS_VISIBLE_HEIGHT * 4) / 2) + y + 1;
 
     s32 sideW = 6 * 4;
     s32 sideX = gridX + (gridW / 2) + (sideW / 2) - 3;
@@ -902,10 +931,13 @@ void tetris_draw_grid(void) {
     fasttext_setup_textrect_rendering(FT_FONT_SMALL_BOLD);
     fasttext_draw_texrect(imgX, imgY - 17, buf, FT_FLAG_ALIGN_LEFT, 0xF0, 0xF0, 0xF0, 0xFF);
     sprintf(buf, "%010d", sTetris.score);
-    fasttext_draw_texrect(imgX, SCREEN_HEIGHT - 23, buf, FT_FLAG_ALIGN_LEFT, 0xF0, 0xF0, 0xF0, 0xFF);
+    fasttext_draw_texrect(imgX, imgY + (TETRIS_VISIBLE_HEIGHT * 4) - 1, buf, FT_FLAG_ALIGN_LEFT, 0xF0, 0xF0, 0xF0, 0xFF);
 
     if(sTetris.state == TET_STATE_GAME_OVER) {
         fasttext_draw_texrect(gridX, SCREEN_HEIGHT - gridY - 14, "GAME\nOVER", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+    } else if(!(gMarioStates->chaosStateFlags & CHAOS_STATE_CONTROLLING_TETRIS) && (gGlobalTimer % 60) < 30) {
+        menu_single_button_prompt(x + (gridW / 2) + 16, imgY + (TETRIS_VISIBLE_HEIGHT * 4) + 9, MENU_PROMPT_R_TRIG, "Hold", FALSE);
+        fasttext_setup_textrect_rendering(FT_FONT_SMALL_BOLD);
     }
 
     fasttext_finished_rendering();

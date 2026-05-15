@@ -23,6 +23,11 @@ u8 chs_cond_l_to_levitate(void) {
 
 u8 chs_can_mario_levitate(void) {
     s32 group = (gMarioState->action & ACT_GROUP_MASK);
+
+    if(gMarioState->chaosStateFlags & CHAOS_STATE_CONTROLLING_TETRIS) {
+        return FALSE;
+    }
+
     if (!(gMarioState->action & ACT_FLAG_INTANGIBLE)
             && group != ACT_GROUP_CUTSCENE
             && group != ACT_GROUP_SUBMERGED) {
@@ -67,6 +72,10 @@ void chs_update_debug_free_move(void) {
     }
     
     if ((gMarioState->action & ACT_FLAG_INTANGIBLE) || group == ACT_GROUP_CUTSCENE) {
+        return;
+    }
+
+    if(gMarioState->chaosStateFlags & CHAOS_STATE_CONTROLLING_TETRIS) {
         return;
     }
 
