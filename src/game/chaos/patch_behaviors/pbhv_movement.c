@@ -99,7 +99,7 @@ u8 chs_cond_losemove_wall_kick(void) {
 }
 
 u8 chs_cond_cant_stop_wont_stop(void) {
-    return !(chaos_check_if_patch_active(CHAOS_PATCH_WALKIES) || chaos_check_if_patch_active(CHAOS_PATCH_SPEED_TAX));
+    return !chaos_check_if_patch_active(CHAOS_PATCH_SPEED_TAX);
 }
 
 void chs_act_cant_stop_wont_stop(void) {

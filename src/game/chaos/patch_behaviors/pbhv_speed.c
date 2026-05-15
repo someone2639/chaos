@@ -42,7 +42,6 @@ u8 chs_cond_walkies(void) {
          && !chaos_check_if_patch_active(CHAOS_PATCH_HEALTH_DRAIN)
          && !chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_CLONES)
          && !chaos_check_if_patch_active(CHAOS_PATCH_PUSH_BACK)
-         && !chaos_check_if_patch_active(CHAOS_PATCH_CANT_STOP_WONT_STOP)
     );
 }
 
