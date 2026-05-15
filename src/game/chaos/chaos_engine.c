@@ -57,6 +57,7 @@ static void chaos_recompute_active_patch_counts(void) {
     }
 }
 
+// NOTE: Function duplicated in chaos_check_conditional_func (for optimization)
 u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId) {
     return (activePatchCounts[patchId] > 0 || patchId == gNegativePatchCompare);
 }
@@ -64,6 +65,17 @@ u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId) {
 static u8 chaos_check_conditional_func(const struct ChaosPatch *patch) {
     if (gChaosGameMode == CHAOS_GAMEMODE_HARDCORE && patch->disableForHardcore) {
         return FALSE;
+    }
+
+    assert(!(patch->incompatibleCount > 0 && patch->incompatible == NULL), "chaos_check_conditional_func:\nincompatible array is NULL, despite incompatibleCount being nonzero!");
+    for (u32 i = 0; i < patch->incompatibleCount; i++) {
+        // NULL pointer exception if incompatibleCount is wrongly non-zero for some reason
+        const enum ChaosPatchID patchId = patch->incompatible[i];
+
+        // NOTE: Inline of chaos_check_if_patch_active (for optimization)
+        if (activePatchCounts[patchId] > 0 || patchId == gNegativePatchCompare) {
+            return FALSE;
+        }
     }
 
     if (patch->conditionalFunc) {

@@ -138,17 +138,6 @@ void play_mode_quicktime() {
     }
 }
 
-u8 chs_cond_quicktime(void) {
-    return (
-            !chaos_check_if_patch_active(CHAOS_PATCH_BUTTON_BROKEN_A) &&
-            !chaos_check_if_patch_active(CHAOS_PATCH_BUTTON_BROKEN_B) &&
-            !chaos_check_if_patch_active(CHAOS_PATCH_BUTTON_BROKEN_Z) &&
-            !chaos_check_if_patch_active(CHAOS_PATCH_BUTTON_BROKEN_C) &&
-            !chaos_check_if_patch_active(CHAOS_PATCH_SWAPPED_ZR_AB) &&
-            !chaos_check_if_patch_active(CHAOS_PATCH_RED_LIGHT)
-        );
-}
-
 void chs_act_quicktime(void) {
     struct ChaosActiveEntry *this;
     chaos_find_first_active_patch(CHAOS_PATCH_QUICKTIME, &this);

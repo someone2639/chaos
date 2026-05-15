@@ -145,7 +145,6 @@ u8 chs_cond_remove_selectable_patch(void) {
 u8 chs_cond_lucky_charm(void) {
     return !(
         gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE ||
-        chaos_check_if_patch_active(CHAOS_PATCH_UNLUCKY_CHARM) ||
         save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) < CHAOS_MIN_STARS_FOR_EVENTS
     );
 }
@@ -153,8 +152,6 @@ u8 chs_cond_lucky_charm(void) {
 u8 chs_cond_unlucky_charm(void) {
     return !(
         gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE ||
-        chaos_check_if_patch_active(CHAOS_PATCH_LUCKY_CHARM) ||
-        chaos_check_if_patch_active(CHAOS_PATCH_UNEVENTFUL) ||
         save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) < CHAOS_MIN_STARS_FOR_EVENTS
     );
 }
@@ -162,15 +159,6 @@ u8 chs_cond_unlucky_charm(void) {
 u8 chs_cond_uneventful(void) {
     return !(
         gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE ||
-        chaos_check_if_patch_active(CHAOS_PATCH_UNLUCKY_CHARM) ||
         save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) < CHAOS_MIN_STARS_FOR_EVENTS
     );
-}
-
-u8 chs_cond_positive_extension(void) {
-    return !chaos_check_if_patch_active(CHAOS_PATCH_NEGATIVE_EXTENSION);
-}
-
-u8 chs_cond_negative_extension(void) {
-    return !chaos_check_if_patch_active(CHAOS_PATCH_POSITIVE_EXTENSION);
 }

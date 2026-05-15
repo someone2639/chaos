@@ -15,10 +15,6 @@
     Health Drain
 */
 
-u8 chs_cond_noheal_coins(void) {return !(chaos_check_if_patch_active(CHAOS_PATCH_HEALTH_DRAIN) || chaos_check_if_patch_active(CHAOS_PATCH_A_BUTTON_CHALLENGE) || chaos_check_if_patch_active(CHAOS_PATCH_HEALING_BONUS));}
-u8 chs_cond_healing_bonus(void) {return !(chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_COINS));}
-u8 chs_cond_health_drain(void) {return !(chaos_check_if_patch_active(CHAOS_PATCH_HEALTH_GAIN) || chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_COINS) || chaos_check_if_patch_active(CHAOS_PATCH_WALKIES));}
-
 void chs_update_health_drain(void) {
     struct ChaosActiveEntry *this;
     chaos_find_first_active_patch(CHAOS_PATCH_HEALTH_DRAIN, &this);
@@ -32,8 +28,6 @@ void chs_update_health_drain(void) {
 /*
     Health Gain
 */
-
-u8 chs_cond_health_gain(void) {return !chaos_check_if_patch_active(CHAOS_PATCH_HEALTH_DRAIN);}
 
 void chs_update_health_gain(void) {
     struct ChaosActiveEntry *this;
@@ -144,11 +138,6 @@ void chs_lvlinit_temporary_invincibility(void) {
     Extra damage patches
 */
 
-u8 chs_cond_instakill_lava(void) {
-    return TRUE;
-    // return(!chaos_check_if_patch_active(CHAOS_PATCH_NO_LAVA_DAMAGE));
-}
-
 u8 chs_cond_extradamage_enemies(void) {
     return (gMarioState->extraDamageEnemy < (4 * 4));
 }
@@ -206,20 +195,4 @@ void chs_update_random_invincibility(void) {
         gMarioState->invincTimer = 600;
         this->frameTimer = RAND(INVINCIBILITY_TIME_MAX); //Get a random offset to restart the timer at
     }
-}
-
-/*
-    A Button Challenge
-*/
-
-u8 chs_cond_a_button_challenge(void) {
-    return (!chaos_check_if_patch_active(CHAOS_PATCH_NOHEAL_COINS));
-}
-
-/*
-    Damage Lottery
-*/
-
-u8 chs_cond_damage_lottery(void) {
-    return !(chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) || chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER));
 }

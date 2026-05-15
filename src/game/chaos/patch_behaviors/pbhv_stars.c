@@ -465,23 +465,11 @@ static void update_any_star(u8 shouldRemove, s8 negativeRetriesBias) {
     gMarioState->numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
 }
 
-static u8 chs_cond_stars_check_negative_patch(void) {
-    return (gNegativePatchCompare == CHAOS_PATCH_STARS_DECREASE_LV2
-                 || gNegativePatchCompare == CHAOS_PATCH_STARS_DECREASE_LV3
-                 || gNegativePatchCompare == CHAOS_PATCH_STARS_DECREASE_GUARANTEE);
-}
-
 u8 chs_cond_star_shuffle(void) {
     return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 2;
 }
-u8 chs_cond_stars_increase_lv2(void) {
-    return !chs_cond_stars_check_negative_patch();
-}
-u8 chs_cond_stars_increase_lv3(void) {
-    return !chs_cond_stars_check_negative_patch();
-}
 u8 chs_cond_stars_increase_guarantee(void) {
-    return (!chs_cond_stars_check_negative_patch() && save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) <= (NUM_STARS - 1));
+    return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) <= (NUM_STARS - 1);
 }
 u8 chs_cond_stars_decrease_guarantee(void) {
     return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 1;

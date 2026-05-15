@@ -17,10 +17,6 @@
 #define FRAMES_BETWEEN_TRIPS_MIN (30 * 45)
 #define TRIP_PROBABILITY 0.003f
 
-u8 chs_cond_brawl_tripping(void) {
-    return (!chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_CLONES));
-}
-
 void chs_update_brawl_tripping(void) {
     const s32 action = gMarioState->action;
     const s32 goodflags = (ACT_FLAG_MOVING);
@@ -71,35 +67,6 @@ void chs_update_galaxy_twirl(void) {
         gMarioState->spinTimer = 0;
         gMarioState->usedSpin = FALSE;
     }
-}
-
-u8 chs_cond_no_fall_damage(void) {
-    return !chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_FALL_DAMAGE);
-}
-
-u8 chs_cond_no_lava_damage(void) {
-    return TRUE;
-    // return !chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_LAVA);
-}
-
-u8 chs_cond_harder_longjumps(void) {
-    return !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_LONG_JUMP);
-}
-
-u8 chs_cond_forwards_blj(void) {
-    return !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_LONG_JUMP);
-}
-
-u8 chs_cond_losemove_longjump(void) {
-    return !(chaos_check_if_patch_active(CHAOS_PATCH_HARDER_LONG_JUMPS) || chaos_check_if_patch_active(CHAOS_PATCH_FORWARDS_BLJ));
-}
-
-u8 chs_cond_losemove_wall_kick(void) {
-    return !chaos_check_if_patch_active(CHAOS_PATCH_STICKY_WALL_JUMP);
-}
-
-u8 chs_cond_cant_stop_wont_stop(void) {
-    return !chaos_check_if_patch_active(CHAOS_PATCH_SPEED_TAX);
 }
 
 void chs_act_cant_stop_wont_stop(void) {

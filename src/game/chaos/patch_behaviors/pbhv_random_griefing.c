@@ -33,10 +33,6 @@ s16 sRandomBurnTimer = -1;
     Sleeping
 */
 
-u8 chs_cond_random_sleep(void) {
-    return (!chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_CLONES));
-}
-
 void chs_act_random_sleep(void) {
     sRandomSleepTimer = RAND(SLEEP_TIME_RAND) + SLEEP_TIME_MIN;
 }
@@ -85,10 +81,6 @@ void chs_update_random_shock(void) {
     }
 }
 
-u8 chs_cond_random_shock(void) {
-    return(!chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER));
-}
-
 /*
     Burning
 */
@@ -126,10 +118,6 @@ void chs_update_random_burn(void) {
     } else {
         sRandomBurnTimer--;
     }
-}
-
-u8 chs_cond_random_burn(void) {
-    return(!chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER));
 }
 
 /*
@@ -346,19 +334,11 @@ void chs_update_red_light(void) {
     }
 }
 
-u8 chs_cond_red_light(void) {
-    return (!(chaos_check_if_patch_active(CHAOS_PATCH_GREEN_DEMON) || chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_CLONES) || chaos_check_if_patch_active(CHAOS_PATCH_QUICKTIME)));
-}
-
 /*
     Cosmic Rays
 */
 
 #define COSMIC_RAYS_TIME_MAX    (3 * 60 * 30)
-
-u8 chs_cond_cosmic_rays(void) {
-    return (!(chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_FALL_DAMAGE) || chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER)));
-}
 
 void chs_act_cosmic_rays(void) {
     struct ChaosActiveEntry *this;

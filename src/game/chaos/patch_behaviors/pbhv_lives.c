@@ -17,20 +17,14 @@
 #define LV2_LIVES_NEG 6
 #define LV3_LIVES_NEG 10
 
-static u8 chs_cond_lives_check_negative_patch(void) {
-    return (gNegativePatchCompare == CHAOS_PATCH_LIVES_DECREASE_LV1
-                 || gNegativePatchCompare == CHAOS_PATCH_LIVES_DECREASE_LV2
-                 || gNegativePatchCompare == CHAOS_PATCH_LIVES_DECREASE_LV3);
-}
-
-u8 chs_cond_lives_increase_lv1(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && !chs_cond_lives_check_negative_patch() && gMarioState->numLives <= (100 - LV1_LIVES_POS)); }
-u8 chs_cond_lives_increase_lv2(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && !chs_cond_lives_check_negative_patch() && gMarioState->numLives <= (100 - LV2_LIVES_POS)); }
-u8 chs_cond_lives_increase_lv3(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && !chs_cond_lives_check_negative_patch() && gMarioState->numLives <= (100 - LV3_LIVES_POS)); }
+u8 chs_cond_lives_increase_lv1(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives <= (100 - LV1_LIVES_POS)); }
+u8 chs_cond_lives_increase_lv2(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives <= (100 - LV2_LIVES_POS)); }
+u8 chs_cond_lives_increase_lv3(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives <= (100 - LV3_LIVES_POS)); }
 u8 chs_cond_lives_decrease_lv1(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives >= LV1_LIVES_NEG); }
 u8 chs_cond_lives_decrease_lv2(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives >= LV2_LIVES_NEG); }
 u8 chs_cond_lives_decrease_lv3(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives >= LV3_LIVES_NEG); }
 u8 chs_cond_instant_game_over(void)  { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE); }
-u8 chs_cond_life_gambler(void)       { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && !chaos_check_if_patch_active(CHAOS_PATCH_INSTANT_GAME_OVER)); }
+u8 chs_cond_life_gambler(void)       { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE); }
 
 void chs_act_lives_increase_lv1(void) {
     gMarioState->numLives += LV1_LIVES_POS;

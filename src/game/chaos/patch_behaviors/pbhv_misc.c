@@ -15,14 +15,6 @@
 #include "behavior_data.h"
 #include "engine/surface_collision.h"
 
-u8 chs_cond_one_hit_wonder(void) {
-    return (!chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_SHOCK)
-         && !chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_BURN)
-         && !chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_RAYS)
-         && !chaos_check_if_patch_active(CHAOS_PATCH_DAMAGE_LOTTERY)
-    );
-}
-
 u8 chs_cond_miracle_normal(void) {
     struct ChaosActiveEntry *match;
 
@@ -62,14 +54,6 @@ void chs_decrement_miracle(void) {
     }
 }
 
-u8 chs_cond_invisible(void) {
-    return(!chaos_check_if_patch_active(CHAOS_PATCH_LUIGI));
-}
-
-u8 chs_cond_luigi(void) {
-    return (!chaos_check_if_patch_active(CHAOS_PATCH_MARIO_INVISIBLE));
-}
-
 void chs_update_luigi(void) {
     gMarioState->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_LUIGI];
 }
@@ -78,24 +62,9 @@ void chs_deact_luigi(void) {
     gMarioState->marioObj->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_MARIO];
 }
 
-u8 chs_cond_20_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_45_FPS) && !chaos_check_if_patch_active(CHAOS_PATCH_60_FPS)); }
-u8 chs_cond_45_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_20_FPS) && !chaos_check_if_patch_active(CHAOS_PATCH_60_FPS)); }
-u8 chs_cond_60_fps(void) { return (!chaos_check_if_patch_active(CHAOS_PATCH_20_FPS) && !chaos_check_if_patch_active(CHAOS_PATCH_45_FPS)); }
-
-u8 chs_cond_lethal_fall_damage(void) {
-    return (!(chaos_check_if_patch_active(CHAOS_PATCH_NO_FALL_DAMAGE) || chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_RAYS)));
-}
-
-u8 chs_cond_climbing_boots(void) {
-    return (!chaos_check_if_patch_active(CHAOS_PATCH_SLIPPERY_FLOORS));
-}
-
-u8 chs_cond_slippery_floors(void) {
-    return (!chaos_check_if_patch_active(CHAOS_PATCH_CLIMBING_BOOTS));
-}
 
 u8 chs_cond_marth_grab(void) {
-    return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) <= (BITS_STAR_REQUIREMENT - 10);
+    return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) <= (BITS_STAR_REQUIREMENT - (s32) (((f32) gChaosPatches[CHAOS_PATCH_MARTH_GRAB].duration * 1.334f) + 2.5f));
 }
 
 void chs_update_noclip(void) {

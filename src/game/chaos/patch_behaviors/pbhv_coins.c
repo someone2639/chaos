@@ -79,10 +79,6 @@ u8 chs_pay2win_can_collect_star(void) {
     );
 }
 
-u8 chs_cond_sonic_simulator(void) {
-    return !chaos_check_if_patch_active(CHAOS_PATCH_DAMAGE_LOTTERY);
-}
-
 u8 chs_cond_coin_size(void) {
     u32 count = chaos_count_active_instances(CHAOS_PATCH_COIN_SIZE);
     return (count < 3 && (count < 2 || !(gEmulator & EMU_CONSOLE)));

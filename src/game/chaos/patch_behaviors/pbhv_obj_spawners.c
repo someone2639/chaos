@@ -21,7 +21,7 @@
     Green Demon
 */
 u8 chs_cond_green_demon(void) {
-    return (gChaosDifficulty != CHAOS_DIFFICULTY_EASY && !chaos_check_if_patch_active(CHAOS_PATCH_WALKIES) && !chaos_check_if_patch_active(CHAOS_PATCH_RED_LIGHT));
+    return (gChaosDifficulty != CHAOS_DIFFICULTY_EASY);
 }
 
 void chs_act_green_demon(void) {

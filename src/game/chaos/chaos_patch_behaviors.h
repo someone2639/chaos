@@ -25,8 +25,6 @@ s32 chs_life_gambler_get_lives_lost(void);
 
 // Star/Save Modifiers
 u8 chs_cond_star_shuffle(void);
-u8 chs_cond_stars_increase_lv2(void);
-u8 chs_cond_stars_increase_lv3(void);
 u8 chs_cond_stars_increase_guarantee(void);
 u8 chs_cond_stars_decrease_guarantee(void);
 void chs_act_star_shuffle(void);
@@ -55,8 +53,6 @@ u8 chs_cond_coin_flip(void);
 void draw_coin_flip(void);
 
 // Gravity Modifiers
-u8 chs_cond_gravity_decrease(void);
-u8 chs_cond_gravity_increase(void);
 void chs_act_gravity_decrease(void);
 void chs_act_gravity_increase(void);
 void chs_deact_gravity_decrease(void);
@@ -64,11 +60,7 @@ void chs_deact_gravity_increase(void);
 
 // Health Modifiers
 u8 chs_calculate_max_heal_counter(void);
-u8 chs_cond_health_drain(void);
-u8 chs_cond_noheal_coins(void);
-u8 chs_cond_healing_bonus(void);
 void chs_update_health_drain(void);
-u8 chs_cond_health_gain(void);
 void chs_update_health_gain(void);
 u8 chs_cond_health_up(void);
 void chs_act_health_up(void);
@@ -78,7 +70,6 @@ void chs_act_health_down(void);
 void chs_deact_health_down(void);
 u8 chs_check_temporary_invincibility(void);
 void chs_lvlinit_temporary_invincibility(void);
-u8 chs_cond_instakill_lava(void);
 u8 chs_cond_extradamage_enemies(void);
 void chs_act_extradamage_enemies(void);
 void chs_deact_extradamage_enemies(void);
@@ -88,8 +79,6 @@ void chs_deact_extradamage_lava(void);
 u8 chs_cond_shield(void);
 void chs_update_random_invincibility(void);
 void chs_act_random_invincibility(void);
-u8 chs_cond_a_button_challenge(void);
-u8 chs_cond_damage_lottery(void);
 
 // Coin Modifiers
 u8 chs_double_coins_under_30s(void); // Check whether double coins should remain in effect
@@ -101,33 +90,20 @@ void chs_act_100c_decrease_lv3(void);
 void chs_deact_100c_decrease_lv2(void);
 void chs_deact_100c_decrease_lv3(void);
 u8 chs_pay2win_can_collect_star(void);
-u8 chs_cond_sonic_simulator(void);
 u8 chs_cond_coin_size(void);
 
 // Movement Modifiers
-u8 chs_cond_brawl_tripping(void);
 void chs_update_brawl_tripping(void);
 void chs_update_galaxy_twirl(void);
-u8 chs_cond_no_fall_damage(void);
-u8 chs_cond_no_lava_damage(void);
-u8 chs_check_sticky_walljump(void);
-u8 chs_cond_harder_longjumps(void);
-u8 chs_cond_forwards_blj(void);
-u8 chs_cond_losemove_longjump(void);
-u8 chs_cond_losemove_wall_kick(void);
-u8 chs_cond_cant_stop_wont_stop(void);
 void chs_act_cant_stop_wont_stop(void);
 
 // Random Griefing
-u8 chs_cond_random_sleep(void);
 void chs_act_random_sleep(void);
 void chs_update_random_sleep(void);
 void chs_act_random_shock(void);
 void chs_update_random_shock(void);
-u8 chs_cond_random_shock(void);
 void chs_act_random_burn(void);
 void chs_update_random_burn(void);
-u8 chs_cond_random_burn(void);
 void chs_act_random_blind(void);
 void chs_update_random_blind(void);
 void chs_act_random_dialogue(void);
@@ -137,9 +113,7 @@ void chs_update_kaizo_blocks(void);
 void chs_act_troll_sounds(void);
 void chs_update_troll_sounds(void);
 void chs_act_red_light(void);
-u8 chs_cond_red_light(void);
 void chs_update_red_light(void);
-u8 chs_cond_cosmic_rays(void);
 void chs_act_cosmic_rays(void);
 void chs_update_cosmic_rays(void);
 void chs_update_random_button_presses(void);
@@ -156,15 +130,11 @@ void chs_deact_cosmic_clones(void);
 void chs_act_cosmic_clones(void);
 void chs_area_init_cosmic_clones(void);
 void chs_update_cosmic_clones(void);
-u8 chs_cond_cosmic_clones(void);
 
 // Visual Modifiers
 u8 chs_cond_no_zbuffer(void);
-u8 chs_cond_inverted_zbuffer(void);
-u8 chs_cond_decreased_fov(void);
 u8 chs_cond_increased_fov(void);
 u8 chs_cond_low_resolution(void);
-u8 chs_cond_ortho(void);
 u8 chs_cond_no_skybox(void);
 u8 chs_cond_dizzy_objects(void);
 u8 chs_cond_camera_lag(void);
@@ -194,23 +164,14 @@ u8 chs_cond_remove_selectable_patch(void);
 u8 chs_cond_lucky_charm(void);
 u8 chs_cond_unlucky_charm(void);
 u8 chs_cond_uneventful(void);
-u8 chs_cond_positive_extension(void);
-u8 chs_cond_negative_extension(void);
 
 // Speed Modifiers
 u8 chs_cond_push_back(void);
 void chs_update_push_back(void);
-u8 chs_cond_walkies(void);
 void chs_act_speed_tax(void);
-u8 chs_cond_speed_tax(void);
 void chs_update_speed_tax(void);
 
 // Input Modifiers
-u8 chs_cond_button_broken_a(void);
-u8 chs_cond_button_broken_b(void);
-u8 chs_cond_button_broken_z(void);
-u8 chs_cond_button_broken_c(void);
-u8 chs_cond_swapped_zr_ab(void);
 void chs_act_input_lag(void);
 
 // Cap Effects
@@ -235,7 +196,6 @@ u8 chs_cond_chill_out(void);
 u8 chs_cond_mad_musical_mess(void);
 
 // Misc
-u8 chs_cond_one_hit_wonder(void);
 void chs_act_serve_ads(void);
 void chs_update_serve_ads(void);
 u8 chs_cond_miracle_normal(void);
@@ -243,32 +203,19 @@ u8 chs_cond_miracle_hardcore(void);
 void chs_update_miracle(void);
 u8 chs_is_miracle_active(void);
 void chs_decrement_miracle(void);
-u8 chs_cond_invisible(void);
-u8 chs_cond_luigi(void);
 void chs_update_luigi(void);
 void chs_deact_luigi(void);
-u8 chs_cond_20_fps(void);
-u8 chs_cond_45_fps(void);
-u8 chs_cond_60_fps(void);
 void chs_mq_init(void);
 void chs_mq_deinit(void);
-u8 chs_topdown_check(void);
-u8 chs_cam_invert_x_check(void);
 void chs_shuffle_objects(void);
 void chs_start_shuffle(void);
-u8 chs_cond_quicktime(void);
 void chs_update_quicktime(void);
 void chs_act_quicktime(void);
-u8 chs_cond_climbing_boots(void);
-u8 chs_cond_slippery_floors(void);
 u8 chs_cond_marth_grab(void);
-u8 chs_cond_lethal_fall_damage(void);
 u8 chs_cond_cherry_clone(void);
 void chs_create_cherry_clone(void);
 void chs_remove_cherry_clone(void);
 void chs_init_cherry_clones_after_warp(void);
-u8 chs_cond_forced_mario_cam(void);
-u8 chs_cond_45_degree_camera(void);
 void chs_act_45_degree_camera(void);
 void chs_deact_45_degree_camera(void);
 void chs_update_noclip(void);
