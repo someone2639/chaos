@@ -281,7 +281,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription   = "Lose one random star currently in your possession.",
     },
     [CHAOS_PATCH_GET_KEY_1] = {
-        .durationType       = CHAOS_DURATION_ONCE,
+        .durationType       = CHAOS_DURATION_INFINITE,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 3,
 
@@ -293,7 +293,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription   = "Unlock the basement key for free!",
     },
     [CHAOS_PATCH_GET_KEY_2] = {
-        .durationType       = CHAOS_DURATION_ONCE,
+        .durationType       = CHAOS_DURATION_INFINITE,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 3,
 
@@ -305,7 +305,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription   = "Unlock the upstairs key for free!",
     },
     [CHAOS_PATCH_GET_WING_CAP] = {
-        .durationType       = CHAOS_DURATION_ONCE,
+        .durationType       = CHAOS_DURATION_INFINITE,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 1,
 
@@ -317,7 +317,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription   = "Unlock the wing cap for free!",
     },
     [CHAOS_PATCH_GET_METAL_CAP] = {
-        .durationType       = CHAOS_DURATION_ONCE,
+        .durationType       = CHAOS_DURATION_INFINITE,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 1,
 
@@ -329,7 +329,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription   = "Unlock the metal cap for free!",
     },
     [CHAOS_PATCH_GET_VANISH_CAP] = {
-        .durationType       = CHAOS_DURATION_ONCE,
+        .durationType       = CHAOS_DURATION_INFINITE,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 1,
 
@@ -341,7 +341,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription   = "Unlock the vanish cap for free!",
     },
     [CHAOS_PATCH_UNLOCK_CANNONS] = {
-        .durationType       = CHAOS_DURATION_ONCE,
+        .durationType       = CHAOS_DURATION_INFINITE,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 2,
 
@@ -1683,11 +1683,39 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 3,
         .affectsPatchSelect = TRUE,
         .duration           = 6,
+        .durationHard       = 6,
+        .durationImpossible = 6,
 
         INCOMPATIBLE(CHAOS_PATCH_POSITIVE_EXTENSION),
 
         .name               = "Negative Extension",
         .shortDescription   = "New negative effects will last 50% longer (rounded up).",
+    },
+    [CHAOS_PATCH_LOW_STAKES] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 3,
+        .affectsPatchSelect = TRUE,
+        .duration           = 6,
+
+        INCOMPATIBLE(CHAOS_PATCH_HIGH_STAKES),
+
+        .name               = "Low Stakes",
+        .shortDescription   = "Max rank patch cards will stop showing up.",
+    },
+    [CHAOS_PATCH_HIGH_STAKES] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 3,
+        .affectsPatchSelect = TRUE,
+        .duration           = 5,
+        .durationHard       = 6,
+        .durationImpossible = 7,
+
+        INCOMPATIBLE(CHAOS_PATCH_LOW_STAKES),
+
+        .name               = "High Stakes",
+        .shortDescription   = "Lowest rank patch cards will stop showing up.",
     },
 
 // Speed Modifiers

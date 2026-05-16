@@ -157,6 +157,8 @@ void chstut_draw_shaded_background(Gfx** dl, s32 x1, s32 x2, s32 y1, s32 y2, u8 
     }
 
     gDPPipeSync(dlHead++);
+    create_dl_ortho_matrix(&dlHead);
+    gDPSetScissor(dlHead++, G_SC_NON_INTERLACE, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     gDPSetTextureFilter(dlHead++, G_TF_POINT);
     gDPSetCycleType(dlHead++, G_CYC_1CYCLE);
 
