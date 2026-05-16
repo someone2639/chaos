@@ -129,7 +129,7 @@ void load_new_patches() {
     enum ChaosPatchSpecialEvent forcedChaosEvent = CHAOS_SPECIAL_DO_NOT_FORCE;
 
     // Enforce CHAOS_SPECIAL_ZERO_POSITIVE upon collecting a repeat star
-    if (gChaosBlueStarLastCollected) {
+    if (gChaosBlueStarLastCollected && !chaos_check_if_patch_active(CHAOS_PATCH_FORGIVENESS)) {
         forcedChaosEvent = CHAOS_SPECIAL_ZERO_POSITIVE;
     }
 

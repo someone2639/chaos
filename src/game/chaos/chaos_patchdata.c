@@ -1717,6 +1717,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "High Stakes",
         .shortDescription   = "Lowest rank patch cards will stop showing up.",
     },
+    [CHAOS_PATCH_FORGIVENESS] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 3,
+        .affectsPatchSelect = TRUE,
+        .duration           = 18,
+
+        .conditionalFunc    = chs_cond_forgiveness,
+
+        .name               = "Forgiveness",
+        .shortDescription   = "Collecting duplicate stars will no longer force a Chaos event.",
+    },
 
 // Speed Modifiers
     [CHAOS_PATCH_PUSH_BACK] = {
