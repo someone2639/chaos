@@ -6,6 +6,7 @@
 #include "game/ingame_menu.h"
 #include "game/game_init.h"
 #include "game/camera.h"
+#include "game/debug.h"
 #include "game/object_helpers.h"
 #include "game/level_update.h"
 #include "game/object_list_processor.h"
@@ -17,6 +18,7 @@
 #include "course_table.h"
 
 #define NUM_SLOTS 3
+#define SUPERSTAR_INDEX 1
 
 // to get slot i: 30 + (60 * i)
 // i = 1 for blue coin
@@ -33,6 +35,7 @@ static f32 globalY = OFFSCREEN_POS;
 u32 timers[NUM_SLOTS] = {16, 24, 32};
 u32 speeds[NUM_SLOTS];
 u16 rotations[NUM_SLOTS];
+s32 pregenerated[NUM_SLOTS];
 
 enum SlotStates {
     S_STANDBY = 0,
@@ -166,24 +169,68 @@ void drawslots() {
                         win = FALSE;
                     }
 
-                    // Precalculation to determine exactly where final slots will land
-                    rotations[i] = 360 - ((speeds[i] * timers[i]) % 360);
-
                     if (shouldWinSlots) {
-                        winningNumber = 1; // Blue coin number (but the rewrite will allow this to just be anything; remove this line if ever desirable)
                         generatedNumber = winningNumber;
                     } else {
                         // Rig the slots for guaranteed loss
                         if (win && i == NUM_SLOTS - 1) {
-                            if (random_u16() % 2 == 0) {
-                                generatedNumber = (generatedNumber + 1) % 6;
-                            } else {
-                                generatedNumber = (generatedNumber + (6 - 1)) % 6;
-                            }
+                            generatedNumber = (generatedNumber + (random_u16() % (6 - 1)) + 1) % 6;
                         }
                     }
 
-                    rotations[i] = (rotations[i] + (generatedNumber * 60) + 30) % 360;
+                    pregenerated[i] = generatedNumber;
+                }
+
+                // The SM64DS slot minigames treats the superstar as a wild. This could make things confusing for the player.
+                // Instead, make sure superstar shows up at most once. Do not allow 2+ superstars or 1 superstar + 2 matching others.
+                if (!shouldWinSlots) {
+                    s32 doubleMatch = FALSE;
+                    s32 sameItemType = -1;
+
+                    for (int i = 0; i < NUM_SLOTS; i++) {
+                        // At most one superstar may show here
+                        if (pregenerated[i] == SUPERSTAR_INDEX) {
+                            if (doubleMatch) {
+                                pregenerated[i] = (pregenerated[i] + (random_u16() % (6 - 1)) + 1) % 6;
+                                assert(pregenerated[i] != SUPERSTAR_INDEX, "drawslots:\nGenerated additional superstar when should not have been possible!");
+                            } else {
+                                doubleMatch = TRUE;
+                                continue;
+                            }
+                        }
+
+                        if (sameItemType < 0) {
+                            sameItemType = pregenerated[i];
+                            continue;
+                        }
+
+                        if (sameItemType != pregenerated[i]) {
+                            // Couldn't have possibly won, carry on
+                            break;
+                        }
+
+                        if (doubleMatch) {
+                            s32 superstarDiff = ((SUPERSTAR_INDEX + 6) - pregenerated[i]) % 6;
+                            s32 newIndexDiff = (random_u16() % (6 - 2)) + 1;
+                            if (newIndexDiff >= superstarDiff) {
+                                newIndexDiff++;
+                            }
+
+                            pregenerated[i] = (pregenerated[i] + newIndexDiff) % 6;
+
+                            assert(pregenerated[i] != SUPERSTAR_INDEX, "drawslots:\nGenerated additional superstar when should not have been possible!");
+                            assert(pregenerated[i] != sameItemType, "drawslots:\nsameItemType should not have been duplicateable here!");
+                            break;
+                        } else {
+                            doubleMatch = TRUE;
+                        }
+                    }
+                }
+
+                for (int i = 0; i < NUM_SLOTS; i++) {
+                    // Precalculation to determine exactly where final slots will land
+                    rotations[i] = 360 - ((speeds[i] * timers[i]) % 360);
+                    rotations[i] = (rotations[i] + (pregenerated[i] * 60) + 30) % 360;
                 }
             }
 
