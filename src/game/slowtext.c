@@ -107,7 +107,6 @@ void slowtext_draw_ortho_text(s32 x, s32 y, const char* string, enum FastTextFla
     gDPPipeSync(dlHead++);
 
     if (a == 0) {
-        gSPPopMatrix(dlHead++, G_MTX_MODELVIEW);
         return; // No point in drawing invisible text!
     }
 

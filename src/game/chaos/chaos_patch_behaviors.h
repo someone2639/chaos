@@ -168,6 +168,8 @@ u8 chs_cond_lucky_charm(void);
 u8 chs_cond_unlucky_charm(void);
 u8 chs_cond_uneventful(void);
 u8 chs_cond_forgiveness(void);
+void init_gambling_wheel(void);
+void render_gambling_wheel(Gfx **dl);
 
 // Speed Modifiers
 u8 chs_cond_push_back(void);

@@ -432,6 +432,10 @@ void render_game(void) {
             render_hud();
         }
 
+        if (gMarioState->action != ACT_UNINITIALIZED) {
+            render_gambling_wheel(&gDisplayListHead);
+        }
+
         gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         render_text_labels();
         do_cutscene_handler();
