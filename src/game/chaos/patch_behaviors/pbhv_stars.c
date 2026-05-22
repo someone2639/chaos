@@ -421,7 +421,7 @@ static void remove_collected_star(void) {
     }
 }
 
-static void update_any_star(u8 shouldRemove, s8 negativeRetriesBias) {
+void update_any_star(u8 shouldRemove, s8 negativeRetriesBias) {
     s32 starToUpdate;
     s32 course;
     if (negativeRetriesBias < 0) {

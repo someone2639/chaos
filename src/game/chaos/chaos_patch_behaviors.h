@@ -24,6 +24,7 @@ void chs_act_lives_decrease_lv3(void);
 s32 chs_life_gambler_get_lives_lost(void);
 
 // Star/Save Modifiers
+void update_any_star(u8 shouldRemove, s8 negativeRetriesBias);
 u8 chs_cond_star_shuffle(void);
 u8 chs_cond_stars_increase_guarantee(void);
 u8 chs_cond_stars_decrease_guarantee(void);
@@ -160,6 +161,7 @@ u8 chs_cond_debug_free_move(void);
 // Patches
 u8 chs_cond_remove_negative_patch(void);
 void chs_act_remove_negative_patch(void);
+void chs_activate_random_pos_neg_patch_of_severity(s32 patchSeverity, enum ChaosPatchEffectType effectType);
 u8 chs_cond_add_random_buff(void);
 void chs_act_add_random_buff(void);
 u8 chs_cond_add_selectable_patch(void);

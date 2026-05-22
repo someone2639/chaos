@@ -17,6 +17,7 @@
 #include "game/interaction.h"
 #include "game/behavior_actions.h"
 #include "game/rumble_init.h"
+#include "game/save_file.h"
 #include "course_table.h"
 
 #define GAMBLING_WHEEL_SLOT_COUNT 16
@@ -87,19 +88,21 @@ enum GamblingWheelOptionType {
     GWHEEL_OPT_CAT_RANK_3,
 
     GWHEEL_OPT_CAT_END,
+
+    GWHEEL_OPT_COUNT = GWHEEL_OPT_CAT_END,
 };
 
 struct GamblingWheelSizeProps {
-    Gfx *wedgeDl;
-    Gfx *borderDl;
+    const Gfx *wedgeDl;
+    const Gfx *borderDl;
 };
 
 struct GamblingWheelColorProps {
-    u8 idleColor[4];
-    u8 highlightedColor[4];
-    s32 menuSoundId;
-    s32 marioSoundId;
-    s32 seqId;
+    const u8 idleColor[4];
+    const u8 highlightedColor[4];
+    const s32 menuSoundId;
+    const s32 marioSoundId;
+    const s32 seqId;
 };
 
 struct GamblingWheelOptionProps {
@@ -120,12 +123,107 @@ struct GamblingWheelParams {
     enum GamblingWheelOptionType generatedOptionType;
     f32 rotationOffsetStart;
     f32 rotationOffsetEnd;
+    f32 iconScale;
 };
 
 struct GamblingWheelEntries {
     struct GamblingWheelParams *entries;
     const s32 count;
 };
+
+static u8 gwheel_type_cond_lives_increase_12(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives <= (100 - 12)); }
+static u8 gwheel_type_cond_lives_increase_5(void)  { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives <= (100 - 6)); }
+static u8 gwheel_type_cond_lives_decrease_3(void)  { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives >= 3); }
+static u8 gwheel_type_cond_lives_decrease_6(void)  { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives >= 6); }
+
+static u8 gwheel_type_cond_positive_extend(void) {
+    // Confirm at least one extendable positive patch active
+    for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+        const struct ChaosPatch *patch = &gChaosPatches[gChaosActiveEntries[i].id];
+        if (patch->effectType == CHAOS_EFFECT_POSITIVE && patch->durationType == CHAOS_DURATION_STARS) {
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}
+
+static u8 gwheel_type_cond_negative_extend(void) {
+    // Confirm at least one extendable negative patch active
+    for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+        const struct ChaosPatch *patch = &gChaosPatches[gChaosActiveEntries[i].id];
+        if (patch->effectType == CHAOS_EFFECT_NEGATIVE && patch->durationType == CHAOS_DURATION_STARS) {
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}
+
+static void gwheel_type_act_stars_increase_1(void) {
+    update_any_star(FALSE, 0);
+    play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
+}
+static void gwheel_type_act_stars_increase_3(void) {
+    update_any_star(FALSE, 0);
+    update_any_star(FALSE, 0);
+    update_any_star(FALSE, 0);
+    play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
+}
+static void gwheel_type_act_stars_decrease_1(void) {
+    update_any_star(TRUE, 1);
+}
+static void gwheel_type_act_stars_decrease_2(void) {
+    update_any_star(TRUE, 1);
+    update_any_star(TRUE, 1);
+}
+
+static void gwheel_type_act_lives_increase_12(void) {
+    gMarioState->numLives += 12;
+    play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
+    save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives, TRUE);
+}
+static void gwheel_type_act_lives_increase_5(void) {
+    gMarioState->numLives += 5;
+    play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
+    save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives, TRUE);
+}
+static void gwheel_type_act_lives_decrease_3(void) {
+    gMarioState->numLives += 3;
+    play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
+    save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives, TRUE);
+}
+static void gwheel_type_act_lives_decrease_6(void) {
+    gMarioState->numLives -= 6;
+    save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives, TRUE);
+}
+
+static void gwheel_type_act_positive_extend(void) {
+    for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+        const struct ChaosPatch *patch = &gChaosPatches[gChaosActiveEntries[i].id];
+        if (patch->effectType == CHAOS_EFFECT_POSITIVE && patch->durationType == CHAOS_DURATION_STARS) {
+            // Extend patch timer by 1
+            gChaosActiveEntries[i].remainingDuration++;
+        }
+    }
+}
+
+static void gwheel_type_act_negative_extend(void) {
+    for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+        const struct ChaosPatch *patch = &gChaosPatches[gChaosActiveEntries[i].id];
+        if (patch->effectType == CHAOS_EFFECT_NEGATIVE && patch->durationType == CHAOS_DURATION_STARS) {
+            // Extend patch timer by 1
+            gChaosActiveEntries[i].remainingDuration++;
+        }
+    }
+}
+
+// static void gwheel_type_act_rank_1_positive(void) { chs_activate_random_pos_neg_patch_of_severity(1, CHAOS_EFFECT_POSITIVE); } // UNUSED
+static void gwheel_type_act_rank_2_positive(void) { chs_activate_random_pos_neg_patch_of_severity(2, CHAOS_EFFECT_POSITIVE); }
+static void gwheel_type_act_rank_3_positive(void) { chs_activate_random_pos_neg_patch_of_severity(3, CHAOS_EFFECT_POSITIVE); }
+static void gwheel_type_act_rank_1_negative(void) { chs_activate_random_pos_neg_patch_of_severity(1, CHAOS_EFFECT_NEGATIVE); }
+static void gwheel_type_act_rank_2_negative(void) { chs_activate_random_pos_neg_patch_of_severity(2, CHAOS_EFFECT_NEGATIVE); }
+static void gwheel_type_act_rank_3_negative(void) { chs_activate_random_pos_neg_patch_of_severity(3, CHAOS_EFFECT_NEGATIVE); }
 
 const struct GamblingWheelSizeProps gamblingWheelSizeParams[] = {
     [GWHEEL_SIZE_INVALID] = {
@@ -180,8 +278,8 @@ const struct GamblingWheelColorProps gamblingWheelColorParams[] = {
         .seqId            = SEQ_SOUND_PLAYER,
     },
     [GWHEEL_TYPE_CATASTROPHIC] = {
-        .idleColor        = {0x2F, 0x0F, 0x27, 0xFF},
-        .highlightedColor = {0x5F, 0x2F, 0x4F, 0xFF},
+        .idleColor        = {0x37, 0x00, 0x2F, 0xFF},
+        .highlightedColor = {0x67, 0x1F, 0x57, 0xFF},
         .marioSoundId     = SOUND_MARIO_WAAAOOOW,
         .menuSoundId      = NO_SOUND,
         .seqId            = SEQ_EVENT_KOOPA_MESSAGE,
@@ -207,7 +305,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .textureDlSmall  = gambling_wheel_dl_icon_stars_3_small,
         .text            = "Mark 3 random stars as collected.",
         .conditionalFunc = NULL,
-        .activationFunc  = NULL,
+        .activationFunc  = gwheel_type_act_stars_increase_3,
     },
     [GWHEEL_OPT_JPT_12_LIVES] = {
         .id              = GWHEEL_OPT_JPT_12_LIVES,
@@ -215,8 +313,8 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .textureDlBig    = gambling_wheel_dl_icon_lives_12_big,
         .textureDlSmall  = gambling_wheel_dl_icon_lives_12_small,
         .text            = "Gain 12 lives.",
-        .conditionalFunc = NULL,
-        .activationFunc  = NULL,
+        .conditionalFunc = gwheel_type_cond_lives_increase_12,
+        .activationFunc  = gwheel_type_act_lives_increase_12,
     },
 
     /* GWHEEL_TYPE_POSITIVE */
@@ -227,7 +325,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .textureDlSmall  = gambling_wheel_dl_icon_stars_1_small,
         .text            = "Mark a random star as collected.",
         .conditionalFunc = NULL,
-        .activationFunc  = NULL,
+        .activationFunc  = gwheel_type_act_stars_increase_1,
     },
     [GWHEEL_OPT_POS_5_LIVES] = {
         .id              = GWHEEL_OPT_POS_5_LIVES,
@@ -235,8 +333,8 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .textureDlBig    = gambling_wheel_dl_icon_lives_5_big,
         .textureDlSmall  = gambling_wheel_dl_icon_lives_5_small,
         .text            = "Gain 5 lives.",
-        .conditionalFunc = NULL,
-        .activationFunc  = NULL,
+        .conditionalFunc = gwheel_type_cond_lives_increase_5,
+        .activationFunc  = gwheel_type_act_lives_increase_5,
     },
     [GWHEEL_OPT_POS_EXTEND] = {
         .id              = GWHEEL_OPT_POS_EXTEND,
@@ -244,8 +342,8 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .textureDlBig    = gambling_wheel_dl_icon_timer_big,
         .textureDlSmall  = gambling_wheel_dl_icon_timer_small,
         .text            = "Extend all positive patch durations by 1 star.",
-        .conditionalFunc = NULL,
-        .activationFunc  = NULL,
+        .conditionalFunc = gwheel_type_cond_positive_extend,
+        .activationFunc  = gwheel_type_act_positive_extend,
     },
     [GWHEEL_OPT_POS_RANK_2] = {
         .id              = GWHEEL_OPT_POS_RANK_2,
@@ -254,7 +352,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .textureDlSmall  = gambling_wheel_dl_icon_rank_2_small,
         .text            = "Gain a positive rank 2 patch for 1 star.",
         .conditionalFunc = NULL,
-        .activationFunc  = NULL,
+        .activationFunc  = gwheel_type_act_rank_2_positive,
     },
     [GWHEEL_OPT_POS_RANK_3] = {
         .id              = GWHEEL_OPT_POS_RANK_3,
@@ -263,7 +361,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .textureDlSmall  = gambling_wheel_dl_icon_rank_3_small,
         .text            = "Gain a positive rank 3 patch for 1 star.",
         .conditionalFunc = NULL,
-        .activationFunc  = NULL,
+        .activationFunc  = gwheel_type_act_rank_3_positive,
     },
 
     /* GWHEEL_TYPE_NEUTRAL */
@@ -285,7 +383,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .textureDlSmall  = gambling_wheel_dl_icon_stars_m1_small,
         .text            = "Mark a random star as uncollected.",
         .conditionalFunc = NULL,
-        .activationFunc  = NULL,
+        .activationFunc  = gwheel_type_act_stars_decrease_1,
     },
     [GWHEEL_OPT_NEG_3_LIVES] = {
         .id              = GWHEEL_OPT_NEG_3_LIVES,
@@ -293,8 +391,8 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .textureDlBig    = gambling_wheel_dl_icon_lives_m3_big,
         .textureDlSmall  = gambling_wheel_dl_icon_lives_m3_small,
         .text            = "Lose 3 lives.",
-        .conditionalFunc = NULL,
-        .activationFunc  = NULL,
+        .conditionalFunc = gwheel_type_cond_lives_decrease_3,
+        .activationFunc  = gwheel_type_act_lives_decrease_3,
     },
     [GWHEEL_OPT_NEG_EXTEND] = {
         .id              = GWHEEL_OPT_NEG_EXTEND,
@@ -302,8 +400,8 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .textureDlBig    = gambling_wheel_dl_icon_timer_big,
         .textureDlSmall  = gambling_wheel_dl_icon_timer_small,
         .text            = "Extend all negative patch durations by 1 star.",
-        .conditionalFunc = NULL,
-        .activationFunc  = NULL,
+        .conditionalFunc = gwheel_type_cond_negative_extend,
+        .activationFunc  = gwheel_type_act_negative_extend,
     },
     [GWHEEL_OPT_NEG_RANK_1] = {
         .id              = GWHEEL_OPT_NEG_RANK_1,
@@ -312,7 +410,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .textureDlSmall  = gambling_wheel_dl_icon_rank_1_small,
         .text            = "Gain a negative rank 1 patch for 1 star.",
         .conditionalFunc = NULL,
-        .activationFunc  = NULL,
+        .activationFunc  = gwheel_type_act_rank_1_negative,
     },
     [GWHEEL_OPT_NEG_RANK_2] = {
         .id              = GWHEEL_OPT_NEG_RANK_2,
@@ -321,7 +419,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .textureDlSmall  = gambling_wheel_dl_icon_rank_2_small,
         .text            = "Gain a negative rank 2 patch for 1 star.",
         .conditionalFunc = NULL,
-        .activationFunc  = NULL,
+        .activationFunc  = gwheel_type_act_rank_2_negative,
     },
 
     /* GWHEEL_TYPE_CATASTROPHIC */
@@ -332,7 +430,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .textureDlSmall  = gambling_wheel_dl_icon_stars_m2_small,
         .text            = "Mark 2 random stars as uncollected.",
         .conditionalFunc = NULL,
-        .activationFunc  = NULL,
+        .activationFunc  = gwheel_type_act_stars_decrease_2,
     },
     [GWHEEL_OPT_CAT_6_LIVES] = {
         .id              = GWHEEL_OPT_CAT_6_LIVES,
@@ -340,8 +438,8 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .textureDlBig    = gambling_wheel_dl_icon_lives_m6_big,
         .textureDlSmall  = gambling_wheel_dl_icon_lives_m6_small,
         .text            = "Lose 6 lives.",
-        .conditionalFunc = NULL,
-        .activationFunc  = NULL,
+        .conditionalFunc = gwheel_type_cond_lives_decrease_6,
+        .activationFunc  = gwheel_type_act_lives_decrease_6,
     },
     [GWHEEL_OPT_CAT_RANK_3] = {
         .id              = GWHEEL_OPT_CAT_RANK_3,
@@ -350,7 +448,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .textureDlSmall  = gambling_wheel_dl_icon_rank_3_small,
         .text            = "Gain a negative rank 3 patch for 1 star.",
         .conditionalFunc = NULL,
-        .activationFunc  = NULL,
+        .activationFunc  = gwheel_type_act_rank_3_negative,
     },
 };
 
@@ -628,14 +726,35 @@ void init_gambling_wheel(void) {
 
     struct GamblingWheelParams *wheel = gamblingWheels[activeWheelIndex].entries;
 
+    // Copy constant weights to modifiable weights
+    f32 weights[GWHEEL_OPT_COUNT];
+    for (enum GamblingWheelOptionType type = 0; type < GWHEEL_OPT_COUNT; type++) {
+        weights[type] = gamblingWheelOptionParams[type].weight;
+
+        if (gamblingWheelOptionParams[type].conditionalFunc != NULL && !gamblingWheelOptionParams[type].conditionalFunc()) {
+            weights[type] = 0.0f;
+        }
+    }
+
     s32 index = 0;
     wheelRotation = (WEDGE_ROTATIONAL_FRAC * wheel[0].size) / 2.0f;
+
+    // Update forced types and weights
     for (s32 i = 0; i < gamblingWheels[activeWheelIndex].count; i++) {
-        if (wheel[i].forcedOptionType != GWHEEL_OPT_ANY) {
+        wheel[i].generatedOptionType = GWHEEL_OPT_NEU_NONE;
+
+        if (wheel[i].forcedOptionType != GWHEEL_OPT_ANY && weights[wheel[i].forcedOptionType] > 0.0f) {
             wheel[i].generatedOptionType = wheel[i].forcedOptionType;
-        } else {
+            weights[wheel[i].forcedOptionType] *= 0.5f; // Cut odds of duplicate in half (for forced types only)
+        }
+    }
+
+    // Generate remaining non-forced types
+    for (s32 i = 0; i < gamblingWheels[activeWheelIndex].count; i++) {
+        if (wheel[i].forcedOptionType == GWHEEL_OPT_ANY || weights[wheel[i].forcedOptionType] <= 0.0f) {
             enum GamblingWheelOptionType start;
             enum GamblingWheelOptionType end;
+            f32 totalWeight = 0.0f;
 
             switch(wheel[i].type) {
                 case GWHEEL_TYPE_JACKPOT:
@@ -660,11 +779,29 @@ void init_gambling_wheel(void) {
                     end = GWHEEL_OPT_CAT_END;
                     break;
             }
+            
+            for (enum GamblingWheelOptionType type = start; type < end; type++) {
+                assert_args(weights[type] >= 0.0f, "init_gambling_wheel:\nNegative weight: %d", type);
+                totalWeight += weights[type];
+            }
 
-            wheel[i].generatedOptionType = (random_u16() % (end - start)) + start;
+            assert_args(totalWeight > 0.0f, "init_gambling_wheel:\ntotalWeight is 0: %d", activeWheelIndex);
+            if (totalWeight > 0.0f) {
+                f32 rand = random_float() * totalWeight;
+                for (enum GamblingWheelOptionType type = start; type < end; type++) {
+                    if (rand < weights[type]) {
+                        wheel[i].generatedOptionType = type;
+                        weights[wheel[i].generatedOptionType] *= 0.33f; // Cut odds of duplicate in a third (for generated types only)
+                        break;
+                    }
+
+                    rand -= weights[type];
+                }
+            }
         }
         wheel[i].rotationOffsetStart = index * WEDGE_ROTATIONAL_FRAC;
         wheel[i].rotationOffsetEnd = wheel[i].rotationOffsetStart + (WEDGE_ROTATIONAL_FRAC * wheel[i].size);
+        wheel[i].iconScale = 1.0f;
 
         index += wheel[i].size;
     }
@@ -691,7 +828,13 @@ void render_gambling_wheel(Gfx **dl) {
         wheelRotation -= 360.0f;
     }
 
-    create_dl_rotation_matrix(&dlHead, MENU_MTX_NOPUSH, 360.0f - wheelRotation, 0, 0, 1.0f);
+    // [-180.0f, 180.0f)
+    f32 wheelRotationDisplayed = 360.0f - wheelRotation;
+    if (wheelRotationDisplayed >= 180.0f) {
+        wheelRotationDisplayed -= 360.0f;
+    }
+
+    create_dl_rotation_matrix(&dlHead, MENU_MTX_NOPUSH, wheelRotationDisplayed, 0, 0, 1.0f);
     // gDPSetPrimColor(dlHead++, 0, 0, normalBorderColor[0], normalBorderColor[1], normalBorderColor[2], normalBorderColor[3]);
     // gSPDisplayList(dlHead++, gambling_wheel_dl_wheel_border_quarter);
 
@@ -715,8 +858,9 @@ void render_gambling_wheel(Gfx **dl) {
 
         gSPDisplayList(dlHead++, gambling_wheel_dl_icon_start);
         create_dl_translation_matrix(&dlHead, MENU_MTX_NOPUSH, 0, 56, 0.0f);
-        gSPDisplayList(dlHead++, gambling_wheel_dl_icon_start);
-        gDPSetPrimColor(dlHead++, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF);
+        wheel[i].iconScale = smoothstop(wheel[i].iconScale, 1.0f, 0.4f);
+        create_dl_scale_matrix(&dlHead, MENU_MTX_NOPUSH, wheel[i].iconScale, wheel[i].iconScale, 1.0f);
+        gDPSetPrimColor(dlHead++, 0, 0, 0xBF, 0xBF, 0xBF, 0xFF);
         if (wheel[i].size > GWHEEL_SIZE_SMALL && gamblingWheelOptionParams[wheel[i].generatedOptionType].textureDlBig) {
             gSPDisplayList(dlHead++, gamblingWheelOptionParams[wheel[i].generatedOptionType].textureDlBig);
         } else if (wheel[i].size == GWHEEL_SIZE_SMALL && gamblingWheelOptionParams[wheel[i].generatedOptionType].textureDlSmall) {
@@ -786,7 +930,9 @@ void render_gambling_wheel(Gfx **dl) {
         gSPDisplayList(dlHead++, gambling_wheel_dl_border_line_slice_end);
 
         create_dl_rotation_matrix(&dlHead, MENU_MTX_PUSH, rotationCenter, 0, 0, 1.0f);
+        wheel[i].iconScale = smoothstop(wheel[i].iconScale, 1.5f, 0.4f);
         create_dl_translation_matrix(&dlHead, MENU_MTX_NOPUSH, 0, 56, 0.0f);
+        create_dl_scale_matrix(&dlHead, MENU_MTX_NOPUSH, wheel[i].iconScale, wheel[i].iconScale, 1.0f);
         gSPDisplayList(dlHead++, gambling_wheel_dl_icon_start);
         gDPSetPrimColor(dlHead++, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF);
         if (wheel[i].size > GWHEEL_SIZE_SMALL && gamblingWheelOptionParams[wheel[i].generatedOptionType].textureDlBig) {
