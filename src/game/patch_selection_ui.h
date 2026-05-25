@@ -74,11 +74,9 @@ enum PatchSelectMenuState {
     PATCH_SELECT_STATE_SHOW_ACTIVE_PATCHES,
     PATCH_SELECT_STATE_TUTORIAL,
     PATCH_SELECT_STATE_START_CLOSING,
+    PATCH_SELECT_STATE_UPDATE_EVENT,
     PATCH_SELECT_STATE_CLOSING,
     PATCH_SELECT_STATE_CLOSED,
-
-    // Bonus event states
-    PATCH_SELECT_STATE_COIN_FLIP,
 };
 
 enum PatchSelectionMenuFlags {
@@ -113,6 +111,3 @@ void update_patch_selection_menu();
 void reset_patch_selection_menu();
 void load_new_patches();
 void draw_patch_type(f32 x, f32 y, enum ChaosPatchDurationType type);
-
-void patch_select_start_coin_flip();
-void patch_select_end_coin_flip();

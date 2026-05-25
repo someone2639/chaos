@@ -172,24 +172,6 @@ void reset_patch_selection_menu() {
     gPatchSelectionMenu->eventTextScale = 0.0f;
 }
 
-void patch_select_start_coin_flip() {
-    struct ChaosMenu *menu = &gPatchSelectionMenu->menu;
-
-    assert(menu->menuState == PATCH_SELECT_STATE_START_CLOSING, "patch_select_start_coin_flip:\ntriggered from wrong menu state!");
-
-    menu->menuState = PATCH_SELECT_STATE_COIN_FLIP;
-    menu->flags |= PATCH_SELECT_FLAG_HALT_INPUT;
-}
-
-void patch_select_end_coin_flip() {
-    struct ChaosMenu *menu = &gPatchSelectionMenu->menu;
-
-    assert(menu->menuState == PATCH_SELECT_STATE_COIN_FLIP, "patch_select_end_coin_flip:\ntriggered from wrong menu state!");
-
-    menu->menuState = PATCH_SELECT_STATE_CLOSING;
-    menu_play_anim(menu, PATCH_SELECT_ANIM_ENDING_2);
-}
-
 #define PATCH_SELECT_STARTUP_CURTAIN_DROP_FRAMES        20
 #define PATCH_SELECT_STARTUP_CARDS_SLIDE_FRAMES         20
 #define PATCH_SELECT_STARTUP_IDLE_FRAMES                9
@@ -735,6 +717,12 @@ void update_patch_selection_menu() {
                 chaos_select_patches(gPatchSelectionMenu->patchCards[gPatchSelectionMenu->selectedPatch].sel);
                 chaos_decrement_star_timers(CHAOS_STAR_DECREMENT_MENU_IMPACTING);
                 gChaosCancelOutLostDuration = FALSE;
+
+                chaos_menuevent_populate_persistent_patch_events();
+                if (gChaosEventCount > 0) {
+                    menu->menuState = PATCH_SELECT_STATE_UPDATE_EVENT;
+                    menu->flags |= PATCH_SELECT_FLAG_HALT_INPUT;
+                }
                 
                 // If no event was triggered, then continue to close the menu
                 if(menu->menuState == PATCH_SELECT_STATE_START_CLOSING) {
@@ -1282,8 +1270,11 @@ void display_patch_selection_ui() {
 
         render_curtain_bg();
 
-        if(gPatchSelectionMenu->menu.menuState == PATCH_SELECT_STATE_COIN_FLIP) {
-            draw_coin_flip();
+        if(gPatchSelectionMenu->menu.menuState == PATCH_SELECT_STATE_UPDATE_EVENT) {
+            if (!chaos_menuevent_update(&gDisplayListHead)) {
+                menu_set_state(&gPatchSelectionMenu->menu, PATCH_SELECT_STATE_CLOSING);
+                menu_play_anim(&gPatchSelectionMenu->menu, PATCH_SELECT_ANIM_ENDING_2);
+            }
         }
 
         squish_ui(&gDisplayListHead);

@@ -52,9 +52,9 @@ void chs_deact_get_vanish_cap(void);
 u8 chs_cond_get_vanish_cap(void);
 u8 chs_cond_star_cloning_device(void);
 s32 chs_get_yellow_star_in_course(s32 courseNum, s32 collectedStarId);
-void chs_act_coin_flip(void);
+void chs_menuinit_coin_flip(void);
 u8 chs_cond_coin_flip(void);
-void draw_coin_flip(void);
+void chs_menuupdate_coin_flip(Gfx **dl);
 
 // Gravity Modifiers
 void chs_act_gravity_decrease(void);
@@ -161,7 +161,7 @@ u8 chs_cond_debug_free_move(void);
 // Patches
 u8 chs_cond_remove_negative_patch(void);
 void chs_act_remove_negative_patch(void);
-void chs_activate_random_pos_neg_patch_of_severity(s32 patchSeverity, enum ChaosPatchEffectType effectType);
+enum ChaosPatchID chs_activate_random_pos_neg_patch_of_severity(s32 patchSeverity, enum ChaosPatchEffectType effectType, u32 forcedDuration, enum ChaosPatchDurationType durationType);
 u8 chs_cond_add_random_buff(void);
 void chs_act_add_random_buff(void);
 u8 chs_cond_add_selectable_patch(void);

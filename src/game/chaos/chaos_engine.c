@@ -34,17 +34,18 @@ u8 gChaosCancelOutLostDuration = FALSE;
 s32 gChaosLastForcedSeverity = -2;
 enum ChaosPatchSpecialEvent gChaosLastEventType = CHAOS_SPECIAL_NONE;
 
+enum ChaosDifficulty gChaosDifficulty = CHAOS_DIFFICULTY_NORMAL;
+enum ChaosGameMode gChaosGameMode = CHAOS_GAMEMODE_CLASSIC;
+enum ChaosPatchDurationType gChaosForcedDurationType = CHAOS_DURATION_DO_NOT_FORCE;
+u32 gChaosForcedDuration = 0;
+enum ChaosPatchID gNegativePatchCompare = CHAOS_PATCH_NONE;
+
 static const f32 difficultyWeights[CHAOS_DIFFICULTY_COUNT][CHAOS_PATCH_SEVERITY_COUNT - 1] = {
     [CHAOS_DIFFICULTY_EASY      ] = { 0.12f, 0.25f, 0.38f }, // Difficulty offset should make highest level more common
     [CHAOS_DIFFICULTY_NORMAL    ] = { 0.25f, 0.25f, 0.25f }, // Difficulty probability is balanced across the board
     [CHAOS_DIFFICULTY_HARD      ] = { 0.15f, 0.25f, 0.35f }, // Difficulty offset doesn't really matter as much for hard, so just make highest level more common
     [CHAOS_DIFFICULTY_IMPOSSIBLE] = { 0.15f, 0.25f, 0.35f }, // Difficulty offset doesn't really matter as much for impossible either, so just make highest level more common
 };
-
-enum ChaosPatchID gNegativePatchCompare = CHAOS_PATCH_NONE;
-
-enum ChaosDifficulty gChaosDifficulty = CHAOS_DIFFICULTY_NORMAL;
-enum ChaosGameMode gChaosGameMode = CHAOS_GAMEMODE_CLASSIC;
 
 static void chaos_recompute_active_patch_counts(void) {
     if (!gChaosActiveEntryCount) {
@@ -64,6 +65,9 @@ u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId) {
 
 static u8 chaos_check_conditional_func(const struct ChaosPatch *patch) {
     if (gChaosGameMode == CHAOS_GAMEMODE_HARDCORE && patch->disableForHardcore) {
+        return FALSE;
+    }
+    if (gChaosForcedDurationType != CHAOS_DURATION_DO_NOT_FORCE && gChaosForcedDurationType != patch->durationType) {
         return FALSE;
     }
 
@@ -155,13 +159,13 @@ static void chaos_sort_active_patches(void) {
 #undef DO_SWAP
 #undef NO_SWAP
 
-u8 chaos_find_first_active_patch(const enum ChaosPatchID patchId, struct ChaosActiveEntry **firstFoundMatch) {
+s32 chaos_find_first_active_patch(const enum ChaosPatchID patchId, struct ChaosActiveEntry **firstFoundMatch) {
     if (firstFoundMatch) {
         *firstFoundMatch = NULL;
     }
 
     if (!gChaosActiveEntryCount) {
-        return FALSE;
+        return -1;
     }
 
     for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
@@ -170,11 +174,11 @@ u8 chaos_find_first_active_patch(const enum ChaosPatchID patchId, struct ChaosAc
                 *firstFoundMatch = &gChaosActiveEntries[i];
             }
 
-            return TRUE;
+            return i;
         }
     }
 
-    return FALSE;
+    return -1;
 }
 
 u32 chaos_count_active_instances(const enum ChaosPatchID patchId) {
@@ -226,6 +230,11 @@ u32 chaos_calculate_patch_duration(const struct ChaosPatch *patch) {
                 (patch->effectType == CHAOS_EFFECT_NEGATIVE && chaos_check_if_patch_active(CHAOS_PATCH_NEGATIVE_EXTENSION))
     )) {
         duration += (duration + 1) / 2;
+    }
+
+    // Override
+    if (gChaosForcedDuration > 0) {
+        duration = gChaosForcedDuration;
     }
 
     if (duration <= 0) {
@@ -342,7 +351,7 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
         if (patch->durationType == CHAOS_DURATION_ONCE) {
             // Activate init func, deactivate, and return immediately.
             // This is not added to the patch array (in general do not rely on this for stackable, negatable infinite, or negatable once patches!)
-            assert_args(patch->activatedInitFunc || patch->deactivationFunc
+            assert_args(patch->activatedInitFunc || patch->deactivationFunc || patch->hasMenuEvent
                         || (patchId == CHAOS_PATCH_NONE_POSITIVE || patchId == CHAOS_PATCH_NONE_NEGATIVE),
                         "%s%08X", "chaos_add_new_entry\nAttempted to add stackable ONCE patch\nwithout a callback: 0x", patchId);
 
@@ -350,6 +359,10 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
             if (patch->activatedInitFunc) {
                 patch->activatedInitFunc();
             }
+
+            // Activate non-persistent patch event, if applicable
+            chaos_menuevent_populate_nonpersistent_patch_event(patchId);
+
             if (patch->deactivationFunc) {
                 patch->deactivationFunc();
             }
@@ -420,14 +433,18 @@ void chaos_decrement_star_timers(enum ChaosStarDecrementType decrementType) {
 
     for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
         struct ChaosActiveEntry *entry = &gChaosActiveEntries[i];
-        if (gChaosPatches[entry->id].durationType != CHAOS_DURATION_STARS) {
+        const struct ChaosPatch *patch = &gChaosPatches[entry->id];
+        if (patch->durationType != CHAOS_DURATION_STARS) {
             continue;
         }
-        if (decrementType == CHAOS_STAR_DECREMENT_STANDARD && gChaosPatches[entry->id].affectsPatchSelect) {
+        if (patch->hasMenuEvent) {
+            continue;
+        }
+        if (decrementType == CHAOS_STAR_DECREMENT_STANDARD && patch->affectsPatchSelect) {
             // Skip patches that affect chaos patch generation / patch select menu
             continue;
         }
-        if (decrementType == CHAOS_STAR_DECREMENT_MENU_IMPACTING && !gChaosPatches[entry->id].affectsPatchSelect) {
+        if (decrementType == CHAOS_STAR_DECREMENT_MENU_IMPACTING && !patch->affectsPatchSelect) {
             // Skip patches that do not affect chaos patch generation / patch select menu
             continue;
         }
@@ -438,6 +455,45 @@ void chaos_decrement_star_timers(enum ChaosStarDecrementType decrementType) {
             chaos_remove_expired_entry(i--, "%s: Expired!");
         }
     }
+}
+
+void chaos_decrement_star_or_use_timer_with_id(enum ChaosPatchID patchId) {
+    if (!gChaosActiveEntryCount) {
+        return;
+    }
+
+    if (patchId == CHAOS_PATCH_NONE) {
+        assert(FALSE, "chaos_decrement_star_or_use_timer_with_id:\npatchId should not be CHAOS_PATCH_NONE!");
+        return;
+    }
+
+    struct ChaosActiveEntry *entry;
+    const struct ChaosPatch *patch = &gChaosPatches[patchId];
+    s32 index = chaos_find_first_active_patch(patchId, &entry);
+    if (index < 0) {
+        // Make sure this is a non-persistent event type
+        assert_args(patch->durationType == CHAOS_DURATION_ONCE && patch->isStackable, "chaos_decrement_star_timer_with_id:\nCould not locate patch ID:\n0x%08X", patchId);
+        return;
+    }
+
+    if (patch->durationType == CHAOS_DURATION_USE_COUNT) {
+        // Decrement use count for use count patch type
+        chaos_decrement_patch_usage(patchId);
+        return;
+    }
+
+    if (patch->durationType != CHAOS_DURATION_STARS) {
+        // Do nothing for ONCE and INFINITE patches
+        return;
+    }
+
+    assert_args(entry->remainingDuration > 0, "%s%08X", "chaos_decrement_star_timers:\nRemaining duration for patch is 0: ", patchId);
+    entry->remainingDuration--;
+    if (entry->remainingDuration <= 0) {
+        chaos_remove_expired_entry(index, "%s: Expired!");
+    }
+
+    gSaveFileModified = TRUE;
 }
 
 void chaos_decrement_patch_usage(const enum ChaosPatchID patchId) {
@@ -1068,6 +1124,9 @@ void chaos_init(void) {
 
     gChaosLevelWarped = FALSE;
     gChaosBlueStarLastCollected = FALSE;
+    gChaosForcedDurationType = CHAOS_DURATION_DO_NOT_FORCE;
+    gChaosForcedDuration = 0;
+    bzero(gChaosEventQueue, sizeof(gChaosEventQueue));
 
     for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
         const enum ChaosPatchID patchId = gChaosActiveEntries[i].id;
@@ -1085,6 +1144,7 @@ void chaos_init(void) {
 
     chaos_sort_active_patches();
     chaosmsg_init();
+    chaos_menuevent_init();
 }
 
 void chaos_area_update(void) {

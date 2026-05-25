@@ -36,6 +36,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc    = NULL,
         .deactivationFunc   = NULL,
 
+        .hasMenuEvent       = FALSE,
+        .chsMenuInitFunc    = NULL,
+        .chsMenuUpdateFunc  = NULL,
+
         .name               = "@BFBFBF--" "---" "@--------",
         .shortDescription   = "@BFBFBF--No positive effect.@--------",
         .longDescription    = NULL,
@@ -59,6 +63,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .areaInitFunc       = NULL,
         .frameUpdateFunc    = NULL,
         .deactivationFunc   = NULL,
+
+        .hasMenuEvent       = FALSE,
+        .chsMenuInitFunc    = NULL,
+        .chsMenuUpdateFunc  = NULL,
 
         .name               = "@BFBFBF--" "---" "@--------",
         .shortDescription   = "@BFBFBF--No negative effect.@--------",
@@ -368,7 +376,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = TRUE,
 
         .conditionalFunc    = chs_cond_coin_flip,
-        .activatedInitFunc  = chs_act_coin_flip,
+
+        .hasMenuEvent       = TRUE,
+        .chsMenuInitFunc    = chs_menuinit_coin_flip,
+        .chsMenuUpdateFunc  = chs_menuupdate_coin_flip,
 
         .name               = "One-Star Coin Flip",
         .shortDescription   = "Flip a coin! If heads, gain a random unobtained star. If tails, lose a star in your possession...",
@@ -1728,6 +1739,27 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Forgiveness",
         .shortDescription   = "Collecting duplicate stars will no longer force a Chaos event.",
+    },
+    [CHAOS_PATCH_LETS_GO_GAMBLING] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 2,
+        .affectsPatchSelect = TRUE,
+        .duration           = 8,
+
+        .hasMenuEvent       = TRUE,
+        .chsMenuInitFunc    = init_gambling_wheel,
+        .chsMenuUpdateFunc  = render_gambling_wheel,
+
+        .name               = "Let's Go Gambling!",
+        .shortDescription   = "Test your luck and spin a roulette wheel for an additional slight boost (or nerf) each time you select a new patch!",
+        .longDescription    = "Each wheel spin will consist of the following\n"
+                               "  - A Few Duds\n"
+                               "  - One Very Negative Outcome\n"
+                               "  - Other Slightly Negative Outcomes\n"
+                               "  - Many Positive Outcomes\n"
+                               "  - One Incredible Jackpot!\n\n"
+                               "The time has come to make irresponsible life choices and gamble your life away! HELL YEAH, WOOOOOOOOO!!!"
     },
 
 // Speed Modifiers

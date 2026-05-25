@@ -567,7 +567,7 @@ u8 chs_cond_get_vanish_cap(void) {
 
 u8 chs_cond_star_cloning_device(void) {
     struct ChaosActiveEntry *match;
-    if (chaos_find_first_active_patch(CHAOS_PATCH_STAR_CLONING_DEVICE, &match)) {
+    if (chaos_find_first_active_patch(CHAOS_PATCH_STAR_CLONING_DEVICE, &match) >= 0) {
         // return (match->remainingDuration + gChaosPatches[match->id].duration <= 2);
         return FALSE; // Above is always FALSE anyway
     } else {
@@ -633,14 +633,13 @@ static struct {
     f32 scale;
 } sCoinFlip;
 
-void chs_act_coin_flip(void) {
+void chs_menuinit_coin_flip(void) {
     sCoinFlip.timer = 0;
     sCoinFlip.phase = 0;
     sCoinFlip.result = (random_u16() % 2);
     sCoinFlip.roll = 0;
     sCoinFlip.x = 0;
     sCoinFlip.scale = 1;
-    patch_select_start_coin_flip();
 }
 
 u8 chs_cond_coin_flip(void) {
@@ -648,7 +647,9 @@ u8 chs_cond_coin_flip(void) {
     return ((totalStars > 0) && (totalStars < NUM_STARS));
 }
 
-void draw_coin_flip(void) {
+void chs_menuupdate_coin_flip(Gfx **dl) {
+    Gfx *dlHead = *dl;
+
     f32 prog = 0;
     f32 target = (((15 * 360) + (sCoinFlip.result * 180)) - COIN_FLIP_TILT); // 15 flips, plus an additional half flip based on the generated result
 
@@ -732,7 +733,8 @@ void draw_coin_flip(void) {
             sCoinFlip.roll = menu_anim_f32(prog, MENU_EASE_IN, ((!sCoinFlip.result) * 1440.0f), 720.0f);
             sCoinFlip.x = menu_anim_f32(prog, MENU_EASE_IN, 0.0f, 240);
             if(++sCoinFlip.timer > COIN_FLIP_ROLL_FRAMES) {
-                patch_select_end_coin_flip();
+                // Coin flip event is finished after this update
+                chaos_menuevent_finish_event();
             }
 
             play_sound(SOUND_GENERAL_ROLLING_LOG, gGlobalSoundSource);
@@ -740,7 +742,6 @@ void draw_coin_flip(void) {
     }
 
     // Draw coin
-    Gfx *dlHead = gDisplayListHead;
     Mtx *matrix = (Mtx *) alloc_display_list(sizeof(Mtx));
 
     if (!matrix) {
@@ -763,5 +764,5 @@ void draw_coin_flip(void) {
     gSPDisplayList(dlHead++, coin_flip_coin_mesh);
     gSPPopMatrix(dlHead++, G_MTX_MODELVIEW);
 
-    gDisplayListHead = dlHead;
+    *dl = dlHead;
 }

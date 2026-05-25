@@ -42,7 +42,7 @@
 #define  FILTER_WRAP 0
 #define  FILTER_CLAMP 1
 
-#define RAND(x) (guRandom()%x)	/* random number between 0 to x */
+#define RAND(x) ((unsigned int)guRandom()%(x))	/* random number between 0 to x */
 
 /*
  * Data Structures

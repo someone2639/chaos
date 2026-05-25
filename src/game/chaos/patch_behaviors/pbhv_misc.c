@@ -22,7 +22,7 @@ u8 chs_cond_miracle_normal(void) {
         return FALSE;
     }
 
-    if(chaos_find_first_active_patch(CHAOS_PATCH_MIRACLE_NORMAL, &match)) {
+    if (chaos_find_first_active_patch(CHAOS_PATCH_MIRACLE_NORMAL, &match) >= 0) {
         return (match->remainingDuration + gChaosPatches[match->id].duration <= 4);
     } else {
         return TRUE;

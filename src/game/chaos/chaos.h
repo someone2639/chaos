@@ -181,6 +181,7 @@ enum ChaosPatchID {
     CHAOS_PATCH_LOW_STAKES,
     CHAOS_PATCH_HIGH_STAKES,
     CHAOS_PATCH_FORGIVENESS,
+    CHAOS_PATCH_LETS_GO_GAMBLING,
 
 // Speed Modifiers
     CHAOS_PATCH_PUSH_BACK,
@@ -282,15 +283,16 @@ enum ChaosGameMode {
 };
 
 enum ChaosPatchDurationType {
-    CHAOS_DURATION_ONCE,      // Calls init function, then deactivates immediately
-    CHAOS_DURATION_INFINITE,  // Activates forever and cannot be deactivated
-    CHAOS_DURATION_STARS,     // Duration is decremented for each star collected (blue stars included)
-    CHAOS_DURATION_USE_COUNT, // Duration is decremented each time its use case is invoked (this must be done manually!)
+    CHAOS_DURATION_DO_NOT_FORCE = -1, // Used to specify no forced duration type when checking conditionals
+    CHAOS_DURATION_ONCE         =  0, // Calls init function, then deactivates immediately
+    CHAOS_DURATION_INFINITE,          // Activates forever and cannot be deactivated
+    CHAOS_DURATION_STARS,             // Duration is decremented for each star collected (blue stars included)
+    CHAOS_DURATION_USE_COUNT,         // Duration is decremented each time its use case is invoked (this must be done manually!)
 };
 
 enum ChaosPatchSpecialEvent {
     CHAOS_SPECIAL_DO_NOT_FORCE = -1, // Used to specify no event override for patch generation
-    CHAOS_SPECIAL_NONE = 0,          // No special effect
+    CHAOS_SPECIAL_NONE         =  0, // No special effect
     CHAOS_SPECIAL_PLUS1_POSITIVE,    // Add +1 severity to each positive listing only
     CHAOS_SPECIAL_PLUS1_NEGATIVE,    // Add +1 severity to each negative listing only
     CHAOS_SPECIAL_ZERO_POSITIVE,     // Floor positive severity to 0, effectively eliminating any positive effect
@@ -327,6 +329,10 @@ struct ChaosPatch {
     void (*areaInitFunc     )(void);       // Invoked once immediately after warping into a new level and/or area that isn't COURSE_NONE (Optional)
     void (*frameUpdateFunc  )(void);       // Invoked once at the start of each frame while active (Optional)
     void (*deactivationFunc )(void);       // Invoked once the patch is deactivated (Optional)
+
+    const u8 hasMenuEvent;                 // Does this patch have a chaos menu event? (Events activated immediately following patch selection, but prior to raising the curtain. Mainly for user-facing render events, such as Coin Flip or Let's Go Gambling!)
+    void (*chsMenuInitFunc)(void);         // Invoked upon initialization of menu event (Optional if `hasMenuEvent` is TRUE)
+    void (*chsMenuUpdateFunc)(Gfx **dl);   // Invoked as the update/render entry point during a menu event (Mandatory if `hasMenuEvent` is TRUE)
 
     const char *name;             // Display name for the patch
     const char *shortDescription; // Short description for the patch
@@ -367,13 +373,15 @@ extern s32 gChaosLastForcedSeverity;
 extern enum ChaosPatchSpecialEvent gChaosLastEventType;
 extern enum ChaosDifficulty gChaosDifficulty;
 extern enum ChaosGameMode gChaosGameMode;
+extern enum ChaosPatchDurationType gChaosForcedDurationType;
+extern u32 gChaosForcedDuration;
 extern enum ChaosPatchID gNegativePatchCompare;
 
 // Check whether a particular chaos patch is active. Overall cheaper operation than the function below this one.
 u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId);
 
-// Get patch data for an active patch (if active at all). Return TRUE if a match is found.
-u8 chaos_find_first_active_patch(const enum ChaosPatchID patchId, struct ChaosActiveEntry **firstFoundMatch);
+// Get patch data for an active patch (if active at all). Return index if a match is found, else return -1.
+s32 chaos_find_first_active_patch(const enum ChaosPatchID patchId, struct ChaosActiveEntry **firstFoundMatch);
 
 // Get the number of active instances for a particular patch.
 u32 chaos_count_active_instances(const enum ChaosPatchID patchId);
@@ -391,8 +399,13 @@ void chaos_remove_expired_entry(const s32 patchIndex, const char *msg);
 void chaos_add_new_entry(const enum ChaosPatchID patchId);
 
 // Decrement all durations for each patch using a star timer (i.e. CHAOS_DURATION_STARS).
-// Additionally deconstructs any applicable patches if their duration hits 0.
+// Additionally deconstructs any applicable patches if their duration hits 0, invoking deactivation functions when applicable.
 void chaos_decrement_star_timers(enum ChaosStarDecrementType decrementType);
+
+// Decrement the duration of a patch using a star timer or use count (i.e. CHAOS_DURATION_STARS or CHAOS_DURATION_USE_COUNT).
+// Does nothing if passed in a type of CHAOS_DURATION_ONCE or CHAOS_DURATION_INFINITE.
+// Additionally deconstruct applicable patches if the remaining duration hits 0, invoking deactivation function if applicable.
+void chaos_decrement_star_or_use_timer_with_id(enum ChaosPatchID patchId);
 
 // Handles behavior for decrementing consumable patches (i.e. CHAOS_DURATION_USE_COUNT).
 // This does NOT invoke a callback for what it should do when the patch is consumed,
@@ -432,4 +445,5 @@ void chaos_frame_update(void);
 
 #include "chaos_patch_shared_vars.h"
 #include "chaos_patch_behaviors.h"
+#include "chaos_menu_event.h"
 #include "chaos_message.h"

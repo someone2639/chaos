@@ -26,7 +26,7 @@ u8 chs_double_coins_under_30s(void) {
         return FALSE;
     }
 
-    if (!chaos_find_first_active_patch(CHAOS_PATCH_DOUBLE_COINS, &entry)) {
+    if (chaos_find_first_active_patch(CHAOS_PATCH_DOUBLE_COINS, &entry) < 0) {
         assert(FALSE, "chs_lvlinit_double_coins:\nActive patch could not be found!");
     }
 
@@ -36,7 +36,7 @@ u8 chs_double_coins_under_30s(void) {
 void chs_lvlinit_double_coins(void) {
     struct ChaosActiveEntry *entry;
 
-    if (!chaos_find_first_active_patch(CHAOS_PATCH_DOUBLE_COINS, &entry)) {
+    if (chaos_find_first_active_patch(CHAOS_PATCH_DOUBLE_COINS, &entry) < 0) {
         assert(FALSE, "chs_lvlinit_double_coins:\nActive patch could not be found!");
     }
 

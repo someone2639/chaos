@@ -49,24 +49,42 @@ u8 chs_cond_remove_negative_patch(void) {
     return FALSE;
 }
 
-void chs_activate_random_pos_neg_patch_of_severity(s32 patchSeverity, enum ChaosPatchEffectType effectType) {
+enum ChaosPatchID chs_activate_random_pos_neg_patch_of_severity(s32 patchSeverity, enum ChaosPatchEffectType effectType, u32 forcedDuration, enum ChaosPatchDurationType durationType) {
     // Ideally this doesn't recurse at all, but just in case...
-    s32 last = inRandomBuffActivationFunc;
+    s32 lastRandomBuff = inRandomBuffActivationFunc;
     inRandomBuffActivationFunc = TRUE;
+
+    // Same here...
+    enum ChaosPatchDurationType lastDurType = gChaosForcedDurationType;
+    gChaosForcedDurationType = durationType;
+
+    // And here...
+    enum ChaosPatchDurationType lastDuration = gChaosForcedDuration;
+    gChaosForcedDuration = forcedDuration;
+
+    enum ChaosPatchID newPatch = CHAOS_PATCH_NONE_POSITIVE;
 
     // Generate new patches, with new rank override and explicitly without any special event
     const struct ChaosPatchSelection *generatedPatches = chaos_roll_for_new_patches(patchSeverity, CHAOS_SPECIAL_NONE);
 
     // Select first generated patch card's positive or negative entry
     if (effectType == CHAOS_EFFECT_POSITIVE) {
-        chaos_add_new_entry(generatedPatches[0].positiveId);
-        chaosmsg_print(generatedPatches[0].positiveId, "New patch activated: %s");
+        newPatch = generatedPatches[0].positiveId;
     } else if (effectType == CHAOS_EFFECT_NEGATIVE) {
-        chaos_add_new_entry(generatedPatches[0].negativeId);
-        chaosmsg_print(generatedPatches[0].negativeId, "New patch activated: %s");
+        newPatch = generatedPatches[0].negativeId;
+    } else {
+        assert_args(FALSE, "chs_activate_random_pos_neg_patch_of_severity:\nInvalid effectType: %d", effectType);
+        newPatch = CHAOS_PATCH_NONE_POSITIVE;
     }
-    
-    inRandomBuffActivationFunc = last;
+
+    chaos_add_new_entry(newPatch);
+    chaosmsg_print(newPatch, "New patch activated: %s");
+
+    gChaosForcedDuration = lastDuration;
+    gChaosForcedDurationType = lastDurType;
+    inRandomBuffActivationFunc = lastRandomBuff;
+
+    return newPatch;
 }
 
 u8 chs_cond_add_random_buff(void) {
@@ -79,7 +97,7 @@ void chs_act_add_random_buff(void) {
     s32 patchSeverity = (random_u16() % CHAOS_PATCH_SEVERITY_MAX) + 1;
 
     // Generate new patches, with new rank override and explicitly without any special event
-    chs_activate_random_pos_neg_patch_of_severity(patchSeverity, CHAOS_EFFECT_POSITIVE);
+    chs_activate_random_pos_neg_patch_of_severity(patchSeverity, CHAOS_EFFECT_POSITIVE, 0, CHAOS_DURATION_DO_NOT_FORCE);
 }
 
 void chs_act_remove_negative_patch(void) {

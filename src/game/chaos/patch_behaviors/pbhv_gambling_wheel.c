@@ -23,7 +23,6 @@
 #define GAMBLING_WHEEL_SLOT_COUNT 16
 #define WEDGE_ROTATIONAL_FRAC (360.0f / GAMBLING_WHEEL_SLOT_COUNT)
 
-s32 wheelInitBefore = FALSE;
 s32 activeWheelIndex = 0;
 f32 wheelRotation = 0.0f;
 
@@ -60,6 +59,7 @@ enum GamblingWheelOptionType {
     GWHEEL_OPT_POS_1_STAR    = GWHEEL_OPT_POS_START,
     GWHEEL_OPT_POS_5_LIVES,
     GWHEEL_OPT_POS_EXTEND,
+    GWHEEL_OPT_POS_RANK_1,
     GWHEEL_OPT_POS_RANK_2,
     GWHEEL_OPT_POS_RANK_3,
 
@@ -218,12 +218,12 @@ static void gwheel_type_act_negative_extend(void) {
     }
 }
 
-// static void gwheel_type_act_rank_1_positive(void) { chs_activate_random_pos_neg_patch_of_severity(1, CHAOS_EFFECT_POSITIVE); } // UNUSED
-static void gwheel_type_act_rank_2_positive(void) { chs_activate_random_pos_neg_patch_of_severity(2, CHAOS_EFFECT_POSITIVE); }
-static void gwheel_type_act_rank_3_positive(void) { chs_activate_random_pos_neg_patch_of_severity(3, CHAOS_EFFECT_POSITIVE); }
-static void gwheel_type_act_rank_1_negative(void) { chs_activate_random_pos_neg_patch_of_severity(1, CHAOS_EFFECT_NEGATIVE); }
-static void gwheel_type_act_rank_2_negative(void) { chs_activate_random_pos_neg_patch_of_severity(2, CHAOS_EFFECT_NEGATIVE); }
-static void gwheel_type_act_rank_3_negative(void) { chs_activate_random_pos_neg_patch_of_severity(3, CHAOS_EFFECT_NEGATIVE); }
+static void gwheel_type_act_rank_1_positive(void) { chs_activate_random_pos_neg_patch_of_severity(1, CHAOS_EFFECT_POSITIVE, 1, CHAOS_DURATION_STARS); }
+static void gwheel_type_act_rank_2_positive(void) { chs_activate_random_pos_neg_patch_of_severity(2, CHAOS_EFFECT_POSITIVE, 1, CHAOS_DURATION_STARS); }
+static void gwheel_type_act_rank_3_positive(void) { chs_activate_random_pos_neg_patch_of_severity(3, CHAOS_EFFECT_POSITIVE, 1, CHAOS_DURATION_STARS); }
+static void gwheel_type_act_rank_1_negative(void) { chs_activate_random_pos_neg_patch_of_severity(1, CHAOS_EFFECT_NEGATIVE, 1, CHAOS_DURATION_STARS); }
+static void gwheel_type_act_rank_2_negative(void) { chs_activate_random_pos_neg_patch_of_severity(2, CHAOS_EFFECT_NEGATIVE, 1, CHAOS_DURATION_STARS); }
+static void gwheel_type_act_rank_3_negative(void) { chs_activate_random_pos_neg_patch_of_severity(3, CHAOS_EFFECT_NEGATIVE, 1, CHAOS_DURATION_STARS); }
 
 const struct GamblingWheelSizeProps gamblingWheelSizeParams[] = {
     [GWHEEL_SIZE_INVALID] = {
@@ -300,7 +300,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
     /* GWHEEL_TYPE_JACKPOT */
     [GWHEEL_OPT_JPT_3_STARS] = {
         .id              = GWHEEL_OPT_JPT_3_STARS,
-        .weight          = 1.0f,
+        .weight          = 1.25f,
         .textureDlBig    = gambling_wheel_dl_icon_stars_3_big,
         .textureDlSmall  = gambling_wheel_dl_icon_stars_3_small,
         .text            = "Mark 3 random stars as collected.",
@@ -320,7 +320,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
     /* GWHEEL_TYPE_POSITIVE */
     [GWHEEL_OPT_POS_1_STAR] = {
         .id              = GWHEEL_OPT_POS_1_STAR,
-        .weight          = 1.0f,
+        .weight          = 1.25f,
         .textureDlBig    = gambling_wheel_dl_icon_stars_1_big,
         .textureDlSmall  = gambling_wheel_dl_icon_stars_1_small,
         .text            = "Mark a random star as collected.",
@@ -329,7 +329,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
     },
     [GWHEEL_OPT_POS_5_LIVES] = {
         .id              = GWHEEL_OPT_POS_5_LIVES,
-        .weight          = 1.0f,
+        .weight          = 1.125f,
         .textureDlBig    = gambling_wheel_dl_icon_lives_5_big,
         .textureDlSmall  = gambling_wheel_dl_icon_lives_5_small,
         .text            = "Gain 5 lives.",
@@ -345,6 +345,15 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .conditionalFunc = gwheel_type_cond_positive_extend,
         .activationFunc  = gwheel_type_act_positive_extend,
     },
+    [GWHEEL_OPT_POS_RANK_1] = {
+        .id              = GWHEEL_OPT_POS_RANK_1,
+        .weight          = 0.67f,
+        .textureDlBig    = gambling_wheel_dl_icon_rank_1_big,
+        .textureDlSmall  = gambling_wheel_dl_icon_rank_1_small,
+        .text            = "Gain a positive rank 1 patch for 1 star.",
+        .conditionalFunc = NULL,
+        .activationFunc  = gwheel_type_act_rank_1_positive,
+    },
     [GWHEEL_OPT_POS_RANK_2] = {
         .id              = GWHEEL_OPT_POS_RANK_2,
         .weight          = 1.0f,
@@ -356,7 +365,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
     },
     [GWHEEL_OPT_POS_RANK_3] = {
         .id              = GWHEEL_OPT_POS_RANK_3,
-        .weight          = 1.0f,
+        .weight          = 0.85f,
         .textureDlBig    = gambling_wheel_dl_icon_rank_3_big,
         .textureDlSmall  = gambling_wheel_dl_icon_rank_3_small,
         .text            = "Gain a positive rank 3 patch for 1 star.",
@@ -378,7 +387,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
     /* GWHEEL_TYPE_NEGATIVE */
     [GWHEEL_OPT_NEG_1_STAR] = {
         .id              = GWHEEL_OPT_NEG_1_STAR,
-        .weight          = 1.0f,
+        .weight          = 1.25f,
         .textureDlBig    = gambling_wheel_dl_icon_stars_m1_big,
         .textureDlSmall  = gambling_wheel_dl_icon_stars_m1_small,
         .text            = "Mark a random star as uncollected.",
@@ -405,7 +414,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
     },
     [GWHEEL_OPT_NEG_RANK_1] = {
         .id              = GWHEEL_OPT_NEG_RANK_1,
-        .weight          = 1.0f,
+        .weight          = 0.75f,
         .textureDlBig    = gambling_wheel_dl_icon_rank_1_big,
         .textureDlSmall  = gambling_wheel_dl_icon_rank_1_small,
         .text            = "Gain a negative rank 1 patch for 1 star.",
@@ -414,7 +423,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
     },
     [GWHEEL_OPT_NEG_RANK_2] = {
         .id              = GWHEEL_OPT_NEG_RANK_2,
-        .weight          = 1.0f,
+        .weight          = 1.25f,
         .textureDlBig    = gambling_wheel_dl_icon_rank_2_big,
         .textureDlSmall  = gambling_wheel_dl_icon_rank_2_small,
         .text            = "Gain a negative rank 2 patch for 1 star.",
@@ -434,7 +443,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
     },
     [GWHEEL_OPT_CAT_6_LIVES] = {
         .id              = GWHEEL_OPT_CAT_6_LIVES,
-        .weight          = 1.0f,
+        .weight          = 0.85f,
         .textureDlBig    = gambling_wheel_dl_icon_lives_m6_big,
         .textureDlSmall  = gambling_wheel_dl_icon_lives_m6_small,
         .text            = "Lose 6 lives.",
@@ -721,7 +730,6 @@ const struct GamblingWheelEntries gamblingWheels[] = {
 };
 
 void init_gambling_wheel(void) {
-    wheelInitBefore = TRUE;
     activeWheelIndex = random_u16() % ARRAY_COUNT(gamblingWheels);
 
     struct GamblingWheelParams *wheel = gamblingWheels[activeWheelIndex].entries;
@@ -812,10 +820,6 @@ void render_gambling_wheel(Gfx **dl) {
     u8 normalBorderColor[4] = {0x00, 0x00, 0x00, 0xFF};
     u8 highlightedBorderColor[4] = {0xCF, 0xBF, 0x3F, 0xFF};
     Gfx *dlHead = *dl;
-
-    if (!wheelInitBefore) {
-        init_gambling_wheel();
-    }
 
     struct GamblingWheelParams *wheel = gamblingWheels[activeWheelIndex].entries;
 
@@ -955,6 +959,11 @@ void render_gambling_wheel(Gfx **dl) {
 
     gSPDisplayList(dlHead++, gambling_wheel_dl_end);
     gSPPopMatrix(dlHead++, G_MTX_MODELVIEW);
+
+    // TODO: Make this better
+    if (gPlayer1Controller->buttonPressed & L_TRIG) {
+        chaos_menuevent_finish_event();
+    }
 
     *dl = dlHead;
 }

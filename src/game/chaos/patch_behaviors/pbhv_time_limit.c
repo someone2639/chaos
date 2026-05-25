@@ -59,7 +59,7 @@ void chs_update_time_limit(void) {
 }
 
 u8 chs_cond_lower_time_limit(void) {
-    return (chaos_check_if_patch_active(CHAOS_PATCH_TIME_LIMIT) && sTimeLimitOffset < CHS_TIME_LIMIT_OFFSET_MAX);
+    return (chaos_check_if_patch_active(CHAOS_PATCH_TIME_LIMIT) && sTimeLimitOffset < CHS_TIME_LIMIT_OFFSET_MAX && gChaosForcedDuration == 0);
 }
 
 void chs_act_lower_time_limit(void) {
