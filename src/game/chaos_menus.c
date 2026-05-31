@@ -249,43 +249,55 @@ f32 menu_get_anim_prog(struct ChaosMenu *menu) {
 /*
     Sets up to draw a button texture
 */
-void menu_start_button() {
-    gDPPipeSync(gDisplayListHead++);
-	gDPSetCycleType(gDisplayListHead++, G_CYC_COPY);
-    gDPSetRenderMode(gDisplayListHead++, G_RM_NOOP, G_RM_NOOP2);
-	gDPSetTexturePersp(gDisplayListHead++, G_TP_NONE);
-	gDPSetAlphaCompare(gDisplayListHead++, G_AC_THRESHOLD);
-	gDPSetBlendColor(gDisplayListHead++, 255, 255, 255, 255);
-    gDPPipeSync(gDisplayListHead++);
-    gSPTexture(gDisplayListHead++, 65535, 65535, 0, 0, 1);
+void menu_start_button(Gfx **dl) {
+    Gfx *dlHead = *dl;
+
+    gDPPipeSync(dlHead++);
+	gDPSetCycleType(dlHead++, G_CYC_COPY);
+    gDPSetRenderMode(dlHead++, G_RM_NOOP, G_RM_NOOP2);
+	gDPSetTexturePersp(dlHead++, G_TP_NONE);
+	gDPSetAlphaCompare(dlHead++, G_AC_THRESHOLD);
+	gDPSetBlendColor(dlHead++, 255, 255, 255, 255);
+    gDPPipeSync(dlHead++);
+    gSPTexture(dlHead++, 65535, 65535, 0, 0, 1);
+
+    *dl = dlHead;
 }
 
 /*
     Resets everything after drawing a button texture
 */
-void menu_end_button() {
-    gDPPipeSync(gDisplayListHead++);
-	gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
-	gSPTexture(gDisplayListHead++, 65535, 65535, 0, G_TX_RENDERTILE, G_OFF);
-	gDPSetTexturePersp(gDisplayListHead++, G_TP_PERSP);
-	gDPSetAlphaCompare(gDisplayListHead++, G_AC_NONE);
+void menu_end_button(Gfx **dl) {
+    Gfx *dlHead = *dl;
+
+    gDPPipeSync(dlHead++);
+	gDPSetCycleType(dlHead++, G_CYC_1CYCLE);
+	gSPTexture(dlHead++, 65535, 65535, 0, G_TX_RENDERTILE, G_OFF);
+	gDPSetTexturePersp(dlHead++, G_TP_PERSP);
+	gDPSetAlphaCompare(dlHead++, G_AC_NONE);
+
+    *dl = dlHead;
 }
 
 /*
     Draws a button texture
 */
-void menu_draw_button(s32 x, s32 y, s32 button, s32 pressed) {
+void menu_draw_button(Gfx **dl, s32 x, s32 y, s32 button, s32 pressed) {
+    Gfx *dlHead = *dl;
+
     u8 *buttonTexture = (pressed) ? sButtonTextureTable[button].down : sButtonTextureTable[button].up;
     buttonTexture = segmented_to_virtual(buttonTexture);
 
-    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, buttonTexture);
-	gDPSetTile(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0);
-	gDPLoadBlock(gDisplayListHead++, 7, 0, 0, 255, 512);
-	gDPSetTile(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 4, 0, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 4, 0, G_TX_WRAP | G_TX_NOMIRROR, 4, 0);
-	gDPSetTileSize(gDisplayListHead++, 0, 0, 0, 60, 60);
-    gSPTextureRectangle(gDisplayListHead++, x << 2, y << 2, (x + 15) << 2, (y + 15) << 2,
+    gDPSetTextureImage(dlHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, buttonTexture);
+	gDPSetTile(dlHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0);
+	gDPLoadBlock(dlHead++, 7, 0, 0, 255, 512);
+	gDPSetTile(dlHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 4, 0, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 4, 0, G_TX_WRAP | G_TX_NOMIRROR, 4, 0);
+	gDPSetTileSize(dlHead++, 0, 0, 0, 60, 60);
+    gSPTextureRectangle(dlHead++, x << 2, y << 2, (x + 15) << 2, (y + 15) << 2,
                         G_TX_RENDERTILE, 0, 0, 4 << 10, 1 << 10);
-    gDPPipeSync(gDisplayListHead++);
+    gDPPipeSync(dlHead++);
+
+    *dl = dlHead;
 }
 
 /*
@@ -349,36 +361,42 @@ void menu_add_button_prompt(struct ButtonPromptList *list, enum MenuButtonPrompt
     Renders the contents of a button prompt list. First draws all the buttons, then all the text.
     Always draws right aligned button prompts, going horizontally to the left.
 */
-void menu_render_button_prompt_list(s32 x, s32 y, struct ButtonPromptList *list) {
+void menu_render_button_prompt_list(Gfx **dl, s32 x, s32 y, struct ButtonPromptList *list) {
+    Gfx *dlHead = *dl;
+
     s32 pressed = ((gGlobalTimer % 60) > 30);
     // Draw buttons
-    menu_start_button();
+    menu_start_button(&dlHead);
     s32 offset = 0;
     for(struct ButtonPrompt *prompt = list->head; prompt != NULL; prompt = prompt->next) {
-        menu_draw_button(x + offset, y, prompt->button, pressed);
+        menu_draw_button(&dlHead, x + offset, y, prompt->button, pressed);
         offset -= prompt->offset;
     }
-    menu_end_button();
+    menu_end_button(&dlHead);
 
     // Draw text
-    fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
+    fasttext_setup_textrect_rendering(&dlHead, FT_FONT_SMALL_THIN);
     offset = -2;
     for(struct ButtonPrompt *prompt = list->head; prompt != NULL; prompt = prompt->next) {
-        fasttext_draw_texrect(x + offset, y, prompt->text, FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+        fasttext_draw_texrect(&dlHead, x + offset, y, prompt->text, FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
         offset -= prompt->offset;
     }
-    fasttext_finished_rendering();
+    fasttext_finished_rendering(&dlHead);
+
+    *dl = dlHead;
 }
 
 /*
     Draws a single button prompt
 */
-void menu_single_button_prompt(s32 x, s32 y, enum MenuButtonPrompt button, char *text, s32 alignLeft) {
-    s32 pressed = ((gGlobalTimer % 60) > 30);
+void menu_single_button_prompt(Gfx **dl, s32 x, s32 y, enum MenuButtonPrompt button, char *text, s32 alignLeft) {
+    Gfx *dlHead = *dl;
 
-    menu_start_button();
-    menu_draw_button(x, y, button, pressed);
-    menu_end_button();
+    s32 pressed = ((gGlobalTimer % 60) >= 30);
+
+    menu_start_button(&dlHead);
+    menu_draw_button(&dlHead, x, y, button, pressed);
+    menu_end_button(&dlHead);
 
     s32 offset, align;
     if(alignLeft) {
@@ -389,9 +407,11 @@ void menu_single_button_prompt(s32 x, s32 y, enum MenuButtonPrompt button, char 
         align = FT_FLAG_ALIGN_RIGHT;
     }
 
-    fasttext_setup_textrect_rendering(FT_FONT_SMALL_THIN);
-    fasttext_draw_texrect(x + offset, y, text, align, 0xFF, 0xFF, 0xFF, 0xFF);
-    fasttext_finished_rendering();
+    fasttext_setup_textrect_rendering(&dlHead, FT_FONT_SMALL_THIN);
+    fasttext_draw_texrect(&dlHead, x + offset, y, text, align, 0xFF, 0xFF, 0xFF, 0xFF);
+    fasttext_finished_rendering(&dlHead);
+
+    *dl = dlHead;
 }
 
 Gfx chaos_text_bg_start[] = {
@@ -551,13 +571,17 @@ Gfx *menu_create_cursor(s32 x, s32 y, f32 scale, u8 r, u8 g, u8 b, u8 a) {
 /*
     Draws a fully transparent texrect across the entire screen to strip all coverage and avoid scummy edges of menu elements due to anti-aliasing.
 */
-void menu_strip_coverage() {
-    gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
-    gDPSetRenderMode(gDisplayListHead++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
-    gDPSetCombineLERP(gDisplayListHead++, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT);
-    gDPSetFillColor(gDisplayListHead++, (GPACK_RGBA5551(0, 0, 0, 1) << 16) | GPACK_RGBA5551(0, 0, 0, 1));
-    gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 0);
-    gDPFillRectangle(gDisplayListHead++, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    gDPPipeSync(gDisplayListHead++);
-    gDPSetRenderMode(gDisplayListHead++, G_RM_OPA_SURF, G_RM_OPA_SURF2);
+void menu_strip_coverage(Gfx **dl) {
+    Gfx *dlHead = *dl;
+
+    gDPSetCycleType(dlHead++, G_CYC_1CYCLE);
+    gDPSetRenderMode(dlHead++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
+    gDPSetCombineLERP(dlHead++, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT);
+    gDPSetFillColor(dlHead++, (GPACK_RGBA5551(0, 0, 0, 1) << 16) | GPACK_RGBA5551(0, 0, 0, 1));
+    gDPSetEnvColor(dlHead++, 0, 0, 0, 0);
+    gDPFillRectangle(dlHead++, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    gDPPipeSync(dlHead++);
+    gDPSetRenderMode(dlHead++, G_RM_OPA_SURF, G_RM_OPA_SURF2);
+
+    *dl = dlHead;
 }

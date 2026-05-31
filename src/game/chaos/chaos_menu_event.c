@@ -125,7 +125,7 @@ u8 chaos_menuevent_update(Gfx **dl) {
 
 #ifdef CHAOS_ENGINE_DEBUG
         if (gChaosEventActiveEvent != CHAOS_PATCH_NONE) {
-            chaosmsg_print_debug("Chaos event: 0x%08X", gChaosEventActiveEvent);
+            chaosmsg_print_debug("@FFFF009FChaos Menu Event: @FF3F3F9F0x%08X@--------", gChaosEventActiveEvent);
         }
 #endif
     }

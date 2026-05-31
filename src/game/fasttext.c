@@ -220,13 +220,14 @@ void fasttext_compute_print_text_with_line_breaks(const enum FastTextFont font, 
     *strComputedLength = fillStrIndex;
 }
 
-void fasttext_draw_texrect(int x, int y, const char* string, enum FastTextFlags flags, int r, int g, int b, int a) {
+void fasttext_draw_texrect(Gfx **dl, int x, int y, const char* string, enum FastTextFlags flags, int r, int g, int b, int a) {
+    Gfx *dlHead = *dl;
+
     int i = 0;
     int xShift = 0;
     int xPos = x;
     int yPos;
     int s = 0;
-    Gfx *dlHead = gDisplayListHead;
     unsigned char rgbaBaseColors[4] = { r, g, b, a };
     unsigned char rgbaCurrentColors[4] = { r, g, b, a };
 
@@ -333,10 +334,11 @@ void fasttext_draw_texrect(int x, int y, const char* string, enum FastTextFlags 
 
     gDPPipeSync(dlHead++);
 
-    gDisplayListHead = dlHead;
+    *dl = dlHead;
 }
 
-void fasttext_draw_texrect_linebreaks(int x, int y, int width, const char* string, enum FastTextFlags flags, int r, int g, int b, int a) {
+void fasttext_draw_texrect_linebreaks(Gfx **dl, int x, int y, int width, const char* string, enum FastTextFlags flags, int r, int g, int b, int a) {
+    Gfx *dlHead = *dl;
     int lines = 0;
     int length = 0;
 
@@ -344,17 +346,20 @@ void fasttext_draw_texrect_linebreaks(int x, int y, int width, const char* strin
     fasttext_compute_print_text_with_line_breaks(fasttextCachedFontId, width, &lines, &length, gFasttextTmpBuffer, string);
 
     assert(length + 1 < (s32) sizeof(gFasttextTmpBuffer), "fasttext_draw_texrect_linebreaks:\nstring is too long!");
-    fasttext_draw_texrect(x, y, gFasttextTmpBuffer, flags, r, g, b, a);
+    fasttext_draw_texrect(&dlHead, x, y, gFasttextTmpBuffer, flags, r, g, b, a);
+
+    *dl = dlHead;
 }
 
-void fasttext_setup_textrect_rendering(enum FastTextFont fnt) {
+void fasttext_setup_textrect_rendering(Gfx **dl, enum FastTextFont fnt) {
+    Gfx *dlHead = *dl;
+
     fasttextCachedFontId = fnt;
     if (fnt == FT_FONT_NONE) {
-        fasttext_finished_rendering();
+        fasttext_finished_rendering(&dlHead);
         return;
     }
 
-    Gfx *dlHead = gDisplayListHead;
     const struct FastTextProps *fontProps = &gFasttextFonts[fasttextCachedFontId];
 
     gSPDisplayList(dlHead++, dl_fasttext_begin);
@@ -384,16 +389,16 @@ void fasttext_setup_textrect_rendering(enum FastTextFont fnt) {
             error("Invalid textureSize!");
     }
 
-    gDisplayListHead = dlHead;
+    *dl = dlHead;
 }
 
-void fasttext_finished_rendering(void) {
-    Gfx *dlHead = gDisplayListHead;
+void fasttext_finished_rendering(Gfx **dl) {
+    Gfx *dlHead = *dl;
 
     gDPSetTexturePersp(dlHead++, G_TP_PERSP);
     gSPDisplayList(dlHead++, dl_fasttext_end);
 
     fasttextCachedFontId = FT_FONT_NONE;
 
-    gDisplayListHead = dlHead;
+    *dl = dlHead;
 }

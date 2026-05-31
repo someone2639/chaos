@@ -75,17 +75,17 @@ extern char gFasttextTmpBuffer[0x1000];
 // fasttext initialization function to be run before texrects can be drawn.
 // This may be run without need for `fasttext_finished_rendering` when switching fonts.
 // Do not attempt to render unrelated DisplayLists until `fasttext_finished_rendering` has been invoked.
-void fasttext_setup_textrect_rendering(enum FastTextFont fnt);
+void fasttext_setup_textrect_rendering(Gfx **dl, enum FastTextFont fnt);
 
 // fasttext function used for physically drawing a message to the screen using texrects.
-void fasttext_draw_texrect(int x, int y, const char* string, enum FastTextFlags flags, int r, int g, int b, int a);
+void fasttext_draw_texrect(Gfx **dl, int x, int y, const char* string, enum FastTextFlags flags, int r, int g, int b, int a);
 
 // same as above, but autocomputes newlines based on a provided string width value.
-void fasttext_draw_texrect_linebreaks(int x, int y, int width, const char* string, enum FastTextFlags flags, int r, int g, int b, int a);
+void fasttext_draw_texrect_linebreaks(Gfx **dl, int x, int y, int width, const char* string, enum FastTextFlags flags, int r, int g, int b, int a);
 
 // fasttext finalization function used when done rendering texrects.
 // Do not forget to invoke this!
-void fasttext_finished_rendering(void);
+void fasttext_finished_rendering(Gfx **dl);
 
 
 /***********************************************************************
@@ -94,17 +94,17 @@ void fasttext_finished_rendering(void);
 // slowtext initialization function to be run before ortho tris can be drawn.
 // This may be run without need for `slowtext_finished_rendering` when switching fonts.
 // Do not attempt to render unrelated DisplayLists until `slowtext_finished_rendering` has been invoked.
-void slowtext_setup_ortho_rendering(enum FastTextFont fnt);
+void slowtext_setup_ortho_rendering(Gfx **dl, enum FastTextFont fnt);
 
 // slowtext function used for physically drawing a message to the screen using ortho tris.
-void slowtext_draw_ortho_text(s32 x, s32 y, const char* string, enum FastTextFlags flags, s32 r, s32 g, s32 b, s32 a);
+void slowtext_draw_ortho_text(Gfx **dl, s32 x, s32 y, const char* string, enum FastTextFlags flags, s32 r, s32 g, s32 b, s32 a);
 
 // same as above, but autocomputes newlines based on a provided string width value.
-void slowtext_draw_ortho_text_linebreaks(s32 x, s32 y, s32 width, const char* string, enum FastTextFlags flags, s32 r, s32 g, s32 b, s32 a);
+void slowtext_draw_ortho_text_linebreaks(Gfx **dl, s32 x, s32 y, s32 width, const char* string, enum FastTextFlags flags, s32 r, s32 g, s32 b, s32 a);
 
 // slowtext finalization function used when done rendering ortho tris.
 // Do not forget to invoke this!
-void slowtext_finished_rendering(void);
+void slowtext_finished_rendering(Gfx **dl);
 
 
 /*************************************************************************************

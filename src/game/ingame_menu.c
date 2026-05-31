@@ -2934,9 +2934,9 @@ s16 render_pause_courses_and_castle(void) {
         handle_page_switch_inputs();
         render_pause_screen_button_prompts();
         if(sPauseShowVerText) {
-            fasttext_setup_textrect_rendering(FT_FONT_VANILLA_SHADOW);
-            fasttext_draw_texrect(16, (SCREEN_HEIGHT - 38), VERSION_STRING, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-            fasttext_finished_rendering();
+            fasttext_setup_textrect_rendering(&gDisplayListHead, FT_FONT_VANILLA_SHADOW);
+            fasttext_draw_texrect(&gDisplayListHead, 16, (SCREEN_HEIGHT - 38), VERSION_STRING, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+            fasttext_finished_rendering(&gDisplayListHead);
         }
     if (gDialogTextAlpha < 250) {
         gDialogTextAlpha += 25;

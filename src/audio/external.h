@@ -8,6 +8,12 @@
 
 #define CHAOS_SLOWDOWN_MULT 0.75f
 
+// sBackgroundMusicMaxTargetVolume and sBackgroundMusicTargetVolume use the 0x80
+// bit to indicate that they are set, and the rest of the bits for the actual value
+#define TARGET_VOLUME_IS_PRESENT_FLAG 0x80
+#define TARGET_VOLUME_VALUE_MASK 0x7f
+#define TARGET_VOLUME_UNSET 0x00
+
 // Sequence arguments, passed to seq_player_play_sequence. seqId may be bit-OR'ed with
 // SEQ_VARIATION; this will load the same sequence, but set a variation
 // bit which may be read by the sequence script.
@@ -41,13 +47,17 @@ extern u32 gAudioRandom;
 
 extern s8 sLevelAreaReverbs[LEVEL_COUNT][3];
 
+extern u8 sBackgroundMusicMaxTargetVolume;
+
 struct SPTask *create_next_audio_frame_task(void);
 void play_sound(s32 soundBits, f32 *pos);
 void audio_signal_game_loop_tick(void);
+void seq_player_play_sequence(u8 player, u8 seqId, u16 arg2);
 void seq_player_fade_out(u8 player, u16 fadeDuration);
 void fade_volume_scale(u8 player, u8 targetScale, u16 fadeDuration);
 void seq_player_lower_volume(u8 player, u16 fadeDuration, u8 percentage);
 void seq_player_unlower_volume(u8 player, u16 fadeDuration);
+u8 begin_background_music_fade(u16 fadeDuration);
 void set_audio_muted(u8 muted);
 void sound_init(void);
 void get_currently_playing_sound(u8 bank, u8 *numPlayingSounds, u8 *numSoundsInBank, u8 *soundId);

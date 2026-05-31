@@ -2852,7 +2852,8 @@ sound_ref .sound_general_grand_star_jump
 sound_ref .sound_general_boat_rock
 sound_ref .sound_general_vanish_sfx
 sound_ref .sound_menu_camera_buzz
-sound_ref .sound_general_red_coin
+sound_ref .sound_general_gambling_wheel_flipper
+sound_ref .chan_2D18
 sound_ref .sound_general_birds_fly_away
 sound_ref .sound_general_right_answer
 sound_ref .sound_general_metal_pound
@@ -4447,6 +4448,19 @@ layer_transpose 1
 .layer_1AEB:
 layer_portamento 0x81, 19, 255
 layer_note1 31, 0x32, 115
+layer_end
+
+.sound_general_gambling_wheel_flipper:
+chan_setbank 9
+chan_setinstr 26
+chan_setval 2
+chan_call .set_reverb
+chan_setenvelope .envelope_custom_instant_nofade
+chan_setlayer 0, .layer_gambling_wheel_flipper
+chan_end
+
+.layer_gambling_wheel_flipper:
+layer_note1 39, 0x3, 79
 layer_end
 
 .channel4_table:
@@ -6985,6 +6999,7 @@ sound_ref .sound_menu_coin_flip
 sound_ref .sound_menu_tetris_rotate
 sound_ref .sound_menu_tetris_lock
 sound_ref .sound_menu_tetris_clear_line
+sound_ref .sound_general_right_answer
 
 .sound_menu_change_select:
 chan_setbank 9
@@ -8377,3 +8392,7 @@ envelope_line 1000 32700
 envelope_line 10 16000
 envelope_line 200 32760
 envelope_goto 3
+
+.envelope_custom_instant_nofade:
+envelope_line 0 32700
+envelope_hang

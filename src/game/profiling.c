@@ -276,8 +276,8 @@ void profiler_print_times() {
         u8 lastNumBlindness = gChsNumberBlindness;
         gChsNumberBlindness = FALSE;
 
-        fasttext_setup_textrect_rendering(FT_FONT_OUTLINE);
-        fasttext_draw_texrect(10, 10, text_buffer, FT_FLAG_ALIGN_LEFT, 255, 255, 255, 255);
+        fasttext_setup_textrect_rendering(&gDisplayListHead, FT_FONT_OUTLINE);
+        fasttext_draw_texrect(&gDisplayListHead, 10, 10, text_buffer, FT_FLAG_ALIGN_LEFT, 255, 255, 255, 255);
 
 #ifdef PROFILER_DEBUG_INFO
         text_buffer[0] = 0; // Effectively clear buffer
@@ -320,14 +320,14 @@ void profiler_print_times() {
             );
         }
 
-        fasttext_draw_texrect(235, 34, text_buffer, FT_FLAG_ALIGN_LEFT, 255, 255, 255, 255);
+        fasttext_draw_texrect(&gDisplayListHead, 235, 34, text_buffer, FT_FLAG_ALIGN_LEFT, 255, 255, 255, 255);
 #endif
 
         // Print memory usage
         sprintf(text_buffer, "RAM: 0x%06X / 0x%06X", memUsed, totalMem);
-        fasttext_draw_texrect(112, 214, text_buffer, FT_FLAG_ALIGN_LEFT, 255, 255, 255, 255);
+        fasttext_draw_texrect(&gDisplayListHead, 112, 214, text_buffer, FT_FLAG_ALIGN_LEFT, 255, 255, 255, 255);
 
-        fasttext_finished_rendering();
+        fasttext_finished_rendering(&gDisplayListHead);
 
         gChsNumberBlindness = lastNumBlindness;
     }

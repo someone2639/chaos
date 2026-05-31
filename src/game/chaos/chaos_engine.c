@@ -37,7 +37,7 @@ enum ChaosPatchSpecialEvent gChaosLastEventType = CHAOS_SPECIAL_NONE;
 enum ChaosDifficulty gChaosDifficulty = CHAOS_DIFFICULTY_NORMAL;
 enum ChaosGameMode gChaosGameMode = CHAOS_GAMEMODE_CLASSIC;
 enum ChaosPatchDurationType gChaosForcedDurationType = CHAOS_DURATION_DO_NOT_FORCE;
-u32 gChaosForcedDuration = 0;
+u32 gChaosForcedDurationMaximum = 0;
 enum ChaosPatchID gNegativePatchCompare = CHAOS_PATCH_NONE;
 
 static const f32 difficultyWeights[CHAOS_DIFFICULTY_COUNT][CHAOS_PATCH_SEVERITY_COUNT - 1] = {
@@ -233,8 +233,8 @@ u32 chaos_calculate_patch_duration(const struct ChaosPatch *patch) {
     }
 
     // Override
-    if (gChaosForcedDuration > 0) {
-        duration = gChaosForcedDuration;
+    if (gChaosForcedDurationMaximum > 0 && ((s32) gChaosForcedDurationMaximum) < duration) {
+        duration = gChaosForcedDurationMaximum;
     }
 
     if (duration <= 0) {
@@ -1125,7 +1125,7 @@ void chaos_init(void) {
     gChaosLevelWarped = FALSE;
     gChaosBlueStarLastCollected = FALSE;
     gChaosForcedDurationType = CHAOS_DURATION_DO_NOT_FORCE;
-    gChaosForcedDuration = 0;
+    gChaosForcedDurationMaximum = 0;
     bzero(gChaosEventQueue, sizeof(gChaosEventQueue));
 
     for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {

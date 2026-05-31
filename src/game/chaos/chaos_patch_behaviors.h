@@ -24,6 +24,8 @@ void chs_act_lives_decrease_lv3(void);
 s32 chs_life_gambler_get_lives_lost(void);
 
 // Star/Save Modifiers
+void add_uncollected_star(void);
+void remove_collected_star(void);
 void update_any_star(u8 shouldRemove, s8 negativeRetriesBias);
 u8 chs_cond_star_shuffle(void);
 u8 chs_cond_stars_increase_guarantee(void);
@@ -52,8 +54,8 @@ void chs_deact_get_vanish_cap(void);
 u8 chs_cond_get_vanish_cap(void);
 u8 chs_cond_star_cloning_device(void);
 s32 chs_get_yellow_star_in_course(s32 courseNum, s32 collectedStarId);
-void chs_menuinit_coin_flip(void);
 u8 chs_cond_coin_flip(void);
+void chs_menuinit_coin_flip(void);
 void chs_menuupdate_coin_flip(Gfx **dl);
 
 // Gravity Modifiers
@@ -161,7 +163,7 @@ u8 chs_cond_debug_free_move(void);
 // Patches
 u8 chs_cond_remove_negative_patch(void);
 void chs_act_remove_negative_patch(void);
-enum ChaosPatchID chs_activate_random_pos_neg_patch_of_severity(s32 patchSeverity, enum ChaosPatchEffectType effectType, u32 forcedDuration, enum ChaosPatchDurationType durationType);
+enum ChaosPatchID chs_activate_random_pos_neg_patch_of_severity(s32 patchSeverity, enum ChaosPatchEffectType effectType, u32 maxForcedDuration, enum ChaosPatchDurationType durationType);
 u8 chs_cond_add_random_buff(void);
 void chs_act_add_random_buff(void);
 u8 chs_cond_add_selectable_patch(void);
@@ -170,8 +172,8 @@ u8 chs_cond_lucky_charm(void);
 u8 chs_cond_unlucky_charm(void);
 u8 chs_cond_uneventful(void);
 u8 chs_cond_forgiveness(void);
-void init_gambling_wheel(void);
-void render_gambling_wheel(Gfx **dl);
+void chs_menuinit_gambling_wheel(void);
+void chs_menuupdate_gambling_wheel(Gfx **dl);
 
 // Speed Modifiers
 u8 chs_cond_push_back(void);

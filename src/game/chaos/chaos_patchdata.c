@@ -1748,11 +1748,11 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration           = 8,
 
         .hasMenuEvent       = TRUE,
-        .chsMenuInitFunc    = init_gambling_wheel,
-        .chsMenuUpdateFunc  = render_gambling_wheel,
+        .chsMenuInitFunc    = chs_menuinit_gambling_wheel,
+        .chsMenuUpdateFunc  = chs_menuupdate_gambling_wheel,
 
         .name               = "Let's Go Gambling!",
-        .shortDescription   = "Test your luck and spin a roulette wheel for an additional slight boost (or nerf) each time you select a new patch!",
+        .shortDescription   = "Test your luck! Spin a roulette wheel for an extra boost (or nerf) after every time you select a new patch!",
         .longDescription    = "Each wheel spin will consist of the following\n"
                                "  - A Few Duds\n"
                                "  - One Very Negative Outcome\n"

@@ -73,12 +73,12 @@ static void slowtext_draw_char(Gfx **dl, const struct FastTextProps *fontProps, 
     *dl = dlHead;
 }
 
-void slowtext_draw_ortho_text(s32 x, s32 y, const char* string, enum FastTextFlags flags, s32 r, s32 g, s32 b, s32 a) {
+void slowtext_draw_ortho_text(Gfx **dl, s32 x, s32 y, const char* string, enum FastTextFlags flags, s32 r, s32 g, s32 b, s32 a) {
     s32 i = 0;
     s32 xShift = 0;
     s32 xPos = x;
     s32 yPos;
-    Gfx *dlHead = gDisplayListHead;
+    Gfx *dlHead = *dl;
     u8 rgbaBaseColors[4] = { r, g, b, a };
     u8 rgbaCurrentColors[4] = { r, g, b, a };
 
@@ -185,10 +185,12 @@ void slowtext_draw_ortho_text(s32 x, s32 y, const char* string, enum FastTextFla
     gDPSetPrimColor(dlHead++, 0, 0, rgbaBaseColors[0], rgbaBaseColors[1], rgbaBaseColors[2], rgbaBaseColors[3]);
     gSPPopMatrix(dlHead++, G_MTX_MODELVIEW);
 
-    gDisplayListHead = dlHead;
+    *dl = dlHead;
 }
 
-void slowtext_draw_ortho_text_linebreaks(s32 x, s32 y, s32 width, const char* string, enum FastTextFlags flags, s32 r, s32 g, s32 b, s32 a) {
+void slowtext_draw_ortho_text_linebreaks(Gfx **dl, s32 x, s32 y, s32 width, const char* string, enum FastTextFlags flags, s32 r, s32 g, s32 b, s32 a) {
+    Gfx *dlHead = *dl;
+
     s32 lines = 0;
     s32 length = 0;
 
@@ -196,17 +198,20 @@ void slowtext_draw_ortho_text_linebreaks(s32 x, s32 y, s32 width, const char* st
     fasttext_compute_print_text_with_line_breaks(fasttextCachedFontId, width, &lines, &length, gFasttextTmpBuffer, string);
 
     assert(length + 1 < (s32) sizeof(gFasttextTmpBuffer), "slowtext_draw_ortho_text_linebreaks:\nstring is too long!");
-    slowtext_draw_ortho_text(x, y, gFasttextTmpBuffer, flags, r, g, b, a);
+    slowtext_draw_ortho_text(&dlHead, x, y, gFasttextTmpBuffer, flags, r, g, b, a);
+
+    *dl = dlHead;
 }
 
-void slowtext_setup_ortho_rendering(enum FastTextFont fnt) {
+void slowtext_setup_ortho_rendering(Gfx **dl, enum FastTextFont fnt) {
+    Gfx *dlHead = *dl;
+
     fasttextCachedFontId = fnt;
     if (fnt == FT_FONT_NONE) {
-        slowtext_finished_rendering();
+        slowtext_finished_rendering(&dlHead);
         return;
     }
 
-    Gfx *dlHead = gDisplayListHead;
     const struct FastTextProps *fontProps = &gFasttextFonts[fasttextCachedFontId];
 
     gSPDisplayList(dlHead++, dl_fasttext_begin);
@@ -238,11 +243,11 @@ void slowtext_setup_ortho_rendering(enum FastTextFont fnt) {
     gSPTexture(dlHead++, 0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON);
     bzero(slowtext_char_vtx, sizeof(slowtext_char_vtx));
 
-    gDisplayListHead = dlHead;
+    *dl = dlHead;
 }
 
-void slowtext_finished_rendering(void) {
-    Gfx *dlHead = gDisplayListHead;
+void slowtext_finished_rendering(Gfx **dl) {
+    Gfx *dlHead = *dl;
 
     bzero(slowtext_char_vtx, sizeof(slowtext_char_vtx));
     gSPTexture(dlHead++, 0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF);
@@ -250,5 +255,5 @@ void slowtext_finished_rendering(void) {
 
     fasttextCachedFontId = FT_FONT_NONE;
 
-    gDisplayListHead = dlHead;
+    *dl = dlHead;
 }

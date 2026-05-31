@@ -928,19 +928,19 @@ void tetris_draw_grid(void) {
     // Draw text
     char buf[64];
     sprintf(buf, "LV-%02d LN-%02d", sTetris.level, sTetris.clearedLines);
-    fasttext_setup_textrect_rendering(FT_FONT_SMALL_BOLD);
-    fasttext_draw_texrect(imgX, imgY - 17, buf, FT_FLAG_ALIGN_LEFT, 0xF0, 0xF0, 0xF0, 0xFF);
+    fasttext_setup_textrect_rendering(&gDisplayListHead, FT_FONT_SMALL_BOLD);
+    fasttext_draw_texrect(&gDisplayListHead, imgX, imgY - 17, buf, FT_FLAG_ALIGN_LEFT, 0xF0, 0xF0, 0xF0, 0xFF);
     sprintf(buf, "%010d", sTetris.score);
-    fasttext_draw_texrect(imgX, imgY + (TETRIS_VISIBLE_HEIGHT * 4) - 1, buf, FT_FLAG_ALIGN_LEFT, 0xF0, 0xF0, 0xF0, 0xFF);
+    fasttext_draw_texrect(&gDisplayListHead, imgX, imgY + (TETRIS_VISIBLE_HEIGHT * 4) - 1, buf, FT_FLAG_ALIGN_LEFT, 0xF0, 0xF0, 0xF0, 0xFF);
 
     if(sTetris.state == TET_STATE_GAME_OVER) {
-        fasttext_draw_texrect(gridX, SCREEN_HEIGHT - gridY - 14, "GAME\nOVER", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+        fasttext_draw_texrect(&gDisplayListHead, gridX, SCREEN_HEIGHT - gridY - 14, "GAME\nOVER", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
     } else if(!(gMarioStates->chaosStateFlags & CHAOS_STATE_CONTROLLING_TETRIS) && (gGlobalTimer % 60) < 30) {
-        menu_single_button_prompt(x + (gridW / 2) + 16, imgY + (TETRIS_VISIBLE_HEIGHT * 4) + 9, MENU_PROMPT_R_TRIG, "Hold", FALSE);
-        fasttext_setup_textrect_rendering(FT_FONT_SMALL_BOLD);
+        menu_single_button_prompt(&gDisplayListHead, x + (gridW / 2) + 16, imgY + (TETRIS_VISIBLE_HEIGHT * 4) + 9, MENU_PROMPT_R_TRIG, "Hold", FALSE);
+        fasttext_setup_textrect_rendering(&gDisplayListHead, FT_FONT_SMALL_BOLD);
     }
 
-    fasttext_finished_rendering();
+    fasttext_finished_rendering(&gDisplayListHead);
 }
 
 void draw_tetris(void) {

@@ -374,7 +374,7 @@ extern enum ChaosPatchSpecialEvent gChaosLastEventType;
 extern enum ChaosDifficulty gChaosDifficulty;
 extern enum ChaosGameMode gChaosGameMode;
 extern enum ChaosPatchDurationType gChaosForcedDurationType;
-extern u32 gChaosForcedDuration;
+extern u32 gChaosForcedDurationMaximum;
 extern enum ChaosPatchID gNegativePatchCompare;
 
 // Check whether a particular chaos patch is active. Overall cheaper operation than the function below this one.

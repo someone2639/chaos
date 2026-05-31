@@ -449,6 +449,7 @@ void render_game(void) {
         }
 
         if (chaos_check_if_patch_active(CHAOS_PATCH_DARKNESS) && check_moving_play_mode(sCurrPlayMode) && !gInActSelect) {
+            create_dl_ortho_matrix(&gDisplayListHead);
             chstut_draw_shaded_background(&gDisplayListHead, WIDESCREEN_HACK_WIDTH_START, WIDESCREEN_HACK_WIDTH_END, 0, SCREEN_HEIGHT, 0, 0, 0, 183);
         }
 

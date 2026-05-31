@@ -277,12 +277,6 @@ u8 sSoundBankFreeListFront[SOUND_BANK_COUNT] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 u8 sNumSoundsInBank[SOUND_BANK_COUNT] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // only used for debugging
 u8 sMaxChannelsForSoundBank[SOUND_BANK_COUNT] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
-// sBackgroundMusicMaxTargetVolume and sBackgroundMusicTargetVolume use the 0x80
-// bit to indicate that they are set, and the rest of the bits for the actual value
-#define TARGET_VOLUME_IS_PRESENT_FLAG 0x80
-#define TARGET_VOLUME_VALUE_MASK 0x7f
-#define TARGET_VOLUME_UNSET 0x00
-
 f32 gGlobalSoundSource[3] = { 0.0f, 0.0f, 0.0f };
 u8 sSoundBankDisabled[16] = { 0 };
 u8 sHasStartedFadeOut = FALSE;
@@ -363,7 +357,6 @@ static void update_background_music_after_sound(u8 bank, u8 soundIndex);
 static void update_game_sound(void);
 static void fade_channel_volume_scale(u8 player, u8 channelId, u8 targetScale, u16 fadeTimer);
 void process_level_music_dynamics(void);
-static u8 begin_background_music_fade(u16 fadeDuration);
 void func_80320ED8(void);
 
 /**
@@ -1587,7 +1580,7 @@ u8 sRandomJingleSeqsLUT[] = {
 /**
  * Called from threads: thread4_sound, thread5_game_loop
  */
-static void seq_player_play_sequence(u8 player, u8 seqId, u16 arg2) {
+void seq_player_play_sequence(u8 player, u8 seqId, u16 arg2) {
     u8 targetVolume;
     u8 i;
 
@@ -1930,7 +1923,7 @@ void seq_player_unlower_volume(u8 player, u16 fadeDuration) {
  *
  * Called from threads: thread3_main, thread4_sound, thread5_game_loop
  */
-static u8 begin_background_music_fade(u16 fadeDuration) {
+u8 begin_background_music_fade(u16 fadeDuration) {
     u8 targetVolume = 0xff;
 
     if (sCurrentBackgroundMusicSeqId == SEQUENCE_NONE

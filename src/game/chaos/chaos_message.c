@@ -159,7 +159,7 @@ void chaosmsg_render(void) {
 
         if (!ftInitialized) {
             ftInitialized = TRUE;
-            fasttext_setup_textrect_rendering(FT_FONT);
+            fasttext_setup_textrect_rendering(&gDisplayListHead, FT_FONT);
         }
 
         chaosmsg_draw_bg(printX - MESSAGE_MARGIN,
@@ -167,13 +167,13 @@ void chaosmsg_render(void) {
                          MAX_WIDTH + (MESSAGE_MARGIN * 2),
                          params->lineHeight,
                          transparency);
-        fasttext_draw_texrect(printX, printY, params->str, FT_FLAG_ALIGN_LEFT, 255, 255, 255, transparency);
+        fasttext_draw_texrect(&gDisplayListHead, printX, printY, params->str, FT_FLAG_ALIGN_LEFT, 255, 255, 255, transparency);
 
         params->animFrame++;
     } while (index != chsStrIter);
 
     if (ftInitialized) {
-        fasttext_finished_rendering();
+        fasttext_finished_rendering(&gDisplayListHead);
     }
 
 #ifdef CHAOS_ENGINE_DEBUG
@@ -196,14 +196,14 @@ void chaosmsg_display_log_recap(void) {
     s32 printY;
     struct ChaosMessageParams *params;
 
-    menu_single_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 23, MENU_PROMPT_B_BUTTON, "Back", FALSE);
+    menu_single_button_prompt(&gDisplayListHead, SCREEN_WIDTH - 32, SCREEN_HEIGHT - 23, MENU_PROMPT_B_BUTTON, "Back", FALSE);
 
 #ifdef CHAOS_ENGINE_DEBUG
     u8 lastNumBlindness = gChsNumberBlindness;
     gChsNumberBlindness = FALSE;
 #endif
 
-    fasttext_setup_textrect_rendering(FT_FONT);
+    fasttext_setup_textrect_rendering(&gDisplayListHead, FT_FONT);
     for(int i = 0; i < MSGBUF_COUNT; i++) {
         if(chsStrParams[i].status != CHSMSG_UNINITIALIZED) {
             params = &chsStrParams[i];
@@ -214,11 +214,11 @@ void chaosmsg_display_log_recap(void) {
                     MAX_WIDTH + (MESSAGE_MARGIN * 2),
                     params->lineHeight,
                     255);
-                fasttext_draw_texrect(printX, printY, params->str, FT_FLAG_ALIGN_LEFT, 255, 255, 255, 255);
+                fasttext_draw_texrect(&gDisplayListHead, printX, printY, params->str, FT_FLAG_ALIGN_LEFT, 255, 255, 255, 255);
             }
         }
     }
-    fasttext_finished_rendering();
+    fasttext_finished_rendering(&gDisplayListHead);
 
 #ifdef CHAOS_ENGINE_DEBUG
     gChsNumberBlindness = lastNumBlindness;

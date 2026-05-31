@@ -157,7 +157,6 @@ void chstut_draw_shaded_background(Gfx** dl, s32 x1, s32 x2, s32 y1, s32 y2, u8 
     }
 
     gDPPipeSync(dlHead++);
-    create_dl_ortho_matrix(&dlHead);
     gDPSetScissor(dlHead++, G_SC_NON_INTERLACE, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     gDPSetTextureFilter(dlHead++, G_TF_POINT);
     gDPSetCycleType(dlHead++, G_CYC_1CYCLE);
@@ -303,10 +302,10 @@ static void chstut_render_tutorial_description(Gfx** dl) {
     }
 
     if (gChaosTutorialSlides[gChaosTutorialSlideIndex].description != NULL) {
-        slowtext_setup_ortho_rendering(font);
-        slowtext_draw_ortho_text_linebreaks(-142, 3, DESC_STRING_WIDTH, gChaosTutorialSlides[gChaosTutorialSlideIndex].description,
+        slowtext_setup_ortho_rendering(&gDisplayListHead, font);
+        slowtext_draw_ortho_text_linebreaks(&gDisplayListHead, -142, 3, DESC_STRING_WIDTH, gChaosTutorialSlides[gChaosTutorialSlideIndex].description,
             FT_FLAG_ALIGN_LEFT, 0xDF, 0xDF, 0xDF, 0xFF);
-        slowtext_finished_rendering();
+        slowtext_finished_rendering(&gDisplayListHead);
     }
 
     if (*dl == gDisplayListHead) {
@@ -467,6 +466,6 @@ void chstut_render_tutorial(void) {
         menu_add_button_prompt(&prompts, MENU_PROMPT_A_BUTTON, "Next");
         menu_add_button_prompt(&prompts, MENU_PROMPT_B_BUTTON, "Back");
         menu_add_button_prompt(&prompts, MENU_PROMPT_START_BUTTON, "Return");
-        menu_render_button_prompt_list(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 23, &prompts);
+        menu_render_button_prompt_list(&gDisplayListHead, SCREEN_WIDTH - 32, SCREEN_HEIGHT - 23, &prompts);
     }
 }

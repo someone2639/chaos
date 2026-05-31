@@ -156,6 +156,11 @@
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "14_coin_flip_custom"
+        },
+        "inst26": {
+            "release_rate": 45,
+            "envelope": "envelope0",
+            "sound": "15_custom_gambling_wheel_flipper"
         }
     },
     "instrument_list": [
@@ -184,6 +189,7 @@
         "inst22",
         "inst23",
         "inst24",
-        "inst25"
+        "inst25",
+        "inst26"
     ]
 }

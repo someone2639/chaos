@@ -524,9 +524,9 @@ void render_chaos_time_limit() {
 
     if(timeLeft >= 0) {
         sprintf(limitText, "Time: %d:%02d", mins, secs);
-        fasttext_setup_textrect_rendering(FT_FONT_MEDIUM);
-        fasttext_draw_texrect(SCREEN_CENTER_X, SCREEN_HEIGHT - 40, limitText, FT_FLAG_ALIGN_CENTER, r, g, b, a);
-        fasttext_finished_rendering();
+        fasttext_setup_textrect_rendering(&gDisplayListHead, FT_FONT_MEDIUM);
+        fasttext_draw_texrect(&gDisplayListHead, SCREEN_CENTER_X, SCREEN_HEIGHT - 40, limitText, FT_FLAG_ALIGN_CENTER, r, g, b, a);
+        fasttext_finished_rendering(&gDisplayListHead);
     }
 }
 

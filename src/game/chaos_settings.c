@@ -210,15 +210,15 @@ void render_settings_categories() {
     Gfx *catCursor = menu_create_cursor(-80, yPos - (15 * index) + 9, 0.5f, 0xFF, 0xFF, 0xFF, 0xFF);
     gSPDisplayList(gDisplayListHead++, catCursor);
     
-    slowtext_setup_ortho_rendering(FT_FONT_SMALL_BOLD);
-    slowtext_draw_ortho_text(0, 26, "Settings", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_setup_ortho_rendering(FT_FONT_SMALL_THIN);
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_SMALL_BOLD);
+    slowtext_draw_ortho_text(&gDisplayListHead, 0, 26, "Settings", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_SMALL_THIN);
     
     for(int i = 0; i < ARRAY_COUNT(gSettingsOptions); i++) {
-        slowtext_draw_ortho_text(-74, yPos, gSettingsOptions[i].display, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+        slowtext_draw_ortho_text(&gDisplayListHead, -74, yPos, gSettingsOptions[i].display, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
         yPos -= 15;
     }
-    slowtext_finished_rendering();
+    slowtext_finished_rendering(&gDisplayListHead);
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
@@ -245,15 +245,15 @@ void render_settings_options() {
         gSPDisplayList(gDisplayListHead++, optCursor);
     }
 
-    slowtext_setup_ortho_rendering(FT_FONT_SMALL_BOLD);
-    slowtext_draw_ortho_text(0, 26, selCat->shortName, FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_setup_ortho_rendering(FT_FONT_SMALL_THIN);
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_SMALL_BOLD);
+    slowtext_draw_ortho_text(&gDisplayListHead, 0, 26, selCat->shortName, FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_SMALL_THIN);
     for(int i = 0; i < selCat->numOptions; i++) {
         u8 col = (i == savedIndex) ? 0xFF : 0x7F;
-        slowtext_draw_ortho_text(-30, yPos, selCat->options[i].option, FT_FLAG_ALIGN_LEFT, col, col, col, 0xFF);
+        slowtext_draw_ortho_text(&gDisplayListHead, -30, yPos, selCat->options[i].option, FT_FLAG_ALIGN_LEFT, col, col, col, 0xFF);
         yPos -= 15;
     }
-    slowtext_finished_rendering();
+    slowtext_finished_rendering(&gDisplayListHead);
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
@@ -267,10 +267,10 @@ void render_settings_description() {
     Gfx *descBg = menu_create_chaos_text_bg(SETTINGS_DESC_X, SETTINGS_DESC_Y, 298, 70, 217);
     gSPDisplayList(gDisplayListHead++, descBg);
     
-    slowtext_setup_ortho_rendering(FT_FONT_SMALL_THIN);
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_SMALL_THIN);
     char *desc = (gChaosSettingsMenu.menu.menuState == CHAOS_SETTINGS_STATE_SUB_MENU) ? selCat->options[subIndex].description : selCat->description;
-    slowtext_draw_ortho_text_linebreaks(-142, 15, DESC_STRING_WIDTH, desc, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_finished_rendering();
+    slowtext_draw_ortho_text_linebreaks(&gDisplayListHead, -142, 15, DESC_STRING_WIDTH, desc, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_finished_rendering(&gDisplayListHead);
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
@@ -297,7 +297,7 @@ void render_settings_menu_button_prompts() {
     struct ButtonPromptList prompts = {0};
     menu_add_button_prompt(&prompts, MENU_PROMPT_A_BUTTON, "Select");
     menu_add_button_prompt(&prompts, MENU_PROMPT_B_BUTTON, "Back");
-    menu_render_button_prompt_list(SCREEN_WIDTH - 32, PAUSE_BUTTON_PROMPTS_Y, &prompts);
+    menu_render_button_prompt_list(&gDisplayListHead, SCREEN_WIDTH - 32, PAUSE_BUTTON_PROMPTS_Y, &prompts);
 }
 
 /*

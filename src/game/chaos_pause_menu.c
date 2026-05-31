@@ -99,10 +99,10 @@ void draw_active_patch_ext_desc(struct ChaosActiveEntry *patch) {
     Gfx *bg = menu_create_chaos_text_bg(SCREEN_CENTER_X, SCREEN_CENTER_Y, 298, 218, 255);
     gSPDisplayList(gDisplayListHead++, bg);
 
-    slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text_linebreaks(-142, 87, DESC_STRING_WIDTH, patchDesc, FT_FLAG_ALIGN_LEFT, 
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_VANILLA_SHADOW);
+    slowtext_draw_ortho_text_linebreaks(&gDisplayListHead, -142, 87, DESC_STRING_WIDTH, patchDesc, FT_FLAG_ALIGN_LEFT, 
         effectR, effectG, effectB, 0xFF);
-    slowtext_finished_rendering();
+    slowtext_finished_rendering(&gDisplayListHead);
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
@@ -118,13 +118,13 @@ void draw_default_patch_desc(f32 x, f32 y) {
     Gfx *bg = menu_create_chaos_text_bg(ACTIVE_PATCH_DESC_X, ACTIVE_PATCH_DESC_Y, 136, 152, 217);
     gSPDisplayList(gDisplayListHead++, bg);
 
-    slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text_linebreaks(-62, 55, ACT_DESC_WIDTH, "Erm... why don't you play the game first, buddy?", FT_FLAG_ALIGN_LEFT, 
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_VANILLA_SHADOW);
+    slowtext_draw_ortho_text_linebreaks(&gDisplayListHead, -62, 55, ACT_DESC_WIDTH, "Erm... why don't you play the game first, buddy?", FT_FLAG_ALIGN_LEFT, 
         0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_setup_ortho_rendering(FT_FONT_OUTLINE);
-    slowtext_draw_ortho_text_linebreaks(-62, 110, ACT_DESC_WIDTH, "No Active Patches!", FT_FLAG_ALIGN_LEFT, 
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_OUTLINE);
+    slowtext_draw_ortho_text_linebreaks(&gDisplayListHead, -62, 110, ACT_DESC_WIDTH, "No Active Patches!", FT_FLAG_ALIGN_LEFT, 
         0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_finished_rendering();
+    slowtext_finished_rendering(&gDisplayListHead);
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
@@ -189,15 +189,15 @@ void draw_active_patch_desc(f32 x, f32 y, struct ChaosActiveEntry *patch) {
 
     draw_patch_quality(patchInfo->severity);
 
-    slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text_linebreaks(-62, 55, ACT_DESC_WIDTH, patchDesc, FT_FLAG_ALIGN_LEFT, 
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_VANILLA_SHADOW);
+    slowtext_draw_ortho_text_linebreaks(&gDisplayListHead, -62, 55, ACT_DESC_WIDTH, patchDesc, FT_FLAG_ALIGN_LEFT, 
         effectR, effectG, effectB, 0xFF);
-    slowtext_setup_ortho_rendering(FT_FONT_OUTLINE);
-    slowtext_draw_ortho_text_linebreaks(-62, 110, ACT_DESC_WIDTH, patchName, FT_FLAG_ALIGN_LEFT, 
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_OUTLINE);
+    slowtext_draw_ortho_text_linebreaks(&gDisplayListHead, -62, 110, ACT_DESC_WIDTH, patchName, FT_FLAG_ALIGN_LEFT, 
         0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_draw_ortho_text_linebreaks(-62, 75, CARD_STRING_WIDTH, durationString, FT_FLAG_ALIGN_LEFT, 
+    slowtext_draw_ortho_text_linebreaks(&gDisplayListHead, -62, 75, CARD_STRING_WIDTH, durationString, FT_FLAG_ALIGN_LEFT, 
         0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_finished_rendering();
+    slowtext_finished_rendering(&gDisplayListHead);
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
@@ -242,11 +242,11 @@ void draw_mini_patch_card(f32 x, f32 y, struct ChaosActiveEntry *patch) {
         timerText[0] = '\0';
     }
 
-    slowtext_setup_ortho_rendering(FT_FONT_SMALL_THIN);
-    slowtext_draw_ortho_text(-58, nameY, drawName, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_setup_ortho_rendering(FT_FONT_OUTLINE);
-    slowtext_draw_ortho_text(50, -10, timerText, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
-    slowtext_finished_rendering();
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_SMALL_THIN);
+    slowtext_draw_ortho_text(&gDisplayListHead, -58, nameY, drawName, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_OUTLINE);
+    slowtext_draw_ortho_text(&gDisplayListHead, 50, -10, timerText, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
+    slowtext_finished_rendering(&gDisplayListHead);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
 
@@ -369,7 +369,7 @@ void render_active_patches_menu_button_prompts() {
             break;
     }
 
-    menu_render_button_prompt_list(SCREEN_WIDTH - 33, yPos, &prompts);
+    menu_render_button_prompt_list(&gDisplayListHead, SCREEN_WIDTH - 33, yPos, &prompts);
 }
 
 /*
@@ -565,7 +565,7 @@ void update_active_patches_menu() {
     Button prompts for the vanilla pause screen
 */
 void render_pause_screen_button_prompts() {
-    menu_single_button_prompt(SCREEN_WIDTH - 32, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_R_TRIG, "Active Patches", FALSE);
-    menu_single_button_prompt(SCREEN_WIDTH - 144, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_Z_TRIG, "Message Log", FALSE);
-    menu_single_button_prompt(15, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_L_TRIG, "Settings", TRUE);
+    menu_single_button_prompt(&gDisplayListHead, SCREEN_WIDTH - 32, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_R_TRIG, "Active Patches", FALSE);
+    menu_single_button_prompt(&gDisplayListHead, SCREEN_WIDTH - 144, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_Z_TRIG, "Message Log", FALSE);
+    menu_single_button_prompt(&gDisplayListHead, 15, PAUSE_BUTTON_PROMPTS_Y, MENU_PROMPT_L_TRIG, "Settings", TRUE);
 }

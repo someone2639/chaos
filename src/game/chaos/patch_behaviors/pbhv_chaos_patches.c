@@ -49,7 +49,7 @@ u8 chs_cond_remove_negative_patch(void) {
     return FALSE;
 }
 
-enum ChaosPatchID chs_activate_random_pos_neg_patch_of_severity(s32 patchSeverity, enum ChaosPatchEffectType effectType, u32 forcedDuration, enum ChaosPatchDurationType durationType) {
+enum ChaosPatchID chs_activate_random_pos_neg_patch_of_severity(s32 patchSeverity, enum ChaosPatchEffectType effectType, u32 maxForcedDuration, enum ChaosPatchDurationType durationType) {
     // Ideally this doesn't recurse at all, but just in case...
     s32 lastRandomBuff = inRandomBuffActivationFunc;
     inRandomBuffActivationFunc = TRUE;
@@ -59,8 +59,8 @@ enum ChaosPatchID chs_activate_random_pos_neg_patch_of_severity(s32 patchSeverit
     gChaosForcedDurationType = durationType;
 
     // And here...
-    enum ChaosPatchDurationType lastDuration = gChaosForcedDuration;
-    gChaosForcedDuration = forcedDuration;
+    u32 lastDuration = gChaosForcedDurationMaximum;
+    gChaosForcedDurationMaximum = maxForcedDuration;
 
     enum ChaosPatchID newPatch = CHAOS_PATCH_NONE_POSITIVE;
 
@@ -80,7 +80,7 @@ enum ChaosPatchID chs_activate_random_pos_neg_patch_of_severity(s32 patchSeverit
     chaos_add_new_entry(newPatch);
     chaosmsg_print(newPatch, "New patch activated: %s");
 
-    gChaosForcedDuration = lastDuration;
+    gChaosForcedDurationMaximum = lastDuration;
     gChaosForcedDurationType = lastDurType;
     inRandomBuffActivationFunc = lastRandomBuff;
 

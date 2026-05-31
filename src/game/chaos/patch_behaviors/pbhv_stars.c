@@ -355,10 +355,11 @@ static void print_star_collect_message(u8 shouldRemove, s32 courseNum, s32 starI
     chaosmsg_print(CHAOS_PATCH_NONE, gChaosInternalBuffer);
 }
 
-static void add_uncollected_star(void) {
+void add_uncollected_star(void) {
     s32 totalStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
     if (totalStars == NUM_STARS) {
-        assert(FALSE, "add_uncollected_star:\nTried to add uncollected star with 120 stars!");
+        // This is now possible with gambling wheel (left alone to ensure there is always a jackpot possibility)
+        // assert(FALSE, "add_uncollected_star:\nTried to add uncollected star with 120 stars!");
         return;
     }
     s32 starToUpdate = random_u16() % (NUM_STARS - totalStars);
@@ -388,10 +389,11 @@ static void add_uncollected_star(void) {
     }
 }
 
-static void remove_collected_star(void) {
+void remove_collected_star(void) {
     s32 totalStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
     if (totalStars == 0) {
-        assert(FALSE, "remove_collected_star:\nTried to remove collected star with 0 stars!");
+        // This is now possible with gambling wheel (left alone to ensure there is always a catastrophe possibility)
+        // assert(FALSE, "remove_collected_star:\nTried to remove collected star with 0 stars!");
         return;
     }
     s32 starToUpdate = random_u16() % totalStars;
@@ -480,6 +482,7 @@ void chs_act_star_shuffle(void) {
     remove_collected_star();
     add_uncollected_star();
     add_uncollected_star();
+    play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 }
 void chs_act_stars_increase_lv2(void) {
     update_any_star(FALSE, 0);
@@ -633,6 +636,11 @@ static struct {
     f32 scale;
 } sCoinFlip;
 
+u8 chs_cond_coin_flip(void) {
+    s32 totalStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
+    return ((totalStars > 0) && (totalStars < NUM_STARS));
+}
+
 void chs_menuinit_coin_flip(void) {
     sCoinFlip.timer = 0;
     sCoinFlip.phase = 0;
@@ -640,11 +648,6 @@ void chs_menuinit_coin_flip(void) {
     sCoinFlip.roll = 0;
     sCoinFlip.x = 0;
     sCoinFlip.scale = 1;
-}
-
-u8 chs_cond_coin_flip(void) {
-    s32 totalStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
-    return ((totalStars > 0) && (totalStars < NUM_STARS));
 }
 
 void chs_menuupdate_coin_flip(Gfx **dl) {
@@ -671,7 +674,7 @@ void chs_menuupdate_coin_flip(Gfx **dl) {
                 sCoinFlip.phase++;
                 play_sound(SOUND_MENU_COIN_FLIP, gGlobalSoundSource);
             }
-            menu_single_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 23, MENU_PROMPT_A_BUTTON, "Flip Coin", FALSE);
+            menu_single_button_prompt(&gDisplayListHead, SCREEN_WIDTH - 32, SCREEN_HEIGHT - 23, MENU_PROMPT_A_BUTTON, "Flip Coin", FALSE);
             break;
         case 2:
             // Flip coin
@@ -708,10 +711,8 @@ void chs_menuupdate_coin_flip(Gfx **dl) {
             if(++sCoinFlip.timer > COIN_FLIP_SCALE_FRAMES) {
                 sCoinFlip.phase++;
                 if(sCoinFlip.result == 0) {
-                    add_uncollected_star();
                     play_sound(SOUND_MARIO_HERE_WE_GO, gGlobalSoundSource);
                 } else {
-                    remove_collected_star();
                     play_sound(SOUND_MENU_BOWSER_LAUGH, gGlobalSoundSource);
                 }
             }
@@ -722,9 +723,17 @@ void chs_menuupdate_coin_flip(Gfx **dl) {
                 sCoinFlip.phase++;
                 sCoinFlip.timer = 0;
             }
-            menu_single_button_prompt(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 23, MENU_PROMPT_A_BUTTON, "Next", FALSE);
+            menu_single_button_prompt(&gDisplayListHead, SCREEN_WIDTH - 32, SCREEN_HEIGHT - 23, MENU_PROMPT_A_BUTTON, "Next", FALSE);
             break;
         case 6:
+            if (sCoinFlip.timer == 0) {
+                if(sCoinFlip.result == 0) {
+                    add_uncollected_star();
+                } else {
+                    remove_collected_star();
+                }
+            }
+
             // Roll off screen, then end
             prog = ((f32)sCoinFlip.timer / (f32)COIN_FLIP_ROLL_FRAMES);
 

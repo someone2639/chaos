@@ -363,6 +363,7 @@ enum SoundBank {
 #define SOUND_GENERAL_GRAND_STAR_JUMP            /* 0x30740081 */ SOUND_ARG_LOAD(SOUND_BANK_GENERAL,  0x74, 0x00, SOUND_DISCRETE) // unverified
 #define SOUND_GENERAL_BOAT_ROCK                  /* 0x30750081 */ SOUND_ARG_LOAD(SOUND_BANK_GENERAL,  0x75, 0x00, SOUND_DISCRETE) // unverified
 #define SOUND_GENERAL_VANISH_SFX                 /* 0x30762081 */ SOUND_ARG_LOAD(SOUND_BANK_GENERAL,  0x76, 0x20, SOUND_DISCRETE) // unverified
+#define SOUND_GENERAL_GAMBLING_WHEEL_INTRO       /* 0x8079A081 */ SOUND_ARG_LOAD(SOUND_BANK_GENERAL,  0x79, 0xA0, SOUND_DISCRETE)
 
 /* Environment Sound Effects */
 #define SOUND_ENV_WATERFALL1                     /* 0x40000001 */ SOUND_ARG_LOAD(SOUND_BANK_ENV,      0x00, 0x00, 0) // unverified
@@ -574,6 +575,7 @@ enum SoundBank {
 #define SOUND_MENU_TETRIS_ROTATE                                  SOUND_ARG_LOAD(SOUND_BANK_MENU,     0x4E, 0x50, SOUND_DISCRETE)
 #define SOUND_MENU_TETRIS_LOCK                                    SOUND_ARG_LOAD(SOUND_BANK_MENU,     0x4F, 0x51, SOUND_DISCRETE)
 #define SOUND_MENU_TETRIS_CLEAR_LINE                              SOUND_ARG_LOAD(SOUND_BANK_MENU,     0x50, 0x52, SOUND_DISCRETE)
+#define SOUND_MENU_RIGHT_ANSWER                                   SOUND_ARG_LOAD(SOUND_BANK_MENU,     0x51, 0xA0, SOUND_DISCRETE)
 
 // Channel 8 loads sounds from the same place as channel 3, making it possible
 // to play two channel 3 sounds at once (since just one sound from each channel
@@ -594,6 +596,8 @@ enum SoundBank {
 #define SOUND_GENERAL2_1UP_APPEAR                /* 0x8063D081 */ SOUND_ARG_LOAD(SOUND_BANK_GENERAL2, 0x63, 0xD0, SOUND_DISCRETE)
 #define SOUND_GENERAL2_RIGHT_ANSWER              /* 0x806AA081 */ SOUND_ARG_LOAD(SOUND_BANK_GENERAL2, 0x6A, 0xA0, SOUND_DISCRETE)
 #define SOUND_GENERAL2_CAMERA_BUZZ               /* 0x8077A081 */ SOUND_ARG_LOAD(SOUND_BANK_GENERAL2, 0x77, 0xA0, SOUND_DISCRETE)
+#define SOUND_GENERAL2_GAMBLING_WHEEL_FLIPPER    /* 0x8078A081 */ SOUND_ARG_LOAD(SOUND_BANK_GENERAL2, 0x78, 0xA0, SOUND_DISCRETE)
+#define SOUND_GENERAL2_GAMBLING_WHEEL_INTRO      /* 0x8079A081 */ SOUND_ARG_LOAD(SOUND_BANK_GENERAL2, 0x79, 0xA0, SOUND_DISCRETE)
 
 // Channel 9 loads sounds from the same place as channel 5.
 #define SOUND_OBJ2_BOWSER_ROAR                   /* 0x90040081 */ SOUND_ARG_LOAD(SOUND_BANK_OBJ2,     0x04, 0x00, SOUND_DISCRETE)

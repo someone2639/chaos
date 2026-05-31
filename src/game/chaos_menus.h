@@ -27,6 +27,7 @@ enum MenuButtonPrompt {
     MENU_PROMPT_C_LEFT,
     MENU_PROMPT_C_UP,
     MENU_PROMPT_C_RIGHT,
+
     MENU_PROMPT_COUNT,
 };
 
@@ -84,14 +85,14 @@ f32 menu_anim_f32(f32 prog, s32 easeType, f32 start, f32 end);
 f32 menu_get_anim_prog(struct ChaosMenu *menu);
 
 void menu_add_button_prompt(struct ButtonPromptList *list, enum MenuButtonPrompt button, char *text);
-void menu_render_button_prompt_list(s32 x, s32 y, struct ButtonPromptList *list);
-void menu_single_button_prompt(s32 x, s32 y, enum MenuButtonPrompt button, char *text, s32 alignLeft);
+void menu_render_button_prompt_list(Gfx **dl, s32 x, s32 y, struct ButtonPromptList *list);
+void menu_single_button_prompt(Gfx **dl, s32 x, s32 y, enum MenuButtonPrompt button, char *text, s32 alignLeft);
 
 Gfx *menu_create_chaos_text_bg(s32 bgx, s32 bgy, s32 width, s32 height, u8 opacity);
 Gfx *menu_create_cursor(s32 x, s32 y, f32 scale, u8 r, u8 g, u8 b, u8 a);
 
-void menu_start_button();
-void menu_end_button();
-void menu_draw_button(s32 x, s32 y, s32 button, s32 pressed);
+void menu_start_button(Gfx **dl);
+void menu_end_button(Gfx **dl);
+void menu_draw_button(Gfx **dl, s32 x, s32 y, s32 button, s32 pressed);
 
-void menu_strip_coverage();
+void menu_strip_coverage(Gfx **dl);

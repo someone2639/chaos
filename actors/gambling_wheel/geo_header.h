@@ -1,4 +1,7 @@
 extern Gfx gambling_wheel_dl_wheel_border_quarter[];
+extern Gfx gambling_wheel_dl_wheel_flipper[];
+extern Gfx gambling_wheel_dl_peg[];
+extern Gfx gambling_wheel_dl_peg_right[];
 extern Gfx gambling_wheel_dl_border_6_25[];
 extern Gfx gambling_wheel_dl_border_12_5[];
 extern Gfx gambling_wheel_dl_border_18_75[];

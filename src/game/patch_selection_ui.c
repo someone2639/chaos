@@ -925,7 +925,7 @@ void draw_patch_name(f32 x, f32 y, const char *patchName, s32 type) {
     //Center name if it's only one line long
     fasttext_compute_print_text_with_line_breaks(FT_FONT_SMALL_THIN, CARD_STRING_WIDTH, &lines, &length, drawName, patchName);
     nameY = (lines == 1) ? y - 7 : y;
-    slowtext_draw_ortho_text(x, nameY, drawName, FT_FLAG_ALIGN_LEFT, 
+    slowtext_draw_ortho_text(&gDisplayListHead, x, nameY, drawName, FT_FLAG_ALIGN_LEFT, 
         sEffectColors[type][0], sEffectColors[type][1], sEffectColors[type][2], 0xFF);
 }
 
@@ -953,13 +953,13 @@ void draw_single_patch_info(const struct ChaosPatch *patch) {
     gSPDisplayList(gDisplayListHead++, patch_use_type_end);
 
     //Write text
-    slowtext_setup_ortho_rendering(FT_FONT_SMALL_THIN);
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_SMALL_THIN);
     draw_patch_name(-63, 4, patch->name, type);
-    slowtext_setup_ortho_rendering(FT_FONT_OUTLINE);
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_OUTLINE);
     if (timerText[0] != '\0') {
-        slowtext_draw_ortho_text(51, -1, timerText, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
+        slowtext_draw_ortho_text(&gDisplayListHead, 51, -1, timerText, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
     }
-    slowtext_finished_rendering();
+    slowtext_finished_rendering(&gDisplayListHead);
 }
 
 /*
@@ -998,18 +998,18 @@ void draw_double_patch_info(const struct ChaosPatch *pos, const struct ChaosPatc
     gSPDisplayList(gDisplayListHead++, patch_use_type_end);
 
     //Write text
-    slowtext_setup_ortho_rendering(FT_FONT_SMALL_THIN);
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_SMALL_THIN);
     
     draw_patch_name(-63, 4, pos->name, EFFECT_COLOR_GOOD);
     draw_patch_name(-63, -20, neg->name, EFFECT_COLOR_BAD);
-    slowtext_setup_ortho_rendering(FT_FONT_OUTLINE);
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_OUTLINE);
     if (timer1Text[0] != '\0') {
-        slowtext_draw_ortho_text(51, -1, timer1Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
+        slowtext_draw_ortho_text(&gDisplayListHead, 51, -1, timer1Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
     }
     if (timer2Text[0] != '\0') {
-        slowtext_draw_ortho_text(51, -25, timer2Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
+        slowtext_draw_ortho_text(&gDisplayListHead, 51, -25, timer2Text, FT_FLAG_ALIGN_LEFT, 0xD0, 0xC4, 0x00, 0xFF);
     }
-    slowtext_finished_rendering();
+    slowtext_finished_rendering(&gDisplayListHead);
 }
 
 /*
@@ -1073,12 +1073,12 @@ void render_patch_desc() {
     const struct ChaosPatch *pos = sel->positivePatch;
     const struct ChaosPatch *neg = sel->negativePatch;
 
-    slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text_linebreaks(-142, 15, DESC_STRING_WIDTH, pos->shortDescription, FT_FLAG_ALIGN_LEFT, 
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_VANILLA_SHADOW);
+    slowtext_draw_ortho_text_linebreaks(&gDisplayListHead, -142, 15, DESC_STRING_WIDTH, pos->shortDescription, FT_FLAG_ALIGN_LEFT, 
         sEffectColors[EFFECT_COLOR_GOOD][0], sEffectColors[EFFECT_COLOR_GOOD][1], sEffectColors[EFFECT_COLOR_GOOD][2], 0xFF);
-    slowtext_draw_ortho_text_linebreaks(-142, -15, DESC_STRING_WIDTH, neg->shortDescription, FT_FLAG_ALIGN_LEFT, 
+    slowtext_draw_ortho_text_linebreaks(&gDisplayListHead, -142, -15, DESC_STRING_WIDTH, neg->shortDescription, FT_FLAG_ALIGN_LEFT, 
         sEffectColors[EFFECT_COLOR_BAD][0], sEffectColors[EFFECT_COLOR_BAD][1], sEffectColors[EFFECT_COLOR_BAD][2], 0xFF);
-    slowtext_finished_rendering();
+    slowtext_finished_rendering(&gDisplayListHead);
 }
 
 /*
@@ -1088,11 +1088,11 @@ void render_patch_confirmation_dialog() {
     Mtx *transMtx = alloc_display_list(sizeof(Mtx));
     Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
 
-    slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text(0, 0, "Would you like to select this patch?", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_draw_ortho_text(-30, -20, "Yes", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_draw_ortho_text(30, -20, "No", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_finished_rendering();
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_VANILLA_SHADOW);
+    slowtext_draw_ortho_text(&gDisplayListHead, 0, 0, "Would you like to select this patch?", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(&gDisplayListHead, -30, -20, "Yes", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(&gDisplayListHead, 30, -20, "No", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_finished_rendering(&gDisplayListHead);
 
     s32 selected = gPatchSelectionMenu->menu.index;
     f32 xPos;
@@ -1182,22 +1182,22 @@ void render_extended_description() {
     Gfx *bg = menu_create_chaos_text_bg(SCREEN_CENTER_X, SCREEN_CENTER_Y, 298, 218, 255);
     gSPDisplayList(gDisplayListHead++, bg);
 
-    slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_VANILLA_SHADOW);
     if(pos->longDescription) {
-        slowtext_draw_ortho_text_linebreaks(-142, 87, DESC_STRING_WIDTH, pos->longDescription, FT_FLAG_ALIGN_LEFT, 
+        slowtext_draw_ortho_text_linebreaks(&gDisplayListHead, -142, 87, DESC_STRING_WIDTH, pos->longDescription, FT_FLAG_ALIGN_LEFT, 
             sEffectColors[EFFECT_COLOR_GOOD][0], sEffectColors[EFFECT_COLOR_GOOD][1], sEffectColors[EFFECT_COLOR_GOOD][2], 0xFF);
     }
     if(neg->longDescription) {
         // Draw second effect description lower if there are two extended descriptions
         if(pos->longDescription) {
-            slowtext_draw_ortho_text_linebreaks(-142, -13, DESC_STRING_WIDTH, neg->longDescription, FT_FLAG_ALIGN_LEFT, 
+            slowtext_draw_ortho_text_linebreaks(&gDisplayListHead, -142, -13, DESC_STRING_WIDTH, neg->longDescription, FT_FLAG_ALIGN_LEFT, 
                 sEffectColors[EFFECT_COLOR_BAD][0], sEffectColors[EFFECT_COLOR_BAD][1], sEffectColors[EFFECT_COLOR_BAD][2], 0xFF);
         } else {
-            slowtext_draw_ortho_text_linebreaks(-142, 87, DESC_STRING_WIDTH, neg->longDescription, FT_FLAG_ALIGN_LEFT, 
+            slowtext_draw_ortho_text_linebreaks(&gDisplayListHead, -142, 87, DESC_STRING_WIDTH, neg->longDescription, FT_FLAG_ALIGN_LEFT, 
                 sEffectColors[EFFECT_COLOR_BAD][0], sEffectColors[EFFECT_COLOR_BAD][1], sEffectColors[EFFECT_COLOR_BAD][2], 0xFF);
         }
     }
-    slowtext_finished_rendering();
+    slowtext_finished_rendering(&gDisplayListHead);
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
@@ -1229,7 +1229,7 @@ void render_patch_select_button_prompts() {
             yPos -= 7;
             break;
     }
-    menu_render_button_prompt_list(SCREEN_WIDTH - 32, yPos, &prompts);
+    menu_render_button_prompt_list(&gDisplayListHead, SCREEN_WIDTH - 32, yPos, &prompts);
 }
 
 #define PATCH_LIVES_X      (12)

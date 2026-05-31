@@ -342,9 +342,9 @@ void render_gm_start_game() {
     Gfx *bg = menu_create_chaos_text_bg(GM_START_GAME_X, GM_START_GAME_Y, 74, 20, 217);
     gSPDisplayList(gDisplayListHead++, bg);
 
-    slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text(-5, -10, "Start", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_finished_rendering();
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_VANILLA_SHADOW);
+    slowtext_draw_ortho_text(&gDisplayListHead, -5, -10, "Start", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_finished_rendering(&gDisplayListHead);
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
@@ -365,12 +365,12 @@ void render_difficulty_select() {
     Gfx *bg = menu_create_chaos_text_bg(DIFF_SELECT_X, DIFF_SELECT_Y, 74, 62, 217);
     gSPDisplayList(gDisplayListHead++, bg);
 
-    slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text(-24,  10, "Easy",       FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_draw_ortho_text(-24,  -3, "Normal",     FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_draw_ortho_text(-24, -16, "Hard",       FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_draw_ortho_text(-24, -29, "Impossible", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_finished_rendering();
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_VANILLA_SHADOW);
+    slowtext_draw_ortho_text(&gDisplayListHead, -24,  10, "Easy",       FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(&gDisplayListHead, -24,  -3, "Normal",     FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(&gDisplayListHead, -24, -16, "Hard",       FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(&gDisplayListHead, -24, -29, "Impossible", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_finished_rendering(&gDisplayListHead);
 
     cursorY = 15 - (13 * sGamemodeSelectMenu.selectedDifficulty);
 
@@ -402,11 +402,11 @@ void render_challenge_select() {
     Gfx *bg = menu_create_chaos_text_bg(CHAL_SELECT_X, CHAL_SELECT_Y, 74, 62, 217);
     gSPDisplayList(gDisplayListHead++, bg);
 
-    slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text(-24,  7, "Classic",   FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_draw_ortho_text(-24, -10, "Challenge", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_draw_ortho_text(-24, -27, "Hardcore",  FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_finished_rendering();
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_VANILLA_SHADOW);
+    slowtext_draw_ortho_text(&gDisplayListHead, -24,  7, "Classic",   FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(&gDisplayListHead, -24, -10, "Challenge", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(&gDisplayListHead, -24, -27, "Hardcore",  FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_finished_rendering(&gDisplayListHead);
 
     cursorY = 12 - (17 * sGamemodeSelectMenu.selectedGameMode);
 
@@ -440,9 +440,9 @@ void render_menu_desc() {
                 break;
     }
 
-    slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text_linebreaks(-142, 15, DESC_STRING_WIDTH, desc, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_finished_rendering();
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_VANILLA_SHADOW);
+    slowtext_draw_ortho_text_linebreaks(&gDisplayListHead, -142, 15, DESC_STRING_WIDTH, desc, FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_finished_rendering(&gDisplayListHead);
 }
 
 /*
@@ -452,11 +452,11 @@ void render_gm_confirmation_dialog() {
     Mtx *transMtx = alloc_display_list(sizeof(Mtx));
     Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
 
-    slowtext_setup_ortho_rendering(FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text(0, 0, "Begin the game with these settings?", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_draw_ortho_text(-30, -20, "Yes", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_draw_ortho_text(30, -20, "No", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
-    slowtext_finished_rendering();
+    slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_VANILLA_SHADOW);
+    slowtext_draw_ortho_text(&gDisplayListHead, 0, 0, "Begin the game with these settings?", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(&gDisplayListHead, -30, -20, "Yes", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(&gDisplayListHead, 30, -20, "No", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_finished_rendering(&gDisplayListHead);
 
     s32 selected = sGamemodeSelectMenu.menu.index;
     f32 xPos;
@@ -529,7 +529,7 @@ void render_gm_select_button_prompts() {
             break;
     }
 
-    menu_render_button_prompt_list(SCREEN_WIDTH - 32, SCREEN_HEIGHT - 33, &prompts);
+    menu_render_button_prompt_list(&gDisplayListHead, SCREEN_WIDTH - 32, SCREEN_HEIGHT - 33, &prompts);
 }
 
 /*
@@ -542,7 +542,7 @@ void render_gamemode_select() {
     s32 cursorY;
     u32 flags = sGamemodeSelectMenu.menu.flags;
 
-    menu_strip_coverage();
+    menu_strip_coverage(&gDisplayListHead);
 
     create_dl_ortho_matrix(&gDisplayListHead);
 
