@@ -1308,7 +1308,8 @@ void display_patch_selection_ui() {
         }
 
         if(!(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) 
-            && (gPatchSelectionMenu->menu.animId != PATCH_SELECT_ANIM_STARTUP) 
+            && (gPatchSelectionMenu->menu.animId != PATCH_SELECT_ANIM_STARTUP)
+            && (gPatchSelectionMenu->menu.menuState < PATCH_SELECT_STATE_UPDATE_EVENT)
             && (gPatchSelectionMenu->menu.menuState != PATCH_SELECT_STATE_SHOW_EXTENDED_DESC)) {
             render_patch_hud_info();
         }

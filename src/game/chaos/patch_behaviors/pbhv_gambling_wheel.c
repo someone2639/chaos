@@ -248,8 +248,7 @@ static void gwheel_type_act_lives_increase_5(void) {
     save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives, TRUE);
 }
 static void gwheel_type_act_lives_decrease_3(void) {
-    gMarioState->numLives += 3;
-    play_sound(SOUND_GENERAL_COLLECT_1UP, gGlobalSoundSource);
+    gMarioState->numLives -= 3;
     save_file_set_life_count(gCurrSaveFileNum - 1, gMarioState->numLives, TRUE);
 }
 static void gwheel_type_act_lives_decrease_6(void) {
@@ -1238,6 +1237,7 @@ static void render_wheel_intro_text(Gfx **dl) {
 
     const u32 precalculatedWidth = 82;
     const u32 precalculatedHeight = 28;
+    const s32 dumbStupidYOffset = 3;
 
     const u32 oscillationFrames = 10;
 
@@ -1264,7 +1264,7 @@ static void render_wheel_intro_text(Gfx **dl) {
         return;
     }
 
-    create_dl_translation_matrix(&dlHead, MENU_MTX_PUSH, SCREEN_CENTER_X, SCREEN_CENTER_Y + WHEEL_OFFSET_Y, 0.0f);
+    create_dl_translation_matrix(&dlHead, MENU_MTX_PUSH, SCREEN_CENTER_X, SCREEN_CENTER_Y, 0.0f);
     create_dl_scale_matrix(&dlHead, MENU_MTX_NOPUSH, 2.0f, 2.0f, 1.0f);
 
     u32 animFrames = introTextFrames - idleDuration;
@@ -1296,7 +1296,7 @@ static void render_wheel_intro_text(Gfx **dl) {
     finalColor[1] = (f32) colorBase[1] + (((f32) colorAdd[1] * colorPerc) + 0.5f);
     finalColor[2] = (f32) colorBase[2] + (((f32) colorAdd[2] * colorPerc) + 0.5f);
     
-    chstut_draw_shaded_background(&dlHead, -precalculatedWidth / 2, precalculatedWidth / 2, (-precalculatedHeight / 2) + 3, (precalculatedHeight / 2) + 3, 0x17, 0x17, 0x00, 0xBF);
+    chstut_draw_shaded_background(&dlHead, -precalculatedWidth / 2, precalculatedWidth / 2, (-precalculatedHeight / 2) + dumbStupidYOffset, (precalculatedHeight / 2) + dumbStupidYOffset, 0x17, 0x17, 0x00, 0xBF);
 
     slowtext_setup_ortho_rendering(&dlHead, FT_FONT_MEDIUM);
     slowtext_draw_ortho_text(&dlHead, 0, 0, "OH YEAH, IT'S\nWHEEL TIME!", FT_FLAG_ALIGN_CENTER, finalColor[0], finalColor[1], finalColor[2], 0xFF);
