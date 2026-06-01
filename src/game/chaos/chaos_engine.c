@@ -837,8 +837,8 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(s32 forcedSeverityOverrid
             forcedSeverity = -1;
             generatedDifficultyWeight = random_float();
             for (s32 i = 0; i < ARRAY_COUNT(difficultyWeights[0]); i++) {
-                if (!(i == 1 && chaos_check_if_patch_active(CHAOS_PATCH_HIGH_STAKES))
-                            && !(i == CHAOS_PATCH_SEVERITY_MAX && chaos_check_if_patch_active(CHAOS_PATCH_HIGH_STAKES))) {
+                if (!((i + 1) == 1 && chaos_check_if_patch_active(CHAOS_PATCH_HIGH_STAKES))
+                            && !((i + 1) == CHAOS_PATCH_SEVERITY_MAX && chaos_check_if_patch_active(CHAOS_PATCH_LOW_STAKES))) {
                     weight += difficultyWeights[gChaosDifficulty][i];
                 }
                 if (generatedDifficultyWeight < weight) {
@@ -942,8 +942,9 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(s32 forcedSeverityOverrid
         s32 pos = i;
         s32 neg = i;
 
-        posNegPairings[i][CHAOS_EFFECT_POSITIVE] = 0;
-        posNegPairings[i][CHAOS_EFFECT_NEGATIVE] = 0;
+        for (s32 j = 0; j < ARRAY_COUNT(posNegPairings[i]); j++) {
+            posNegPairings[i][j] = 0;
+        }
         allowedSeverities[i] = FALSE;
 
         if (i == 1 && chaos_check_if_patch_active(CHAOS_PATCH_HIGH_STAKES)) {
