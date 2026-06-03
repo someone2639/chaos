@@ -760,6 +760,24 @@ struct RandomWarp sRandomWarpTable[] = {
     {LEVEL_TTM, 2, 0x0A},
 };
 
+u8 is_exit_course_safe(s32 courseNum) {
+    const s32 safeExitCourseMap[] = {
+        COURSE_PSS,
+        COURSE_COTMC,
+        COURSE_TOTWC,
+        COURSE_VCUTM,
+        COURSE_WMOTR,
+    };
+
+    for (s32 i = 0; i < ARRAY_COUNT(safeExitCourseMap); i++) {
+        if (courseNum == safeExitCourseMap[i]) {
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}
+
 /**
  * Set the current warp type and destination level/area/node.
  */
@@ -1261,7 +1279,7 @@ s32 play_mode_paused(void) {
             fade_into_special_warp(-9, 1);
         } else {
             gSavedCourseNum = COURSE_NONE;
-            if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE || gChaosGameMode == CHAOS_GAMEMODE_HARDCORE || chaos_check_if_patch_active(CHAOS_PATCH_INSTANT_GAME_OVER)) {
+            if (!is_exit_course_safe(gCurrCourseNum) && (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE || gChaosGameMode == CHAOS_GAMEMODE_HARDCORE || chaos_check_if_patch_active(CHAOS_PATCH_INSTANT_GAME_OVER))) {
                 if (chs_is_miracle_active()) {
                     initiate_warp(LEVEL_CASTLE, 1, 0x1F, 0);
                     fade_into_special_warp(0, 0);
