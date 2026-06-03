@@ -5,6 +5,7 @@
 
 #include "internal.h"
 #include "types.h"
+#include "sounds.h"
 #include "synthesis.h"
 
 #define AUDIO_LOCK_UNINITIALIZED 0x00000000
@@ -107,6 +108,13 @@ extern f32 gVolRampingLhs144[1 << VOL_RAMPING_EXPONENT];
 extern f32 gVolRampingRhs144[1 << VOL_RAMPING_EXPONENT];
 extern f32 gVolRampingLhs128[1 << VOL_RAMPING_EXPONENT];
 extern f32 gVolRampingRhs128[1 << VOL_RAMPING_EXPONENT];
+
+extern s32 gDiscreteSFX[];
+extern s32 gNonDiscreteSFX[];
+extern s32 gDiscreteSFXRandomized[];
+extern s32 gNonDiscreteSFXRandomized[];
+extern const s32 gDiscreteSFXCount;
+extern const s32 gNonDiscreteSFXCount;
 
 // non-constant .data
 extern s16 gTatumsPerBeat;

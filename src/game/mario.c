@@ -256,7 +256,7 @@ void play_mario_jump_sound(struct MarioState *m) {
     if (!(m->flags & MARIO_MARIO_SOUND_PLAYED)) {
 #ifndef VERSION_JP
         if (m->action == ACT_TRIPLE_JUMP) {
-            play_sound(SOUND_MARIO_YAHOO_WAHA_YIPPEE + ((gAudioRandom % 5) << 16),
+            play_sound(SOUND_MARIO_YAHOO_WAHA_YIPPEE_0 + ((gAudioRandom % 5) << 16),
                        m->marioObj->header.gfx.cameraToObject);
         } else {
 #endif
@@ -269,7 +269,7 @@ void play_mario_jump_sound(struct MarioState *m) {
                     play_sound(sound, m->marioObj->header.gfx.cameraToObject);
                 }
             } else {
-                play_sound(SOUND_MARIO_YAH_WAH_HOO + ((gAudioRandom % 3) << 16),
+                play_sound(SOUND_MARIO_YAH_WAH_HOO_0 + ((gAudioRandom % 3) << 16),
                            m->marioObj->header.gfx.cameraToObject);
             }
 #ifndef VERSION_JP
@@ -363,9 +363,9 @@ void play_mario_heavy_landing_sound_once(struct MarioState *m, u32 soundBits) {
  * Plays action and Mario sounds relevant to what was passed into the function.
  */
 void play_mario_sound(struct MarioState *m, s32 actionSound, s32 marioSound) {
-    if (actionSound == SOUND_ACTION_TERRAIN_JUMP) {
+    if (actionSound == SOUND_ACTION_TERRAIN_JUMP_0) {
         play_mario_action_sound(m, (m->flags & MARIO_METAL_CAP) ? (s32) SOUND_ACTION_METAL_JUMP
-                                                                : (s32) SOUND_ACTION_TERRAIN_JUMP, 1);
+                                                                : (s32) SOUND_ACTION_TERRAIN_JUMP_0, 1);
     } else {
         play_sound_if_no_flag(m, actionSound, MARIO_ACTION_SOUND_PLAYED);
     }

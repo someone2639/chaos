@@ -679,6 +679,10 @@ struct SPTask *create_next_audio_frame_task(void) {
  */
 void play_sound(s32 soundBits, f32 *pos) {
     assert(((soundBits & SOUNDARGS_MASK_SOUNDID) >> SOUNDARGS_SHIFT_SOUNDID) != 0xff, "Sfx tables do not support a sound id of 0xff!");
+    if (chaos_check_if_patch_active(CHAOS_PATCH_SOUND_EFFECT_SHUFFLE)) {
+        soundBits = get_randomized_sound(soundBits);
+    }
+
     sSoundRequests[sSoundRequestCount].soundBits = soundBits;
     sSoundRequests[sSoundRequestCount].position = pos;
     sSoundRequestCount++;

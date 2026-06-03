@@ -700,7 +700,7 @@ s32 act_fall_after_star_grab(struct MarioState *m) {
         return set_mario_action(m, ACT_STAR_DANCE_WATER, m->actionArg);
     }
     if (perform_air_step(m, 1) == AIR_STEP_LANDED) {
-        play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);
+        play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING_0);
         set_mario_action(m, m->actionArg & 1 ? ACT_STAR_DANCE_NO_EXIT : ACT_STAR_DANCE_EXIT,
                          m->actionArg);
     }
@@ -726,7 +726,7 @@ s32 act_standing_death(struct MarioState *m) {
     play_sound_if_no_flag(m, SOUND_MARIO_DYING, MARIO_ACTION_SOUND_PLAYED);
     common_death_handler(m, MARIO_ANIM_DYING_FALL_OVER, 80);
     if (m->marioObj->header.gfx.animInfo.animFrame == 77) {
-        play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_BODY_HIT_GROUND);
+        play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_BODY_HIT_GROUND_0);
     }
     return FALSE;
 }
@@ -746,7 +746,7 @@ s32 act_suffocation(struct MarioState *m) {
 s32 act_death_on_back(struct MarioState *m) {
     play_sound_if_no_flag(m, SOUND_MARIO_DYING, MARIO_ACTION_SOUND_PLAYED);
     if (common_death_handler(m, MARIO_ANIM_DYING_ON_BACK, 54) == 40) {
-        play_mario_heavy_landing_sound(m, SOUND_ACTION_TERRAIN_BODY_HIT_GROUND);
+        play_mario_heavy_landing_sound(m, SOUND_ACTION_TERRAIN_BODY_HIT_GROUND_0);
     }
     return FALSE;
 }
@@ -754,7 +754,7 @@ s32 act_death_on_back(struct MarioState *m) {
 s32 act_death_on_stomach(struct MarioState *m) {
     play_sound_if_no_flag(m, SOUND_MARIO_DYING, MARIO_ACTION_SOUND_PLAYED);
     if (common_death_handler(m, MARIO_ANIM_DYING_ON_STOMACH, 37) == 37) {
-        play_mario_heavy_landing_sound(m, SOUND_ACTION_TERRAIN_BODY_HIT_GROUND);
+        play_mario_heavy_landing_sound(m, SOUND_ACTION_TERRAIN_BODY_HIT_GROUND_0);
     }
     return FALSE;
 }
@@ -1021,7 +1021,7 @@ s32 act_emerge_from_pipe(struct MarioState *m) {
 
     if (launch_mario_until_land(m, ACT_JUMP_LAND_STOP, MARIO_ANIM_SINGLE_JUMP, 8.0f)) {
         mario_set_forward_vel(m, 0.0f);
-        play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);
+        play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING_0);
     }
     return FALSE;
 }
@@ -1038,7 +1038,7 @@ s32 act_spawn_spin_airborne(struct MarioState *m) {
 
     // landed on floor, play spawn land animation
     if (perform_air_step(m, 0.0) == AIR_STEP_LANDED) {
-        play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);
+        play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING_0);
         set_mario_action(m, ACT_SPAWN_SPIN_LANDING, 0);
     }
 
@@ -1125,7 +1125,7 @@ s32 act_falling_exit_airborne(struct MarioState *m) {
 s32 act_exit_land_save_dialog(struct MarioState *m) {
     s32 animFrame;
     stationary_ground_step(m);
-    play_mario_landing_sound_once(m, SOUND_ACTION_TERRAIN_LANDING);
+    play_mario_landing_sound_once(m, SOUND_ACTION_TERRAIN_LANDING_0);
     switch (m->actionState) {
         // determine type of exit
         case 0:
@@ -1375,7 +1375,7 @@ s32 act_spawn_no_spin_airborne(struct MarioState *m) {
 }
 
 s32 act_spawn_no_spin_landing(struct MarioState *m) {
-    play_mario_landing_sound_once(m, SOUND_ACTION_TERRAIN_LANDING);
+    play_mario_landing_sound_once(m, SOUND_ACTION_TERRAIN_LANDING_0);
     set_mario_animation(m, MARIO_ANIM_GENERAL_LAND);
     stop_and_set_height_to_floor(m);
     if (is_anim_at_end(m)) {
@@ -1475,7 +1475,7 @@ s32 act_bbh_enter_jump(struct MarioState *m) {
     f32 cageDist;
 
     play_mario_action_sound(
-        m, m->flags & MARIO_METAL_CAP ? SOUND_ACTION_METAL_JUMP : SOUND_ACTION_TERRAIN_JUMP, 1);
+        m, m->flags & MARIO_METAL_CAP ? SOUND_ACTION_METAL_JUMP : SOUND_ACTION_TERRAIN_JUMP_0, 1);
     play_mario_jump_sound(m);
 
     if (m->actionState == 0) {
@@ -1576,7 +1576,7 @@ s32 act_shocked(struct MarioState *m) {
     if (m->actionArg == 0) {
         mario_set_forward_vel(m, 0.0f);
         if (perform_air_step(m, 1) == AIR_STEP_LANDED) {
-            play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);
+            play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING_0);
             m->actionArg = 1;
         }
     } else {
@@ -1734,14 +1734,14 @@ void stuck_in_ground_handler(struct MarioState *m, s32 animation, s32 unstuckFra
     stop_and_set_height_to_floor(m);
 
     if (animFrame == -1) {
-        play_sound_and_spawn_particles(m, SOUND_ACTION_TERRAIN_STUCK_IN_GROUND, 1);
+        play_sound_and_spawn_particles(m, SOUND_ACTION_TERRAIN_STUCK_IN_GROUND_0, 1);
     } else if (animFrame == unstuckFrame) {
 #if ENABLE_RUMBLE
         queue_rumble_data(5, 80);
 #endif
         play_sound_and_spawn_particles(m, SOUND_ACTION_UNSTUCK_FROM_GROUND, 1);
     } else if (animFrame == target2 || animFrame == target3) {
-        play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);
+        play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING_0);
     }
 
     if (is_anim_at_end(m)) {
@@ -1843,7 +1843,7 @@ static void intro_cutscene_jump_out_of_pipe(struct MarioState *m) {
         mario_set_forward_vel(m, 10.0f);
         if (perform_air_step(m, 0) == AIR_STEP_LANDED) {
             sound_banks_enable(SEQ_PLAYER_SFX, SOUND_BANKS_DISABLED_DURING_INTRO_CUTSCENE);
-            play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);
+            play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING_0);
 #ifndef VERSION_JP
             play_sound(SOUND_MARIO_HAHA, m->marioObj->header.gfx.cameraToObject);
 #endif
@@ -1938,7 +1938,7 @@ static void jumbo_star_cutscene_falling(struct MarioState *m) {
 
         if (perform_air_step(m, 1) == AIR_STEP_LANDED) {
             play_cutscene_music(SEQUENCE_ARGS(15, SEQ_EVENT_CUTSCENE_VICTORY));
-            play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);
+            play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING_0);
             m->actionState++;
         }
     } else {
@@ -1960,13 +1960,13 @@ static s32 jumbo_star_cutscene_taking_off(struct MarioState *m) {
         marioObj->rawData.asF32[0x22] = 0.0f;
 
         if (is_anim_past_end(m)) {
-            play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);
+            play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING_0);
             m->actionState++;
         }
     } else {
         animFrame = set_mario_animation(m, MARIO_ANIM_FINAL_BOWSER_WING_CAP_TAKE_OFF);
         if (animFrame == 3 || animFrame == 28 || animFrame == 60) {
-            play_sound_and_spawn_particles(m, SOUND_ACTION_TERRAIN_JUMP, 1);
+            play_sound_and_spawn_particles(m, SOUND_ACTION_TERRAIN_JUMP_0, 1);
         }
         if (animFrame >= 3) {
             marioObj->rawData.asF32[0x22] -= 32.0f;
@@ -1974,7 +1974,7 @@ static s32 jumbo_star_cutscene_taking_off(struct MarioState *m) {
 
         switch (animFrame) {
             case 3:
-                play_sound(SOUND_MARIO_YAH_WAH_HOO + (gAudioRandom % 3 << 16),
+                play_sound(SOUND_MARIO_YAH_WAH_HOO_0 + (gAudioRandom % 3 << 16),
                            m->marioObj->header.gfx.cameraToObject);
                 break;
 
@@ -2137,7 +2137,7 @@ static void end_peach_cutscene_mario_falling(struct MarioState *m) {
     mario_set_forward_vel(m, 0.0f);
 
     if (perform_air_step(m, 0) == AIR_STEP_LANDED) {
-        play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);
+        play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING_0);
         advance_cutscene_step(m);
     }
 }

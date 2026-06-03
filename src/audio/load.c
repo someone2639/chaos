@@ -774,6 +774,40 @@ void load_sequence_internal(u32 player, u32 seqId, s32 loadAsync) {
     seqPlayer->scriptState.pc = sequenceData;
 }
 
+// Sort needed to binary search later on
+void sort_sound_effect_arrays(void) {
+    s32 *sfxArray;
+    s32 tmp;
+
+    // Discrete SFX
+    sfxArray = gDiscreteSFX;
+    for (s32 i = 0; i < gDiscreteSFXCount + 1; i++) {
+        for (s32 j = (i + 1); j < gDiscreteSFXCount; j++) {
+            if (sfxArray[i] > sfxArray[j]) {
+                tmp = sfxArray[i];
+                sfxArray[i] = sfxArray[j];
+                sfxArray[j] = tmp;
+            }
+        }
+    }
+
+    // Nondiscrete SFX
+    sfxArray = gNonDiscreteSFX;
+    for (s32 i = 0; i < gNonDiscreteSFXCount + 1; i++) {
+        for (s32 j = (i + 1); j < gNonDiscreteSFXCount; j++) {
+            if (sfxArray[i] > sfxArray[j]) {
+                tmp = sfxArray[i];
+                sfxArray[i] = sfxArray[j];
+                sfxArray[j] = tmp;
+            }
+        }
+    }
+
+    // Copy discrete and nondiscrete sfx to new array, to be used with randomization
+    bcopy(gDiscreteSFX, gDiscreteSFXRandomized, gDiscreteSFXCount * sizeof(s32));
+    bcopy(gNonDiscreteSFX, gNonDiscreteSFXRandomized, gNonDiscreteSFXCount * sizeof(s32));
+}
+
 // (void) must be omitted from parameters to fix stack with -framepointer
 void audio_init() {
     s32 i, /*j,*/ k;
@@ -900,6 +934,8 @@ void audio_init() {
     // Load bank sets for each sequence
     gAlBankSets = soundAlloc(&gAudioInitPool, MAX_NUM_SOUNDBANKS * sizeof(s32));
     audio_dma_copy_immediate((uintptr_t) gBankSetsData, gAlBankSets, MAX_NUM_SOUNDBANKS * sizeof(s32));
+
+    sort_sound_effect_arrays();
 
     init_sequence_players();
     gAudioLoadLock = AUDIO_LOCK_NOT_LOADING;

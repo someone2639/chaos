@@ -2048,6 +2048,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 8,
         .durationImpossible = 10,
 
+        INCOMPATIBLE(CHAOS_PATCH_SOUND_EFFECT_SHUFFLE),
         .name               = "Audio Inversion",
         .shortDescription   = "The game will sound upside-down!",
     },
@@ -2106,6 +2107,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Mad Musical Mess",
         .shortDescription   = "The seasoned musicians behind SM64 want a break. We pulled in some random fellas off the streets to sub in!",
+    },
+    [CHAOS_PATCH_SOUND_EFFECT_SHUFFLE] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 1,
+        .duration           = 3,
+        .durationHard       = 4,
+        .durationImpossible = 5,
+
+        INCOMPATIBLE(CHAOS_PATCH_INVERTED_SOUND),
+        .activatedInitFunc  = chs_act_sound_effect_shuffle,
+
+        .name               = "Sound Effect Shuffle",
+        .shortDescription   = "Randomly shuffle almost every sound in the game!",
     },
 
 // Miscellaneous Modifiers

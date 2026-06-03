@@ -99,7 +99,7 @@ void bhv_red_coin_loop(void) {
             // For JP version, play an identical sound for all coins.
             create_sound_spawner(SOUND_GENERAL_RED_COIN);
 #else
-            play_sound(SOUND_MENU_COLLECT_RED_COIN
+            play_sound(SOUND_MENU_COLLECT_RED_COIN_0
                        + (((u8) o->parentObj->oHiddenStarTriggerCounter - 1) << 16),
                        gGlobalSoundSource);
 #endif

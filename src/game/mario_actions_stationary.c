@@ -231,7 +231,7 @@ s32 act_start_sleeping(struct MarioState *m) {
 
     play_anim_sound(m, 1, 41, SOUND_ACTION_PAT_BACK);
     play_anim_sound(m, 1, 49, SOUND_ACTION_PAT_BACK);
-    play_anim_sound(m, 3, 15, m->terrainSoundAddend + SOUND_ACTION_TERRAIN_BODY_HIT_GROUND);
+    play_anim_sound(m, 3, 15, m->terrainSoundAddend + SOUND_ACTION_TERRAIN_BODY_HIT_GROUND_0);
 
     if (is_anim_at_end(m)) {
         m->actionState++;
@@ -307,7 +307,7 @@ s32 act_sleeping(struct MarioState *m) {
 
         case 1:
             if (set_mario_animation(m, MARIO_ANIM_SLEEP_START_LYING) == 18) {
-                play_mario_heavy_landing_sound(m, SOUND_ACTION_TERRAIN_BODY_HIT_GROUND);
+                play_mario_heavy_landing_sound(m, SOUND_ACTION_TERRAIN_BODY_HIT_GROUND_0);
             }
 
             if (is_anim_at_end(m)) {
@@ -595,7 +595,7 @@ s32 act_panting(struct MarioState *m) {
     }
 
     if (set_mario_animation(m, MARIO_ANIM_WALK_PANTING) == 1) {
-        play_sound(SOUND_MARIO_PANTING + ((gAudioRandom % 3U) << 0x10),
+        play_sound(SOUND_MARIO_PANTING_0 + ((gAudioRandom % 3U) << 0x10),
                    m->marioObj->header.gfx.cameraToObject);
     }
 
@@ -668,7 +668,7 @@ s32 act_butt_slide_stop(struct MarioState *m) {
 
     stopping_step(m, MARIO_ANIM_STOP_SLIDE, ACT_IDLE);
     if (m->marioObj->header.gfx.animInfo.animFrame == 6) {
-        play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);
+        play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING_0);
     }
 
     return FALSE;

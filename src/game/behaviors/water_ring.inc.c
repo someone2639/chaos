@@ -63,7 +63,7 @@ void water_ring_check_collection(f32 avgScale, struct Object *ringManager) {
 #ifdef VERSION_JP
                     play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 #else
-                    play_sound(SOUND_MENU_COLLECT_SECRET
+                    play_sound(SOUND_MENU_COLLECT_SECRET_0
                                + (((u8) ringSpawner->oWaterRingSpawnerRingsCollected - 1) << 16),
                                gGlobalSoundSource);
 #endif

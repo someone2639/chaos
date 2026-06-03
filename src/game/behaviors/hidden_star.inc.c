@@ -45,7 +45,7 @@ void bhv_hidden_star_trigger_loop(void) {
 #ifdef VERSION_JP
             play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 #else
-            play_sound(SOUND_MENU_COLLECT_SECRET
+            play_sound(SOUND_MENU_COLLECT_SECRET_0
                        + (((u8) hiddenStar->oHiddenStarTriggerCounter - 1) << 16), gGlobalSoundSource);
 #endif
         }

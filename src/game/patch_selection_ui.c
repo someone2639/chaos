@@ -661,7 +661,7 @@ void patch_select_state_confirmation() {
                     play_sound(SOUND_MARIO_HERE_WE_GO, gGlobalSoundSource);
                     break;
                 case 2:
-                    play_sound(SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x21, 0x00, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE), gGlobalSoundSource); //okey dokey sound
+                    play_sound(SOUND_MARIO_OKEY_DOKEY, gGlobalSoundSource); //okey dokey sound
                     break;
                 case 3:
                     play_sound(SOUND_MARIO_OOOF, gGlobalSoundSource);

@@ -733,6 +733,8 @@ f32 gDefaultPanVolume[128] = {
 #include "volramping.c.in"
 #endif
 
+#include "sfx.c.in"
+
 #ifdef VERSION_SH
 u16 unk_sh_data_3[] = {
     // 30 entries

@@ -81,9 +81,9 @@ void play_step_sound(struct MarioState *m, s16 frame1, s16 frame2) {
         } else if (m->quicksandDepth > 50.0f) {
             play_sound(SOUND_ACTION_QUICKSAND_STEP, m->marioObj->header.gfx.cameraToObject);
         } else if (m->marioObj->header.gfx.animInfo.animID == MARIO_ANIM_TIPTOE) {
-            play_sound_and_spawn_particles(m, SOUND_ACTION_TERRAIN_STEP_TIPTOE, 0);
+            play_sound_and_spawn_particles(m, SOUND_ACTION_TERRAIN_STEP_TIPTOE_0, 0);
         } else {
-            play_sound_and_spawn_particles(m, SOUND_ACTION_TERRAIN_STEP, 0);
+            play_sound_and_spawn_particles(m, SOUND_ACTION_TERRAIN_STEP_0, 0);
         }
     }
 }
@@ -1609,7 +1609,7 @@ s32 act_dive_slide(struct MarioState *m) {
                                 0);
     }
 
-    play_mario_landing_sound_once(m, SOUND_ACTION_TERRAIN_BODY_HIT_GROUND);
+    play_mario_landing_sound_once(m, SOUND_ACTION_TERRAIN_BODY_HIT_GROUND_0);
 
     //! If the dive slide ends on the same frame that we pick up on object,
     // Mario will not be in the dive slide action for the call to
@@ -1640,7 +1640,7 @@ s32 common_ground_knockback_action(struct MarioState *m, s32 animation, s32 arg2
     m->bonkKill = FALSE;
 
     if (arg3) {
-        play_mario_heavy_landing_sound_once(m, SOUND_ACTION_TERRAIN_BODY_HIT_GROUND);
+        play_mario_heavy_landing_sound_once(m, SOUND_ACTION_TERRAIN_BODY_HIT_GROUND_0);
     }
 
     if (arg4 > 0) {
@@ -1703,7 +1703,7 @@ s32 act_hard_backward_ground_kb(struct MarioState *m) {
 #endif
 
     if (animFrame == 69) {
-        play_mario_landing_sound_once(m, SOUND_ACTION_TERRAIN_LANDING);
+        play_mario_landing_sound_once(m, SOUND_ACTION_TERRAIN_LANDING_0);
     }
 
     return FALSE;
@@ -1743,7 +1743,7 @@ s32 act_ground_bonk(struct MarioState *m) {
     s32 animFrame =
         common_ground_knockback_action(m, MARIO_ANIM_GROUND_BONK, 32, TRUE, m->actionArg);
     if (animFrame == 32) {
-        play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);
+        play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING_0);
     }
     return FALSE;
 }
@@ -1756,7 +1756,7 @@ s32 act_death_exit_land(struct MarioState *m) {
     } else {
         apply_landing_accel(m, 0.9f);
     }
-    play_mario_heavy_landing_sound_once(m, SOUND_ACTION_TERRAIN_BODY_HIT_GROUND);
+    play_mario_heavy_landing_sound_once(m, SOUND_ACTION_TERRAIN_BODY_HIT_GROUND_0);
 
     animFrame = set_mario_animation(m, MARIO_ANIM_FALL_OVER_BACKWARDS);
 
@@ -1764,7 +1764,7 @@ s32 act_death_exit_land(struct MarioState *m) {
         play_sound(SOUND_MARIO_MAMA_MIA, m->marioObj->header.gfx.cameraToObject);
     }
     if (animFrame == 68) {
-        play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING);
+        play_mario_landing_sound(m, SOUND_ACTION_TERRAIN_LANDING_0);
     }
 
     if (is_anim_at_end(m)) {
@@ -1801,7 +1801,7 @@ u32 common_landing_action(struct MarioState *m, s16 animation, u32 airAction) {
     }
 
     set_mario_animation(m, animation);
-    play_mario_landing_sound_once(m, SOUND_ACTION_TERRAIN_LANDING);
+    play_mario_landing_sound_once(m, SOUND_ACTION_TERRAIN_LANDING_0);
 
     if (m->floor->type >= SURFACE_SHALLOW_QUICKSAND && m->floor->type <= SURFACE_MOVING_QUICKSAND) {
         m->quicksandDepth += (4 - m->actionTimer) * 3.5f - 0.5f;

@@ -204,6 +204,8 @@ void chs_deact_reverb(void);
 u8 chs_cond_randomized_music(void);
 u8 chs_cond_chill_out(void);
 u8 chs_cond_mad_musical_mess(void);
+void chs_act_sound_effect_shuffle(void);
+s32 get_randomized_sound(s32 sound);
 
 // Misc
 void chs_act_serve_ads(void);
