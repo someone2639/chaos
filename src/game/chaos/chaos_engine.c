@@ -267,6 +267,8 @@ void chaos_remove_expired_entry(const s32 patchIndex, const char *msg) {
         return;
     }
 
+    // We CANNOT safely deactivate other patches within deactivation functions because of stale references in the chaos engine when decrementing star timers and such.
+    // (There is a recursive assertion check in place to watch out for this, even though this function on its own is actually safe to call recursively).
     assert_args(insideDeactivationFunc == FALSE, "chaos_remove_expired_entry:\nNot safe to invoke recursively:\n0x%08X", patchIndex);
     insideDeactivationFunc = TRUE;
 
@@ -277,17 +279,6 @@ void chaos_remove_expired_entry(const s32 patchIndex, const char *msg) {
     if (activePatchCounts[patchId] > 0) {
         activePatchCounts[patchId]--;
     }
-    gChaosActiveEntries[patchIndex] = gChaosActiveEntries[*gChaosActiveEntryCount];
-
-    // Invoke deactivation function, now that the entry has been removed
-    if (patch->deactivationFunc) {
-        patch->deactivationFunc();
-    }
-
-    // Print chaos message, if it exists
-    if (msg) {
-        chaosmsg_print(patchId, msg);
-    }
 
     // Decrease number of active patches.
     (*gChaosActiveEntryCount)--;
@@ -295,6 +286,16 @@ void chaos_remove_expired_entry(const s32 patchIndex, const char *msg) {
     // Shift all patches following the deactivated patch left one, overwriting the slot with the deactivated patch.
     for (s32 i = patchIndex; i < *gChaosActiveEntryCount; i++) {
         gChaosActiveEntries[i] = gChaosActiveEntries[i+1];
+    }
+
+    // Invoke deactivation function, now that the entry has been fully removed
+    if (patch->deactivationFunc) {
+        patch->deactivationFunc();
+    }
+
+    // Print chaos message, if it exists
+    if (msg) {
+        chaosmsg_print(patchId, msg);
     }
 
     insideDeactivationFunc = FALSE;
