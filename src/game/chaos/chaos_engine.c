@@ -102,7 +102,7 @@ static void chaos_swap_active_entry_indexes(struct ChaosActiveEntry *first, stru
 #define NO_SWAP { \
     continue; \
 }
-static void chaos_sort_active_patches(void) {
+void chaos_sort_active_patches(void) {
     s32 count = *gChaosActiveEntryCount;
     for (s32 i = 0; i < count - 1; i++) {
         for (s32 j = i + 1; j < count; j++) {
@@ -248,15 +248,16 @@ u32 chaos_calculate_patch_duration(const struct ChaosPatch *patch) {
     return duration;
 }
 
+// NOTE: Do not attempt to remove entries inside of deactivation functions, even for separate patches!
 void chaos_remove_expired_entry(const s32 patchIndex, const char *msg) {
+    static s32 insideDeactivationFunc = FALSE;
+
     if (!gChaosActiveEntryCount) {
         return;
     }
 
     const enum ChaosPatchID patchId = gChaosActiveEntries[patchIndex].id;
     const struct ChaosPatch *patch = &gChaosPatches[patchId];
-
-    gSaveFileModified = TRUE;
 
     if (patchIndex >= *gChaosActiveEntryCount || patchIndex < 0) {
         // May as well make these aggressions instead of asserts, since they'll infiniloop in practice anyway if we don't.
@@ -266,9 +267,12 @@ void chaos_remove_expired_entry(const s32 patchIndex, const char *msg) {
         return;
     }
 
-    // Decrease number of active patches and move the last active patch in the array to the index of the removed patch.
-    // This means of moving stuff around implies we cannot make use of sorting order!
-    (*gChaosActiveEntryCount)--;
+    assert_args(insideDeactivationFunc == FALSE, "chaos_remove_expired_entry:\nNot safe to invoke recursively:\n0x%08X", patchIndex);
+    insideDeactivationFunc = TRUE;
+
+    gSaveFileModified = TRUE;
+
+    // Decrease active patch counts for patch.
     assert(activePatchCounts[patchId] > 0, "chaos_remove_expired_entry:\nactivePatchCounts mismatch!");
     if (activePatchCounts[patchId] > 0) {
         activePatchCounts[patchId]--;
@@ -285,8 +289,15 @@ void chaos_remove_expired_entry(const s32 patchIndex, const char *msg) {
         chaosmsg_print(patchId, msg);
     }
 
-    // Sort patch order
-    chaos_sort_active_patches();
+    // Decrease number of active patches.
+    (*gChaosActiveEntryCount)--;
+
+    // Shift all patches following the deactivated patch left one, overwriting the slot with the deactivated patch.
+    for (s32 i = patchIndex; i < *gChaosActiveEntryCount; i++) {
+        gChaosActiveEntries[i] = gChaosActiveEntries[i+1];
+    }
+
+    insideDeactivationFunc = FALSE;
 }
 
 void chaos_add_new_entry(const enum ChaosPatchID patchId) {
@@ -417,6 +428,9 @@ void chaos_add_new_entry(const enum ChaosPatchID patchId) {
         patch->activatedInitFunc();
     }
     assert(patch->deactivationFunc == NULL || patch->durationType != CHAOS_DURATION_ONCE, "chaos_add_new_entry:\nDeactivation func will never run for CHAOS_DURATION_ONCE entries!\nRemove this assert if this becomes desirable.");
+    
+    // NOTE: After invoking the activation callback, it is no longer safe to reference newEntry from this point on, unless we search for it again manually! (This doesn't functionally do anything; it just serves as a future safeguard.)
+    newEntry = NULL;
 
     // Sort patch order
     chaos_sort_active_patches();
@@ -455,8 +469,12 @@ void chaos_decrement_star_timers(enum ChaosStarDecrementType decrementType) {
             chaos_remove_expired_entry(i--, "%s: Expired!");
         }
     }
+    
+    // Sorting is needed because not every single star timer decrements here.
+    chaos_sort_active_patches();
 }
 
+// Note: This sorts patches! Do not use a patch reference here!
 void chaos_decrement_star_or_use_timer_with_id(enum ChaosPatchID patchId) {
     if (!gChaosActiveEntryCount) {
         return;
@@ -493,9 +511,11 @@ void chaos_decrement_star_or_use_timer_with_id(enum ChaosPatchID patchId) {
         chaos_remove_expired_entry(index, "%s: Expired!");
     }
 
+    chaos_sort_active_patches();
     gSaveFileModified = TRUE;
 }
 
+// Note: This sorts patches! Do not use a patch reference here!
 void chaos_decrement_patch_usage(const enum ChaosPatchID patchId) {
     if (!gChaosActiveEntryCount) {
         return;
@@ -547,6 +567,8 @@ void chaos_decrement_patch_usage(const enum ChaosPatchID patchId) {
     if (firstFoundMatch->remainingDuration <= 0) {
         chaos_remove_expired_entry(matchIndex--, NULL);
     }
+    
+    chaos_sort_active_patches();
 }
 
 // Update a complete list of patches that are acceptible for generation

@@ -685,6 +685,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription   = "Lose a random amount of health whenever Mario takes damage, between 0 and the max number of health slices.",
         .longDescription    = "Insta-kill patches are given priority over this patch, but this overrides other health-related patches. This patch ignores damage from water or poison.",
     },
+    [CHAOS_PATCH_MARIO_DIES] = {
+        .durationType       = CHAOS_DURATION_ONCE,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 1,
+        .isStackable        = TRUE,
+        .disableForHardcore = TRUE,
+
+        INCOMPATIBLE(CHAOS_PATCH_MIRACLE_NORMAL, CHAOS_PATCH_MIRACLE_HARDCORE),
+        .conditionalFunc    = chs_cond_mario_dies,
+        .activatedInitFunc  = chs_act_mario_dies,
+
+        .name               = "Mario Dies!",
+        .shortDescription   = "Kill Mario and kick him out of the current stage.",
+    },
 
 // Coin Modifiers
     [CHAOS_PATCH_DOUBLE_COINS] = {

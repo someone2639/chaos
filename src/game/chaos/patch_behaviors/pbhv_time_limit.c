@@ -102,8 +102,15 @@ void chs_act_lower_time_limit(void) {
             gChaosActiveEntries[i].remainingDuration = longestRemainingDuration;
         }
     }
+
+    // NOTE: No need to sort; this will be taken care of later in all possible scenarios anyway.
+    // chaos_sort_active_patches();
 }
 
+// TODO: This behavior will need to be changed completely to work as expected with the likes of Show Me Mercy and (eventually) Sweet Relief.
+// Unfortunately the solution isn't as simple as just reverting time back to the offset, because we would also want the lower patches to disappear completely if the main patch is removed.
+// We also CANNOT safely deactivate other patches within a deactivation function because of multiple recursive stale references in the chaos engine (there is an assertion check in place for this).
+// It should however be safe to both activate and deactivate patches from inside of an activation function.
 void chs_deact_lower_time_limit(void) {
     sTimeLimitOffset = 0;
 }

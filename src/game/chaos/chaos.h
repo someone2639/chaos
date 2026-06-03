@@ -85,6 +85,7 @@ enum ChaosPatchID {
     CHAOS_PATCH_RANDOM_INVINCIBILITY,
     CHAOS_PATCH_A_BUTTON_CHALLENGE,
     CHAOS_PATCH_DAMAGE_LOTTERY,
+    CHAOS_PATCH_MARIO_DIES,
 
 // Coin Modifiers
     CHAOS_PATCH_DOUBLE_COINS,
@@ -380,6 +381,10 @@ extern enum ChaosPatchID gNegativePatchCompare;
 
 // Check whether a particular chaos patch is active. Overall cheaper operation than the function below this one.
 u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId);
+
+// Sorts all active patches to make them display in order.
+// NOTE: This will destroy any existing patch duration / frame timer pointer references!!!
+void chaos_sort_active_patches(void);
 
 // Get patch data for an active patch (if active at all). Return index if a match is found, else return -1.
 s32 chaos_find_first_active_patch(const enum ChaosPatchID patchId, struct ChaosActiveEntry **firstFoundMatch);

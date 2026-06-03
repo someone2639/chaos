@@ -264,6 +264,9 @@ static void gwheel_type_act_positive_extend(void) {
             gChaosActiveEntries[i].remainingDuration += 2;
         }
     }
+
+    // Sort all patches
+    chaos_sort_active_patches();
 }
 
 static void gwheel_type_act_negative_extend(void) {
@@ -274,6 +277,9 @@ static void gwheel_type_act_negative_extend(void) {
             gChaosActiveEntries[i].remainingDuration += 2;
         }
     }
+
+    // Sort all patches
+    chaos_sort_active_patches();
 }
 
 static void gwheel_type_act_rank_1_positive(void) { chs_activate_random_pos_neg_patch_of_severity(1, CHAOS_EFFECT_POSITIVE, 2, CHAOS_DURATION_STARS); }
@@ -482,7 +488,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
     },
     [GWHEEL_OPT_NEG_EXTEND] = {
         .id              = GWHEEL_OPT_NEG_EXTEND,
-        .weight          = 1.0f,
+        .weight          = 0.75f,
         .textureDlBig    = gambling_wheel_dl_icon_timer_big,
         .textureDlSmall  = gambling_wheel_dl_icon_timer_small,
 
@@ -493,7 +499,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
     },
     [GWHEEL_OPT_NEG_RANK_1] = {
         .id              = GWHEEL_OPT_NEG_RANK_1,
-        .weight          = 0.75f,
+        .weight          = 0.85f,
         .textureDlBig    = gambling_wheel_dl_icon_rank_1_big,
         .textureDlSmall  = gambling_wheel_dl_icon_rank_1_small,
 
@@ -504,7 +510,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
     },
     [GWHEEL_OPT_NEG_RANK_2] = {
         .id              = GWHEEL_OPT_NEG_RANK_2,
-        .weight          = 1.25f,
+        .weight          = 1.15f,
         .textureDlBig    = gambling_wheel_dl_icon_rank_2_big,
         .textureDlSmall  = gambling_wheel_dl_icon_rank_2_small,
 

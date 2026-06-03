@@ -196,3 +196,15 @@ void chs_update_random_invincibility(void) {
         this->frameTimer = RAND(INVINCIBILITY_TIME_MAX); //Get a random offset to restart the timer at
     }
 }
+
+/*
+    Mario Dies!
+*/
+
+u8 chs_cond_mario_dies(void) {
+    return ((gCurrCourseNum != COURSE_NONE) && (gChaosGameMode != CHAOS_GAMEMODE_CHALLENGE || gMarioState->numLives >= chs_life_gambler_get_lives_lost()));
+}
+
+void chs_act_mario_dies(void) {
+    gMarioState->health = 0;
+}
