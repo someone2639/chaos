@@ -1729,7 +1729,10 @@ u32 update_and_return_cap_flags(struct MarioState *m) {
         if ((m->capTimer <= 60)
             || ((action != ACT_READING_AUTOMATIC_DIALOG) && (action != ACT_READING_NPC_DIALOG)
                 && (action != ACT_READING_SIGN) && (action != ACT_IN_CANNON))) {
-            m->capTimer -= 1;
+            // Only uncap caps if flickering hasn't started yet
+            if (m->capTimer < 64 || !chaos_check_if_patch_active(CHAOS_PATCH_UNCAPPED_CAPS)) {
+                m->capTimer -= 1;
+            }
         }
 
         if (m->capTimer == 0) {

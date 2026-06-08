@@ -42,3 +42,8 @@ u8 chs_cond_disable_caps(void) {
     s32 flags = save_file_get_flags();
     return (flags & (SAVE_FLAG_HAVE_WING_CAP | SAVE_FLAG_HAVE_METAL_CAP | SAVE_FLAG_HAVE_VANISH_CAP));
 }
+
+u8 chs_cond_uncapped_caps(void) {
+    s32 flags = save_file_get_flags();
+    return (flags & (SAVE_FLAG_HAVE_WING_CAP | SAVE_FLAG_HAVE_METAL_CAP | SAVE_FLAG_HAVE_VANISH_CAP));
+}

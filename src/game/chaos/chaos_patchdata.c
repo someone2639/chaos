@@ -1880,6 +1880,17 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Boxing Day",
         .shortDescription   = "Temporarily disables all cap blocks.",
     },
+    [CHAOS_PATCH_UNCAPPED_CAPS] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 2,
+        .duration           = 8,
+
+        .conditionalFunc    = chs_cond_uncapped_caps,
+
+        .name               = "Uncapped Caps",
+        .shortDescription   = "Cap effects will never time out (including for Metal Cap).",
+    },
 
 // Input Modifiers
     [CHAOS_PATCH_BUTTON_BROKEN_A] = {
@@ -2467,13 +2478,13 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc    = chs_update_tetris,
 
         .name               = "Tetris Effect",
-        .shortDescription   = "Control a simultaneous game of Tetris. If you lose, Mario dies! Press Z to see controls.",
-        .longDescription    = "Hold R to control Tetris and lock Mario's inputs.\n"
-                              "D-Pad/C Left/Right -- Move Piece\n"
-                              "D-Pad/C Up -- Hard Drop\n"
-                              "D-Pad/C Down -- Soft Drop\n"
-                              "A -- Rotate Left\n"
-                              "B -- Rotate Right\n"
-                              "Z/L -- Hold"
+        .shortDescription   = "Control a simultaneous game of Tetris. If you lose, Mario dies. See details screen controls!",
+        .longDescription    = "Hold @9F9FFF--R@-------- to control Tetris and lock Mario's inputs.\n"
+                              "Move Piece\t@7F7F7F-- -- @9F9FFF--D-Pad/C Left/Right@--------\n"
+                              "Hard Drop\t@7F7F7F-- -- @9F9FFF--D-Pad/C Up@--------\n"
+                              "Soft Drop\t\t@7F7F7F-- -- @9F9FFF--D-Pad/C Down@--------\n"
+                              "Rotate Left\t@7F7F7F-- -- @9F9FFF--A@--------\n"
+                              "Rotate Right\t@7F7F7F-- -- @9F9FFF--B@--------\n"
+                              "Hold Piece\t@7F7F7F-- -- @9F9FFF--Z/L@--------"
     },
 };

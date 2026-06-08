@@ -717,7 +717,7 @@ void tetris_state_default(void) {
         } else if ((autoRepeat & (L_JPAD | L_CBUTTONS)) || (pressed & (L_JPAD | L_CBUTTONS))) {
             // Move left
             tetris_move_piece(piece, -1, 0);
-        } else if ((autoRepeat & (R_JPAD | R_CBUTTONS)) || (pressed & (R_JPAD | L_CBUTTONS))) {
+        } else if ((autoRepeat & (R_JPAD | R_CBUTTONS)) || (pressed & (R_JPAD | R_CBUTTONS))) {
             // Move right
             tetris_move_piece(piece, 1, 0);
         } else if (pressed & (U_JPAD | U_CBUTTONS)) {
