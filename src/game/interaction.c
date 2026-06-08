@@ -1100,6 +1100,11 @@ u32 get_door_save_file_flag(struct Object *door) {
 
 u32 interact_door(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
     s16 requiredNumStars = (o->oBehParams >> 24);
+
+    if (requiredNumStars != BITS_STAR_REQUIREMENT && chaos_check_if_patch_active(CHAOS_PATCH_UNLOCK_STAR_DOORS)) {
+        requiredNumStars = 0;
+    }
+
 #ifndef UNLOCK_ALL
     s16 numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
 #endif

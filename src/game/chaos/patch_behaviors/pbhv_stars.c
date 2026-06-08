@@ -568,6 +568,11 @@ u8 chs_cond_get_vanish_cap(void) {
     return (!(save_file_get_flags() & SAVE_FLAG_HAVE_VANISH_CAP));
 }
 
+u8 chs_cond_unlock_star_doors(void) {
+    // Last non-70 star door requires 50 stars.
+    return (save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) < 50);
+}
+
 u8 chs_cond_star_cloning_device(void) {
     struct ChaosActiveEntry *match;
     if (chaos_find_first_active_patch(CHAOS_PATCH_STAR_CLONING_DEVICE, &match) >= 0) {

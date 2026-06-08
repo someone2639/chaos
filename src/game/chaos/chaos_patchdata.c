@@ -356,6 +356,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "1812 Overture",
         .shortDescription   = "Unlock all cannons in the game!",
     },
+    [CHAOS_PATCH_UNLOCK_STAR_DOORS] = {
+        .durationType       = CHAOS_DURATION_INFINITE,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 3,
+
+        .conditionalFunc    = chs_cond_unlock_star_doors,
+
+        .name               = "Just Some Cool Looking Doors",
+        .shortDescription   = "Mario may enter all star doors (but still may not climb the infinite staircase).",
+    },
     [CHAOS_PATCH_STAR_CLONING_DEVICE] = {
         .durationType       = CHAOS_DURATION_USE_COUNT,
         .effectType         = CHAOS_EFFECT_POSITIVE,

@@ -52,6 +52,7 @@ u8 chs_cond_get_metal_cap(void);
 void chs_act_get_vanish_cap(void);
 void chs_deact_get_vanish_cap(void);
 u8 chs_cond_get_vanish_cap(void);
+u8 chs_cond_unlock_star_doors(void);
 u8 chs_cond_star_cloning_device(void);
 s32 chs_get_yellow_star_in_course(s32 courseNum, s32 collectedStarId);
 u8 chs_cond_coin_flip(void);
