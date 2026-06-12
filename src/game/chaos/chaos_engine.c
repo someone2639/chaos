@@ -890,7 +890,7 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(s32 forcedSeverityOverrid
 
     if (forcedEventOverride != CHAOS_SPECIAL_DO_NOT_FORCE) {
         specialEvent = forcedEventOverride;
-        if (forcedEventOverride < 0 || forcedEventOverride >= CHAOS_SPECIAL_COUNT) {
+        if (forcedEventOverride < CHAOS_SPECIAL_NONE || forcedEventOverride >= CHAOS_SPECIAL_COUNT) {
             assert_args(FALSE, "chaos_roll_for_new_patches:\nBad forced event override: %d", forcedEventOverride);
             specialEvent = CHAOS_SPECIAL_NONE;
         }
@@ -996,11 +996,18 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(s32 forcedSeverityOverrid
                 break;
         }
 
-        if (gChaosDifficulty == CHAOS_DIFFICULTY_EASY) {
-            neg--;
-        } else if (gChaosDifficulty == CHAOS_DIFFICULTY_HARD) {
-            pos--;
+        // Do not set difficulty parameters if override is positive (as long as it's valid...)
+        // TODO: This should just be its own variable, as we might need to use overrides for the re-roll patch (which does not want this behavior).
+        if (forcedSeverityOverride < 0 || forcedSeverity < 0) {
+            if (gChaosDifficulty == CHAOS_DIFFICULTY_EASY) {
+                neg--;
+            } else if (gChaosDifficulty == CHAOS_DIFFICULTY_HARD) {
+                pos--;
+            } else if (gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE) {
+                pos = 0;
+            }
         }
+
         if (pos > CHAOS_PATCH_SEVERITY_MAX) {
             pos = CHAOS_PATCH_SEVERITY_MAX;
         }
@@ -1012,10 +1019,6 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(s32 forcedSeverityOverrid
         }
         if (neg < 0) {
             neg = 0;
-        }
-
-        if (gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE) {
-            pos = 0;
         }
 
         if (severityCounts[pos][CHAOS_EFFECT_POSITIVE] > 0 && severityCounts[neg][CHAOS_EFFECT_NEGATIVE] > 0) {
@@ -1100,14 +1103,14 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(s32 forcedSeverityOverrid
         generatedPatches[index].specialEvent = specialEvent;
         if (specialEvent == CHAOS_SPECIAL_PLUS1_POSITIVE &&
                     gChaosDifficulty != CHAOS_DIFFICULTY_HARD &&
-                    generatedPatches[index].severityLevel == 3
+                    generatedPatches[index].severityLevel == CHAOS_PATCH_SEVERITY_MAX
         ) {
             generatedPatches[index].specialEvent = CHAOS_SPECIAL_NONE;
         }
 
         if (specialEvent == CHAOS_SPECIAL_PLUS1_NEGATIVE &&
                     gChaosDifficulty != CHAOS_DIFFICULTY_EASY &&
-                    generatedPatches[index].severityLevel == 3
+                    generatedPatches[index].severityLevel == CHAOS_PATCH_SEVERITY_MAX
         ) {
             generatedPatches[index].specialEvent = CHAOS_SPECIAL_NONE;
         }

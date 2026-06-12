@@ -1,0 +1,112 @@
+{
+    "date": "1996-03-19",
+    "sample_bank": "instruments",
+    "envelopes": {
+        "envelope0": [
+            [1, 32700],
+            [1, 32700],
+            [32700, 29430],
+            "hang"
+        ],
+        "envelope1": [
+            [2, 32700],
+            [1, 32700],
+            [32700, 29430],
+            "hang"
+        ],
+        "envelope2": [
+            [2, 32700],
+            [1, 32700],
+            [32700, 29430],
+            "hang"
+        ],
+        "envelope3": [
+            [3, 32700],
+            [1, 32700],
+            [32700, 29430],
+            "hang"
+        ],
+        "envelope4": [
+            [2, 32700],
+            [1, 32700],
+            [32700, 29430],
+            "hang"
+        ],
+        "envelope5": [
+            [1, 32700],
+            [1, 32700],
+            [32700, 29430],
+            "hang"
+        ],
+        "envelope6": [
+            [2, 32700],
+            [1, 32700],
+            [32700, 29430],
+            "hang"
+        ],
+        "envelope7": [
+            [1, 32700],
+            [1, 32700],
+            [32700, 29430],
+            "hang"
+        ]
+    },
+    "instruments": {
+        "SAW_WAVE": {
+            "release_rate": 208,
+            "envelope": "envelope0",
+            "sound": "19_brass"
+        },
+        "inst1": {
+            "release_rate": 75,
+            "envelope": "envelope1",
+            "sound": "3B_banjo_2"
+        },
+        "inst2": {
+            "release_rate": 110,
+            "envelope": "envelope2",
+            "sound": "21_sine_bass"
+        },
+        "inst3": {
+            "release_rate": 45,
+            "normal_range_lo": 27,
+            "normal_range_hi": 46,
+            "envelope": "envelope3",
+            "sound_lo": "23_strings_1",
+            "sound": "24_strings_2",
+            "sound_hi": "25_strings_3"
+        },
+        "inst4": {
+            "release_rate": 30,
+            "envelope": "envelope4",
+            "sound": "22_boys_choir"
+        },
+        "inst5": {
+            "release_rate": 110,
+            "envelope": "envelope5",
+            "sound": "19_brass"
+        },
+        "inst6": {
+            "release_rate": 25,
+            "normal_range_lo": 24,
+            "envelope": "envelope6",
+            "sound_lo": "0E_hihat_closed",
+            "sound": "0F_hihat_open"
+        },
+        "percussion": [
+            {"release_rate": 30, "pan": 62, "envelope": "envelope7", "sound": {"sample": "38_electric_kick_drum", "tuning": 0.516214}},
+            {"release_rate": 30, "pan": 66, "envelope": "envelope7", "sound": {"sample": "13_snare_drum_2", "tuning": 1.189207}},
+            {"release_rate": 30, "pan": 70, "envelope": "envelope7", "sound": {"sample": "0B", "tuning": 1.6388757}},
+            {"release_rate": 30, "pan": 58, "envelope": "envelope7", "sound": {"sample": "0C_conga_stick", "tuning": 1.189207}}
+        ]
+	},
+    "instrument_list": [
+        "SAW_WAVE",
+        "inst1",
+        "inst2",
+        "inst3",
+        "inst4",
+        "inst5",
+        "inst6"
+    ]
+}

@@ -1,0 +1,91 @@
+{
+    "date": "1996-03-19",
+    "sample_bank": "instruments",
+    "envelopes": {
+        "envelope0": [
+            [2, 32700],
+            "hang"
+        ],
+        "envelope1": [
+            [1, 32700],
+            "hang"
+        ],
+        "envelope2": [
+            [2, 32700],
+            "hang"
+        ],
+        "envelope3": [
+            [2, 32700],
+            "hang"
+        ],
+        "envelope4": [
+            [2, 32700],
+            "hang"
+        ],
+        "envelope5": [
+            [1, 32700],
+            [195, 0],
+            "hang"
+        ],
+        "envelope6": [
+            [2, 32700],
+            "hang"
+        ],
+        "envelope7": [
+            [1, 32700],
+            "hang"
+        ]
+    },
+    "instruments": {
+        "inst0": {
+            "release_rate": 70,
+            "envelope": "envelope0",
+            "sound": "35_gospel_organ"
+        },
+        "inst1": {
+            "release_rate": 45,
+            "envelope": "envelope1",
+            "sound": "43_harmonica"
+        },
+        "inst2": {
+            "release_rate": 85,
+            "envelope": "envelope2",
+            "sound": "36_sawtooth_synth"
+        },
+        "inst3": {
+            "release_rate": 80,
+            "envelope": "envelope3",
+            "sound": "19_brass"
+        },
+        "inst4": {
+            "release_rate": 95,
+            "envelope": "envelope4",
+            "sound": "28_sitar_1"
+        },
+        "inst5": {
+            "release_rate": 40,
+            "envelope": "envelope5",
+            "sound": "11_splash_cymbal"
+        },
+        "inst6": {
+            "release_rate": 45,
+            "normal_range_lo": 24,
+            "envelope": "envelope6",
+            "sound_lo": "0E_hihat_closed",
+            "sound": "0F_hihat_open"
+        },
+        "percussion": [
+            {"release_rate":  45, "pan":  63, "envelope": "envelope7", "sound": {"sample": "38_electric_kick_drum", "tuning": 0.5162136 }},
+            {"release_rate":  45, "pan":  70, "envelope": "envelope7", "sound": {"sample": "08",                    "tuning": 0.8919052 }}
+        ]
+    },
+    "instrument_list": [
+		"inst0",
+		"inst1",
+		"inst2",
+		"inst3",
+		"inst4",
+		"inst5",
+		"inst6"
+	]
+}

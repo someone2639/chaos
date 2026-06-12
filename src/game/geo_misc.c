@@ -393,7 +393,7 @@ Gfx *geo_chaos_cake_stats(s32 callContext, UNUSED struct GraphNode *node, UNUSED
                 char totalPatchesText[8];
                 s32 totalPatchesCount = save_file_get_total_patches();
                 sprintf(totalPatchesText, "%d", totalPatchesCount);
-                fasttext_draw_texrect(&gDisplayListHead, 16, 160, "Total Patches", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
+                fasttext_draw_texrect(&gDisplayListHead, 16, 160, "Total Patches:", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
                 fasttext_draw_texrect(&gDisplayListHead, 150, 160, totalPatchesText, FT_FLAG_ALIGN_RIGHT, 0x9F, 0x9F, 0x9F, 0xFF);
             }
             if(sEndCakeTimer > 120) {

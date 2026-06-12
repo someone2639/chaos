@@ -1238,7 +1238,7 @@ static void render_wheel_intro_text(Gfx **dl) {
 
     const u32 idleDuration = 10;
     const u32 animDuration = 22;
-    const u32 freezeDuration = 24;
+    const u32 freezeDuration = 36;
     const u32 totalDuration = (animDuration * 2) + freezeDuration;
 
     const u32 precalculatedWidth = 82;

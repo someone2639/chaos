@@ -39,5 +39,13 @@
     "24_custom_rse_game_corner": ["27_custom_rse_game_corner"],
     "25_custom_sms_casino_delfino": ["28_custom_sms_casino_delfino"],
     "26_custom_yi_bonus_minigame": ["29_custom_yi_bonus_minigame"],
-    "27_custom_hgss_game_corner": ["2A_custom_hgss_game_corner"]
+    "27_custom_hgss_game_corner": ["2A_custom_hgss_game_corner"],
+    "28_custom_sm3dw_world_bowser": ["2B_custom_sm3dw_world_bowser"],
+    "29_custom_dppt_game_corner": ["2C_custom_dppt_game_corner"],
+    "2A_custom_mkds_waluigi_pinball": ["2D_custom_mkds_waluigi_pinball"],
+    "2B_custom_mp3_game_guy_minigame": ["2E_custom_mp3_game_guy_minigame"],
+    "2C_custom_oot_shooting_gallery": ["2F_custom_oot_shooting_gallery"],
+    "2D_custom_sa_casino_paradise_1": ["30_custom_sa_casino_paradise_1"],
+    "2E_custom_smb2_bonus_minigame": ["31_custom_smb2_bonus_minigame"],
+    "2F_custom_smg2_warp_pipe_room": ["32_custom_smg2_warp_pipe_room"]
 }

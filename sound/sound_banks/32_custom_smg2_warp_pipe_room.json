@@ -1,0 +1,64 @@
+{
+    "date": "1996-03-19",
+    "sample_bank": "instruments",
+    "envelopes": {
+        "envelope0": [
+            [2, 32700],
+            "hang"
+        ],
+        "envelope1": [
+            [2, 32700],
+            [125, 16000],
+            [250, 0],
+            "hang"
+        ],
+        "envelope2": [
+            [2, 32700],
+            "hang"
+        ],
+        "envelope3": [
+            [2, 32700],
+            "hang"
+        ],
+        "envelope4": [
+            [2, 32700],
+            "hang"
+        ]
+    },
+    "instruments": {
+        "inst0": {
+            "release_rate": 45,
+            "envelope": "envelope0",
+            "sound": "26_crystal_rhodes"
+        },
+        "inst1": {
+            "release_rate": 95,
+            "envelope": "envelope1",
+            "sound": "42_vibraphone"
+        },
+        "inst2": {
+            "release_rate": 60,
+            "envelope": "envelope2",
+            "sound": "36_sawtooth_synth"
+        },
+        "inst3": {
+            "release_rate": 10,
+            "envelope": "envelope3",
+            "sound": "10_cymbal_bell"
+        },
+        "inst4": {
+            "release_rate": 30,
+            "normal_range_lo": 24,
+            "envelope": "envelope4",
+            "sound_lo": "0E_hihat_closed",
+            "sound": "0F_hihat_open"
+        }
+    },
+    "instrument_list": [
+		"inst0",
+		"inst1",
+		"inst2",
+		"inst3",
+		"inst4"
+	]
+}

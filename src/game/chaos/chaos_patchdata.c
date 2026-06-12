@@ -1777,13 +1777,12 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Let's Go Gambling!",
         .shortDescription   = "Test your luck! Spin a roulette wheel for an extra boost (or nerf) after every time you select a new patch!",
-        .longDescription    = "Each wheel spin will consist of the following\n"
-                               "  - A Few Duds\n"
-                               "  - One Very Negative Outcome\n"
-                               "  - Other Slightly Negative Outcomes\n"
-                               "  - Many Positive Outcomes\n"
-                               "  - One Incredible Jackpot!\n\n"
-                               "The time has come to make irresponsible life choices and gamble your life away! HELL YEAH, WOOOOOOOOO!!!"
+        .longDescription    = "Each wheel spin may consist of the following...\n"
+                               "  - @AFAFAF--A Few Duds@--------\n"
+                               "  - @671F57--One Very Negative Outcome@--------\n"
+                               "  - @CF3F3F--Other Slightly Negative Outcomes@--------\n"
+                               "  - @3FBF3F--Many Positive Outcomes@--------\n"
+                               "  - @FFFFAF--One Incredible Jackpot!!!@--------\n\n"
     },
 
 // Speed Modifiers

@@ -1,0 +1,104 @@
+{
+    "date": "1996-03-19",
+    "sample_bank": "instruments",
+    "envelopes": {
+        "envelope0": [
+            [3, 32700],
+            [348, 0],
+            "hang"
+        ],
+        "envelope1": [
+            [3, 32700],
+            "hang"
+        ],
+        "envelope2": [
+            [2, 32700],
+            "hang"
+        ],
+        "envelope3": [
+            [1, 32700],
+            "hang"
+        ],
+        "envelope4": [
+            [2, 32700],
+            "hang"
+        ],
+        "envelope5": [
+            [1, 32700],
+            "hang"
+        ],
+        "envelope6": [
+            [2, 32700],
+            "hang"
+        ],
+        "envelope7": [
+            [1, 32700],
+            "hang"
+        ],
+        "envelope8": [
+            [1, 32700],
+            [195, 0],
+            "hang"
+        ]
+    },
+    "instruments": {
+        "inst0": {
+            "release_rate": 55,
+            "envelope": "envelope0",
+            "sound": "26_crystal_rhodes"
+        },
+        "inst1": {
+            "release_rate": 25,
+            "envelope": "envelope1",
+            "sound": "3A_music_box"
+        },
+        "inst2": {
+            "release_rate": 50,
+            "envelope": "envelope2",
+            "sound": "36_sawtooth_synth"
+        },
+        "inst3": {
+            "release_rate": 58,
+            "normal_range_lo": 27,
+            "normal_range_hi": 46,
+            "envelope": "envelope3",
+            "sound_lo": "23_strings_1",
+            "sound": "24_strings_2",
+            "sound_hi": "25_strings_3"
+        },
+        "inst4": {
+            "release_rate": 60,
+            "envelope": "envelope4",
+            "sound": "19_brass"
+        },
+        "inst5": {
+            "release_rate": 40,
+            "envelope": "envelope5",
+            "sound": "10_cymbal_bell"
+        },
+        "inst6": {
+            "release_rate": 40,
+            "normal_range_lo": 24,
+            "envelope": "envelope6",
+            "sound_lo": "0E_hihat_closed",
+            "sound": "0F_hihat_open"
+        },
+        "percussion": [
+            {"release_rate":  45, "pan":  64, "envelope": "envelope7", "sound": {"sample": "38_electric_kick_drum", "tuning": 0.5162136 }},
+            {"release_rate":  45, "pan":  66, "envelope": "envelope7", "sound": {"sample": "08",                    "tuning": 0.8919052 }},
+            {"release_rate":  45, "pan":  27, "envelope": "envelope7", "sound": {"sample": "09",                    "tuning": 0.66742   }},
+            {"release_rate":  45, "pan":  45, "envelope": "envelope7", "sound": {"sample": "09",                    "tuning": 0.793701  }},
+            {"release_rate":  45, "pan":  53, "envelope": "envelope7", "sound": {"sample": "09",                    "tuning": 1.0       }},
+            {"release_rate":  35, "pan":  98, "envelope": "envelope8", "sound": {"sample": "11_splash_cymbal",      "tuning": 0.8908987 }}
+        ]
+    },
+    "instrument_list": [
+		"inst0",
+		"inst1",
+		"inst2",
+		"inst3",
+		"inst4",
+		"inst5",
+		"inst6"
+	]
+}

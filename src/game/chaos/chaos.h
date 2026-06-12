@@ -426,7 +426,7 @@ void chaos_decrement_patch_usage(const enum ChaosPatchID patchId);
 //     forcedSeverityOverride:
 //         -2:                             Determine internally based on patches/history [DEFAULT]
 //         -1:                             Explicitly do not force severity on any of the generated patches
-//         [0 - CHAOS_PATCH_SEVERITY_MAX]: Force to that severity for all generated patches
+//         [0 - CHAOS_PATCH_SEVERITY_MAX]: Force to that severity for all generated patches (this also override difficulty modifiers!)
 //     forcedEventOverride:
 //         CHAOS_SPECIAL_DO_NOT_FORCE: Determine internally based on patches/history [DEFAULT]
 //         CHAOS_SPECIAL_NONE:         Explicitly do not activate an event for patch generation
