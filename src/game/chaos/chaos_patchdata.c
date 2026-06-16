@@ -702,7 +702,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .isStackable        = TRUE,
         .disableForHardcore = TRUE,
 
-        INCOMPATIBLE(CHAOS_PATCH_MIRACLE_NORMAL, CHAOS_PATCH_MIRACLE_HARDCORE),
+        INCOMPATIBLE(CHAOS_PATCH_MIRACLE_NORMAL, CHAOS_PATCH_MIRACLE_HARDCORE, CHAOS_PATCH_INSTANT_GAME_OVER),
         .conditionalFunc    = chs_cond_mario_dies,
         .activatedInitFunc  = chs_act_mario_dies,
 
@@ -1301,8 +1301,39 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 3,
         .durationImpossible = 4,
 
+        INCOMPATIBLE(CHAOS_PATCH_SIDEWAYS_CAMERA),
+
         .name               = "Australia Mode",
         .shortDescription   = "Flips the camera upside-down so you can experience what it's like to be from the land down under.",
+    },
+    [CHAOS_PATCH_SIDEWAYS_CAMERA] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 3,
+        .duration           = 4,
+        .durationHard       = 5,
+        .durationImpossible = 6,
+
+        INCOMPATIBLE(CHAOS_PATCH_UPSIDE_DOWN_CAMERA),
+        .activatedInitFunc  = chs_act_sideways_camera,
+
+        .name               = "Sideways Mode",
+        .shortDescription   = "Ever wanted to experience wall running in SM64? Now you can, with this one simple trick!",
+    },
+    [CHAOS_PATCH_ROCKING_CAMERA] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 1,
+        .duration           = 3,
+        .durationHard       = 4,
+        .durationImpossible = 5,
+
+        .conditionalFunc    = chs_cond_rocking_camera,
+        .activatedInitFunc  = chs_act_rocking_camera,
+        .frameUpdateFunc    = chs_update_rocking_camera,
+
+        .name               = "Cruise Simulator",
+        .shortDescription   = "I'm on a boat! The waves today are pretty intense, hopefully I won't get sea sick...",
     },
     [CHAOS_PATCH_DECREASED_FOV] = {
         .durationType       = CHAOS_DURATION_STARS,

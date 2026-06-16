@@ -492,6 +492,8 @@ Vec3f sUnusedModeBasePosition_4 = { 646.0f, 143.0f, -1513.0f };
 Vec3f sUnusedModeBasePosition_5 = { 646.0f, 143.0f, -1513.0f };
 
 enum ChsForced8DirFlags gChsForced8DirCam = FORCED_8DIR_FLAGS_NONE;
+u8 gChsSidewaysOrientation = 0;
+s16 gChsCurrentRock = 0;
 
 s32 update_radial_camera(struct Camera *c, Vec3f, Vec3f);
 s32 update_outward_radial_camera(struct Camera *c, Vec3f, Vec3f);
@@ -3275,10 +3277,19 @@ void update_lakitu(struct Camera *c) {
         vec3f_get_dist_and_angle(gLakituState.pos, gLakituState.focus, &gLakituState.focusDistance,
                                  &gLakituState.oldPitch, &gLakituState.oldYaw);
 
-        if(chaos_check_if_patch_active(CHAOS_PATCH_UPSIDE_DOWN_CAMERA)) {
-            gLakituState.roll = 0x7FFF;
-        } else {
-            gLakituState.roll = 0;
+        gLakituState.roll = 0;
+        if (chaos_check_if_patch_active(CHAOS_PATCH_UPSIDE_DOWN_CAMERA)) {
+            gLakituState.roll += 0x8000;
+        }
+        if (chaos_check_if_patch_active(CHAOS_PATCH_SIDEWAYS_CAMERA)) {
+            if (gChsSidewaysOrientation == 1) {
+                gLakituState.roll += 0x4000;
+            } else {
+                gLakituState.roll -= 0x4000;
+            }
+        }
+        if (chaos_check_if_patch_active(CHAOS_PATCH_ROCKING_CAMERA) && !gConfig.disableHarshVisuals) {
+            gLakituState.roll += gChsCurrentRock;
         }
 
         // Apply camera shakes

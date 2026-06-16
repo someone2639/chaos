@@ -148,6 +148,10 @@ u8 chs_cond_no_skybox(void);
 u8 chs_cond_dizzy_objects(void);
 u8 chs_cond_camera_lag(void);
 u8 chs_cond_darkness(void);
+void chs_act_sideways_camera(void);
+u8 chs_cond_rocking_camera(void);
+void chs_act_rocking_camera(void);
+void chs_update_rocking_camera(void);
 
 // Time Limit
 void chs_level_init_time_limit(void);

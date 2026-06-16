@@ -668,6 +668,8 @@ extern struct Object *gCutsceneFocus;
 extern struct Object *gSecondCameraFocus;
 extern u8 gRecentCutscene;
 extern enum ChsForced8DirFlags gChsForced8DirCam;
+extern u8 gChsSidewaysOrientation;
+extern s16 gChsCurrentRock;
 
 // DECOMP_DO: sort all of this extremely messy shit out after the split
 
