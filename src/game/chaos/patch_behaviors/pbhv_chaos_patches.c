@@ -49,7 +49,17 @@ u8 chs_cond_remove_negative_patch(void) {
     return FALSE;
 }
 
-enum ChaosPatchID chs_activate_random_pos_neg_patch_of_severity(s32 patchSeverity, enum ChaosPatchEffectType effectType, u32 maxForcedDuration, enum ChaosPatchDurationType durationType) {
+/**
+ * @brief Randomly generate and activate a random patch based on the provided criteria.
+ * 
+ * @param patchSeverity Should the patch be forced to any particular severity? (See chaos_roll_for_new_patches() description for more info.)
+ * @param effectType Should the returned patch be positive or negative?
+ * @param skipSeverityModifier Whether non-Normal difficulties should skip applying severity modifier when generating patches (e.g. if Hard mode and severity 2 patch is generated, should positive patch not become a severity 1?)
+ * @param maxForcedDuration Maximum number of stars the patch should last (e.g. if set to 2, something that normally lasts 1 star will still last 1 star, but something that normally lasts 4 stars will only last 2 stars.)
+ * @param durationType Type of patch to generate (e.g. star duration, infinite, use count, etc.)
+ * @return Generated patch ID
+ */
+enum ChaosPatchID chs_activate_random_pos_neg_patch_of_severity(s32 patchSeverity, enum ChaosPatchEffectType effectType, u8 skipSeverityModifier, u32 maxForcedDuration, enum ChaosPatchDurationType durationType) {
     // Ideally this doesn't recurse at all, but just in case...
     s32 lastRandomBuff = inRandomBuffActivationFunc;
     inRandomBuffActivationFunc = TRUE;
@@ -57,6 +67,10 @@ enum ChaosPatchID chs_activate_random_pos_neg_patch_of_severity(s32 patchSeverit
     // Same here...
     enum ChaosPatchDurationType lastDurType = gChaosForcedDurationType;
     gChaosForcedDurationType = durationType;
+
+    // And here...
+    u8 lastSkipSeverityModifier = gChaosSkipSeverityDifficultyModifier;
+    gChaosSkipSeverityDifficultyModifier = skipSeverityModifier;
 
     // And here...
     u32 lastDuration = gChaosForcedDurationMaximum;
@@ -81,6 +95,7 @@ enum ChaosPatchID chs_activate_random_pos_neg_patch_of_severity(s32 patchSeverit
     chaosmsg_print(newPatch, "New patch activated: %s");
 
     gChaosForcedDurationMaximum = lastDuration;
+    gChaosSkipSeverityDifficultyModifier = lastSkipSeverityModifier;
     gChaosForcedDurationType = lastDurType;
     inRandomBuffActivationFunc = lastRandomBuff;
 
@@ -97,7 +112,7 @@ void chs_act_add_random_buff(void) {
     s32 patchSeverity = (random_u16() % CHAOS_PATCH_SEVERITY_MAX) + 1;
 
     // Generate new patches, with new rank override and explicitly without any special event
-    chs_activate_random_pos_neg_patch_of_severity(patchSeverity, CHAOS_EFFECT_POSITIVE, 0, CHAOS_DURATION_DO_NOT_FORCE);
+    chs_activate_random_pos_neg_patch_of_severity(patchSeverity, CHAOS_EFFECT_POSITIVE, TRUE, 0, CHAOS_DURATION_DO_NOT_FORCE);
 }
 
 void chs_act_remove_negative_patch(void) {

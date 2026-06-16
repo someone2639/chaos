@@ -31,6 +31,7 @@ u8 gChaosLevelWarped = FALSE;
 u8 gChaosBlueStarLastCollected = FALSE;
 u8 gChaosImmediateActDeact = FALSE;
 u8 gChaosCancelOutLostDuration = FALSE;
+u8 gChaosSkipSeverityDifficultyModifier = FALSE;
 s32 gChaosLastForcedSeverity = -2;
 enum ChaosPatchSpecialEvent gChaosLastEventType = CHAOS_SPECIAL_NONE;
 
@@ -245,7 +246,12 @@ u32 chaos_calculate_patch_duration(const struct ChaosPatch *patch) {
         duration++;
     }
 
-    return duration;
+    // (duration == __UINT8_MAX__) not currently used for anything, but just in case...
+    if (duration > (__UINT8_MAX__ - 1)) {
+        duration = (__UINT8_MAX__ - 1);
+    }
+
+    return (u32) duration;
 }
 
 // NOTE: Do not attempt to remove entries inside of deactivation functions, even for separate patches!
@@ -996,9 +1002,7 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(s32 forcedSeverityOverrid
                 break;
         }
 
-        // Do not set difficulty parameters if override is positive (as long as it's valid...)
-        // TODO: This should just be its own variable, as we might need to use overrides for the re-roll patch (which does not want this behavior).
-        if (forcedSeverityOverride < 0 || forcedSeverity < 0) {
+        if (!gChaosSkipSeverityDifficultyModifier) {
             if (gChaosDifficulty == CHAOS_DIFFICULTY_EASY) {
                 neg--;
             } else if (gChaosDifficulty == CHAOS_DIFFICULTY_HARD) {

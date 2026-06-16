@@ -1768,7 +1768,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 2,
-        .affectsPatchSelect = TRUE,
         .duration           = 8,
 
         .hasMenuEvent       = TRUE,

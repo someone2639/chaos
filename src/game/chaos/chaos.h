@@ -373,6 +373,7 @@ extern u8 gChaosLevelWarped;
 extern u8 gChaosBlueStarLastCollected;
 extern u8 gChaosImmediateActDeact;
 extern u8 gChaosCancelOutLostDuration;
+extern u8 gChaosSkipSeverityDifficultyModifier;
 extern s32 gChaosLastForcedSeverity;
 extern enum ChaosPatchSpecialEvent gChaosLastEventType;
 extern enum ChaosDifficulty gChaosDifficulty;
