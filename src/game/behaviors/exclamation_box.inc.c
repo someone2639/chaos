@@ -150,6 +150,9 @@ void exclamation_box_act_4(void) {
     if (o->oBehParams2ndByte < 3) {
         o->oAction = 5;
         cur_obj_hide();
+    } else if (o->oBehParams2ndByte == 3) {
+        o->oAction = 6;
+        cur_obj_hide();
     } else {
         obj_mark_for_deletion(o);
     }
@@ -161,6 +164,13 @@ void exclamation_box_act_5(void) {
     }
 }
 
+void exclamation_box_act_6(void) {
+    // NOTE: New action needed to avoid parentObj stale reference with shell
+    if (o->oTimer > 300 && chaos_check_if_patch_active(CHAOS_PATCH_RESPAWNABLE_SHELLS)) {
+        o->oAction = 2;
+    }
+}
+
 void (*sExclamationBoxActions[])(void) = {
     exclamation_box_act_0,
     exclamation_box_act_1,
@@ -168,6 +178,7 @@ void (*sExclamationBoxActions[])(void) = {
     exclamation_box_act_3,
     exclamation_box_act_4,
     exclamation_box_act_5,
+    exclamation_box_act_6,
 };
 
 void bhv_exclamation_box_loop(void) {

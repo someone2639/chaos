@@ -42,7 +42,7 @@ void chs_act_sideways_camera(void) {
     gChsSidewaysOrientation = random_u16() % 2;
 }
 
-#define CAMERA_ROCK_MAX_PITCH 0x2200
+#define CAMERA_ROCK_MAX_PITCH 0x1C00
 #define CAMERA_ROCK_MIN_PITCH 0x0200
 #define CAMERA_ROCK_MAX_ROCK_TIME 300
 #define CAMERA_ROCK_MIN_ROCK_TIME 90

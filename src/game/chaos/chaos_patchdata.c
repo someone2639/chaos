@@ -1191,7 +1191,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 2,
         .duration           = 10,
         .durationHard       = 12,
-        .durationImpossible = 20,
+        .durationImpossible = 15,
 
         .name               = "SM64DS Movement",
         .shortDescription   = "SM64DS, but with full analog control! Surely that was the ONLY problem people had with that game, right...?",
@@ -2351,6 +2351,14 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Not So Bossy",
         .shortDescription   = "All bosses die in one hit (except for during the final Bowser fight).",
+    },
+    [CHAOS_PATCH_RESPAWNABLE_SHELLS] = {
+        .durationType       = CHAOS_DURATION_INFINITE,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 1,
+
+        .name               = "Shell Restock",
+        .shortDescription   = "Shell boxes will now respawn.",
     },
     [CHAOS_PATCH_QUICKTIME] = {
         .durationType       = CHAOS_DURATION_STARS,
