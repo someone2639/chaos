@@ -448,20 +448,17 @@ void update_any_star(u8 shouldRemove, s8 negativeRetriesBias) {
             starToUpdate -= starsInCourse;
         }
 
-        if (shouldRemove) {
-            // If negativeRetriesBias is positive, try again if star not found for removal (this is bad for the player)
-            if (negativeRetriesBias >= 0 && !(save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(course)) & (1 << starToUpdate))) {
-                continue;
-            }
+        // If negativeRetriesBias is positive, try again if star not found for removal (this is bad for the player).
+        // Or if giving a star, try again if star is uncollected for addition (this is also bad for the player).
+        // With one retry, odds of a negative outcome are around 50% by the time the player has reached 35 stars (which just happens to be exactly halfway to a 70 star run, how convenient!)
+        if (negativeRetriesBias >= 0 && !(save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(course)) & (1 << starToUpdate))) {
+            continue;
+        }
 
+        if (shouldRemove) {
             print_star_collect_message(shouldRemove, course, starToUpdate);
             save_file_remove_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(course), 1 << starToUpdate);
         } else {
-            // If negativeRetriesBias is positive, try again if star isn't collected for addition (this is also bad for the player)
-            if (negativeRetriesBias >= 0 && !(save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(course)) & (1 << starToUpdate))) {
-                continue;
-            }
-
             print_star_collect_message(shouldRemove, course, starToUpdate);
             save_file_set_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(course), 1 << starToUpdate);
         }
@@ -494,12 +491,12 @@ void chs_act_star_shuffle(void) {
     play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 }
 void chs_act_stars_increase_lv2(void) {
-    update_any_star(FALSE, 0);
+    update_any_star(FALSE, 1);
     play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 }
 void chs_act_stars_increase_lv3(void) {
-    update_any_star(FALSE, 0);
-    update_any_star(FALSE, 0);
+    update_any_star(FALSE, 1);
+    update_any_star(FALSE, 1);
     play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 }
 void chs_act_stars_increase_guarantee(void) {
