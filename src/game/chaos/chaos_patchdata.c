@@ -1194,7 +1194,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationImpossible = 20,
 
         .name               = "SM64DS Movement",
-        .shortDescription   = "Move like SM64DS, but with full analog control! Surely that was the ONLY complaint people had with the game, right...?",
+        .shortDescription   = "SM64DS, but with full analog control! Surely that was the ONLY problem people had with that game, right...?",
     },
 
 // Object Spawners
