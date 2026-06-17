@@ -18,6 +18,11 @@
 
 #define NUM_STARS 120
 
+struct StarFlagsWithID {
+    u32 flag;
+    s32 id;
+};
+
 const char *courseNames[COURSE_COUNT] = {
     [COURSE_NONE]  = "Castle Inside",
     [COURSE_BOB]   = "Bob-omb Battlefield",
@@ -476,6 +481,10 @@ u8 chs_cond_stars_increase_guarantee(void) {
 u8 chs_cond_stars_decrease_guarantee(void) {
     return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 1;
 }
+u8 chs_cond_toad_star_restock(void) {
+    return ((save_file_get_flags() & (SAVE_FLAG_COLLECTED_TOAD_STAR_1 | SAVE_FLAG_COLLECTED_TOAD_STAR_2 | SAVE_FLAG_COLLECTED_TOAD_STAR_3))
+                && save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) <= (NUM_STARS - 1));
+}
 
 void chs_act_star_shuffle(void) {
     remove_collected_star();
@@ -506,6 +515,50 @@ void chs_act_stars_decrease_lv3(void) {
 }
 void chs_act_stars_decrease_guarantee(void) {
     remove_collected_star();
+}
+void chs_act_toad_star_restock(void) {
+    if (save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) == NUM_STARS) {
+        return;
+    }
+
+    const struct StarFlagsWithID flags[] = {
+        {.flag = SAVE_FLAG_COLLECTED_TOAD_STAR_1, .id = 0},
+        {.flag = SAVE_FLAG_COLLECTED_TOAD_STAR_2, .id = 1},
+        {.flag = SAVE_FLAG_COLLECTED_TOAD_STAR_3, .id = 2},
+    };
+
+    u32 saveFlags = save_file_get_flags();
+    s32 count = 0;
+
+    for (s32 i = 0; i < ARRAY_COUNT(flags); i++) {
+        if (saveFlags & flags[i].flag) {
+            count++;
+        }
+    }
+
+    if (count == 0) {
+        assert(FALSE, "chs_act_toad_star_restock:\nNo Toad stars currently in possession!");
+        return;
+    }
+
+    s32 index = random_u16() % count;
+
+    for (s32 i = 0; i < ARRAY_COUNT(flags); i++) {
+        if (saveFlags & flags[i].flag) {
+            if (index == 0) {
+                // Print star removal message first, but wait until removing star to remove duplicates
+                print_star_collect_message(TRUE, COURSE_NONE, flags[i].id);
+                add_uncollected_star();
+                save_file_remove_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(COURSE_NONE), (1 << flags[i].id));
+                gMarioState->numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
+                return;
+            } else {
+                index--;
+            }
+        }
+    }
+    
+    assert(FALSE, "chs_act_toad_star_restock:\nToad star not remapped!");
 }
 
 void chs_act_get_key_1(void) {

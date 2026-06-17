@@ -394,6 +394,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "One-Star Coin Flip",
         .shortDescription   = "Flip a coin! If heads, gain a random unobtained star. If tails, lose a star in your possession...",
     },
+    [CHAOS_PATCH_TOAD_STAR_RESTOCK] = {
+        .durationType       = CHAOS_DURATION_ONCE,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 3,
+        .isStackable        = TRUE,
+
+        .conditionalFunc    = chs_cond_toad_star_restock,
+        .activatedInitFunc  = chs_act_toad_star_restock,
+
+        .name               = "Toad Star Restock",
+        .shortDescription   = "Swap out a collected Toad star with another random star not currently in your possession.",
+    },
 
 // Gravity Modifiers
     [CHAOS_PATCH_GRAVITY_DECREASE] = {
