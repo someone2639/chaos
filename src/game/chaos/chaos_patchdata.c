@@ -1185,6 +1185,17 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Forwards BLJ",
         .shortDescription   = "Uncap the speed of the long jump, even while moving forwards. It's just like a BLJ, but without the B!",
     },
+    [CHAOS_PATCH_64DS_MOMENTUM] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 2,
+        .duration           = 10,
+        .durationHard       = 12,
+        .durationImpossible = 20,
+
+        .name               = "SM64DS Movement",
+        .shortDescription   = "Move like SM64DS, but with full analog control! Surely that was the ONLY complaint people had with the game, right...?",
+    },
 
 // Object Spawners
     [CHAOS_PATCH_GREEN_DEMON] = {

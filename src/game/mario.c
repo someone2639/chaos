@@ -1426,6 +1426,15 @@ void update_mario_joystick_inputs(struct MarioState *m) {
     } else {
         m->intendedYaw = m->faceAngle[1];
     }
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_64DS_MOMENTUM)) {
+        if (m->action & ACT_FLAG_AIR) {
+            m->intendedYaw = m->storedYaw;
+            // m->input |= INPUT_NONZERO_ANALOG;
+        } else {
+            m->storedYaw = m->intendedYaw;
+        }
+    }
 }
 
 /**
