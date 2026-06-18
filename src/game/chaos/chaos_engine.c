@@ -590,6 +590,8 @@ void chaos_decrement_patch_usage(const enum ChaosPatchID patchId) {
     if (firstFoundMatch->remainingDuration <= 0) {
         chaos_remove_expired_entry_deferred(patchId, NULL);
     }
+
+    chaos_sort_active_patches();
 }
 
 // Update a complete list of patches that are acceptible for generation
@@ -1291,5 +1293,4 @@ void chaos_remove_deferred_patches(void) {
     }
     
     deferredPatchIndex = 0;
-    chaos_sort_active_patches();
 }
