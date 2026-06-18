@@ -17,6 +17,15 @@ const GeoLayout unagi_rainbow_star_geo[] = {
    GEO_RETURN(),
 };
 
+const GeoLayout unagi_inert_star_geo[] = {
+   GEO_NODE_START(),
+   GEO_OPEN_NODE(),
+      GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_OPAQUE, 2000, 0, 0, 0, 0, 0, inert_star_000_displaylist_mesh_layer_1_with_revert),
+      GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_ALPHA, 2000, 0, 0, 0, 0, 0, inert_star_001_displaylist_mesh_layer_4_with_revert),
+   GEO_CLOSE_NODE(),
+   GEO_RETURN(),
+};
+
 // 0x0C00010C
 const GeoLayout unagi_geo[] = {
    GEO_CULLING_RADIUS(2000),
@@ -40,10 +49,11 @@ const GeoLayout unagi_geo[] = {
                            GEO_OPEN_NODE(),
                               GEO_SCALE(0x00, 16384),
                               GEO_OPEN_NODE(),
-                                 GEO_SWITCH_CASE(2, geo_switch_enemy_star_model),
+                                 GEO_SWITCH_CASE(3, geo_switch_enemy_star_model),
                                  GEO_OPEN_NODE(),
                                     GEO_BRANCH(1, unagi_star_geo),
                                     GEO_BRANCH(1, unagi_rainbow_star_geo),
+                                    GEO_BRANCH(1, unagi_inert_star_geo),
                                  GEO_CLOSE_NODE(),
                               GEO_CLOSE_NODE(),
                            GEO_CLOSE_NODE(),

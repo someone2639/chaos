@@ -25,3 +25,5 @@
 #include "white_particle/geo.inc.c"
 #include "wooden_signpost/geo.inc.c"
 #include "tree/geo.inc.c"
+#include "inert_star/geo.inc.c"
+#include "inert_star_transparent/geo.inc.c"

@@ -27,6 +27,8 @@
 #include "rendering_graph_node.h"
 #include "spawn_object.h"
 #include "spawn_sound.h"
+#include "save_file.h"
+#include "course_table.h"
 
 static s8 sBbhStairJiggleOffsets[] = { -8, 8, -4, 4 };
 static s16 sPowersOfTwo[] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
@@ -48,6 +50,31 @@ Gfx *geo_update_projectile_pos_from_parent(s32 callContext, UNUSED struct GraphN
             obj_set_gfx_pos_from_pos(sp1C->prevObj);
         }
     }
+    return NULL;
+}
+
+Gfx *geo_update_inert_star_indicator(s32 callContext, struct GraphNode *node, UNUSED void *context) {
+    struct Object *star = (struct Object *)gCurGraphNodeObject;
+    struct GraphNode *indicator = node->next;
+
+    if (callContext == GEO_CONTEXT_RENDER) {
+        if (star->oStarInertIndicatorTimer > 0) {
+            u8 alpha = ((f32)star->oStarInertIndicatorTimer / 60.0f) * 255;
+            Gfx* prim = alloc_display_list(sizeof(Gfx) * 2);
+            Gfx* head = prim;
+
+            gDPSetPrimColor(head++, 0, 0, 255, 0, 0, alpha);
+            gSPEndDisplayList(head);
+            
+            indicator->flags |= GRAPH_RENDER_ACTIVE;
+            star->oStarInertIndicatorTimer--;
+
+            return prim;
+        } else {
+            indicator->flags &= ~GRAPH_RENDER_ACTIVE;
+        }
+    }
+    
     return NULL;
 }
 
@@ -1088,6 +1115,27 @@ void cur_obj_get_dropped(void) {
 
 void cur_obj_set_model(s32 modelID) {
     o->header.gfx.sharedChild = gLoadedGraphNodes[modelID];
+}
+
+void cur_obj_update_star_model(s8 starId) {
+    u8 currentLevelStarFlags = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum));
+    s32 collected = (currentLevelStarFlags & (1 << starId));
+
+    if (!chs_pay2win_can_collect_star()) {
+        if (collected) {
+            cur_obj_set_model(MODEL_INERT_STAR_TRANSPARENT);
+        } else {
+            cur_obj_set_model(MODEL_INERT_STAR);
+        }
+    } else {
+        if (collected) {
+            cur_obj_set_model(MODEL_TRANSPARENT_STAR);
+        } else if (chaos_check_if_patch_active(CHAOS_PATCH_RAINBOW_STARS)){
+            cur_obj_set_model(MODEL_RAINBOW_STAR);
+        } else {
+            cur_obj_set_model(MODEL_STAR);
+        }
+    }
 }
 
 void mario_set_flag(s32 flag) {
@@ -2476,7 +2524,9 @@ Gfx *geo_switch_enemy_star_model(s32 callContext, struct GraphNode *node, UNUSED
     if (callContext == GEO_CONTEXT_RENDER) {
         switchCase = (struct GraphNodeSwitchCase *) node;
 
-        if(chaos_check_if_patch_active(CHAOS_PATCH_RAINBOW_STARS)) { 
+        if (!chs_pay2win_can_collect_star()) {
+            switchCase->selectedCase = 2;
+        } else if (chaos_check_if_patch_active(CHAOS_PATCH_RAINBOW_STARS)) { 
             switchCase->selectedCase = 1;
         } else {
             switchCase->selectedCase = 0;

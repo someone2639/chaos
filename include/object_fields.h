@@ -1164,4 +1164,7 @@
 #define /*0x0FC*/ oYoshiChosenHome OBJECT_FIELD_S32(0x1D)
 #define /*0x100*/ oYoshiTargetYaw  OBJECT_FIELD_S32(0x1E)
 
+/* Stars (common) */
+#define /*0x10C*/ oStarInertIndicatorTimer OBJECT_FIELD_S32(0x21)
+
 #endif // OBJECT_FIELDS_H

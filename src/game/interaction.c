@@ -838,86 +838,94 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
     u32 starGrabAction = ACT_STAR_DANCE_EXIT;
     u32 noExit = (o->oInteractionSubtype & INT_SUBTYPE_NO_EXIT) != 0;
     u32 grandStar = (o->oInteractionSubtype & INT_SUBTYPE_GRAND_STAR) != 0;
+    u32 key = (o->oInteractionSubtype & INT_SUBTYPE_KEY) != 0;
     s32 previousStarCount;
     u32 previousSaveFlags;
     u32 newSaveFlags;
 
     if (m->health >= 0x100 || chaos_check_if_patch_active(CHAOS_PATCH_FROM_BEYOND_THE_GRAVE)) {
-        mario_stop_riding_and_holding(m);
+        if(chs_pay2win_can_collect_star() || grandStar || key) {
+            mario_stop_riding_and_holding(m);
 #if ENABLE_RUMBLE
-        queue_rumble_data(5, 80);
+            queue_rumble_data(5, 80);
 #endif
 
-        if (!noExit) {
-            m->hurtCounter = 0;
-            m->healCounter = 0;
-            if (m->capTimer > 1) {
-                m->capTimer = 1;
+            if (!noExit) {
+                m->hurtCounter = 0;
+                m->healCounter = 0;
+                if (m->capTimer > 1) {
+                    m->capTimer = 1;
+                }
             }
-        }
 
-        if (noExit) {
-            starGrabAction = ACT_STAR_DANCE_NO_EXIT;
-        }
-
-        if (m->action & ACT_FLAG_SWIMMING) {
-            starGrabAction = ACT_STAR_DANCE_WATER;
-        }
-
-        if (m->action & ACT_FLAG_METAL_WATER) {
-            starGrabAction = ACT_STAR_DANCE_WATER;
-        }
-
-        if (m->action & ACT_FLAG_AIR) {
-            starGrabAction = ACT_FALL_AFTER_STAR_GRAB;
-        }
-
-        spawn_object(o, MODEL_NONE, bhvStarKeyCollectionPuffSpawner);
-
-        o->oInteractStatus = INT_STATUS_INTERACTED;
-        m->interactObj = o;
-        m->usedObj = o;
-
-        previousStarCount = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
-        previousSaveFlags = save_file_get_flags();
-        starIndex = (o->oBehParams >> 24) & 0x1F;
-        if (chaos_check_if_patch_active(CHAOS_PATCH_STAR_CLONING_DEVICE)) {
-            starIndex = chs_get_yellow_star_in_course(gCurrCourseNum, starIndex);
-        }
-        save_file_collect_star_or_key(m->numCoins, starIndex);
-        m->numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
-        newSaveFlags = save_file_get_flags();
-
-        if(!(m->numStars > previousStarCount || (newSaveFlags & ~previousSaveFlags)) && !grandStar) {
-            gChaosBlueStarLastCollected = TRUE;
-            gShouldGive1UP = FALSE;
-            save_file_add_blue_star();
-        } else {
-            gChaosBlueStarLastCollected = FALSE;
-            if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && !grandStar) {
-                gShouldGive1UP = TRUE;
+            if (noExit) {
+                starGrabAction = ACT_STAR_DANCE_NO_EXIT;
             }
-            if(!grandStar) {
-                save_file_add_yellow_star();
+
+            if (m->action & ACT_FLAG_SWIMMING) {
+                starGrabAction = ACT_STAR_DANCE_WATER;
             }
-        }
 
-        if (!noExit) {
-            drop_queued_background_music();
-            fadeout_level_music(126);
-        }
+            if (m->action & ACT_FLAG_METAL_WATER) {
+                starGrabAction = ACT_STAR_DANCE_WATER;
+            }
 
-        play_sound(SOUND_MENU_STAR_SOUND, m->marioObj->header.gfx.cameraToObject);
+            if (m->action & ACT_FLAG_AIR) {
+                starGrabAction = ACT_FALL_AFTER_STAR_GRAB;
+            }
+
+            spawn_object(o, MODEL_NONE, bhvStarKeyCollectionPuffSpawner);
+
+            o->oInteractStatus = INT_STATUS_INTERACTED;
+            m->interactObj = o;
+            m->usedObj = o;
+
+            previousStarCount = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
+            previousSaveFlags = save_file_get_flags();
+            starIndex = (o->oBehParams >> 24) & 0x1F;
+            if (chaos_check_if_patch_active(CHAOS_PATCH_STAR_CLONING_DEVICE)) {
+                starIndex = chs_get_yellow_star_in_course(gCurrCourseNum, starIndex);
+            }
+            save_file_collect_star_or_key(m->numCoins, starIndex);
+            m->numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
+            newSaveFlags = save_file_get_flags();
+
+            if(!(m->numStars > previousStarCount || (newSaveFlags & ~previousSaveFlags)) && !grandStar) {
+                gChaosBlueStarLastCollected = TRUE;
+                gShouldGive1UP = FALSE;
+                save_file_add_blue_star();
+            } else {
+                gChaosBlueStarLastCollected = FALSE;
+                if (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && !grandStar) {
+                    gShouldGive1UP = TRUE;
+                }
+                if(!grandStar) {
+                    save_file_add_yellow_star();
+                }
+            }
+
+            if (!noExit) {
+                drop_queued_background_music();
+                fadeout_level_music(126);
+            }
+
+            play_sound(SOUND_MENU_STAR_SOUND, m->marioObj->header.gfx.cameraToObject);
 #ifndef VERSION_JP
-        update_mario_sound_and_camera(m);
+            update_mario_sound_and_camera(m);
 #endif
 
-        if (grandStar) {
-            save_file_update_clears();
-            return set_mario_action(m, ACT_JUMBO_STAR_CUTSCENE, 0);
-        }
+            if (grandStar) {
+                save_file_update_clears();
+                return set_mario_action(m, ACT_JUMBO_STAR_CUTSCENE, 0);
+            }
 
-        return set_mario_action(m, starGrabAction, noExit + 2 * grandStar);
+            return set_mario_action(m, starGrabAction, noExit + 2 * grandStar);
+        } else {
+            if(o->oStarInertIndicatorTimer == 0) {
+                chaosmsg_print(CHAOS_PATCH_PAY2WIN, "You can't collect this star due to the effects of %s!");
+            }
+            o->oStarInertIndicatorTimer = 60;
+        }
     }
 
     return FALSE;

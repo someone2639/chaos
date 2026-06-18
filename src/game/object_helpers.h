@@ -64,6 +64,7 @@ struct SpawnParticlesInfo {
 };
 
 Gfx *geo_update_projectile_pos_from_parent(s32 callContext, UNUSED struct GraphNode *node, Mat4 mtx);
+Gfx *geo_update_inert_star_indicator(s32 callContext, struct GraphNode *node, UNUSED void *context);
 Gfx *geo_update_layer_transparency(s32 callContext, struct GraphNode *node, UNUSED void *context);
 #ifdef AVOID_UB
 Gfx *geo_switch_anim_state(s32 callContext, struct GraphNode *node, UNUSED void *context);
@@ -152,6 +153,7 @@ void cur_obj_unrender_set_action_and_anim(s32 sp18, s32 sp1C);
 void cur_obj_get_thrown_or_placed(f32 forwardVel, f32 velY, s32 thrownAction);
 void cur_obj_get_dropped(void);
 void cur_obj_set_model(s32 modelID);
+void cur_obj_update_star_model(s8 starId);
 void mario_set_flag(s32 flag);
 s32 cur_obj_clear_interact_status_flag(s32 flag);
 void obj_mark_for_deletion(struct Object *obj);

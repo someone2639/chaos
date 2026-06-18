@@ -13,35 +13,20 @@ struct ObjectHitbox sSparkleSpawnStarHitbox = {
 };
 
 void bhv_spawned_star_init(void) {
-    s32 sp24;
+    s32 starId;
 
     if (!(o->oInteractionSubtype & INT_SUBTYPE_NO_EXIT)) {
         o->oBehParams = o->parentObj->oBehParams;
     }
-    sp24 = (o->oBehParams >> 24) & 0xFF;
 
-    if (bit_shift_left(sp24) & save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum))) {
-        cur_obj_set_model(MODEL_TRANSPARENT_STAR);
-    } else if (chaos_check_if_patch_active(CHAOS_PATCH_RAINBOW_STARS)) {
-        cur_obj_set_model(MODEL_RAINBOW_STAR);
-    }
+    starId = (o->oBehParams >> 24) & 0xFF;
+
+    cur_obj_update_star_model(starId);
 
     cur_obj_play_sound_2(SOUND_GENERAL2_STAR_APPEARS);
-
-    if (chs_pay2win_can_collect_star()) {
-        cur_obj_become_tangible();
-    } else {
-        cur_obj_become_intangible();
-    }
 }
 
 void set_sparkle_spawn_star_hitbox(void) {
-    if (chs_pay2win_can_collect_star()) {
-        cur_obj_become_tangible();
-    } else {
-        cur_obj_become_intangible();
-    }
-
     obj_set_hitbox(o, &sSparkleSpawnStarHitbox);
     if (o->oInteractStatus & INT_STATUS_INTERACTED) {
         mark_obj_for_deletion(o);
@@ -132,11 +117,9 @@ void bhv_spawned_star_loop(void) {
     o->oFaceAngleYaw += o->oAngleVelYaw;
     o->oInteractStatus = 0;
 
-    if (chs_pay2win_can_collect_star()) {
-        cur_obj_become_tangible();
-    } else {
-        cur_obj_become_intangible();
-    }
+    u8 starId = (o->oBehParams >> 24) & 0xFF;
+
+    cur_obj_update_star_model(starId);
 }
 
 void bhv_spawn_star_no_level_exit(u32 sp20) {

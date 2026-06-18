@@ -84,3 +84,6 @@ UNUSED static const u64 binid_21 = 21;
 
 #include "tree/model.inc.c"
 UNUSED static const u64 binid_22 = 22;
+
+#include "inert_star/model.inc.c"
+#include "inert_star_transparent/model.inc.c"

@@ -22,6 +22,17 @@ const GeoLayout klepto_rainbow_star_geo[] = {
    GEO_RETURN(),
 };
 
+const GeoLayout klepto_inert_star_geo[] = {
+   GEO_NODE_START(),
+   GEO_OPEN_NODE(),
+      GEO_ASM(0, geo_offset_klepto_held_object),
+      GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_OPAQUE, 0, 100, 0, 180, 270, 0, inert_star_000_displaylist_mesh_layer_1_with_revert),
+      GEO_ASM(0, geo_offset_klepto_held_object),
+      GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_ALPHA, 0, 100, 0, 180, 270, 0, inert_star_001_displaylist_mesh_layer_4_with_revert),
+   GEO_CLOSE_NODE(),
+   GEO_RETURN(),
+};
+
 // 0x0C000000
 const GeoLayout klepto_geo[] = {
    GEO_SHADOW(SHADOW_CIRCLE_4_VERTS, 0x96, 250),
@@ -63,10 +74,11 @@ const GeoLayout klepto_geo[] = {
                            GEO_OPEN_NODE(),
                               GEO_SCALE(0x00, 16384),
                               GEO_OPEN_NODE(),
-                                 GEO_SWITCH_CASE(2, geo_switch_enemy_star_model),
+                                 GEO_SWITCH_CASE(3, geo_switch_enemy_star_model),
                                  GEO_OPEN_NODE(),
                                     GEO_BRANCH(1, klepto_star_geo),
                                     GEO_BRANCH(1, klepto_rainbow_star_geo),
+                                    GEO_BRANCH(1, klepto_inert_star_geo),
                                  GEO_CLOSE_NODE(),
                               GEO_CLOSE_NODE(),
                            GEO_CLOSE_NODE(),

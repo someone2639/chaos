@@ -14,41 +14,22 @@ static struct ObjectHitbox sCollectStarHitbox = {
 
 void bhv_collect_star_init(void) {
     s8 starId = (o->oBehParams >> 24) & 0xFF;
-    u8 currentLevelStarFlags = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum));
 
-    if (currentLevelStarFlags & (1 << starId)) {
-        o->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_TRANSPARENT_STAR];
-    } else {
-        if(chaos_check_if_patch_active(CHAOS_PATCH_RAINBOW_STARS)) {
-            o->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_RAINBOW_STAR];
-        } else {
-            o->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_STAR];
-        }
-    }
+    cur_obj_update_star_model(starId);
 
     obj_set_hitbox(o, &sCollectStarHitbox);
-
-    if (chs_pay2win_can_collect_star()) {
-        cur_obj_become_tangible();
-    } else {
-        cur_obj_become_intangible();
-    }
 }
 
 void bhv_collect_star_loop(void) {
     o->oFaceAngleYaw += 0x800;
 
-    if (chs_pay2win_can_collect_star()) {
-        cur_obj_become_tangible();
-    } else {
-        cur_obj_become_intangible();
-    }
-
-
     if (o->oInteractStatus & INT_STATUS_INTERACTED) {
         mark_obj_for_deletion(o);
         o->oInteractStatus = 0;
     }
+
+    s8 starId = (o->oBehParams >> 24) & 0xFF;
+    cur_obj_update_star_model(starId); 
 }
 
 void bhv_star_spawn_init(void) {
@@ -106,20 +87,13 @@ void bhv_star_spawn_loop(void) {
 
             if (o->oPosY < o->oHomeY) {
                 cur_obj_play_sound_2(SOUND_GENERAL_STAR_APPEARS);
-                if (chs_pay2win_can_collect_star()) {
-                    cur_obj_become_tangible();
-                }
+                cur_obj_become_tangible();
                 o->oPosY = o->oHomeY;
                 o->oAction = 3;
             }
             break;
 
         case 3:
-            if (chs_pay2win_can_collect_star()) {
-                cur_obj_become_tangible();
-            } else {
-                cur_obj_become_intangible();
-            }
             o->oFaceAngleYaw += 0x800;
             if (o->oTimer == 20) {
                 gObjCutsceneDone = TRUE;
@@ -133,6 +107,9 @@ void bhv_star_spawn_loop(void) {
             }
             break;
     }
+    
+    s8 starId = (o->oBehParams >> 24) & 0xFF;
+    cur_obj_update_star_model(starId);
 }
 
 struct Object *spawn_star(struct Object *sp30, f32 sp34, f32 sp38, f32 sp3C) {

@@ -1,0 +1,13 @@
+extern const GeoLayout inert_star_transparent_geo[];
+extern Lights1 inert_star_transparent_transparent_lights;
+extern u8 inert_star_transparent_no_ia8[];
+extern Vtx inert_star_transparent_000_displaylist_mesh_layer_5_vtx_0[12];
+extern Gfx inert_star_transparent_000_displaylist_mesh_layer_5_tri_0[];
+extern Vtx inert_star_transparent_001_no_dl_mesh_layer_5_vtx_0[4];
+extern Gfx inert_star_transparent_001_no_dl_mesh_layer_5_tri_0[];
+extern Gfx mat_inert_star_transparent_transparent[];
+extern Gfx mat_revert_inert_star_transparent_transparent[];
+extern Gfx mat_inert_star_transparent_no_layer5[];
+extern Gfx mat_revert_inert_star_transparent_no_layer5[];
+extern Gfx inert_star_transparent_000_displaylist_mesh_layer_5[];
+extern Gfx inert_star_transparent_001_no_dl_mesh_layer_5_with_revert[];
