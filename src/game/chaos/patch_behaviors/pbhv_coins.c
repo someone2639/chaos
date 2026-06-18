@@ -79,7 +79,109 @@ u8 chs_pay2win_can_collect_star(void) {
     );
 }
 
+/**
+ * Collector's Anxiety
+ */
+
+enum CollectorsAnxietyCoinCourseFlags {
+    COLLECTORS_ANXIETY_NONE   = 0u,
+    COLLECTORS_ANXIETY_YELLOW = (1u << 0),
+    COLLECTORS_ANXIETY_RED    = (1u << 1),
+    COLLECTORS_ANXIETY_BLUE   = (1u << 2),
+
+    COLLECTORS_ANXIETY_ALL    = (COLLECTORS_ANXIETY_YELLOW | COLLECTORS_ANXIETY_RED | COLLECTORS_ANXIETY_BLUE),
+};
+
+const enum CollectorsAnxietyCoinCourseFlags sCollectorsAnxietyCourseFlags[COURSE_COUNT] = {
+    [COURSE_NONE] = COLLECTORS_ANXIETY_NONE,
+    [COURSE_BOB]  = (COLLECTORS_ANXIETY_YELLOW | COLLECTORS_ANXIETY_RED), // Note: Koopa has a blue coin...
+    [COURSE_WF]   = COLLECTORS_ANXIETY_ALL,
+    [COURSE_JRB]  = COLLECTORS_ANXIETY_ALL,
+    [COURSE_CCM]  = COLLECTORS_ANXIETY_ALL,
+    [COURSE_BBH]  = COLLECTORS_ANXIETY_ALL,
+    [COURSE_HMC]  = COLLECTORS_ANXIETY_ALL,
+    [COURSE_LLL]  = COLLECTORS_ANXIETY_ALL,
+    [COURSE_SSL]  = COLLECTORS_ANXIETY_ALL,
+    [COURSE_DDD]  = COLLECTORS_ANXIETY_ALL,
+    [COURSE_SL]   = (COLLECTORS_ANXIETY_YELLOW | COLLECTORS_ANXIETY_RED),
+    [COURSE_WDW]  = COLLECTORS_ANXIETY_ALL,
+    [COURSE_TTM]  = COLLECTORS_ANXIETY_ALL,
+    [COURSE_THI]  = COLLECTORS_ANXIETY_ALL,
+    [COURSE_TTC]  = COLLECTORS_ANXIETY_ALL,
+    [COURSE_RR]   = COLLECTORS_ANXIETY_ALL,
+
+    [COURSE_BITDW]    = (COLLECTORS_ANXIETY_YELLOW | COLLECTORS_ANXIETY_RED),
+    [COURSE_BITFS]    = (COLLECTORS_ANXIETY_YELLOW | COLLECTORS_ANXIETY_RED),
+    [COURSE_BITS]     = (COLLECTORS_ANXIETY_YELLOW | COLLECTORS_ANXIETY_RED),
+    [COURSE_PSS]      = (COLLECTORS_ANXIETY_YELLOW | COLLECTORS_ANXIETY_BLUE),
+    [COURSE_COTMC]    = (COLLECTORS_ANXIETY_YELLOW | COLLECTORS_ANXIETY_RED),
+    [COURSE_TOTWC]    = (COLLECTORS_ANXIETY_YELLOW | COLLECTORS_ANXIETY_RED),
+    [COURSE_VCUTM]    = (COLLECTORS_ANXIETY_YELLOW | COLLECTORS_ANXIETY_RED),
+    [COURSE_WMOTR]    = (COLLECTORS_ANXIETY_YELLOW | COLLECTORS_ANXIETY_RED),
+    [COURSE_SA]       = (COLLECTORS_ANXIETY_YELLOW | COLLECTORS_ANXIETY_RED),
+};
+
+enum CollectorsAnxietyCoinCourseFlags sCollectorsAnxietyCoinFlags = COLLECTORS_ANXIETY_NONE;
+u8 sBoBKoopaSpawned = FALSE;
+
+void chs_collectors_anxiety_load_new_level(void) {
+    sCollectorsAnxietyCoinFlags = COLLECTORS_ANXIETY_NONE;
+    sBoBKoopaSpawned = FALSE;
+}
+
+void chs_collectors_anxiety_small_koopa_spawned(void) {
+    sBoBKoopaSpawned = TRUE;
+}
+
+void chs_collectors_anxiety_coin_collected(s32 coinValue) {
+    switch (coinValue) {
+        case 1:
+            sCollectorsAnxietyCoinFlags |= COLLECTORS_ANXIETY_YELLOW;
+            break;
+        case 2:
+            sCollectorsAnxietyCoinFlags |= COLLECTORS_ANXIETY_RED;
+            break;
+        case 5:
+        case 100: // CHAOS_PATCH_BLUECOIN_LOTTERY
+            sCollectorsAnxietyCoinFlags |= COLLECTORS_ANXIETY_BLUE;
+            break;
+        default:
+            assert_args(FALSE, "chs_collectors_anxiety_coin_collected:\nUnexpected coinValue: %d", coinValue);
+            break;
+    }
+}
+
+u8 chs_collectors_anxiety_can_collect_star(void) {
+    if (!chaos_check_if_patch_active(CHAOS_PATCH_COLLECTORS_ANXIETY)) {
+        return TRUE;
+    }
+
+    // Ignore Bowser fights
+    if (gCurrCourseNum >= COURSE_COUNT || gCurrLevelNum == LEVEL_BOWSER_1 || gCurrLevelNum == LEVEL_BOWSER_2 || gCurrLevelNum == LEVEL_BOWSER_3) {
+        return TRUE;
+    }
+
+    // Set required flags, and update them in BoB as possible
+    enum CollectorsAnxietyCoinCourseFlags requiredFlags = sCollectorsAnxietyCourseFlags[gCurrCourseNum];
+    if (gCurrCourseNum == COURSE_BOB && sBoBKoopaSpawned) {
+        requiredFlags |= COLLECTORS_ANXIETY_BLUE;
+    }
+
+    enum CollectorsAnxietyCoinCourseFlags courseFlags = (sCollectorsAnxietyCoinFlags & requiredFlags);
+
+    if (courseFlags == requiredFlags) {
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+/**
+ * Coin Size
+ */
+
 u8 chs_cond_coin_size(void) {
     u32 count = chaos_count_active_instances(CHAOS_PATCH_COIN_SIZE);
     return (count < 3 && (count < 2 || !(gEmulator & EMU_CONSOLE)));
 }
+

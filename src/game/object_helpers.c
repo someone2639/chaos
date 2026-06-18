@@ -1121,7 +1121,7 @@ void cur_obj_update_star_model(s8 starId) {
     u8 currentLevelStarFlags = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(gCurrCourseNum));
     s32 collected = (currentLevelStarFlags & (1 << starId));
 
-    if (!chs_pay2win_can_collect_star()) {
+    if (!chs_can_collect_star(NULL)) {
         if (collected) {
             cur_obj_set_model(MODEL_INERT_STAR_TRANSPARENT);
         } else {
@@ -2524,7 +2524,7 @@ Gfx *geo_switch_enemy_star_model(s32 callContext, struct GraphNode *node, UNUSED
     if (callContext == GEO_CONTEXT_RENDER) {
         switchCase = (struct GraphNodeSwitchCase *) node;
 
-        if (!chs_pay2win_can_collect_star()) {
+        if (!chs_can_collect_star(NULL)) {
             switchCase->selectedCase = 2;
         } else if (chaos_check_if_patch_active(CHAOS_PATCH_RAINBOW_STARS)) { 
             switchCase->selectedCase = 1;
@@ -2945,3 +2945,22 @@ void cur_obj_spawn_star_at_y_offset(f32 targetX, f32 targetY, f32 targetZ, f32 o
     o->oPosY = objectPosY;
 }
 #endif
+
+u8 chs_can_collect_star(enum ChaosPatchID *id) {
+    enum ChaosPatchID fillerID;
+    if (id == NULL) {
+        id = &fillerID;
+    }
+    *id = CHAOS_PATCH_NONE;
+
+    if (!chs_pay2win_can_collect_star()) {
+        *id = CHAOS_PATCH_PAY2WIN;
+        return FALSE;
+    }
+    if (!chs_collectors_anxiety_can_collect_star()) {
+        *id = CHAOS_PATCH_COLLECTORS_ANXIETY;
+        return FALSE;
+    }
+
+    return TRUE;
+}

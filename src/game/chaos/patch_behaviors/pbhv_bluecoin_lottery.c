@@ -50,6 +50,8 @@ enum SlotStates {
 u32 interact_coin_delayed(struct MarioState *m, struct Object *obj) {
     s32 coinCount = obj->oDamageOrCoinValue;
     s32 healCount = 0;
+
+    chs_collectors_anxiety_coin_collected(coinCount);
     if (chs_double_coins_under_30s()) {
         coinCount *= 2;
     }

@@ -76,6 +76,7 @@ void bhv_koopa_init(void) {
         o->oDrawingDistance = 1500.0f;
         cur_obj_scale(0.8f);
         o->oGravity = -6.4f / 3.0f;
+        chs_collectors_anxiety_small_koopa_spawned();
     } else if (o->oKoopaMovementType >= KOOPA_BP_KOOPA_THE_QUICK_BASE) {
         // Koopa the Quick. Race index is 0 for BoB and 1 for THI
         o->oKoopaTheQuickRaceIndex = o->oKoopaMovementType - KOOPA_BP_KOOPA_THE_QUICK_BASE;
@@ -83,6 +84,7 @@ void bhv_koopa_init(void) {
         cur_obj_scale(3.0f);
     } else {
         o->oKoopaAgility = 1.0f;
+        chs_collectors_anxiety_small_koopa_spawned();
     }
 }
 

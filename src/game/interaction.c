@@ -786,6 +786,7 @@ void reset_mario_pitch(struct MarioState *m) {
 
 u32 interact_coin(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
     s32 coinCount = o->oDamageOrCoinValue;
+    chs_collectors_anxiety_coin_collected(coinCount);
     if (coinCount >= 5 && chaos_check_if_patch_active(CHAOS_PATCH_BLUECOIN_LOTTERY)) {
         o->oInteractStatus = INT_STATUS_INTERACTED;
         void init_slots(struct Object *, f32);
@@ -834,6 +835,7 @@ u32 interact_water_ring(struct MarioState *m, UNUSED u32 interactType, struct Ob
 }
 
 u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
+    enum ChaosPatchID uncollectablePatchID = CHAOS_PATCH_NONE;
     u32 starIndex;
     u32 starGrabAction = ACT_STAR_DANCE_EXIT;
     u32 noExit = (o->oInteractionSubtype & INT_SUBTYPE_NO_EXIT) != 0;
@@ -844,7 +846,7 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
     u32 newSaveFlags;
 
     if (m->health >= 0x100 || chaos_check_if_patch_active(CHAOS_PATCH_FROM_BEYOND_THE_GRAVE)) {
-        if(chs_pay2win_can_collect_star() || grandStar || key) {
+        if(chs_can_collect_star(&uncollectablePatchID) || grandStar || key) {
             mario_stop_riding_and_holding(m);
 #if ENABLE_RUMBLE
             queue_rumble_data(5, 80);
@@ -921,8 +923,8 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
 
             return set_mario_action(m, starGrabAction, noExit + 2 * grandStar);
         } else {
-            if(o->oStarInertIndicatorTimer == 0) {
-                chaosmsg_print(CHAOS_PATCH_PAY2WIN, "You can't collect this star due to the effects of %s!");
+            if(o->oStarInertIndicatorTimer == 0 && uncollectablePatchID != CHAOS_PATCH_NONE) {
+                chaosmsg_print(uncollectablePatchID, "@FF9F9F--You can't collect this star due to the effects of %s@FF9F9F--!@--------");
             }
             o->oStarInertIndicatorTimer = 60;
         }

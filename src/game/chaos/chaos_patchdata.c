@@ -777,6 +777,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Pay to Win",
         .shortDescription   = "Stars are only collectible when Mario has at least 30 coins.",
     },
+    [CHAOS_PATCH_COLLECTORS_ANXIETY] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 2,
+        .duration           = 4,
+        .durationHard       = 6,
+        .durationImpossible = 8,
+
+        INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SHUFFLE_OBJECTS),
+
+        .name               = "Collector's Anxiety",
+        .shortDescription   = "Stars are only collectible after every single coin type in a level has been collected (when present).",
+    },
     [CHAOS_PATCH_6_RED_COINS] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
@@ -1983,7 +1996,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 6,
         .durationImpossible = 7,
 
-        INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_A, CHAOS_PATCH_BUTTON_BROKEN_B, CHAOS_PATCH_SWAPPED_ZR_AB, CHAOS_PATCH_QUICKTIME, CHAOS_PATCH_TETRIS),
+        INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_A, CHAOS_PATCH_BUTTON_BROKEN_B, CHAOS_PATCH_SWAPPED_ZR_AB, CHAOS_PATCH_QUICKTIME, CHAOS_PATCH_TETRIS, CHAOS_PATCH_COLLECTORS_ANXIETY),
 
         .name               = "The Zonked Z",
         .shortDescription   = "The Z button is completely nonfunctional (even for menus!)",
@@ -2470,6 +2483,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 7,
         .durationImpossible = 8,
 
+        INCOMPATIBLE(CHAOS_PATCH_COLLECTORS_ANXIETY),
         .areaInitFunc       = chs_start_shuffle,
         .frameUpdateFunc    = chs_shuffle_objects,
 

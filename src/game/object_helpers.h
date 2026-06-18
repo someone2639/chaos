@@ -5,6 +5,7 @@
 
 #include "macros.h"
 #include "types.h"
+#include "chaos/chaos.h"
 
 // used for chain chomp and wiggler
 struct ChainSegment {
@@ -284,5 +285,7 @@ Gfx *geo_switch_enemy_star_model(s32 callContext, struct GraphNode *node, UNUSED
 #ifndef VERSION_JP
 void cur_obj_spawn_star_at_y_offset(f32 targetX, f32 targetY, f32 targetZ, f32 offsetY);
 #endif
+
+u8 chs_can_collect_star(enum ChaosPatchID *id);
 
 #endif // OBJECT_HELPERS_H
