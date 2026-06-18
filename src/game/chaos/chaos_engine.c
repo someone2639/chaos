@@ -22,6 +22,9 @@
 static u32 activePatchCounts[CHAOS_PATCH_COUNT];
 static u8 availablePatches[CHAOS_PATCH_COUNT];
 static struct ChaosPatchSelection generatedPatches[CHAOS_PATCH_MAX_GENERATABLE];
+static enum ChaosPatchID deferredPatchesForRemoval[CHAOS_PATCH_DEFERRED_QUEUE_SIZE];
+static u32 deferredPatchIndex = 0;
+static s32 unsafeDeactivationFunc = FALSE;
 
 char gChaosInternalBuffer[0x1000];
 
@@ -256,8 +259,6 @@ u32 chaos_calculate_patch_duration(const struct ChaosPatch *patch) {
 
 // NOTE: Do not attempt to remove entries inside of deactivation functions, even for separate patches!
 void chaos_remove_expired_entry(const s32 patchIndex, const char *msg) {
-    static s32 insideDeactivationFunc = FALSE;
-
     if (!gChaosActiveEntryCount) {
         return;
     }
@@ -275,8 +276,8 @@ void chaos_remove_expired_entry(const s32 patchIndex, const char *msg) {
 
     // We CANNOT safely deactivate other patches within deactivation functions because of stale references in the chaos engine when decrementing star timers and such.
     // (There is a recursive assertion check in place to watch out for this, even though this function on its own is actually safe to call recursively).
-    assert_args(insideDeactivationFunc == FALSE, "chaos_remove_expired_entry:\nNot safe to invoke recursively:\n0x%08X", patchIndex);
-    insideDeactivationFunc = TRUE;
+    assert_args(unsafeDeactivationFunc == FALSE, "chaos_remove_expired_entry:\nNot safe to invoke recursively or from inside non-activation callbacks:\n0x%08X", patchIndex);
+    unsafeDeactivationFunc = TRUE;
 
     gSaveFileModified = TRUE;
 
@@ -294,17 +295,34 @@ void chaos_remove_expired_entry(const s32 patchIndex, const char *msg) {
         gChaosActiveEntries[i] = gChaosActiveEntries[i+1];
     }
 
-    // Invoke deactivation function, now that the entry has been fully removed
-    if (patch->deactivationFunc) {
-        patch->deactivationFunc();
-    }
-
     // Print chaos message, if it exists
     if (msg) {
         chaosmsg_print(patchId, msg);
     }
 
-    insideDeactivationFunc = FALSE;
+    // Invoke deactivation function, now that the entry has been fully removed
+    if (patch->deactivationFunc) {
+        patch->deactivationFunc();
+    }
+
+    unsafeDeactivationFunc = FALSE;
+}
+
+// NOTE: This is the safer alternative for use inside callbacks and for USE_COUNT patches
+void chaos_remove_expired_entry_deferred(const enum ChaosPatchID patchId, const char *msg) {
+    if (!gChaosActiveEntryCount) {
+        return;
+    }
+    
+    assert(deferredPatchIndex < ARRAY_COUNT(deferredPatchesForRemoval), "chaos_remove_expired_entry_deferred:\nOut of defer slots!")
+    if (deferredPatchIndex < ARRAY_COUNT(deferredPatchesForRemoval)) {
+        deferredPatchesForRemoval[deferredPatchIndex++] = patchId;
+
+        // Print chaos message, if it exists
+        if (msg) {
+            chaosmsg_print(patchId, msg);
+        }
+    }
 }
 
 void chaos_add_new_entry(const enum ChaosPatchID patchId) {
@@ -529,7 +547,6 @@ void chaos_decrement_patch_usage(const enum ChaosPatchID patchId) {
     }
 
     struct ChaosActiveEntry *firstFoundMatch = NULL;
-    s32 matchIndex = -1;
 
     gSaveFileModified = TRUE;
 
@@ -541,7 +558,6 @@ void chaos_decrement_patch_usage(const enum ChaosPatchID patchId) {
     for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
         if (gChaosActiveEntries[i].id == patchId) {
             firstFoundMatch = &gChaosActiveEntries[i];
-            matchIndex = i;
             break;
         }
     }
@@ -572,10 +588,8 @@ void chaos_decrement_patch_usage(const enum ChaosPatchID patchId) {
     chaosmsg_print(patchId, gChaosInternalBuffer);
 
     if (firstFoundMatch->remainingDuration <= 0) {
-        chaos_remove_expired_entry(matchIndex--, NULL);
+        chaos_remove_expired_entry_deferred(patchId, NULL);
     }
-    
-    chaos_sort_active_patches();
 }
 
 // Update a complete list of patches that are acceptible for generation
@@ -1153,6 +1167,7 @@ void chaos_init(void) {
     save_file_get_chaos_data(&gChaosActiveEntries, &gChaosActiveEntryCount, &gChaosDifficulty, &gChaosGameMode, &gChaosLastForcedSeverity, &gChaosLastEventType);
     chaos_recompute_active_patch_counts();
 
+    deferredPatchIndex = 0;
     gChaosLevelWarped = FALSE;
     gChaosBlueStarLastCollected = FALSE;
     gChaosForcedDurationType = CHAOS_DURATION_DO_NOT_FORCE;
@@ -1191,6 +1206,7 @@ void chaos_area_update(void) {
         return;
     }
 
+    unsafeDeactivationFunc = TRUE;
     for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
         const enum ChaosPatchID patchId = gChaosActiveEntries[i].id;
         const struct ChaosPatch *patch = &gChaosPatches[patchId];
@@ -1202,6 +1218,7 @@ void chaos_area_update(void) {
             patch->areaInitFunc();
         }
     }
+    unsafeDeactivationFunc = FALSE;
 
     gChaosLevelWarped = FALSE;
 }
@@ -1215,6 +1232,7 @@ void chaos_frame_update(void) {
         return;
     }
 
+    unsafeDeactivationFunc = TRUE;
     for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
         const enum ChaosPatchID patchId = gChaosActiveEntries[i].id;
         const struct ChaosPatch *patch = &gChaosPatches[patchId];
@@ -1226,4 +1244,52 @@ void chaos_frame_update(void) {
             gChaosActiveEntries[i].frameTimer++;
         }
     }
+    unsafeDeactivationFunc = FALSE;
+}
+
+void chaos_remove_deferred_patches(void) {
+    if (!gChaosActiveEntryCount || deferredPatchIndex == 0) {
+        return;
+    }
+    
+    // Prioritize should-be expiring patches with 0 duration, just in case they're otherwise missed somehow
+    for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+        if (gChaosActiveEntries[i].remainingDuration != 0) {
+            continue;
+        }
+
+        const enum ChaosPatchID patchId = gChaosActiveEntries[i].id;
+        const struct ChaosPatch *patch = &gChaosPatches[patchId];
+        if (patch->durationType != CHAOS_DURATION_STARS && patch->durationType != CHAOS_DURATION_USE_COUNT) {
+            continue;
+        }
+
+        for (u32 entry = 0; entry < deferredPatchIndex; entry++) {
+            if (patchId != deferredPatchesForRemoval[entry] || patchId == CHAOS_PATCH_NONE) {
+                continue;
+            }
+
+            chaos_remove_expired_entry(i--, NULL);
+            deferredPatchesForRemoval[entry] = CHAOS_PATCH_NONE;
+        }
+    }
+
+    // Remove everything else
+    for (u32 entry = 0; entry < deferredPatchIndex; entry++) {
+        const enum ChaosPatchID patchId = deferredPatchesForRemoval[entry];
+        if (patchId == CHAOS_PATCH_NONE) {
+            continue;
+        }
+
+        // Remove first found patch (favors lower patch timers for stackable patches)
+        for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+            if (gChaosActiveEntries[i].id == patchId) {
+                chaos_remove_expired_entry(i--, NULL);
+                break;
+            }
+        }
+    }
+    
+    deferredPatchIndex = 0;
+    chaos_sort_active_patches();
 }

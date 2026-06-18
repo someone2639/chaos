@@ -58,6 +58,20 @@ void chs_update_time_limit(void) {
     }
 }
 
+void chs_deact_time_limit(void) {
+    for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+        if (gChaosActiveEntries[i].id != CHAOS_PATCH_LOWER_TIME_LIMIT) {
+            continue;
+        }
+
+        // Make sure these don't expire naturally, if they still exist. This way, deferred removal will handle it without duplicate message prints.
+        if (gChaosActiveEntries[i].remainingDuration < 10) {
+            gChaosActiveEntries[i].remainingDuration = 10;
+        }
+        chaos_remove_expired_entry_deferred(CHAOS_PATCH_LOWER_TIME_LIMIT, "%s: Expired!");
+    }
+}
+
 u8 chs_cond_lower_time_limit(void) {
     return (chaos_check_if_patch_active(CHAOS_PATCH_TIME_LIMIT) && sTimeLimitOffset < CHS_TIME_LIMIT_OFFSET_MAX && gChaosForcedDurationMaximum == 0);
 }
@@ -85,8 +99,7 @@ void chs_act_lower_time_limit(void) {
                 continue;
             }
 
-            chaos_remove_expired_entry(i, NULL);
-            i--;
+            chaos_remove_expired_entry(i--, NULL);
         }
         return;
     }
@@ -107,11 +120,6 @@ void chs_act_lower_time_limit(void) {
     // chaos_sort_active_patches();
 }
 
-// TODO: This behavior will need to be changed completely to work as expected with the likes of Show Me Mercy and (eventually) Sweet Relief.
-// Unfortunately the solution isn't as simple as just reverting time back to the offset, because we would also want the lower patches to disappear completely if the main patch is removed.
-// We also CANNOT safely deactivate other patches within a deactivation function because of stale references in the chaos engine when decrementing star timers and such
-// (there is a recursive assertion check in place for this, even though chaos_remove_expired_entry on its own is safe to call recursively).
-// It should however be safe to both activate and deactivate patches from inside of an activation function.
 void chs_deact_lower_time_limit(void) {
-    sTimeLimitOffset = 0;
+    sTimeLimitOffset -= (30 * 30);
 }

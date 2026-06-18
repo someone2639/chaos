@@ -27,13 +27,13 @@ u8 chs_cond_remove_negative_patch(void) {
         const enum ChaosPatchID patchId = entry->id;
         const struct ChaosPatch *patch = &gChaosPatches[patchId];
 
-        if (patch->effectType != CHAOS_EFFECT_NEGATIVE) {
+        if (patch->effectType != CHAOS_EFFECT_NEGATIVE || (patch->durationType == CHAOS_DURATION_STARS && entry->remainingDuration <= 1)) {
             continue;
         }
 
         s32 blacklistedMatchFound = FALSE;
         for (s32 j = 0; j < ARRAY_COUNT(patchBlacklist); j++) {
-            if (patchId == patchBlacklist[i]) {
+            if (patchId == patchBlacklist[j]) {
                 blacklistedMatchFound = TRUE;
                 break;
             }
@@ -91,8 +91,8 @@ enum ChaosPatchID chs_activate_random_pos_neg_patch_of_severity(s32 patchSeverit
         newPatch = CHAOS_PATCH_NONE_POSITIVE;
     }
 
-    chaos_add_new_entry(newPatch);
     chaosmsg_print(newPatch, "New patch activated: %s");
+    chaos_add_new_entry(newPatch);
 
     gChaosForcedDurationMaximum = lastDuration;
     gChaosSkipSeverityDifficultyModifier = lastSkipSeverityModifier;
@@ -123,13 +123,13 @@ void chs_act_remove_negative_patch(void) {
         const enum ChaosPatchID patchId = entry->id;
         const struct ChaosPatch *patch = &gChaosPatches[patchId];
 
-        if (patch->effectType != CHAOS_EFFECT_NEGATIVE) {
+        if (patch->effectType != CHAOS_EFFECT_NEGATIVE || (patch->durationType == CHAOS_DURATION_STARS && entry->remainingDuration <= 1)) {
             continue;
         }
 
         s32 blacklistedMatchFound = FALSE;
         for (s32 j = 0; j < ARRAY_COUNT(patchBlacklist); j++) {
-            if (patchId == patchBlacklist[i]) {
+            if (patchId == patchBlacklist[j]) {
                 blacklistedMatchFound = TRUE;
                 break;
             }
@@ -153,13 +153,13 @@ void chs_act_remove_negative_patch(void) {
         const enum ChaosPatchID patchId = entry->id;
         const struct ChaosPatch *patch = &gChaosPatches[patchId];
 
-        if (patch->effectType != CHAOS_EFFECT_NEGATIVE) {
+        if (patch->effectType != CHAOS_EFFECT_NEGATIVE || (patch->durationType == CHAOS_DURATION_STARS && entry->remainingDuration <= 1)) {
             continue;
         }
 
         s32 blacklistedMatchFound = FALSE;
         for (s32 j = 0; j < ARRAY_COUNT(patchBlacklist); j++) {
-            if (patchId == patchBlacklist[i]) {
+            if (patchId == patchBlacklist[j]) {
                 blacklistedMatchFound = TRUE;
                 break;
             }
@@ -174,7 +174,7 @@ void chs_act_remove_negative_patch(void) {
             continue;
         }
 
-        chaos_remove_expired_entry(i, "Patch deactivated: %s");
+        chaos_remove_expired_entry_deferred(patchId, "Patch deactivated: %s");
         return;
     }
 }

@@ -1625,6 +1625,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .levelInitFunc      = chs_level_init_time_limit,
         .frameUpdateFunc    = chs_update_time_limit,
+        .deactivationFunc   = chs_deact_time_limit,
 
         .name               = "Speedy Comet",
         .shortDescription   = "Better hurry up! You now have 3 minutes to collect each star.",

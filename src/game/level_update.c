@@ -1469,6 +1469,7 @@ s32 update_level(void) {
         save_file_update_play_time();
     }
 
+    chaos_remove_deferred_patches();
     chaosShouldProcessFrameUpdate = FALSE;
     return changeLevel;
 }

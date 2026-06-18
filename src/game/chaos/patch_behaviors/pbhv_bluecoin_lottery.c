@@ -295,7 +295,7 @@ void drawslots() {
                         continue;
                     }
 
-                    chaos_remove_expired_entry(i, "%s: Expired!");
+                    chaos_remove_expired_entry(i--, "%s: Expired!"); // NOTE: Not inside callback, doesn't need to be deferred
                     break;
                 }
             }
