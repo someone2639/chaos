@@ -97,3 +97,32 @@ void chs_update_rocking_camera(void) {
 u8 chs_cond_cartridge_tilt(void) {
     return !gConfig.disableHarshVisuals; 
 }
+
+void *sCorruptionOriginalAddr = NULL;
+u8 sCorruptionLastLevel = LEVEL_NONE;
+
+u8 chs_cond_corruption(void) {
+    return !gConfig.disableHarshVisuals; 
+}
+
+void chs_update_corruption(void) {
+    if(gCurrLevelNum != sCorruptionLastLevel) {
+        sCorruptionLastLevel = gCurrLevelNum;
+        sCorruptionOriginalAddr = NULL;
+    }
+
+    if(!sCorruptionOriginalAddr && !gConfig.disableHarshVisuals) {
+        sCorruptionOriginalAddr = get_segment_base_addr(0x09); 
+        set_segment_base_addr(0x09, get_segment_base_addr(0x07));
+    } else if (sCorruptionOriginalAddr && gConfig.disableHarshVisuals) {
+        set_segment_base_addr(0x09, sCorruptionOriginalAddr);
+        sCorruptionOriginalAddr = NULL;
+    }
+}
+
+void chs_deact_corruption(void) {
+    if(sCorruptionOriginalAddr) {
+        set_segment_base_addr(0x09, sCorruptionOriginalAddr);
+        sCorruptionOriginalAddr = NULL;
+    }
+}

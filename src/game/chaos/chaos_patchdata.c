@@ -1629,6 +1629,21 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Cartridge Tilt",
         .shortDescription   = "GEDDAN",
     },
+    [CHAOS_PATCH_CORRUPTION] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 1,
+        .duration           = 10,
+        .durationHard       = 12,
+        .durationImpossible = 14,
+
+        .frameUpdateFunc    = chs_update_corruption,
+        .deactivationFunc   = chs_deact_corruption,
+        .conditionalFunc    = chs_cond_corruption,
+
+        .name               = "Corrupted Textures",
+        .shortDescription   = "Because that grass texture was just too boring.",
+    },
 
 // Time Limit
 #define CHS_TIME_LIMIT_DURATION            10

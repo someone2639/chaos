@@ -159,6 +159,9 @@ u8 chs_cond_rocking_camera(void);
 void chs_act_rocking_camera(void);
 void chs_update_rocking_camera(void);
 u8 chs_cond_cartridge_tilt(void);
+u8 chs_cond_corruption(void);
+void chs_update_corruption(void);
+void chs_deact_corruption(void);
 
 // Time Limit
 void chs_level_init_time_limit(void);

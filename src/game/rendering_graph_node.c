@@ -658,9 +658,9 @@ void geo_process_animated_part(struct GraphNodeAnimatedPart *node) {
 
     if (gCurrAnimType == ANIM_TYPE_ROTATION) {
         if(!gConfig.disableHarshVisuals && chaos_check_if_patch_active(CHAOS_PATCH_CARTRIDGE_TILT)) {
-            rotation[0] = RAND(0xFFFF);
-            rotation[1] = RAND(0xFFFF);
-            rotation[2] = RAND(0xFFFF);
+            rotation[0] = RAND(0x10000);
+            rotation[1] = RAND(0x10000);
+            rotation[2] = RAND(0x10000);
         } else {
             rotation[0] = gCurrAnimData[retrieve_animation_index(gCurrAnimFrame, &gCurrAnimAttribute)];
             rotation[1] = gCurrAnimData[retrieve_animation_index(gCurrAnimFrame, &gCurrAnimAttribute)];
