@@ -622,15 +622,24 @@ s8 obj_find_wall_displacement(Vec3f dist, f32 x, f32 y, f32 z, f32 radius) {
  * Spawns a number of coins at the location of an object
  * with a random forward velocity, y velocity, and direction.
  */
-void obj_spawn_yellow_coins(struct Object *obj, s8 nCoins) {
+void obj_spawn_yellow_coins(struct Object *obj, s8 nCoins, u8 isEnemy) {
     struct Object *coin;
     s8 count;
 
-    for (count = 0; count < nCoins; count++) {
-        coin = spawn_object(obj, MODEL_YELLOW_COIN, bhvMovingYellowCoin);
-        coin->oForwardVel = random_float() * 20;
-        coin->oVelY = random_float() * 40 + 20;
-        coin->oMoveAngleYaw = random_u16();
+    if (isEnemy && chaos_check_if_patch_active(CHAOS_PATCH_ENEMY_BLUE_COINS)) {
+        if (nCoins > 0) {
+            coin = spawn_object(obj, MODEL_BLUE_COIN, bhvMovingBlueCoinNonSlide);
+            coin->oForwardVel = random_float() * 20;
+            coin->oVelY = random_float() * 40 + 20;
+            coin->oMoveAngleYaw = random_u16();
+        }
+    } else {
+        for (count = 0; count < nCoins; count++) {
+            coin = spawn_object(obj, MODEL_YELLOW_COIN, bhvMovingYellowCoin);
+            coin->oForwardVel = random_float() * 20;
+            coin->oVelY = random_float() * 40 + 20;
+            coin->oMoveAngleYaw = random_u16();
+        }
     }
 }
 

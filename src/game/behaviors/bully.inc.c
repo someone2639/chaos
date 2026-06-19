@@ -188,7 +188,12 @@ void bully_step(void) {
 }
 
 void bully_spawn_coin(void) {
-    struct Object *coin = spawn_object(o, MODEL_YELLOW_COIN, bhvMovingYellowCoin);
+    struct Object *coin;
+    if (chaos_check_if_patch_active(CHAOS_PATCH_ENEMY_BLUE_COINS)) {
+        coin = spawn_object(o, MODEL_BLUE_COIN, bhvMovingBlueCoinNonSlide);
+    } else {
+        coin = spawn_object(o, MODEL_YELLOW_COIN, bhvMovingYellowCoin);
+    }
 
     cur_obj_play_sound_2(SOUND_GENERAL_COIN_SPURT);
 

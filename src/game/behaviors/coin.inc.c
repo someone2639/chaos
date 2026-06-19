@@ -12,6 +12,18 @@ struct ObjectHitbox sYellowCoinHitbox = {
     /* hurtboxHeight:     */ 0,
 };
 
+static struct ObjectHitbox sBlueCoinHitbox = {
+    /* interactType:      */ INTERACT_COIN,
+    /* downOffset:        */ 0,
+    /* damageOrCoinValue: */ 5,
+    /* health:            */ 0,
+    /* numLootCoins:      */ 0,
+    /* radius:            */ 100,
+    /* height:            */ 64,
+    /* hurtboxRadius:     */ 0,
+    /* hurtboxHeight:     */ 0,
+};
+
 s16 sCoinArrowPositions[][2] = {
     { 0, -150 },
     { 0, -50 },
@@ -75,6 +87,21 @@ void bhv_yellow_coin_init(void) {
 
     if (500.0f < absf(o->oPosY - o->oFloorHeight)) {
         cur_obj_set_model(MODEL_YELLOW_COIN_NO_SHADOW);
+    }
+
+    if (o->oFloorHeight < FLOOR_LOWER_LIMIT_MISC) {
+        obj_mark_for_deletion(o);
+    }
+}
+
+void bhv_blue_coin_init(void) {
+    cur_obj_set_behavior(bhvYellowCoin);
+    obj_set_hitbox(o, &sBlueCoinHitbox);
+    bhv_init_room();
+    cur_obj_update_floor_height();
+
+    if (500.0f < absf(o->oPosY - o->oFloorHeight)) {
+        cur_obj_set_model(MODEL_BLUE_COIN_NO_SHADOW);
     }
 
     if (o->oFloorHeight < FLOOR_LOWER_LIMIT_MISC) {

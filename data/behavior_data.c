@@ -1011,6 +1011,16 @@ const BehaviorScript bhvTemporaryYellowCoin[] = {
     END_LOOP(),
 };
 
+const BehaviorScript bhvTemporaryBlueCoin[] = {
+    BEGIN(OBJ_LIST_LEVEL),
+    BILLBOARD(),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    CALL_NATIVE(bhv_blue_coin_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_temp_coin_loop),
+    END_LOOP(),
+};
+
 const BehaviorScript bhvThreeCoinsSpawn[] = {
     BEGIN(OBJ_LIST_DEFAULT),
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
@@ -1035,6 +1045,19 @@ const BehaviorScript bhvSingleCoinGetsSpawned[] = {
     BILLBOARD(),
     CALL_NATIVE(bhv_coin_scale),
     CALL_NATIVE(bhv_coin_init),
+    SET_OBJ_PHYSICS(/*Wall hitbox radius*/ 30, /*Gravity*/ -400, /*Bounciness*/ -70, /*Drag strength*/ 1000, /*Friction*/ 1000, /*Buoyancy*/ 200, /*Unused*/ 0, 0),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_coin_loop),
+        ADD_INT(oAnimState, 1),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvSingleBlueCoinGetsSpawned[] = {
+    BEGIN(OBJ_LIST_LEVEL),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    BILLBOARD(),
+    CALL_NATIVE(bhv_coin_init),
+    SET_INT(oDamageOrCoinValue, 5),
     SET_OBJ_PHYSICS(/*Wall hitbox radius*/ 30, /*Gravity*/ -400, /*Bounciness*/ -70, /*Drag strength*/ 1000, /*Friction*/ 1000, /*Buoyancy*/ 200, /*Unused*/ 0, 0),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_coin_loop),
@@ -3751,6 +3774,22 @@ const BehaviorScript bhvMovingYellowCoin[] = {
     SET_INT(oAnimState, -1),
     CALL_NATIVE(bhv_coin_scale),
     CALL_NATIVE(bhv_moving_yellow_coin_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_moving_yellow_coin_loop),
+        ADD_INT(oAnimState, 1),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvMovingBlueCoinNonSlide[] = {
+    BEGIN(OBJ_LIST_LEVEL),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    BILLBOARD(),
+    SET_HITBOX(/*Radius*/ 100, /*Height*/ 64),
+    SET_INT(oInteractType, INTERACT_COIN),
+    SET_INT(oIntangibleTimer, 0),
+    SET_INT(oAnimState, -1),
+    CALL_NATIVE(bhv_moving_blue_coin_init),
+    SET_FLOAT(oGravity, 3),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_moving_yellow_coin_loop),
         ADD_INT(oAnimState, 1),

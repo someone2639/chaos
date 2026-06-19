@@ -27,8 +27,12 @@ struct ObjectHitbox sBowserFlameHitbox = {
 void bowser_flame_despawn(void) {
     obj_mark_for_deletion(o);
     spawn_object_with_scale(o, MODEL_NONE, bhvBlackSmokeUpward, 1.0f);
-    if (random_float() < 0.1) {
-        spawn_object(o, MODEL_YELLOW_COIN, bhvTemporaryYellowCoin);
+    if (random_float() < 0.1f) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_ENEMY_BLUE_COINS)) {
+            spawn_object(o, MODEL_BLUE_COIN, bhvTemporaryBlueCoin);
+        } else {
+            spawn_object(o, MODEL_YELLOW_COIN, bhvTemporaryYellowCoin);
+        }
     }
 }
 

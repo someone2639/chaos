@@ -1642,6 +1642,15 @@ void obj_spawn_loot_blue_coins(struct Object *obj, s32 numCoins, f32 sp28, s16 p
 }
 
 void obj_spawn_loot_yellow_coins(struct Object *obj, s32 numCoins, f32 sp28) {
+    if (chaos_check_if_patch_active(CHAOS_PATCH_ENEMY_BLUE_COINS)) {
+        o->oNumLootCoins = MIN(o->oNumLootCoins, 1);
+        obj_spawn_loot_coins(obj, numCoins, sp28, bhvSingleBlueCoinGetsSpawned, 0, MODEL_BLUE_COIN);
+    }
+
+    obj_spawn_loot_coins(obj, numCoins, sp28, bhvSingleCoinGetsSpawned, 0, MODEL_YELLOW_COIN);
+}
+
+void obj_spawn_loot_yellow_coins_forced(struct Object *obj, s32 numCoins, f32 sp28) {
     obj_spawn_loot_coins(obj, numCoins, sp28, bhvSingleCoinGetsSpawned, 0, MODEL_YELLOW_COIN);
 }
 
@@ -1653,7 +1662,16 @@ void cur_obj_spawn_loot_coin_at_mario_pos(void) {
 
     o->oNumLootCoins--;
 
-    coin = spawn_object(o, MODEL_YELLOW_COIN, bhvSingleCoinGetsSpawned);
+    if (chaos_check_if_patch_active(CHAOS_PATCH_ENEMY_BLUE_COINS)) {
+        o->oNumLootCoins -= 4;
+        if (o->oNumLootCoins < 0) {
+            o->oNumLootCoins = 0;
+        }
+
+        coin = spawn_object(o, MODEL_BLUE_COIN, bhvSingleBlueCoinGetsSpawned);
+    } else {
+        coin = spawn_object(o, MODEL_YELLOW_COIN, bhvSingleCoinGetsSpawned);
+    }
     coin->oVelY = 30.0f;
 
     obj_copy_pos(coin, gMarioObject);
@@ -2482,9 +2500,11 @@ void obj_explode_and_spawn_coins(f32 sp18, s32 sp1C) {
     obj_mark_for_deletion(o);
 
     if (sp1C == 1) {
-        obj_spawn_loot_yellow_coins(o, o->oNumLootCoins, 20.0f);
+        obj_spawn_loot_yellow_coins_forced(o, o->oNumLootCoins, 20.0f);
     } else if (sp1C == 2) {
         obj_spawn_loot_blue_coins(o, o->oNumLootCoins, 20.0f, 150);
+    } else if (sp1C == 3) {
+        obj_spawn_loot_yellow_coins(o, o->oNumLootCoins, 20.0f);
     }
 }
 

@@ -785,7 +785,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 6,
         .durationImpossible = 8,
 
-        INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SHUFFLE_OBJECTS),
+        INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SHUFFLE_OBJECTS, CHAOS_PATCH_ENEMY_BLUE_COINS),
 
         .name               = "Collector's Anxiety",
         .shortDescription   = "Stars are only collectible after every single coin type in a level has been collected (when present).",
@@ -852,6 +852,17 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Money Magnet",
         .shortDescription   = "Yellow and Blue coins will find you more attractive.",
+    },
+    [CHAOS_PATCH_ENEMY_BLUE_COINS] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 3,
+        .duration           = 5,
+
+        INCOMPATIBLE(CHAOS_PATCH_COLLECTORS_ANXIETY),
+
+        .name               = "Blue Coin Bonanza",
+        .shortDescription   = "All enemy coin drops will spawn a blue coin instead of yellow coins.",
     },
 
 

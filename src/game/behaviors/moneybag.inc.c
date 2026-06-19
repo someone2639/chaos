@@ -171,7 +171,7 @@ void moneybag_act_disappear(void) {
 
 void moneybag_act_death(void) {
     if (o->oTimer == 1) {
-        obj_spawn_yellow_coins(o, 5);
+        obj_spawn_yellow_coins(o, 5, TRUE);
         create_sound_spawner(SOUND_GENERAL_SPLATTERING);
         spawn_mist_particles();
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;

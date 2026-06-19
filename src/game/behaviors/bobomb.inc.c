@@ -21,7 +21,7 @@ void bhv_bobomb_init(void) {
 
 void bobomb_spawn_coin(void) {
     if (!((o->oBehParams >> 8) & 0x01)) {
-        obj_spawn_yellow_coins(o, 1);
+        obj_spawn_yellow_coins(o, 1, TRUE);
         o->oBehParams = 0x100;
         set_object_respawn_info_bits(o, 1);
     }
