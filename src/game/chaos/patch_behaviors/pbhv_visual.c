@@ -93,3 +93,7 @@ void chs_update_rocking_camera(void) {
 
     sChsRockTimeLeft--;
 }
+
+u8 chs_cond_cartridge_tilt(void) {
+    return !gConfig.disableHarshVisuals; 
+}

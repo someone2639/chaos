@@ -657,9 +657,15 @@ void geo_process_animated_part(struct GraphNodeAnimatedPart *node) {
     }
 
     if (gCurrAnimType == ANIM_TYPE_ROTATION) {
-        rotation[0] = gCurrAnimData[retrieve_animation_index(gCurrAnimFrame, &gCurrAnimAttribute)];
-        rotation[1] = gCurrAnimData[retrieve_animation_index(gCurrAnimFrame, &gCurrAnimAttribute)];
-        rotation[2] = gCurrAnimData[retrieve_animation_index(gCurrAnimFrame, &gCurrAnimAttribute)];
+        if(!gConfig.disableHarshVisuals && chaos_check_if_patch_active(CHAOS_PATCH_CARTRIDGE_TILT)) {
+            rotation[0] = RAND(0xFFFF);
+            rotation[1] = RAND(0xFFFF);
+            rotation[2] = RAND(0xFFFF);
+        } else {
+            rotation[0] = gCurrAnimData[retrieve_animation_index(gCurrAnimFrame, &gCurrAnimAttribute)];
+            rotation[1] = gCurrAnimData[retrieve_animation_index(gCurrAnimFrame, &gCurrAnimAttribute)];
+            rotation[2] = gCurrAnimData[retrieve_animation_index(gCurrAnimFrame, &gCurrAnimAttribute)];
+        }
     }
     mtxf_rotate_xyz_and_translate(matrix, translation, rotation);
     mtxf_mul(gMatStack[gMatStackIndex + 1], matrix, gMatStack[gMatStackIndex]);

@@ -158,6 +158,7 @@ void chs_act_sideways_camera(void);
 u8 chs_cond_rocking_camera(void);
 void chs_act_rocking_camera(void);
 void chs_update_rocking_camera(void);
+u8 chs_cond_cartridge_tilt(void);
 
 // Time Limit
 void chs_level_init_time_limit(void);

@@ -1412,6 +1412,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 8,
         .durationImpossible = 10,
 
+        INCOMPATIBLE(CHAOS_PATCH_CARTRIDGE_TILT),
+
         .name               = "Confused Entities",
         .shortDescription   = "Most objects are (sometimes) facing the wrong way!",
     },
@@ -1422,6 +1424,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration           = 5,
         .durationHard       = 7,
         .durationImpossible = 9,
+
+        INCOMPATIBLE(CHAOS_PATCH_CARTRIDGE_TILT),
 
         .name               = "Upside-Down Entities",
         .shortDescription   = "Most objects are (sometimes) floating upside down!",
@@ -1609,6 +1613,21 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "45-Degree Camera",
         .shortDescription   = "Add a third camera option in addition to Lakitu Cam and Mario Cam (see details screen for more info).",
         .longDescription    = "The 45-Degree Camera will snap to 8 directions nearly at all times, and override most camera-following behaviors. This mode also supports Parallel Lakitu Cam, which allows the player to use D-Pad buttons for precise camera angle adjustments.",
+    },
+    [CHAOS_PATCH_CARTRIDGE_TILT] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 2,
+        .duration           = 8,
+        .durationHard       = 10,
+        .durationImpossible = 10,
+
+        INCOMPATIBLE(CHAOS_PATCH_CONFUSED_OBJECTS, CHAOS_PATCH_UPSIDE_DOWN_OBJECTS),
+
+        .conditionalFunc    = chs_cond_cartridge_tilt,
+
+        .name               = "Cartridge Tilt",
+        .shortDescription   = "GEDDAN",
     },
 
 // Time Limit
