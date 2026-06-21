@@ -300,6 +300,36 @@ void menu_draw_button(Gfx **dl, s32 x, s32 y, s32 button, s32 pressed) {
     *dl = dlHead;
 }
 
+void menu_apply_gradient_to_string(char *dest, const char *src, const s32 oscillationFrames, const s32 color1[4], const s32 color2[4]) {
+    char finalHexStr[8 + 1];
+    f32 colorPerc = (1.0f + sins((gGlobalTimer % oscillationFrames) * 0x10000 / oscillationFrames)) * 0.5f;
+
+    for (s32 i = 0; i < 4; i++) {
+        if ((color1[i] >= 0 && color1[i] <= 255) && (color2[i] >= 0 && color2[i] <= 255)) {
+            f32 colorBase;
+            f32 colorAdd;
+            f32 mult;
+
+            if (color1[i] < color2[i]) {
+                colorBase = color1[i];
+                colorAdd = color2[i] - color1[i];
+                mult = colorPerc;
+            } else {
+                colorBase = color2[i];
+                colorAdd = color1[i] - color2[i];
+                mult = (1.0f - colorPerc);
+            }
+
+            sprintf(&finalHexStr[2 * i], "%02X", (u8) (colorBase + ((colorAdd * mult) + 0.5f)));
+        } else {
+            sprintf(&finalHexStr[2 * i], "--");
+        }
+    }
+
+    finalHexStr[ARRAY_COUNT(finalHexStr) - 1] = '\0';
+    sprintf(dest, "@%s%s@--------", finalHexStr, src);
+}
+
 /*
     Adds a button prompt to the button prompt list
 */

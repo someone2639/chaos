@@ -1217,7 +1217,12 @@ void render_patch_select_button_prompts() {
             menu_add_button_prompt(&prompts, MENU_PROMPT_R_TRIG, "Active Patches");
             menu_add_button_prompt(&prompts, MENU_PROMPT_START_BUTTON, "Help");
             if(pos->longDescription || neg->longDescription) {
-                menu_add_button_prompt(&prompts, MENU_PROMPT_Z_TRIG, "Details");
+                const s32 color1[4] = {0x7F, 0x7F, 0x7F, -1};
+                const s32 color2[4] = {0xFF, 0xFF, 0xFF, -1};
+                char str[32];
+
+                menu_apply_gradient_to_string(str, "Details", 22, color1, color2);
+                menu_add_button_prompt(&prompts, MENU_PROMPT_Z_TRIG, str);
             }
             break;
         case PATCH_SELECT_STATE_CONFIRMATION:

@@ -360,7 +360,12 @@ void render_active_patches_menu_button_prompts() {
         case ACTIVE_PATCHES_MENU_STATE_DEFAULT:
             menu_add_button_prompt(&prompts, MENU_PROMPT_B_BUTTON, "Back");
             if(patchInfo->longDescription){
-                menu_add_button_prompt(&prompts, MENU_PROMPT_Z_TRIG, "Details");
+                const s32 color1[4] = {0x7F, 0x7F, 0x7F, -1};
+                const s32 color2[4] = {0xFF, 0xFF, 0xFF, -1};
+                char str[32];
+
+                menu_apply_gradient_to_string(str, "Details", 22, color1, color2);
+                menu_add_button_prompt(&prompts, MENU_PROMPT_Z_TRIG, str);
             }
             break;
         case ACTIVE_PATCHES_MENU_STATE_SHOW_EXT_DESC:
