@@ -1562,7 +1562,7 @@ u8 sRandomMusicSeqsLUT[] = {
     SEQ_EVENT_ENDLESS_STAIRS,
     SEQ_LEVEL_BOSS_KOOPA_FINAL,
     SEQ_EVENT_CUTSCENE_ENDING,
-    SEQ_EVENT_CUTSCENE_CREDITS,
+    SEQ_EVENT_CUTSCENE_CREDITS, // TODO: BUG: This keeps playing during patch selection (Can this be fixed without deliberately botching credits behavior? (you know...just in case!))
 };
 
 

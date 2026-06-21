@@ -999,8 +999,10 @@ void cur_obj_update(void) {
       chaos_check_if_patch_active(CHAOS_PATCH_MARTH_GRAB) &&
       gCurrentObject->activeFlags != ACTIVE_FLAG_DEACTIVATED &&
       gCurrentObject->oIntangibleTimer == 0 &&
+      (gCurrentObject->oInteractType & INTERACT_GRABBABLE) &&
+      !(gCurrentObject->oInteractionSubtype & INT_SUBTYPE_NOT_GRABBABLE) &&
       (objFlags & (OBJ_FLAG_HOLDABLE | OBJ_FLAG_COMPUTE_DIST_TO_MARIO)) == (OBJ_FLAG_HOLDABLE | OBJ_FLAG_COMPUTE_DIST_TO_MARIO) &&
-      gCurrentObject->oDistanceToMario < 500.0f
+      gCurrentObject->oDistanceToMario < 800.0f
     )  {
         gMarthObject = gCurrentObject;
     } else if (gCurrentObject == gMarthObject) {

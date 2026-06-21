@@ -23,7 +23,12 @@ void bowser_tail_anchor_act_default(void) {
         bowser->oIntangibleTimer = 0;
         o->oAction = BOWSER_ACT_TAIL_TOUCHED_MARIO;
     } else {
-        bowser->oIntangibleTimer = -1;
+        if (chaos_check_if_patch_active(CHAOS_PATCH_MARTH_GRAB)) {
+            bowser->oIntangibleTimer = 0;
+            o->oAction = BOWSER_ACT_TAIL_TOUCHED_MARIO;
+        } else {
+            bowser->oIntangibleTimer = -1;
+        }
     }
 }
 

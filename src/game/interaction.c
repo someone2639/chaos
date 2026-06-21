@@ -421,24 +421,32 @@ u32 mario_check_object_grab(struct MarioState *m) {
     const BehaviorScript *script;
 
     if (gMarthObject && !(m->action & ACT_FLAG_AIR) && (m->action != ACT_DIVE_SLIDE)) {
-        s16 facingDYaw = mario_obj_angle_to_object(m, gMarthObject) - m->faceAngle[1];
-        if (facingDYaw >= -0x3AAA && facingDYaw <= 0x3AAA) {
+        script = virtual_to_segmented(0x13, gMarthObject->behavior);
+
+        if (script == bhvBowser) {
+            m->faceAngle[1] = gMarthObject->oMoveAngleYaw;
             m->usedObj = gMarthObject;
-
-            set_mario_action(
-                m, (m->action & ACT_FLAG_DIVING) ? ACT_DIVE_PICKING_UP : ACT_PICKING_UP, 0);
-
-            result = TRUE;
+            result = set_mario_action(m, ACT_PICKING_UP_BOWSER, 0);
         } else {
-            m->usedObj = NULL;
+            s16 facingDYaw = mario_obj_angle_to_object(m, gMarthObject) - m->faceAngle[1];
+            if (facingDYaw >= -0x3AAA && facingDYaw <= 0x3AAA) {
+                m->usedObj = gMarthObject;
+
+                set_mario_action(
+                    m, (m->action & ACT_FLAG_DIVING) ? ACT_DIVE_PICKING_UP : ACT_PICKING_UP, 0);
+
+                result = TRUE;
+            } else {
+                m->usedObj = NULL;
+            }
         }
         gMarthObject = NULL;
     } else if (m->input & INPUT_INTERACT_OBJ_GRABBABLE) {
         script = virtual_to_segmented(0x13, m->interactObj->behavior);
 
         if (script == bhvBowser) {
-            s16 facingDYaw = m->faceAngle[1] - m->interactObj->oMoveAngleYaw;
-            if (facingDYaw >= -0x5555 && facingDYaw <= 0x5555) {
+            s16 bowserAngle = m->faceAngle[1] - m->interactObj->oMoveAngleYaw;
+            if (bowserAngle >= -0x5555 && bowserAngle <= 0x5555) {
                 m->faceAngle[1] = m->interactObj->oMoveAngleYaw;
                 m->usedObj = m->interactObj;
                 result = set_mario_action(m, ACT_PICKING_UP_BOWSER, 0);
@@ -845,6 +853,8 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
     u32 previousSaveFlags;
     u32 newSaveFlags;
 
+    // TODO: BUG: Do not allow collection of star if warp is active, as patch select menu / save will be skipped (or all patches will disappear if grand star).
+    // Primarily an issue for Speedy Comet (also deactivate countdown timer for Speedy Comet after interaction (handle exit and non-exit of course appropriately)).
     if (m->health >= 0x100 || chaos_check_if_patch_active(CHAOS_PATCH_FROM_BEYOND_THE_GRAVE)) {
         if(chs_can_collect_star(&uncollectablePatchID) || grandStar || key) {
             mario_stop_riding_and_holding(m);
@@ -885,7 +895,7 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
             previousStarCount = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
             previousSaveFlags = save_file_get_flags();
             starIndex = (o->oBehParams >> 24) & 0x1F;
-            if (chaos_check_if_patch_active(CHAOS_PATCH_STAR_CLONING_DEVICE)) {
+            if (chaos_check_if_patch_active(CHAOS_PATCH_STAR_CLONING_DEVICE) && !(grandStar || key)) {
                 starIndex = chs_get_yellow_star_in_course(gCurrCourseNum, starIndex);
             }
             save_file_collect_star_or_key(m->numCoins, starIndex);

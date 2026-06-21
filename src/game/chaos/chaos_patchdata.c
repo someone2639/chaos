@@ -292,6 +292,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "One-Star Giveaway",
         .shortDescription   = "Lose one random star currently in your possession.",
     },
+    // TODO: Collecting a key legitimately and pressing a cap switch legitimately should expire free patches (and not count as chaos events or display blue keys)
     [CHAOS_PATCH_GET_KEY_1] = {
         .durationType       = CHAOS_DURATION_INFINITE,
         .effectType         = CHAOS_EFFECT_POSITIVE,
@@ -368,7 +369,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc    = chs_cond_unlock_star_doors,
 
         .name               = "Just Some Cool Looking Doors",
-        .shortDescription   = "Mario may enter all star doors (but still may not climb the infinite staircase).",
+        .shortDescription   = "Mario may enter all star doors, regardless of star count.",
     },
     [CHAOS_PATCH_STAR_CLONING_DEVICE] = {
         .durationType       = CHAOS_DURATION_USE_COUNT,
@@ -1495,7 +1496,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription   = "It's like playing the game two times at the same time!",
         .longDescription    = "This will probably not be hitting 60 FPS most of the time while running on hardware...hopefully console players enjoy the choppy framerates!",
     },
-    [CHAOS_PATCH_TOP_DOWN_CAMERA] = {
+    [CHAOS_PATCH_TOP_DOWN_CAMERA] = { // TODO: BUG: Joystick is busted when twirling with top down camera
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
@@ -2148,7 +2149,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "One Makes You Larger",
         .shortDescription   = "Increase Mario's size by 12.5% (additive).",
     },
-    [CHAOS_PATCH_MARIO_SMALL] = {
+    [CHAOS_PATCH_MARIO_SMALL] = { // TODO: BUG: Maximum small Mario has some significant issues (especially with breaking yellow boxes and grabbing Bowser)
         .durationType       = CHAOS_DURATION_INFINITE,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .negationId         = CHAOS_PATCH_MARIO_BIG,
@@ -2404,7 +2405,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Fading Fantasy",
         .shortDescription   = "Fading teleports are all deactivated.",
     },
-    [CHAOS_PATCH_LUIGI] = {
+    [CHAOS_PATCH_LUIGI] = { // TODO: Either add proper voice lines or pitch them up, Melee style
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 1,
@@ -2491,8 +2492,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 1,
         .duration           = 8,
 
-        // NOTE: There is a bug with this where Bowser grabs don't work correctly, which makes Bowser 3 almost impossible.
-        // It is however hilarious on Bowser 1 and 2, so this will only get star restricted after ~57 stars rather than properly fixed.
+        // Note: Star restriction begins around ~57 stars. Was originally added to make Bowser 3 possible, but bug has since been fixed.
+        // However, Marth Grab now makes the Bowser 3 fight way too easy and anticlimactic, so this restriction remains in place.
         .conditionalFunc    = chs_cond_marth_grab,
 
         .name               = "Marth Grab",
@@ -2593,7 +2594,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration           = 6,
         .durationHard       = 7,
         .durationImpossible = 8,
-        // .disableForHardcore = TRUE, // TODO: Determine whether this should be disabled for hardcore mode in playtesting, or if it is, whether it should be moved to severity 2
+        .disableForHardcore = TRUE,
         
         INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_A, CHAOS_PATCH_BUTTON_BROKEN_B, CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SWAPPED_ZR_AB, CHAOS_PATCH_BUTTON_BROKEN_C, CHAOS_PATCH_RED_LIGHT),
 
@@ -2602,7 +2603,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc    = chs_update_tetris,
 
         .name               = "Tetris Effect",
-        .shortDescription   = "Control a simultaneous game of Tetris. If you lose, Mario dies. See details screen controls!",
+        .shortDescription   = "Control a simultaneous game of Tetris. If you lose, Mario dies. See details screen for controls!",
         .longDescription    = "Hold @9F9FFF--R@-------- to control Tetris and lock Mario's inputs.\n"
                               "Move Piece\t@7F7F7F-- -- @9F9FFF--D-Pad/C Left/Right@--------\n"
                               "Hard Drop\t@7F7F7F-- -- @9F9FFF--D-Pad/C Up@--------\n"

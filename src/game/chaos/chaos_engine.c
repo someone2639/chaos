@@ -23,7 +23,7 @@ static u32 activePatchCounts[CHAOS_PATCH_COUNT];
 static u8 availablePatches[CHAOS_PATCH_COUNT];
 static struct ChaosPatchSelection generatedPatches[CHAOS_PATCH_MAX_GENERATABLE];
 static enum ChaosPatchID deferredPatchesForRemoval[CHAOS_PATCH_DEFERRED_QUEUE_SIZE];
-static u32 deferredPatchIndex = 0;
+static u32 deferredPatchCount = 0;
 static s32 unsafeDeactivationFunc = FALSE;
 
 char gChaosInternalBuffer[0x1000];
@@ -314,9 +314,9 @@ void chaos_remove_expired_entry_deferred(const enum ChaosPatchID patchId, const 
         return;
     }
     
-    assert(deferredPatchIndex < ARRAY_COUNT(deferredPatchesForRemoval), "chaos_remove_expired_entry_deferred:\nOut of defer slots!")
-    if (deferredPatchIndex < ARRAY_COUNT(deferredPatchesForRemoval)) {
-        deferredPatchesForRemoval[deferredPatchIndex++] = patchId;
+    assert(deferredPatchCount < ARRAY_COUNT(deferredPatchesForRemoval), "chaos_remove_expired_entry_deferred:\nOut of defer slots!")
+    if (deferredPatchCount < ARRAY_COUNT(deferredPatchesForRemoval)) {
+        deferredPatchesForRemoval[deferredPatchCount++] = patchId;
 
         // Print chaos message, if it exists
         if (msg) {
@@ -1169,7 +1169,7 @@ void chaos_init(void) {
     save_file_get_chaos_data(&gChaosActiveEntries, &gChaosActiveEntryCount, &gChaosDifficulty, &gChaosGameMode, &gChaosLastForcedSeverity, &gChaosLastEventType);
     chaos_recompute_active_patch_counts();
 
-    deferredPatchIndex = 0;
+    deferredPatchCount = 0;
     gChaosLevelWarped = FALSE;
     gChaosBlueStarLastCollected = FALSE;
     gChaosForcedDurationType = CHAOS_DURATION_DO_NOT_FORCE;
@@ -1250,7 +1250,7 @@ void chaos_frame_update(void) {
 }
 
 void chaos_remove_deferred_patches(void) {
-    if (!gChaosActiveEntryCount || deferredPatchIndex == 0) {
+    if (!gChaosActiveEntryCount || deferredPatchCount == 0) {
         return;
     }
     
@@ -1266,7 +1266,7 @@ void chaos_remove_deferred_patches(void) {
             continue;
         }
 
-        for (u32 entry = 0; entry < deferredPatchIndex; entry++) {
+        for (u32 entry = 0; entry < deferredPatchCount; entry++) {
             if (patchId != deferredPatchesForRemoval[entry] || patchId == CHAOS_PATCH_NONE) {
                 continue;
             }
@@ -1277,7 +1277,7 @@ void chaos_remove_deferred_patches(void) {
     }
 
     // Remove everything else
-    for (u32 entry = 0; entry < deferredPatchIndex; entry++) {
+    for (u32 entry = 0; entry < deferredPatchCount; entry++) {
         const enum ChaosPatchID patchId = deferredPatchesForRemoval[entry];
         if (patchId == CHAOS_PATCH_NONE) {
             continue;
@@ -1292,5 +1292,5 @@ void chaos_remove_deferred_patches(void) {
         }
     }
     
-    deferredPatchIndex = 0;
+    deferredPatchCount = 0;
 }
