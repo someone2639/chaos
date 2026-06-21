@@ -1561,8 +1561,13 @@ void update_mario_inputs(struct MarioState *m) {
     }
 
 #ifdef L_TO_ADD_PATCH
-    if(gPlayer1Controller->buttonPressed & L_TRIG && !chaos_check_if_patch_active(L_TO_ADD_PATCH)) {
-        chaos_add_new_entry(L_TO_ADD_PATCH);
+    enum ChaosPatchID addPatches[] = {L_TO_ADD_PATCH};
+    if(gPlayer1Controller->buttonPressed & L_TRIG) {
+        for(int i = 0; i < ARRAY_COUNT(addPatches); i++) {
+            if(!chaos_check_if_patch_active(addPatches[i])) {
+                chaos_add_new_entry(addPatches[i]);
+            }
+        }
     }
 #endif // L_TO_ADD_PATCH
 }

@@ -16,7 +16,7 @@
 #include "audio/external.h"
 #include "sounds.h"
 
-static s8 sTetrisHoldRTimer  =   0;
+static s8 sTetrisHoldRTimer = 0;
 
 // Swaps the R button input to change camera mode from a button press to a button release
 s8 gTetrisTriggerCameraR = FALSE;
@@ -683,12 +683,21 @@ void tetris_state_default(void) {
     u32 down = gPlayer1Controller->buttonDown;
     
     s32 autoRepeat = 0;
+    f32 fpsAdjust = 1.0f;
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_60_FPS)) {
+        fpsAdjust = (30.0f / 60.0f);
+    } else if (chaos_check_if_patch_active(CHAOS_PATCH_45_FPS)) {
+        fpsAdjust = (30.0f / 45.0f);
+    } else if (chaos_check_if_patch_active(CHAOS_PATCH_20_FPS)) {
+        fpsAdjust = (30.0f / 20.0f);
+    }
 
     if(gMarioState->chaosStateFlags & CHAOS_STATE_CONTROLLING_TETRIS) {
         if((down & (L_JPAD | R_JPAD | L_CBUTTONS | R_CBUTTONS))) {
-            if(sTetris.autoRepeatTimer++ > 5) {
+            if(sTetris.autoRepeatTimer++ > (5 / fpsAdjust)) {
                 autoRepeat |= (down & (L_JPAD | R_JPAD | L_CBUTTONS | R_CBUTTONS));
-                sTetris.autoRepeatTimer -= 2;
+                sTetris.autoRepeatTimer -= (2 / fpsAdjust);
             }
         } else {
             sTetris.autoRepeatTimer = 0;
@@ -733,7 +742,7 @@ void tetris_state_default(void) {
             tetris_score_action(TET_ACT_HARD_DROP, lines);
         } else if (down & (D_JPAD | D_CBUTTONS)) {
             // Soft drop
-            sTetris.gravity += 1.0f;
+            sTetris.gravity += (1.0f * fpsAdjust);
             tetris_score_action(TET_ACT_SOFT_DROP, 1);
         }
     } else {
@@ -741,7 +750,7 @@ void tetris_state_default(void) {
     }
 
     // Handle gravity
-    sTetris.gravity += sGravityTable[sTetris.level - 1];
+    sTetris.gravity += (sGravityTable[sTetris.level - 1] * fpsAdjust);
     while(sTetris.gravity >= 1.0f) {
         tetris_move_piece(piece, 0, 1);
         sTetris.gravity -= 1.0f;
