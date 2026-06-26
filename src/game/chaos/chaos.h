@@ -263,6 +263,7 @@ enum ChaosPatchID {
     CHAOS_PATCH_DVD,
     CHAOS_PATCH_NUMBER_BLINDNESS,
     CHAOS_PATCH_TETRIS,
+    CHAOS_PATCH_STAR_MEDALLION,
 
 // Patch Count
     CHAOS_PATCH_COUNT,
@@ -372,7 +373,7 @@ struct ChaosPatchSelection {
 struct ChaosActiveEntry {
     enum ChaosPatchID id; // ID of a currently active patch
     u32 remainingDuration : 8; // Number of stars/uses/etc left for this patch to remain active
-    u32 frameTimer : 24;
+    u32 frameTimer : 24; // NOTE: Not actually read from the save file in practice (but still needed as a runtime property)
 };
 
 extern const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT];
@@ -390,7 +391,7 @@ extern enum ChaosDifficulty gChaosDifficulty;
 extern enum ChaosGameMode gChaosGameMode;
 extern enum ChaosPatchDurationType gChaosForcedDurationType;
 extern u32 gChaosForcedDurationMaximum;
-extern enum ChaosPatchID gNegativePatchCompare;
+extern enum ChaosPatchID gChaosNegativePatchCompare;
 
 // Check whether a particular chaos patch is active. Overall cheaper operation than the function below this one.
 u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId);

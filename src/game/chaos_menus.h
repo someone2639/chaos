@@ -84,7 +84,7 @@ s32 menu_anim_s32(f32 prog, s32 easeType, s32 start, s32 end);
 f32 menu_anim_f32(f32 prog, s32 easeType, f32 start, f32 end);
 f32 menu_get_anim_prog(struct ChaosMenu *menu);
 
-void menu_apply_gradient_to_string(char *dest, const char *src, const s32 oscillationFrames, const s32 color1[4], const s32 color2[4]);
+void menu_apply_color_oscillation_to_string(char *dest, const char *src, const s32 oscillationFrames, const s32 color1[4], const s32 color2[4]);
 void menu_add_button_prompt(struct ButtonPromptList *list, enum MenuButtonPrompt button, char *text);
 void menu_render_button_prompt_list(Gfx **dl, s32 x, s32 y, struct ButtonPromptList *list);
 void menu_single_button_prompt(Gfx **dl, s32 x, s32 y, enum MenuButtonPrompt button, char *text, s32 alignLeft);

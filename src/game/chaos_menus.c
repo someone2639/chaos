@@ -300,9 +300,9 @@ void menu_draw_button(Gfx **dl, s32 x, s32 y, s32 button, s32 pressed) {
     *dl = dlHead;
 }
 
-void menu_apply_gradient_to_string(char *dest, const char *src, const s32 oscillationFrames, const s32 color1[4], const s32 color2[4]) {
+void menu_apply_color_oscillation_to_string(char *dest, const char *src, const s32 oscillationFrames, const s32 color1[4], const s32 color2[4]) {
+    const f32 colorPerc = (1.0f + sins((gGlobalTimer % oscillationFrames) * 0x10000 / oscillationFrames)) * 0.5f;
     char finalHexStr[8 + 1];
-    f32 colorPerc = (1.0f + sins((gGlobalTimer % oscillationFrames) * 0x10000 / oscillationFrames)) * 0.5f;
 
     for (s32 i = 0; i < 4; i++) {
         if ((color1[i] >= 0 && color1[i] <= 255) && (color2[i] >= 0 && color2[i] <= 255)) {

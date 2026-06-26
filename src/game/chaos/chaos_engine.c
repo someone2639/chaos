@@ -42,7 +42,7 @@ enum ChaosDifficulty gChaosDifficulty = CHAOS_DIFFICULTY_NORMAL;
 enum ChaosGameMode gChaosGameMode = CHAOS_GAMEMODE_CLASSIC;
 enum ChaosPatchDurationType gChaosForcedDurationType = CHAOS_DURATION_DO_NOT_FORCE;
 u32 gChaosForcedDurationMaximum = 0;
-enum ChaosPatchID gNegativePatchCompare = CHAOS_PATCH_NONE;
+enum ChaosPatchID gChaosNegativePatchCompare = CHAOS_PATCH_NONE;
 
 static const f32 difficultyWeights[CHAOS_DIFFICULTY_COUNT][CHAOS_PATCH_SEVERITY_COUNT - 1] = {
     [CHAOS_DIFFICULTY_EASY      ] = { 0.12f, 0.25f, 0.38f }, // Difficulty offset should make highest level more common
@@ -64,7 +64,7 @@ static void chaos_recompute_active_patch_counts(void) {
 
 // NOTE: Function duplicated in chaos_check_conditional_func (for optimization)
 u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId) {
-    return (activePatchCounts[patchId] > 0 || patchId == gNegativePatchCompare);
+    return (activePatchCounts[patchId] > 0 || patchId == gChaosNegativePatchCompare);
 }
 
 static u8 chaos_check_conditional_func(const struct ChaosPatch *patch) {
@@ -81,7 +81,7 @@ static u8 chaos_check_conditional_func(const struct ChaosPatch *patch) {
         const enum ChaosPatchID patchId = patch->incompatible[i];
 
         // NOTE: Inline of chaos_check_if_patch_active (for optimization)
-        if (activePatchCounts[patchId] > 0 || patchId == gNegativePatchCompare) {
+        if (activePatchCounts[patchId] > 0 || patchId == gChaosNegativePatchCompare) {
             return FALSE;
         }
     }
@@ -706,7 +706,7 @@ static void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT]
             chaosmsg_print_debug("@AFAFAF--Negative attempt tries exceeded!@--------");
         }
 
-        gNegativePatchCompare = negativePatchId;
+        gChaosNegativePatchCompare = negativePatchId;
 
         s32 applicablePositiveCount = 0;
         for (enum ChaosPatchID patchId = 0; patchId < CHAOS_PATCH_COUNT; patchId++) {
@@ -783,7 +783,7 @@ static void chaos_generate_patches(u8 severityCounts[CHAOS_PATCH_SEVERITY_COUNT]
             }
         }
 
-        gNegativePatchCompare = CHAOS_PATCH_NONE;
+        gChaosNegativePatchCompare = CHAOS_PATCH_NONE;
 
 #ifdef CHAOS_FORCED_POSITIVE_CARD
         if (index == 0

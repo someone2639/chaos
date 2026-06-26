@@ -183,6 +183,7 @@ void spawn_sparkle_particles(s32 n, s32 a1, s32 a2, s32 r) {
 #include "behaviors/beta_boo_key.inc.c"
 #include "behaviors/grand_star.inc.c"
 #include "behaviors/bowser_key.inc.c"
+#include "behaviors/star_medallion.inc.c"
 #include "behaviors/bullet_bill.inc.c"
 #include "behaviors/bowser.inc.c"
 #include "behaviors/bowser_falling_platform.inc.c"

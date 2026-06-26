@@ -364,7 +364,7 @@ void render_active_patches_menu_button_prompts() {
                 const s32 color2[4] = {0xFF, 0xFF, 0xFF, -1};
                 char str[32];
 
-                menu_apply_gradient_to_string(str, "Details", 22, color1, color2);
+                menu_apply_color_oscillation_to_string(str, "Details", 22, color1, color2);
                 menu_add_button_prompt(&prompts, MENU_PROMPT_Z_TRIG, str);
             }
             break;

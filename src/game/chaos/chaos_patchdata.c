@@ -420,7 +420,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 3,
         .duration           = 10,
 
-        INCOMPATIBLE(CHAOS_PATCH_GRAVITY_INCREASE),
+        INCOMPATIBLE(CHAOS_PATCH_GRAVITY_INCREASE, CHAOS_PATCH_STAR_MEDALLION),
         .activatedInitFunc  = chs_act_gravity_decrease,
         .deactivationFunc   = chs_deact_gravity_decrease,
 
@@ -1912,7 +1912,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 5,
         .durationImpossible = 6,
 
-        INCOMPATIBLE(CHAOS_PATCH_WALKIES),
+        INCOMPATIBLE(CHAOS_PATCH_WALKIES, CHAOS_PATCH_STAR_MEDALLION),
         .conditionalFunc    = chs_cond_push_back,
         .frameUpdateFunc    = chs_update_push_back,
 
@@ -1927,7 +1927,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 4,
         .durationImpossible = 5,
 
-        INCOMPATIBLE(CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_SPEED_TAX, CHAOS_PATCH_HEALTH_DRAIN, CHAOS_PATCH_COSMIC_CLONES, CHAOS_PATCH_PUSH_BACK),
+        INCOMPATIBLE(CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_SPEED_TAX, CHAOS_PATCH_HEALTH_DRAIN, CHAOS_PATCH_COSMIC_CLONES, CHAOS_PATCH_PUSH_BACK, CHAOS_PATCH_STAR_MEDALLION),
 
         .name               = "Walkies",
         .shortDescription   = "Slows Mario down to walking speed. This is a Walkies level now.",
@@ -2611,5 +2611,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
                               "Rotate Left\t@7F7F7F-- -- @9F9FFF--A@--------\n"
                               "Rotate Right\t@7F7F7F-- -- @9F9FFF--B@--------\n"
                               "Hold Piece\t@7F7F7F-- -- @9F9FFF--Z/L@--------"
+    },
+    [CHAOS_PATCH_STAR_MEDALLION] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 3,
+        .duration           = 6,
+        .durationHard       = 8,
+        .durationImpossible = 10,
+        .disableForHardcore = TRUE, // Too much unpredictability
+
+        INCOMPATIBLE(CHAOS_PATCH_GRAVITY_INCREASE, CHAOS_PATCH_WALKIES, CHAOS_PATCH_PUSH_BACK),
+
+        .name               = "Star Medallion",
+        .shortDescription   = "Mario must collect the star medallion randomly placed in each course before collecting a star.",
     },
 };
