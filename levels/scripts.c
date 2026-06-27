@@ -81,6 +81,7 @@ const LevelScript level_main_scripts_entry[] = {
     LOAD_MODEL_FROM_GEO(MODEL_YELLOW_COIN,             yellow_coin_geo),
     LOAD_MODEL_FROM_GEO(MODEL_STAR,                    star_geo),
     LOAD_MODEL_FROM_GEO(MODEL_TRANSPARENT_STAR,        transparent_star_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_COLLECTIBLE_GLOW,        collectible_glow_geo),
     LOAD_MODEL_FROM_GEO(MODEL_RAINBOW_STAR,            star_rainbow_geo),
     LOAD_MODEL_FROM_GEO(MODEL_INERT_STAR,              inert_star_geo),
     LOAD_MODEL_FROM_GEO(MODEL_INERT_STAR_TRANSPARENT,  inert_star_transparent_geo),

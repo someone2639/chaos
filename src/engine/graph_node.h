@@ -4,6 +4,7 @@
 #include <PR/ultratypes.h>
 #include <PR/gbi.h>
 
+#include "sm64.h"
 #include "types.h"
 #include "game/memory.h"
 
@@ -27,6 +28,7 @@
 #define GRAPH_NODE_TYPE_ORTHO_PROJECTION      0x002
 #define GRAPH_NODE_TYPE_PERSPECTIVE          (0x003 | GRAPH_NODE_TYPE_FUNCTIONAL)
 #define GRAPH_NODE_TYPE_MASTER_LIST           0x004
+#define GRAPH_NODE_TYPE_POINTER               0x005
 #define GRAPH_NODE_TYPE_START                 0x00A
 #define GRAPH_NODE_TYPE_LEVEL_OF_DETAIL       0x00B
 #define GRAPH_NODE_TYPE_SWITCH_CASE          (0x00C | GRAPH_NODE_TYPE_FUNCTIONAL)
@@ -46,10 +48,6 @@
 #define GRAPH_NODE_TYPE_HELD_OBJ             (0x02E | GRAPH_NODE_TYPE_FUNCTIONAL)
 #define GRAPH_NODE_TYPE_CULLING_RADIUS        0x02F
 
-// The number of master lists. A master list determines the order and render
-// mode with which display lists are drawn.
-#define GFX_NUM_MASTER_LISTS 8
-
 // Passed as first argument to a GraphNodeFunc to give information about in
 // which context it was called and what it is expected to do.
 #define GEO_CONTEXT_CREATE        0 // called when node is created from a geo command
@@ -58,6 +56,26 @@
 #define GEO_CONTEXT_AREA_LOAD     3 // called when loading an area
 #define GEO_CONTEXT_AREA_INIT     4 // called when initializing the 8 areas
 #define GEO_CONTEXT_HELD_OBJ      5 // called when processing a GraphNodeHeldObj
+/**
+ * The amount of bits to use for the above flags out of an s16 variable.
+ * The remaining bits to the left are used for the render layers.
+ * The vanilla value is 8, allowing for 8 flags and 255 layers.
+ */
+#define GRAPH_RENDER_FLAGS_SIZE 8
+
+// 0xFF00 when GRAPH_RENDER_FLAGS_SIZE is 8
+#define GRAPH_RENDER_LAYERS_MASK (BITMASK(16 - GRAPH_RENDER_FLAGS_SIZE) << GRAPH_RENDER_FLAGS_SIZE)
+// 0x00FF when GRAPH_RENDER_FLAGS_SIZE is 8
+#define GRAPH_RENDER_FLAGS_MASK  BITMASK(GRAPH_RENDER_FLAGS_SIZE)
+
+#if GRAPH_RENDER_FLAGS_SIZE == 8
+// Optimize the vanilla values
+#define SET_GRAPH_NODE_LAYER(flags, layer) ((flags) = ((flags) & GRAPH_RENDER_FLAGS_MASK) | ((layer) << GRAPH_RENDER_FLAGS_SIZE))
+#define GET_GRAPH_NODE_LAYER(flags)        (flags >> GRAPH_RENDER_FLAGS_SIZE)
+#else
+#define SET_GRAPH_NODE_LAYER(flags, layer) ((flags) = ((flags) & GRAPH_RENDER_FLAGS_MASK) | (((layer) << GRAPH_RENDER_FLAGS_SIZE) & GRAPH_RENDER_LAYERS_MASK))
+#define GET_GRAPH_NODE_LAYER(flags)        ((flags & GRAPH_RENDER_LAYERS_MASK) >> GRAPH_RENDER_FLAGS_SIZE)
+#endif
 
 // The signature for a function stored in a geo node
 // The context argument depends on the callContext:
@@ -126,8 +144,8 @@ struct DisplayListNode {
  */
 struct GraphNodeMasterList {
     /*0x00*/ struct GraphNode node;
-    /*0x14*/ struct DisplayListNode *listHeads[GFX_NUM_MASTER_LISTS];
-    /*0x34*/ struct DisplayListNode *listTails[GFX_NUM_MASTER_LISTS];
+    /*0x14*/ struct DisplayListNode *listHeads[LAYER_COUNT];
+    /*0x34*/ struct DisplayListNode *listTails[LAYER_COUNT];
 };
 
 /** Simply used as a parent to group multiple children.
@@ -331,6 +349,14 @@ struct GraphNodeCullingRadius {
     u8 filler[2];
 };
 
+/** A node points to an already generated graph node somewhere else
+ */
+struct GraphNodePointer {
+    /*0x00*/ struct GraphNode node;
+    /*0x14*/ u16 modelId;
+    /*0x16*/ u16 displayShadow;
+};
+
 extern struct GraphNodeMasterList *gCurGraphNodeMasterList;
 extern struct GraphNodePerspective *gCurGraphNodeCamFrustum;
 extern struct GraphNodeCamera *gCurGraphNodeCamera;
@@ -390,6 +416,7 @@ struct GraphNodeBackground *init_graph_node_background(struct AllocOnlyPool *poo
 struct GraphNodeHeldObject *init_graph_node_held_object(struct AllocOnlyPool *pool, struct GraphNodeHeldObject *sp1c,
                                                         struct Object *objNode, Vec3s translation,
                                                         GraphNodeFunc nodeFunc, s32 playerIndex);
+struct GraphNodePointer *init_graph_node_pointer(struct AllocOnlyPool *pool, struct GraphNodePointer *graphNode, u16 modelId, u8 displayShadow);
 struct GraphNode *geo_add_child(struct GraphNode *parent, struct GraphNode *childNode);
 struct GraphNode *geo_remove_child(struct GraphNode *graphNode);
 struct GraphNode *geo_make_first_child(struct GraphNode *newFirstChild);

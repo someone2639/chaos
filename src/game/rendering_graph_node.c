@@ -67,6 +67,7 @@ struct GeoAnimState gGeoTempState;
 
 u8 gCurrAnimType;
 u8 gCurrAnimEnabled;
+u8 gCurGraphNodeShadowEnabled = TRUE;
 s16 gCurrAnimFrame;
 f32 gCurrAnimTranslationMultiplier;
 u16 *gCurrAnimAttribute;
@@ -75,53 +76,73 @@ s16 *gCurrAnimData;
 struct AllocOnlyPool *gDisplayListHeap;
 
 struct RenderModeContainer {
-    u32 modes[8];
+    u32 modes[LAYER_COUNT];
 };
 
-/* Rendermode settings for cycle 1 for all 8 layers. */
-struct RenderModeContainer renderModeTable_1Cycle[2] = { { {
-    G_RM_OPA_SURF,
-    G_RM_AA_OPA_SURF,
-    G_RM_AA_OPA_SURF,
-    G_RM_AA_OPA_SURF,
-    G_RM_AA_TEX_EDGE,
-    G_RM_AA_XLU_SURF,
-    G_RM_AA_XLU_SURF,
-    G_RM_AA_XLU_SURF,
+/* Rendermode settings for cycle 1 for all layers. */
+struct RenderModeContainer renderModeTable_1Cycle[RENDER_MODE_COUNT] = { 
+    [RENDER_NO_ZB] = { {
+        [LAYER_FORCE]                                   = G_RM_OPA_SURF,
+        [LAYER_OPAQUE]                                  = G_RM_AA_OPA_SURF,
+        [LAYER_OPAQUE_DECAL]                            = G_RM_AA_OPA_SURF,
+        [LAYER_OPAQUE_INTER]                            = G_RM_AA_OPA_SURF,
+        [LAYER_ALPHA]                                   = G_RM_AA_TEX_EDGE,
+        [LAYER_TRANSPARENT]                             = G_RM_AA_XLU_SURF,
+        [LAYER_TRANSPARENT_DECAL]                       = G_RM_AA_XLU_SURF,
+        [LAYER_TRANSPARENT_INTER]                       = G_RM_AA_XLU_SURF,
+        [LAYER_OPAQUE_2ND_PASS]                         = G_RM_AA_OPA_SURF,
+        [LAYER_OPAQUE_DECAL_2ND_PASS]                   = G_RM_AA_OPA_SURF,
+        [LAYER_ALPHA_2ND_PASS]                          = G_RM_AA_TEX_EDGE,
+        [LAYER_TRANSPARENT_2ND_PASS]                    = G_RM_AA_XLU_SURF,
+        [LAYER_TRANSPARENT_DECAL_2ND_PASS]              = G_RM_AA_XLU_SURF,
     } },
-    { {
-    /* z-buffered */
-    G_RM_ZB_OPA_SURF,
-    G_RM_AA_ZB_OPA_SURF,
-    G_RM_AA_ZB_OPA_DECAL,
-    G_RM_AA_ZB_OPA_INTER,
-    G_RM_AA_ZB_TEX_EDGE,
-    G_RM_AA_ZB_XLU_SURF,
-    G_RM_AA_ZB_XLU_DECAL,
-    G_RM_AA_ZB_XLU_INTER,
+    [RENDER_ZB] = { {
+        [LAYER_FORCE]                                   = G_RM_ZB_OPA_SURF,
+        [LAYER_OPAQUE]                                  = G_RM_AA_ZB_OPA_SURF,
+        [LAYER_OPAQUE_DECAL]                            = G_RM_AA_ZB_OPA_DECAL,
+        [LAYER_OPAQUE_INTER]                            = G_RM_AA_ZB_OPA_INTER,
+        [LAYER_ALPHA]                                   = G_RM_AA_ZB_TEX_EDGE,
+        [LAYER_TRANSPARENT]                             = G_RM_AA_ZB_XLU_SURF,
+        [LAYER_TRANSPARENT_DECAL]                       = G_RM_AA_ZB_XLU_DECAL,
+        [LAYER_TRANSPARENT_INTER]                       = G_RM_AA_ZB_XLU_INTER,
+        [LAYER_OPAQUE_2ND_PASS]                         = G_RM_AA_ZB_OPA_SURF,
+        [LAYER_OPAQUE_DECAL_2ND_PASS]                   = G_RM_AA_ZB_OPA_DECAL,
+        [LAYER_ALPHA_2ND_PASS]                          = G_RM_AA_ZB_TEX_EDGE,
+        [LAYER_TRANSPARENT_2ND_PASS]                    = G_RM_AA_ZB_XLU_SURF,
+        [LAYER_TRANSPARENT_DECAL_2ND_PASS]              = G_RM_AA_ZB_XLU_DECAL,
     } } };
 
 /* Rendermode settings for cycle 2 for all 8 layers. */
-struct RenderModeContainer renderModeTable_2Cycle[2] = { { {
-    G_RM_OPA_SURF2,
-    G_RM_AA_OPA_SURF2,
-    G_RM_AA_OPA_SURF2,
-    G_RM_AA_OPA_SURF2,
-    G_RM_AA_TEX_EDGE2,
-    G_RM_AA_XLU_SURF2,
-    G_RM_AA_XLU_SURF2,
-    G_RM_AA_XLU_SURF2,
+struct RenderModeContainer renderModeTable_2Cycle[RENDER_MODE_COUNT] = {
+    [RENDER_NO_ZB] = { {
+        [LAYER_FORCE]                                   = G_RM_OPA_SURF2,
+        [LAYER_OPAQUE]                                  = G_RM_AA_OPA_SURF2,
+        [LAYER_OPAQUE_DECAL]                            = G_RM_AA_OPA_SURF2,
+        [LAYER_OPAQUE_INTER]                            = G_RM_AA_OPA_SURF2,
+        [LAYER_ALPHA]                                   = G_RM_AA_TEX_EDGE2,
+        [LAYER_TRANSPARENT]                             = G_RM_AA_XLU_SURF2,
+        [LAYER_TRANSPARENT_DECAL]                       = G_RM_AA_XLU_SURF2,
+        [LAYER_TRANSPARENT_INTER]                       = G_RM_AA_XLU_SURF2,
+        [LAYER_OPAQUE_2ND_PASS]                         = G_RM_AA_OPA_SURF2,
+        [LAYER_OPAQUE_DECAL_2ND_PASS]                   = G_RM_AA_OPA_SURF2,
+        [LAYER_ALPHA_2ND_PASS]                          = G_RM_AA_TEX_EDGE2,
+        [LAYER_TRANSPARENT_2ND_PASS]                    = G_RM_AA_XLU_SURF2,
+        [LAYER_TRANSPARENT_DECAL_2ND_PASS]              = G_RM_AA_XLU_SURF2,
     } },
-    { {
-    /* z-buffered */
-    G_RM_ZB_OPA_SURF2,
-    G_RM_AA_ZB_OPA_SURF2,
-    G_RM_AA_ZB_OPA_DECAL2,
-    G_RM_AA_ZB_OPA_INTER2,
-    G_RM_AA_ZB_TEX_EDGE2,
-    G_RM_AA_ZB_XLU_SURF2,
-    G_RM_AA_ZB_XLU_DECAL2,
-    G_RM_AA_ZB_XLU_INTER2,
+    [RENDER_ZB] = { {
+        [LAYER_FORCE]                                   = G_RM_ZB_OPA_SURF2,
+        [LAYER_OPAQUE]                                  = G_RM_AA_ZB_OPA_SURF2,
+        [LAYER_OPAQUE_DECAL]                            = G_RM_AA_ZB_OPA_DECAL2,
+        [LAYER_OPAQUE_INTER]                            = G_RM_AA_ZB_OPA_INTER2,
+        [LAYER_ALPHA]                                   = G_RM_AA_ZB_TEX_EDGE2,
+        [LAYER_TRANSPARENT]                             = G_RM_AA_ZB_XLU_SURF2,
+        [LAYER_TRANSPARENT_DECAL]                       = G_RM_AA_ZB_XLU_DECAL2,
+        [LAYER_TRANSPARENT_INTER]                       = G_RM_AA_ZB_XLU_INTER2,
+        [LAYER_OPAQUE_2ND_PASS]                         = G_RM_AA_ZB_OPA_SURF2,
+        [LAYER_OPAQUE_DECAL_2ND_PASS]                   = G_RM_AA_ZB_OPA_DECAL2,
+        [LAYER_ALPHA_2ND_PASS]                          = G_RM_AA_ZB_TEX_EDGE2,
+        [LAYER_TRANSPARENT_2ND_PASS]                    = G_RM_AA_ZB_XLU_SURF2,
+        [LAYER_TRANSPARENT_DECAL_2ND_PASS]              = G_RM_AA_ZB_XLU_DECAL2,
     } } };
 
 struct GraphNodeRoot *gCurGraphNodeRoot = NULL;
@@ -187,7 +208,7 @@ void geo_process_master_list_sub(struct GraphNodeMasterList *node) {
         gSPSetGeometryMode(gDisplayListHead++, G_ZBUFFER);
     }
 
-    for (i = 0; i < GFX_NUM_MASTER_LISTS; i++) {
+    for (i = 0; i < LAYER_COUNT; i++) {
         if ((currList = node->listHeads[i]) != NULL) {
             gDPSetRenderMode(gDisplayListHead++, modeList->modes[i], mode2List->modes[i]);
             while (currList != NULL) {
@@ -248,7 +269,7 @@ void geo_process_master_list(struct GraphNodeMasterList *node) {
 
     if (gCurGraphNodeMasterList == NULL && node->node.children != NULL) {
         gCurGraphNodeMasterList = node;
-        for (i = 0; i < GFX_NUM_MASTER_LISTS; i++) {
+        for (i = 0; i < LAYER_COUNT; i++) {
             node->listHeads[i] = NULL;
         }
         geo_process_node_and_siblings(node->node.children);
@@ -731,7 +752,7 @@ void geo_process_shadow(struct GraphNodeShadow *node) {
     struct GraphNode *geo;
     Mtx *mtx;
 
-    if (gCurGraphNodeCamera != NULL && gCurGraphNodeObject != NULL) {
+    if (gCurGraphNodeCamera != NULL && gCurGraphNodeObject != NULL && gCurGraphNodeShadowEnabled) {
         if (gCurGraphNodeHeldObject != NULL) {
             get_pos_from_transform_mtx(shadowPos, gMatStack[gMatStackIndex],
                                        *gCurGraphNodeCamera->matrixPtr);
@@ -1054,6 +1075,21 @@ void geo_process_held_object(struct GraphNodeHeldObject *node) {
 }
 
 /**
+ * Process an already existing graph node generated completely separately
+ */
+void geo_process_model_pointer(struct GraphNodePointer *node) {
+    u32 modelId = node->modelId;
+    u8 shadowState = gCurGraphNodeShadowEnabled;
+    gCurGraphNodeShadowEnabled = (shadowState != FALSE) ? node->displayShadow : FALSE;
+
+    if (modelId < MODEL_ID_COUNT && gLoadedGraphNodes[modelId] != NULL) {
+        geo_process_node_and_siblings(gLoadedGraphNodes[modelId]);
+    }
+
+    gCurGraphNodeShadowEnabled = shadowState;
+}
+
+/**
  * Processes the children of the given GraphNode if it has any
  */
 void geo_try_process_children(struct GraphNode *node) {
@@ -1141,6 +1177,9 @@ void geo_process_node_and_siblings(struct GraphNode *firstNode) {
                         break;
                     case GRAPH_NODE_TYPE_HELD_OBJ:
                         geo_process_held_object((struct GraphNodeHeldObject *) curGraphNode);
+                        break;
+                    case GRAPH_NODE_TYPE_POINTER:
+                        geo_process_model_pointer((struct GraphNodePointer *) curGraphNode);
                         break;
                     default:
                         geo_try_process_children((struct GraphNode *) curGraphNode);

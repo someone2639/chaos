@@ -30,7 +30,7 @@
 #include "chaos_tutorial.h"
 
 struct SpawnInfo gPlayerSpawnInfos[1];
-struct GraphNode *D_8033A160[0x100];
+struct GraphNode *D_8033A160[MODEL_ID_COUNT];
 struct Area gAreaData[8];
 
 struct WarpTransition gWarpTransition;

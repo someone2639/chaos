@@ -566,6 +566,13 @@ void bhv_noclip_plane_loop(void);
 
 Gfx *geo_move_mario_part_from_parent(s32 run, UNUSED struct GraphNode *node, Mat4 mtx);
 
+// Collectible Glow
+void collectible_glow_init(void);
+void collectible_glow_update(void);
+void collectible_glow_clear(void);
+Gfx *geo_obj_render_collectible_glow_bgs(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx);
+Gfx *geo_obj_render_collectible_glow_rays(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 mtx);
+
 // Bowser
 Gfx *geo_bits_bowser_coloring(s32 run, struct GraphNode *node, UNUSED s32 a2);
 Gfx *geo_update_body_rot_from_parent(s32 run, UNUSED struct GraphNode *node, Mat4 mtx);

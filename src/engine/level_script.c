@@ -10,6 +10,7 @@
 #include "buffers/zbuffer.h"
 #include "hvqm/hvqm.h"
 #include "game/area.h"
+#include "game/debug.h"
 #include "game/game_init.h"
 #include "game/main.h"
 #include "game/mario.h"
@@ -382,8 +383,10 @@ static void level_cmd_load_model_from_dl(void) {
     s16 val1 = CMD_GET(s16, 2) & 0x0FFF;
     s16 val2 = ((u16)CMD_GET(s16, 2)) >> 12;
     void *val3 = CMD_GET(void *, 4);
+    
+    assert(val1 < MODEL_ID_COUNT, "Model Id too large!");
 
-    if (val1 < 256) {
+    if (val1 < MODEL_ID_COUNT) {
         gLoadedGraphNodes[val1] =
             (struct GraphNode *) init_graph_node_display_list(sLevelPool, 0, val2, val3);
     }
@@ -395,7 +398,9 @@ static void level_cmd_load_model_from_geo(void) {
     s16 arg0 = CMD_GET(s16, 2);
     void *arg1 = CMD_GET(void *, 4);
 
-    if (arg0 < 256) {
+    assert(arg0 < MODEL_ID_COUNT, "Model Id too large!");
+
+    if (arg0 < MODEL_ID_COUNT) {
         gLoadedGraphNodes[arg0] = process_geo_layout(sLevelPool, arg1);
     }
 
@@ -414,7 +419,9 @@ static void level_cmd_23(void) {
     // load an f32, but using an integer load instruction for some reason (hence the union)
     arg2.i = CMD_GET(s32, 8);
 
-    if (model < 256) {
+    assert(model < MODEL_ID_COUNT, "Model Id too large!");
+
+    if (model < MODEL_ID_COUNT) {
         // GraphNodeScale has a GraphNode at the top. This
         // is being stored to the array, so cast the pointer.
         gLoadedGraphNodes[model] =

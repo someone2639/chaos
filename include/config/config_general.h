@@ -19,6 +19,11 @@
 #define COMPLETE_EN_US_SEGMENT2
 
 /**
+ * Number of possible unique model ID's (keep it higher than 256).
+ */
+#define MODEL_ID_COUNT 256
+
+/**
  * Star requirement for getting into Bowser in the Sky
  */
 #define BITS_STAR_REQUIREMENT 70

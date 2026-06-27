@@ -1047,7 +1047,7 @@ static f32 get_sound_pan(f32 x, f32 z) {
         pan = 0.5f + x / (6.0f * absZ);
     }
 
-    if (isGameFlipped) {
+    if (isGameFlipped ^ chaos_check_if_patch_active(CHAOS_PATCH_UPSIDE_DOWN_CAMERA)) {
         return 1.0f - pan;
     }
 

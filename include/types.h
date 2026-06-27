@@ -19,6 +19,10 @@
     #define BAD_RETURN(cmd) cmd
 #endif
 
+#define BIT(i)  (1 << (i))
+#define BITMASK(size) ((BIT(size)) - 1)
+#define SHIFTED_BITMASK(size, shift) (BITMASK(size) << shift)
+
 #define SCREEN_CENTER_X (SCREEN_WIDTH  / 2)
 #define SCREEN_CENTER_Y (SCREEN_HEIGHT / 2)
 

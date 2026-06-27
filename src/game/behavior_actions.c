@@ -16,6 +16,7 @@
 #include "engine/math_util.h"
 #include "engine/surface_collision.h"
 #include "engine/surface_load.h"
+#include "emutest.h"
 #include "game_init.h"
 #include "ingame_menu.h"
 #include "interaction.h"
@@ -141,6 +142,7 @@ void spawn_mist_particles_variable(s32 count, s32 offsetY, f32 size) {
 #include "behaviors/metal_box.inc.c"
 #include "behaviors/switch_hidden_objects.inc.c"
 #include "behaviors/breakable_box.inc.c"
+#include "behaviors/collectible_glow.inc.c"
 
 // not sure what this is doing here. not in a behavior file.
 Gfx *geo_move_mario_part_from_parent(s32 run, UNUSED struct GraphNode *node, Mat4 mtx) {

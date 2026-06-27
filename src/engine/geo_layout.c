@@ -42,6 +42,7 @@ GeoLayoutCommandProc GeoLayoutJumpTable[] = {
     geo_layout_cmd_nop2,
     geo_layout_cmd_nop3,
     geo_layout_cmd_node_culling_radius,
+    geo_layout_cmd_jump_to_existing_graph_node,
 };
 
 struct GraphNode gObjParentGraphNode;
@@ -763,6 +764,17 @@ void geo_layout_cmd_node_held_obj(void) {
 void geo_layout_cmd_node_culling_radius(void) {
     struct GraphNodeCullingRadius *graphNode;
     graphNode = init_graph_node_culling_radius(gGraphNodePool, NULL, cur_geo_cmd_s16(0x02));
+    register_scene_graph_node(&graphNode->node);
+    gGeoLayoutCommand += 0x04 << CMD_SIZE_SHIFT;
+}
+
+/*
+  0x21: Jump to existing loaded graph node model for additional processing
+   cmd+0x02: u16 modelId
+*/
+void geo_layout_cmd_jump_to_existing_graph_node(void) {
+    struct GraphNodePointer *graphNode;
+    graphNode = init_graph_node_pointer(gGraphNodePool, NULL, (u16) cur_geo_cmd_s16(0x02), (u8) cur_geo_cmd_u8(0x01));
     register_scene_graph_node(&graphNode->node);
     gGeoLayoutCommand += 0x04 << CMD_SIZE_SHIFT;
 }

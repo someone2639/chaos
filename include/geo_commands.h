@@ -431,5 +431,13 @@
  */
 #define GEO_CULLING_RADIUS(cullingRadius) \
     CMD_BBH(0x20, 0x00, cullingRadius)
+    
+/**
+ * 0x21: Branch and store return address
+ *   0x01: Whether linked nodes should display their shadows
+ *   0x02: Model ID to use
+ */
+#define GEO_JUMP_TO_EXISTING_GRAPH_NODE(modelId, displayShadows) \
+    CMD_BBH(0x21, displayShadows, modelId)
 
 #endif // GEO_COMMANDS_H

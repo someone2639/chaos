@@ -40,14 +40,32 @@
 #endif
 
 // Layers
-#define LAYER_FORCE             0
-#define LAYER_OPAQUE            1
-#define LAYER_OPAQUE_DECAL      2
-#define LAYER_OPAQUE_INTER      3
-#define LAYER_ALPHA             4
-#define LAYER_TRANSPARENT       5
-#define LAYER_TRANSPARENT_DECAL 6
-#define LAYER_TRANSPARENT_INTER 7
+enum RenderLayers {
+    LAYER_FORCE = 0,
+    LAYER_OPAQUE,
+    LAYER_OPAQUE_DECAL,
+    LAYER_OPAQUE_INTER,
+    LAYER_ALPHA,
+    LAYER_TRANSPARENT,
+    LAYER_TRANSPARENT_DECAL,
+    LAYER_TRANSPARENT_INTER,
+    
+    // RANDO NOTE: Custom layers for rando collectibles only, to render over all transparent textures (notably collectible glow)
+    LAYER_OPAQUE_2ND_PASS,
+    LAYER_OPAQUE_DECAL_2ND_PASS,
+    LAYER_ALPHA_2ND_PASS,
+    LAYER_TRANSPARENT_2ND_PASS,
+    LAYER_TRANSPARENT_DECAL_2ND_PASS,
+
+    LAYER_COUNT,
+};
+
+enum RenderModeTypes {
+    RENDER_NO_ZB = 0,
+    RENDER_ZB,
+
+    RENDER_MODE_COUNT,
+};
 
 #define INPUT_NONZERO_ANALOG         0x0001
 #define INPUT_A_PRESSED              0x0002

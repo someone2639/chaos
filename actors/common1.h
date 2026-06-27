@@ -54,6 +54,13 @@ extern const Gfx coin_seg3_dl_silver1[];
 extern const Gfx coin_seg3_dl_silver2[];
 extern const Gfx coin_seg3_dl_silver3[];
 
+// collectible_glow
+extern const GeoLayout collectible_glow_geo[];
+extern const Gfx collectible_glow_dl_begin[];
+extern const Gfx collectible_glow_bg_dl[];
+extern const Gfx collectible_glow_ray_dl[];
+extern const Gfx collectible_glow_dl_end[];
+
 // dirt
 extern const GeoLayout dirt_animation_geo[];
 extern const GeoLayout cartoon_star_geo[];

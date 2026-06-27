@@ -6,9 +6,9 @@
 #include "audio/external.h"
 #include "audio/synthesis.h"
 #include "engine/behavior_script.h"
+#include "behavior_actions.h"
 #include "level_update.h"
 #include "game_init.h"
-#include "level_update.h"
 #include "main.h"
 #include "engine/math_util.h"
 #include "engine/graph_node.h"
@@ -1229,6 +1229,7 @@ s32 play_mode_normal(void) {
         gHudDisplay.timer++;
     }
 
+    collectible_glow_update();
     area_update_objects();
     update_hud_values();
     update_area_camera();

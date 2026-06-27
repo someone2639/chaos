@@ -4,6 +4,7 @@
 #include "sm64.h"
 #include "gfx_dimensions.h"
 #include "audio/external.h"
+#include "behavior_actions.h"
 #include "buffers/buffers.h"
 #include "buffers/gfx_output_buffer.h"
 #include "buffers/framebuffers.h"
@@ -1007,6 +1008,8 @@ void thread5_game_loop(UNUSED void *arg) {
 #endif
     gConfig.disableHarshVisuals = save_file_get_harsh_visuals_mode();
     render_init();
+
+    collectible_glow_init();
     reset_patch_selection_menu();
 
     __n64DelayedAssertCheck();

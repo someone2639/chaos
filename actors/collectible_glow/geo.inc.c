@@ -1,0 +1,17 @@
+const GeoLayout collectible_glow_geo[] = {
+   GEO_CULLING_RADIUS(10000),
+   GEO_OPEN_NODE(),
+      GEO_BILLBOARD(),
+      GEO_OPEN_NODE(),
+         GEO_DISPLAY_LIST(LAYER_TRANSPARENT, collectible_glow_dl_begin),
+         GEO_DISPLAY_LIST(LAYER_TRANSPARENT, collectible_glow_bg_dl),
+         GEO_ASM(LAYER_TRANSPARENT, geo_obj_render_collectible_glow_bgs),
+         GEO_DISPLAY_LIST(LAYER_TRANSPARENT, collectible_glow_dl_end),
+         GEO_DISPLAY_LIST(LAYER_TRANSPARENT_2ND_PASS, collectible_glow_dl_begin),
+         GEO_DISPLAY_LIST(LAYER_TRANSPARENT_2ND_PASS, collectible_glow_ray_dl),
+         GEO_ASM(LAYER_TRANSPARENT_2ND_PASS, geo_obj_render_collectible_glow_rays),
+         GEO_DISPLAY_LIST(LAYER_TRANSPARENT_2ND_PASS, collectible_glow_dl_end),
+      GEO_CLOSE_NODE(),
+   GEO_CLOSE_NODE(),
+   GEO_END(),
+};
