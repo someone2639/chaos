@@ -28,3 +28,4 @@
 #include "tree/geo.inc.c"
 #include "inert_star/geo.inc.c"
 #include "inert_star_transparent/geo.inc.c"
+#include "star_medallion/geo.inc.c"

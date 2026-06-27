@@ -90,3 +90,4 @@ UNUSED static const u64 binid_23 = 23;
 
 #include "inert_star/model.inc.c"
 #include "inert_star_transparent/model.inc.c"
+#include "star_medallion/model.inc.c"

@@ -81,6 +81,7 @@ const LevelScript level_main_scripts_entry[] = {
     LOAD_MODEL_FROM_GEO(MODEL_YELLOW_COIN,             yellow_coin_geo),
     LOAD_MODEL_FROM_GEO(MODEL_STAR,                    star_geo),
     LOAD_MODEL_FROM_GEO(MODEL_TRANSPARENT_STAR,        transparent_star_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_STAR_MEDALLION,          star_medallion_geo), // TODO: Replace with proper model (should be 100 unit radius (200 diameter), bottom of model starting at 0)
     LOAD_MODEL_FROM_GEO(MODEL_COLLECTIBLE_GLOW,        collectible_glow_geo),
     LOAD_MODEL_FROM_GEO(MODEL_RAINBOW_STAR,            star_rainbow_geo),
     LOAD_MODEL_FROM_GEO(MODEL_INERT_STAR,              inert_star_geo),
@@ -110,7 +111,6 @@ const LevelScript level_main_scripts_entry[] = {
     LOAD_MODEL_FROM_GEO(MODEL_MARIOS_METAL_CAP,        marios_metal_cap_geo),
     LOAD_MODEL_FROM_GEO(MODEL_MARIOS_WING_CAP,         marios_wing_cap_geo),
     LOAD_MODEL_FROM_GEO(MODEL_MARIOS_CAP,              marios_cap_geo),
-    LOAD_MODEL_FROM_GEO(MODEL_MARIOS_CAP,              marios_cap_geo), // repeated
     LOAD_MODEL_FROM_GEO(MODEL_BOWSER_KEY_CUTSCENE,     bowser_key_cutscene_geo),
     LOAD_MODEL_FROM_GEO(MODEL_BOWSER_KEY,              bowser_key_geo),
     LOAD_MODEL_FROM_GEO(MODEL_TRANSPARENT_BOWSER_KEY,  transparent_bowser_key_geo),
