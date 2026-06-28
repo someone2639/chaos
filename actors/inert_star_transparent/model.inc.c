@@ -569,7 +569,7 @@ Gfx mat_inert_star_transparent_transparent[] = {
 	gsDPSetCombineLERP(0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT, 0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT),
 	gsDPSetAlphaDither(G_AD_NOISE),
 	gsSPTexture(1984, 1984, 0, 0, 1),
-	gsDPSetEnvColor(255, 255, 255, 75),
+	gsDPSetEnvColor(255, 255, 255, 111),
 	gsSPEndDisplayList(),
 };
 

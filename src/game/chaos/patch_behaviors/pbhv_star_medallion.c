@@ -48,8 +48,8 @@ static u8 sm_bbh_shack_at_start(void)          { return (gChaosDifficulty > CHAO
 static u8 sm_bbh_can_go_upstairs(void)         { return ((gChaosDifficulty > CHAOS_DIFFICULTY_EASY && !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_WALL_KICK)) || gCurrActNum >= 2); }
 static u8 sm_bbh_can_go_extra_upstairs(void)   { return ((gChaosDifficulty > CHAOS_DIFFICULTY_EASY || gCurrActNum >= 2) && !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_WALL_KICK)); }
 static u8 sm_lll_a1_lava_check(void)           { return (gCurrActNum >= 5 || (!chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER) && chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_LAVA))); } // TODO: If remove shell patch ever added, add condition here
-static u8 sm_ddd_a2_bowser_sub_active(void)    { return (gCurrActNum <= 1); } // TODO: BUG: Make sure Bowser sub is act dependent! (Otherwise it might become impossible to get that star if lost or key obtained for free...)
-static u8 sm_ddd_a2_poles_active(void)         { return (gCurrActNum >= 2); }
+static u8 sm_ddd_a2_bowser_sub_active(void)    { return (gCurrActNum == 1); }
+static u8 sm_ddd_a2_poles_active(void)         { return (gCurrActNum != 1); }
 static u8 sm_wdw_a2(void)                      { return (gCurrActNum >= 5); }
 static u8 sm_wdw_a2_vanish_cap(void)           { return ((gCurrActNum >= 5) && (save_file_get_flags() & SAVE_FLAG_HAVE_VANISH_CAP) && !chaos_check_if_patch_active(CHAOS_PATCH_DISABLE_CAPS)); }
 static u8 sm_ttm_a1_can_warp(void)             { return (!chaos_check_if_patch_active(CHAOS_PATCH_DISABLE_FADE_WARPS)); }

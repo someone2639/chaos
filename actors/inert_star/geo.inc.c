@@ -14,7 +14,7 @@ const GeoLayout inert_star_geo[] = {
 					GEO_SCALE(LAYER_OPAQUE, 16384),
 					GEO_OPEN_NODE(),
 						GEO_ASM(0, geo_update_inert_star_indicator),
-						GEO_DISPLAY_LIST(LAYER_TRANSPARENT, inert_star_001_no_dl_mesh_layer_5_with_revert),
+						GEO_DISPLAY_LIST(LAYER_TRANSPARENT_2ND_PASS, inert_star_001_no_dl_mesh_layer_5_with_revert),
 					GEO_CLOSE_NODE(),
 				GEO_CLOSE_NODE(),
 			GEO_CLOSE_NODE(),
