@@ -50,7 +50,7 @@ enum RenderLayers {
     LAYER_TRANSPARENT_DECAL,
     LAYER_TRANSPARENT_INTER,
     
-    // RANDO NOTE: Custom layers for rando collectibles only, to render over all transparent textures (notably collectible glow)
+    // NOTE: Custom layers to render over all transparent textures (notably collectible glow)
     LAYER_OPAQUE_2ND_PASS,
     LAYER_OPAQUE_DECAL_2ND_PASS,
     LAYER_ALPHA_2ND_PASS,

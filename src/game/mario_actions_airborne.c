@@ -86,7 +86,7 @@ s32 check_fall_damage(struct MarioState *m, u32 hardFallAction) {
 #pragma GCC diagnostic pop
 
     if (m->action != ACT_TWIRLING && (m->floor->type != SURFACE_BURNING || chaos_check_if_patch_active(CHAOS_PATCH_NO_LAVA_DAMAGE))) {
-        if (m->vel[1] < (-55.0f * gravity)) {
+        if (m->vel[1] < (-55.0f * gravity) || (chaos_check_if_patch_active(CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE) && m->vel[1] < 0.0f)) {
             if (fallHeight > (3000.0f / gravity)) {
                 if(chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_FALL_DAMAGE)) {
                     set_hurt_counter(m, U8_MAX);
@@ -99,7 +99,10 @@ s32 check_fall_damage(struct MarioState *m, u32 hardFallAction) {
                 set_camera_shake_from_hit(SHAKE_FALL_DAMAGE);
                 play_sound(SOUND_MARIO_ATTACKED, m->marioObj->header.gfx.cameraToObject);
                 return drop_and_set_mario_action(m, hardFallAction, 4);
-            } else if (fallHeight > (1150.0f / gravity) && !mario_floor_is_slippery(m)) {
+            } else if ((fallHeight > (1150.0f / gravity)
+                                || (chaos_check_if_patch_active(CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE) && fallHeight > 0.0f))
+                        && !mario_floor_is_slippery(m)
+            ) {
                 if(chaos_check_if_patch_active(CHAOS_PATCH_LETHAL_FALL_DAMAGE)) {
                     set_hurt_counter(m, U8_MAX);
                 } else {
