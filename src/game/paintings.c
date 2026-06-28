@@ -1137,7 +1137,7 @@ void move_ddd_painting(struct Painting *painting, f32 frontPos, f32 backPos, f32
             // Tell the save file that we've moved DDD back.
             save_file_set_flags(SAVE_FLAG_DDD_MOVED_BACK);
         }
-    } else if (bowsersSubBeaten && dddBack) {
+    } else {
         // If the painting has already moved back, place it in the back position.
         painting->posX = backPos;
         gDddPaintingStatus = BOWSERS_SUB_BEATEN | DDD_BACK;
