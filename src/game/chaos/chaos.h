@@ -341,7 +341,9 @@ struct ChaosPatch {
     u8   (*conditionalFunc  )(void);       // Check specific scenarios for whether this patch type is allowed to show up, beyond just conflicting patch IDs (Optional)
     void (*activatedInitFunc)(void);       // Invoked the moment this patch takes effect (Optional)
     void (*levelInitFunc    )(void);       // Invoked once immediately after warping into a new level that isn't COURSE_NONE (Optional)
-    void (*areaInitFunc     )(void);       // Invoked once immediately after warping into a new level and/or area that isn't COURSE_NONE (Optional)
+    void (*areaInitFunc     )(void);       // Invoked once immediately after warping into a new level and/or area that isn't COURSE_NONE (Optional, excludes instant warps)
+    void (*instWarpPreFunc  )(void);       // Invoked once immediately before instantant warping into a new area that isn't in COURSE_NONE (Optional)
+    void (*instWarpPostFunc )(void);       // Invoked once immediately after instantant warping into a new area that isn't in COURSE_NONE (Optional)
     void (*frameUpdateFunc  )(void);       // Invoked once at the start of each frame while active (Optional)
     void (*deactivationFunc )(void);       // Invoked once the patch is deactivated (Optional)
 
@@ -458,10 +460,14 @@ void chaos_select_patches(struct ChaosPatchSelection *patchSelection);
 // Activate any patches that were previously active in a different session.
 void chaos_init(void);
 
-// Invokes the area callback for each chaos patch as soon as Mario enters a new area.
+// Invokes the area callback for each chaos patch as soon as Mario enters a new area (excluding via instant warps).
 // This function also executes the callback for level changes.
 // Neither are invoked if the current course is COURSE_NONE.
 void chaos_area_update(void);
+
+// Invokes the area callback for each chaos patch right before/after Mario enters a new area via instant warp.
+// Not invoked if the current course is COURSE_NONE.
+void chaos_instant_warp_area_update(s32 isPostWarp);
 
 // Invokes a frame update for each active and applicable chaos patch.
 // Only updates if current play mode is normal (i.e. not paused) and timestop is inactive.

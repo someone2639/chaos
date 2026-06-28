@@ -33,6 +33,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .activatedInitFunc  = NULL,
         .levelInitFunc      = NULL,
         .areaInitFunc       = NULL,
+        .instWarpPreFunc    = NULL,
+        .instWarpPostFunc   = NULL,
         .frameUpdateFunc    = NULL,
         .deactivationFunc   = NULL,
 
@@ -61,6 +63,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .activatedInitFunc  = NULL,
         .levelInitFunc      = NULL,
         .areaInitFunc       = NULL,
+        .instWarpPreFunc    = NULL,
+        .instWarpPostFunc   = NULL,
         .frameUpdateFunc    = NULL,
         .deactivationFunc   = NULL,
 
@@ -2597,7 +2601,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .disableForHardcore = TRUE,
         
         INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_A, CHAOS_PATCH_BUTTON_BROKEN_B, CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SWAPPED_ZR_AB, CHAOS_PATCH_BUTTON_BROKEN_C, CHAOS_PATCH_RED_LIGHT),
-
         .activatedInitFunc  = chs_act_tetris,
         .deactivationFunc   = chs_deact_tetris,
         .frameUpdateFunc    = chs_update_tetris,
@@ -2622,6 +2625,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .disableForHardcore = TRUE, // Too much unpredictability
 
         INCOMPATIBLE(CHAOS_PATCH_GRAVITY_INCREASE, CHAOS_PATCH_WALKIES, CHAOS_PATCH_PUSH_BACK),
+        .activatedInitFunc  = chs_act_star_medallion,
+        .levelInitFunc      = chs_lvlinit_star_medallion,
+        .areaInitFunc       = chs_area_init_star_medallion,
+        .instWarpPostFunc   = chs_area_init_star_medallion,
 
         .name               = "Star Medallion",
         .shortDescription   = "Mario must collect the star medallion randomly placed in each course before collecting a star.",

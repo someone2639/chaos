@@ -22,3 +22,7 @@
 // Double Cherry
 s16 set_cherry_animation(struct Object *o, s32 targetAnimID);
 void delete_cherry_clone(struct Object *obj);
+
+// Star Medallion
+extern s32 gStarMedallionCollected;
+extern s32 gStarMedallionActiveIndex;

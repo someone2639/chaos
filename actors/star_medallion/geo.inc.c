@@ -2,7 +2,7 @@
 
 // TODO: Placeholder
 const GeoLayout star_medallion_geo[] = {
-	GEO_NODE_START(),
+    GEO_SHADOW(SHADOW_CIRCLE_4_VERTS, 0x9B, 150),
 	GEO_OPEN_NODE(),
       GEO_SCALE(0x00, 0x28000),
 		GEO_OPEN_NODE(),

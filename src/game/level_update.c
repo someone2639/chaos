@@ -628,6 +628,11 @@ void check_instant_warp(void) {
             struct InstantWarp *warp = &gCurrentArea->instantWarps[index];
 
             if (warp->id != 0) {
+                // TODO: Move all chaos logic into callbacks
+
+                // Pre-warp chaos callbacks
+                chaos_instant_warp_area_update(TRUE);
+
                 Vec3f demonPos;
                 struct ObjectNode *listHead = &gObjectLists[get_object_list_from_behavior(segmented_to_virtual(bhvGreenDemon))];
                 struct Object *obj = (struct Object *) listHead->next;
@@ -664,6 +669,9 @@ void check_instant_warp(void) {
                 warp_camera(warp->displacement[0], warp->displacement[1], warp->displacement[2]);
 
                 gMarioState->area->camera->yaw = cameraAngle;
+
+                // Post-warp chaos callbacks
+                chaos_instant_warp_area_update(TRUE);
 
                 if (chaos_check_if_patch_active(CHAOS_PATCH_SHUFFLE_OBJECTS)) {
                     if (gCurrCourseNum != COURSE_NONE) {

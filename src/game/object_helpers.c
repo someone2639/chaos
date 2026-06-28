@@ -2973,6 +2973,10 @@ u8 chs_can_collect_star(enum ChaosPatchID *id) {
     }
     *id = CHAOS_PATCH_NONE;
 
+    if (!chs_star_medallion_can_collect_star()) {
+        *id = CHAOS_PATCH_STAR_MEDALLION;
+        return FALSE;
+    }
     if (!chs_pay2win_can_collect_star()) {
         *id = CHAOS_PATCH_PAY2WIN;
         return FALSE;

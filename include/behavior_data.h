@@ -557,6 +557,6 @@ extern const BehaviorScript bhvIntroScene[];
 extern const BehaviorScript bhvUnusedFakeStar[];
 extern const BehaviorScript bhvMarioClone[];
 extern const BehaviorScript bhvSlotCoinPlaceholder[];
-extern const BehaviorScript bhvCollectibleGlow[];
+extern const BehaviorScript bhvStarMedallion[];
 
 #endif // BEHAVIOR_DATA_H

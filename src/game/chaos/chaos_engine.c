@@ -1200,7 +1200,7 @@ void chaos_area_update(void) {
         return;
     }
 
-    if (gCurrCourseNum == COURSE_NONE) {
+    if (gCurrCourseNum == COURSE_NONE || gCurrCourseNum == COURSE_CAKE_END) {
         return;
     }
 
@@ -1223,6 +1223,37 @@ void chaos_area_update(void) {
     unsafeDeactivationFunc = FALSE;
 
     gChaosLevelWarped = FALSE;
+}
+
+void chaos_instant_warp_area_update(s32 isPostWarp) {
+    if (!gChaosActiveEntryCount) {
+        return;
+    }
+
+    if (gCurrCourseNum == COURSE_NONE || gCurrCourseNum == COURSE_CAKE_END) {
+        return;
+    }
+
+    if (sWarpDest.type == WARP_TYPE_SAME_AREA) {
+        return;
+    }
+
+    unsafeDeactivationFunc = TRUE;
+    for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+        const enum ChaosPatchID patchId = gChaosActiveEntries[i].id;
+        const struct ChaosPatch *patch = &gChaosPatches[patchId];
+
+        if (isPostWarp) {
+            if (patch->instWarpPostFunc) {
+                patch->instWarpPostFunc();
+            }
+        } else {
+            if (patch->instWarpPreFunc) {
+                patch->instWarpPreFunc();
+            }
+        }
+    }
+    unsafeDeactivationFunc = FALSE;
 }
 
 void chaos_frame_update(void) {

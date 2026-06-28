@@ -789,7 +789,8 @@ Gfx yellow_coin_3D_Cylinder_mesh_layer_1_tri_0[] = {
 
 Gfx mat_yellow_coin_3D_Yellow_Coin[] = {
 	gsDPPipeSync(),
-	gsDPSetCombineLERP(0, 0, 0, TEXEL0, 0, 0, 0, ENVIRONMENT, 0, 0, 0, TEXEL0, 0, 0, 0, ENVIRONMENT),
+	gsDPSetCombineLERP(TEXEL0, 0, ENVIRONMENT, 0, 0, 0, 0, ENVIRONMENT, TEXEL0, 0, ENVIRONMENT, 0, 0, 0, 0, ENVIRONMENT),
+	gsDPSetEnvColor(223, 223, 191, 255),
 	gsSPSetGeometryMode(G_TEXTURE_GEN),
 	gsSPTexture(1983, 1983, 0, 0, 1),
 	gsDPSetTextureLUT(G_TT_RGBA16),

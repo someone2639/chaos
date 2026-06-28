@@ -6268,3 +6268,15 @@ const BehaviorScript bhvSlotCoinPlaceholder[] = {
 	BEGIN(OBJ_LIST_LEVEL),
 	BREAK(),
 };
+
+const BehaviorScript bhvStarMedallion[] = {
+    BEGIN(OBJ_LIST_LEVEL),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    SET_INTERACT_TYPE(INTERACT_COIN),
+    SET_HITBOX_WITH_OFFSET(/*radius*/ 75, /*height*/ 150, /*downOffset*/ -25),
+    SET_INT(oIntangibleTimer, 0),
+    CALL_NATIVE(bhv_init_room),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_star_medallion_loop),
+    END_LOOP(),
+};

@@ -259,3 +259,7 @@ void chs_act_tetris(void);
 void chs_deact_tetris(void);
 void chs_update_tetris(void);
 void draw_tetris(void);
+void chs_act_star_medallion(void);
+void chs_area_init_star_medallion(void);
+void chs_lvlinit_star_medallion(void);
+u8 chs_star_medallion_can_collect_star(void);

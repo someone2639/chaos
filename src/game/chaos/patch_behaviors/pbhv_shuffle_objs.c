@@ -41,6 +41,7 @@ const BehaviorScript *surflist[] = {
     bhvThwomp2,
     bhvGrindel,
     bhvCapSwitch,
+    bhvStarMedallion,
 
 
     // TTC memes

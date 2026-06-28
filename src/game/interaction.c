@@ -793,6 +793,14 @@ void reset_mario_pitch(struct MarioState *m) {
 }
 
 u32 interact_coin(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
+    if (o->behavior == segmented_to_virtual(bhvStarMedallion)) {
+        gStarMedallionCollected = TRUE;
+        play_sound(SOUND_MENU_STAR_SOUND, m->marioObj->header.gfx.cameraToObject); // TODO: Use a different sound (SMG2 sound?)
+        spawn_object(o, MODEL_NONE, bhvStarKeyCollectionPuffSpawner);
+        o->oInteractStatus = INT_STATUS_INTERACTED;
+        return FALSE;
+    }
+
     s32 coinCount = o->oDamageOrCoinValue;
     chs_collectors_anxiety_coin_collected(coinCount);
     if (coinCount >= 5 && chaos_check_if_patch_active(CHAOS_PATCH_BLUECOIN_LOTTERY)) {
