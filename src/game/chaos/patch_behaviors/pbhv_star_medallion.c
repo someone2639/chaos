@@ -549,6 +549,10 @@ void chs_area_init_star_medallion(void) {
     spawn_star_medallion(gStarMedallionActiveIndex);
 }
 
+void chs_instwarp_post_star_medallion(UNUSED struct InstantWarp *warp) {
+    chs_area_init_star_medallion();
+}
+
 void chs_lvlinit_star_medallion(void) {
     s32 isCheckpoint = FALSE;
     gStarMedallionCollected = FALSE;

@@ -25,4 +25,3 @@ struct CosmicCloneFrameData {
 
 Gfx *geo_switch_cosmic_clone_hand(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c);
 Gfx *geo_cosmic_clone_hand_foot_scaler(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c);
-void chs_cosmic_clones_move_instant_warp(Vec3s displacement);

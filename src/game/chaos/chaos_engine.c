@@ -1225,7 +1225,7 @@ void chaos_area_update(void) {
     gChaosLevelWarped = FALSE;
 }
 
-void chaos_instant_warp_area_update(s32 isPostWarp) {
+void chaos_instant_warp_area_update(struct InstantWarp *warp, s32 isPostWarp) {
     if (!gChaosActiveEntryCount) {
         return;
     }
@@ -1245,11 +1245,11 @@ void chaos_instant_warp_area_update(s32 isPostWarp) {
 
         if (isPostWarp) {
             if (patch->instWarpPostFunc) {
-                patch->instWarpPostFunc();
+                patch->instWarpPostFunc(warp);
             }
         } else {
             if (patch->instWarpPreFunc) {
-                patch->instWarpPreFunc();
+                patch->instWarpPreFunc(warp);
             }
         }
     }

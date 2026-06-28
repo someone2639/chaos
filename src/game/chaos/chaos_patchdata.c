@@ -1254,6 +1254,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         INCOMPATIBLE(CHAOS_PATCH_WALKIES, CHAOS_PATCH_RED_LIGHT),
         .conditionalFunc    = chs_cond_green_demon,
         .activatedInitFunc  = chs_act_green_demon,
+        .instWarpPreFunc    = chs_instwarp_pre_green_demon,
+        .instWarpPostFunc   = chs_instwarp_post_green_demon,
         .areaInitFunc       = chs_area_init_green_demon,
 
         .name               = "Green Demon",
@@ -1315,6 +1317,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .activatedInitFunc  = chs_act_cosmic_clones,
         .deactivationFunc   = chs_deact_cosmic_clones,
         .areaInitFunc       = chs_area_init_cosmic_clones,
+        .instWarpPostFunc   = chs_instwarp_post_cosmic_clones,
         .frameUpdateFunc    = chs_update_cosmic_clones,
 
         .name               = "Cosmic Clones",
@@ -2536,6 +2539,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         INCOMPATIBLE(CHAOS_PATCH_COLLECTORS_ANXIETY),
         .areaInitFunc       = chs_start_shuffle,
+        .instWarpPostFunc   = chs_instwarp_post_shuffle,
         .frameUpdateFunc    = chs_shuffle_objects,
 
         .name               = "Shuffle Object Positions",
@@ -2628,7 +2632,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .activatedInitFunc  = chs_act_star_medallion,
         .levelInitFunc      = chs_lvlinit_star_medallion,
         .areaInitFunc       = chs_area_init_star_medallion,
-        .instWarpPostFunc   = chs_area_init_star_medallion,
+        .instWarpPostFunc   = chs_instwarp_post_star_medallion,
 
         .name               = "Star Medallion",
         .shortDescription   = "Mario must collect the star medallion randomly placed in each course before collecting a star.",

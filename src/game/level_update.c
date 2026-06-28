@@ -628,30 +628,8 @@ void check_instant_warp(void) {
             struct InstantWarp *warp = &gCurrentArea->instantWarps[index];
 
             if (warp->id != 0) {
-                // TODO: Move all chaos logic into callbacks
-
                 // Pre-warp chaos callbacks
-                chaos_instant_warp_area_update(TRUE);
-
-                Vec3f demonPos;
-                struct ObjectNode *listHead = &gObjectLists[get_object_list_from_behavior(segmented_to_virtual(bhvGreenDemon))];
-                struct Object *obj = (struct Object *) listHead->next;
-                s32 spawnDemon = FALSE;
-
-                if(chaos_check_if_patch_active(CHAOS_PATCH_GREEN_DEMON) && gCurrCourseNum != COURSE_NONE) {
-                    while (obj != (struct Object *) listHead) {
-                        if (obj->behavior == segmented_to_virtual(bhvGreenDemon)) {
-                            if (obj->activeFlags != ACTIVE_FLAG_DEACTIVATED) {
-                                demonPos[0] = obj->oPosX;
-                                demonPos[1] = obj->oPosY;
-                                demonPos[2] = obj->oPosZ;
-                                spawnDemon = TRUE;
-                                break;
-                            }
-                        }
-                        obj = (struct Object *) obj->header.next;
-                    }
-                }
+                chaos_instant_warp_area_update(warp, FALSE);
 
                 gMarioState->pos[0] += warp->displacement[0];
                 gMarioState->pos[1] += warp->displacement[1];
@@ -671,27 +649,7 @@ void check_instant_warp(void) {
                 gMarioState->area->camera->yaw = cameraAngle;
 
                 // Post-warp chaos callbacks
-                chaos_instant_warp_area_update(TRUE);
-
-                if (chaos_check_if_patch_active(CHAOS_PATCH_SHUFFLE_OBJECTS)) {
-                    if (gCurrCourseNum != COURSE_NONE) {
-                        gMarioState->statusForCamera->cameraEvent = CAM_EVENT_SHUFFLE;
-                    }
-                }
-
-                if(chaos_check_if_patch_active(CHAOS_PATCH_COSMIC_CLONES) && gCurrCourseNum != COURSE_NONE) {
-                    chs_cosmic_clones_move_instant_warp(warp->displacement);
-                }
-
-                if(spawnDemon) {
-                    demonPos[0] += warp->displacement[0];
-                    demonPos[1] += warp->displacement[1];
-                    demonPos[2] += warp->displacement[2];
-
-                    struct Object *demon = spawn_object_abs_with_rot(gMarioState->marioObj, 0, MODEL_GREEN_DEMON, bhvGreenDemon,
-                            demonPos[0], demonPos[1], demonPos[2], 0, 0, 0);
-                    demon->oAction = 1;
-                }
+                chaos_instant_warp_area_update(warp, TRUE);
             }
         }
     }

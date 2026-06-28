@@ -3,6 +3,7 @@
 #include <PR/ultratypes.h>
 #include <PR/gbi.h>
 #include "types.h"
+#include "game/area.h"
 
 #define CHAOS_PATCH_SEVERITY_MAX 3
 #define CHAOS_PATCH_SEVERITY_COUNT (CHAOS_PATCH_SEVERITY_MAX + 1)
@@ -338,18 +339,18 @@ struct ChaosPatch {
     const u8 incompatibleCount;            // Number of specified incompatible patches
     const enum ChaosPatchID *incompatible; // List of all incompatible patch IDs (Optional)
 
-    u8   (*conditionalFunc  )(void);       // Check specific scenarios for whether this patch type is allowed to show up, beyond just conflicting patch IDs (Optional)
-    void (*activatedInitFunc)(void);       // Invoked the moment this patch takes effect (Optional)
-    void (*levelInitFunc    )(void);       // Invoked once immediately after warping into a new level that isn't COURSE_NONE (Optional)
-    void (*areaInitFunc     )(void);       // Invoked once immediately after warping into a new level and/or area that isn't COURSE_NONE (Optional, excludes instant warps)
-    void (*instWarpPreFunc  )(void);       // Invoked once immediately before instantant warping into a new area that isn't in COURSE_NONE (Optional)
-    void (*instWarpPostFunc )(void);       // Invoked once immediately after instantant warping into a new area that isn't in COURSE_NONE (Optional)
-    void (*frameUpdateFunc  )(void);       // Invoked once at the start of each frame while active (Optional)
-    void (*deactivationFunc )(void);       // Invoked once the patch is deactivated (Optional)
+    u8   (*conditionalFunc  )(void);                     // Check specific scenarios for whether this patch type is allowed to show up, beyond just conflicting patch IDs (Optional)
+    void (*activatedInitFunc)(void);                     // Invoked the moment this patch takes effect (Optional)
+    void (*levelInitFunc    )(void);                     // Invoked once immediately after warping into a new level that isn't COURSE_NONE (Optional)
+    void (*areaInitFunc     )(void);                     // Invoked once immediately after warping into a new level and/or area that isn't COURSE_NONE (Optional, excludes instant warps)
+    void (*instWarpPreFunc  )(struct InstantWarp *warp); // Invoked once immediately before instant warping into a new area that isn't in COURSE_NONE (Optional)
+    void (*instWarpPostFunc )(struct InstantWarp *warp); // Invoked once immediately after instant warping into a new area that isn't in COURSE_NONE (Optional)
+    void (*frameUpdateFunc  )(void);                     // Invoked once at the start of each frame while active (Optional)
+    void (*deactivationFunc )(void);                     // Invoked once the patch is deactivated (Optional)
 
-    const u8 hasMenuEvent;                 // Does this patch have a chaos menu event? (Events activated immediately following patch selection, but prior to raising the curtain. Mainly for user-facing render events, such as Coin Flip or Let's Go Gambling!)
-    void (*chsMenuInitFunc)(void);         // Invoked upon initialization of menu event (Optional if `hasMenuEvent` is TRUE)
-    void (*chsMenuUpdateFunc)(Gfx **dl);   // Invoked as the update/render entry point during a menu event (Mandatory if `hasMenuEvent` is TRUE)
+    const u8 hasMenuEvent;               // Does this patch have a chaos menu event? (Events activated immediately following patch selection, but prior to raising the curtain. Mainly for user-facing render events, such as Coin Flip or Let's Go Gambling!)
+    void (*chsMenuInitFunc)(void);       // Invoked upon initialization of menu event (Optional if `hasMenuEvent` is TRUE)
+    void (*chsMenuUpdateFunc)(Gfx **dl); // Invoked as the update/render entry point during a menu event (Mandatory if `hasMenuEvent` is TRUE)
 
     const char *name;             // Display name for the patch
     const char *shortDescription; // Short description for the patch
@@ -467,7 +468,7 @@ void chaos_area_update(void);
 
 // Invokes the area callback for each chaos patch right before/after Mario enters a new area via instant warp.
 // Not invoked if the current course is COURSE_NONE.
-void chaos_instant_warp_area_update(s32 isPostWarp);
+void chaos_instant_warp_area_update(struct InstantWarp *warp, s32 isPostWarp);
 
 // Invokes a frame update for each active and applicable chaos patch.
 // Only updates if current play mode is normal (i.e. not paused) and timestop is inactive.

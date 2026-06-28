@@ -20,6 +20,10 @@
 /*
     Green Demon
 */
+
+static Vec3f demonPos;
+static s32 spawnDemon;
+
 u8 chs_cond_green_demon(void) {
     return (gChaosDifficulty != CHAOS_DIFFICULTY_EASY);
 }
@@ -38,6 +42,39 @@ void chs_act_green_demon(void) {
 void chs_area_init_green_demon(void) {
     spawn_object_abs_with_rot(gMarioState->marioObj, 0, MODEL_GREEN_DEMON, bhvGreenDemon,
                             gMarioState->pos[0], gMarioState->pos[1], gMarioState->pos[2], 0, 0, 0);
+}
+
+void chs_instwarp_pre_green_demon(UNUSED struct InstantWarp *warp) {
+    struct ObjectNode *listHead = &gObjectLists[get_object_list_from_behavior(segmented_to_virtual(bhvGreenDemon))];
+    struct Object *obj = (struct Object *) listHead->next;
+    spawnDemon = FALSE;
+
+    while (obj != (struct Object *) listHead) {
+        if (obj->behavior == segmented_to_virtual(bhvGreenDemon)) {
+            if (obj->activeFlags != ACTIVE_FLAG_DEACTIVATED) {
+                demonPos[0] = obj->oPosX;
+                demonPos[1] = obj->oPosY;
+                demonPos[2] = obj->oPosZ;
+                spawnDemon = TRUE;
+                break;
+            }
+        }
+        obj = (struct Object *) obj->header.next;
+    }
+}
+
+void chs_instwarp_post_green_demon(struct InstantWarp *warp) {
+    if (spawnDemon) {
+        demonPos[0] += warp->displacement[0];
+        demonPos[1] += warp->displacement[1];
+        demonPos[2] += warp->displacement[2];
+
+        struct Object *demon = spawn_object_abs_with_rot(gMarioState->marioObj, 0, MODEL_GREEN_DEMON, bhvGreenDemon,
+                demonPos[0], demonPos[1], demonPos[2], 0, 0, 0);
+        demon->oAction = 1;
+    }
+
+    spawnDemon = FALSE;
 }
 
 /*

@@ -68,6 +68,15 @@ void chs_area_init_cosmic_clones(void) {
     sStartClones = FALSE;
 }
 
+void chs_instwarp_post_cosmic_clones(struct InstantWarp *warp) {
+    spawn_cosmic_clones(TRUE);
+    for(int i = 0; i < TOTAL_CLONE_FRAMES; i++) {
+        gCosmicCloneFrames[i].pos[0] += warp->displacement[0];
+        gCosmicCloneFrames[i].pos[1] += warp->displacement[1];
+        gCosmicCloneFrames[i].pos[2] += warp->displacement[2];
+    }
+}
+
 void chs_update_cosmic_clones(void) {
     if(gCurrCourseNum == COURSE_NONE) { 
         return;
@@ -158,13 +167,4 @@ Gfx *geo_cosmic_clone_hand_foot_scaler(s32 callContext, struct GraphNode *node, 
         }
     }
     return NULL;
-}
-
-void chs_cosmic_clones_move_instant_warp(Vec3s displacement) {
-    spawn_cosmic_clones(TRUE);
-    for(int i = 0; i < TOTAL_CLONE_FRAMES; i++) {
-        gCosmicCloneFrames[i].pos[0] += displacement[0];
-        gCosmicCloneFrames[i].pos[1] += displacement[1];
-        gCosmicCloneFrames[i].pos[2] += displacement[2];
-    }
 }

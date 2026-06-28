@@ -374,6 +374,10 @@ void chs_start_shuffle(void) {
     chsStartShuffle = 1;
 }
 
+void chs_instwarp_post_shuffle(UNUSED struct InstantWarp *warp) {
+    gMarioState->statusForCamera->cameraEvent = CAM_EVENT_SHUFFLE;
+}
+
 #define GROUNDCOND (gMarioState->action & (ACT_FLAG_STATIONARY | ACT_FLAG_MOVING))
 #define SWIMCOND (gMarioState->action & ACT_FLAG_SWIMMING)
 #define SHELLCOND (gMarioState->action == ACT_RIDING_SHELL_GROUND)
