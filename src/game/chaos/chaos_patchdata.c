@@ -1053,6 +1053,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 12,
         .durationImpossible = 14,
 
+        INCOMPATIBLE(CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE),
+
         .name               = "Sore Arms",
         .shortDescription   = "Mario can no longer ledge grab.",
     },
@@ -2201,10 +2203,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
         .duration           = 3,
-        .durationHard       = 3,
+        .durationHard       = 4,
         .durationImpossible = 5,
 
-        INCOMPATIBLE(CHAOS_PATCH_NO_FALL_DAMAGE, CHAOS_PATCH_COSMIC_RAYS, CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_ONE_HIT_WONDER),
+        INCOMPATIBLE(CHAOS_PATCH_NO_FALL_DAMAGE, CHAOS_PATCH_COSMIC_RAYS, CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_LOSEMOVE_LEDGE_GRAB),
 
         .name               = "Unrealistic Fall Damage",
         .shortDescription   = "Falling from any height whatsoever will crush Mario's legs.",
