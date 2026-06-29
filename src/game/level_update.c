@@ -856,6 +856,8 @@ void initiate_painting_warp(void) {
  */
 s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
     s32 val04 = TRUE;
+    s32 isMiracle = FALSE;
+    s32 isSafetyNet = FALSE;
 
     if (sDelayedWarpOp == WARP_OP_NONE) {
         m->invincTimer = -1;
@@ -887,16 +889,19 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 break;
 
             case WARP_OP_DEATH:
+                if (chs_is_miracle_active() && m->floor) {
+                    isMiracle = TRUE;
+                }
                 if ((chaos_check_if_patch_active(CHAOS_PATCH_INSTANT_GAME_OVER)
                     || gChaosGameMode == CHAOS_GAMEMODE_HARDCORE
                     || (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && m->numLives < chs_life_gambler_get_lives_lost())
-                ) && !chs_is_miracle_active()) {
+                ) && !isMiracle) {
                     sDelayedWarpOp = WARP_OP_GAME_OVER;
                 }
                 sDelayedWarpTimer = 48;
                 sSourceWarpNodeId = WARP_NODE_DEATH;
                 play_transition(WARP_TRANSITION_FADE_INTO_BOWSER, 0x30, 0x00, 0x00, 0x00);
-                if(!chs_is_miracle_active() || !m->floor) {
+                if(!isMiracle) {
                     play_sound(SOUND_MENU_BOWSER_LAUGH, gGlobalSoundSource);
                 }
                 break;
@@ -904,14 +909,19 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
             case WARP_OP_WARP_FLOOR:
                 sSourceWarpNodeId = WARP_NODE_WARP_FLOOR;
                 if (area_get_warp_node(sSourceWarpNodeId) == NULL || (gCurrLevelNum == LEVEL_JRB && m->floor->type == SURFACE_DEATH_PLANE)) { // epic hard coded level check
+                    if (chs_is_safety_net_active() && m->floor) {
+                        isSafetyNet = TRUE;
+                    } else if (chs_is_miracle_active() && m->floor) {
+                        isMiracle = TRUE;
+                    }
                     if ((chaos_check_if_patch_active(CHAOS_PATCH_INSTANT_GAME_OVER)
                         || gChaosGameMode == CHAOS_GAMEMODE_HARDCORE
                         || (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && m->numLives < chs_life_gambler_get_lives_lost())
-                    ) && !chs_is_miracle_active()) {
+                    ) && !(isSafetyNet || isMiracle)) {
                         sDelayedWarpOp = WARP_OP_GAME_OVER;
-                    } else {
-                        sSourceWarpNodeId = WARP_NODE_DEATH;
                     }
+
+                    sSourceWarpNodeId = WARP_NODE_DEATH;
                 }
                 sDelayedWarpTimer = 20;
                 play_transition(WARP_TRANSITION_FADE_INTO_CIRCLE, 0x14, 0x00, 0x00, 0x00);
@@ -970,10 +980,13 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 val04 = FALSE;
                 break;
             case WARP_OP_TIME_UP:
+                if (chs_is_miracle_active() && m->floor) {
+                    isMiracle = TRUE;
+                }
                 if ((chaos_check_if_patch_active(CHAOS_PATCH_INSTANT_GAME_OVER)
                     || gChaosGameMode == CHAOS_GAMEMODE_HARDCORE
                     || (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && m->numLives < chs_life_gambler_get_lives_lost())
-                ) && !chs_is_miracle_active()) {
+                ) && !isMiracle) {
                     sDelayedWarpOp = WARP_OP_GAME_OVER;
                 }
                 sDelayedWarpTimer = 60;
@@ -991,7 +1004,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 break;
         }
 
-        if(chs_is_miracle_active() && m->floor) {
+        if((isSafetyNet || isMiracle) && m->floor) {
             if(sSourceWarpNodeId == WARP_NODE_DEATH) {
                 sDelayedWarpOp = WARP_OP_NONE;
                 gWarpTransition.isActive = FALSE;
@@ -1001,9 +1014,6 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 m->invincTimer = 30;
                 m->quicksandDepth = 0.0f;
                 m->marioObj->header.gfx.pos[1] = m->pos[1];
-                m->health = 0x100;
-                m->hurtCounter = 0;
-                m->healCounter = chs_calculate_max_heal_counter();
                 sDelayedWarpTimer = 0;
                 val04 = FALSE;
                 if(m->action & ACT_FLAG_SWIMMING) {
@@ -1017,10 +1027,24 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                             m->faceAngle[1] = atan2s(m->floor->normal.z, m->floor->normal.x);
                         }
                     }
-                    set_mario_action(m, ACT_MIRACLE_RESPAWN, 0);
+                    if (isSafetyNet) {
+                        set_mario_action(m, ACT_SAFETY_NET_RESPAWN, 0);
+                    } else {
+                        set_mario_action(m, ACT_MIRACLE_RESPAWN, 0);
+                    }
                 }
                 
-                chs_decrement_miracle();
+                if (isSafetyNet) {
+                    m->health = gMarioState->maxHealth;
+                    m->hurtCounter = (gMarioState->health - 0x180) / 0x40;
+                    m->healCounter = 0;
+                    chaosmsg_print(CHAOS_PATCH_SAFETY_NET, "%s: Applied successfully.");
+                } else {
+                    m->health = 0x100;
+                    m->hurtCounter = 0;
+                    m->healCounter = chs_calculate_max_heal_counter();
+                    chs_decrement_miracle();
+                }
             }
         }
     

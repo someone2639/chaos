@@ -28,6 +28,7 @@ u8 chs_double_coins_under_30s(void) {
 
     if (chaos_find_first_active_patch(CHAOS_PATCH_DOUBLE_COINS, &entry) < 0) {
         assert(FALSE, "chs_lvlinit_double_coins:\nActive patch could not be found!");
+        return FALSE;
     }
 
     return (entry->frameTimer < TIMELIMIT);
@@ -38,6 +39,7 @@ void chs_lvlinit_double_coins(void) {
 
     if (chaos_find_first_active_patch(CHAOS_PATCH_DOUBLE_COINS, &entry) < 0) {
         assert(FALSE, "chs_lvlinit_double_coins:\nActive patch could not be found!");
+        return;
     }
 
     entry->frameTimer = 0;

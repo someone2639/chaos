@@ -42,6 +42,17 @@ void chs_update_miracle(void) {
     }
 }
 
+u8 chs_is_safety_net_active(void) {
+    return (chaos_check_if_patch_active(CHAOS_PATCH_SAFETY_NET) && (gMarioState->health / 0x100) == (gMarioState->maxHealth / 0x100));
+}
+
+void chs_activate_safety_net(void) {
+    gMarioState->health = gMarioState->maxHealth;
+    gMarioState->hurtCounter = (gMarioState->health - 0x180) / 0x40;
+    gMarioState->healCounter = 0;
+    chaosmsg_print(CHAOS_PATCH_SAFETY_NET, "%s: Applied successfully.");
+}
+
 u8 chs_is_miracle_active(void) {
     return (chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE_NORMAL) || chaos_check_if_patch_active(CHAOS_PATCH_MIRACLE_HARDCORE));
 }

@@ -380,7 +380,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 3,
         .isStackable        = TRUE,
-        .duration           = 2,
+        .duration           = 1,
 
         .conditionalFunc    = chs_cond_star_cloning_device,
 
@@ -812,7 +812,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 12,
         .durationImpossible = 15,
 
-        INCOMPATIBLE(CHAOS_PATCH_DAMAGE_LOTTERY),
+        INCOMPATIBLE(CHAOS_PATCH_DAMAGE_LOTTERY, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE),
 
         .name               = "Sonic Simulator",
         .shortDescription   = "Coins represent Mario's health. Just like in Sonic, Mario will drop all of his coins upon taking damage.",
@@ -1844,9 +1844,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
         .affectsPatchSelect = TRUE,
-        .duration           = 6,
-        .durationHard       = 6,
-        .durationImpossible = 6,
+        .duration           = 5,
+        .durationHard       = 5,
+        .durationImpossible = 5,
 
         INCOMPATIBLE(CHAOS_PATCH_POSITIVE_EXTENSION),
 
@@ -2206,10 +2206,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 4,
         .durationImpossible = 5,
 
-        INCOMPATIBLE(CHAOS_PATCH_NO_FALL_DAMAGE, CHAOS_PATCH_COSMIC_RAYS, CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_LOSEMOVE_LEDGE_GRAB),
+        INCOMPATIBLE(CHAOS_PATCH_NO_FALL_DAMAGE, CHAOS_PATCH_COSMIC_RAYS, CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_LOSEMOVE_LEDGE_GRAB, CHAOS_PATCH_SONIC_SIMULATOR),
 
         .name               = "Unrealistic Fall Damage",
-        .shortDescription   = "Falling from any height whatsoever will crush Mario's legs.",
+        .shortDescription   = "Falling from any height whatsoever will crush Mario's stubby little legs.",
 },
 
 // Audio Modifiers
@@ -2387,6 +2387,15 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Sequence Break",
         .shortDescription   = "All course acts are now selectable, and may be completed in any order.",
+    },
+    [CHAOS_PATCH_SAFETY_NET] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 3,
+        .duration           = 6,
+
+        .name               = "Safety Net",
+        .shortDescription   = "When Mario is at full HP, falling off a ledge will respawn Mario at his previous location with 1 HP.",
     },
     [CHAOS_PATCH_MIRACLE_NORMAL] = {
         .durationType       = CHAOS_DURATION_USE_COUNT,

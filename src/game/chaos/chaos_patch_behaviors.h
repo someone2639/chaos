@@ -236,6 +236,7 @@ void chs_update_serve_ads(void);
 u8 chs_cond_miracle_normal(void);
 u8 chs_cond_miracle_hardcore(void);
 void chs_update_miracle(void);
+u8 chs_is_safety_net_active(void);
 u8 chs_is_miracle_active(void);
 void chs_decrement_miracle(void);
 void chs_update_luigi(void);
