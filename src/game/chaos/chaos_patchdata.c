@@ -504,7 +504,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 10,
         .durationImpossible = 12,
 
-        INCOMPATIBLE(CHAOS_PATCH_HEALTH_GAIN, CHAOS_PATCH_NOHEAL_COINS, CHAOS_PATCH_WALKIES),
+        INCOMPATIBLE(CHAOS_PATCH_HEALTH_GAIN, CHAOS_PATCH_NOHEAL_COINS, CHAOS_PATCH_WALKIES, CHAOS_PATCH_SAFETY_NET),
         .frameUpdateFunc    = chs_update_health_drain,
 
         .name               = "Bleeding Out",
@@ -2394,8 +2394,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 3,
         .duration           = 6,
 
+        INCOMPATIBLE(CHAOS_PATCH_HEALTH_DRAIN),
+
         .name               = "Safety Net",
-        .shortDescription   = "When Mario is at full HP, falling off a ledge will respawn Mario at his previous location with 1 HP.",
+        .shortDescription   = "When Mario is at full HP, falling into the void will respawn him at his last safe location with 1 HP.",
     },
     [CHAOS_PATCH_MIRACLE_NORMAL] = {
         .durationType       = CHAOS_DURATION_USE_COUNT,
@@ -2423,7 +2425,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "The Miracle Happened",
         .shortDescription   = "The next time Mario dies, he is revived as if nothing ever happened. Essentially a free lifeline for your run!",
-        .longDescription    = "On death, Mario will be instantly healed back to full health instead of being thrown out of the level. He will maintain his level and coin progress."
+        .longDescription    = "On death, Mario will be instantly healed back to full health instead of being thrown out of the level. He will maintain his level and coin progress. This can also be used instead to exit course without a game over."
     },
     [CHAOS_PATCH_DISABLE_FADE_WARPS] = {
         .durationType       = CHAOS_DURATION_STARS,
