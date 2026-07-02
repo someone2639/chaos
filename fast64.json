@@ -1,0 +1,154 @@
+{
+	"version": 1.0,
+	"autoLoad": true,
+	"autoPickTextureFormat": true,
+	"preferRGBAOverCI": false,
+	"microcode": "F3DEX2/LX2",
+	"bleedAndInline": false,
+	"saveTextures": false,
+	"ignoreTextureRestrictions": false,
+	"rdpDefaults": {
+		"geometryMode": {
+			"zBuffer": true,
+			"shade": true,
+			"cullBack": true,
+			"lighting": true,
+			"shadeSmooth": true
+		},
+		"otherModeH": {
+			"textureConvert": "G_TC_FILT",
+			"textureFilter": "G_TF_BILERP",
+			"perspectiveCorrection": "G_TP_PERSP",
+			"pipelineMode": "G_PM_1PRIMITIVE"
+		},
+		"otherModeL": {},
+		"other": {
+			"clipRatio": 1
+		}
+	},
+	"sm64": {
+		"draw_layers": {
+			"0": {
+				"cycle_1": "G_RM_ZB_OPA_SURF",
+				"cycle_2": "G_RM_ZB_OPA_SURF2"
+			},
+			"1": {
+				"cycle_1": "G_RM_AA_ZB_OPA_SURF",
+				"cycle_2": "G_RM_AA_ZB_OPA_SURF2"
+			},
+			"2": {
+				"cycle_1": "G_RM_AA_ZB_OPA_DECAL",
+				"cycle_2": "G_RM_AA_ZB_OPA_DECAL2"
+			},
+			"3": {
+				"cycle_1": "G_RM_AA_ZB_OPA_INTER",
+				"cycle_2": "G_RM_AA_ZB_OPA_INTER2"
+			},
+			"4": {
+				"cycle_1": "G_RM_AA_ZB_TEX_EDGE",
+				"cycle_2": "G_RM_AA_ZB_TEX_EDGE2"
+			},
+			"5": {
+				"cycle_1": "G_RM_AA_ZB_XLU_SURF",
+				"cycle_2": "G_RM_AA_ZB_XLU_SURF2"
+			},
+			"6": {
+				"cycle_1": "G_RM_AA_ZB_XLU_DECAL",
+				"cycle_2": "G_RM_AA_ZB_XLU_DECAL2"
+			},
+			"7": {
+				"cycle_1": "G_RM_AA_ZB_XLU_INTER",
+				"cycle_2": "G_RM_AA_ZB_XLU_INTER2"
+			}
+		},
+		"refresh_version": "Refresh 16",
+		"compression_format": "mio0",
+		"force_extended_ram": true,
+		"matstack_fix": false,
+		"lighting_engine_presets": false,
+		"write_all": false,
+		"designated": false,
+		"custom_cmds": [
+			{
+				"name": "Jump To Graph Node",
+				"cmd_type": "Geo",
+				"str_cmd": "GEO_JUMP_TO_EXISTING_GRAPH_NODE",
+				"int_cmd": 0,
+				"skip_eval": true,
+				"children_requirements": "NONE",
+				"dl_option": "NONE",
+				"is_animated": false,
+				"args": [
+					{
+						"name": "Model ID",
+						"show_as_preset": true,
+						"arg_type": "PARAMETER",
+						"defaults": {
+							"parameter": "MODEL_NONE"
+						}
+					},
+					{
+						"name": "Display Shadow",
+						"show_as_preset": true,
+						"arg_type": "BOOLEAN",
+						"defaults": {
+							"boolean": false
+						}
+					}
+				]
+			},
+			{
+				"name": "Render Range",
+				"cmd_type": "Geo",
+				"str_cmd": "GEO_RENDER_RANGE",
+				"int_cmd": 0,
+				"skip_eval": true,
+				"children_requirements": "MUST",
+				"group_children": true,
+				"dl_option": "NONE",
+				"is_animated": false,
+				"args": [
+					{
+						"name": "Min",
+						"show_as_preset": true,
+						"arg_type": "NUMBER",
+						"is_integer": true,
+						"step": 1,
+						"min": -32768,
+						"max": 32767,
+						"defaults": {
+							"value": 0
+						}
+					},
+					{
+						"name": "Max",
+						"show_as_preset": true,
+						"arg_type": "NUMBER",
+						"is_integer": true,
+						"step": 1,
+						"min": -32768,
+						"max": 32767,
+						"defaults": {
+							"value": 0
+						}
+					}
+				]
+			}
+		]
+	},
+	"glTF": {
+		"verbose": false,
+		"f3d": {
+			"use": true,
+			"apply_alpha_to_col": true,
+			"raise_texture_limits": true,
+			"raise_large_multitex": true,
+			"raise_large_tex": true,
+			"raise_rendermode": true,
+			"raise_non_f3d_mat": false,
+			"raise_bad_mat_slot": false,
+			"raise_no_uvmap": true
+		},
+		"game": true
+	}
+}

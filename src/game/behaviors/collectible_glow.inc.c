@@ -84,16 +84,16 @@ struct CollectibleGlowRayProps {
 
 static const struct CollectibleGlowColorBaselines baselineColors[CG_TYPE_COUNT] = {
     [CG_TYPE_BACKGROUND_GLOW] = {
-        .rgbaStart[CG_VERT_NORMAL][CG_COLOR_MIN] = { 0.45f, 0.45f, 0.45f, 0.92f },
-        .rgbaStart[CG_VERT_NORMAL][CG_COLOR_MAX] = { 0.85f, 0.85f, 0.85f, 0.92f },
-          .rgbaEnd[CG_VERT_NORMAL][CG_COLOR_MIN] = { 0.55f, 0.55f, 0.55f, 0.92f },
-          .rgbaEnd[CG_VERT_NORMAL][CG_COLOR_MAX] = { 0.95f, 0.95f, 0.95f, 0.92f },
+        .rgbaStart[CG_VERT_NORMAL][CG_COLOR_MIN] = { 0.99f, 1.00f, 0.45f, 0.92f },
+        .rgbaStart[CG_VERT_NORMAL][CG_COLOR_MAX] = { 0.94f, 0.69f, 0.11f, 0.92f },
+          .rgbaEnd[CG_VERT_NORMAL][CG_COLOR_MIN] = { 1.00f, 0.98f, 0.66f, 0.92f },
+          .rgbaEnd[CG_VERT_NORMAL][CG_COLOR_MAX] = { 1.00f, 1.00f, 1.00f, 0.92f },
     },
     [CG_TYPE_RAY] = {
-        .rgbaStart[CG_VERT_NORMAL][CG_COLOR_MIN] = { 0.45f, 0.45f, 0.90f, 0.90f },
-        .rgbaStart[CG_VERT_NORMAL][CG_COLOR_MAX] = { 0.95f, 0.70f, 1.00f, 1.00f },
-          .rgbaEnd[CG_VERT_NORMAL][CG_COLOR_MIN] = { 0.45f, 0.90f, 0.45f, 0.90f },
-          .rgbaEnd[CG_VERT_NORMAL][CG_COLOR_MAX] = { 0.95f, 1.00f, 0.70f, 1.00f },
+        .rgbaStart[CG_VERT_NORMAL][CG_COLOR_MIN] = { 0.87f, 0.63f, 0.06f, 0.90f },
+        .rgbaStart[CG_VERT_NORMAL][CG_COLOR_MAX] = { 0.78f, 0.49f, 0.08f, 1.00f },
+          .rgbaEnd[CG_VERT_NORMAL][CG_COLOR_MIN] = { 1.00f, 1.00f, 1.00f, 1.00f },
+          .rgbaEnd[CG_VERT_NORMAL][CG_COLOR_MAX] = { 1.00f, 0.97f, 0.66f, 0.90f },
     }
 };
 
