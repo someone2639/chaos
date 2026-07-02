@@ -337,23 +337,23 @@ static void print_star_collect_message(u8 shouldRemove, s32 courseNum, s32 starI
         }
 
         if ((shouldRemove && possessed) || (!shouldRemove && !possessed)) {
-            sprintf(courseBuf, "@7FFF7F--[%s%s]@9F9F9F-- - @--------", courseNames[courseNum], numBuf);
+            sprintf(courseBuf, "@FFFF7F--[%s%s]@8F8F8F-- - @--------", courseNames[courseNum], numBuf);
         } else {
-            sprintf(courseBuf, "@8F8FFF--[%s%s]@9F9F9F-- - @--------", courseNames[courseNum], numBuf);
+            sprintf(courseBuf, "@8F8FFF--[%s%s]@8F8F8F-- - @--------", courseNames[courseNum], numBuf);
         }
     }
 
     if (shouldRemove) {
         if (possessed) {
-            sprintf(gChaosInternalBuffer, "Star revoked:\n%s@FFFF00--%s@--------", courseBuf, act);
+            sprintf(gChaosInternalBuffer, "@FF5F5F--Star revoked:\n%s@FFFF00--%s@--------", courseBuf, act);
         } else {
-            sprintf(gChaosInternalBuffer, "Star revoked:\n%s@1F1FFF--%s@--------", courseBuf, act);
+            sprintf(gChaosInternalBuffer, "@FF5F5F--Star revoked:\n%s@1F1FFF--%s @8F8F8F--(never collected)@--------", courseBuf, act);
         }
     } else {
         if (possessed) {
-            sprintf(gChaosInternalBuffer, "Star obtained:\n%s@1F1FFF--%s@--------", courseBuf, act);
+            sprintf(gChaosInternalBuffer, "@5FFF5F--Star obtained:\n%s@1F1FFF--%s @8F8F8F--(repeat)@--------", courseBuf, act);
         } else {
-            sprintf(gChaosInternalBuffer, "Star obtained:\n%s@FFFF00--%s@--------", courseBuf, act);
+            sprintf(gChaosInternalBuffer, "@5FFF5F--Star obtained:\n%s@FFFF00--%s@--------", courseBuf, act);
         }
     }
 

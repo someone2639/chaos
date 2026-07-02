@@ -222,7 +222,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "One-Star Offer",
         .shortDescription   = "Receive a random star. This is NOT guaranteed to be a yellow star.",
-        .longDescription    = "Rolls for star gain come with disadvantage. In other words, this will reattempt to provide a star you don't have if it succeeds the first time. Your odds of gaining a repeat star are about 50% by the time you've collected a total of 35 stars.",
+        .longDescription    = "Rolls for star gain come with disadvantage. In other words, this will reattempt to provide a star you don't have if it succeeds the first time. Your odds of gaining a new star are about 50% by the time you've collected a total of 35 stars.",
     },
     [CHAOS_PATCH_STARS_INCREASE_LV3] = {
         .durationType       = CHAOS_DURATION_ONCE,
@@ -237,7 +237,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Two-Star Treat",
         .shortDescription   = "Receive two random stars. These are NOT guaranteed to be yellow stars.",
-        .longDescription    = "Rolls for star gain come with disadvantage. In other words, this will reattempt to provide a star you don't have if it succeeds the first time. Your odds of gaining a repeat star are about 50% by the time you've collected a total of 35 stars.",
+        .longDescription    = "Rolls for star gain come with disadvantage. In other words, this will reattempt to provide a star you don't have if it succeeds the first time. Your odds of gaining a new star are about 50% by the time you've collected a total of 35 stars.",
     },
     [CHAOS_PATCH_STARS_INCREASE_GUARANTEE] = {
         .durationType       = CHAOS_DURATION_ONCE,
