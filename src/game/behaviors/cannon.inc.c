@@ -18,7 +18,7 @@ void opened_cannon_act_0(void) {
         cur_obj_become_tangible();
     }
 
-    if (o->oDistanceToMario < 500.0f) {
+    if (o->oDistanceToMario < 500.0f && !chaos_check_if_patch_active(CHAOS_PATCH_LOCK_CANNONS)) {
         cur_obj_become_tangible();
         cur_obj_enable_rendering();
         if (o->oInteractStatus & INT_STATUS_INTERACTED

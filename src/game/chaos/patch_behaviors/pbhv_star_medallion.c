@@ -36,13 +36,14 @@ struct StarMedallionCourse {
     const u32 entryCount;
 };
 
-static u8 sm_bob_spawn_on_island(void)         { return ((gCurrActNum >= 2) || chaos_check_if_patch_active(CHAOS_PATCH_UNLOCK_CANNONS)); }
+static u8 sm_bob_spawn_on_island(void)         { return (!chaos_check_if_patch_active(CHAOS_PATCH_LOCK_CANNONS) && (gCurrActNum >= 2 || chaos_check_if_patch_active(CHAOS_PATCH_UNLOCK_CANNONS))); }
 static u8 sm_wf_wall_kick_below_platform(void) { return (gChaosDifficulty > CHAOS_DIFFICULTY_EASY && !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_WALL_KICK)); }
 static u8 sm_wf_spawn_on_tower(void)           { return (gCurrActNum >= 2); }
-static u8 sm_jrb_cannon_pole(void)             { return ((gCurrActNum >= 2) || chaos_check_if_patch_active(CHAOS_PATCH_UNLOCK_CANNONS)); }
-static u8 sm_jrb_rocking_ship(void)            { return ((gCurrActNum >= 2)); }
-static u8 sm_jrb_whirlpool(void)               { return ((gCurrActNum >= 2)); }
+static u8 sm_jrb_cannon_pole(void)             { return (!chaos_check_if_patch_active(CHAOS_PATCH_LOCK_CANNONS) && (gCurrActNum >= 2 || chaos_check_if_patch_active(CHAOS_PATCH_UNLOCK_CANNONS))); }
+static u8 sm_jrb_rocking_ship(void)            { return (gCurrActNum >= 2); }
+static u8 sm_jrb_whirlpool(void)               { return (gCurrActNum >= 2); }
 static u8 sm_ccm_a1_broken_bridge(void)        { return (!chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_LONG_JUMP)); }
+static u8 sm_ccm_a1_cannon_unlocked(void)      { return (!chaos_check_if_patch_active(CHAOS_PATCH_LOCK_CANNONS)); }
 static u8 sm_ccm_a2_hidden_path(void)          { return (gChaosDifficulty > CHAOS_DIFFICULTY_EASY && !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_WALL_KICK)); }
 static u8 sm_bbh_shack_at_start(void)          { return (gChaosDifficulty > CHAOS_DIFFICULTY_EASY && !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_WALL_KICK)); }
 static u8 sm_bbh_can_go_upstairs(void)         { return ((gChaosDifficulty > CHAOS_DIFFICULTY_EASY && !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_WALL_KICK)) || gCurrActNum >= 2); }
@@ -50,8 +51,8 @@ static u8 sm_bbh_can_go_extra_upstairs(void)   { return ((gChaosDifficulty > CHA
 static u8 sm_lll_a1_lava_check(void)           { return (gCurrActNum >= 5 || (!chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER) && chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_LAVA))); } // TODO: If remove shell patch ever added, add condition here
 static u8 sm_ddd_a2_bowser_sub_active(void)    { return (gCurrActNum == 1); }
 static u8 sm_ddd_a2_poles_active(void)         { return (gCurrActNum != 1); }
-static u8 sm_wdw_a2(void)                      { return (gCurrActNum >= 5); }
-static u8 sm_wdw_a2_vanish_cap(void)           { return ((gCurrActNum >= 5) && (save_file_get_flags() & SAVE_FLAG_HAVE_VANISH_CAP) && !chaos_check_if_patch_active(CHAOS_PATCH_DISABLE_CAPS)); }
+static u8 sm_wdw_a2(void)                      { return (!chaos_check_if_patch_active(CHAOS_PATCH_LOCK_CANNONS) && gCurrActNum >= 5); }
+static u8 sm_wdw_a2_vanish_cap(void)           { return (!chaos_check_if_patch_active(CHAOS_PATCH_LOCK_CANNONS) && gCurrActNum >= 5 && (save_file_get_flags() & SAVE_FLAG_HAVE_VANISH_CAP) && !chaos_check_if_patch_active(CHAOS_PATCH_DISABLE_CAPS)); }
 static u8 sm_ttm_a1_can_warp(void)             { return (!chaos_check_if_patch_active(CHAOS_PATCH_DISABLE_FADE_WARPS)); }
 static u8 sm_ttm_a1_can_wall_kick(void)        { return (gChaosDifficulty > CHAOS_DIFFICULTY_EASY && !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_WALL_KICK)); }
 static u8 sm_thi_a1_can_wall_kick(void)        { return (gChaosDifficulty > CHAOS_DIFFICULTY_EASY && !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_WALL_KICK)); }
@@ -59,6 +60,7 @@ static u8 sm_thi_a2_can_wall_kick(void)        { return (gChaosDifficulty > CHAO
 static u8 sm_thi_a3_can_wall_kick(void)        { return (gChaosDifficulty > CHAOS_DIFFICULTY_EASY && !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_WALL_KICK)); }
 static u8 sm_ttc_can_kick(void)                { return (gChaosDifficulty > CHAOS_DIFFICULTY_EASY && !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_KICK)); }
 static u8 sm_ttc_moving_or_wall_kick(void)     { return (gTTCSpeedSetting != TTC_SPEED_STOPPED || !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_WALL_KICK)); }
+static u8 sm_rr_cannon_unlocked(void)          { return (!chaos_check_if_patch_active(CHAOS_PATCH_LOCK_CANNONS)); }
 static u8 sm_rr_not_easy(void)                 { return (gChaosDifficulty > CHAOS_DIFFICULTY_EASY); }
 static u8 sm_bitdw_not_easy(void)              { return (gChaosDifficulty > CHAOS_DIFFICULTY_EASY); }
 static u8 sm_bitfs_not_easy(void)              { return (gChaosDifficulty > CHAOS_DIFFICULTY_EASY); }
@@ -112,9 +114,9 @@ static const struct StarMedallionSpawnLocation starMedallionList_CCM[] = {
     {.areaNum = 1, .checkpointOnly = FALSE, .x =  3300, .y = -1200, .z =  2075, .conditionalFunc = sm_ccm_a1_broken_bridge       }, // In between the broken bridge by the red coin star
     {.areaNum = 1, .checkpointOnly = FALSE, .x =  2300, .y =  -423, .z =  1550, .conditionalFunc = NULL                          }, // Tucked away by the blue coin switch
     {.areaNum = 1, .checkpointOnly = FALSE, .x =  2375, .y = -3280, .z =  3650, .conditionalFunc = NULL                          }, // By the wrong baby penguin
-    {.areaNum = 1, .checkpointOnly = FALSE, .x = -3748, .y = -3883, .z =  4464, .conditionalFunc = NULL                          }, // Above the tree on the way to Wall Kicks Will Work (cannon involved)
+    {.areaNum = 1, .checkpointOnly = FALSE, .x = -3748, .y = -3883, .z =  4464, .conditionalFunc = sm_ccm_a1_cannon_unlocked     }, // Above the tree on the way to Wall Kicks Will Work (cannon involved)
     {.areaNum = 1, .checkpointOnly = FALSE, .x =  5700, .y = -4357, .z = -2800, .conditionalFunc = NULL                          }, // In a corner near the tucked away red coin by the warp bridge at the bottom (not the actual bridge coin)
-    {.areaNum = 1, .checkpointOnly = FALSE, .x =  1000, .y = -4620, .z = -3150, .conditionalFunc = NULL                          }, // At the bottom of the Wall Kicks Will Work area (cannon involved)
+    {.areaNum = 1, .checkpointOnly = FALSE, .x =  1000, .y = -4620, .z = -3150, .conditionalFunc = sm_ccm_a1_cannon_unlocked     }, // At the bottom of the Wall Kicks Will Work area (cannon involved)
     {.areaNum = 1, .checkpointOnly = FALSE, .x = -4900, .y = -1745, .z = -3500, .conditionalFunc = NULL                          }, // At the midpoint section hidden by the 1-up box
     {.areaNum = 1, .checkpointOnly = FALSE, .x = -1942, .y =  1395, .z =  1678, .conditionalFunc = NULL                          }, // On the slide near the top, on the coin bridge (over the coins)
     // Area 2
@@ -265,11 +267,11 @@ static const struct StarMedallionSpawnLocation starMedallionList_WDW[] = {
     {.areaNum = 1, .checkpointOnly = FALSE, .x = -1843, .y =  2357, .z = -3694, .conditionalFunc = NULL                          }, // Hidden inside pushable box near the top of the stage
     {.areaNum = 1, .checkpointOnly = FALSE, .x =  1537, .y =  1997, .z = -3582, .conditionalFunc = NULL                          }, // On top of spawn
     // Area 2
-    {.areaNum = 2, .checkpointOnly = FALSE, .x =  -465, .y =   -82, .z =  2094, .conditionalFunc = sm_wdw_a2                     }, // By water triangle in top center of area
-    {.areaNum = 2, .checkpointOnly = FALSE, .x =  2048, .y = -2309, .z = -1279, .conditionalFunc = sm_wdw_a2                     }, // By two trees and 1-UP box
-    {.areaNum = 2, .checkpointOnly = FALSE, .x = -3589, .y = -2309, .z =  3584, .conditionalFunc = sm_wdw_a2                     }, // Tucked in corner next to vanish cap box
-    {.areaNum = 2, .checkpointOnly = FALSE, .x =  1592, .y = -2309, .z =  3640, .conditionalFunc = sm_wdw_a2_vanish_cap          }, // Behind vanish cap cage
-    {.areaNum = 2, .checkpointOnly = FALSE, .x =  2137, .y = -1357, .z =  1020, .conditionalFunc = sm_wdw_a2                     }, // Hidden behind breakable box on white building
+    {.areaNum = 2, .checkpointOnly = FALSE, .x =  -465, .y =   -82, .z =  2094, .conditionalFunc = sm_wdw_a2                     }, // By water triangle in top center of area (cannon involved)
+    {.areaNum = 2, .checkpointOnly = FALSE, .x =  2048, .y = -2309, .z = -1279, .conditionalFunc = sm_wdw_a2                     }, // By two trees and 1-UP box (cannon involved)
+    {.areaNum = 2, .checkpointOnly = FALSE, .x = -3589, .y = -2309, .z =  3584, .conditionalFunc = sm_wdw_a2                     }, // Tucked in corner next to vanish cap box (cannon involved)
+    {.areaNum = 2, .checkpointOnly = FALSE, .x =  1592, .y = -2309, .z =  3640, .conditionalFunc = sm_wdw_a2_vanish_cap          }, // Behind vanish cap cage (cannon involved)
+    {.areaNum = 2, .checkpointOnly = FALSE, .x =  2137, .y = -1357, .z =  1020, .conditionalFunc = sm_wdw_a2                     }, // Hidden behind breakable box on white building (cannon involved)
 };
 static const struct StarMedallionSpawnLocation starMedallionList_TTM[] = {
     // Area 1
@@ -340,7 +342,7 @@ static const struct StarMedallionSpawnLocation starMedallionList_RR[] = {
     {.areaNum = 1, .checkpointOnly = FALSE, .x = -4834, .y =  2614, .z =   -87, .conditionalFunc = NULL                          }, // On top of red coin section, above cannon bob-omb
     {.areaNum = 1, .checkpointOnly = FALSE, .x =  -100, .y =  3565, .z = -2345, .conditionalFunc = NULL                          }, // Tip of the windy ship
     {.areaNum = 1, .checkpointOnly = FALSE, .x =  3554, .y =  5045, .z = -2327, .conditionalFunc = NULL                          }, // Above top of pole on windy ship
-    {.areaNum = 1, .checkpointOnly = FALSE, .x =  5325, .y =  4450, .z =   600, .conditionalFunc = NULL                          }, // In cannon ring firing to pole
+    {.areaNum = 1, .checkpointOnly = FALSE, .x =  5325, .y =  4450, .z =   600, .conditionalFunc = sm_rr_cannon_unlocked         }, // In cannon ring firing to pole (cannon involved)
     {.areaNum = 1, .checkpointOnly = FALSE, .x =  5043, .y =  2196, .z =   300, .conditionalFunc = NULL                          }, // On top of rotating bridge platform heading toward ship
     {.areaNum = 1, .checkpointOnly = FALSE, .x = -6700, .y =  3173, .z = -2559, .conditionalFunc = NULL                          }, // End of bridge by house
     {.areaNum = 1, .checkpointOnly = FALSE, .x = -5275, .y =  3322, .z = -6225, .conditionalFunc = NULL                          }, // Inside back corner of big house

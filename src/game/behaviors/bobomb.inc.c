@@ -385,7 +385,7 @@ void bobomb_buddy_cannon_dialog(s16 dialogFirstText, s16 dialogSecondText) {
             if (buddyText != DIALOG_RESPONSE_NONE) {
                 save_file_set_cannon_unlocked();
                 cannonClosed = cur_obj_nearest_object_with_behavior(bhvCannonClosed);
-                if (cannonClosed != NULL) {
+                if (!chaos_check_if_patch_active(CHAOS_PATCH_LOCK_CANNONS) && cannonClosed != NULL) {
                     o->oBobombBuddyCannonStatus = BOBOMB_BUDDY_CANNON_OPENING;
                 } else {
                     o->oBobombBuddyCannonStatus = BOBOMB_BUDDY_CANNON_STOP_TALKING;

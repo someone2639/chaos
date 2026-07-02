@@ -79,7 +79,7 @@ void chs_update_noclip(void) {
 }
 
 u8 chs_cond_randomize_warps(void) {
-    return (gChaosGameMode != CHAOS_GAMEMODE_CLASSIC && gChaosDifficulty != CHAOS_DIFFICULTY_IMPOSSIBLE);
+    return (gChaosDifficulty != CHAOS_DIFFICULTY_IMPOSSIBLE);
 }
 
 void chs_act_number_blindness(void) {

@@ -357,10 +357,25 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Free Vanish Cap",
         .shortDescription   = "Unlock the vanish cap for free!",
     },
+    [CHAOS_PATCH_LOCK_CANNONS] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 1,
+        .duration           = 8,
+        .durationHard       = 10,
+        .durationImpossible = 12,
+
+        // NOTE: Not marked incompatible with CHAOS_PATCH_UNLOCK_CANNONS, since that one's infinite
+
+        .name               = "Cannonless",
+        .shortDescription   = "Temporarily lock all cannons in the game.",
+    },
     [CHAOS_PATCH_UNLOCK_CANNONS] = {
         .durationType       = CHAOS_DURATION_INFINITE,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 2,
+
+        INCOMPATIBLE(CHAOS_PATCH_LOCK_CANNONS),
 
         .name               = "1812 Overture",
         .shortDescription   = "Unlock all cannons in the game!",
@@ -2574,7 +2589,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_RANDOMIZE_WARPS] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
-        .severity           = 2,
+        .severity           = 1,
         .duration           = 5,
         .durationHard       = 6,
         .durationImpossible = 8,
