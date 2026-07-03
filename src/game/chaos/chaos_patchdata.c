@@ -1258,6 +1258,24 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "SM64DS Movement",
         .shortDescription   = "SM64DS, but with full analog control! Surely that was the ONLY problem people had with that game, right...?",
     },
+    [CHAOS_PATCH_UNDERWATER_GROUNDPOUND] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 2,
+        .duration           = 12,
+
+        .name               = "Underwater Ground Pound",
+        .shortDescription   = "Allows ground pounds while underwater. Get down to deep places quicker!",
+    },
+    [CHAOS_PATCH_SUNSHINE_TWIRL] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 1,
+        .duration           = 15,
+
+        .name               = "Sunshine Spin Jump",
+        .shortDescription   = "Spin the joystick then jump to gain a lot of height! Chain with jumps and dives to get even more!",
+    },
 
 // Object Spawners
     [CHAOS_PATCH_GREEN_DEMON] = {

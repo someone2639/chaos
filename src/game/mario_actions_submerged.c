@@ -349,6 +349,9 @@ static s32 act_water_idle(struct MarioState *m) {
     }
 
     common_idle_step(m, MARIO_ANIM_WATER_IDLE, val);
+    if (chaos_check_if_patch_active(CHAOS_PATCH_UNDERWATER_GROUNDPOUND) && (m->input & INPUT_Z_PRESSED)) {
+        return set_mario_action(m, ACT_GROUND_POUND_WATER, 0);
+    }
     return FALSE;
 }
 
@@ -370,6 +373,9 @@ static s32 act_hold_water_idle(struct MarioState *m) {
     }
 
     common_idle_step(m, MARIO_ANIM_WATER_IDLE_WITH_OBJ, 0);
+    if (chaos_check_if_patch_active(CHAOS_PATCH_UNDERWATER_GROUNDPOUND) && (m->input & INPUT_Z_PRESSED)) {
+        return set_mario_action(m, ACT_GROUND_POUND_WATER, 0);
+    }
     return FALSE;
 }
 
@@ -387,6 +393,9 @@ static s32 act_water_action_end(struct MarioState *m) {
     }
 
     common_idle_step(m, MARIO_ANIM_WATER_ACTION_END, 0);
+    if (chaos_check_if_patch_active(CHAOS_PATCH_UNDERWATER_GROUNDPOUND) && (m->input & INPUT_Z_PRESSED)) {
+        return set_mario_action(m, ACT_GROUND_POUND_WATER, 0);
+    }
     if (is_anim_at_end(m)) {
         set_mario_action(m, ACT_WATER_IDLE, 0);
     }
@@ -413,6 +422,9 @@ static s32 act_hold_water_action_end(struct MarioState *m) {
     common_idle_step(
         m, m->actionArg == 0 ? MARIO_ANIM_WATER_ACTION_END_WITH_OBJ : MARIO_ANIM_STOP_GRAB_OBJ_WATER,
         0);
+    if (chaos_check_if_patch_active(CHAOS_PATCH_UNDERWATER_GROUNDPOUND) && (m->input & INPUT_Z_PRESSED)) {
+        return set_mario_action(m, ACT_GROUND_POUND_WATER, 0);
+    }
     if (is_anim_at_end(m)) {
         set_mario_action(m, ACT_HOLD_WATER_IDLE, 0);
     }
@@ -1104,6 +1116,61 @@ static s32 act_caught_in_whirlpool(struct MarioState *m) {
     return FALSE;
 }
 
+s32 act_ground_pound_water(struct MarioState *m) {
+    u32 stepResult;
+    f32 yOffset;
+
+    // TODO: water gp sound
+    play_sound_if_no_flag(m, SOUND_ACTION_THROW, MARIO_ACTION_SOUND_PLAYED);
+
+    if (m->actionState == 0) {
+        if (m->actionTimer < 10) {
+            yOffset = 20 - 2 * m->actionTimer;
+            if (m->pos[1] + yOffset + (160.0f * m->size) < m->ceilHeight) {
+                m->pos[1] += yOffset;
+                m->peakHeight = m->pos[1];
+                vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
+            }
+        }
+
+        m->vel[1] = -50.0f;
+        mario_set_forward_vel(m, 0.0f);
+
+        set_mario_animation(m, m->actionArg == 0 ? MARIO_ANIM_START_GROUND_POUND
+                                                 : MARIO_ANIM_TRIPLE_JUMP_GROUND_POUND);
+        if (m->actionTimer == 0) {
+            play_sound(SOUND_ACTION_SPIN, m->marioObj->header.gfx.cameraToObject);
+        }
+
+        m->actionTimer++;
+        if (m->actionTimer >= m->marioObj->header.gfx.animInfo.curAnim->loopEnd + 4) {
+            play_sound(SOUND_MARIO_GROUND_POUND_WAH, m->marioObj->header.gfx.cameraToObject);
+            m->actionState = 1;
+        }
+    } else {
+        set_mario_animation(m, MARIO_ANIM_GROUND_POUND);
+        set_mario_action(m, ACT_WATER_PLUNGE, 0);
+
+        stepResult = perform_water_step(m);
+        if (stepResult == WATER_STEP_HIT_FLOOR) {
+            play_mario_heavy_landing_sound(m, SOUND_ACTION_TERRAIN_HEAVY_LANDING_0);
+            set_mario_action(m, ACT_GROUND_POUND_LAND, 0);
+            set_camera_shake_from_hit(SHAKE_GROUND_POUND);
+        } else if (stepResult == WATER_STEP_HIT_WALL) {
+            mario_set_forward_vel(m, -16.0f);
+            if (m->vel[1] > 0.0f) {
+                m->vel[1] = 0.0f;
+            }
+
+            m->particleFlags |= PARTICLE_VERTICAL_STAR;
+            m->bonkKill = TRUE;
+            set_mario_action(m, ACT_BACKWARD_WATER_KB, 0);
+        }
+    }
+
+    return FALSE;
+}
+
 static void play_metal_water_jumping_sound(struct MarioState *m, u32 landing) {
     if (!(m->flags & MARIO_ACTION_SOUND_PLAYED)) {
         m->particleFlags |= PARTICLE_MIST_CIRCLE;
@@ -1564,6 +1631,7 @@ s32 mario_execute_submerged_action(struct MarioState *m) {
         case ACT_WATER_PUNCH:                cancel = act_water_punch(m);                break;
         case ACT_WATER_PLUNGE:               cancel = act_water_plunge(m);               break;
         case ACT_CAUGHT_IN_WHIRLPOOL:        cancel = act_caught_in_whirlpool(m);        break;
+        case ACT_GROUND_POUND_WATER:         cancel = act_ground_pound_water(m);               break;
         case ACT_METAL_WATER_STANDING:       cancel = act_metal_water_standing(m);       break;
         case ACT_METAL_WATER_WALKING:        cancel = act_metal_water_walking(m);        break;
         case ACT_METAL_WATER_FALLING:        cancel = act_metal_water_falling(m);        break;
