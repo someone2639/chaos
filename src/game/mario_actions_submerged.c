@@ -1159,7 +1159,7 @@ s32 act_ground_pound_water(struct MarioState *m) {
         stepResult = perform_water_step(m);
         if (stepResult == WATER_STEP_HIT_FLOOR) {
             play_mario_heavy_landing_sound(m, SOUND_ACTION_TERRAIN_HEAVY_LANDING_0);
-            set_mario_action(m, ACT_GROUND_POUND_LAND, 0);
+            set_mario_action(m, ACT_GROUND_POUND_LAND_WATER, 0);
             set_camera_shake_from_hit(SHAKE_GROUND_POUND);
         } else if (stepResult == WATER_STEP_HIT_WALL) {
             mario_set_forward_vel(m, -16.0f);
@@ -1180,6 +1180,19 @@ s32 act_ground_pound_water(struct MarioState *m) {
     }
 
     return FALSE;
+}
+
+s32 landing_step_water(struct MarioState *m, s32 anim, u32 action) {
+    perform_water_step(m);
+    set_mario_animation(m, anim);
+    if (is_anim_at_end(m)) {
+        return set_mario_action(m, action, 0);
+    }
+    return FALSE;
+}
+
+s32 act_ground_pound_land_water(struct MarioState *m) {
+    return landing_step_water(m, MARIO_ANIM_GROUND_POUND_LANDING, ACT_WATER_IDLE);
 }
 
 static void play_metal_water_jumping_sound(struct MarioState *m, u32 landing) {
@@ -1642,7 +1655,8 @@ s32 mario_execute_submerged_action(struct MarioState *m) {
         case ACT_WATER_PUNCH:                cancel = act_water_punch(m);                break;
         case ACT_WATER_PLUNGE:               cancel = act_water_plunge(m);               break;
         case ACT_CAUGHT_IN_WHIRLPOOL:        cancel = act_caught_in_whirlpool(m);        break;
-        case ACT_GROUND_POUND_WATER:         cancel = act_ground_pound_water(m);               break;
+        case ACT_GROUND_POUND_WATER:         cancel = act_ground_pound_water(m);         break;
+        case ACT_GROUND_POUND_LAND_WATER:    cancel = act_ground_pound_land_water(m);    break;
         case ACT_METAL_WATER_STANDING:       cancel = act_metal_water_standing(m);       break;
         case ACT_METAL_WATER_WALKING:        cancel = act_metal_water_walking(m);        break;
         case ACT_METAL_WATER_FALLING:        cancel = act_metal_water_falling(m);        break;
