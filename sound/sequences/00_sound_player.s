@@ -7,9 +7,9 @@ sequence_start:
 seq_setmutebhv 0x60
 seq_setmutescale 0
 #ifdef VERSION_SH
-  seq_setvol 100
+seq_setvol 100
 #else
-  seq_setvol 127
+seq_setvol 127
 #endif
 seq_settempo 120
 seq_initchannels 0x3ff
@@ -23,6 +23,7 @@ seq_startchannel 6, .channel6
 seq_startchannel 7, .channel7
 seq_startchannel 8, .channel38
 seq_startchannel 9, .channel59
+
 .seq_loop:
 seq_delay 20000
 seq_jump .seq_loop
@@ -71,29 +72,31 @@ chan_stereoheadseteffects 1
 chan_setdyntable .channel59_table
 chan_jump .main_loop_023589
 
-// Main loop for standard, non-continuous sound effects
 .main_loop_023589:
 chan_hang
 chan_ioreadval 0
 chan_bltz .main_loop_023589
+
 .start_playing_023589:
 chan_freelayers
 chan_setval 0
 chan_iowriteval 5
 chan_ioreadval 4
 chan_dyncall
-
 // keep looping until layer 0 finishes or we are told to stop or to play something else
+
 .poll_023589:
 chan_delay1
 chan_ioreadval 0
-chan_bltz .skip_023589 // if we have a signal: 
-  chan_beqz .force_stop_023589 // told to stop
-  chan_jump .start_playing_023589 // told to play something else
+chan_bltz .skip_023589
+chan_beqz .force_stop_023589
+chan_jump .start_playing_023589
+
 .skip_023589:
 chan_testlayersfinished
-chan_beqz .poll_023589 // if all layers haven't finished, keep polling
-chan_jump .main_loop_023589 // otherwise go back to the main loop
+chan_beqz .poll_023589
+chan_jump .main_loop_023589
+
 .force_stop_023589:
 chan_freelayers
 chan_jump .main_loop_023589
@@ -134,11 +137,11 @@ chan_stereoheadseteffects 1
 chan_setdyntable .channel6_table
 chan_jump .main_loop_146
 
-// Main loop for moving, env and air sound effects, which play continuously
 .main_loop_146:
 chan_hang
 chan_ioreadval 0
 chan_bltz .main_loop_146
+
 .start_playing_146:
 chan_freelayers
 chan_setvolscale 127
@@ -146,14 +149,15 @@ chan_setval 0
 chan_iowriteval 5
 chan_ioreadval 4
 chan_dyncall
-
 // keep looping until we are told to stop or to play something else
+
 .poll_146:
 chan_delay1
 chan_ioreadval 0
 chan_bltz .poll_146
 chan_beqz .force_stop_146
 chan_jump .start_playing_146
+
 .force_stop_146:
 chan_freelayers
 chan_jump .main_loop_146
@@ -166,12 +170,13 @@ chan_setval 0
 chan_iowriteval 5
 chan_stereoheadseteffects 1
 chan_setdyntable .channel7_table
-
 // Loop for menu sound effects
+
 .main_loop_7:
 chan_hang
 chan_ioreadval 0
 chan_bltz .main_loop_7
+
 .start_playing_7:
 chan_freelayers
 chan_setval 0
@@ -181,26 +186,27 @@ chan_setpan 64
 chan_setpanmix 127
 chan_ioreadval 4
 chan_dyncall
-
 // keep looping until layer 0 finishes or we are told to stop or to play something else
+
 .poll_7:
 chan_delay1
 chan_ioreadval 0
-chan_bltz .skip_7 // if we have a signal:
-  chan_beqz .force_stop_7 // told to stop
-  chan_unreservenotes
-  chan_jump .start_playing_7 // told to play something else
+chan_bltz .skip_7
+chan_beqz .force_stop_7
+chan_unreservenotes
+chan_jump .start_playing_7
+
 .skip_7:
 chan_testlayersfinished
-chan_beqz .poll_7 // if all layers haven't finished, keep polling
+chan_beqz .poll_7
 chan_unreservenotes
-chan_jump .main_loop_7 // otherwise go back to the main loop
+chan_jump .main_loop_7
+
 .force_stop_7:
 chan_freelayers
 chan_unreservenotes
 chan_jump .main_loop_7
 
-// Delay for a number of ticks (1-255) in an interruptible manner.
 .delay:
 chan_writeseq_nextinstr 0, 1
 chan_loop 20
@@ -221,9 +227,6 @@ chan_break // break out of the loop
 chan_break // force the caller to return immediately
 chan_end
 
-// Set reverb in way that takes area echo level and volume into account. This
-// is done by writing to IO slot 5 and letting get_sound_reverb in external.c
-// do the necessary math.
 .set_reverb:
 chan_writeseq_nextinstr 0, 1
 chan_setreverb 10
@@ -285,6 +288,7 @@ sound_ref .chan_4FD
 sound_ref .sound_action_swim
 sound_ref .chan_522
 sound_ref .sound_action_throw
+sound_ref .sound_action_water_gp
 sound_ref .sound_action_key_swish
 sound_ref .sound_action_spin
 sound_ref .sound_action_spin
@@ -965,7 +969,7 @@ layer_portamento 0x81, 42, 255
 layer_note1 37, 0x1e, 105
 layer_end
 
-.sound_action_climb_down_tree: // unused
+.sound_action_climb_down_tree:
 chan_setbank 0
 chan_setinstr 1
 chan_setlayer 0, .layer_579
@@ -976,7 +980,7 @@ layer_portamento 0x81, 44, 255
 layer_note1 40, 0xb4, 100
 layer_end
 
-.chan_582: // unused
+.chan_582:
 chan_setbank 0
 chan_setinstr 2
 chan_setlayer 0, .layer_58A
@@ -1081,6 +1085,7 @@ chan_end
 .layer_618:
 layer_portamento 0x81, 27, 255
 layer_note1 46, 0xb, 127
+
 .layer_61F:
 layer_somethingon
 layer_portamento 0x85, 32, 255
@@ -1398,7 +1403,7 @@ layer_note1 39, 0xa, 127
 layer_note1 42, 0x8, 127
 layer_end
 
-.chan_828: // unused
+.chan_828:
 chan_setbank 7
 chan_setinstr 3
 chan_setlayer 0, .layer_83C
@@ -1592,10 +1597,10 @@ chan_end
 
 .layer_96E:
 layer_somethingon
+
 .layer_96F:
 layer_note1 39, 0x12c, 80
 layer_jump .layer_96F
-layer_end
 
 .sound_moving_slide_grass:
 chan_setbank 1
@@ -1610,10 +1615,10 @@ chan_end
 .layer_988:
 layer_note1 41, 0x8, 105
 layer_somethingon
+
 .layer_98C:
 layer_note1 39, 0x12c, 70
 layer_jump .layer_98C
-layer_end
 
 .sound_moving_slide_water:
 chan_setbank 2
@@ -1629,10 +1634,10 @@ chan_end
 .layer_9A8:
 layer_delay 1
 layer_somethingon
+
 .layer_9AB:
 layer_note1 39, 0x12c, 88
 layer_jump .layer_9AB
-layer_end
 
 .layer_9B3:
 layer_portamento 0x81, 39, 255
@@ -1647,10 +1652,10 @@ chan_end
 
 .layer_9C3:
 layer_somethingon
+
 .layer_9C4:
 layer_note1 39, 0x12c, 68
 layer_jump .layer_9C4
-layer_end
 
 .sound_moving_slide_spooky:
 chan_setbank 1
@@ -1665,10 +1670,10 @@ chan_end
 .layer_9DD:
 layer_note1 42, 0xc, 75
 layer_somethingon
+
 .layer_9E1:
 layer_note1 39, 0x12c, 76
 layer_jump .layer_9E1
-layer_end
 
 .sound_moving_slide_snow:
 chan_setbank 3
@@ -1678,10 +1683,10 @@ chan_end
 
 .layer_9F1:
 layer_somethingon
+
 .layer_9F2:
 layer_note1 39, 0x12c, 80
 layer_jump .layer_9F2
-layer_end
 
 .sound_moving_slide_ice:
 chan_setbank 3
@@ -1691,10 +1696,10 @@ chan_end
 
 .layer_A02:
 layer_somethingon
+
 .layer_A03:
 layer_note1 39, 0x12c, 100
 layer_jump .layer_A03
-layer_end
 
 .sound_moving_slide_sand:
 chan_setbank 1
@@ -1709,10 +1714,10 @@ chan_end
 .layer_A1C:
 layer_note1 42, 0xc, 100
 layer_somethingon
+
 .layer_A20:
 layer_note1 39, 0x12c, 81
 layer_jump .layer_A20
-layer_end
 
 .sound_moving_lava_burn:
 chan_setbank 3
@@ -1722,10 +1727,10 @@ chan_end
 
 .layer_A30:
 layer_somethingon
+
 .layer_A31:
 layer_note1 39, 0x12c, 120
 layer_jump .layer_A31
-layer_end
 
 .sound_moving_slide_down_pole:
 chan_setbank 3
@@ -1736,10 +1741,10 @@ chan_end
 
 .layer_A44:
 layer_somethingon
+
 .layer_A45:
 layer_note1 43, 0x12c, 80
 layer_jump .layer_A45
-layer_end
 
 .sound_moving_slide_down_tree:
 chan_setbank 0
@@ -1749,11 +1754,11 @@ chan_end
 
 .layer_A55:
 layer_portamento 0x81, 44, 255
+
 .layer_A59:
 layer_somethingon
 layer_note1 40, 0xb4, 100
 layer_jump .layer_A59
-layer_end
 
 .sound_moving_quicksand_death:
 chan_setbank 3
@@ -1764,10 +1769,10 @@ chan_end
 .layer_A6A:
 layer_somethingon
 layer_portamento 0x85, 37, 255
+
 .layer_A6F:
 layer_note1 34, 0xc8, 127
 layer_jump .layer_A6F
-layer_end
 
 .sound_moving_shocked:
 chan_setbank 3
@@ -1782,7 +1787,6 @@ layer_transpose 24
 .layer_A84:
 layer_note1_long 43, 0x6, 127
 layer_jump .layer_A84
-layer_end
 
 .sound_moving_flying:
 chan_setbank 5
@@ -1797,6 +1801,7 @@ layer_transpose -12
 
 .layer_A9B:
 layer_somethingon
+
 .layer_A9C:
 layer_note1 43, 0x12c, 105
 layer_jump .layer_A9C
@@ -1812,6 +1817,7 @@ chan_end
 
 .layer_AB3:
 layer_transpose 12
+
 .layer_AB5:
 layer_note0 60, 0xc, 100, 127
 layer_note0 60, 0x30, 100, 127
@@ -1837,6 +1843,7 @@ layer_delay 0x4
 
 .layer_AD8:
 layer_transpose 24
+
 .layer_ADA:
 layer_portamento 0x85, 32, 40
 layer_note1 39, 0x9, 100
@@ -1948,6 +1955,7 @@ layer_jump .layer_A1C
 .sound_moving_riding_shell_lava:
 chan_setlayer 0, .layer_B9F
 chan_setlayer 1, .layer_BA8
+
 .chan_B84:
 chan_setbank 3
 chan_setinstr 2
@@ -1960,17 +1968,17 @@ chan_setenvelope .envelope_3334
 chan_setval 1
 chan_call .delay
 chan_jump .chan_B84
-chan_end
 
 .layer_B9F:
 layer_somethingon
+
 .layer_BA0:
 layer_note1 42, 0x12c, 88
 layer_jump .layer_BA0
-layer_end
 
 .layer_BA8:
 layer_delay 1
+
 .layer_BAA:
 layer_portamento 0x81, 41, 255
 layer_note1 56, 0xa, 127
@@ -2054,7 +2062,7 @@ chan_end
 
 .layer_C3C:
 #if defined(VERSION_EU) || defined(VERSION_SH)
-  layer_transpose_mario 2
+layer_transpose_mario 2
 #endif
 layer_portamento_mario 0x82, 41, 127
 layer_note1_mario 37, 0x14, 127
@@ -2068,6 +2076,7 @@ chan_end
 
 .layer_C4C:
 layer_transpose_mario -2
+
 .layer_C4E:
 layer_note1_mario 38, 0x18, 127
 layer_end
@@ -2080,6 +2089,7 @@ chan_end
 
 .layer_C5A:
 layer_transpose_mario -2
+
 .layer_C5C:
 layer_portamento_mario 0x82, 39, 200
 layer_note1_mario 38, 0x24, 120
@@ -2345,7 +2355,6 @@ chan_setinstr 2
 chan_setlayer 0, .layer_D8E
 chan_end
 
-// layer_note1_mario intentionally not used
 .layer_D8E:
 layer_transpose_mario -2
 layer_note1 39, 0x3c, 100
@@ -2357,7 +2366,6 @@ chan_setinstr 2
 chan_setlayer 0, .layer_D9C
 chan_end
 
-// layer_note1_mario intentionally not used
 .layer_D9C:
 layer_transpose_mario -2
 layer_delay 0x4
@@ -2370,7 +2378,6 @@ chan_setinstr 2
 chan_setlayer 0, .layer_DAC
 chan_end
 
-// layer_note1_mario intentionally not used
 .layer_DAC:
 layer_transpose_mario -2
 layer_delay 0x8
@@ -2383,7 +2390,6 @@ chan_setinstr 7
 chan_setlayer 0, .layer_DBC
 chan_end
 
-// layer_note1_mario intentionally not used
 .layer_DBC:
 layer_transpose_mario -2
 layer_note1 39, 0x10, 115
@@ -2395,7 +2401,6 @@ chan_setinstr 7
 chan_setlayer 0, .layer_DCA
 chan_end
 
-// layer_portamento_mario and layer_note1_mario intentionally not used
 .layer_DCA:
 layer_transpose_mario -2
 layer_portamento 0x81, 38, 255
@@ -2408,8 +2413,6 @@ chan_setinstr 7
 chan_setlayer 0, .layer_DDC
 chan_end
 
-// layer_portamento_mario and layer_note1_mario intentionally not used
-// NOTE: This particular sound has been modified for use with the DISABLE_MARIO_PITCH_SHIFTING define since it may otherwise sound bad left alone
 .layer_DDC:
 layer_transpose_mario -2
 #ifndef DISABLE_MARIO_PITCH_SHIFTING
@@ -2591,6 +2594,7 @@ chan_end
 
 .layer_ECF:
 layer_delay 0x4e
+
 .layer_ED1:
 layer_loop 50
 layer_call .layer_fn_EE1
@@ -2598,7 +2602,6 @@ layer_loopend
 layer_setinstr 21
 layer_note1_mario 39, 0x44c, 127
 layer_jump .layer_ED1
-layer_end
 
 .layer_fn_EE1:
 layer_setinstr 21
@@ -2718,18 +2721,6 @@ chan_end
 .layer_F8A:
 layer_note1 39, 0x50, 127
 layer_end
-
-#if defined(VERSION_EU) || defined(VERSION_SH)
-  .chan_unused_F9A_eu:
-  chan_setbank 8
-  chan_setinstr 0
-  chan_setlayer 0, .layer_FA2_eu
-  chan_end
-  
-  .layer_FA2_eu:
-  layer_delay 0x5
-  layer_end
-#endif
 
 .channel38_table:
 sound_ref .sound_general_activate_cap_switch
@@ -3055,6 +3046,7 @@ layer_note0 48, 0x4, 127, 64
 layer_note0 44, 0x6, 127, 64
 layer_note0 41, 0x9, 127, 64
 layer_note0 39, 0x6, 127, 64
+
 .layer_11BB:
 layer_note0 37, 0x7, 127, 64
 layer_note0 34, 0x5, 127, 64
@@ -3211,6 +3203,7 @@ chan_end
 
 .layer_12C7:
 layer_note1 24, 0xa, 110
+
 .layer_12CA:
 layer_setinstr 5
 layer_portamento 0x82, 27, 255
@@ -3420,7 +3413,7 @@ chan_setinstr 3
 chan_setval 40
 chan_call .set_reverb
 #ifdef VERSION_SH
-  chan_setreverb 40
+chan_setreverb 40
 #endif
 chan_setlayer 0, .layer_141A
 chan_end
@@ -3428,7 +3421,7 @@ chan_end
 .layer_141A:
 layer_transpose 24
 #ifdef VERSION_SH
-  layer_note1 51, 0xc, 90
+layer_note1 51, 0xc, 90
 #endif
 layer_note1 39, 0x4, 90
 layer_note1 51, 0xc, 90
@@ -4016,6 +4009,7 @@ layer_transpose 12
 
 .layer_17F3:
 layer_setinstr 0
+
 .layer_17F5:
 layer_portamento 0x83, 3, 255
 layer_note1 15, 0x30, 100
@@ -4029,10 +4023,10 @@ layer_note1 27, 0x14, 100
 layer_note1 29, 0x11, 100
 layer_note1 31, 0xe, 100
 layer_note1 32, 0xc, 100
+
 .layer_181A:
 layer_note1 34, 0xa, 100
 layer_jump .layer_181A
-layer_end
 
 .sound_general_bowser_key:
 chan_setbank 4
@@ -4167,6 +4161,7 @@ layer_delay 0x6
 
 .layer_1909:
 layer_transpose 12
+
 .layer_190B:
 layer_note0 46, 0xc, 90, 20
 layer_note0 45, 0xc, 90, 20
@@ -4195,6 +4190,7 @@ chan_iowriteval 7
 chan_setlayer 0, .layer_195F
 chan_setlayer 1, .layer_1986
 chan_setlayer 2, .layer_1982
+
 .chan_1942:
 chan_setval 4
 chan_call .delay
@@ -4205,6 +4201,7 @@ chan_iowriteval 7
 chan_writeseq_nextinstr 0, 1
 chan_setvolscale 127
 chan_jump .chan_1942
+
 .chan_1957:
 chan_setval 127
 chan_call .delay
@@ -4219,12 +4216,12 @@ layer_note1 44, 0x6, 124
 layer_note1 44, 0x4, 116
 layer_note1 45, 0x7, 114
 layer_delay 0x19
+
 .layer_1975:
 layer_note1 43, 0x7f, 122
 layer_note1 43, 0xa, 127
 layer_note1 43, 0x64, 114
 layer_jump .layer_1975
-layer_end
 
 .layer_1982:
 layer_transpose 4
@@ -4243,6 +4240,7 @@ layer_delay 0x5
 layer_note1 56, 0x6, 123
 layer_note1 62, 0x7, 119
 layer_delay 0x8
+
 .layer_19A5:
 layer_loop 10
 layer_note1 57, 0x5, 120
@@ -4260,7 +4258,6 @@ layer_note1 58, 0x6, 113
 layer_delay 0x5
 layer_loopend
 layer_jump .layer_19A5
-layer_end
 
 .sound_general_right_answer:
 chan_setbank 9
@@ -4517,6 +4514,7 @@ chan_end
 .layer_1B53:
 layer_somethingon
 layer_delay 0x4
+
 .layer_1B56:
 layer_note1 41, 0x12c, 95
 layer_jump .layer_1B56
@@ -4529,6 +4527,7 @@ chan_end
 
 .layer_1B65:
 layer_somethingon
+
 .layer_1B66:
 layer_note1 39, 0x12c, 90
 layer_jump .layer_1B66
@@ -4541,6 +4540,7 @@ chan_end
 
 .layer_1B75:
 layer_somethingon
+
 .layer_1B76:
 layer_note1 44, 0x12c, 105
 layer_jump .layer_1B76
@@ -4559,6 +4559,7 @@ layer_transpose -12
 .layer_1B8C:
 layer_somethingon
 layer_portamento 0x85, 39, 255
+
 .layer_1B91:
 layer_note1 44, 0x18, 110
 layer_note1 38, 0x3c, 110
@@ -4590,6 +4591,7 @@ chan_end
 .layer_1BD5:
 layer_somethingon
 layer_portamento 0x85, 36, 255
+
 .layer_1BDA:
 layer_note1 34, 0x12c, 95
 layer_note1 36, 0x12c, 95
@@ -4606,6 +4608,7 @@ layer_somethingon
 layer_note1 43, 0xc, 127
 layer_portamento 0x81, 44, 255
 layer_note1 43, 0x50, 127
+
 .layer_1BF8:
 layer_note1 43, 0x12c, 127
 layer_jump .layer_1BF8
@@ -4618,6 +4621,7 @@ chan_end
 
 .layer_1C07:
 layer_somethingon
+
 .layer_1C08:
 layer_note1 27, 0x12c, 100
 layer_jump .layer_1C08
@@ -4633,6 +4637,7 @@ chan_end
 .layer_1C1C:
 layer_transpose 6
 layer_portamento 0x85, 39, 255
+
 .layer_1C22:
 layer_note1 39, 0x18, 127
 layer_note1 31, 0x36, 127
@@ -4657,6 +4662,7 @@ chan_end
 layer_somethingon
 layer_portamento 0x85, 39, 255
 layer_note1 42, 0x3c, 127
+
 .layer_1C56:
 layer_note1 41, 0x3c, 127
 layer_note1 42, 0x3c, 127
@@ -4694,6 +4700,7 @@ layer_call .layer_fn_1CA3
 layer_delay 0x6
 layer_call .layer_fn_1CA3
 layer_delay 0x5
+
 .layer_1C9B:
 layer_call .layer_fn_1CA3
 layer_delay 0x3
@@ -4734,12 +4741,14 @@ chan_end
 
 .layer_1CDA:
 layer_somethingon
+
 .layer_1CDB:
 layer_note1 47, 0x1f4, 90
 layer_jump .layer_1CDB
 
 .layer_1CE2:
 layer_somethingon
+
 .layer_1CE3:
 layer_note1 46, 0x1f4, 90
 layer_jump .layer_1CE3
@@ -4774,6 +4783,7 @@ layer_transpose -6
 .layer_1D13:
 layer_somethingon
 layer_portamento 0x85, 34, 255
+
 .layer_1D18:
 layer_note1 51, 0x18, 110
 layer_note1 43, 0x63, 110
@@ -4801,6 +4811,7 @@ chan_end
 
 .layer_1D51:
 layer_transpose 3
+
 .layer_1D53:
 layer_note0 62, 0x2, 127, 127
 layer_jump .layer_1D53
@@ -4815,6 +4826,7 @@ chan_end
 
 .layer_1D67:
 layer_somethingon
+
 .layer_1D68:
 layer_note1 44, 0x12c, 95
 layer_jump .layer_1D68
@@ -4877,6 +4889,7 @@ chan_end
 layer_transpose -12
 layer_somethingon
 layer_portamento 0x82, 39, 255
+
 .layer_1DDB:
 layer_note1 46, 0x2710, 80
 layer_jump .layer_1DDB
@@ -4909,6 +4922,7 @@ layer_jump .layer_1E0C
 
 .layer_1E12:
 layer_setinstr 15
+
 .layer_1E14:
 layer_note1 39, 0x10, 115
 layer_jump .layer_1E14
@@ -4924,10 +4938,10 @@ chan_end
 .layer_1E28:
 layer_portamento 0x81, 38, 80
 layer_somethingon
+
 .layer_1E2D:
 layer_note1 35, 0x12c, 100
 layer_jump .layer_1E2D
-layer_end
 
 .sound_air_peach_twinkle:
 chan_setbank 5
@@ -4940,6 +4954,7 @@ chan_end
 .layer_1E42:
 layer_somethingon
 layer_portamento 0x82, 20, 255
+
 .layer_1E47:
 layer_note1 43, 0x1b58, 63
 layer_jump .layer_1E47
@@ -5450,12 +5465,6 @@ layer_note0 40, 0xf, 127, 127
 layer_note1 26, 0x20, 127
 layer_end
 
-.layer_unused_216C:
-layer_portamento 0x83, 27, 255
-layer_note1 22, 0x9, 127
-layer_note1 24, 0x1c, 127
-layer_end
-
 .chan_2177:
 chan_setbank 7
 chan_setinstr 3
@@ -5689,9 +5698,6 @@ chan_setenvelope .envelope_32D4
 chan_setlayer 0, .layer_22F3
 chan_end
 
-.layer_unused_22F1:
-layer_transpose -12
-
 .layer_22F3:
 layer_somethingon
 layer_portamento 0x85, 39, 255
@@ -5826,9 +5832,6 @@ chan_setinstr 4
 chan_setenvelope .envelope_32F4
 chan_setlayer 0, .layer_23CD
 chan_end
-
-.layer_unused_23CB:
-layer_transpose 12
 
 .layer_23CD:
 layer_somethingon
@@ -6710,10 +6713,10 @@ chan_end
 
 .layer_29B9:
 layer_somethingon
+
 .layer_29BA:
 layer_note1 39, 0x12c, 127
 layer_jump .layer_29BA
-layer_end
 
 .chan_29C2:
 chan_setbank 7
@@ -6723,10 +6726,10 @@ chan_end
 
 .layer_29CA:
 layer_somethingon
+
 .layer_29CB:
 layer_note1 39, 0x12c, 90
 layer_jump .layer_29CB
-layer_end
 
 .sound_air_lakitu_fly:
 chan_setbank 9
@@ -6739,11 +6742,11 @@ chan_end
 layer_transpose 12
 layer_somethingon
 layer_portamento 0x85, 27, 255
+
 .layer_29E5:
 layer_note1 51, 0x16, 50
 layer_note1 27, 0x16, 50
 layer_jump .layer_29E5
-layer_end
 
 .sound_air_amp_buzz:
 chan_setbank 3
@@ -6754,10 +6757,10 @@ chan_end
 
 .layer_29FA:
 layer_somethingon
+
 .layer_29FB:
 layer_note1 46, 0xc8, 92
 layer_jump .layer_29FB
-layer_end
 
 .sound_air_blow_fire:
 chan_setbank 7
@@ -6768,10 +6771,10 @@ chan_end
 
 .layer_2A0E:
 layer_somethingon
+
 .layer_2A0F:
 layer_note1 44, 0x12c, 127
 layer_jump .layer_2A0F
-layer_end
 
 .sound_air_rough_slide:
 chan_setbank 3
@@ -6782,10 +6785,10 @@ chan_end
 
 .layer_2A22:
 layer_somethingon
+
 .layer_2A23:
 layer_note1 35, 0x12c, 127
 layer_jump .layer_2A23
-layer_end
 
 .sound_air_heaveho_move:
 chan_setbank 5
@@ -6797,7 +6800,6 @@ chan_end
 layer_note1 56, 0x4, 62
 layer_note1 32, 0x3, 62
 layer_jump .layer_2A33
-layer_end
 
 .chan_2A3D:
 chan_setbank 9
@@ -6809,7 +6811,6 @@ chan_end
 layer_portamento 0x81, 24, 255
 layer_note1 56, 0x10, 55
 layer_jump .layer_2A45
-layer_end
 
 .sound_air_bobomb_lit_fuse:
 chan_setbank 3
@@ -6824,28 +6825,16 @@ chan_end
 .layer_2A61:
 layer_note1 48, 0x6, 100
 layer_somethingon
+
 .layer_2A65:
 layer_note1 44, 0x12c, 127
 layer_jump .layer_2A65
-layer_end
-
-.chan_unused_2A6D:
-chan_setbank 3
-chan_setinstr 6
-chan_setenvelope .envelope_32E4
-chan_setlayer 0, .layer_2A78
-chan_end
-
-.layer_2A78:
-layer_somethingon
-layer_note1 35, 0x12c, 100
-layer_jump .layer_2A23
-layer_end
 
 .sound_air_howling_wind:
 chan_setlayer 0, .layer_2AA7
 chan_setlayer 1, .layer_2AB7
 chan_setpanmix 0
+
 .chan_2A89:
 chan_setbank 5
 chan_setinstr 6
@@ -6864,6 +6853,7 @@ chan_jump .chan_2A89
 .layer_2AA7:
 layer_somethingon
 layer_portamento 0x85, 38, 255
+
 .layer_2AAC:
 layer_note1 41, 0x12c, 127
 layer_note1 38, 0x12c, 127
@@ -6915,7 +6905,6 @@ layer_portamento 0x81, 56, 255
 layer_note1 44, 0x3, 85
 layer_note1 20, 0x2, 85
 layer_jump .layer_2B0F
-layer_end
 
 .channel7_table:
 sound_ref .sound_menu_change_select
@@ -7037,6 +7026,7 @@ chan_end
 
 .layer_2BD5:
 layer_setpan 34
+
 .layer_2BD7:
 layer_note0 45, 0xc, 80, 63
 layer_note0 41, 0xc, 80, 63
@@ -7672,6 +7662,7 @@ layer_jump .layer_2EA5
 
 .layer_2EA3:
 layer_transpose -24
+
 .layer_2EA5:
 layer_call .layer_fn_2EAB
 layer_call .layer_fn_2EAB
@@ -7701,11 +7692,11 @@ chan_reservenotes 4
 chan_setbank 9
 chan_setinstr 2
 #ifdef VERSION_SH
-  chan_setval 15
-  .set EXIT_PIPE_NOTE_VELOCITY, 106
+chan_setval 15
+.set EXIT_PIPE_NOTE_VELOCITY, 106
 #else
-  chan_setval 30
-  .set EXIT_PIPE_NOTE_VELOCITY, 126
+chan_setval 30
+.set EXIT_PIPE_NOTE_VELOCITY, 126
 #endif
 chan_call .set_reverb
 chan_setenvelope .envelope_3464
@@ -7720,6 +7711,7 @@ layer_jump .layer_2EF6
 
 .layer_2EF4:
 layer_transpose 12
+
 .layer_2EF6:
 layer_portamento 0x85, 15, 128
 layer_note1 15, 0x3, EXIT_PIPE_NOTE_VELOCITY
@@ -8030,11 +8022,10 @@ chan_end
 
 .layer_3146:
 layer_delay 0x6
-
 #ifdef VERSION_SH
-  .set RED_COIN_NOTE_VELOCITY_SUB, 10
+.set RED_COIN_NOTE_VELOCITY_SUB, 10
 #else
-  .set RED_COIN_NOTE_VELOCITY_SUB, 0
+.set RED_COIN_NOTE_VELOCITY_SUB, 0
 #endif
 
 .layer_3148:
@@ -8046,7 +8037,6 @@ layer_note0 58, 0x10, (80 - RED_COIN_NOTE_VELOCITY_SUB), 80
 layer_note0 58, 0x10, (45 - RED_COIN_NOTE_VELOCITY_SUB), 80
 layer_note0 58, 0x10, (20 - RED_COIN_NOTE_VELOCITY_SUB), 80
 layer_note0 58, 0x10, (15 - RED_COIN_NOTE_VELOCITY_SUB), 80
-
 layer_end
 
 .layer_3168:
@@ -8100,7 +8090,6 @@ layer_note0 39, 0x4b, 73, 127
 layer_note0 39, 0x96, 94, 127
 layer_note0 36, 0x74, 78, 127
 layer_jump .layer_31B3
-layer_end
 
 .sound_obj_bird_chirp3:
 chan_setbank 5
@@ -8123,7 +8112,6 @@ layer_note1 38, 0x6f, 51
 layer_note1 39, 0xc7, 79
 layer_note1 35, 0xe9, 74
 layer_jump .layer_31EB
-layer_end
 
 .sound_obj_bird_chirp1:
 chan_setbank 5
@@ -8147,7 +8135,6 @@ layer_delay 0x159
 layer_note1 36, 0x4f, 61
 layer_delay 0xc6
 layer_jump .layer_3221
-layer_end
 
 .sound_air_castle_outdoors_ambient:
 chan_setbank 5
@@ -8179,6 +8166,7 @@ layer_transpose 12
 layer_setinstr 13
 layer_somethingon
 layer_delay 0xf
+
 .layer_3286:
 layer_note1 39, 0x12c, 25
 layer_jump .layer_3286
@@ -8189,6 +8177,7 @@ chan_jump .chan_3294
 
 .sound_general_switch_tick_fast:
 chan_setval 42
+
 .chan_3294:
 chan_writeseq 0, .layer_32BF, 1
 chan_reservenotes 4
@@ -8198,6 +8187,7 @@ chan_setenvelope .envelope_3314
 chan_setdecayrelease 15
 chan_setlayer 0, .layer_32B7
 chan_setlayer 1, .layer_32B3
+
 .chan_32A9:
 chan_delay1
 chan_ioreadval 0
@@ -8214,11 +8204,11 @@ layer_transpose 12
 .layer_32B7:
 layer_note0 50, 0x3, 127, 127
 layer_note0 38, 0x3, 127, 127
+
 .layer_32BF:
 layer_delay 0x2a
 layer_jump .layer_32B7
 
-.align 2, 0
 .envelope_32C4:
 envelope_line 7 20000
 envelope_line 6 32700
@@ -8299,12 +8289,6 @@ envelope_line 20 32700
 envelope_line 600 6000
 envelope_goto 2
 
-.envelope_unused_339C:
-envelope_line 1 32700
-envelope_line 20 32700
-envelope_line 100 18000
-envelope_goto 2
-
 .envelope_33AC:
 envelope_line 1 32700
 envelope_line 20 32700
@@ -8351,9 +8335,9 @@ envelope_goto 2
 envelope_line 25 32760
 envelope_line 60 10000
 #ifdef VERSION_SH
-  envelope_hang
+envelope_hang
 #else
-  envelope_goto 2
+envelope_goto 2
 #endif
 
 .envelope_3428:
@@ -8386,13 +8370,16 @@ envelope_line 50 32760
 envelope_line 200 0
 envelope_goto 2
 
-.envelope_unused_3478:
-envelope_line 1 32700
-envelope_line 1000 32700
-envelope_line 10 16000
-envelope_line 200 32760
-envelope_goto 3
-
 .envelope_custom_instant_nofade:
 envelope_line 0 32700
 envelope_hang
+
+.sound_action_water_gp:
+chan_setbank 0
+chan_setinstr 8
+chan_setlayer 0, .layer_action_water_gp
+chan_end
+
+.layer_action_water_gp:
+layer_note1 39, 0x66, 127
+layer_end
