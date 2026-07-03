@@ -344,6 +344,7 @@ sound_ref .sound_action_jump_default
 sound_ref .sound_action_jump_default
 sound_ref .sound_action_jump_default
 sound_ref .sound_action_galaxy_spin
+sound_ref .sound_action_underwater_gp
 
 .sound_action_jump_default:
 chan_setbank 1
@@ -1522,8 +1523,18 @@ chan_setinstr 7
 chan_setlayer 0 .layer_galaxy_spin
 chan_end
 
+.sound_action_underwater_gp:
+chan_setbank 0
+chan_setinstr 8
+chan_setlayer 0 .layer_underwater_gp
+chan_end
+
 .layer_galaxy_spin:
 layer_note1 39, 0xB7, 127
+layer_end
+
+.layer_underwater_gp:
+layer_note1 39, 0x66, 127
 layer_end
 
 .channel1_table:

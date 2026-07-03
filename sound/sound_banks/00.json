@@ -49,6 +49,11 @@
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "07_galaxy_spin_custom"
+        },
+        "inst8": {
+            "release_rate": 208,
+            "envelope": "envelope0",
+            "sound": "08_underwater_gp"
         }
     },
     "instrument_list": [
@@ -59,6 +64,7 @@
         "inst4",
         "inst5",
         "inst6",
-        "inst7"
+        "inst7",
+        "inst8"
     ]
 }

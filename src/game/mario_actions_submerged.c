@@ -1124,9 +1124,6 @@ s32 act_ground_pound_water(struct MarioState *m) {
     u32 stepResult;
     f32 yOffset;
 
-    // TODO: water gp sound
-    play_sound_if_no_flag(m, SOUND_ACTION_THROW, MARIO_ACTION_SOUND_PLAYED);
-
     m->faceAngle[0] = 0;
 
     if (m->actionState == 0) {
@@ -1145,7 +1142,7 @@ s32 act_ground_pound_water(struct MarioState *m) {
         set_mario_animation(m, m->actionArg == 0 ? MARIO_ANIM_START_GROUND_POUND
                                                  : MARIO_ANIM_TRIPLE_JUMP_GROUND_POUND);
         if (m->actionTimer == 0) {
-            play_sound(SOUND_ACTION_SPIN, m->marioObj->header.gfx.cameraToObject);
+            play_sound(SOUND_ACTION_UNDERWATER_GROUND_POUND, m->marioObj->header.gfx.cameraToObject);
         }
 
         m->actionTimer++;
