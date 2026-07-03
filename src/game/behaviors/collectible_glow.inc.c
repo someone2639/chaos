@@ -440,7 +440,8 @@ Gfx *geo_obj_render_collectible_glow_bgs(s32 callContext, UNUSED struct GraphNod
 	        gSP2Triangles(gfx++, vertOffset+0, vertOffset+1, vertOffset+3, 0, vertOffset+0, vertOffset+3, vertOffset+2, 0);
         }
 
-        gSPEndDisplayList(gfx);
+        gSPEndDisplayList(gfx++);
+        assert((u8 *) gfx <= (u8 *) gfxHead + (numDLs * sizeof(Gfx)), "geo_obj_render_collectible_glow_bgs:\nDL overflow!");
     }
 
     return gfxHead;
@@ -499,7 +500,8 @@ Gfx *geo_obj_render_collectible_glow_rays(s32 callContext, UNUSED struct GraphNo
 #endif
         }
 
-        gSPEndDisplayList(gfx);
+        gSPEndDisplayList(gfx++);
+        assert((u8 *) gfx <= (u8 *) gfxHead + (numDLs * sizeof(Gfx)), "geo_obj_render_collectible_glow_rays:\nDL overflow!");
     }
 
     return gfxHead;

@@ -59,9 +59,13 @@ Gfx *geo_update_inert_star_indicator(s32 callContext, struct GraphNode *node, UN
 
     if (callContext == GEO_CONTEXT_RENDER) {
         if (star->oStarInertIndicatorTimer > 0) {
+            struct GraphNodeGenerated *currentGraphNode = (struct GraphNodeGenerated *) node;
+            s32 layer = currentGraphNode->parameter;
             u8 alpha = ((f32)star->oStarInertIndicatorTimer / 60.0f) * 255;
             Gfx* prim = alloc_display_list(sizeof(Gfx) * 2);
             Gfx* head = prim;
+
+            SET_GRAPH_NODE_LAYER(currentGraphNode->fnNode.node.flags, layer);
 
             gDPSetPrimColor(head++, 0, 0, 255, 0, 0, alpha);
             gSPEndDisplayList(head);
