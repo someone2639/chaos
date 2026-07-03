@@ -495,6 +495,10 @@ static void common_swimming_step(struct MarioState *m, s16 swimStrength) {
 
     surface_swim_bob(m);
     set_swimming_at_surface_particles(m, PARTICLE_WAVE_TRAIL);
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_UNDERWATER_GROUNDPOUND) && (m->input & INPUT_Z_PRESSED)) {
+        set_mario_action(m, ACT_GROUND_POUND_WATER, 0);
+    }
 }
 
 static void play_swimming_noise(struct MarioState *m) {
@@ -1123,6 +1127,8 @@ s32 act_ground_pound_water(struct MarioState *m) {
     // TODO: water gp sound
     play_sound_if_no_flag(m, SOUND_ACTION_THROW, MARIO_ACTION_SOUND_PLAYED);
 
+    m->faceAngle[0] = 0;
+
     if (m->actionState == 0) {
         if (m->actionTimer < 10) {
             yOffset = 20 - 2 * m->actionTimer;
@@ -1149,7 +1155,6 @@ s32 act_ground_pound_water(struct MarioState *m) {
         }
     } else {
         set_mario_animation(m, MARIO_ANIM_GROUND_POUND);
-        set_mario_action(m, ACT_WATER_PLUNGE, 0);
 
         stepResult = perform_water_step(m);
         if (stepResult == WATER_STEP_HIT_FLOOR) {
@@ -1165,6 +1170,12 @@ s32 act_ground_pound_water(struct MarioState *m) {
             m->particleFlags |= PARTICLE_VERTICAL_STAR;
             m->bonkKill = TRUE;
             set_mario_action(m, ACT_BACKWARD_WATER_KB, 0);
+        } else {
+            m->vel[1] += 3.0f;
+            if (m->vel[1] > 0) {
+                m->vel[1] = 0;
+                set_mario_action(m, ACT_WATER_IDLE, 0);
+            }
         }
     }
 
