@@ -3,25 +3,9 @@
     "sample_bank": "sfx_1",
     "envelopes": {
         "envelope0": [
-            [
-                2,
-                32700
-            ],
-            [
-                1,
-                32700
-            ],
-            [
-                32700,
-                29430
-            ],
-            "hang"
-        ],
-        "envelope1": [
-            [
-                2,
-                32700
-            ],
+            [2, 32700],
+            [1, 32700],
+            [32700, 29430],
             "hang"
         ]
     },
@@ -65,11 +49,6 @@
             "release_rate": 208,
             "envelope": "envelope0",
             "sound": "07_galaxy_spin_custom"
-        },
-        "inst8": {
-            "release_rate": 208,
-            "envelope": "envelope1",
-            "sound": "08_underwater_gp"
         }
     },
     "instrument_list": [
@@ -80,7 +59,6 @@
         "inst4",
         "inst5",
         "inst6",
-        "inst7",
-        "inst8"
+        "inst7"
     ]
 }
