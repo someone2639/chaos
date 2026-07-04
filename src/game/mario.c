@@ -1481,9 +1481,12 @@ void update_stick_history(struct MarioState *m, f32 mag, s16 s_angle) {
                 max = hitDirections[i];
             }
         }
+        // give up spinjump if we hold W for too long
         if (max - min > 4) {
-            // basically, give up spinjump if we hold W for too long
-            clear_stick_history();
+            // ... unless we're airborne
+            if (!(m->action & ACT_FLAG_AIR)) {
+                clear_stick_history();
+            }
         }
 
         if (streak > 5) {
