@@ -166,6 +166,8 @@ u8 chs_cond_cartridge_tilt(void);
 u8 chs_cond_corruption(void);
 void chs_update_corruption(void);
 void chs_deact_corruption(void);
+void chs_squint_init(void);
+void chs_squint_deinit(void);
 
 // Time Limit
 void chs_level_init_time_limit(void);

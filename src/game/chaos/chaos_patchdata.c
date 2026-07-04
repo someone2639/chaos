@@ -1723,6 +1723,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Corrupted Textures",
         .shortDescription   = "Because that grass texture was just too boring.",
     },
+    [CHAOS_PATCH_SQUINT_MODE] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 3,
+        .duration           = 4,
+        .durationHard       = 8,
+        .durationImpossible = 12,
+
+        .activatedInitFunc  = chs_squint_init,
+        .deactivationFunc   = chs_squint_deinit,
+
+        .name               = "Squint Mode",
+        .shortDescription   = "Oops, hit the restore window button.",
+    },
 
 // Time Limit
 #define CHS_TIME_LIMIT_DURATION            10

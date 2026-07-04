@@ -366,31 +366,35 @@ void play_transition_after_delay(s16 transType, s16 time, u8 red, u8 green, u8 b
 
 s32 fliptarget = SCREEN_WIDTH / 2;
 u8 isInMenu = FALSE;
+u8 isGameSquished = FALSE;
+s32 chaos_viewport_width_target = SCREEN_WIDTH / 2;
+s32 chaos_viewport_height_target = SCREEN_HEIGHT / 2;
 
-void process_master_quest_transition(struct GraphNodeRoot *node) {
+void process_viewport_transitions(struct GraphNodeRoot *node) {
     if (isInMenu || gInActSelect) {
         isGameFlipped = 0;
+        isGameSquished = 0;
         node->width = SCREEN_WIDTH / 2;
+        node->height = SCREEN_HEIGHT / 2;
         return;
     }
 
     if (isGameFlipped && node->width > 10) {
         // instant warp fix
-        node->width = fliptarget;
+        node->width = chaos_viewport_width_target;
     }
 
     #define FS_SWAPSPEED 5
-    #define FS_SNAPLEFT -156
-    #define FS_SNAPRIGHT 156
     if (node == NULL) return;
 
-    node->width = approach_s16_asymptotic(node->width, fliptarget, FS_SWAPSPEED);
-    if (node->width >= FS_SNAPRIGHT) {
-        node->width = fliptarget;
+    node->width = approach_s16_asymptotic(node->width, chaos_viewport_width_target, FS_SWAPSPEED);
+    node->height = approach_s16_asymptotic(node->height, chaos_viewport_height_target, FS_SWAPSPEED);
+
+    if (ABS(ABS(node->width) - ABS(chaos_viewport_width_target)) <= 4) {
+        node->width = chaos_viewport_width_target;
+        node->height = chaos_viewport_height_target;
     }
-    if (node->width <= FS_SNAPLEFT) {
-        node->width = fliptarget;
-    }
+
     if (node->width < 0) {
         isGameFlipped = 1;
     } else {
@@ -407,7 +411,8 @@ extern s8 sShowMessageLogRecap;
 void drawslots();
 void render_game(void) {
     if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
-        process_master_quest_transition(gCurrentArea->unk04);
+        process_viewport_transitions(gCurrentArea->unk04);
+
         if(!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_STOP_GAME_RENDER)) {
             geo_process_root(gCurrentArea->unk04, D_8032CE74, D_8032CE78, gFBSetColor);             
         }

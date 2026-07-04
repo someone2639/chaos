@@ -8,13 +8,21 @@
 #include "audio/external.h"
 #include "game/level_update.h"
 
-extern s32 fliptarget;
+#include "pbhv_viewport_mods.h"
 
 void chs_mq_init(void) {
-    fliptarget = -SCREEN_WIDTH / 2;
+    chaos_viewport_width_target = -SCREEN_WIDTH / 2;
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_SQUINT_MODE)) {
+        chaos_viewport_width_target = -SCREEN_WIDTH / SQUINT_FACTOR;
+    }
 }
 
 void chs_mq_deinit(void) {
-    fliptarget = SCREEN_WIDTH / 2;
+    chaos_viewport_width_target = SCREEN_WIDTH / 2;
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_SQUINT_MODE)) {
+        chaos_viewport_width_target = SCREEN_WIDTH / SQUINT_FACTOR;
+    }
 }
 
