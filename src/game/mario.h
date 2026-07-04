@@ -55,7 +55,6 @@ void update_mario_safe_pos(void);
 void set_mario_y_vel_based_on_fspeed(struct MarioState *m, f32 initialVelY, f32 multiplier);
 
 // sunshine twirl infrastructure
-#define STICK_HISTORY_REFRESH_TIME_FRAMES 6
 s32 make_mario_spin_jump(struct MarioState *m);
 void clear_stick_history();
 

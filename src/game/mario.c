@@ -1439,7 +1439,6 @@ void update_stick_history(struct MarioState *m, f32 mag, s16 s_angle) {
         }
 
         u16 angle = (u32)s_angle & 0xFFFF;
-        osSyncPrintf("update_stick_history %08X %f\n", angle, mag);
 
         if (is_close(angle, 0x0000, 10)) {
             hitDirections[0] += 1;
@@ -1469,22 +1468,21 @@ void update_stick_history(struct MarioState *m, f32 mag, s16 s_angle) {
         u32 streak = 0;
         u32 min = 999;
         u32 max = 0;
-        osSyncPrintf("Hits: ");
         for (int i = 0; i < ARRAY_COUNT(hitDirections); i++) {
             if (hitDirections[i] > 0) {
                 streak++;
             }
+
+            // Prevent stale spin states
             if (hitDirections[i] < min) {
                 min = hitDirections[i];
             }
             if (hitDirections[i] > max) {
                 max = hitDirections[i];
             }
-            osSyncPrintf("%d", hitDirections[i]);
         }
-
         if (max - min > 4) {
-            // basically, have we been holding W for too long
+            // basically, give up spinjump if we hold W for too long
             clear_stick_history();
         }
 
@@ -1493,8 +1491,8 @@ void update_stick_history(struct MarioState *m, f32 mag, s16 s_angle) {
         } else {
             m->canSpinJump = 0;
         }
-
-        osSyncPrintf("\n");
+    } else {
+        m->canSpinJump = 0;
     }
 }
 
