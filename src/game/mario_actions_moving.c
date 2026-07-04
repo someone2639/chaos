@@ -987,6 +987,11 @@ s32 act_turning_around(struct MarioState *m) {
     }
 
     if (m->input & INPUT_A_PRESSED) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_SUNSHINE_TWIRL)) {
+            if (m->canSpinJump) {
+                return make_mario_spin_jump(m);
+            }
+        }
         if (!chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_SIDEFLIP)) {
             return set_jumping_action(m, ACT_SIDE_FLIP, 0);
         } else {
@@ -1834,7 +1839,11 @@ s32 common_landing_cancels(struct MarioState *m, struct LandingAction *landingAc
     }
 
     if (m->input & INPUT_A_PRESSED) {
-        return setAPressAction(m, landingAction->aPressedAction, 0);
+        if (m->canSpinJump) {
+            return make_mario_spin_jump(m);
+        } else {
+            return setAPressAction(m, landingAction->aPressedAction, 0);
+        }
     }
 
     if (m->input & INPUT_OFF_FLOOR) {
