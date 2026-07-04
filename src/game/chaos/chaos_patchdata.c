@@ -182,6 +182,17 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Life Gambler",
         .shortDescription   = "Lose twice as many lives when dying.",
     },
+    [CHAOS_PATCH_LIFETIME_SALE] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 2,
+        .duration           = 6,
+
+        .conditionalFunc    = chs_cond_lifetime_sale,
+
+        .name               = "Lifetime Sale",
+        .shortDescription   = "Get one free extra life for every " STR2(LIFETIME_SALE_COIN_REQ) " coins collected whenever you complete a normal star mission!",
+    },
     [CHAOS_PATCH_INSTANT_GAME_OVER] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
@@ -429,6 +440,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Toad Star Restock",
         .shortDescription   = "Swap out a collected Toad star with another random star not currently in your possession.",
+    },
+    [CHAOS_PATCH_HIGH_ROLLER] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 3,
+        .duration           = 6,
+
+        .name               = "High Roller",
+        .shortDescription   = "Get one random star for every " STR2(HIGH_ROLLER_COIN_REQ) " coins collected whenever you complete a normal star mission!",
+        .longDescription    = "These are NOT guaranteed to be yellow stars. Rolls for star gain come with disadvantage. In other words, this will reattempt to provide a star you don't have if it succeeds the first time. Your odds of gaining a new star are about 50% by the time you've collected a total of 35 stars.",
     },
 
 // Gravity Modifiers

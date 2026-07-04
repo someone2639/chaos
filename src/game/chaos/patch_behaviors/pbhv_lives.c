@@ -25,6 +25,7 @@ u8 chs_cond_lives_decrease_lv2(void) { return (gChaosGameMode == CHAOS_GAMEMODE_
 u8 chs_cond_lives_decrease_lv3(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives >= LV3_LIVES_NEG); }
 u8 chs_cond_instant_game_over(void)  { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE); }
 u8 chs_cond_life_gambler(void)       { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE); }
+u8 chs_cond_lifetime_sale(void)      { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE); }
 
 void chs_act_lives_increase_lv1(void) {
     gMarioState->numLives += LV1_LIVES_POS;

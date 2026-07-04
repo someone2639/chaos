@@ -15,6 +15,7 @@ u8 chs_cond_lives_decrease_lv2(void);
 u8 chs_cond_lives_decrease_lv3(void);
 u8 chs_cond_instant_game_over(void);
 u8 chs_cond_life_gambler(void);
+u8 chs_cond_lifetime_sale(void);
 void chs_act_lives_increase_lv1(void);
 void chs_act_lives_increase_lv2(void);
 void chs_act_lives_increase_lv3(void);
