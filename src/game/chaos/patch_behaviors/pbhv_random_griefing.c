@@ -208,6 +208,7 @@ void chs_act_troll_sounds(void) {
     this->frameTimer = RAND(TROLL_SOUNDS_TIME_MAX); //Get a random offset to start the timer at
 }
 
+// TODO: More variance
 void chs_update_troll_sounds(void) {
     struct ChaosActiveEntry *this;
     chaos_find_first_active_patch(CHAOS_PATCH_TROLL_SOUNDS, &this);
