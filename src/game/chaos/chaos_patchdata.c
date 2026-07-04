@@ -1219,6 +1219,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 1,
         .duration           = 8,
 
+        INCOMPATIBLE(CHAOS_PATCH_SUNSHINE_TWIRL),
+
         .name               = "Beta",
         .shortDescription   = "YAAHAA!!! Triple Jumps will now cause you to twirl!",
         .longDescription    = "HUD by robichu, sounds from the Internet archive (this will be more credit than any beta hacker will ever give). pls give me bps for betah triple jump"
@@ -1272,6 +1274,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 1,
         .duration           = 15,
+
+        INCOMPATIBLE(CHAOS_PATCH_BETA),
 
         .name               = "Sunshine Spin Jump",
         .shortDescription   = "Spin the joystick then jump to gain a lot of height! Chain with jumps and dives to get even more!",
