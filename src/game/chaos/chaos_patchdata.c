@@ -1828,6 +1828,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Random Buff",
         .shortDescription   = "Activate a positive patch of any rank at random.",
     },
+    [CHAOS_PATCH_BITE_SIZED_SPLIT] = {
+        .durationType       = CHAOS_DURATION_ONCE,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 2,
+        .isStackable        = TRUE,
+
+        .conditionalFunc    = chs_cond_bite_sized_split,
+        .activatedInitFunc  = chs_act_bite_sized_split,
+
+        .name               = "Bite-Sized Split",
+        .shortDescription   = "Activate two negative Rank 1 patches at random.",
+    },
     [CHAOS_PATCH_ADD_SELECTABLE_PATCH] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
@@ -1967,7 +1979,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 2,
-        .duration           = 8,
+        .duration           = 6,
 
         .hasMenuEvent       = TRUE,
         .chsMenuInitFunc    = chs_menuinit_gambling_wheel,
@@ -1980,7 +1992,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
                                "  - @671F57--One Very Negative Outcome@--------\n"
                                "  - @CF3F3F--Other Slightly Negative Outcomes@--------\n"
                                "  - @3FBF3F--Many Positive Outcomes@--------\n"
-                               "  - @FFFFAF--One Incredible Jackpot!!!@--------\n\n"
+                               "  - @FFFFAF--One Incredible Jackpot!!!@--------"
     },
 
 // Speed Modifiers

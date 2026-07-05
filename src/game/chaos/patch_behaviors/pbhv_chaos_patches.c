@@ -12,7 +12,7 @@
 #include "game/level_update.h"
 #include "game/save_file.h"
 
-static u8 inRandomBuffActivationFunc = FALSE;
+static u8 inRandomPatchActivationFunc = FALSE;
 
 static const enum ChaosPatchID patchBlacklist[] = {
     CHAOS_PATCH_LOWER_TIME_LIMIT,
@@ -61,8 +61,8 @@ u8 chs_cond_remove_negative_patch(void) {
  */
 enum ChaosPatchID chs_activate_random_pos_neg_patch_of_severity(s32 patchSeverity, enum ChaosPatchEffectType effectType, u8 skipSeverityModifier, u32 maxForcedDuration, enum ChaosPatchDurationType durationType) {
     // Ideally this doesn't recurse at all, but just in case...
-    s32 lastRandomBuff = inRandomBuffActivationFunc;
-    inRandomBuffActivationFunc = TRUE;
+    s32 lastRandomPatch = inRandomPatchActivationFunc;
+    inRandomPatchActivationFunc = TRUE;
 
     // Same here...
     enum ChaosPatchDurationType lastDurType = gChaosForcedDurationType;
@@ -97,14 +97,14 @@ enum ChaosPatchID chs_activate_random_pos_neg_patch_of_severity(s32 patchSeverit
     gChaosForcedDurationMaximum = lastDuration;
     gChaosSkipSeverityDifficultyModifier = lastSkipSeverityModifier;
     gChaosForcedDurationType = lastDurType;
-    inRandomBuffActivationFunc = lastRandomBuff;
+    inRandomPatchActivationFunc = lastRandomPatch;
 
     return newPatch;
 }
 
 u8 chs_cond_add_random_buff(void) {
     // This is not an eligible patch if it's already in the process of being activated (recursion moment).
-    return (!inRandomBuffActivationFunc);
+    return (!inRandomPatchActivationFunc);
 }
 
 void chs_act_add_random_buff(void) {
@@ -113,6 +113,18 @@ void chs_act_add_random_buff(void) {
 
     // Generate new patches, with new rank override and explicitly without any special event
     chs_activate_random_pos_neg_patch_of_severity(patchSeverity, CHAOS_EFFECT_POSITIVE, TRUE, 0, CHAOS_DURATION_DO_NOT_FORCE);
+}
+
+u8 chs_cond_bite_sized_split(void) {
+    // This is not an eligible patch if it's already in the process of being activated (recursion moment).
+    // Make sure it's also not on easy difficulty, since it may become misleading what a rank 1 patch even is.
+    return (!inRandomPatchActivationFunc && gChaosDifficulty != CHAOS_DIFFICULTY_EASY);
+}
+
+void chs_act_bite_sized_split(void) {
+    // Generate new patches, with rank 1 override and explicitly without any special event
+    chs_activate_random_pos_neg_patch_of_severity(1, CHAOS_EFFECT_NEGATIVE, TRUE, 0, CHAOS_DURATION_DO_NOT_FORCE);
+    chs_activate_random_pos_neg_patch_of_severity(1, CHAOS_EFFECT_NEGATIVE, TRUE, 0, CHAOS_DURATION_DO_NOT_FORCE);
 }
 
 void chs_act_remove_negative_patch(void) {
