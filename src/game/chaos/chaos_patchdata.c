@@ -1284,8 +1284,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_UNDERWATER_GROUNDPOUND] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
-        .severity           = 2,
-        .duration           = 12,
+        .severity           = 1,
+        .duration           = 15,
 
         .name               = "Underwater Ground Pound",
         .shortDescription   = "Allows ground pounds while underwater. Get down to deep places quicker!",
@@ -1478,7 +1478,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 5,
         .durationImpossible = 6,
 
-        INCOMPATIBLE(CHAOS_PATCH_DECREASED_FOV, CHAOS_PATCH_ORTHO),
+        INCOMPATIBLE(CHAOS_PATCH_DECREASED_FOV, CHAOS_PATCH_ORTHO, CHAOS_PATCH_SQUINT_MODE),
         .conditionalFunc    = chs_cond_increased_fov,
 
         .name               = "Fish Eyes",
@@ -1572,7 +1572,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 7,
         .durationImpossible = 9,
 
-        INCOMPATIBLE(CHAOS_PATCH_INVERTED_CAMERA_X, CHAOS_PATCH_FORCED_MARIO_CAM, CHAOS_PATCH_DECREASED_FOV, CHAOS_PATCH_INCREASED_FOV, CHAOS_PATCH_45_DEGREE_CAM),
+        INCOMPATIBLE(CHAOS_PATCH_INVERTED_CAMERA_X, CHAOS_PATCH_FORCED_MARIO_CAM, CHAOS_PATCH_DECREASED_FOV, CHAOS_PATCH_INCREASED_FOV, CHAOS_PATCH_45_DEGREE_CAM, CHAOS_PATCH_SQUINT_MODE),
 
         .name               = "Top-Down Camera",
         .shortDescription   = "Now you're playing Zelda! (without the items) (without the story) (without the combat) (without the",
@@ -1600,6 +1600,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 5,
         .durationImpossible = 6,
 
+        INCOMPATIBLE(CHAOS_PATCH_SQUINT_MODE),
         .conditionalFunc    = chs_cond_low_resolution,
 
         .name               = "Potato Graphics",
@@ -1732,6 +1733,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 8,
         .durationImpossible = 12,
 
+        INCOMPATIBLE(CHAOS_PATCH_INCREASED_FOV, CHAOS_PATCH_TOP_DOWN_CAMERA, CHAOS_PATCH_LOW_RESOLUTION),
         .activatedInitFunc  = chs_squint_init,
         .deactivationFunc   = chs_squint_deinit,
 
