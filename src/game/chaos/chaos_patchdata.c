@@ -1341,6 +1341,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 1,
         .duration           = 5,
 
+        INCOMPATIBLE(CHAOS_PATCH_NO_RIDING_SHELLS),
         .levelInitFunc     = chs_lvlinit_spawn_on_shell,
         .frameUpdateFunc    = chs_lvlupdate_spawn_on_shell,
 
@@ -2552,6 +2553,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Shell Restock",
         .shortDescription   = "Shell boxes will now respawn.",
+    },
+    [CHAOS_PATCH_NO_RIDING_SHELLS] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 1,
+        .duration           = 14,
+        .durationHard       = 18,
+        .durationImpossible = 22,
+
+        INCOMPATIBLE(CHAOS_PATCH_SPAWN_ON_SHELL),
+
+        .name               = "Shell Shocked",
+        .shortDescription   = "Mario may no longer hitch a ride on koopa shells.",
     },
     [CHAOS_PATCH_QUICKTIME] = {
         .durationType       = CHAOS_DURATION_STARS,

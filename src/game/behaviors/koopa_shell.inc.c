@@ -13,6 +13,12 @@ struct ObjectHitbox sKoopaShellHitbox = {
 };
 
 void check_shell_despawn(void) {
+    if (chaos_check_if_patch_active(CHAOS_PATCH_NO_RIDING_SHELLS)) {
+        obj_mark_for_deletion(o);
+        spawn_mist_particles();
+        return;
+    }
+
     if (!chaos_check_if_patch_active(CHAOS_PATCH_RESPAWNABLE_SHELLS)) {
         return;
     }
@@ -80,14 +86,15 @@ void bhv_koopa_shell_loop(void) {
             cur_obj_update_floor_and_walls();
             cur_obj_if_hit_wall_bounce_away();
 
-            if (o->oInteractStatus & INT_STATUS_INTERACTED) {
-                o->oAction++;
-            }
-
             o->oFaceAngleYaw += 0x1000;
             cur_obj_move_standard(-20);
             koopa_shell_spawn_sparkles(10.0f);
-            check_shell_despawn();
+
+            if (o->oInteractStatus & INT_STATUS_INTERACTED) {
+                o->oAction++;
+            } else {
+                check_shell_despawn();
+            }
             break;
 
         case 1:

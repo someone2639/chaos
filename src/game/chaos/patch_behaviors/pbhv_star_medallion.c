@@ -48,9 +48,10 @@ static u8 sm_ccm_a2_hidden_path(void)          { return (gChaosDifficulty > CHAO
 static u8 sm_bbh_shack_at_start(void)          { return (gChaosDifficulty > CHAOS_DIFFICULTY_EASY && !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_WALL_KICK)); }
 static u8 sm_bbh_can_go_upstairs(void)         { return ((gChaosDifficulty > CHAOS_DIFFICULTY_EASY && !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_WALL_KICK)) || gCurrActNum >= 2); }
 static u8 sm_bbh_can_go_extra_upstairs(void)   { return ((gChaosDifficulty > CHAOS_DIFFICULTY_EASY || gCurrActNum >= 2) && !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_WALL_KICK)); }
-static u8 sm_lll_a1_lava_check(void)           { return (gCurrActNum >= 5 || (!chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER) && chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_LAVA))); } // TODO: If remove shell patch ever added, add condition here
+static u8 sm_lll_a1_lava_check(void)           { return ((gCurrActNum >= 5 && !chaos_check_if_patch_active(CHAOS_PATCH_NO_RIDING_SHELLS)) || (!chaos_check_if_patch_active(CHAOS_PATCH_ONE_HIT_WONDER) && chaos_check_if_patch_active(CHAOS_PATCH_INSTAKILL_LAVA))); }
 static u8 sm_ddd_a2_bowser_sub_active(void)    { return (gCurrActNum == 1); }
 static u8 sm_ddd_a2_poles_active(void)         { return (gCurrActNum != 1); }
+static u8 sm_sl_a1_shell_check(void)           { return !chaos_check_if_patch_active(CHAOS_PATCH_NO_RIDING_SHELLS); }
 static u8 sm_wdw_a2(void)                      { return (!chaos_check_if_patch_active(CHAOS_PATCH_LOCK_CANNONS) && gCurrActNum >= 5); }
 static u8 sm_wdw_a2_vanish_cap(void)           { return (!chaos_check_if_patch_active(CHAOS_PATCH_LOCK_CANNONS) && gCurrActNum >= 5 && (save_file_get_flags() & SAVE_FLAG_HAVE_VANISH_CAP) && !chaos_check_if_patch_active(CHAOS_PATCH_DISABLE_CAPS)); }
 static u8 sm_ttm_a1_can_warp(void)             { return (!chaos_check_if_patch_active(CHAOS_PATCH_DISABLE_FADE_WARPS)); }
@@ -242,7 +243,7 @@ static const struct StarMedallionSpawnLocation starMedallionList_SL[] = {
     {.areaNum = 1, .checkpointOnly = FALSE, .x =  4375, .y =  2093, .z =  4565, .conditionalFunc = NULL                          }, // Above ice block area
     {.areaNum = 1, .checkpointOnly = FALSE, .x =  4050, .y =   809, .z = -2950, .conditionalFunc = NULL                          }, // Bottom of windy path
     {.areaNum = 1, .checkpointOnly = FALSE, .x =   500, .y =   972, .z = -1600, .conditionalFunc = NULL                          }, // Tucked behind a ledge on hardened ice
-    {.areaNum = 1, .checkpointOnly = FALSE, .x =     0, .y =  1024, .z = -4900, .conditionalFunc = NULL                          }, // Underneath ice bully area (shell involved)
+    {.areaNum = 1, .checkpointOnly = FALSE, .x =     0, .y =  1024, .z = -4900, .conditionalFunc = sm_sl_a1_shell_check          }, // Underneath ice bully area (shell involved)
     {.areaNum = 1, .checkpointOnly = FALSE, .x = -6900, .y =  2298, .z = -6700, .conditionalFunc = NULL                          }, // In top corner by elevated red coins area (past star and shell boxes)
     {.areaNum = 1, .checkpointOnly = FALSE, .x =  -700, .y =   844, .z =  2600, .conditionalFunc = NULL                          }, // In cold water on the right side of the moving snow triangles
     {.areaNum = 1, .checkpointOnly = FALSE, .x =  1025, .y =  1832, .z =  2750, .conditionalFunc = NULL                          }, // Past moving snow triangles, on slippery slope to the right
