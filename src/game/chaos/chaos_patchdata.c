@@ -2380,6 +2380,15 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Sound Effect Shuffle",
         .shortDescription   = "Randomly shuffle almost every sound in the game!",
     },
+    [CHAOS_PATCH_PLEASANT_CAMERA_SOUNDS] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 1,
+        .duration           = 15,
+
+        .name               = "Pleasant Camera Sounds",
+        .shortDescription   = "Replace default camera sounds with less obnoxious alternatives!",
+    },
 
 // Miscellaneous Modifiers
     [CHAOS_PATCH_MARIO_INVISIBLE] = {

@@ -5403,19 +5403,35 @@ void play_camera_buzz_if_c_sideways(void) {
 }
 
 void play_sound_cbutton_up(void) {
-    play_sound(SOUND_MENU_CAMERA_ZOOM_IN, gGlobalSoundSource);
+    if (chaos_check_if_patch_active(CHAOS_PATCH_PLEASANT_CAMERA_SOUNDS)) {
+        play_sound(SOUND_MENU_CAMERA_ZOOM_IN_PLEASANT, gGlobalSoundSource);
+    } else {
+        play_sound(SOUND_MENU_CAMERA_ZOOM_IN, gGlobalSoundSource);
+    }
 }
 
 void play_sound_cbutton_down(void) {
-    play_sound(SOUND_MENU_CAMERA_ZOOM_OUT, gGlobalSoundSource);
+    if (chaos_check_if_patch_active(CHAOS_PATCH_PLEASANT_CAMERA_SOUNDS)) {
+        play_sound(SOUND_MENU_CAMERA_ZOOM_OUT_PLEASANT, gGlobalSoundSource);
+    } else {
+        play_sound(SOUND_MENU_CAMERA_ZOOM_OUT, gGlobalSoundSource);
+    }
 }
 
 void play_sound_cbutton_side(void) {
-    play_sound(SOUND_MENU_CAMERA_TURN, gGlobalSoundSource);
+    if (chaos_check_if_patch_active(CHAOS_PATCH_PLEASANT_CAMERA_SOUNDS)) {
+        play_sound(SOUND_MENU_CAMERA_TURN_PLEASANT, gGlobalSoundSource);
+    } else {
+        play_sound(SOUND_MENU_CAMERA_TURN, gGlobalSoundSource);
+    }
 }
 
 void play_sound_button_change_blocked(void) {
-    play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
+    if (chaos_check_if_patch_active(CHAOS_PATCH_PLEASANT_CAMERA_SOUNDS)) {
+        play_sound(SOUND_MENU_CAMERA_BUZZ_PLEASANT, gGlobalSoundSource);
+    } else {
+        play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
+    }
 }
 
 void play_sound_rbutton_changed(void) {

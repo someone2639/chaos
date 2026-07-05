@@ -7011,6 +7011,10 @@ sound_ref .sound_menu_tetris_rotate
 sound_ref .sound_menu_tetris_lock
 sound_ref .sound_menu_tetris_clear_line
 sound_ref .sound_general_right_answer
+sound_ref .sound_menu_camera_zoom_in_pleasant
+sound_ref .sound_menu_camera_zoom_out_pleasant
+sound_ref .sound_menu_camera_turn_pleasant
+sound_ref .sound_menu_camera_buzz_pleasant
 
 .sound_menu_change_select:
 chan_setbank 9
@@ -8092,6 +8096,63 @@ layer_transpose 0
 layer_note1 32, 0x7f, 115
 layer_end
 
+.sound_menu_camera_zoom_in_pleasant:
+chan_setmutebhv 0x0
+chan_setnotepriority 14
+chan_setinstr 0x82
+chan_setdecayrelease 12
+chan_setenvelope .envelope_custom_camera_pleasant
+chan_setlayer 0, .layer_camera_zoom_in_pleasant
+chan_end
+
+.layer_camera_zoom_in_pleasant:
+layer_portamento 0x81, 20, 255
+layer_note1 39, 0x18, 71
+layer_end
+
+.sound_menu_camera_zoom_out_pleasant:
+chan_setmutebhv 0x0
+chan_setnotepriority 14
+chan_setinstr 0x82
+chan_setdecayrelease 12
+chan_setenvelope .envelope_custom_camera_pleasant
+chan_setlayer 0, .layer_camera_zoom_out_pleasant
+chan_end
+
+.layer_camera_zoom_out_pleasant:
+layer_portamento 0x81, 38, 255
+layer_note1 19, 0x1C, 71
+layer_end
+
+.sound_menu_camera_turn_pleasant:
+chan_setmutebhv 0x0
+chan_setnotepriority 14
+chan_setinstr 0x82
+chan_setdecayrelease 12
+chan_setenvelope .envelope_custom_camera_pleasant
+chan_setlayer 0, .layer_camera_turn_pleasant
+chan_end
+
+.layer_camera_turn_pleasant:
+layer_portamento 0x81, 15, 255
+layer_note1 39, 0x28, 63
+layer_end
+
+.sound_menu_camera_buzz_pleasant:
+chan_setmutebhv 0x0
+chan_setnotepriority 14
+chan_setinstr 0x81
+chan_setdecayrelease 150
+chan_setenvelope .envelope_custom_camera_pleasant
+chan_setlayer 0, .layer_camera_buzz_pleasant
+chan_end
+
+.layer_camera_buzz_pleasant:
+layer_note1 19, 0x6, 79
+layer_delay 0x4
+layer_note1 19, 0xA, 79
+layer_end
+
 .sound_general_bird_chirp2:
 chan_setbank 5
 chan_setinstr 9
@@ -8406,4 +8467,9 @@ envelope_goto 3
 
 .envelope_custom_instant_nofade:
 envelope_line 0 32700
+envelope_hang
+
+.envelope_custom_camera_pleasant:
+envelope_line 3 32700
+envelope_line 60 0
 envelope_hang
