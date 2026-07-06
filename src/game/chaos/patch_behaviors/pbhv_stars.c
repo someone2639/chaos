@@ -546,6 +546,7 @@ void chs_act_toad_star_restock(void) {
                 // Print star removal message first, but wait until removing star to remove duplicates
                 print_star_collect_message(TRUE, COURSE_NONE, flags[i].id);
                 add_uncollected_star();
+                play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
                 save_file_remove_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(COURSE_NONE), (1 << flags[i].id));
                 gMarioState->numStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
                 return;
@@ -784,6 +785,7 @@ void chs_menuupdate_coin_flip(Gfx **dl) {
             if (sCoinFlip.timer == 0) {
                 if(sCoinFlip.result == 0) {
                     add_uncollected_star();
+                    play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
                 } else {
                     remove_collected_star();
                 }

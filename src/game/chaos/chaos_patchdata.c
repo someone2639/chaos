@@ -1284,8 +1284,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_UNDERWATER_GROUNDPOUND] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
-        .severity           = 2,
-        .duration           = 12,
+        .severity           = 1,
+        .duration           = 15,
 
         .name               = "Underwater Ground Pound",
         .shortDescription   = "Allows ground pounds while underwater. Get down to deep places quicker!",
@@ -1341,6 +1341,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 1,
         .duration           = 5,
 
+        INCOMPATIBLE(CHAOS_PATCH_NO_RIDING_SHELLS),
         .levelInitFunc     = chs_lvlinit_spawn_on_shell,
         .frameUpdateFunc    = chs_lvlupdate_spawn_on_shell,
 
@@ -1477,7 +1478,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 5,
         .durationImpossible = 6,
 
-        INCOMPATIBLE(CHAOS_PATCH_DECREASED_FOV, CHAOS_PATCH_ORTHO),
+        INCOMPATIBLE(CHAOS_PATCH_DECREASED_FOV, CHAOS_PATCH_ORTHO, CHAOS_PATCH_SQUINT_MODE),
         .conditionalFunc    = chs_cond_increased_fov,
 
         .name               = "Fish Eyes",
@@ -1571,7 +1572,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 7,
         .durationImpossible = 9,
 
-        INCOMPATIBLE(CHAOS_PATCH_INVERTED_CAMERA_X, CHAOS_PATCH_FORCED_MARIO_CAM, CHAOS_PATCH_DECREASED_FOV, CHAOS_PATCH_INCREASED_FOV, CHAOS_PATCH_45_DEGREE_CAM),
+        INCOMPATIBLE(CHAOS_PATCH_INVERTED_CAMERA_X, CHAOS_PATCH_FORCED_MARIO_CAM, CHAOS_PATCH_DECREASED_FOV, CHAOS_PATCH_INCREASED_FOV, CHAOS_PATCH_45_DEGREE_CAM, CHAOS_PATCH_SQUINT_MODE),
 
         .name               = "Top-Down Camera",
         .shortDescription   = "Now you're playing Zelda! (without the items) (without the story) (without the combat) (without the",
@@ -1599,6 +1600,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 5,
         .durationImpossible = 6,
 
+        INCOMPATIBLE(CHAOS_PATCH_SQUINT_MODE),
         .conditionalFunc    = chs_cond_low_resolution,
 
         .name               = "Potato Graphics",
@@ -1731,6 +1733,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 8,
         .durationImpossible = 12,
 
+        INCOMPATIBLE(CHAOS_PATCH_INCREASED_FOV, CHAOS_PATCH_TOP_DOWN_CAMERA, CHAOS_PATCH_LOW_RESOLUTION),
         .activatedInitFunc  = chs_squint_init,
         .deactivationFunc   = chs_squint_deinit,
 
@@ -1827,6 +1830,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Random Buff",
         .shortDescription   = "Activate a positive patch of any rank at random.",
+    },
+    [CHAOS_PATCH_BITE_SIZED_SPLIT] = {
+        .durationType       = CHAOS_DURATION_ONCE,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 2,
+        .isStackable        = TRUE,
+
+        .conditionalFunc    = chs_cond_bite_sized_split,
+        .activatedInitFunc  = chs_act_bite_sized_split,
+
+        .name               = "Bite-Sized Split",
+        .shortDescription   = "Activate two negative Rank 1 patches at random.",
     },
     [CHAOS_PATCH_ADD_SELECTABLE_PATCH] = {
         .durationType       = CHAOS_DURATION_STARS,
@@ -1967,7 +1982,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 2,
-        .duration           = 8,
+        .duration           = 6,
 
         .hasMenuEvent       = TRUE,
         .chsMenuInitFunc    = chs_menuinit_gambling_wheel,
@@ -1980,7 +1995,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
                                "  - @671F57--One Very Negative Outcome@--------\n"
                                "  - @CF3F3F--Other Slightly Negative Outcomes@--------\n"
                                "  - @3FBF3F--Many Positive Outcomes@--------\n"
-                               "  - @FFFFAF--One Incredible Jackpot!!!@--------\n\n"
+                               "  - @FFFFAF--One Incredible Jackpot!!!@--------"
     },
 
 // Speed Modifiers
@@ -2367,6 +2382,15 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Sound Effect Shuffle",
         .shortDescription   = "Randomly shuffle almost every sound in the game!",
     },
+    [CHAOS_PATCH_PLEASANT_CAMERA_SOUNDS] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 1,
+        .duration           = 15,
+
+        .name               = "Pleasant Camera Sounds",
+        .shortDescription   = "Replace default camera sounds with less obnoxious alternatives!",
+    },
 
 // Miscellaneous Modifiers
     [CHAOS_PATCH_MARIO_INVISIBLE] = {
@@ -2540,6 +2564,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Shell Restock",
         .shortDescription   = "Shell boxes will now respawn.",
+    },
+    [CHAOS_PATCH_NO_RIDING_SHELLS] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 1,
+        .duration           = 14,
+        .durationHard       = 18,
+        .durationImpossible = 22,
+
+        INCOMPATIBLE(CHAOS_PATCH_SPAWN_ON_SHELL),
+
+        .name               = "Shell Shocked",
+        .shortDescription   = "Mario may no longer hitch a ride on koopa shells.",
     },
     [CHAOS_PATCH_QUICKTIME] = {
         .durationType       = CHAOS_DURATION_STARS,

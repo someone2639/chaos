@@ -1628,8 +1628,8 @@ u32 interact_koopa_shell(struct MarioState *m, UNUSED u32 interactType, struct O
     if (!(m->action & ACT_FLAG_RIDING_SHELL)) {
         u32 interaction = determine_interaction(m, o);
 
-        if (interaction == INT_HIT_FROM_ABOVE || m->action == ACT_WALKING
-            || m->action == ACT_HOLD_WALKING) {
+        if (!chaos_check_if_patch_active(CHAOS_PATCH_NO_RIDING_SHELLS) &&
+                    (interaction == INT_HIT_FROM_ABOVE || m->action == ACT_WALKING || m->action == ACT_HOLD_WALKING)) {
             m->interactObj = o;
             m->usedObj = o;
             m->riddenObj = o;

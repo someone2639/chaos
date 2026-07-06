@@ -191,6 +191,8 @@ enum ChaosPatchID chs_activate_random_pos_neg_patch_of_severity(s32 patchSeverit
             u8 skipSeverityModifier, u32 maxForcedDuration, enum ChaosPatchDurationType durationType);
 u8 chs_cond_add_random_buff(void);
 void chs_act_add_random_buff(void);
+u8 chs_cond_bite_sized_split(void);
+void chs_act_bite_sized_split(void);
 u8 chs_cond_add_selectable_patch(void);
 u8 chs_cond_remove_selectable_patch(void);
 u8 chs_cond_lucky_charm(void);

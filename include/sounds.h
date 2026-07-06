@@ -645,6 +645,10 @@ enum SoundBank {
 #define SOUND_MENU_TETRIS_LOCK                                    SOUND_ARG_LOAD(SOUND_BANK_MENU,     0x4F, 0x51, SOUND_DISCRETE)
 #define SOUND_MENU_TETRIS_CLEAR_LINE                              SOUND_ARG_LOAD(SOUND_BANK_MENU,     0x50, 0x52, SOUND_DISCRETE)
 #define SOUND_MENU_RIGHT_ANSWER                                   SOUND_ARG_LOAD(SOUND_BANK_MENU,     0x51, 0xA0, SOUND_DISCRETE)
+#define SOUND_MENU_CAMERA_ZOOM_IN_PLEASANT                        SOUND_ARG_LOAD(SOUND_BANK_MENU,     0x52, 0x00, SOUND_DISCRETE)
+#define SOUND_MENU_CAMERA_ZOOM_OUT_PLEASANT                       SOUND_ARG_LOAD(SOUND_BANK_MENU,     0x53, 0x00, SOUND_DISCRETE)
+#define SOUND_MENU_CAMERA_TURN_PLEASANT                           SOUND_ARG_LOAD(SOUND_BANK_MENU,     0x54, 0x00, SOUND_DISCRETE)
+#define SOUND_MENU_CAMERA_BUZZ_PLEASANT                           SOUND_ARG_LOAD(SOUND_BANK_MENU,     0x55, 0x00, SOUND_DISCRETE)
 
 // Channel 8 loads sounds from the same place as channel 3, making it possible
 // to play two channel 3 sounds at once (since just one sound from each channel

@@ -20,6 +20,10 @@ void bhv_koopa_shell_underwater_loop(void) {
     switch (o->oHeldState) {
         case HELD_FREE:
             set_koopa_shell_underwater_hitbox();
+            if (chaos_check_if_patch_active(CHAOS_PATCH_NO_RIDING_SHELLS) && !(o->oInteractStatus & INT_STATUS_INTERACTED)) {
+                obj_mark_for_deletion(o);
+                spawn_mist_particles();
+            }
             break;
         case HELD_HELD:
             cur_obj_unrender_set_action_and_anim(-1, 0);
