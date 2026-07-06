@@ -1735,7 +1735,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .deactivationFunc   = chs_squint_deinit,
 
         .name               = "Squint Mode",
-        .shortDescription   = "Oops, hit the restore window button.",
+        .shortDescription   = "You've been sitting too close to the screen. Keep a good distance, for the sake of your eyes.",
     },
 
 // Time Limit

@@ -361,4 +361,6 @@ extern const Gfx white_particle_small_unused_dl[];
 
 #include "noclip_plane/collision_header.h"
 
+#include "squint_room/geo_header.h"
+
 #endif

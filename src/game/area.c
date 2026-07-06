@@ -369,6 +369,8 @@ u8 isInMenu = FALSE;
 u8 isGameSquished = FALSE;
 s32 chaos_viewport_width_target = SCREEN_WIDTH / 2;
 s32 chaos_viewport_height_target = SCREEN_HEIGHT / 2;
+float squint_room_scale = 5.5f;
+float squint_room_scale_target = 5.5f;
 
 void process_viewport_transitions(struct GraphNodeRoot *node) {
     if (isInMenu || gInActSelect) {
@@ -389,6 +391,7 @@ void process_viewport_transitions(struct GraphNodeRoot *node) {
 
     node->width = approach_s16_asymptotic(node->width, chaos_viewport_width_target, FS_SWAPSPEED);
     node->height = approach_s16_asymptotic(node->height, chaos_viewport_height_target, FS_SWAPSPEED);
+    squint_room_scale = approach_f32_asymptotic(squint_room_scale, squint_room_scale_target, 1.0f / FS_SWAPSPEED);
 
     if (ABS(ABS(node->width) - ABS(chaos_viewport_width_target)) <= 4) {
         node->width = chaos_viewport_width_target;
@@ -409,6 +412,7 @@ void process_viewport_transitions(struct GraphNodeRoot *node) {
 
 extern s8 sShowMessageLogRecap;
 void drawslots();
+void draw_room(float);
 void render_game(void) {
     if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
         process_viewport_transitions(gCurrentArea->unk04);
@@ -430,7 +434,14 @@ void render_game(void) {
 
         gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, gBorderHeight, SCREEN_WIDTH,
                       SCREEN_HEIGHT - gBorderHeight);
-                       
+
+
+        if (squint_room_scale < 5.0f) {
+            create_dl_ortho_matrix(&gDisplayListHead);
+            draw_room(squint_room_scale);
+        }
+        osSyncPrintf("scale %f\n", squint_room_scale);
+
         if(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_ACTIVE) {
             display_patch_selection_ui();
         } else {

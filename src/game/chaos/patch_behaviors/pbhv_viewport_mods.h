@@ -5,6 +5,8 @@ extern s32 chaos_viewport_width_target;
 extern s32 chaos_viewport_height_target;
 extern s32 width_snapright_target;
 extern s32 width_snapleft_target;
+extern float squint_room_scale;
+extern float squint_room_scale_target;
 
 #define FS_SNAPLEFT -156
 #define FS_SNAPRIGHT 156

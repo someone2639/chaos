@@ -37,3 +37,5 @@
 #include "kaizo_block/collision.inc.c"
 #include "kaizo_block/model.inc.c"
 #include "noclip_plane/collision.inc.c"
+
+#include "squint_room/model.inc.c"
