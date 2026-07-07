@@ -10,11 +10,32 @@
 #include "audio/external.h"
 #include "game/camera.h"
 #include "game/game_init.h"
+#include "game/ingame_menu.h"
 #include "game/level_update.h"
 
 #include "pbhv_viewport_mods.h"
 
 f32 squint_room_pos[3];
+
+static void ortho(Gfx **dl) {
+    Gfx *dlHead = *dl;
+    Mtx *matrix = (Mtx *) alloc_display_list(sizeof(Mtx));
+
+    if (matrix == NULL) {
+        return;
+    }
+
+    create_dl_identity_matrix(&dlHead);
+
+    guOrtho(matrix, 0.0f, SCREEN_WIDTH, 0.0f, SCREEN_HEIGHT, -600.0f, 100.0f, 1.0f);
+
+    // Should produce G_RDPHALF_1 in Fast3D
+    gSPPerspNormalize(dlHead++, 0xFFFF);
+
+    gSPMatrix(dlHead++, VIRTUAL_TO_PHYSICAL(matrix), G_MTX_PROJECTION | G_MTX_MUL | G_MTX_NOPUSH);
+
+    *dl = dlHead;
+}
 
 void draw_room(float scaleXY) {
     Mtx trans;
@@ -26,6 +47,8 @@ void draw_room(float scaleXY) {
     if (final == NULL) {
         return;
     }
+
+    ortho(&gDisplayListHead);
 
     static float x = 160;
     static float y = 120;
@@ -49,19 +72,15 @@ void draw_room(float scaleXY) {
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
 
     gDPPipeSync(gDisplayListHead++);
+    gSPClearGeometryMode(gDisplayListHead++, G_ZBUFFER);
     gDPSetRenderMode(gDisplayListHead++, G_RM_OPA_SURF,G_RM_OPA_SURF2);
     gSPDisplayList(gDisplayListHead++, &squint_room_squint_room_mesh_layer_1);
+    gDPSetRenderMode(gDisplayListHead++, G_RM_TEX_EDGE,G_RM_TEX_EDGE2);
+    gSPDisplayList(gDisplayListHead++, &squint_room_squint_room_mesh_layer_4);
 
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
-    osSyncPrintf("%f %f %f, %f\n", x, y, z, S16_TO_DEG(gMarioState->area->camera->yaw));
-
-    if (gPlayer1Controller->buttonDown & U_CBUTTONS) {
-        z++;
-    }
-    if (gPlayer1Controller->buttonDown & D_CBUTTONS) {
-        z--;
-    }
+    gSPPopMatrix(gDisplayListHead++, G_MTX_PROJECTION);
 }
 
 void chs_squint_init(void) {
