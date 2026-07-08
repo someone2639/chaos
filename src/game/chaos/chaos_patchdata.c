@@ -1059,9 +1059,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
-        .duration           = 7,
-        .durationHard       = 9,
-        .durationImpossible = 11,
+        .duration           = 5,
+        .durationHard       = 7,
+        .durationImpossible = 9,
 
         .frameUpdateFunc    = chs_update_random_button_presses,
 
@@ -1728,10 +1728,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_SQUINT_MODE] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
-        .severity           = 3,
+        .severity           = 2,
         .duration           = 4,
-        .durationHard       = 8,
-        .durationImpossible = 12,
+        .durationHard       = 6,
+        .durationImpossible = 8,
 
         INCOMPATIBLE(CHAOS_PATCH_INCREASED_FOV, CHAOS_PATCH_TOP_DOWN_CAMERA, CHAOS_PATCH_LOW_RESOLUTION),
         .activatedInitFunc  = chs_squint_init,
@@ -2734,9 +2734,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
-        .duration           = 6,
-        .durationHard       = 7,
-        .durationImpossible = 8,
+        .duration           = 4,
+        .durationHard       = 5,
+        .durationImpossible = 6,
         .disableForHardcore = TRUE,
         
         INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_A, CHAOS_PATCH_BUTTON_BROKEN_B, CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SWAPPED_ZR_AB, CHAOS_PATCH_BUTTON_BROKEN_C, CHAOS_PATCH_RED_LIGHT),
@@ -2745,7 +2745,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc    = chs_update_tetris,
 
         .name               = "Tetris Effect",
-        .shortDescription   = "Control a simultaneous game of Tetris. If you lose, Mario dies. See details screen for controls!",
+        .shortDescription   = "Control a simultaneous game of Tetris. If you lose, Mario dies. See details screen for controls!", // TODO: This should take a star instead of killing the player.
         .longDescription    = "Hold @9F9FFF--R@-------- to control Tetris and lock Mario's inputs.\n"
                               "Move Piece\t@7F7F7F-- -- @9F9FFF--D-Pad/C Left/Right@--------\n"
                               "Hard Drop\t@7F7F7F-- -- @9F9FFF--D-Pad/C Up@--------\n"

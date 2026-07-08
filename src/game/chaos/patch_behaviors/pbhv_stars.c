@@ -23,7 +23,7 @@ struct StarFlagsWithID {
     s32 id;
 };
 
-const char *courseNames[COURSE_COUNT] = {
+static const char *courseNames[COURSE_COUNT] = {
     [COURSE_NONE]  = "Castle Inside",
     [COURSE_BOB]   = "Bob-omb Battlefield",
     [COURSE_WF]    = "Whomp's Fortress",
@@ -51,7 +51,7 @@ const char *courseNames[COURSE_COUNT] = {
     [COURSE_SA]    = "The Secret Aquarium",
 };
 
-const char *starNames[COURSE_COUNT][7] = {
+static const char *starNames[COURSE_COUNT][7] = {
     [COURSE_NONE]  = {
         "Talk to Toad (1)",
         "Talk to Toad (2)",
@@ -315,7 +315,8 @@ static void print_star_collect_message(u8 shouldRemove, s32 courseNum, s32 starI
 
     courseBuf[0] = '\0'; // Linker complains if this is statically allocated to "\0" earlier...
 
-    assert(starId >= 0 && starId < ARRAY_COUNT(starNames[0]), "print_star_collect_message:\nInvalid star index!");
+    assert_args(courseNum >= 0 && courseNum < COURSE_COUNT, "print_star_collect_message:\nInvalid course num:\n%d", courseNum);
+    assert_args(starId >= 0 && starId < ARRAY_COUNT(starNames[0]), "print_star_collect_message:\nInvalid star index:%d\n", starId);
     if (act == NULL || act[0] == '\0') {
         assert(FALSE, "print_star_collect_message:\nEmpty star name detected!");
         return;
@@ -362,7 +363,7 @@ static void print_star_collect_message(u8 shouldRemove, s32 courseNum, s32 starI
 
 void add_uncollected_star(void) {
     s32 totalStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
-    if (totalStars == NUM_STARS) {
+    if (totalStars >= NUM_STARS) {
         // This is now possible with gambling wheel (left alone to ensure there is always a jackpot possibility)
         // assert(FALSE, "add_uncollected_star:\nTried to add uncollected star with 120 stars!");
         return;
@@ -371,13 +372,17 @@ void add_uncollected_star(void) {
 
     for (s32 course = 0; course < ARRAY_COUNT(starsPerCourse); course++) {
         s32 starsInCourse = starsPerCourse[course] - save_file_get_course_star_count(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(course));
+        if (starsInCourse < 0) {
+            assert_args(FALSE, "add_uncollected_star:\nSave file star count too high in course:\n%d", course);
+            starsInCourse = 0;
+        }
         if (starsInCourse <= starToUpdate) {
             starToUpdate -= starsInCourse;
             continue;
         }
 
         s32 starFlags = save_file_get_star_flags(gCurrSaveFileNum - 1, COURSE_NUM_TO_INDEX(course));
-        for (s32 starIndex = 0; starIndex < 8; starFlags >>= 1, starIndex++) {
+        for (s32 starIndex = 0; starIndex < starsPerCourse[course]; starFlags >>= 1, starIndex++) {
             if (!(starFlags & 1)) {
                 if (starToUpdate == 0) {
                     print_star_collect_message(FALSE, course, starIndex);
