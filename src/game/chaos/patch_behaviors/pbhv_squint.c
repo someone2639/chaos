@@ -79,7 +79,7 @@ static void mtxTransformStick(Mtx *m, Vec3f translate, Vec2f stick, Vec3f scale)
 void draw_n64_controls(void) {
     void *buttonDL = squint_room_button_squint_room_button_mesh_layer_1;
     void *stickDL = squint_room_stick_squint_room_stick_mesh_layer_1;
-    // void *dpadDL = 
+    void *dpadDL = squintroom_dpad_squintroom_dpad_mesh_layer_1;
     Mtx *buttonMtxs = alloc_display_list(sizeof(Mtx) * 9);
 
     static f32 contX = 160;
@@ -152,10 +152,21 @@ void draw_n64_controls(void) {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
     // dpad
-
+    int dpadXRot = 0;
+    int dpadYRot = 0;
+    if (gPlayer1Controller->buttonDown & L_JPAD) dpadXRot = -20;
+    if (gPlayer1Controller->buttonDown & R_JPAD) dpadXRot = 20;
+    if (gPlayer1Controller->buttonDown & U_JPAD) dpadYRot = -20;
+    if (gPlayer1Controller->buttonDown & D_JPAD) dpadYRot = 20;
+    mtxTransformStick(&buttonMtxs[curMtx++],
+        (Vec3f){118.0, 56.0, 254.0},
+        (Vec2f){dpadYRot + 80, dpadXRot},
+        (Vec3f){1.0f, 1.0f, 1.0f}
+    );
+    gSPDisplayList(gDisplayListHead++, dpadDL);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
     // stick
-    gDPSetEnvColor(gDisplayListHead++, 245, 13, 35, 0xFF);
     mtxTransformStick(&buttonMtxs[curMtx++],
         (Vec3f){160, 21, 405},
         (Vec2f){-gPlayer1Controller->stickY + 40, gPlayer1Controller->stickX},

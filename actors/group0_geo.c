@@ -29,3 +29,4 @@
 
 #include "squint_room_button/geo.inc.c"
 #include "squint_room_stick/geo.inc.c"
+#include "squintroom_dpad/geo.inc.c"

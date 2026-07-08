@@ -367,4 +367,5 @@ extern const Gfx white_particle_small_unused_dl[];
 
 #include "squint_room_stick/geo_header.h"
 
+#include "squintroom_dpad/geo_header.h"
 #endif
