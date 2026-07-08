@@ -8,6 +8,7 @@
 
 #include "sounds.h"
 #include "audio/external.h"
+#include "engine/math_util.h"
 #include "game/camera.h"
 #include "game/game_init.h"
 #include "game/ingame_menu.h"
@@ -27,7 +28,7 @@ static void ortho(Gfx **dl) {
 
     create_dl_identity_matrix(&dlHead);
 
-    guOrtho(matrix, 0.0f, SCREEN_WIDTH, 0.0f, SCREEN_HEIGHT, -600.0f, 100.0f, 1.0f);
+    guOrtho(matrix, 0.0f, SCREEN_WIDTH, 0.0f, SCREEN_HEIGHT, -600.0f, 200.0f, 1.0f);
 
     // Should produce G_RDPHALF_1 in Fast3D
     gSPPerspNormalize(dlHead++, 0xFFFF);
@@ -37,46 +38,187 @@ static void ortho(Gfx **dl) {
     *dl = dlHead;
 }
 
-void draw_room(float scaleXY) {
-    Mtx trans;
-    Mtx rot;
-    Mtx scale;
+static void mtxTransformRPY(Mtx *m, Vec3f translate, Vec3f rotateRPY, Vec3f scale) {
+    Mtx transM;
+    Mtx rotM;
+    Mtx scaleM;
     Mtx SR;
+
+    guScale(&scaleM, scale[0], scale[1], scale[2]);
+    guRotateRPY(&rotM, rotateRPY[0], rotateRPY[1], rotateRPY[2]);
+    guTranslate(&transM, translate[0], translate[1], translate[2]);
+    guMtxCatL(&scaleM, &rotM, &SR);
+    guMtxCatL(&SR, &transM, m);
+
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(m), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+}
+
+static void mtxTransformStick(Mtx *m, Vec3f translate, Vec2f stick, Vec3f scale) {
+    Mtx transM;
+    Mtx rotM;
+    Mtx scaleM;
+    Mtx SR;
+
+    float totalStick = vec2_mag(stick) / 80.0f * 40.0f;
+    Vec3f axis = {stick[0], 0, -stick[1]};
+    vec3_normalize(axis);
+
+    guScale(&scaleM, scale[0], scale[1], scale[2]);
+    guRotate(&rotM, totalStick, axis[0], axis[1], axis[2]);
+    guTranslate(&transM, translate[0], translate[1], translate[2]);
+    guMtxCatL(&scaleM, &rotM, &SR);
+    guMtxCatL(&SR, &transM, m);
+
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(m), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+}
+
+#define btn(button, val) \
+    ((gPlayer1Controller->buttonDown & (button))) ? \
+        ((val) - 2) : (val)
+
+void draw_n64_controls(void) {
+    void *buttonDL = squint_room_button_squint_room_button_mesh_layer_1;
+    void *stickDL = squint_room_stick_squint_room_stick_mesh_layer_1;
+    // void *dpadDL = 
+    Mtx *buttonMtxs = alloc_display_list(sizeof(Mtx) * 9);
+
+    static f32 contX = 160;
+    static f32 contY = 15;
+    static f32 contZ = 87;
+
+    u32 curMtx = 0;
+
+    // A
+    gDPSetEnvColor(gDisplayListHead++, 4, 64, 191, 0xFF);
+    mtxTransformRPY(&buttonMtxs[curMtx++],
+        (Vec3f){188.0, btn(A_BUTTON, 47.0), btn(A_BUTTON, 390)},
+        (Vec3f){70, 0, 0},
+        (Vec3f){1.0f, 1.0f, 1.0f}
+    );
+    gSPDisplayList(gDisplayListHead++, buttonDL);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+
+    // B
+    gDPSetEnvColor(gDisplayListHead++, 0, 153, 46, 0xFF);
+    mtxTransformRPY(&buttonMtxs[curMtx++],
+        (Vec3f){179.0, btn(B_BUTTON, 54.0), btn(B_BUTTON, 380)},
+        (Vec3f){70, 0, 0},
+        (Vec3f){1.0f, 1.0f, 1.0f}
+    );
+    gSPDisplayList(gDisplayListHead++, buttonDL);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+
+    // C buttons
+    gDPSetEnvColor(gDisplayListHead++, 253, 200, 2, 0xFF);
+    mtxTransformRPY(&buttonMtxs[curMtx++],
+        (Vec3f){211, btn(U_CBUTTONS, 64), btn(U_CBUTTONS, 365)},
+        (Vec3f){70, 0, 0},
+        (Vec3f){0.5f, 0.5f, 0.5f}
+    );
+    gSPDisplayList(gDisplayListHead++, buttonDL);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    mtxTransformRPY(&buttonMtxs[curMtx++],
+        (Vec3f){203, btn(L_CBUTTONS, 58), btn(L_CBUTTONS, 372)},
+        (Vec3f){70, 0, 0},
+        (Vec3f){0.5f, 0.5f, 0.5f}
+    );
+    gSPDisplayList(gDisplayListHead++, buttonDL);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    mtxTransformRPY(&buttonMtxs[curMtx++],
+        (Vec3f){219, btn(R_CBUTTONS, 58), btn(R_CBUTTONS, 372)},
+        (Vec3f){70, 0, 0},
+        (Vec3f){0.5f, 0.5f, 0.5f}
+    );
+    gSPDisplayList(gDisplayListHead++, buttonDL);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    mtxTransformRPY(&buttonMtxs[curMtx++],
+        (Vec3f){211, btn(D_CBUTTONS, 52), btn(D_CBUTTONS, 380)},
+        (Vec3f){70, 0, 0},
+        (Vec3f){0.5f, 0.5f, 0.5f}
+    );
+    gSPDisplayList(gDisplayListHead++, buttonDL);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+
+
+
+    // start button
+    gDPSetEnvColor(gDisplayListHead++, 245, 13, 35, 0xFF);
+    mtxTransformRPY(&buttonMtxs[curMtx++],
+        (Vec3f){160, btn(START_BUTTON, 65), btn(START_BUTTON, 360)},
+        (Vec3f){70, 0, 0},
+        (Vec3f){1.0f, 1.0f, 1.0f}
+    );
+    gSPDisplayList(gDisplayListHead++, buttonDL);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+
+    // dpad
+
+
+    // stick
+    gDPSetEnvColor(gDisplayListHead++, 245, 13, 35, 0xFF);
+    mtxTransformStick(&buttonMtxs[curMtx++],
+        (Vec3f){160, 21, 405},
+        (Vec2f){-gPlayer1Controller->stickY + 40, gPlayer1Controller->stickX},
+        (Vec3f){1.0f, 1.0f, 1.0f}
+    );
+    gSPDisplayList(gDisplayListHead++, stickDL);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+
+
+    if (gPlayer1Controller->buttonDown & U_CBUTTONS) {
+        contY++;
+    }
+    if (gPlayer1Controller->buttonDown & D_CBUTTONS) {
+        contY--;
+    }
+
+    if (gPlayer1Controller->buttonDown & L_CBUTTONS) {
+        contX++;
+    }
+    if (gPlayer1Controller->buttonDown & R_CBUTTONS) {
+        contX--;
+    }
+    if (gPlayer1Controller->buttonDown & A_BUTTON) {
+        contZ++;
+    }
+    if (gPlayer1Controller->buttonDown & B_BUTTON) {
+        contZ--;
+    }
+
+    osSyncPrintf("CONT %.1f, %.1f, %.1f\n", contX, contY, contZ);
+}
+
+void draw_room(float scaleXY) {
+    Mtx *baseScale = alloc_display_list(sizeof(Mtx));
     Mtx *final = alloc_display_list(sizeof(Mtx));
 
+    if (baseScale == NULL) {
+        return;
+    }
     if (final == NULL) {
         return;
     }
 
     ortho(&gDisplayListHead);
+    gSPSetGeometryMode(gDisplayListHead++, G_ZBUFFER);
 
-    static float x = 160;
-    static float y = 120;
-    static float z = 160;
-    // float x = gLakituState.pos[0];
-    // float y = gLakituState.pos[1];
-    // float z = gLakituState.pos[2];
-    // float x = squint_room_pos[0];
-    // float y = squint_room_pos[1];
-    // float z = squint_room_pos[2];
-
-    #define S16_TO_DEG(x) (((f32)(x) / 65536.0f) * 360.0f)
-
-    guScale(&scale, scaleXY, scaleXY, 1.6f);
-    guRotate(&rot, 0, 0, 1, 0);
-    guTranslate(&trans, x, y, z);
-    guMtxCatL(&scale, &rot, &SR);
-    guMtxCatL(&SR, &trans, final);
-
-    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(final++),
-              G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    mtxTransformRPY(final,
+        (Vec3f){160, 120, 160},
+        (Vec3f){0, 0, 0},
+        (Vec3f){scaleXY, scaleXY, 1.6f}
+    );
 
     gDPPipeSync(gDisplayListHead++);
-    gSPClearGeometryMode(gDisplayListHead++, G_ZBUFFER);
     gDPSetRenderMode(gDisplayListHead++, G_RM_OPA_SURF,G_RM_OPA_SURF2);
-    gSPDisplayList(gDisplayListHead++, &squint_room_squint_room_mesh_layer_1);
-    gDPSetRenderMode(gDisplayListHead++, G_RM_TEX_EDGE,G_RM_TEX_EDGE2);
-    gSPDisplayList(gDisplayListHead++, &squint_room_squint_room_mesh_layer_4);
+    gSPDisplayList(gDisplayListHead++, &squint_room_squint_room_mesh_layer_1_with_revert);
+    // gDPSetRenderMode(gDisplayListHead++, G_RM_TEX_EDGE,G_RM_TEX_EDGE2);
+    // gSPDisplayList(gDisplayListHead++, &squint_room_squint_room_mesh_layer_4_with_revert);
+    gDPSetRenderMode(gDisplayListHead++, G_RM_AA_ZB_OPA_SURF,G_RM_AA_ZB_OPA_SURF2);
+    gSPDisplayList(gDisplayListHead++, &squint_room_squint_room_mesh_layer_3_with_revert);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+
+    gDPSetRenderMode(gDisplayListHead++, G_RM_AA_ZB_OPA_SURF,G_RM_AA_ZB_OPA_SURF2);
+    draw_n64_controls();
 
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
