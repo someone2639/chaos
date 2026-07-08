@@ -39,3 +39,6 @@
 #include "noclip_plane/collision.inc.c"
 
 #include "squint_room/model.inc.c"
+
+#include "squint_room_button/model.inc.c"
+#include "squint_room_stick/model.inc.c"

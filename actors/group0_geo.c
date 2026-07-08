@@ -26,3 +26,6 @@
 #include "kaizo_block/geo.inc.c"
 
 #include "squint_room/geo.inc.c"
+
+#include "squint_room_button/geo.inc.c"
+#include "squint_room_stick/geo.inc.c"
