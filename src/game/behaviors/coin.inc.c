@@ -69,6 +69,9 @@ void bhv_coin_magnet() {
 s32 bhv_coin_sparkles_init(void) {
     if (o->oInteractStatus & INT_STATUS_INTERACTED
         && !(o->oInteractStatus & INT_STATUS_TOUCHED_BOB_OMB)) {
+        if (o->parentObj && o->parentObj->behavior == segmented_to_virtual(bhvHiddenStarTrigger)) {
+            o->parentObj->oHiddenStarCoinCollected = TRUE;
+        }
         spawn_object(o, MODEL_SPARKLES, bhvGoldenCoinSparkles);
         obj_mark_for_deletion(o);
         return TRUE;
@@ -110,6 +113,17 @@ void bhv_blue_coin_init(void) {
 }
 
 void bhv_yellow_coin_loop(void) {
+    if (o->parentObj && o->parentObj->activeFlags == ACTIVE_FLAG_DEACTIVATED) {
+        o->parentObj = o;
+    } else if (o->parentObj && o->parentObj->behavior == segmented_to_virtual(bhvHiddenStarTrigger)) {
+        o->parentObj->oPosX = o->oPosX;
+        o->parentObj->oPosY = o->oPosY;
+        o->parentObj->oPosZ = o->oPosZ;
+        o->parentObj->oHomeX = o->parentObj->oPosX;
+        o->parentObj->oHomeY = o->parentObj->oPosY;
+        o->parentObj->oHomeZ = o->parentObj->oPosZ;
+    }
+
     bhv_coin_sparkles_init();
     bhv_coin_magnet();
     o->oAnimState++;

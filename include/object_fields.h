@@ -924,6 +924,7 @@
 /* Hidden Star */
 // Secrets/Red Coins
 #define /*0x0F4*/ oHiddenStarTriggerCounter OBJECT_FIELD_S32(0x1B)
+#define /*0x0F8*/ oHiddenStarCoinCollected  OBJECT_FIELD_S32(0x1C)
 
 // Overall very difficult to determine usage, mostly stubbed code.
 /* Sparkle Spawn Star */
