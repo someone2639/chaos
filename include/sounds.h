@@ -79,6 +79,9 @@ enum SoundBank {
 #define SOUND_STATUS_WAITING        1
 #define SOUND_STATUS_PLAYING        2
 
+#define VANILLA_MARIO_SOUND_INDEX_MAX (0x40 << SOUNDARGS_SHIFT_SOUNDID)
+#define FOCUSM_INDEX_OFFSET (0x80 << SOUNDARGS_SHIFT_SOUNDID)
+
 /**
  * Terrain types. mario_get_terrain_sound_addend computes a
  * sound terrain type between 0 and 7, depending on the terrain type of the
@@ -258,11 +261,18 @@ enum SoundBank {
 #define SOUND_MARIO_WAAAOOOW                     /* 0x2410C081 */ SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x10, 0xC0, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE) // unverified
 #define SOUND_MARIO_HAHA                         /* 0x24118081 */ SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x11, 0x80, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE) // unverified
 #define SOUND_MARIO_HAHA_WATER                   /* 0x2411F081 */ SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x11, 0xF0, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE) // unverified
+
+/* Custom Betah */
+#define SOUND_MARIO_BETA_OU                      /* 0x24408081 */ SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x12, 0x80, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE)
+
 #define SOUND_MARIO_UH_LEDGE_CLIMB_FAST          /* 0x2413D081 */ SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x13, 0xD0, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE) // unverified
 #define SOUND_MARIO_UH_LONG_JUMP_LAND            /* 0x24138081 */ SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x13, 0x80, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE) // unverified
 #define SOUND_MARIO_ON_FIRE                      /* 0x2414A081 */ SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x14, 0xA0, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE) // unverified
 #define SOUND_MARIO_DYING                        /* 0x2415FF81 */ SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x15, 0xFF, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE) // unverified
 #define SOUND_MARIO_PANTING_COLD                 /* 0x24168081 */ SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x16, 0x80, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE)
+
+/* Custom Betah */
+#define SOUND_MARIO_BETA_HOO                     /* 0x24408081 */ SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x17, 0x80, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE)
 
 // A random number 0-2 is added to the sound ID before playing
 #define SOUND_MARIO_PANTING_0                    /* 0x24188081 */ SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x18, 0x80, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE)
@@ -282,6 +292,10 @@ enum SoundBank {
 
 /* Mario Sound Effects (US/EU only) */
 #define SOUND_PEACH_DEAR_MARIO                   /* 0x2428FF81 */ SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x28, 0xFF, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE)
+
+/* Custom Betah */
+#define SOUND_MARIO_BETA_HAA                     /* 0x24408081 */ SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x29, 0x80, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE)
+#define SOUND_MARIO_YAAHAA                       /* 0x24408081 */ SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x2A, 0x80, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE)
 
 // A random number 0-4 is added to the sound ID before playing, producing one of
 // Yahoo! (60% chance), Waha! (20%), or Yippee! (20%).
@@ -310,10 +324,11 @@ enum SoundBank {
 #define SOUND_PEACH_FOR_MARIO                    /* 0x243EFF81 */ SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x3E, 0xFF, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE)
 #define SOUND_PEACH_MARIO2                       /* 0x243FFF81 */ SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x3F, 0xFF, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE)
 
-#define SOUND_MARIO_BETA_HOO                     /* 0x24408081 */ SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x40, 0x80, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE)
-#define SOUND_MARIO_BETA_OU                      /* 0x24408081 */ SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x41, 0x80, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE)
-#define SOUND_MARIO_BETA_HAA                     /* 0x24408081 */ SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x42, 0x80, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE)
-#define SOUND_MARIO_YAAHAA                       /* 0x24408081 */ SOUND_ARG_LOAD(SOUND_BANK_VOICE,    0x43, 0x80, SOUND_NO_PRIORITY_LOSS | SOUND_DISCRETE)
+/* CHAOS NOTE: VOICE 0x40 - 0x7F: Reserved for Luigi if we ever add proper sfx in the future */
+
+/* CHAOS NOTE: VOICE 0x80 - 0xBF: Reserved for Focus, M Sounds that match Mario offsets */
+
+/* CHAOS NOTE: FOR CUSTOM ADDITIONAL FOCUS, M SOUNDS DEVIATING FROM STANDARD MARIO SOUND BEHAVIOR, ADD THEM STARTING AT 0xC0! */
 
 /* General Sound Effects */
 #define SOUND_GENERAL_ACTIVATE_CAP_SWITCH        /* 0x30008081 */ SOUND_ARG_LOAD(SOUND_BANK_GENERAL,  0x00, 0x80, SOUND_DISCRETE)

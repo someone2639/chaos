@@ -1240,7 +1240,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 1,
         .duration           = 8,
 
-        INCOMPATIBLE(CHAOS_PATCH_SUNSHINE_TWIRL),
+        INCOMPATIBLE(CHAOS_PATCH_SUNSHINE_TWIRL, CHAOS_PATCH_FOCUS_M),
 
         .name               = "Beta",
         .shortDescription   = "YAAHAA!!! Triple Jumps will now cause you to twirl!",
@@ -2376,7 +2376,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 4,
         .durationImpossible = 5,
 
-        INCOMPATIBLE(CHAOS_PATCH_INVERTED_SOUND),
+        INCOMPATIBLE(CHAOS_PATCH_INVERTED_SOUND, CHAOS_PATCH_FOCUS_M),
         .activatedInitFunc  = chs_act_sound_effect_shuffle,
 
         .name               = "Sound Effect Shuffle",
@@ -2390,6 +2390,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Pleasant Camera Sounds",
         .shortDescription   = "Replace default camera sounds with less obnoxious alternatives!",
+    },
+    [CHAOS_PATCH_FOCUS_M] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 1,
+        .duration           = 6,
+        .durationHard       = 8,
+        .durationImpossible = 10,
+
+        INCOMPATIBLE(CHAOS_PATCH_BETA, CHAOS_PATCH_LUIGI, CHAOS_PATCH_SOUND_EFFECT_SHUFFLE),
+
+        .name               = "Focus, M",
+        .shortDescription   = "Mario becomes more talkative.", // TODO: Better description probably
     },
 
 // Miscellaneous Modifiers
@@ -2540,7 +2553,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 1,
         .duration           = 10,
 
-        INCOMPATIBLE(CHAOS_PATCH_MARIO_INVISIBLE),
+        INCOMPATIBLE(CHAOS_PATCH_MARIO_INVISIBLE, CHAOS_PATCH_FOCUS_M),
         .frameUpdateFunc    = chs_update_luigi,
         .deactivationFunc   = chs_deact_luigi,
 
