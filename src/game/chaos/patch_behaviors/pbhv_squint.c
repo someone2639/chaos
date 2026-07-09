@@ -88,9 +88,9 @@ static void draw_n64_controls(void) {
     void *dpadDL = squintroom_dpad_squintroom_dpad_mesh_layer_1;
     Mtx *buttonMtxs = alloc_display_list(sizeof(Mtx) * 9);
 
-    static f32 contX = 160;
-    static f32 contY = 15;
-    static f32 contZ = 87;
+    // static f32 contX = 160;
+    // static f32 contY = 15;
+    // static f32 contZ = 87;
 
     u32 curMtx = 0;
 
@@ -115,32 +115,33 @@ static void draw_n64_controls(void) {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
     // C buttons
+    #define C_BUTTON_SCALE 0.6f
     gDPSetEnvColor(gDisplayListHead++, 253, 200, 2, 0xFF);
     mtxTransformRPY(&buttonMtxs[curMtx++],
         (Vec3f){211, btn(U_CBUTTONS, 64), btn(U_CBUTTONS, 365)},
         (Vec3f){70, 0, 0},
-        (Vec3f){0.5f, 0.5f, 0.5f}
+        (Vec3f){C_BUTTON_SCALE, C_BUTTON_SCALE, C_BUTTON_SCALE}
     );
     gSPDisplayList(gDisplayListHead++, buttonDL);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
     mtxTransformRPY(&buttonMtxs[curMtx++],
         (Vec3f){203, btn(L_CBUTTONS, 58), btn(L_CBUTTONS, 372)},
         (Vec3f){70, 0, 0},
-        (Vec3f){0.5f, 0.5f, 0.5f}
+        (Vec3f){C_BUTTON_SCALE, C_BUTTON_SCALE, C_BUTTON_SCALE}
     );
     gSPDisplayList(gDisplayListHead++, buttonDL);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
     mtxTransformRPY(&buttonMtxs[curMtx++],
         (Vec3f){219, btn(R_CBUTTONS, 58), btn(R_CBUTTONS, 372)},
         (Vec3f){70, 0, 0},
-        (Vec3f){0.5f, 0.5f, 0.5f}
+        (Vec3f){C_BUTTON_SCALE, C_BUTTON_SCALE, C_BUTTON_SCALE}
     );
     gSPDisplayList(gDisplayListHead++, buttonDL);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
     mtxTransformRPY(&buttonMtxs[curMtx++],
         (Vec3f){211, btn(D_CBUTTONS, 52), btn(D_CBUTTONS, 380)},
         (Vec3f){70, 0, 0},
-        (Vec3f){0.5f, 0.5f, 0.5f}
+        (Vec3f){C_BUTTON_SCALE, C_BUTTON_SCALE, C_BUTTON_SCALE}
     );
     gSPDisplayList(gDisplayListHead++, buttonDL);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
@@ -182,27 +183,27 @@ static void draw_n64_controls(void) {
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
 
-    if (gPlayer1Controller->buttonDown & U_CBUTTONS) {
-        contY++;
-    }
-    if (gPlayer1Controller->buttonDown & D_CBUTTONS) {
-        contY--;
-    }
+    // if (gPlayer1Controller->buttonDown & U_CBUTTONS) {
+    //     contY++;
+    // }
+    // if (gPlayer1Controller->buttonDown & D_CBUTTONS) {
+    //     contY--;
+    // }
 
-    if (gPlayer1Controller->buttonDown & L_CBUTTONS) {
-        contX++;
-    }
-    if (gPlayer1Controller->buttonDown & R_CBUTTONS) {
-        contX--;
-    }
-    if (gPlayer1Controller->buttonDown & A_BUTTON) {
-        contZ++;
-    }
-    if (gPlayer1Controller->buttonDown & B_BUTTON) {
-        contZ--;
-    }
+    // if (gPlayer1Controller->buttonDown & L_CBUTTONS) {
+    //     contX++;
+    // }
+    // if (gPlayer1Controller->buttonDown & R_CBUTTONS) {
+    //     contX--;
+    // }
+    // if (gPlayer1Controller->buttonDown & A_BUTTON) {
+    //     contZ++;
+    // }
+    // if (gPlayer1Controller->buttonDown & B_BUTTON) {
+    //     contZ--;
+    // }
 
-    osSyncPrintf("CONT %.1f, %.1f, %.1f\n", contX, contY, contZ);
+    // osSyncPrintf("CONT %.1f, %.1f, %.1f\n", contX, contY, contZ);
 }
 
 void draw_room(float scaleXY) {
