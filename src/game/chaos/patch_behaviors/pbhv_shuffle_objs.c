@@ -41,8 +41,6 @@ const BehaviorScript *surflist[] = {
     bhvThwomp2,
     bhvGrindel,
     bhvCapSwitch,
-    bhvStarMedallion,
-
 
     // TTC memes
     bhvTTCRotatingSolid,
@@ -51,10 +49,13 @@ const BehaviorScript *surflist[] = {
 
 const BehaviorScript *ignorelist[] = {
     bhvStar,
+    bhvStarMedallion,
     bhvUkiki,
     bhvInitializeChangingWaterLevel,
     bhvWaterLevelDiamond,
     bhvBigChillBully,
+    bhvMontyMole,
+    bhvMontyMoleHole,
 };
 
 const BehaviorScript *allowedWithParents[] = {
