@@ -16,7 +16,7 @@
 
 #include "pbhv_viewport_mods.h"
 
-f32 squint_room_pos[3];
+static float internal_scale = 0;
 
 static void ortho(Gfx **dl) {
     Gfx *dlHead = *dl;
@@ -38,11 +38,15 @@ static void ortho(Gfx **dl) {
     *dl = dlHead;
 }
 
+#define BUTTON_STICK_TRANSITION_SPEED 45.0f
+
 static void mtxTransformRPY(Mtx *m, Vec3f translate, Vec3f rotateRPY, Vec3f scale) {
     Mtx transM;
     Mtx rotM;
     Mtx scaleM;
     Mtx SR;
+
+    translate[1] -= ((internal_scale - 1.6f) * BUTTON_STICK_TRANSITION_SPEED);
 
     guScale(&scaleM, scale[0], scale[1], scale[2]);
     guRotateRPY(&rotM, rotateRPY[0], rotateRPY[1], rotateRPY[2]);
@@ -58,6 +62,8 @@ static void mtxTransformStick(Mtx *m, Vec3f translate, Vec2f stick, Vec3f scale)
     Mtx rotM;
     Mtx scaleM;
     Mtx SR;
+
+    translate[1] -= ((internal_scale - 1.6f) * BUTTON_STICK_TRANSITION_SPEED);
 
     float totalStick = vec2_mag(stick) / 80.0f * 40.0f;
     Vec3f axis = {stick[0], 0, -stick[1]};
@@ -76,7 +82,7 @@ static void mtxTransformStick(Mtx *m, Vec3f translate, Vec2f stick, Vec3f scale)
     ((gPlayer1Controller->buttonDown & (button))) ? \
         ((val) - 2) : (val)
 
-void draw_n64_controls(void) {
+static void draw_n64_controls(void) {
     void *buttonDL = squint_room_button_squint_room_button_mesh_layer_1;
     void *stickDL = squint_room_stick_squint_room_stick_mesh_layer_1;
     void *dpadDL = squintroom_dpad_squintroom_dpad_mesh_layer_1;
@@ -200,6 +206,7 @@ void draw_n64_controls(void) {
 }
 
 void draw_room(float scaleXY) {
+    internal_scale = scaleXY;
     Mtx *baseScale = alloc_display_list(sizeof(Mtx));
     Mtx *final = alloc_display_list(sizeof(Mtx));
 
@@ -213,11 +220,14 @@ void draw_room(float scaleXY) {
     ortho(&gDisplayListHead);
     gSPSetGeometryMode(gDisplayListHead++, G_ZBUFFER);
 
+    // Hack to make the final scene not transform like the buttons
+    internal_scale = 1.6f;
     mtxTransformRPY(final,
         (Vec3f){160, 120, 160},
         (Vec3f){0, 0, 0},
         (Vec3f){scaleXY, scaleXY, 1.6f}
     );
+    internal_scale = scaleXY;
 
     gDPPipeSync(gDisplayListHead++);
     gDPSetRenderMode(gDisplayListHead++, G_RM_OPA_SURF,G_RM_OPA_SURF2);
