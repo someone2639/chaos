@@ -2006,12 +2006,12 @@ sound_ref .sound_mario_snoring1
 sound_ref .sound_mario_snoring2
 sound_ref .sound_mario_waaaooow
 sound_ref .sound_mario_haha
-sound_ref .sound_mario_OU
+sound_ref .sound_mario_HOO
 sound_ref .sound_mario_uh2
 sound_ref .sound_mario_on_fire
 sound_ref .sound_mario_dying
 sound_ref .sound_mario_panting_cold
-sound_ref .sound_mario_HOO
+sound_ref .sound_mario_OU
 sound_ref .sound_mario_panting1
 sound_ref .sound_mario_panting2
 sound_ref .sound_mario_panting3
@@ -2072,12 +2072,12 @@ sound_ref .sound_peach_mario
 sound_ref .sound_peach_mario
 sound_ref .sound_peach_mario
 sound_ref .sound_peach_mario
-sound_ref .sound_mario_OU
-sound_ref .sound_peach_mario
-sound_ref .sound_peach_mario
-sound_ref .sound_peach_mario
-sound_ref .sound_peach_mario
 sound_ref .sound_mario_HOO
+sound_ref .sound_peach_mario
+sound_ref .sound_peach_mario
+sound_ref .sound_peach_mario
+sound_ref .sound_peach_mario
+sound_ref .sound_mario_OU
 sound_ref .sound_peach_mario
 sound_ref .sound_peach_mario
 sound_ref .sound_peach_mario
@@ -2138,12 +2138,12 @@ sound_ref .sound_focusm_snoring1
 sound_ref .sound_focusm_snoring2
 sound_ref .sound_focusm_waaaooow
 sound_ref .sound_focusm_haha
-sound_ref .sound_mario_OU
+sound_ref .sound_mario_HOO
 sound_ref .sound_focusm_uh2
 sound_ref .sound_focusm_on_fire
 sound_ref .sound_focusm_dying
 sound_ref .sound_focusm_panting
-sound_ref .sound_mario_HOO
+sound_ref .sound_mario_OU
 sound_ref .sound_focusm_panting
 sound_ref .sound_focusm_panting
 sound_ref .sound_focusm_panting
@@ -7544,8 +7544,8 @@ sound_ref .sound_menu_exit_a_sign
 sound_ref .sound_menu_mario_castle_warp2
 sound_ref .sound_menu_star_sound_okey_dokey
 sound_ref .sound_menu_star_sound_lets_a_go
+sound_ref .sound_menu_star_sound_lets_a_go_focusm
 sound_ref .sound_menu_sonic_lose_rings
-sound_ref .sound_menu_enter_pipe
 sound_ref .sound_menu_exit_pipe
 sound_ref .sound_menu_collect_red_coin
 sound_ref .sound_menu_collect_red_coin
@@ -8584,6 +8584,21 @@ chan_setlayer 1, .layer_1344
 chan_end
 
 .layer_311D:
+layer_note1 39, 0xb4, 127
+layer_end
+
+.sound_menu_star_sound_lets_a_go_focusm:
+chan_setbank 11
+chan_setinstr 26
+chan_setlayer 0, .layer_focusm_lets_a_go
+chan_setval 1
+chan_call .delay
+chan_setbank 4
+chan_setinstr 14
+chan_setlayer 1, .layer_1344
+chan_end
+
+.layer_focusm_lets_a_go:
 layer_note1 39, 0xb4, 127
 layer_end
 

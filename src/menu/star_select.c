@@ -453,7 +453,11 @@ s32 lvl_update_obj_and_load_act_button_actions(UNUSED s32 arg, UNUSED s32 unused
 #ifdef VERSION_JP
             play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 #else
-            play_sound(SOUND_MENU_STAR_SOUND_LETS_A_GO, gGlobalSoundSource);
+            if (chaos_check_if_patch_active(CHAOS_PATCH_FOCUS_M)) {
+                play_sound(SOUND_MENU_STAR_SOUND_LETS_A_GO_FOCUSM, gGlobalSoundSource);
+            } else {
+                play_sound(SOUND_MENU_STAR_SOUND_LETS_A_GO, gGlobalSoundSource);
+            }
 #endif
 #if ENABLE_RUMBLE
             queue_rumble_data(60, 70);
