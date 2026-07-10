@@ -861,9 +861,9 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
     u32 previousSaveFlags;
     u32 newSaveFlags;
 
-    // TODO: BUG: Do not allow collection of star if warp is active, as patch select menu / save will be skipped (or all patches will disappear if grand star).
+    // Do not allow collection of star if warp is active, as patch select menu / save will be skipped (or all patches will disappear if grand star).
     // Primarily an issue for Speedy Comet (also deactivate countdown timer for Speedy Comet after interaction (handle exit and non-exit of course appropriately)).
-    if (m->health >= 0x100 || chaos_check_if_patch_active(CHAOS_PATCH_FROM_BEYOND_THE_GRAVE)) {
+    if ((m->health >= 0x100 || chaos_check_if_patch_active(CHAOS_PATCH_FROM_BEYOND_THE_GRAVE)) && sDelayedWarpOp == WARP_OP_NONE) {
         if(chs_can_collect_star(&uncollectablePatchID) || grandStar || key) {
             mario_stop_riding_and_holding(m);
 #if ENABLE_RUMBLE
