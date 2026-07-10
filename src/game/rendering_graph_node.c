@@ -310,8 +310,7 @@ void geo_process_perspective(struct GraphNodePerspective *node) {
         Mtx *mtx = alloc_display_list(sizeof(*mtx));
 
 #ifdef WIDE
-        // TODO: BUG: gCurrLevelNum not a valid check on game over; file select display should be fixed properly
-        if ((gConfig.widescreen & WIDE_SCREEN_ENABLED) && gCurrLevelNum != 0x01) {
+        if ((gConfig.widescreen & WIDE_SCREEN_ENABLED) && gCurrLevelNum != LEVEL_UNKNOWN_2) {
             sAspectRatio = 16.0f / 9.0f; // 1.775f
         } else {
             sAspectRatio = 4.0f / 3.0f; // 1.33333f

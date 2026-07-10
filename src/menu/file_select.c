@@ -2830,6 +2830,7 @@ s32 lvl_init_menu_values_and_cursor_pos(UNUSED s32 arg, UNUSED s32 unused) {
     sMainMenuTimer = 0;
     sEraseYesNoHoverState = MENU_ERASE_HOVER_NONE;
     sSoundMode = save_file_get_sound_mode();
+    gCurrLevelNum = LEVEL_UNKNOWN_2;
 #ifdef VERSION_EU
     sLanguageMode = eu_get_language();
 
