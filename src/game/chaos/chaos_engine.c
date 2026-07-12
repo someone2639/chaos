@@ -1088,6 +1088,7 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(s32 forcedSeverityOverrid
     // Compute weights for generation
     f32 totalWeight = 0.0f;
 
+    // NOTE: We don't actually apply anything to severityWeights right now, so this essentially does nothing (apart from disabled severities)...
     for (s32 i = 1; i < ARRAY_COUNT(severityWeights); i++) {
         severityWeights[i] += WEIGHT_OFFSET;
         totalWeight += severityWeights[i];

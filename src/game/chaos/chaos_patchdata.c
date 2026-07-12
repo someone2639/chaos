@@ -1564,7 +1564,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription   = "It's like playing the game two times at the same time!",
         .longDescription    = "This will probably not be hitting 60 FPS most of the time while running on hardware...hopefully console players enjoy the choppy framerates!",
     },
-    [CHAOS_PATCH_TOP_DOWN_CAMERA] = { // TODO: BUG: Joystick is busted when twirling with top down camera (also TODO: force 45-degree cam but use lakitu cam HUD indictor when active, and always make camera rotateable (make sure this doesn't break wing cap or swimming))
+    [CHAOS_PATCH_TOP_DOWN_CAMERA] = { // TODO: BUG: Joystick is busted when twirling with top down camera
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
