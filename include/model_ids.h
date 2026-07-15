@@ -358,9 +358,7 @@
 #define MODEL_BULLY_BOSS                  0x57        // bully_boss_geo
 
 // group 3
-#define MODEL_WATER_BOMB                  0x54        // water_bomb_geo
-#define MODEL_WATER_BOMB_SHADOW           0x55        // water_bomb_shadow_geo
-#define MODEL_KING_BOBOMB                 0x56        // king_bobomb_geo
+#define MODEL_KING_BOBOMB                 0x54        // king_bobomb_geo
 
 // group 4
 #define MODEL_MANTA_RAY                   0x54        // manta_seg5_geo_05008D14
@@ -493,12 +491,12 @@
 #define MODEL_SPARKLES_ANIMATION          0x8F        // sparkles_animation_geo
 #define MODEL_RED_FLAME                   0x90        // red_flame_geo
 #define MODEL_BLUE_FLAME                  0x91        // blue_flame_geo
-// find me
-// find me
+#define MODEL_WATER_BOMB                  0x92        // water_bomb_geo
+#define MODEL_WATER_BOMB_CHAOS            0x93        // water_bomb_chaos_geo
 #define MODEL_BURN_SMOKE                  0x94        // burn_smoke_geo
 #define MODEL_SPARKLES                    0x95        // sparkles_geo
 #define MODEL_SMOKE                       0x96        // smoke_geo
-// find me
+#define MODEL_WATER_BOMB_SHADOW           0x97        // water_bomb_shadow_geo
 // find me
 // find me
 // find me

@@ -149,6 +149,8 @@ void chs_act_cosmic_clones(void);
 void chs_area_init_cosmic_clones(void);
 void chs_instwarp_post_cosmic_clones(struct InstantWarp *warp);
 void chs_update_cosmic_clones(void);
+u8 chs_cond_water_bombs(void);
+void chs_update_water_bombs(void);
 
 // Visual Modifiers
 u8 chs_cond_no_zbuffer(void);

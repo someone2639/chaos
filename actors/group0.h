@@ -314,6 +314,14 @@ extern const Gfx smoke_seg4_dl_04021778[];
 extern const Gfx smoke_seg4_dl_04021790[];
 extern const Gfx smoke_seg4_dl_040217A8[];
 
+// water_bubble
+extern const GeoLayout water_bomb_geo[];
+extern const GeoLayout water_bomb_chaos_geo[];
+extern const GeoLayout water_bomb_shadow_geo[];
+extern const Gfx water_bubble_seg5_dl_05010D30[];
+extern const Gfx water_bubble_seg5_dl_05011000[];
+extern const Gfx water_bubble_chaos_dl[];
+
 // water_splash
 extern const GeoLayout water_splash_geo[];
 extern const Gfx water_splash_seg4_dl_040325C8[];

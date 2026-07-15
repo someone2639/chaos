@@ -1452,7 +1452,6 @@ void eight_dir_collision_handler(struct Camera *c) {
     // WALL/FLOOR COLLISION
     // More complex; If ray successful, set the camera position to the wall/floor hit location
     // and push the camera inward if Mario is close to the wall/floor.
-
     vec3f_diff(camdir,c->pos,origin);
 
     find_surface_on_ray(origin, camdir, &surf, hitpos, RAYCAST_FIND_WALL | RAYCAST_FIND_FLOOR);

@@ -476,6 +476,8 @@ void bhv_seesaw_platform_update(void);
 void bhv_ferris_wheel_axle_init(void);
 void bhv_ferris_wheel_platform_update(void);
 void bhv_water_bomb_spawner_update(void);
+void bhv_water_bomb_spawner_chaos_init(void);
+void bhv_water_bomb_spawner_chaos_update(void);
 void bhv_water_bomb_update(void);
 void bhv_water_bomb_shadow_update(void);
 void bhv_ttc_rotating_solid_init(void);

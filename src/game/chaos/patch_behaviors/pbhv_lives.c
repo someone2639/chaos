@@ -13,9 +13,9 @@
 #define LV2_LIVES_POS 4
 #define LV3_LIVES_POS 6
 
-#define LV1_LIVES_NEG 3
-#define LV2_LIVES_NEG 6
-#define LV3_LIVES_NEG 10
+#define LV1_LIVES_NEG 4
+#define LV2_LIVES_NEG 8
+#define LV3_LIVES_NEG 12
 
 u8 chs_cond_lives_increase_lv1(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives <= (100 - LV1_LIVES_POS)); }
 u8 chs_cond_lives_increase_lv2(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives <= (100 - LV2_LIVES_POS)); }

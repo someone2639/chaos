@@ -891,6 +891,22 @@ s32 count_unimportant_objects(void) {
     return count;
 }
 
+struct Object *find_first_object_with_behavior(const BehaviorScript *behavior) {
+    uintptr_t *behaviorAddr = segmented_to_virtual(behavior);
+    struct ObjectNode *listHead = &gObjectLists[get_object_list_from_behavior(behaviorAddr)];
+    struct ObjectNode *obj = listHead->next;
+
+    while (listHead != obj) {
+        if (((struct Object *) obj)->activeFlags != ACTIVE_FLAG_DEACTIVATED && ((struct Object *) obj)->behavior == behaviorAddr) {
+            return (struct Object *) obj;
+        }
+
+        obj = obj->next;
+    }
+
+    return NULL;
+}
+
 s32 count_objects_with_behavior(const BehaviorScript *behavior) {
     uintptr_t *behaviorAddr = segmented_to_virtual(behavior);
     struct ObjectNode *listHead = &gObjectLists[get_object_list_from_behavior(behaviorAddr)];
@@ -898,7 +914,7 @@ s32 count_objects_with_behavior(const BehaviorScript *behavior) {
     s32 count = 0;
 
     while (listHead != obj) {
-        if (((struct Object *) obj)->behavior == behaviorAddr) {
+        if (((struct Object *) obj)->activeFlags != ACTIVE_FLAG_DEACTIVATED && ((struct Object *) obj)->behavior == behaviorAddr) {
             count++;
         }
 

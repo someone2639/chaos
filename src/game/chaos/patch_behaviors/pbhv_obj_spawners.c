@@ -400,3 +400,27 @@ void chs_lvlupdate_spawn_on_shell(void) {
         this->frameTimer = 0xFFFFFF;
     }
 }
+
+u8 chs_cond_water_bombs(void) {
+    return (chaos_count_active_instances(CHAOS_PATCH_WATER_BOMBS) < 3);
+}
+
+void chs_update_water_bombs(void) {
+    if (gCurrCourseNum == COURSE_NONE) {
+        return;
+    }
+
+    u32 objCount = count_objects_with_behavior(bhvWaterBombSpawnerChaos);
+    u32 patchCount = chaos_count_active_instances(CHAOS_PATCH_WATER_BOMBS);
+    if (objCount < patchCount) {
+        spawn_object_relative(0, 0, 0, 0, gMarioState->marioObj, MODEL_NONE, bhvWaterBombSpawnerChaos);
+    }
+    
+    while (objCount > patchCount) {
+        struct Object *obj = find_first_object_with_behavior(bhvWaterBombSpawnerChaos);
+        if (obj) {
+            obj_mark_for_deletion(obj);
+            objCount--;
+        }
+    }
+}
