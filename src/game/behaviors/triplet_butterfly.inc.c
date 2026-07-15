@@ -20,7 +20,7 @@ static struct ObjectHitbox sTripletButterflyExplodeHitbox = {
 
 static struct TripletButterflyActivationData sTripletButterflyActivationData[] = {
     { MODEL_BOWLING_BALL, NULL, 0.5f },
-    { MODEL_1UP, bhv1upWalking, 1.0f },
+    { /*MODEL_1UP*/ MODEL_NONE, bhv1upWalking, 1.0f },
 };
 
 static void triplet_butterfly_act_init(void) {
@@ -49,6 +49,7 @@ static void triplet_butterfly_act_init(void) {
         o->oTripletButterflyBaseYaw = o->oBehParams2ndByte * (0x10000 / 3);
         o->oMoveAngleYaw = (s32)(o->oTripletButterflyBaseYaw + random_linear_offset(0, 0x5555));
         o->oTripletButterflySpeed = random_linear_offset(15, 15);
+        o->oTripletButterflyModel = -1;
 
         cur_obj_unhide();
     }
@@ -88,7 +89,7 @@ static void triplet_butterfly_act_wander(void) {
 
 static void triplet_butterfly_act_activate(void) {
     if (o->oTimer > 20) {
-        if (o->oTripletButterflyModel == 0) {
+        if (o->oTripletButterflyModel < 0) {
             spawn_object_relative_with_scale(0, 0, -40, 0, 1.5f, o, MODEL_SMOKE, bhvWhitePuffSmoke2);
             o->oTripletButterflyModel = sTripletButterflyActivationData[o->oTripletButterflyType].model;
             cur_obj_set_model(o->oTripletButterflyModel);
