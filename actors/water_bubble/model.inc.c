@@ -11,6 +11,10 @@ ALIGNED8 static const Texture water_bubble_seg5_texture_0500FE80[] = {
 #include "actors/water_bubble/water_bubble.rgba16.inc.c"
 };
 
+ALIGNED8 static const Texture water_bubble_chaos_texture[] = {
+#include "actors/water_bubble/custom_water_bubble_chaos.rgba16.inc.c"
+};
+
 // 0x05010680
 static const Vtx water_bubble_seg5_vertex_05010680[] = {
     {{{   -20,    -64,    -33}, 0, {     0,      0}, {0xdd, 0x95, 0xc7, 0xff}}},
@@ -209,6 +213,23 @@ const Gfx water_bubble_seg5_dl_05011000[] = {
     gsDPSetCombineMode(G_CC_MODULATERGBFADE, G_CC_MODULATERGBFADE),
     gsDPSetEnvColor(255, 255, 255, 205),
     gsDPLoadTextureBlock(water_bubble_seg5_texture_0500FE80, G_IM_FMT_RGBA, G_IM_SIZ_16b, 32, 32, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_WRAP | G_TX_NOMIRROR, 5, 5, G_TX_NOLOD, G_TX_NOLOD),
+    gsSPTexture(0x07C0, 0x07C0, 0, G_TX_RENDERTILE, G_ON),
+    gsSPDisplayList(water_bubble_seg5_dl_05010D30),
+    gsSPTexture(0x07C0, 0x07C0, 0, G_TX_RENDERTILE, G_OFF),
+    gsDPPipeSync(),
+    gsSPClearGeometryMode(G_TEXTURE_GEN),
+    gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
+    gsDPSetEnvColor(255, 255, 255, 255),
+    gsSPEndDisplayList(),
+};
+
+// 0x05011000 - 0x05011098
+const Gfx water_bubble_chaos_dl[] = {
+    gsDPPipeSync(),
+    gsSPSetGeometryMode(G_TEXTURE_GEN),
+    gsDPSetCombineMode(G_CC_MODULATERGBFADE, G_CC_MODULATERGBFADE),
+    gsDPSetEnvColor(255, 255, 255, 205),
+    gsDPLoadTextureBlock(water_bubble_chaos_texture, G_IM_FMT_RGBA, G_IM_SIZ_16b, 32, 32, 0, G_TX_WRAP | G_TX_NOMIRROR, G_TX_WRAP | G_TX_NOMIRROR, 5, 5, G_TX_NOLOD, G_TX_NOLOD),
     gsSPTexture(0x07C0, 0x07C0, 0, G_TX_RENDERTILE, G_ON),
     gsSPDisplayList(water_bubble_seg5_dl_05010D30),
     gsSPTexture(0x07C0, 0x07C0, 0, G_TX_RENDERTILE, G_OFF),

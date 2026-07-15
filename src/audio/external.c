@@ -1562,7 +1562,7 @@ u8 sRandomMusicSeqsLUT[] = {
     SEQ_EVENT_ENDLESS_STAIRS,
     SEQ_LEVEL_BOSS_KOOPA_FINAL,
     SEQ_EVENT_CUTSCENE_ENDING,
-    SEQ_EVENT_CUTSCENE_CREDITS, // TODO: BUG: This keeps playing during patch selection (Can this be fixed without deliberately botching credits behavior? (you know...just in case!))
+    SEQ_EVENT_CUTSCENE_CREDITS,
 };
 
 
@@ -1931,7 +1931,7 @@ u8 begin_background_music_fade(u16 fadeDuration) {
     u8 targetVolume = 0xff;
 
     if (sCurrentBackgroundMusicSeqId == SEQUENCE_NONE
-        || sCurrentBackgroundMusicSeqId == SEQ_EVENT_CUTSCENE_CREDITS) {
+        || (sCurrentBackgroundMusicSeqId == SEQ_EVENT_CUTSCENE_CREDITS && !chaos_check_if_patch_active(CHAOS_PATCH_RANDOMIZED_MUSIC))) {
         return 0xff;
     }
 

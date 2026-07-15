@@ -860,13 +860,23 @@ void chs_update_tetris(void) {
 // clear arg determines if the non-collision parts of the shape should clear pixels, used for bag display
 void tetris_draw_tetrimino(s32 startX, s32 startY, u16 shape, u16 col, s32 clear) {
     for(int y = 0; y < 4; y++) {
+        s32 yIndex = startY + y;
+        if(yIndex < 0 || yIndex >= (s32)TET_IMG_H) {
+            continue;
+        }
+
         s32 shift = (y * 4);
         u16 row = (shape & (0x0F << shift)) >> shift;
         for(int x = 0; x < 4; x++) {
+            s32 xIndex = startX + x;
+            if(xIndex < 0 || xIndex >= (s32)TET_IMG_W) {
+                continue;
+            }
+            
             if(row & (1 << x)) {
-                sTetrisImg[startY + y][startX + x] = col;
+                sTetrisImg[yIndex][xIndex] = col;
             } else if (clear) {
-                sTetrisImg[startY + y][startX + x] = 0;
+                sTetrisImg[yIndex][xIndex] = 0;
             }
         }
     }
@@ -959,14 +969,20 @@ void draw_tetris(void) {
     
     // Render the grid
     for(int y = TETRIS_GRID_VANISH; y < TETRIS_GRID_HEIGHT; y++) {
+        s32 yIndex = y - TETRIS_GRID_VANISH;
+
+        if(yIndex < 0 || yIndex >= (s32)TET_IMG_H) {
+            continue;
+        }
+
         if((sTetris.state == TET_STATE_LINE_CLEAR) && (sTetris.collision[y] == TET_FULL_LINE)) {
             // Line clear animation
             s32 clearIndex = (TETRIS_GRID_WIDTH / 2) - (sTetris.timer / (TETRIS_GRID_WIDTH / TET_LINE_CLEAR_ANIM));
             for(int x = 0; x < TETRIS_GRID_WIDTH; x++) {
                 if((x > clearIndex) && (x < TETRIS_GRID_WIDTH - clearIndex)) {
-                    sTetrisImg[y - TETRIS_GRID_VANISH][x] = 0;
+                    sTetrisImg[yIndex][x] = 0;
                 } else {
-                    sTetrisImg[y - TETRIS_GRID_VANISH][x] = 0xFFFF;
+                    sTetrisImg[yIndex][x] = 0xFFFF;
                 }
             }
         } else if((sTetris.state == TET_STATE_GAME_OVER)){ 
@@ -974,7 +990,7 @@ void draw_tetris(void) {
             s32 eraseIndex = TETRIS_GRID_HEIGHT - (sTetris.timer / (TET_GAME_OVER_ANIM / TETRIS_VISIBLE_HEIGHT));
             if(y == eraseIndex) {
                 for(int x = 0; x < TETRIS_GRID_WIDTH; x++) {
-                    sTetrisImg[y - TETRIS_GRID_VANISH][x] = 0;
+                    sTetrisImg[yIndex][x] = 0;
                 }
             }
         } else {
@@ -984,9 +1000,9 @@ void draw_tetris(void) {
                     s32 shift = (x * 3);
                     u32 mask = (0x7 << shift);
                     u32 tile = (sTetris.tile[y] & mask) >> shift;
-                    sTetrisImg[y - TETRIS_GRID_VANISH][x] = sTetCols[tile];
+                    sTetrisImg[yIndex][x] = sTetCols[tile];
                 } else {
-                    sTetrisImg[y - TETRIS_GRID_VANISH][x] = 0;
+                    sTetrisImg[yIndex][x] = 0;
                 }
             }
         }

@@ -1416,47 +1416,63 @@ s16 snap_to_45_degrees(s16 angle) {
     return angle;
 }
 
-#define MIN_CAMERA_DISTANCE 150.0f // Minimum distance between Mario and the camera.
-#define VERTICAL_RAY_OFFSET 300.0f // The ray is cast from 300 units above Mario in order to prevent small obstacles from constantly snapping the camera
-
+/* Handler copied from Mario Builder 64, with slight modifications */
+#define MIN_CAMERA_DISTANCE 300.0f // Minimum distance between Mario and the camera.
+#define VERTICAL_RAY_OFFSET 200.0f // The ray is cast from 200 units above Mario in order to prevent small obstacles from constantly snapping the camera
+#define VERTICAL_RAY_OFFSET_HANGING 100.0f // The ray is only cast 100 units away when hanging.
 void eight_dir_collision_handler(struct Camera *c) {
     struct Surface *surf = NULL;
 
+    Vec3f camera_looknormal;
     Vec3f camdir;
     Vec3f origin;
     Vec3f thick;
     Vec3f hitpos;
+    
+    vec3f_diff(camera_looknormal,c->focus,c->pos);
+    vec3f_normalize(camera_looknormal);
 
+    // CEILING COLLISION
+    // Standard camera raycast check for ceiling collision. No special shenanigans here!
     vec3f_copy(origin,gMarioState->pos);
+    
+    if (!(gMarioState->action & ACT_FLAG_HANGING)) {
+        origin[1] += VERTICAL_RAY_OFFSET;
+    } else {
+        origin[1] += VERTICAL_RAY_OFFSET_HANGING;
+    }
+    vec3f_diff(camdir,c->pos,origin);
 
-    origin[1] += VERTICAL_RAY_OFFSET; 
-    camdir[0] = c->pos[0] - origin[0];
-    camdir[1] = c->pos[1] - origin[1];
-    camdir[2] = c->pos[2] - origin[2];
-
-    find_surface_on_ray(origin, camdir, &surf, hitpos, (RAYCAST_FIND_FLOOR | RAYCAST_FIND_WALL | RAYCAST_FIND_CEIL));
+    find_surface_on_ray(origin, camdir, &surf, hitpos, RAYCAST_FIND_CEIL);
 
     if (surf) {
-        f32 distFromSurf = 100.0f;
-        f32 dist;
-        f32 yDist = 0;
-        Vec3f camToMario;
-        vec3f_diff(camToMario, gMarioState->pos, hitpos);
-        s16 yaw = atan2s(camToMario[2], camToMario[0]);
-        vec3f_get_lateral_dist(hitpos,gMarioState->pos, &dist);
-        if (dist < MIN_CAMERA_DISTANCE) {
-            distFromSurf += (dist - MIN_CAMERA_DISTANCE); // If Mario runs right up to the screen, the camera pull back slightly...
-            yDist = MIN_CAMERA_DISTANCE - CLAMP(dist, 0, MIN_CAMERA_DISTANCE); // ...and also up slightly.
+        c->pos[1] = hitpos[1];
+    }
+
+    // WALL/FLOOR COLLISION
+    // More complex; If ray successful, set the camera position to the wall/floor hit location
+    // and push the camera inward if Mario is close to the wall/floor.
+    vec3f_diff(camdir,c->pos,origin);
+
+    find_surface_on_ray(origin, camdir, &surf, hitpos, RAYCAST_FIND_WALL | RAYCAST_FIND_FLOOR);
+
+    if (surf) {
+        Vec3f camera_hit_diff;
+        vec3f_diff(camera_hit_diff,origin,hitpos);
+        f32 hit_to_mario_dist = vec3_mag(camera_hit_diff);
+
+        f32 thickMul = 35.0f;
+
+        if (hit_to_mario_dist < MIN_CAMERA_DISTANCE) {
+            thickMul -= MIN_CAMERA_DISTANCE - hit_to_mario_dist;
         }
-        thick[0] = sins(yaw) * distFromSurf;
-        thick[1] = yDist;
-        thick[2] = coss(yaw) * distFromSurf;
+
+        thick[0] = camera_looknormal[0] * thickMul;
+        thick[1] = camera_looknormal[1] * thickMul;
+        thick[2] = camera_looknormal[2] * thickMul;
         vec3f_add(hitpos,thick);
         vec3f_copy(c->pos,hitpos);
     }
-
-    c->yaw = atan2s(c->pos[2] - gMarioState->pos[2], c->pos[0] - gMarioState->pos[0]);
-
 }
 
 /**

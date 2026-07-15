@@ -23,6 +23,17 @@ static struct ObjectHitbox sWaterBombHitbox = {
     /* hurtboxRadius:     */ 60,
     /* hurtboxHeight:     */ 50,
 };
+static struct ObjectHitbox sWaterBombChaosHitbox = {
+    /* interactType:      */ INTERACT_MR_BLIZZARD,
+    /* downOffset:        */ 25,
+    /* damageOrCoinValue: */ 2,
+    /* health:            */ 99,
+    /* numLootCoins:      */ 0,
+    /* radius:            */ 80,
+    /* height:            */ 50,
+    /* hurtboxRadius:     */ 60,
+    /* hurtboxHeight:     */ 50,
+};
 
 /**
  * Update function for bhvWaterBombSpawner.
@@ -59,6 +70,72 @@ void bhv_water_bomb_spawner_update(void) {
                 o->oWaterBombSpawnerBombActive = TRUE;
                 o->oWaterBombSpawnerTimeToSpawn = random_linear_offset(0, 50);
             }
+        }
+    }
+}
+
+void bhv_water_bomb_spawner_chaos_init(void) {
+    o->oWaterBombSpawnerTimeToSpawn = random_linear_offset(0, 150);
+}
+
+/**
+ * Update function for bhvWaterBombSpawnerChaos.
+ * Spawn water bombs targeting mario when he comes in range.
+ */
+void bhv_water_bomb_spawner_chaos_update(void) {
+    if (!chaos_check_if_patch_active(CHAOS_PATCH_WATER_BOMBS)) {
+        obj_mark_for_deletion(o);
+        return;
+    }
+    
+    obj_copy_pos(o, gMarioObject);
+    // When mario is in range and a water bomb isn't already active
+    if (!o->oWaterBombSpawnerBombActive && !(gMarioState->action & ACT_FLAG_SWIMMING)) {
+        if (o->oWaterBombSpawnerTimeToSpawn != 0) {
+            o->oWaterBombSpawnerTimeToSpawn--;
+        } else {
+            u8 shouldSpawnWaterBomb = TRUE;
+            f32 ceilHeight = 2000.0f;
+            Vec3f hitpos;
+            struct Surface *surf = NULL;
+            Vec3f pos = {gMarioObject->oPosX, gMarioObject->oPosY + ceilHeight, gMarioObject->oPosZ};
+            Vec3f dir = {0.0f, -ceilHeight * 0.99f, 0.0f};
+
+            // If there is a floor above Mario, find lowest ceiling to spawn water bomb
+            find_surface_on_ray(pos, dir, &surf, hitpos, RAYCAST_FIND_FLOOR);
+            if (surf) {
+                shouldSpawnWaterBomb = FALSE;
+                dir[1] = ceilHeight * 0.99f;
+                find_surface_on_ray(&gMarioObject->oPosVec, dir, &surf, hitpos, RAYCAST_FIND_CEIL);
+                if (surf) {
+                    f32 newHeight = (hitpos[1] - sWaterBombChaosHitbox.height) - gMarioObject->oPosY;
+                    if (newHeight > 800.0f && newHeight < ceilHeight) {
+                        shouldSpawnWaterBomb = TRUE;
+                        ceilHeight = newHeight;
+                    }
+                }
+            }
+
+            if (shouldSpawnWaterBomb) {
+                struct Object *waterBomb =
+                    spawn_object_relative(1, 0, ceilHeight, 0, o, MODEL_WATER_BOMB_CHAOS, bhvWaterBomb);
+
+                if (waterBomb != NULL) {
+                    // Drop farther ahead of mario when he is moving faster
+                    f32 waterBombDistToMario = 28.0f * gMarioStates[0].forwardVel + 100.0f;
+
+                    waterBomb->oAction = WATER_BOMB_ACT_INIT;
+
+                    waterBomb->oPosX += waterBombDistToMario * sins(gMarioObject->oMoveAngleYaw);
+                    waterBomb->oPosZ += waterBombDistToMario * coss(gMarioObject->oMoveAngleYaw);
+
+                    spawn_object(waterBomb, MODEL_WATER_BOMB_SHADOW, bhvWaterBombShadow);
+
+                    o->oWaterBombSpawnerBombActive = TRUE;
+                }
+            }
+            
+            bhv_water_bomb_spawner_chaos_init(); // Reset spawn timer
         }
     }
 }
@@ -107,10 +184,19 @@ static void water_bomb_act_init(void) {
 static void water_bomb_act_drop(void) {
     f32 stretch;
 
-    obj_set_hitbox(o, &sWaterBombHitbox);
+    if (o->oBehParams2ndByte == 1) {
+        obj_set_hitbox(o, &sWaterBombChaosHitbox);
+    } else {
+        obj_set_hitbox(o, &sWaterBombHitbox);
+    }
 
-    // Explode if touched or if hit water
-    if ((o->oInteractStatus & INT_STATUS_INTERACTED) || (o->oMoveFlags & OBJ_MOVE_ENTERED_WATER)) {
+    if (o->parentObj->activeFlags == ACTIVE_FLAG_DEACTIVATED) {
+        o->parentObj = o;
+        create_sound_spawner(SOUND_OBJ_DIVING_IN_WATER);
+        set_camera_shake_from_point(SHAKE_POS_SMALL, o->oPosX, o->oPosY, o->oPosZ);
+        o->oAction = WATER_BOMB_ACT_EXPLODE;
+    } else if ((o->oInteractStatus & INT_STATUS_INTERACTED) || (o->oMoveFlags & OBJ_MOVE_ENTERED_WATER)) {
+        // Explode if touched or if hit water
         create_sound_spawner(SOUND_OBJ_DIVING_IN_WATER);
         set_camera_shake_from_point(SHAKE_POS_SMALL, o->oPosX, o->oPosY, o->oPosZ);
         o->oAction = WATER_BOMB_ACT_EXPLODE;
@@ -167,7 +253,9 @@ static void water_bomb_act_drop(void) {
  */
 static void water_bomb_act_explode(void) {
     water_bomb_spawn_explode_particles(25, 60, 10);
-    o->parentObj->oWaterBombSpawnerBombActive = FALSE;
+    if (o->parentObj != o) {
+        o->parentObj->oWaterBombSpawnerBombActive = FALSE;
+    }
     obj_mark_for_deletion(o);
 }
 

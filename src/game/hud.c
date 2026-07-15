@@ -495,7 +495,12 @@ void render_chaos_time_limit() {
     struct ChaosActiveEntry *chaosTimer;
     chaos_find_first_active_patch(CHAOS_PATCH_TIME_LIMIT, &chaosTimer);
     char limitText[16];
-    s32 timeLeft = (5400 - chaosTimer->frameTimer);
+
+    if (chaosTimer->frameTimer >= 0xFFFFFF) {
+        return;
+    }
+
+    s32 timeLeft = (CHS_TIME_LIMIT - chaosTimer->frameTimer);
     u32 mins = (timeLeft / (30 * 60));
     u32 secs = ((timeLeft - (mins * (30 * 60))) / 30);
 
@@ -516,7 +521,7 @@ void render_chaos_time_limit() {
     }
 
     //Flicker when time gets low
-    if((timeLeft < 1800 && timeLeft >= 1740) || (timeLeft < 900 && timeLeft >= 840) || (timeLeft < 300)) {
+    if((timeLeft < (30 * 60) && timeLeft >= (30 * (60 - 1))) || (timeLeft < (30 * 30) && timeLeft >= (30 * (30 - 1))) || (timeLeft < (30 * 10))) {
         if(timeLeft % 10 < 5) {
             a = 0;
         }
