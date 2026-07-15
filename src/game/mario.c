@@ -1440,38 +1440,45 @@ void update_stick_history(struct MarioState *m, f32 mag, s16 s_angle) {
 
         u16 angle = (u32)s_angle & 0xFFFF;
 
-        if (is_close(angle, 0x0000, 10)) {
+        #define SPIN_JUMP_ANGLE_THRESHOLD_DIRECT (0x1000)
+        #define SPIN_JUMP_ANGLE_THRESHOLD_ANGLED (0x1000)
+        #define NUM_DIRECTIONS_HIT_FOR_SPIN 4
+        #define NUM_FRAMES_HELD_TO_CANCEL_SPIN 8
+
+        if (is_close(angle, 0x0000, SPIN_JUMP_ANGLE_THRESHOLD_DIRECT)) {
             hitDirections[0] += 1;
         }
-        if (is_close(angle, 0x4000, 10)) {
+        if (is_close(angle, 0x4000, SPIN_JUMP_ANGLE_THRESHOLD_DIRECT)) {
             hitDirections[1] += 1;
         }
-        if (is_close(angle, 0x8000, 10)) {
+        if (is_close(angle, 0x8000, SPIN_JUMP_ANGLE_THRESHOLD_DIRECT)) {
             hitDirections[2] += 1;
         }
-        if (is_close(angle, 0xC000, 10)) {
+        if (is_close(angle, 0xC000, SPIN_JUMP_ANGLE_THRESHOLD_DIRECT)) {
             hitDirections[3] += 1;
         }
-        if (is_close(angle, 0x2000, 10)) {
+        if (is_close(angle, 0x2000, SPIN_JUMP_ANGLE_THRESHOLD_ANGLED)) {
             hitDirections[4] += 1;
         }
-        if (is_close(angle, 0x6000, 10)) {
+        if (is_close(angle, 0x6000, SPIN_JUMP_ANGLE_THRESHOLD_ANGLED)) {
             hitDirections[5] += 1;
         }
-        if (is_close(angle, 0xA000, 10)) {
+        if (is_close(angle, 0xA000, SPIN_JUMP_ANGLE_THRESHOLD_ANGLED)) {
             hitDirections[6] += 1;
         }
-        if (is_close(angle, 0xE000, 10)) {
+        if (is_close(angle, 0xE000, SPIN_JUMP_ANGLE_THRESHOLD_ANGLED)) {
             hitDirections[7] += 1;
         }
 
         u32 streak = 0;
         u32 min = 999;
         u32 max = 0;
+        osSyncPrintf("ANGLE %04X STICK: [", angle);
         for (int i = 0; i < ARRAY_COUNT(hitDirections); i++) {
             if (hitDirections[i] > 0) {
                 streak++;
             }
+            osSyncPrintf("%d", hitDirections[i]);
 
             // Prevent stale spin states
             if (hitDirections[i] < min) {
@@ -1481,15 +1488,16 @@ void update_stick_history(struct MarioState *m, f32 mag, s16 s_angle) {
                 max = hitDirections[i];
             }
         }
+        osSyncPrintf("]\n");
         // give up spinjump if we hold W for too long
-        if (max - min > 4) {
+        if ((max - min) >= NUM_FRAMES_HELD_TO_CANCEL_SPIN) {
             // ... unless we're airborne
             if (!(m->action & ACT_FLAG_AIR)) {
                 clear_stick_history();
             }
         }
 
-        if (streak > 5) {
+        if (streak >= NUM_DIRECTIONS_HIT_FOR_SPIN) {
             m->canSpinJump = 1;
         } else {
             m->canSpinJump = 0;
