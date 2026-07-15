@@ -146,8 +146,6 @@ static void draw_n64_controls(void) {
     gSPDisplayList(gDisplayListHead++, buttonDL);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
-
-
     // start button
     gDPSetEnvColor(gDisplayListHead++, 245, 13, 35, 0xFF);
     mtxTransformRPY(&buttonMtxs[curMtx++],
@@ -175,7 +173,7 @@ static void draw_n64_controls(void) {
 
     // stick
     mtxTransformStick(&buttonMtxs[curMtx++],
-        (Vec3f){160, 21, 405},
+        (Vec3f){160, 21, 281.0},
         (Vec2f){-gPlayer1Controller->stickY + 40, gPlayer1Controller->stickX},
         (Vec3f){1.0f, 1.0f, 1.0f}
     );
@@ -233,15 +231,15 @@ void draw_room(float scaleXY) {
     gDPPipeSync(gDisplayListHead++);
     gDPSetRenderMode(gDisplayListHead++, G_RM_OPA_SURF,G_RM_OPA_SURF2);
     gSPDisplayList(gDisplayListHead++, &squint_room_squint_room_mesh_layer_1_with_revert);
-    // gDPSetRenderMode(gDisplayListHead++, G_RM_TEX_EDGE,G_RM_TEX_EDGE2);
-    // gSPDisplayList(gDisplayListHead++, &squint_room_squint_room_mesh_layer_4_with_revert);
+
+    gDPPipeSync(gDisplayListHead++);
     gDPSetRenderMode(gDisplayListHead++, G_RM_AA_ZB_OPA_SURF,G_RM_AA_ZB_OPA_SURF2);
     gSPDisplayList(gDisplayListHead++, &squint_room_squint_room_mesh_layer_3_with_revert);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
+    gDPPipeSync(gDisplayListHead++);
     gDPSetRenderMode(gDisplayListHead++, G_RM_AA_ZB_OPA_SURF,G_RM_AA_ZB_OPA_SURF2);
     draw_n64_controls();
-
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
     gSPPopMatrix(gDisplayListHead++, G_MTX_PROJECTION);

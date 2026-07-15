@@ -1,0 +1,14 @@
+extern const GeoLayout squint_room_cart_geo[];
+extern Lights1 squint_room_cart_sm64_lights;
+extern Lights1 squint_room_cart_cart_lights;
+extern u8 squint_room_cart_sm64_rgba16[];
+extern Vtx squint_room_cart_squint_room_cart_mesh_layer_1_vtx_0[4];
+extern Gfx squint_room_cart_squint_room_cart_mesh_layer_1_tri_0[];
+extern Vtx squint_room_cart_squint_room_cart_mesh_layer_3_vtx_0[8];
+extern Gfx squint_room_cart_squint_room_cart_mesh_layer_3_tri_0[];
+extern Gfx mat_squint_room_cart_sm64[];
+extern Gfx mat_revert_squint_room_cart_sm64[];
+extern Gfx mat_squint_room_cart_cart[];
+extern Gfx mat_revert_squint_room_cart_cart[];
+extern Gfx squint_room_cart_squint_room_cart_mesh_layer_1_with_revert[];
+extern Gfx squint_room_cart_squint_room_cart_mesh_layer_3_with_revert[];
