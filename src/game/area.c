@@ -440,7 +440,6 @@ void render_game(void) {
             create_dl_ortho_matrix(&gDisplayListHead);
             draw_room(squint_room_scale);
         }
-        osSyncPrintf("scale %f\n", squint_room_scale);
 
         if(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_ACTIVE) {
             display_patch_selection_ui();

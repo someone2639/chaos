@@ -1434,16 +1434,17 @@ void update_stick_history(struct MarioState *m, f32 mag, s16 s_angle) {
 
     if (chaos_check_if_patch_active(CHAOS_PATCH_SUNSHINE_TWIRL)) {
         if (mag < SPIN_DEADZONE) {
+            osSyncPrintf("no spin stick off\n");
             clear_stick_history();
             return;
         }
 
         u16 angle = (u32)s_angle & 0xFFFF;
 
-        #define SPIN_JUMP_ANGLE_THRESHOLD_DIRECT (0x1000)
-        #define SPIN_JUMP_ANGLE_THRESHOLD_ANGLED (0x1000)
-        #define NUM_DIRECTIONS_HIT_FOR_SPIN 4
-        #define NUM_FRAMES_HELD_TO_CANCEL_SPIN 8
+        #define SPIN_JUMP_ANGLE_THRESHOLD_DIRECT (0x9FF)
+        #define SPIN_JUMP_ANGLE_THRESHOLD_ANGLED (0x9FF)
+        #define NUM_DIRECTIONS_HIT_FOR_SPIN 5
+        #define NUM_FRAMES_HELD_TO_CANCEL_SPIN 4
 
         if (is_close(angle, 0x0000, SPIN_JUMP_ANGLE_THRESHOLD_DIRECT)) {
             hitDirections[0] += 1;
@@ -1473,7 +1474,7 @@ void update_stick_history(struct MarioState *m, f32 mag, s16 s_angle) {
         u32 streak = 0;
         u32 min = 999;
         u32 max = 0;
-        osSyncPrintf("ANGLE %04X STICK: [", angle);
+        osSyncPrintf("STICK: [");
         for (int i = 0; i < ARRAY_COUNT(hitDirections); i++) {
             if (hitDirections[i] > 0) {
                 streak++;
@@ -1488,19 +1489,19 @@ void update_stick_history(struct MarioState *m, f32 mag, s16 s_angle) {
                 max = hitDirections[i];
             }
         }
-        osSyncPrintf("]\n");
+        osSyncPrintf("] %d\n", m->canSpinJump);
         // give up spinjump if we hold W for too long
         if ((max - min) >= NUM_FRAMES_HELD_TO_CANCEL_SPIN) {
             // ... unless we're airborne
             if (!(m->action & ACT_FLAG_AIR)) {
+                osSyncPrintf("no spin too w\n");
                 clear_stick_history();
+                streak = 0;
             }
         }
 
         if (streak >= NUM_DIRECTIONS_HIT_FOR_SPIN) {
             m->canSpinJump = 1;
-        } else {
-            m->canSpinJump = 0;
         }
     } else {
         m->canSpinJump = 0;
@@ -1511,7 +1512,8 @@ s32 make_mario_spin_jump(struct MarioState *m) {
     m->canSpinJump = 0;
     m->faceAngle[1] = atan2s(-m->controller->stickY, m->controller->stickX) + m->area->camera->yaw;
     clear_stick_history();
-    return set_mario_action(m, ACT_SPIN_JUMP, 0);
+    set_mario_action(m, ACT_SPIN_JUMP, 0);
+    return TRUE;
 }
 
 /**
