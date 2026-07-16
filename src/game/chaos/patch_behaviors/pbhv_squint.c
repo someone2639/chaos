@@ -242,6 +242,7 @@ void draw_room(float scaleXY) {
 
     gDPPipeSync(gDisplayListHead++);
     gDPSetRenderMode(gDisplayListHead++, G_RM_AA_ZB_OPA_SURF,G_RM_AA_ZB_OPA_SURF2);
+    gSPDisplayList(gDisplayListHead++, &squint_room_squint_room_mesh_layer_2_with_revert);
     gSPDisplayList(gDisplayListHead++, &squint_room_squint_room_mesh_layer_3_with_revert);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 

@@ -1710,7 +1710,7 @@ Gfx squint_room_squint_room_mesh_layer_1_tri_3[] = {
 	gsSPEndDisplayList(),
 };
 
-Vtx squint_room_squint_room_mesh_layer_3_vtx_0[46] = {
+Vtx squint_room_squint_room_mesh_layer_1_vtx_4[46] = {
 	{{ {-69, -38, -90}, 0, {-106, 662}, {0, 0, 127, 255} }},
 	{{ {-79, -27, -90}, 0, {-362, 381}, {172, 0, 95, 255} }},
 	{{ {-79, -38, -90}, 0, {-362, 662}, {172, 0, 95, 255} }},
@@ -1759,8 +1759,8 @@ Vtx squint_room_squint_room_mesh_layer_3_vtx_0[46] = {
 	{{ {6, -50, 69}, 0, {-32, 992}, {4, 110, 64, 255} }},
 };
 
-Gfx squint_room_squint_room_mesh_layer_3_tri_0[] = {
-	gsSPVertex(squint_room_squint_room_mesh_layer_3_vtx_0 + 0, 32, 0),
+Gfx squint_room_squint_room_mesh_layer_1_tri_4[] = {
+	gsSPVertex(squint_room_squint_room_mesh_layer_1_vtx_4 + 0, 32, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 3, 1, 0),
 	gsSP2Triangles(4, 5, 6, 0, 4, 7, 5, 0),
 	gsSP2Triangles(8, 9, 10, 0, 8, 10, 11, 0),
@@ -1774,7 +1774,7 @@ Gfx squint_room_squint_room_mesh_layer_3_tri_0[] = {
 	gsSP2Triangles(17, 28, 18, 0, 29, 28, 17, 0),
 	gsSP2Triangles(19, 29, 17, 0, 29, 30, 28, 0),
 	gsSP2Triangles(31, 28, 30, 0, 31, 27, 28, 0),
-	gsSPVertex(squint_room_squint_room_mesh_layer_3_vtx_0 + 32, 14, 0),
+	gsSPVertex(squint_room_squint_room_mesh_layer_1_vtx_4 + 32, 14, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 3, 1, 0),
 	gsSP2Triangles(4, 3, 0, 0, 4, 5, 3, 0),
 	gsSP2Triangles(6, 5, 4, 0, 6, 7, 5, 0),
@@ -1784,7 +1784,44 @@ Gfx squint_room_squint_room_mesh_layer_3_tri_0[] = {
 	gsSPEndDisplayList(),
 };
 
-Vtx squint_room_squint_room_mesh_layer_3_vtx_1[116] = {
+Vtx squint_room_squint_room_mesh_layer_2_vtx_0[8] = {
+	{{ {-63, -25, -90}, 0, {359, -124}, {0, 0, 127, 255} }},
+	{{ {-69, -27, -90}, 0, {-881, 255}, {216, 0, 120, 255} }},
+	{{ {-69, -38, -90}, 0, {-881, 2339}, {0, 0, 127, 255} }},
+	{{ {-63, -38, -90}, 0, {359, 2339}, {0, 0, 127, 255} }},
+	{{ {-56, -25, -90}, 0, {1806, -124}, {0, 0, 127, 255} }},
+	{{ {-56, -38, -90}, 0, {1806, 2339}, {0, 0, 127, 255} }},
+	{{ {-49, -27, -90}, 0, {3253, 255}, {40, 0, 120, 255} }},
+	{{ {-49, -38, -90}, 0, {3253, 2339}, {0, 0, 127, 255} }},
+};
+
+Gfx squint_room_squint_room_mesh_layer_2_tri_0[] = {
+	gsSPVertex(squint_room_squint_room_mesh_layer_2_vtx_0 + 0, 8, 0),
+	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
+	gsSP2Triangles(4, 0, 3, 0, 4, 3, 5, 0),
+	gsSP2Triangles(6, 4, 5, 0, 6, 5, 7, 0),
+	gsSPEndDisplayList(),
+};
+
+Vtx squint_room_squint_room_mesh_layer_2_vtx_1[8] = {
+	{{ {-67, -35, -87}, 0, {2057, 2023}, {0, 0, 127, 255} }},
+	{{ {-77, -30, -87}, 0, {-2126, -7}, {0, 0, 127, 255} }},
+	{{ {-77, -35, -87}, 0, {-2126, 2023}, {0, 0, 127, 255} }},
+	{{ {-67, -30, -87}, 0, {2057, -7}, {0, 0, 127, 255} }},
+	{{ {-42, -35, -87}, 0, {2057, 2023}, {0, 0, 127, 255} }},
+	{{ {-42, -30, -87}, 0, {2057, -7}, {0, 0, 127, 255} }},
+	{{ {-51, -30, -87}, 0, {-2126, -7}, {0, 0, 127, 255} }},
+	{{ {-51, -35, -87}, 0, {-2126, 2023}, {0, 0, 127, 255} }},
+};
+
+Gfx squint_room_squint_room_mesh_layer_2_tri_1[] = {
+	gsSPVertex(squint_room_squint_room_mesh_layer_2_vtx_1 + 0, 8, 0),
+	gsSP2Triangles(0, 1, 2, 0, 0, 3, 1, 0),
+	gsSP2Triangles(4, 5, 6, 0, 4, 6, 7, 0),
+	gsSPEndDisplayList(),
+};
+
+Vtx squint_room_squint_room_mesh_layer_3_vtx_0[116] = {
 	{{ {46, -51, 55}, 0, {-32, 992}, {126, 8, 240, 255} }},
 	{{ {46, -48, 50}, 0, {-32, 992}, {127, 0, 0, 255} }},
 	{{ {46, -40, 54}, 0, {-32, 992}, {65, 91, 60, 255} }},
@@ -1903,8 +1940,8 @@ Vtx squint_room_squint_room_mesh_layer_3_vtx_1[116] = {
 	{{ {-6, -51, 71}, 0, {-32, 992}, {253, 108, 67, 255} }},
 };
 
-Gfx squint_room_squint_room_mesh_layer_3_tri_1[] = {
-	gsSPVertex(squint_room_squint_room_mesh_layer_3_vtx_1 + 0, 32, 0),
+Gfx squint_room_squint_room_mesh_layer_3_tri_0[] = {
+	gsSPVertex(squint_room_squint_room_mesh_layer_3_vtx_0 + 0, 32, 0),
 	gsSP2Triangles(0, 1, 2, 0, 3, 0, 2, 0),
 	gsSP2Triangles(2, 4, 3, 0, 5, 4, 2, 0),
 	gsSP2Triangles(2, 6, 5, 0, 7, 5, 6, 0),
@@ -1920,7 +1957,7 @@ Gfx squint_room_squint_room_mesh_layer_3_tri_1[] = {
 	gsSP2Triangles(25, 26, 24, 0, 26, 27, 24, 0),
 	gsSP2Triangles(27, 26, 28, 0, 27, 28, 29, 0),
 	gsSP2Triangles(27, 29, 30, 0, 31, 30, 29, 0),
-	gsSPVertex(squint_room_squint_room_mesh_layer_3_vtx_1 + 32, 32, 0),
+	gsSPVertex(squint_room_squint_room_mesh_layer_3_vtx_0 + 32, 32, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
 	gsSP2Triangles(0, 3, 4, 0, 4, 3, 5, 0),
 	gsSP2Triangles(6, 4, 5, 0, 6, 5, 7, 0),
@@ -1936,7 +1973,7 @@ Gfx squint_room_squint_room_mesh_layer_3_tri_1[] = {
 	gsSP2Triangles(26, 25, 24, 0, 25, 26, 27, 0),
 	gsSP2Triangles(27, 28, 25, 0, 28, 27, 29, 0),
 	gsSP2Triangles(28, 29, 30, 0, 31, 28, 30, 0),
-	gsSPVertex(squint_room_squint_room_mesh_layer_3_vtx_1 + 64, 32, 0),
+	gsSPVertex(squint_room_squint_room_mesh_layer_3_vtx_0 + 64, 32, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 3, 1, 0),
 	gsSP2Triangles(0, 4, 3, 0, 3, 4, 5, 0),
 	gsSP2Triangles(3, 5, 6, 0, 6, 5, 7, 0),
@@ -1954,7 +1991,7 @@ Gfx squint_room_squint_room_mesh_layer_3_tri_1[] = {
 	gsSP2Triangles(25, 26, 27, 0, 27, 26, 28, 0),
 	gsSP2Triangles(27, 28, 29, 0, 27, 29, 30, 0),
 	gsSP1Triangle(27, 30, 31, 0),
-	gsSPVertex(squint_room_squint_room_mesh_layer_3_vtx_1 + 96, 20, 0),
+	gsSPVertex(squint_room_squint_room_mesh_layer_3_vtx_0 + 96, 20, 0),
 	gsSP2Triangles(0, 1, 2, 0, 3, 4, 5, 0),
 	gsSP2Triangles(5, 6, 3, 0, 6, 7, 3, 0),
 	gsSP2Triangles(7, 6, 8, 0, 9, 8, 6, 0),
@@ -1964,43 +2001,6 @@ Gfx squint_room_squint_room_mesh_layer_3_tri_1[] = {
 	gsSP2Triangles(16, 3, 15, 0, 15, 17, 16, 0),
 	gsSP2Triangles(16, 17, 1, 0, 18, 1, 17, 0),
 	gsSP1Triangle(19, 1, 18, 0),
-	gsSPEndDisplayList(),
-};
-
-Vtx squint_room_squint_room_mesh_layer_2_vtx_0[8] = {
-	{{ {-63, -25, -90}, 0, {359, -124}, {0, 0, 127, 255} }},
-	{{ {-69, -27, -90}, 0, {-881, 255}, {216, 0, 120, 255} }},
-	{{ {-69, -38, -90}, 0, {-881, 2339}, {0, 0, 127, 255} }},
-	{{ {-63, -38, -90}, 0, {359, 2339}, {0, 0, 127, 255} }},
-	{{ {-56, -25, -90}, 0, {1806, -124}, {0, 0, 127, 255} }},
-	{{ {-56, -38, -90}, 0, {1806, 2339}, {0, 0, 127, 255} }},
-	{{ {-49, -27, -90}, 0, {3253, 255}, {40, 0, 120, 255} }},
-	{{ {-49, -38, -90}, 0, {3253, 2339}, {0, 0, 127, 255} }},
-};
-
-Gfx squint_room_squint_room_mesh_layer_2_tri_0[] = {
-	gsSPVertex(squint_room_squint_room_mesh_layer_2_vtx_0 + 0, 8, 0),
-	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
-	gsSP2Triangles(4, 0, 3, 0, 4, 3, 5, 0),
-	gsSP2Triangles(6, 4, 5, 0, 6, 5, 7, 0),
-	gsSPEndDisplayList(),
-};
-
-Vtx squint_room_squint_room_mesh_layer_2_vtx_1[8] = {
-	{{ {-67, -35, -87}, 0, {2057, 2023}, {0, 0, 127, 255} }},
-	{{ {-77, -30, -87}, 0, {-2126, -7}, {0, 0, 127, 255} }},
-	{{ {-77, -35, -87}, 0, {-2126, 2023}, {0, 0, 127, 255} }},
-	{{ {-67, -30, -87}, 0, {2057, -7}, {0, 0, 127, 255} }},
-	{{ {-42, -35, -87}, 0, {2057, 2023}, {0, 0, 127, 255} }},
-	{{ {-42, -30, -87}, 0, {2057, -7}, {0, 0, 127, 255} }},
-	{{ {-51, -30, -87}, 0, {-2126, -7}, {0, 0, 127, 255} }},
-	{{ {-51, -35, -87}, 0, {-2126, 2023}, {0, 0, 127, 255} }},
-};
-
-Gfx squint_room_squint_room_mesh_layer_2_tri_1[] = {
-	gsSPVertex(squint_room_squint_room_mesh_layer_2_vtx_1 + 0, 8, 0),
-	gsSP2Triangles(0, 1, 2, 0, 0, 3, 1, 0),
-	gsSP2Triangles(4, 5, 6, 0, 4, 6, 7, 0),
 	gsSPEndDisplayList(),
 };
 
@@ -2187,23 +2187,9 @@ Gfx squint_room_squint_room_mesh_layer_1_with_revert[] = {
 	gsSPDisplayList(mat_squint_room_desk),
 	gsSPDisplayList(squint_room_squint_room_mesh_layer_1_tri_3),
 	gsSPDisplayList(mat_revert_squint_room_desk),
-	gsDPPipeSync(),
-	gsSPSetGeometryMode(G_LIGHTING),
-	gsSPClearGeometryMode(G_TEXTURE_GEN),
-	gsDPSetCombineLERP(0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT, 0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT),
-	gsSPTexture(65535, 65535, 0, 0, 0),
-	gsDPSetEnvColor(255, 255, 255, 255),
-	gsDPSetAlphaCompare(G_AC_NONE),
-	gsSPEndDisplayList(),
-};
-
-Gfx squint_room_squint_room_mesh_layer_3_with_revert[] = {
 	gsSPDisplayList(mat_squint_room_n64),
-	gsSPDisplayList(squint_room_squint_room_mesh_layer_3_tri_0),
+	gsSPDisplayList(squint_room_squint_room_mesh_layer_1_tri_4),
 	gsSPDisplayList(mat_revert_squint_room_n64),
-	gsSPDisplayList(mat_squint_room_cart),
-	gsSPDisplayList(squint_room_squint_room_mesh_layer_3_tri_1),
-	gsSPDisplayList(mat_revert_squint_room_cart),
 	gsDPPipeSync(),
 	gsSPSetGeometryMode(G_LIGHTING),
 	gsSPClearGeometryMode(G_TEXTURE_GEN),
@@ -2221,6 +2207,20 @@ Gfx squint_room_squint_room_mesh_layer_2_with_revert[] = {
 	gsSPDisplayList(mat_squint_room_rca_inputs),
 	gsSPDisplayList(squint_room_squint_room_mesh_layer_2_tri_1),
 	gsSPDisplayList(mat_revert_squint_room_rca_inputs),
+	gsDPPipeSync(),
+	gsSPSetGeometryMode(G_LIGHTING),
+	gsSPClearGeometryMode(G_TEXTURE_GEN),
+	gsDPSetCombineLERP(0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT, 0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT),
+	gsSPTexture(65535, 65535, 0, 0, 0),
+	gsDPSetEnvColor(255, 255, 255, 255),
+	gsDPSetAlphaCompare(G_AC_NONE),
+	gsSPEndDisplayList(),
+};
+
+Gfx squint_room_squint_room_mesh_layer_3_with_revert[] = {
+	gsSPDisplayList(mat_squint_room_cart),
+	gsSPDisplayList(squint_room_squint_room_mesh_layer_3_tri_0),
+	gsSPDisplayList(mat_revert_squint_room_cart),
 	gsDPPipeSync(),
 	gsSPSetGeometryMode(G_LIGHTING),
 	gsSPClearGeometryMode(G_TEXTURE_GEN),
