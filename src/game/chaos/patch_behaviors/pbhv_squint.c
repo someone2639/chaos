@@ -86,11 +86,11 @@ static void draw_n64_controls(void) {
     void *buttonDL = squint_room_button_squint_room_button_mesh_layer_1;
     void *stickDL = squint_room_stick_squint_room_stick_mesh_layer_1;
     void *dpadDL = squintroom_dpad_squintroom_dpad_mesh_layer_1;
-    Mtx *buttonMtxs = alloc_display_list(sizeof(Mtx) * 9);
+    Mtx *buttonMtxs = alloc_display_list(sizeof(Mtx) * 10);
 
-    // static f32 contX = 160;
-    // static f32 contY = 15;
-    // static f32 contZ = 87;
+    static f32 contX = 160;
+    static f32 contY = 15;
+    static f32 contZ = 87;
 
     u32 curMtx = 0;
 
@@ -180,28 +180,36 @@ static void draw_n64_controls(void) {
     gSPDisplayList(gDisplayListHead++, stickDL);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
+    u8 tiltCart = chaos_check_if_patch_active(CHAOS_PATCH_CARTRIDGE_TILT);
+    mtxTransformRPY(&buttonMtxs[curMtx++],
+        (Vec3f){66, 78, 13},
+        (Vec3f){0, 0, tiltCart ? 20 : 0},
+        (Vec3f){1.0f, 1.0f, 1.0f}
+    );
+    gSPDisplayList(gDisplayListHead++, squint_room_cart_squint_room_cart_mesh_layer_3_with_revert);
+    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 
-    // if (gPlayer1Controller->buttonDown & U_CBUTTONS) {
-    //     contY++;
-    // }
-    // if (gPlayer1Controller->buttonDown & D_CBUTTONS) {
-    //     contY--;
-    // }
+    if (gPlayer1Controller->buttonDown & U_CBUTTONS) {
+        contY++;
+    }
+    if (gPlayer1Controller->buttonDown & D_CBUTTONS) {
+        contY--;
+    }
 
-    // if (gPlayer1Controller->buttonDown & L_CBUTTONS) {
-    //     contX++;
-    // }
-    // if (gPlayer1Controller->buttonDown & R_CBUTTONS) {
-    //     contX--;
-    // }
-    // if (gPlayer1Controller->buttonDown & A_BUTTON) {
-    //     contZ++;
-    // }
-    // if (gPlayer1Controller->buttonDown & B_BUTTON) {
-    //     contZ--;
-    // }
+    if (gPlayer1Controller->buttonDown & L_CBUTTONS) {
+        contX++;
+    }
+    if (gPlayer1Controller->buttonDown & R_CBUTTONS) {
+        contX--;
+    }
+    if (gPlayer1Controller->buttonDown & A_BUTTON) {
+        contZ++;
+    }
+    if (gPlayer1Controller->buttonDown & B_BUTTON) {
+        contZ--;
+    }
 
-    // osSyncPrintf("CONT %.1f, %.1f, %.1f\n", contX, contY, contZ);
+    osSyncPrintf("CONT %.1f, %.1f, %.1f\n", contX, contY, contZ);
 }
 
 void draw_room(float scaleXY) {

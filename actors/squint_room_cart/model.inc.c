@@ -235,32 +235,32 @@ u8 squint_room_cart_sm64_rgba16[] = {
 	
 };
 
-Vtx squint_room_cart_squint_room_cart_mesh_layer_1_vtx_0[4] = {
-	{{ {-63, -25, -124}, 0, {-32, 992}, {0, 0, 127, 255} }},
-	{{ {-56, -15, -124}, 0, {868, -32}, {5, 34, 122, 255} }},
-	{{ {-63, -15, -124}, 0, {-32, -32}, {236, 121, 34, 255} }},
-	{{ {-56, -25, -124}, 0, {868, 992}, {0, 0, 127, 255} }},
+Vtx squint_room_cart_squint_room_cart_mesh_layer_3_vtx_0[4] = {
+	{{ {-5, -1, 0}, 0, {-32, 992}, {0, 0, 127, 255} }},
+	{{ {4, 12, 0}, 0, {868, -32}, {5, 34, 122, 255} }},
+	{{ {-5, 12, 0}, 0, {-32, -32}, {236, 121, 34, 255} }},
+	{{ {4, -1, 0}, 0, {868, 992}, {0, 0, 127, 255} }},
 };
 
-Gfx squint_room_cart_squint_room_cart_mesh_layer_1_tri_0[] = {
-	gsSPVertex(squint_room_cart_squint_room_cart_mesh_layer_1_vtx_0 + 0, 4, 0),
+Gfx squint_room_cart_squint_room_cart_mesh_layer_3_tri_0[] = {
+	gsSPVertex(squint_room_cart_squint_room_cart_mesh_layer_3_vtx_0 + 0, 4, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 3, 1, 0),
 	gsSPEndDisplayList(),
 };
 
-Vtx squint_room_cart_squint_room_cart_mesh_layer_3_vtx_0[8] = {
-	{{ {-56, -25, -124}, 0, {198, 395}, {0, 0, 127, 255} }},
-	{{ {-49, -27, -124}, 0, {147, 395}, {217, 11, 120, 255} }},
-	{{ {-49, -17, -124}, 0, {147, 395}, {82, 62, 75, 255} }},
-	{{ {-56, -15, -124}, 0, {198, 395}, {5, 34, 122, 255} }},
-	{{ {-69, -27, -124}, 0, {301, 395}, {38, 13, 120, 255} }},
-	{{ {-63, -25, -124}, 0, {250, 395}, {0, 0, 127, 255} }},
-	{{ {-63, -15, -124}, 0, {250, 395}, {236, 121, 34, 255} }},
-	{{ {-69, -17, -124}, 0, {301, 395}, {173, 60, 76, 255} }},
+Vtx squint_room_cart_squint_room_cart_mesh_layer_3_vtx_1[8] = {
+	{{ {4, -1, 0}, 0, {198, 395}, {0, 0, 127, 255} }},
+	{{ {13, -4, 0}, 0, {147, 395}, {217, 11, 120, 255} }},
+	{{ {13, 9, 0}, 0, {147, 395}, {82, 62, 75, 255} }},
+	{{ {4, 12, 0}, 0, {198, 395}, {5, 34, 122, 255} }},
+	{{ {-13, -4, 0}, 0, {301, 395}, {38, 13, 120, 255} }},
+	{{ {-5, -1, 0}, 0, {250, 395}, {0, 0, 127, 255} }},
+	{{ {-5, 12, 0}, 0, {250, 395}, {236, 121, 34, 255} }},
+	{{ {-13, 9, 0}, 0, {301, 395}, {173, 60, 76, 255} }},
 };
 
-Gfx squint_room_cart_squint_room_cart_mesh_layer_3_tri_0[] = {
-	gsSPVertex(squint_room_cart_squint_room_cart_mesh_layer_3_vtx_0 + 0, 8, 0),
+Gfx squint_room_cart_squint_room_cart_mesh_layer_3_tri_1[] = {
+	gsSPVertex(squint_room_cart_squint_room_cart_mesh_layer_3_vtx_1 + 0, 8, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
 	gsSP2Triangles(4, 5, 6, 0, 4, 6, 7, 0),
 	gsSPEndDisplayList(),
@@ -303,23 +303,12 @@ Gfx mat_revert_squint_room_cart_cart[] = {
 	gsSPEndDisplayList(),
 };
 
-Gfx squint_room_cart_squint_room_cart_mesh_layer_1_with_revert[] = {
-	gsSPDisplayList(mat_squint_room_cart_sm64),
-	gsSPDisplayList(squint_room_cart_squint_room_cart_mesh_layer_1_tri_0),
-	gsSPDisplayList(mat_revert_squint_room_cart_sm64),
-	gsDPPipeSync(),
-	gsSPSetGeometryMode(G_LIGHTING),
-	gsSPClearGeometryMode(G_TEXTURE_GEN),
-	gsDPSetCombineLERP(0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT, 0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT),
-	gsSPTexture(65535, 65535, 0, 0, 0),
-	gsDPSetEnvColor(255, 255, 255, 255),
-	gsDPSetAlphaCompare(G_AC_NONE),
-	gsSPEndDisplayList(),
-};
-
 Gfx squint_room_cart_squint_room_cart_mesh_layer_3_with_revert[] = {
-	gsSPDisplayList(mat_squint_room_cart_cart),
+	gsSPDisplayList(mat_squint_room_cart_sm64),
 	gsSPDisplayList(squint_room_cart_squint_room_cart_mesh_layer_3_tri_0),
+	gsSPDisplayList(mat_revert_squint_room_cart_sm64),
+	gsSPDisplayList(mat_squint_room_cart_cart),
+	gsSPDisplayList(squint_room_cart_squint_room_cart_mesh_layer_3_tri_1),
 	gsSPDisplayList(mat_revert_squint_room_cart_cart),
 	gsDPPipeSync(),
 	gsSPSetGeometryMode(G_LIGHTING),
