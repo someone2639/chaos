@@ -182,7 +182,7 @@ static void draw_n64_controls(void) {
 
     u8 tiltCart = chaos_check_if_patch_active(CHAOS_PATCH_CARTRIDGE_TILT);
     mtxTransformRPY(&buttonMtxs[curMtx++],
-        (Vec3f){66, 78, 13},
+        (Vec3f){66, 76, 13},
         (Vec3f){0, 0, tiltCart ? 20 : 0},
         (Vec3f){1.0f, 1.0f, 1.0f}
     );
