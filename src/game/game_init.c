@@ -1039,12 +1039,12 @@ void thread5_game_loop(UNUSED void *arg) {
         menu_update_input_dir();
         addr = level_script_execute(addr);
 
-        if (gPlayer1Controller->buttonPressed & R_TRIG) {
-            chaos_remove_expired_entry(0, "%s: Removed patch!");
-        }
 #ifdef SOMEONE2639_CRAZY_EXPERIMENTS
         if (gPlayer1Controller->buttonPressed & L_TRIG) {
             chaos_add_new_entry(CHAOS_PATCH_MIRROR_MODE);
+        }
+        if (gPlayer1Controller->buttonPressed & R_TRIG) {
+            chaos_remove_expired_entry(0, "%s: Removed patch!");
         }
         if ((gPlayer1Controller->buttonPressed & (A_BUTTON|L_TRIG)) && (gPlayer1Controller->buttonDown & (A_BUTTON|L_TRIG)) == (A_BUTTON | L_TRIG)) {
             extern void chs_debug_serve_ads(void);

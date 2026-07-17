@@ -932,6 +932,12 @@ static u32 set_mario_action_airborne(struct MarioState *m, u32 action, u32 actio
             break;
     }
 
+    // Check if Mario was already in the air (check old action not new action)
+    if (((m->action & ACT_GROUP_MASK) == ACT_GROUP_AIRBORNE) && (m->action & ACT_FLAG_AIR)) {
+        m->peakHeightNoCancel = MAX(m->pos[1], m->peakHeightNoCancel);
+    } else {
+        m->peakHeightNoCancel = m->pos[1];
+    }
     m->peakHeight = m->pos[1];
     m->flags |= MARIO_UNKNOWN_08;
 

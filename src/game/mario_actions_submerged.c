@@ -1135,6 +1135,7 @@ s32 act_ground_pound_water(struct MarioState *m) {
             if (m->pos[1] + yOffset + (160.0f * m->size) < m->ceilHeight) {
                 m->pos[1] += yOffset;
                 m->peakHeight = m->pos[1];
+                m->peakHeightNoCancel = m->pos[1];
                 vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
             }
         }

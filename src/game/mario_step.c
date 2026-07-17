@@ -645,6 +645,7 @@ s32 perform_air_step(struct MarioState *m, u32 stepArg) {
 
     if (m->vel[1] >= 0.0f) {
         m->peakHeight = m->pos[1];
+        m->peakHeightNoCancel = m->pos[1];
     }
 
     m->terrainSoundAddend = mario_get_terrain_sound_addend(m);

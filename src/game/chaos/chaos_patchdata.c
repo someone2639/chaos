@@ -593,7 +593,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 2,
         .duration           = 12,
 
-        INCOMPATIBLE(CHAOS_PATCH_LETHAL_FALL_DAMAGE),
+        INCOMPATIBLE(CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_FALL_CANCEL_CANCEL),
 
         .name               = "Long Fall Boots",
         .shortDescription   = "Mario is immune to fall damage.",
@@ -1047,7 +1047,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 10,
         .durationImpossible = 12,
 
-        INCOMPATIBLE(CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_ONE_HIT_WONDER),
+        INCOMPATIBLE(CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_FALL_CANCEL_CANCEL),
         .activatedInitFunc  = chs_act_cosmic_rays,
         .frameUpdateFunc    = chs_update_cosmic_rays,
 
@@ -1578,9 +1578,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "60 FPS (Double Time!)",
         .shortDescription   = "It's like playing the game two times at the same time!",
-        .longDescription    = "This will probably not be hitting 60 FPS most of the time while running on hardware...hopefully console players enjoy the choppy framerates!",
+        .longDescription    = "This will probably not regularly be hitting 60 FPS while running on hardware...hopefully console players enjoy the choppy framerates!",
     },
-    [CHAOS_PATCH_TOP_DOWN_CAMERA] = { // TODO: BUG: Joystick is busted when twirling with top down camera
+    [CHAOS_PATCH_TOP_DOWN_CAMERA] = { // TODO: BUG: Joystick is busted when twirling with top down camera, also TTC is completely unplayable
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
@@ -2301,19 +2301,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Realistic Fall Damage",
         .shortDescription   = "Falling will now instantly kill Mario.",
 },
-[CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE] = {
-        .durationType       = CHAOS_DURATION_STARS,
-        .effectType         = CHAOS_EFFECT_NEGATIVE,
-        .severity           = 3,
-        .duration           = 3,
-        .durationHard       = 4,
-        .durationImpossible = 5,
-
-        INCOMPATIBLE(CHAOS_PATCH_NO_FALL_DAMAGE, CHAOS_PATCH_COSMIC_RAYS, CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_LOSEMOVE_LEDGE_GRAB, CHAOS_PATCH_SONIC_SIMULATOR, CHAOS_PATCH_DAMAGE_LOTTERY),
-
-        .name               = "Unrealistic Fall Damage",
-        .shortDescription   = "Falling from any height whatsoever will crush Mario's stubby little legs.",
-},
 
 // Audio Modifiers
     [CHAOS_PATCH_INVERTED_SOUND] = {
@@ -2409,6 +2396,32 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     },
 
 // Miscellaneous Modifiers
+    [CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE] = {
+            .durationType       = CHAOS_DURATION_STARS,
+            .effectType         = CHAOS_EFFECT_NEGATIVE,
+            .severity           = 3,
+            .duration           = 3,
+            .durationHard       = 4,
+            .durationImpossible = 5,
+
+            INCOMPATIBLE(CHAOS_PATCH_NO_FALL_DAMAGE, CHAOS_PATCH_COSMIC_RAYS, CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_LOSEMOVE_LEDGE_GRAB, CHAOS_PATCH_SONIC_SIMULATOR, CHAOS_PATCH_DAMAGE_LOTTERY),
+
+            .name               = "Unrealistic Fall Damage",
+            .shortDescription   = "Falling from any height whatsoever will crush Mario's stubby little legs.",
+    },
+    [CHAOS_PATCH_FALL_CANCEL_CANCEL] = {
+            .durationType       = CHAOS_DURATION_STARS,
+            .effectType         = CHAOS_EFFECT_NEGATIVE,
+            .severity           = 2,
+            .duration           = 8,
+            .durationHard       = 10,
+            .durationImpossible = 12,
+
+            INCOMPATIBLE(CHAOS_PATCH_NO_FALL_DAMAGE, CHAOS_PATCH_COSMIC_RAYS),
+
+            .name               = "Fall Cancel Cancel",
+            .shortDescription   = "Mario cannot cancel fall damage by diving, ground pounding, or bonking.",
+    },
     [CHAOS_PATCH_MARIO_INVISIBLE] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,

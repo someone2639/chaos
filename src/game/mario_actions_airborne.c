@@ -74,7 +74,11 @@ s32 check_fall_damage(struct MarioState *m, u32 hardFallAction) {
         gravity = 0.05f;
     }
 
-    fallHeight = m->peakHeight - m->pos[1];
+    if (chaos_check_if_patch_active(CHAOS_PATCH_FALL_CANCEL_CANCEL)) {
+        fallHeight = MAX(m->peakHeight, m->peakHeightNoCancel) - m->pos[1];
+    } else {
+        fallHeight = m->peakHeight - m->pos[1];
+    }
 
 #pragma GCC diagnostic push
 #if defined(__clang__)
@@ -152,10 +156,16 @@ s32 should_get_stuck_in_ground(struct MarioState *m) {
     struct Surface *floor = m->floor;
     s32 flags = floor->flags;
     s32 type = floor->type;
+    f32 fallHeight;
+    if (chaos_check_if_patch_active(CHAOS_PATCH_FALL_CANCEL_CANCEL)) {
+        fallHeight = MAX(m->peakHeight, m->peakHeightNoCancel) - m->pos[1];
+    } else {
+        fallHeight = m->peakHeight - m->pos[1];
+    }
 
     if (floor != NULL && (terrainType == TERRAIN_SNOW || terrainType == TERRAIN_SAND)
         && (type != SURFACE_BURNING || chaos_check_if_patch_active(CHAOS_PATCH_NO_LAVA_DAMAGE)) && SURFACE_IS_NOT_HARD(type)) {
-        if (!(flags & 0x01) && m->peakHeight - m->pos[1] > 1000.0f && floor->normal.y >= 0.8660254f) {
+        if (!(flags & 0x01) && fallHeight > 1000.0f && floor->normal.y >= 0.8660254f) {
             return TRUE;
         }
     }
@@ -1065,6 +1075,7 @@ s32 act_ground_pound(struct MarioState *m) {
             if (m->pos[1] + yOffset + (160.0f * m->size) < m->ceilHeight) {
                 m->pos[1] += yOffset;
                 m->peakHeight = m->pos[1];
+                m->peakHeightNoCancel = MAX(m->pos[1], m->peakHeightNoCancel);
                 vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
             }
         }
