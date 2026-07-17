@@ -932,7 +932,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 12,
         .durationImpossible = 14,
 
-        INCOMPATIBLE(CHAOS_PATCH_ONE_HIT_WONDER),
+        INCOMPATIBLE(CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_GREEN_DEMON),
         .activatedInitFunc  = chs_act_random_shock,
         .frameUpdateFunc    = chs_update_random_shock,
 
@@ -948,7 +948,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 8,
         .durationImpossible = 10,
 
-        INCOMPATIBLE(CHAOS_PATCH_ONE_HIT_WONDER),
+        INCOMPATIBLE(CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_GREEN_DEMON),
         .activatedInitFunc  = chs_act_random_burn,
         .frameUpdateFunc    = chs_update_random_burn,
 
@@ -1311,7 +1311,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 2,
         .durationImpossible = 2,
 
-        INCOMPATIBLE(CHAOS_PATCH_WALKIES, CHAOS_PATCH_RED_LIGHT, CHAOS_PATCH_BRAWL_TRIPPING, CHAOS_PATCH_RANDOM_SLEEP),
+        INCOMPATIBLE(CHAOS_PATCH_WALKIES, CHAOS_PATCH_RED_LIGHT, CHAOS_PATCH_BRAWL_TRIPPING, CHAOS_PATCH_RANDOM_SLEEP, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE, CHAOS_PATCH_RANDOM_SHOCK, CHAOS_PATCH_RANDOM_BURN),
         .conditionalFunc    = chs_cond_green_demon,
         .activatedInitFunc  = chs_act_green_demon,
         .instWarpPreFunc    = chs_instwarp_pre_green_demon,
@@ -2405,7 +2405,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
             .durationHard       = 4,
             .durationImpossible = 5,
 
-            INCOMPATIBLE(CHAOS_PATCH_NO_FALL_DAMAGE, CHAOS_PATCH_COSMIC_RAYS, CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_LOSEMOVE_LEDGE_GRAB, CHAOS_PATCH_SONIC_SIMULATOR, CHAOS_PATCH_DAMAGE_LOTTERY),
+            INCOMPATIBLE(CHAOS_PATCH_NO_FALL_DAMAGE, CHAOS_PATCH_COSMIC_RAYS, CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_LOSEMOVE_LEDGE_GRAB, CHAOS_PATCH_SONIC_SIMULATOR, CHAOS_PATCH_DAMAGE_LOTTERY, CHAOS_PATCH_GREEN_DEMON),
 
             .name               = "Unrealistic Fall Damage",
             .shortDescription   = "Falling from any height whatsoever will crush Mario's stubby little legs.",
