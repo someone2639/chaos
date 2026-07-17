@@ -1435,7 +1435,7 @@ void update_stick_history(struct MarioState *m, f32 mag, s16 s_angle) {
 
     if (chaos_check_if_patch_active(CHAOS_PATCH_SUNSHINE_TWIRL)) {
         if (mag < SPIN_DEADZONE) {
-            osSyncPrintf("no spin stick off\n");
+            // osSyncPrintf("no spin stick off\n");
             clear_stick_history();
             return;
         }
@@ -1478,12 +1478,12 @@ void update_stick_history(struct MarioState *m, f32 mag, s16 s_angle) {
         u32 streak = 0;
         u32 min = 999;
         u32 max = 0;
-        osSyncPrintf("STICK: [");
+        // osSyncPrintf("STICK: [");
         for (int i = 0; i < ARRAY_COUNT(hitDirections); i++) {
             if (hitDirections[i] > 0) {
                 streak++;
             }
-            osSyncPrintf("%d ", hitDirections[i]);
+            // osSyncPrintf("%d ", hitDirections[i]);
 
             // Prevent stale spin states
             if (hitDirections[i] < min) {
@@ -1493,14 +1493,14 @@ void update_stick_history(struct MarioState *m, f32 mag, s16 s_angle) {
                 max = hitDirections[i];
             }
         }
-        osSyncPrintf("] %d\n", m->canSpinJump);
+        // osSyncPrintf("] %d\n", m->canSpinJump);
         // give up spinjump if we hold W for too long
         u32 threshold = m->canSpinJump ? NUM_FRAMES_HELD_TO_CANCEL_SPIN_IF_CAN_ALREADY_SPIN
                                        : NUM_FRAMES_HELD_TO_CANCEL_SPIN;
         if ((max - min) >= threshold) {
             // ... unless we're airborne
             if (!(m->action & ACT_FLAG_AIR)) {
-                osSyncPrintf("no spin too w\n");
+                // osSyncPrintf("no spin too w\n");
                 clear_stick_history();
                 m->canSpinJump = 0;
                 streak = 0;
