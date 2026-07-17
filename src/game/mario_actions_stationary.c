@@ -1143,6 +1143,7 @@ s32 check_common_stationary_cancels(struct MarioState *m) {
 
 s32 mario_execute_stationary_action(struct MarioState *m) {
     s32 cancel;
+    clear_stick_history();
 
     if (check_common_stationary_cancels(m)) {
         return TRUE;

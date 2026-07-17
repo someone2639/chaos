@@ -1415,7 +1415,8 @@ void update_mario_button_inputs(struct MarioState *m) {
     }
 }
 
-static u8 hitDirections[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+// 8 directions, plus one for any angles we can't catch
+static u8 hitDirections[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 void clear_stick_history(void) {
     for (int i = 0; i < ARRAY_COUNT(hitDirections); i++) {
@@ -1445,30 +1446,33 @@ void update_stick_history(struct MarioState *m, f32 mag, s16 s_angle) {
         #define SPIN_JUMP_ANGLE_THRESHOLD_ANGLED (0x9FF)
         #define NUM_DIRECTIONS_HIT_FOR_SPIN 5
         #define NUM_FRAMES_HELD_TO_CANCEL_SPIN 4
+        #define NUM_FRAMES_HELD_TO_CANCEL_SPIN_IF_CAN_ALREADY_SPIN 15
 
         if (is_close(angle, 0x0000, SPIN_JUMP_ANGLE_THRESHOLD_DIRECT)) {
             hitDirections[0] += 1;
         }
-        if (is_close(angle, 0x4000, SPIN_JUMP_ANGLE_THRESHOLD_DIRECT)) {
+        else if (is_close(angle, 0x4000, SPIN_JUMP_ANGLE_THRESHOLD_DIRECT)) {
             hitDirections[1] += 1;
         }
-        if (is_close(angle, 0x8000, SPIN_JUMP_ANGLE_THRESHOLD_DIRECT)) {
+        else if (is_close(angle, 0x8000, SPIN_JUMP_ANGLE_THRESHOLD_DIRECT)) {
             hitDirections[2] += 1;
         }
-        if (is_close(angle, 0xC000, SPIN_JUMP_ANGLE_THRESHOLD_DIRECT)) {
+        else if (is_close(angle, 0xC000, SPIN_JUMP_ANGLE_THRESHOLD_DIRECT)) {
             hitDirections[3] += 1;
         }
-        if (is_close(angle, 0x2000, SPIN_JUMP_ANGLE_THRESHOLD_ANGLED)) {
+        else if (is_close(angle, 0x2000, SPIN_JUMP_ANGLE_THRESHOLD_ANGLED)) {
             hitDirections[4] += 1;
         }
-        if (is_close(angle, 0x6000, SPIN_JUMP_ANGLE_THRESHOLD_ANGLED)) {
+        else if (is_close(angle, 0x6000, SPIN_JUMP_ANGLE_THRESHOLD_ANGLED)) {
             hitDirections[5] += 1;
         }
-        if (is_close(angle, 0xA000, SPIN_JUMP_ANGLE_THRESHOLD_ANGLED)) {
+        else if (is_close(angle, 0xA000, SPIN_JUMP_ANGLE_THRESHOLD_ANGLED)) {
             hitDirections[6] += 1;
         }
-        if (is_close(angle, 0xE000, SPIN_JUMP_ANGLE_THRESHOLD_ANGLED)) {
+        else if (is_close(angle, 0xE000, SPIN_JUMP_ANGLE_THRESHOLD_ANGLED)) {
             hitDirections[7] += 1;
+        } else {
+            hitDirections[8] += 1;
         }
 
         u32 streak = 0;
@@ -1479,7 +1483,7 @@ void update_stick_history(struct MarioState *m, f32 mag, s16 s_angle) {
             if (hitDirections[i] > 0) {
                 streak++;
             }
-            osSyncPrintf("%d", hitDirections[i]);
+            osSyncPrintf("%d ", hitDirections[i]);
 
             // Prevent stale spin states
             if (hitDirections[i] < min) {
@@ -1491,11 +1495,14 @@ void update_stick_history(struct MarioState *m, f32 mag, s16 s_angle) {
         }
         osSyncPrintf("] %d\n", m->canSpinJump);
         // give up spinjump if we hold W for too long
-        if ((max - min) >= NUM_FRAMES_HELD_TO_CANCEL_SPIN) {
+        u32 threshold = m->canSpinJump ? NUM_FRAMES_HELD_TO_CANCEL_SPIN_IF_CAN_ALREADY_SPIN
+                                       : NUM_FRAMES_HELD_TO_CANCEL_SPIN;
+        if ((max - min) >= threshold) {
             // ... unless we're airborne
             if (!(m->action & ACT_FLAG_AIR)) {
                 osSyncPrintf("no spin too w\n");
                 clear_stick_history();
+                m->canSpinJump = 0;
                 streak = 0;
             }
         }
