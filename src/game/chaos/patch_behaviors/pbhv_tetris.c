@@ -782,7 +782,7 @@ void tetris_state_new_piece(void) {
     sTetris.usedHold = FALSE;
 
     if(!tetris_fit_piece(&sTetris.piece)) {
-        gMarioState->health = 0;
+        remove_collected_star();
         sTetris.state = TET_STATE_GAME_OVER;
     } else {
         sTetris.state = TET_STATE_DEFAULT;
@@ -794,10 +794,8 @@ void tetris_state_game_over(void) {
         play_sound(SOUND_MENU_TETRIS_LOCK, gGlobalSoundSource);
     }
 
-    if(sTetris.timer++ > TET_GAME_OVER_ANIM) {
-        if(gMarioState->health != 0) {
-            tetris_reset();
-        }
+    if(sTetris.timer++ > TET_RESET_TIMER) {
+        tetris_reset();
     }
 }
 

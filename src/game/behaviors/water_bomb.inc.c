@@ -75,7 +75,7 @@ void bhv_water_bomb_spawner_update(void) {
 }
 
 void bhv_water_bomb_spawner_chaos_init(void) {
-    o->oWaterBombSpawnerTimeToSpawn = random_linear_offset(0, 150);
+    o->oWaterBombSpawnerTimeToSpawn = random_linear_offset(150, 150);
 }
 
 /**
@@ -135,7 +135,7 @@ void bhv_water_bomb_spawner_chaos_update(void) {
                 }
             }
             
-            bhv_water_bomb_spawner_chaos_init(); // Reset spawn timer
+            o->oWaterBombSpawnerTimeToSpawn = random_linear_offset(0, 150);
         }
     }
 }

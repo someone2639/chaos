@@ -402,7 +402,7 @@ void add_uncollected_star(void) {
 void remove_collected_star(void) {
     s32 totalStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
     if (totalStars == 0) {
-        // This is now possible with gambling wheel (left alone to ensure there is always a catastrophe possibility)
+        // This is now possible with tetris and gambling wheel (left alone to ensure there is always a catastrophe possibility)
         // assert(FALSE, "remove_collected_star:\nTried to remove collected star with 0 stars!");
         return;
     }

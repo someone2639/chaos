@@ -23,9 +23,26 @@ u8 chs_cond_lives_increase_lv3(void) { return (gChaosGameMode == CHAOS_GAMEMODE_
 u8 chs_cond_lives_decrease_lv1(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives >= LV1_LIVES_NEG); }
 u8 chs_cond_lives_decrease_lv2(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives >= LV2_LIVES_NEG); }
 u8 chs_cond_lives_decrease_lv3(void) { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE && gMarioState->numLives >= LV3_LIVES_NEG); }
-u8 chs_cond_instant_game_over(void)  { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE); }
 u8 chs_cond_life_gambler(void)       { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE); }
 u8 chs_cond_lifetime_sale(void)      { return (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE); }
+
+u8 chs_cond_instant_game_over(void)  {
+    if (gChaosGameMode != CHAOS_GAMEMODE_CHALLENGE) {
+        return FALSE;
+    }
+
+    // Make sure no active patches are disabled in hardcore mode for fairness
+    for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+        struct ChaosActiveEntry *entry = &gChaosActiveEntries[i];
+        const struct ChaosPatch *patch = &gChaosPatches[entry->id];
+
+        if (patch->disableForHardcore) {
+            return FALSE;
+        }
+    }
+
+    return TRUE;
+}
 
 void chs_act_lives_increase_lv1(void) {
     gMarioState->numLives += LV1_LIVES_POS;

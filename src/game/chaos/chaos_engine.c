@@ -68,7 +68,7 @@ u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId) {
 }
 
 static u8 chaos_check_conditional_func(const struct ChaosPatch *patch) {
-    if (gChaosGameMode == CHAOS_GAMEMODE_HARDCORE && patch->disableForHardcore) {
+    if (patch->disableForHardcore && (gChaosGameMode == CHAOS_GAMEMODE_HARDCORE || chaos_check_if_patch_active(CHAOS_PATCH_INSTANT_GAME_OVER))) {
         return FALSE;
     }
     if (gChaosForcedDurationType != CHAOS_DURATION_DO_NOT_FORCE && gChaosForcedDurationType != patch->durationType) {

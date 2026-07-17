@@ -926,11 +926,11 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_RANDOM_SHOCK] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
-        .severity           = 1,
+        .severity           = 2,
         .disableForHardcore = TRUE,
-        .duration           = 6,
-        .durationHard       = 8,
-        .durationImpossible = 10,
+        .duration           = 10,
+        .durationHard       = 12,
+        .durationImpossible = 14,
 
         INCOMPATIBLE(CHAOS_PATCH_ONE_HIT_WONDER),
         .activatedInitFunc  = chs_act_random_shock,
@@ -1389,11 +1389,12 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
         .isStackable        = TRUE,
+        .disableForHardcore = TRUE, // Patch too unpredictable (also with one-hit wonder)
         .duration           = 8,
         .durationHard       = 10,
         .durationImpossible = 12,
 
-        INCOMPATIBLE(CHAOS_PATCH_WALKIES, CHAOS_PATCH_RED_LIGHT, CHAOS_PATCH_BRAWL_TRIPPING, CHAOS_PATCH_RANDOM_SLEEP),
+        INCOMPATIBLE(CHAOS_PATCH_WALKIES, CHAOS_PATCH_RED_LIGHT, CHAOS_PATCH_BRAWL_TRIPPING, CHAOS_PATCH_RANDOM_SLEEP, CHAOS_PATCH_ONE_HIT_WONDER),
         .conditionalFunc    = chs_cond_water_bombs,
         .frameUpdateFunc    = chs_update_water_bombs,
 
@@ -2454,7 +2455,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 5,
         .durationImpossible = 6,
 
-        INCOMPATIBLE(CHAOS_PATCH_RANDOM_SHOCK, CHAOS_PATCH_RANDOM_BURN, CHAOS_PATCH_COSMIC_RAYS, CHAOS_PATCH_DAMAGE_LOTTERY, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE),
+        INCOMPATIBLE(CHAOS_PATCH_RANDOM_SHOCK, CHAOS_PATCH_RANDOM_BURN, CHAOS_PATCH_COSMIC_RAYS, CHAOS_PATCH_DAMAGE_LOTTERY, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE, CHAOS_PATCH_WATER_BOMBS),
 
         .name               = "One-Hit Wonder",
         .shortDescription   = "Mario will die instantly upon taking any form of damage (other than from swimming or poison).",
@@ -2766,7 +2767,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration           = 4,
         .durationHard       = 5,
         .durationImpossible = 6,
-        .disableForHardcore = TRUE,
         
         INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_A, CHAOS_PATCH_BUTTON_BROKEN_B, CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SWAPPED_ZR_AB, CHAOS_PATCH_BUTTON_BROKEN_C, CHAOS_PATCH_RED_LIGHT),
         .activatedInitFunc  = chs_act_tetris,
@@ -2774,7 +2774,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc    = chs_update_tetris,
 
         .name               = "Tetris Effect",
-        .shortDescription   = "Control a simultaneous game of Tetris. If you lose, Mario dies. See details screen for controls!", // TODO: This should take a star instead of killing the player.
+        .shortDescription   = "Control a simultaneous game of Tetris. Mario will lose one star per failure. See details screen for controls!",
         .longDescription    = "Hold @9F9FFF--R@-------- to control Tetris and lock Mario's inputs.\n"
                               "Move Piece\t@7F7F7F-- -- @9F9FFF--D-Pad/C Left/Right@--------\n"
                               "Hard Drop\t@7F7F7F-- -- @9F9FFF--D-Pad/C Up@--------\n"
