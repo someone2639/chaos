@@ -27,6 +27,9 @@
 #define BLIND_TIME_END    (BLIND_TIME_MAX + (30 * 5)) // BLIND_TIME_MAX + 5 seconds
 #define BLIND_TIME_BUFFER (30 * 60 * 1) // At least 60 seconds of relief
 
+// Invisible Wall Fun
+#define QSTEP_RANDOM_INVISWALL_CHANCE 0x800
+
 /**************
  * Time Limit *
  **************/

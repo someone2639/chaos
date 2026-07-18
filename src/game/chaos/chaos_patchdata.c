@@ -1068,6 +1068,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Random Button Presses",
         .shortDescription   = "Periodically trigger a random button press.",
     },
+    [CHAOS_PATCH_RANDOM_INVISIBLE_WALLS] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 2,
+        .disableForHardcore = TRUE,
+        .duration           = 10,
+        .durationHard       = 12,
+        .durationImpossible = 14,
+
+        INCOMPATIBLE(CHAOS_PATCH_LETHAL_BONK),
+
+        .name               = "Invisible Walls",
+        .shortDescription   = "Mario may find himself colliding with jack squat while airborne. Why did Nintendo put those there??",
+    },
 
 // Movement Modifiers
     [CHAOS_PATCH_LOSEMOVE_BREAKDANCE] = {
@@ -2285,6 +2299,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration           = 6,
         .durationHard       = 8,
         .durationImpossible = 10,
+
+        INCOMPATIBLE(CHAOS_PATCH_RANDOM_INVISIBLE_WALLS),
 
         .name               = "Realistic Concussions",
         .shortDescription   = "Careful not to hit your head! Bonking now results in severe brain trauma.",

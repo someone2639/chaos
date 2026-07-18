@@ -31,6 +31,6 @@ u32 mario_update_windy_ground(struct MarioState *);
 void stop_and_set_height_to_floor(struct MarioState *);
 s32 stationary_ground_step(struct MarioState *);
 s32 perform_ground_step(struct MarioState *);
-s32 perform_air_step(struct MarioState *, u32);
+s32 perform_air_step(struct MarioState *, u32, u8);
 
 #endif // MARIO_STEP_H

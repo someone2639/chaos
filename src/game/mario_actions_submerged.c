@@ -1422,7 +1422,7 @@ static s32 act_metal_water_jump(struct MarioState *m) {
     play_metal_water_jumping_sound(m, FALSE);
     set_mario_animation(m, MARIO_ANIM_SINGLE_JUMP);
 
-    switch (perform_air_step(m, 0)) {
+    switch (perform_air_step(m, 0, FALSE)) {
         case AIR_STEP_LANDED:
             set_mario_action(m, ACT_METAL_WATER_JUMP_LAND, 0);
             break;
@@ -1451,7 +1451,7 @@ static s32 act_hold_metal_water_jump(struct MarioState *m) {
     play_metal_water_jumping_sound(m, FALSE);
     set_mario_animation(m, MARIO_ANIM_JUMP_WITH_LIGHT_OBJ);
 
-    switch (perform_air_step(m, 0)) {
+    switch (perform_air_step(m, 0, FALSE)) {
         case AIR_STEP_LANDED:
             set_mario_action(m, ACT_HOLD_METAL_WATER_JUMP_LAND, 0);
             break;
