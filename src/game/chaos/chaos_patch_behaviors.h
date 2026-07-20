@@ -262,6 +262,8 @@ void chs_remove_cherry_clone(void);
 void chs_init_cherry_clones_after_warp(void);
 void chs_act_45_degree_camera(void);
 void chs_deact_45_degree_camera(void);
+void chs_act_smooth_camera(void);
+void chs_deact_smooth_camera(void);
 void chs_update_noclip(void);
 u8 chs_cond_randomize_warps(void);
 void chs_init_dvd(void);

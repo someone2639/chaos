@@ -298,9 +298,9 @@
 #define CAM_EVENT_SHUFFLE             14
 
 enum ChsForced8DirFlags {
-    FORCED_8DIR_FLAGS_NONE      = 0,
-    FORCED_8DIR_FLAGS_45DEG_CAM = (1 << 0),
-    // TODO: Slot reserved for smooth camera patch
+    FORCED_8DIR_FLAGS_NONE       = 0,
+    FORCED_8DIR_FLAGS_45DEG_CAM  = (1 << 0),
+    FORCED_8DIR_FLAGS_SMOOTH_CAM = (2 << 0),
 };
 
 /**

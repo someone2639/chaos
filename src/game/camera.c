@@ -1485,16 +1485,25 @@ void mode_8_directions_camera(struct Camera *c) {
 
     radial_camera_input(c, 0.f);
 
-    if (gPlayer1Controller->buttonPressed & R_CBUTTONS) {
-        s8DirModeYawOffset += DEGREES(45);
-        play_sound_cbutton_side();
-    }
-    if (gPlayer1Controller->buttonPressed & L_CBUTTONS) {
-        s8DirModeYawOffset -= DEGREES(45);
-        play_sound_cbutton_side();
+    if (gChsForced8DirCam & FORCED_8DIR_FLAGS_SMOOTH_CAM) {
+        if (gPlayer1Controller->buttonDown & R_CBUTTONS) {
+            s8DirModeYawOffset += DEGREES(6);
+        }
+        if (gPlayer1Controller->buttonDown & L_CBUTTONS) {
+            s8DirModeYawOffset -= DEGREES(6);
+        }
+    } else {
+        if (gPlayer1Controller->buttonPressed & R_CBUTTONS) {
+            s8DirModeYawOffset += DEGREES(45);
+            play_sound_cbutton_side();
+        }
+        if (gPlayer1Controller->buttonPressed & L_CBUTTONS) {
+            s8DirModeYawOffset -= DEGREES(45);
+            play_sound_cbutton_side();
+        }
     }
 
-    if (sSelectionFlags & CAM_MODE_8_DIR_ACTIVE) {
+    if (gChsForced8DirCam & FORCED_8DIR_FLAGS_45DEG_CAM) {
         if (gPlayer1Controller->buttonPressed & U_JPAD && gMarioState->action != ACT_DEBUG_FREE_MOVE) {
             s8DirModeYawOffset = 0;
             s8DirModeYawOffset = gMarioState->faceAngle[1] - 0x8000;
@@ -3472,7 +3481,9 @@ void update_camera(struct Camera *c) {
         // Only process R_TRIG if 'fixed' is not selected in the menu
         if (cam_select_alt_mode(0) == CAM_SELECTION_MARIO || forceMarioCam) {
             s32 angle = set_cam_angle(NULL, 0);
-            if (gPlayer1Controller->buttonPressed & R_TRIG || forceMarioCam) {
+            if (gChsForced8DirCam & FORCED_8DIR_FLAGS_SMOOTH_CAM) {
+                set_cam_angle(c, CAM_ANGLE_8_DIR);
+            } else if (gPlayer1Controller->buttonPressed & R_TRIG || forceMarioCam) {
                 if (angle == CAM_ANGLE_LAKITU || forceMarioCam) {
                     set_cam_angle(c, CAM_ANGLE_MARIO);
                 } else if (angle == CAM_ANGLE_MARIO) {
@@ -4288,7 +4299,9 @@ s32 cam_select_alt_mode(s32 selection) {
  * If `mode` is 3, start 8-dir mode
  */
 s32 set_cam_angle(struct Camera *c, s32 mode) {
-    if (mode == CAM_ANGLE_8_DIR && gChsForced8DirCam == FORCED_8DIR_FLAGS_NONE) {
+    if (gChsForced8DirCam & FORCED_8DIR_FLAGS_SMOOTH_CAM) {
+        mode = CAM_ANGLE_8_DIR;
+    } else if (mode == CAM_ANGLE_8_DIR && gChsForced8DirCam == FORCED_8DIR_FLAGS_NONE) {
         mode = CAM_ANGLE_LAKITU;
     }
 
@@ -5435,10 +5448,12 @@ void play_sound_cbutton_down(void) {
 }
 
 void play_sound_cbutton_side(void) {
-    if (chaos_check_if_patch_active(CHAOS_PATCH_PLEASANT_CAMERA_SOUNDS)) {
-        play_sound(SOUND_MENU_CAMERA_TURN_PLEASANT, gGlobalSoundSource);
-    } else {
-        play_sound(SOUND_MENU_CAMERA_TURN, gGlobalSoundSource);
+    if (!(gChsForced8DirCam & FORCED_8DIR_FLAGS_SMOOTH_CAM)) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_PLEASANT_CAMERA_SOUNDS)) {
+            play_sound(SOUND_MENU_CAMERA_TURN_PLEASANT, gGlobalSoundSource);
+        } else {
+            play_sound(SOUND_MENU_CAMERA_TURN, gGlobalSoundSource);
+        }
     }
 }
 
@@ -5451,7 +5466,9 @@ void play_sound_button_change_blocked(void) {
 }
 
 void play_sound_rbutton_changed(void) {
-    play_sound(SOUND_MENU_CLICK_CHANGE_VIEW, gGlobalSoundSource);
+    if (!(gChsForced8DirCam & FORCED_8DIR_FLAGS_SMOOTH_CAM) || !(sSelectionFlags & CAM_MODE_MARIO_SELECTED)) {
+        play_sound(SOUND_MENU_CLICK_CHANGE_VIEW, gGlobalSoundSource);
+    }
 }
 
 /**

@@ -1718,13 +1718,28 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 1,
         .duration           = 18,
 
-        INCOMPATIBLE(CHAOS_PATCH_FORCED_MARIO_CAM, CHAOS_PATCH_TOP_DOWN_CAMERA),
+        INCOMPATIBLE(CHAOS_PATCH_FORCED_MARIO_CAM, CHAOS_PATCH_TOP_DOWN_CAMERA, CHAOS_PATCH_SMOOTH_CAM),
         .activatedInitFunc  = chs_act_45_degree_camera,
         .deactivationFunc   = chs_deact_45_degree_camera,
 
         .name               = "45-Degree Camera",
         .shortDescription   = "Add a third camera option in addition to Lakitu Cam and Mario Cam (see details screen for more info).",
         .longDescription    = "The 45-Degree Camera will snap to 8 directions nearly at all times, and override most camera-following behaviors. This mode also supports Parallel Lakitu Cam, which allows the player to use D-Pad buttons for precise camera angle adjustments.",
+    },
+    [CHAOS_PATCH_SMOOTH_CAM] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 1,
+        .duration           = 10,
+        .durationHard       = 13,
+        .durationImpossible = 15,
+
+        INCOMPATIBLE(CHAOS_PATCH_FORCED_MARIO_CAM, CHAOS_PATCH_TOP_DOWN_CAMERA, CHAOS_PATCH_45_DEGREE_CAM, CHAOS_PATCH_PLEASANT_CAMERA_SOUNDS),
+        .activatedInitFunc  = chs_act_smooth_camera,
+        .deactivationFunc   = chs_deact_smooth_camera,
+
+        .name               = "Smooth Camera",
+        .shortDescription   = "Camera rotation will be smoothed out rather than locked to 45 degrees (just like most analog game cameras!)",
     },
     [CHAOS_PATCH_CARTRIDGE_TILT] = {
         .durationType       = CHAOS_DURATION_STARS,

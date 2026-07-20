@@ -462,7 +462,11 @@ void render_hud_camera_status(void) {
             render_hud_tex_lut(x + 16, y, (*cameraLUT)[GLYPH_CAM_LAKITU_HEAD]);
             break;
         case CAM_STATUS_8_DIR:
-            render_hud_tex_lut(x + 16, y, (*cameraLUT)[GLYPH_CAM_45_DEGREES]);
+            if (gChsForced8DirCam & FORCED_8DIR_FLAGS_45DEG_CAM) {
+                render_hud_tex_lut(x + 16, y, (*cameraLUT)[GLYPH_CAM_45_DEGREES]);
+            } else {
+                render_hud_tex_lut(x + 16, y, (*cameraLUT)[GLYPH_CAM_LAKITU_HEAD]);
+            }
             break;
         case CAM_STATUS_FIXED:
             render_hud_tex_lut(x + 16, y, (*cameraLUT)[GLYPH_CAM_FIXED]);

@@ -15,3 +15,11 @@ void chs_act_45_degree_camera(void) {
 void chs_deact_45_degree_camera(void) {
     gChsForced8DirCam &= ~FORCED_8DIR_FLAGS_45DEG_CAM;
 }
+
+void chs_act_smooth_camera(void) {
+    gChsForced8DirCam |= FORCED_8DIR_FLAGS_SMOOTH_CAM;
+}
+
+void chs_deact_smooth_camera(void) {
+    gChsForced8DirCam &= ~FORCED_8DIR_FLAGS_SMOOTH_CAM;
+}
