@@ -197,9 +197,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
-        .duration           = 3,
-        .durationHard       = 3,
-        .durationImpossible = 4,
+        .duration           = 2,
+        .durationHard       = 2,
+        .durationImpossible = 3,
 
         .conditionalFunc    = chs_cond_instant_game_over,
 
@@ -1288,9 +1288,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
-        .duration           = 10,
-        .durationHard       = 12,
-        .durationImpossible = 15,
+        .duration           = 7,
+        .durationHard       = 9,
+        .durationImpossible = 11,
 
         .name               = "SM64DS Movement",
         .shortDescription   = "SM64DS, but with full analog control! Surely that was the ONLY problem people had with that game, right...?",
@@ -1771,7 +1771,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Corrupted Textures",
         .shortDescription   = "Because that grass texture was just too boring.",
     },
-    [CHAOS_PATCH_SQUINT_MODE] = {
+    [CHAOS_PATCH_SQUINT_MODE] = { // TODO: Finish implementing (also BUG: fix act select crash)
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
@@ -2552,7 +2552,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc    = chs_update_serve_ads,
         .activatedInitFunc  = chs_act_serve_ads,
 
-        .name               = "Ad Breaks",
+        .name               = "Ad Breaks", // TODO: Turns out this is still broken, EVEN ON CONSOLE
         .shortDescription   = "As if the cash for making this romhack wasn't enough, have some ads too!",
     },
     [CHAOS_PATCH_ALL_STARS_SELECTABLE] = {
@@ -2781,7 +2781,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription   = "Mario may still recover from coins or collect stars, even when he has no health left (pre-death animation only).",
         .longDescription    = "This may be useful in specific situations, such as flying around with the wing cap while dead."
     },
-    [CHAOS_PATCH_DVD] = {
+    [CHAOS_PATCH_DVD] = { // TODO: BUG: Fix console render issue
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 1,

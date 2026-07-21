@@ -606,6 +606,8 @@ struct SPTask *create_next_audio_frame_task(void) {
                 gAiBuffer_u32[processedLength] = sLagAudioBuffer_u32[sLagAudioBufStart];
                 sLagAudioBufStart = (sLagAudioBufStart + 1) % (sizeof(sLagAudioBuffer) / sizeof(u32));
             }
+
+            osWritebackDCache(gAiBuffers[index], ALIGN16(gAiBufferLengths[index]));
         }
 
         osAiSetNextBuffer(gAiBuffers[index], gAiBufferLengths[index] * 4);
