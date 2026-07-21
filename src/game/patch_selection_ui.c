@@ -686,6 +686,25 @@ void patch_select_state_confirmation() {
 void update_patch_selection_menu() {
     struct ChaosMenu *menu = &gPatchSelectionMenu->menu;
 
+    if (gPlayer1Controller->buttonPressed & L_CBUTTONS) {
+        if (gPatchSelectionMenu->patchCards[0].sel->positiveId == 0) {
+            gPatchSelectionMenu->patchCards[0].sel->positiveId = CHAOS_PATCH_COUNT - 1;
+        } else {
+            gPatchSelectionMenu->patchCards[0].sel->positiveId--;
+        }
+
+        gPatchSelectionMenu->patchCards[0].sel->positivePatch = &gChaosPatches[gPatchSelectionMenu->patchCards[0].sel->positiveId];
+    }
+    if (gPlayer1Controller->buttonPressed & R_CBUTTONS) {
+        if (gPatchSelectionMenu->patchCards[0].sel->positiveId == CHAOS_PATCH_COUNT - 1) {
+            gPatchSelectionMenu->patchCards[0].sel->positiveId = 0;
+        } else {
+            gPatchSelectionMenu->patchCards[0].sel->positiveId++;
+        }
+
+        gPatchSelectionMenu->patchCards[0].sel->positivePatch = &gChaosPatches[gPatchSelectionMenu->patchCards[0].sel->positiveId];
+    }
+
     switch(menu->menuState) {
         case PATCH_SELECT_STATE_SELECT:
             patch_select_state_select();

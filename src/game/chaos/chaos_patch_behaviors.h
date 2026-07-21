@@ -238,6 +238,7 @@ void chs_act_sound_effect_shuffle(void);
 s32 get_randomized_sound(s32 sound);
 
 // Misc
+u8 chs_cond_forced_mario_cam(void);
 void chs_act_serve_ads(void);
 void chs_update_serve_ads(void);
 u8 chs_cond_miracle_normal(void);

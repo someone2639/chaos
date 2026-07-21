@@ -3429,7 +3429,7 @@ void mode_top_down_cam(struct Camera *c) {
 void update_camera(struct Camera *c) {
     u16 temporaryButtonDown = gPlayer1Controller->buttonDown;
     u16 temporaryButtonPressed = gPlayer1Controller->buttonPressed;
-    s32 forceMarioCam = chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM);
+    s32 forceMarioCam = (chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM) && !gConfig.disableHarshVisuals);
 
     if(chaos_check_if_patch_active(CHAOS_PATCH_TETRIS)) {
         if(gTetrisTriggerCameraR) {
@@ -4265,8 +4265,8 @@ s32 move_point_along_spline(Vec3f p, struct CutsceneSplinePoint spline[], s16 *s
  */
 s32 cam_select_alt_mode(s32 selection) {
     s32 mode = CAM_SELECTION_FIXED;
-    if(chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM)) {
-        return 1;
+    if (chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM) && !gConfig.disableHarshVisuals) {
+        return CAM_SELECTION_MARIO;
     }
 
     if (selection == CAM_SELECTION_MARIO) {

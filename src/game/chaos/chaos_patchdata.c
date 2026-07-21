@@ -2528,6 +2528,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationImpossible = 7,
 
         INCOMPATIBLE(CHAOS_PATCH_TOP_DOWN_CAMERA, CHAOS_PATCH_CAMERA_LAG, CHAOS_PATCH_45_DEGREE_CAM, CHAOS_PATCH_SMOOTH_CAM),
+        .conditionalFunc    = chs_cond_forced_mario_cam,
 
         .name               = "Up Close and Personal",
         .shortDescription   = "Forces Mario Cam (close-up view).",
