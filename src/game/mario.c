@@ -31,6 +31,7 @@
 #include "object_helpers.h"
 #include "object_list_processor.h"
 #include "print.h"
+#include "rendering_graph_node.h"
 #include "save_file.h"
 #include "sound_init.h"
 #include "rumble_init.h"
@@ -2070,6 +2071,9 @@ s32 execute_mario_action(UNUSED struct Object *o) {
 
             gMarioState->controller->stickX = adjustedX;
             gMarioState->controller->stickY = adjustedY;
+        }
+        if (isGameFlipped) {
+            gMarioState->controller->stickX *= -1.0f;
         }
         if (chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_STICK_X)) {
             gMarioState->controller->stickX *= -1.0f;

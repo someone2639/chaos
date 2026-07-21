@@ -653,10 +653,49 @@ void adjust_analog_stick(struct Controller *controller) {
         controller->stickY *= 64 / controller->stickMag;
         controller->stickMag = 64;
     }
+}
 
-    if (isGameFlipped) {
-        controller->stickX *= -1;
+/**
+ * Swap the C buttons with the analog stick
+ */
+void swap_stick_with_c_buttons(struct Controller *controller) {
+#define PRESS_THRESHOLD 54
+#define PRESS_MAX 80
+
+    u16 buttons = (controller->controllerData->button & C_BUTTONS);
+    controller->controllerData->button &= ~C_BUTTONS;
+
+    if (controller->controllerData->stick_x <= -PRESS_THRESHOLD) {
+        controller->controllerData->button |= L_CBUTTONS;
     }
+    if (controller->controllerData->stick_x >= PRESS_THRESHOLD) {
+        controller->controllerData->button |= R_CBUTTONS;
+    }
+    if (controller->controllerData->stick_y <= -PRESS_THRESHOLD) {
+        controller->controllerData->button |= D_CBUTTONS;
+    }
+    if (controller->controllerData->stick_y >= PRESS_THRESHOLD) {
+        controller->controllerData->button |= U_CBUTTONS;
+    }
+
+    controller->controllerData->stick_x = 0;
+    controller->controllerData->stick_y = 0;
+
+    if (buttons & L_CBUTTONS) {
+        controller->controllerData->stick_x -= PRESS_MAX;
+    }
+    if (buttons & R_CBUTTONS) {
+        controller->controllerData->stick_x += PRESS_MAX;
+    }
+    if (buttons & D_CBUTTONS) {
+        controller->controllerData->stick_y -= PRESS_MAX;
+    }
+    if (buttons & U_CBUTTONS) {
+        controller->controllerData->stick_y += PRESS_MAX;
+    }
+
+#undef PRESS_MAX
+#undef PRESS_THRESHOLD
 }
 
 /**
@@ -773,6 +812,10 @@ void read_controller_inputs(void) {
 
                 controller->controllerData->button &= ~(Z_TRIG | R_TRIG | A_BUTTON | B_BUTTON);
                 controller->controllerData->button |= newButtons;
+            }
+
+            if (chaos_check_if_patch_active(CHAOS_PATCH_SWAPPED_C_STICK)) {
+                swap_stick_with_c_buttons(controller);
             }
 
             if (chaos_check_if_patch_active(CHAOS_PATCH_BUTTON_BROKEN_A)) {

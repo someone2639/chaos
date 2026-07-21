@@ -1395,7 +1395,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .instWarpPostFunc   = chs_instwarp_post_cosmic_clones,
         .frameUpdateFunc    = chs_update_cosmic_clones,
 
-        .name               = "Cosmic Clones",
+        .name               = "Cosmic Clones", // TODO: Make these (and every other Bowser 3 problem patch) never show up in impossible mode durationImpossible stars before hitting 120 (with slight margin of error)
         .shortDescription   = "Spawns a trail of cosmic Marios that copy your every move!",
     },
     [CHAOS_PATCH_WATER_BOMBS] = {
@@ -1603,7 +1603,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 7,
         .durationImpossible = 9,
 
-        INCOMPATIBLE(CHAOS_PATCH_INVERTED_CAMERA_X, CHAOS_PATCH_FORCED_MARIO_CAM, CHAOS_PATCH_DECREASED_FOV, CHAOS_PATCH_INCREASED_FOV, CHAOS_PATCH_45_DEGREE_CAM, CHAOS_PATCH_SQUINT_MODE),
+        INCOMPATIBLE(CHAOS_PATCH_INVERTED_CAMERA_X, CHAOS_PATCH_FORCED_MARIO_CAM, CHAOS_PATCH_DECREASED_FOV, CHAOS_PATCH_INCREASED_FOV, CHAOS_PATCH_45_DEGREE_CAM, CHAOS_PATCH_SMOOTH_CAM, CHAOS_PATCH_SQUINT_MODE),
 
         .name               = "Top-Down Camera",
         .shortDescription   = "Now you're playing Zelda! (without the items) (without the story) (without the combat) (without the",
@@ -1718,7 +1718,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 1,
         .duration           = 18,
 
-        INCOMPATIBLE(CHAOS_PATCH_FORCED_MARIO_CAM, CHAOS_PATCH_TOP_DOWN_CAMERA, CHAOS_PATCH_SMOOTH_CAM),
+        INCOMPATIBLE(CHAOS_PATCH_FORCED_MARIO_CAM, CHAOS_PATCH_TOP_DOWN_CAMERA, CHAOS_PATCH_SMOOTH_CAM, CHAOS_PATCH_SWAPPED_C_STICK),
         .activatedInitFunc  = chs_act_45_degree_camera,
         .deactivationFunc   = chs_deact_45_degree_camera,
 
@@ -1734,7 +1734,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 13,
         .durationImpossible = 15,
 
-        INCOMPATIBLE(CHAOS_PATCH_FORCED_MARIO_CAM, CHAOS_PATCH_TOP_DOWN_CAMERA, CHAOS_PATCH_45_DEGREE_CAM, CHAOS_PATCH_PLEASANT_CAMERA_SOUNDS),
+        INCOMPATIBLE(CHAOS_PATCH_FORCED_MARIO_CAM, CHAOS_PATCH_TOP_DOWN_CAMERA, CHAOS_PATCH_45_DEGREE_CAM, CHAOS_PATCH_PLEASANT_CAMERA_SOUNDS, CHAOS_PATCH_SWAPPED_C_STICK),
         .activatedInitFunc  = chs_act_smooth_camera,
         .deactivationFunc   = chs_deact_smooth_camera,
 
@@ -1983,7 +1983,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         INCOMPATIBLE(CHAOS_PATCH_POSITIVE_EXTENSION),
 
-        .name               = "Negative Extension",
+        .name               = "Negative Extension", // TODO: Make this never show up after about 100 stars on Impossible difficulty
         .shortDescription   = "New negative effects will last 50% longer (rounded up).",
     },
     [CHAOS_PATCH_LOW_STAKES] = {
@@ -2198,7 +2198,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 6,
         .durationImpossible = 7,
 
-        INCOMPATIBLE(CHAOS_PATCH_QUICKTIME, CHAOS_PATCH_TETRIS),
+        INCOMPATIBLE(CHAOS_PATCH_QUICKTIME, CHAOS_PATCH_TETRIS, CHAOS_PATCH_SWAPPED_C_STICK),
 
         .name               = "Camera Malfunction",
         .shortDescription   = "All C buttons are completely nonfunctional (even for menus!)",
@@ -2215,6 +2215,19 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Bizarro Buttons",
         .shortDescription   = "The A and B buttons will be swapped with Z and R respectively (including for menus!)",
+    },
+    [CHAOS_PATCH_SWAPPED_C_STICK] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 3,
+        .duration           = 4,
+        .durationHard       = 5,
+        .durationImpossible = 6,
+
+        INCOMPATIBLE(CHAOS_PATCH_45_DEGREE_CAM, CHAOS_PATCH_SMOOTH_CAM, CHAOS_PATCH_BUTTON_BROKEN_C, CHAOS_PATCH_TETRIS, CHAOS_PATCH_QUICKTIME, CHAOS_PATCH_SM64_DS),
+
+        .name               = "C-Stick Switcharoo",
+        .shortDescription   = "Swap the analog stick with C buttons. Because analog camera is way more important than analog movement!",
     },
     [CHAOS_PATCH_INVERTED_CAMERA_X] = {
         .durationType       = CHAOS_DURATION_STARS,
@@ -2271,6 +2284,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration           = 8,
         .durationHard       = 10,
         .durationImpossible = 12,
+
+        INCOMPATIBLE(CHAOS_PATCH_SWAPPED_C_STICK),
 
         .name               = "Super Mario 64 DS",
         .shortDescription   = "Locks analog input to 8 directions. It's beans for your mouth, for your floor!",
@@ -2423,6 +2438,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 1,
         .duration           = 15,
 
+        INCOMPATIBLE(CHAOS_PATCH_SMOOTH_CAM),
+
         .name               = "Pleasant Camera Sounds",
         .shortDescription   = "Replace default camera sounds with less obnoxious alternatives!",
     },
@@ -2510,7 +2527,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 6,
         .durationImpossible = 7,
 
-        INCOMPATIBLE(CHAOS_PATCH_TOP_DOWN_CAMERA, CHAOS_PATCH_CAMERA_LAG, CHAOS_PATCH_45_DEGREE_CAM),
+        INCOMPATIBLE(CHAOS_PATCH_TOP_DOWN_CAMERA, CHAOS_PATCH_CAMERA_LAG, CHAOS_PATCH_45_DEGREE_CAM, CHAOS_PATCH_SMOOTH_CAM),
 
         .name               = "Up Close and Personal",
         .shortDescription   = "Forces Mario Cam (close-up view).",
@@ -2647,7 +2664,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 12,
         .durationImpossible = 15,
 
-        INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_A, CHAOS_PATCH_BUTTON_BROKEN_B, CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_BUTTON_BROKEN_C, CHAOS_PATCH_SWAPPED_ZR_AB, CHAOS_PATCH_RED_LIGHT),
+        INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_A, CHAOS_PATCH_BUTTON_BROKEN_B, CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_BUTTON_BROKEN_C, CHAOS_PATCH_SWAPPED_ZR_AB, CHAOS_PATCH_RED_LIGHT, CHAOS_PATCH_SWAPPED_C_STICK),
         .frameUpdateFunc    = chs_update_quicktime,
         .activatedInitFunc  = chs_act_quicktime,
 
@@ -2789,7 +2806,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .deactivationFunc   = chs_deact_number_blindness,
 
         .name               = "Number Blindness",
-        .shortDescription   = "All numbers will display as '?'. Hope you remember those patch durations!",
+        .shortDescription   = "All numbers will display as '?'. Hope you remember those patch durations!", // TODO: Confirm every single patch description doesn't newline off-screen with this active
     },
     [CHAOS_PATCH_TETRIS] = {
         .durationType       = CHAOS_DURATION_STARS,
@@ -2799,7 +2816,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 5,
         .durationImpossible = 6,
         
-        INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_A, CHAOS_PATCH_BUTTON_BROKEN_B, CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SWAPPED_ZR_AB, CHAOS_PATCH_BUTTON_BROKEN_C, CHAOS_PATCH_RED_LIGHT),
+        INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_A, CHAOS_PATCH_BUTTON_BROKEN_B, CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SWAPPED_ZR_AB, CHAOS_PATCH_BUTTON_BROKEN_C, CHAOS_PATCH_RED_LIGHT, CHAOS_PATCH_SWAPPED_C_STICK),
         .activatedInitFunc  = chs_act_tetris,
         .deactivationFunc   = chs_deact_tetris,
         .frameUpdateFunc    = chs_update_tetris,

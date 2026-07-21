@@ -32,11 +32,10 @@ void bhv_hidden_star_loop(void) {
 }
 
 void bhv_hidden_star_trigger_init(void) {
-    if (gCurrCourseNum == COURSE_BOB) {
-        struct Object *obj = cur_obj_nearest_object_with_behavior(bhvYellowCoin);
-        if (obj && obj->parentObj == obj) {
-            obj->parentObj = o;
-        }
+    f32 dist;
+    struct Object *obj = cur_obj_find_nearest_object_with_behavior(bhvYellowCoin, &dist);
+    if (obj && obj->parentObj == obj && dist < 50.0f) {
+        obj->parentObj = o;
     }
 }
 
