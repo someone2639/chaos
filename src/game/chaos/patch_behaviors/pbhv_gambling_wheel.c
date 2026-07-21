@@ -276,8 +276,8 @@ static void gwheel_type_act_negative_extend(void) {
     for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
         const struct ChaosPatch *patch = &gChaosPatches[gChaosActiveEntries[i].id];
         if (patch->effectType == CHAOS_EFFECT_NEGATIVE && patch->durationType == CHAOS_DURATION_STARS) {
-            // Extend patch timer by 2
-            gChaosActiveEntries[i].remainingDuration += 2;
+            // Extend patch timer by 1
+            gChaosActiveEntries[i].remainingDuration += 1;
         }
     }
 
@@ -510,7 +510,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .conditionalFunc = gwheel_type_cond_negative_extend,
         .activationFunc  = gwheel_type_act_negative_extend,
 
-        .description     = "Extend all negative patch durations by two stars.",
+        .description     = "Extend all negative patch durations by one star.",
     },
     [GWHEEL_OPT_NEG_RANK_1] = {
         .id              = GWHEEL_OPT_NEG_RANK_1,
