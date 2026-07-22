@@ -307,7 +307,6 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "One-Star Giveaway",
         .shortDescription   = "Lose one random star currently in your possession.",
     },
-    // TODO: Collecting a key legitimately and pressing a cap switch legitimately should expire free patches (and not count as chaos events or display blue keys)
     [CHAOS_PATCH_GET_KEY_1] = {
         .durationType       = CHAOS_DURATION_INFINITE,
         .effectType         = CHAOS_EFFECT_POSITIVE,

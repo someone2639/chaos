@@ -373,9 +373,10 @@ void save_file_load_all(void) {
  * Update the current save file after collecting a star or a key.
  * If coin score is greater than the current high score, update it.
  */
-void save_file_collect_star_or_key(s16 coinScore, s16 starIndex) {
+void save_file_collect_star_or_key(s16 coinScore, s16 starIndex, u32 *previousSaveFlags) {
     s32 fileIndex = gCurrSaveFileNum - 1;
     s32 courseIndex = COURSE_NUM_TO_INDEX(gCurrCourseNum);
+    s32 keyPatchIndex;
 
     s32 starFlag = 1 << starIndex;
     UNUSED s32 flags = save_file_get_flags();
@@ -405,12 +406,22 @@ void save_file_collect_star_or_key(s16 coinScore, s16 starIndex) {
 
     switch (gCurrLevelNum) {
         case LEVEL_BOWSER_1:
+            keyPatchIndex = chaos_find_first_active_patch(CHAOS_PATCH_GET_KEY_1, NULL);
+            if (keyPatchIndex >= 0) {
+                chaos_remove_expired_entry(keyPatchIndex, "%s: Expired!");
+                *previousSaveFlags = save_file_get_flags();
+            }
             if (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_1 | SAVE_FLAG_UNLOCKED_BASEMENT_DOOR))) {
                 save_file_set_flags(SAVE_FLAG_HAVE_KEY_1);
             }
             break;
 
         case LEVEL_BOWSER_2:
+            keyPatchIndex = chaos_find_first_active_patch(CHAOS_PATCH_GET_KEY_2, NULL);
+            if (keyPatchIndex >= 0) {
+                chaos_remove_expired_entry(keyPatchIndex, "%s: Expired!");
+                *previousSaveFlags = save_file_get_flags();
+            }
             if (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_2 | SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR))) {
                 save_file_set_flags(SAVE_FLAG_HAVE_KEY_2);
             }

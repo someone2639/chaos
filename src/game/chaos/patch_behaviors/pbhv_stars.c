@@ -570,6 +570,7 @@ void chs_act_get_key_1(void) {
 
 void chs_deact_get_key_1(void) {
     save_file_clear_flags(SAVE_FLAG_HAVE_KEY_1);
+    save_file_clear_flags(SAVE_FLAG_UNLOCKED_BASEMENT_DOOR);
 }
 
 u8 chs_cond_get_key_1(void) {
@@ -582,6 +583,7 @@ void chs_act_get_key_2(void) {
 
 void chs_deact_get_key_2(void) {
     save_file_clear_flags(SAVE_FLAG_HAVE_KEY_2);
+    save_file_clear_flags(SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR);
 }
 
 u8 chs_cond_get_key_2(void) {
