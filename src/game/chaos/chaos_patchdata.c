@@ -603,7 +603,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 3,
         .duration           = 4,
 
-        // Since instakill lava is infinite and this one isn't, ignore conditional for this patch only, and allow it to take precedent over instakill
+        // Since instakill lava lasts a log time and this one doesn't, ignore conditional for this patch only, and allow it to take precedent over instakill
         INCOMPATIBLE(/* CHAOS_PATCH_INSTAKILL_LAVA */),
 
         .name               = "Extreme Thermal Shoes",
@@ -637,9 +637,12 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription   = "Goombas can now insta-kill Mario.",
     },
     [CHAOS_PATCH_INSTAKILL_LAVA] = {
-        .durationType       = CHAOS_DURATION_INFINITE, // TODO: Nerf? This only ever affects LLL, SL, and BitFS so infinite seems appropriate, but most people don't really realize that on instinct...
+        .durationType       = CHAOS_DURATION_STARS, // Nerfed from infinite to be less scary (though this makes the patch admittedly pretty weak in comparison due to limited lava situations)
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
+        .duration           = 20,
+        .durationHard       = 24,
+        .durationImpossible = 28,
 
         INCOMPATIBLE(CHAOS_PATCH_NO_LAVA_DAMAGE),
 
