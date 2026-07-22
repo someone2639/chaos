@@ -938,9 +938,12 @@ void tetris_draw_grid(void) {
                         G_TX_RENDERTILE, 0, 0, 256, 256);
     
     gDPPipeSync(gDisplayListHead++);
+    gDPSetRenderMode(gDisplayListHead++, G_RM_AA_ZB_OPA_SURF, G_RM_AA_ZB_OPA_SURF2);
+    gDPSetCombineMode(gDisplayListHead++, G_CC_SHADE, G_CC_SHADE);
 	gSPTexture(gDisplayListHead++, 65535, 65535, 0, G_TX_RENDERTILE, G_OFF);
 	gDPSetTexturePersp(gDisplayListHead++, G_TP_PERSP);
 	gDPSetAlphaCompare(gDisplayListHead++, G_AC_NONE);
+    gDPSetTextureFilter(gDisplayListHead++, G_TF_BILERP);
 
     // Draw text
     char buf[64];

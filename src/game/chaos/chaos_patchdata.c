@@ -2554,7 +2554,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc    = chs_update_serve_ads,
         .activatedInitFunc  = chs_act_serve_ads,
 
-        .name               = "Ad Breaks", // TODO: Turns out this is still broken, EVEN ON CONSOLE
+        .name               = "Ad Breaks", // TODO: BUG: Turns out this is still broken, EVEN ON CONSOLE
         .shortDescription   = "As if the cash for making this romhack wasn't enough, have some ads too!",
     },
     [CHAOS_PATCH_ALL_STARS_SELECTABLE] = {
@@ -2783,7 +2783,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription   = "Mario may still recover from coins or collect stars, even when he has no health left (pre-death animation only).",
         .longDescription    = "This may be useful in specific situations, such as flying around with the wing cap while dead."
     },
-    [CHAOS_PATCH_DVD] = { // TODO: BUG: Fix console render issue
+    [CHAOS_PATCH_DVD] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 1,
@@ -2809,7 +2809,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .deactivationFunc   = chs_deact_number_blindness,
 
         .name               = "Number Blindness",
-        .shortDescription   = "All numbers will display as '?'. Hope you remember those patch durations!", // TODO: Confirm every single patch description doesn't newline off-screen with this active
+        .shortDescription   = "All numbers will display as '?'. Hope you remember those patch durations!",
     },
     [CHAOS_PATCH_TETRIS] = {
         .durationType       = CHAOS_DURATION_STARS,
