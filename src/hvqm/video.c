@@ -135,6 +135,9 @@ int load_video_frame(void **streamp, VideoRing *vbuf) {
                 frames_elapsed++;
                 record_size = get_record(&record_header, HVQM2_VIDEO, streamp);
                 video_remain--;
+                if (video_remain <= 0) {
+                    return -1;
+                }
                 if (record_header.format == HVQM2_VIDEO_KEYFRAME) {
                     // osSyncPrintf("(keyframed)\n");
                     // skup further if we're REALLY far behind
@@ -145,14 +148,11 @@ int load_video_frame(void **streamp, VideoRing *vbuf) {
                         break;
                     }
                 }
-                if (video_remain == 0) {
-                    break;
-                }
             }
             // osSyncPrintf("(SKIPPED %d FRAMES)\n", skipped_frames);
         }
-        if (video_remain == 0) {
-            return 0;
+        if (video_remain <= 0) {
+            return -1;
         } else {
             vbuf->format = load16(record_header.format);
         }
