@@ -212,7 +212,7 @@ void clear_framebuffer(s32 color) {
     gDPSetFillColor(gDisplayListHead++, color);
     gDPFillRectangle(gDisplayListHead++,
                      GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(0), gBorderHeight,
-                     GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(0) - 1, SCREEN_HEIGHT - gBorderHeight - 1);
+                     GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(0), SCREEN_HEIGHT - gBorderHeight);
 
     gDPPipeSync(gDisplayListHead++);
 

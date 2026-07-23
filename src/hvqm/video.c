@@ -53,10 +53,11 @@ void hvqm_reset_bss() {
 void init_video(void **streamp, u32 offset) {
     // new_profiler("HVQM Part1 (CPU)");
     // new_profiler("HVQM Part2 (RSP)");
+    void hvqm_clearCurrentFB(void *buf, u32 size);
 
     for (int i = 0; i < NUM_CFBs; i++) {
+        hvqm_clearCurrentFB(&gFramebuffers[i][0], sizeof(gFramebuffers[i]));
         vbuffer[i].cfb = &gFramebuffers[i][0];
-        bzero(gFramebuffers[i], sizeof(gFramebuffers[i]));
         vbuffer[i].drawbuf = &gFramebuffers[i][offset];
         vbuffer[i].endtime_us = 0;
     }
