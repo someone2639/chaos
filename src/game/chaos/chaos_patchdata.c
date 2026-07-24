@@ -2395,6 +2395,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 7,
         .durationImpossible = 9,
 
+        INCOMPATIBLE(CHAOS_PATCH_AD_BREAK),
+
         .name               = "Bluetooth Lag",
         .shortDescription   = "The game's audio response will be substantially delayed.",
     },
@@ -2554,7 +2556,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc    = chs_update_serve_ads,
         .activatedInitFunc  = chs_act_serve_ads,
 
-        .name               = "Ad Breaks", // TODO: BUG: Turns out this is still broken, EVEN ON CONSOLE
+        INCOMPATIBLE(CHAOS_PATCH_AUDIO_DELAY),
+
+        .name               = "Ad Breaks",
         .shortDescription   = "As if the cash for making this romhack wasn't enough, have some ads too!",
     },
     [CHAOS_PATCH_ALL_STARS_SELECTABLE] = {
