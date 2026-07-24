@@ -592,7 +592,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 2,
         .duration           = 12,
 
-        INCOMPATIBLE(CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_FALL_CANCEL_CANCEL),
+        INCOMPATIBLE(CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_FALL_CANCEL_CANCEL, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE),
 
         .name               = "Long Fall Boots",
         .shortDescription   = "Mario is immune to fall damage.",
@@ -1049,7 +1049,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 10,
         .durationImpossible = 12,
 
-        INCOMPATIBLE(CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_FALL_CANCEL_CANCEL),
+        INCOMPATIBLE(CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_FALL_CANCEL_CANCEL, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE),
         .activatedInitFunc  = chs_act_cosmic_rays,
         .frameUpdateFunc    = chs_update_cosmic_rays,
 
@@ -2453,9 +2453,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
             .durationType       = CHAOS_DURATION_STARS,
             .effectType         = CHAOS_EFFECT_NEGATIVE,
             .severity           = 3,
-            .duration           = 3,
-            .durationHard       = 4,
-            .durationImpossible = 5,
+            .duration           = 2,
+            .durationHard       = 2,
+            .durationImpossible = 3,
 
             INCOMPATIBLE(CHAOS_PATCH_NO_FALL_DAMAGE, CHAOS_PATCH_COSMIC_RAYS, CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_LOSEMOVE_LEDGE_GRAB, CHAOS_PATCH_SONIC_SIMULATOR, CHAOS_PATCH_DAMAGE_LOTTERY, CHAOS_PATCH_GREEN_DEMON),
 
