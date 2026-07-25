@@ -32,16 +32,20 @@ static void betah(int next_state) {
     if (next_state != cur_state) {
         next_state = cur_state;
 
+        osWritebackDCacheAll();
         switch (next_state) {
             case 0:
                 dma_read(buffer_tex, normal_tex, normal_tex + 0x800);
+                osWritebackDCacheAll();
                 dma_read(buffer_pal, normal_pal, normal_pal + 0x1A6);
                 break;
             case 1:
                 dma_read(buffer_tex, betah_tex, betah_tex + 0x800);
+                osWritebackDCacheAll();
                 dma_read(buffer_pal, betah_pal, betah_pal + 0x1CC);
                 break;
         }
+        osWritebackDCacheAll();
     }
 }
 
@@ -240,8 +244,8 @@ static void draw_n64_controls(void) {
 }
 
 void draw_room(float scaleXY) {
-    betah(chaos_check_if_patch_active(CHAOS_PATCH_BETA));
-    // betah(gPlayer1Controller->buttonDown & A_BUTTON);
+    // betah(chaos_check_if_patch_active(CHAOS_PATCH_BETA));
+    betah(gPlayer1Controller->buttonDown & A_BUTTON);
 
     internal_scale = scaleXY;
     Mtx *baseScale = alloc_display_list(sizeof(Mtx));
