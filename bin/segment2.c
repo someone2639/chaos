@@ -4259,3 +4259,51 @@ Gfx coin_flip_coin_mesh[] = {
 	gsDPSetAlphaDither(G_AD_DISABLE),
 	gsSPEndDisplayList(),
 };
+
+ALIGNED8 u8 wth_cave_rgba16[] = {
+	#include "textures/segment2/wth_cave.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_clock_rgba16[] = {
+	#include "textures/segment2/wth_clock.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_cloud_rgba16[] = {
+	#include "textures/segment2/wth_cloud.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_hot_rgba16[] = {
+	#include "textures/segment2/wth_hot.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_none_rgba16[] = {
+	#include "textures/segment2/wth_none.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_snow_rgba16[] = {
+	#include "textures/segment2/wth_snow.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_spooky_rgba16[] = {
+	#include "textures/segment2/wth_spooky.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_sun_rgba16[] = {
+	#include "textures/segment2/wth_sun.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_wet_rgba16[] = {
+	#include "textures/segment2/wth_wet.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wow_health_meter_rgba16[] = {
+    #include "textures/segment2/wow_health_meter.rgba16.inc.c"
+};
+
+ALIGNED8 u8 breaking_news_rgba16[] = {
+    #include "textures/segment2/breaking_news.rgba16.inc.c"
+};
+
+ALIGNED8 u8 radar_bg_rgba16[] = {
+    #include "textures/segment2/radar_bg.rgba16.inc.c"
+};

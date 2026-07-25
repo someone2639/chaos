@@ -2856,4 +2856,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Star Medallion",
         .shortDescription   = "Mario must collect the star medallion randomly placed in each course before collecting a star.",
     },
+    [CHAOS_PATCH_MORE_HUD] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 1,
+        .duration           = 10,
+        .durationHard       = 12,
+        .durationImpossible = 14,
+
+        INCOMPATIBLE(CHAOS_PATCH_TETRIS, CHAOS_PATCH_NO_HUD),
+
+        .activatedInitFunc  = chs_act_more_hud,
+        .levelInitFunc      = chs_lvlinit_more_hud,
+
+        .name               = "Raiding UI",
+        .shortDescription   = "Adds lots of \"useful\" information to the heads up display.",
+    },
 };

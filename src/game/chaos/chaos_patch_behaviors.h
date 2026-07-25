@@ -279,3 +279,6 @@ void chs_area_init_star_medallion(void);
 void chs_instwarp_post_star_medallion(struct InstantWarp *warp);
 void chs_lvlinit_star_medallion(void);
 u8 chs_star_medallion_can_collect_star(void);
+void draw_more_hud(void);
+void chs_act_more_hud(void);
+void chs_lvlinit_more_hud(void);
