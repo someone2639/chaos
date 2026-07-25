@@ -1294,8 +1294,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 9,
         .durationImpossible = 11,
 
-        .name               = "SM64DS Movement",
-        .shortDescription   = "SM64DS, but with full analog control! Surely that was the ONLY problem people had with that game, right...?",
+        .name               = "Refrigerator Movement",
+        .shortDescription   = "Hope you liked that jump angle, because you're stuck with it until you hit the ground!",
     },
     [CHAOS_PATCH_UNDERWATER_GROUNDPOUND] = {
         .durationType       = CHAOS_DURATION_STARS,
