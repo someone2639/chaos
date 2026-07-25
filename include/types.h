@@ -359,8 +359,9 @@ struct MarioState {
     /*0xEE*/ u8 safePosUpdatedLastFrame;
     /*0xEF*/ u8 lastSafePosIndex;
     /*0xF0*/ Vec3f lastSafePos[8];
-    /*0x150 i think*/ s16 storedYaw;
-    /*0x152*/ u16 canSpinJump;
+    /*0x150 i think*/ u16 canSpinJump;
+    /*0x152*/ s16 storedYaw;
+    /*0x154*/ f32 storedMag;
 };
 
 #endif // TYPES_H

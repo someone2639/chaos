@@ -1216,6 +1216,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 3,
         .duration           = 12,
 
+        INCOMPATIBLE(CHAOS_PATCH_FORWARDS_BLJ),
         .frameUpdateFunc    = chs_update_galaxy_twirl,
 
         .name               = "First Introduced in Galaxy 2",
@@ -1281,21 +1282,21 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 1,
         .duration           = 10,
 
-        INCOMPATIBLE(CHAOS_PATCH_LOSEMOVE_LONG_JUMP),
+        INCOMPATIBLE(CHAOS_PATCH_LOSEMOVE_LONG_JUMP, CHAOS_PATCH_GALAXY_SPIN),
 
         .name               = "Forwards BLJ",
         .shortDescription   = "Uncap the speed of the long jump, even while moving forwards. It's just like a BLJ, but without the B!",
     },
-    [CHAOS_PATCH_64DS_MOMENTUM] = {
+    [CHAOS_PATCH_REFRIGERATOR_MOVEMENT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
-        .duration           = 7,
-        .durationHard       = 9,
-        .durationImpossible = 11,
+        .duration           = 6,
+        .durationHard       = 7,
+        .durationImpossible = 8,
 
         .name               = "Refrigerator Movement",
-        .shortDescription   = "Hope you liked that jump angle, because you're stuck with it until you hit the ground!",
+        .shortDescription   = "Hope you liked that jump, because you're stuck with that angle/momentum until you hit the ground!",
     },
     [CHAOS_PATCH_UNDERWATER_GROUNDPOUND] = {
         .durationType       = CHAOS_DURATION_STARS,
