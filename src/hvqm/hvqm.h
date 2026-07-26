@@ -104,6 +104,7 @@ int get_cfb();
 void hvqm_reset_bss(void);
 void timekeeper_reset_bss(void);
 void hvqm_drawHLE(void*);
+void hvqm_clearCurrentFB(void *buf, u32 size);
 
 extern OSThread daCounterThread;
 extern OSThread hvqmThread;

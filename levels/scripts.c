@@ -76,12 +76,15 @@ const LevelScript level_main_scripts_entry[] = {
     LOAD_MODEL_FROM_GEO(MODEL_BUBBLE,                  bubble_geo),
     LOAD_MODEL_FROM_GEO(MODEL_SMALL_WATER_SPLASH,      small_water_splash_geo),
     LOAD_MODEL_FROM_GEO(MODEL_IDLE_WATER_WAVE,         idle_water_wave_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_WATER_BOMB,              water_bomb_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_WATER_BOMB_CHAOS,        water_bomb_chaos_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_WATER_BOMB_SHADOW,       water_bomb_shadow_geo),
     LOAD_MODEL_FROM_GEO(MODEL_WATER_SPLASH,            water_splash_geo),
     LOAD_MODEL_FROM_GEO(MODEL_WAVE_TRAIL,              wave_trail_geo),
     LOAD_MODEL_FROM_GEO(MODEL_YELLOW_COIN,             yellow_coin_geo),
     LOAD_MODEL_FROM_GEO(MODEL_STAR,                    star_geo),
     LOAD_MODEL_FROM_GEO(MODEL_TRANSPARENT_STAR,        transparent_star_geo),
-    LOAD_MODEL_FROM_GEO(MODEL_STAR_MEDALLION,          star_medallion_geo), // TODO: Replace with proper model (should be 100 unit radius (200 diameter), bottom of model starting at 0)
+    LOAD_MODEL_FROM_GEO(MODEL_STAR_MEDALLION,          star_medallion_geo),
     LOAD_MODEL_FROM_GEO(MODEL_COLLECTIBLE_GLOW,        collectible_glow_geo),
     LOAD_MODEL_FROM_GEO(MODEL_RAINBOW_STAR,            star_rainbow_geo),
     LOAD_MODEL_FROM_GEO(MODEL_INERT_STAR,              inert_star_geo),
@@ -227,8 +230,6 @@ const LevelScript script_func_global_3[] = {
 };
 
 const LevelScript script_func_global_4[] = {
-    LOAD_MODEL_FROM_GEO(MODEL_WATER_BOMB,              water_bomb_geo),
-    LOAD_MODEL_FROM_GEO(MODEL_WATER_BOMB_SHADOW,       water_bomb_shadow_geo),
     LOAD_MODEL_FROM_GEO(MODEL_KING_BOBOMB,             king_bobomb_geo),
     RETURN(),
 };

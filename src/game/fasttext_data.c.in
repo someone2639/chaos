@@ -9,6 +9,10 @@ ALIGNED8 static const Texture fnt_medium[] = {
 #include "textures/fasttext/custom_fnt_medium.ia4.preswap.inc.c"
 };
 
+ALIGNED8 static const Texture fnt_medium_noshadow[] = {
+#include "textures/fasttext/custom_fnt_medium_noshadow.ia4.preswap.inc.c"
+};
+
 ALIGNED8 static const Texture fnt_small_bold[] = {
 #include "textures/fasttext/custom_fnt_small_bold.ia4.preswap.inc.c"
 };
@@ -1025,6 +1029,19 @@ const struct FastTextProps gFasttextFonts[FT_FONT_COUNT] = {
     },
     [FT_FONT_MEDIUM] = {
         .texture = fnt_medium,
+        .kerningTable = kerning_fnt_medium,
+        .offsetTable = offset_table_fnt_medium,
+        .textureFormat = G_IM_FMT_IA,
+        .textureSize = G_IM_SIZ_4b,
+        .yShift = 3,
+        .subFromLength = 1,
+        .textureWidth = 608,
+        .textureHeight = 12,
+        .lineHeight = 13,
+        .averageCharHeight = 8,
+    },
+    [FT_FONT_MEDIUM_NOSHADOW] = {
+        .texture = fnt_medium_noshadow,
         .kerningTable = kerning_fnt_medium,
         .offsetTable = offset_table_fnt_medium,
         .textureFormat = G_IM_FMT_IA,

@@ -1179,11 +1179,11 @@ void bowser_spawn_collectable(void) {
         gSecondCameraFocus = spawn_object(o, MODEL_STAR, bhvGrandStar);
     } else {
         if(gCurrLevelNum == LEVEL_BOWSER_1) {
-            if(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_1 | SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)) {
+            if((save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_1 | SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)) && !chaos_check_if_patch_active(CHAOS_PATCH_GET_KEY_1)) {
                 keyModel = MODEL_TRANSPARENT_BOWSER_KEY;
             }
         } else if(gCurrLevelNum == LEVEL_BOWSER_2) {
-            if(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_2 | SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR)) {
+            if((save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_2 | SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR)) && !chaos_check_if_patch_active(CHAOS_PATCH_GET_KEY_2)) {
                 keyModel = MODEL_TRANSPARENT_BOWSER_KEY;
             }
         }

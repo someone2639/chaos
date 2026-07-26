@@ -353,13 +353,15 @@ struct MarioState {
     /*0xDC*/ f32 csws_lastStickX;
     /*0xE0*/ f32 csws_lastStickY;
     /*0xE4*/ f32 csws_lastStickMag;
-    /*0xE8*/ u8 bonkKill;
-    /*0xE9*/ u8 bonkKillTimer;
-    /*0xEA*/ u8 safePosUpdatedLastFrame;
-    /*0xEB*/ u8 lastSafePosIndex;
-    /*0xEC*/ Vec3f lastSafePos[8];
-    /*0x14C i think*/ s16 storedYaw;
-    /*0x14E*/ u16 canSpinJump;
+    /*0xE8*/ f32 peakHeightNoCancel;
+    /*0xEC*/ u8 bonkKill;
+    /*0xED*/ u8 bonkKillTimer;
+    /*0xEE*/ u8 safePosUpdatedLastFrame;
+    /*0xEF*/ u8 lastSafePosIndex;
+    /*0xF0*/ Vec3f lastSafePos[8];
+    /*0x150 i think*/ u16 canSpinJump;
+    /*0x152*/ s16 storedYaw;
+    /*0x154*/ f32 storedMag;
 };
 
 #endif // TYPES_H

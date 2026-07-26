@@ -113,5 +113,17 @@ extern u8 desc_bg_desc_bg_i8[];
 extern u8 texture_dvd_logo[];
 extern Gfx dvd_logo[];
 extern Gfx coin_flip_coin_mesh[];
+extern u8 wth_cave_rgba16[];
+extern u8 wth_clock_rgba16[];
+extern u8 wth_cloud_rgba16[];
+extern u8 wth_hot_rgba16[];
+extern u8 wth_none_rgba16[];
+extern u8 wth_snow_rgba16[];
+extern u8 wth_spooky_rgba16[];
+extern u8 wth_sun_rgba16[];
+extern u8 wth_wet_rgba16[];
+extern u8 wow_health_meter_rgba16[];
+extern u8 breaking_news_rgba16[];
+extern u8 radar_bg_rgba16[];
 
 #endif // SEGMENT2_H

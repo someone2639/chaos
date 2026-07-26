@@ -149,6 +149,8 @@ void chs_act_cosmic_clones(void);
 void chs_area_init_cosmic_clones(void);
 void chs_instwarp_post_cosmic_clones(struct InstantWarp *warp);
 void chs_update_cosmic_clones(void);
+u8 chs_cond_water_bombs(void);
+void chs_update_water_bombs(void);
 
 // Visual Modifiers
 u8 chs_cond_no_zbuffer(void);
@@ -236,6 +238,7 @@ void chs_act_sound_effect_shuffle(void);
 s32 get_randomized_sound(s32 sound);
 
 // Misc
+u8 chs_cond_forced_mario_cam(void);
 void chs_act_serve_ads(void);
 void chs_update_serve_ads(void);
 u8 chs_cond_miracle_normal(void);
@@ -260,6 +263,8 @@ void chs_remove_cherry_clone(void);
 void chs_init_cherry_clones_after_warp(void);
 void chs_act_45_degree_camera(void);
 void chs_deact_45_degree_camera(void);
+void chs_act_smooth_camera(void);
+void chs_deact_smooth_camera(void);
 void chs_update_noclip(void);
 u8 chs_cond_randomize_warps(void);
 void chs_init_dvd(void);
@@ -274,3 +279,6 @@ void chs_area_init_star_medallion(void);
 void chs_instwarp_post_star_medallion(struct InstantWarp *warp);
 void chs_lvlinit_star_medallion(void);
 u8 chs_star_medallion_can_collect_star(void);
+void draw_more_hud(void);
+void chs_act_more_hud(void);
+void chs_lvlinit_more_hud(void);

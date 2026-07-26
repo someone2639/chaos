@@ -298,9 +298,9 @@
 #define CAM_EVENT_SHUFFLE             14
 
 enum ChsForced8DirFlags {
-    FORCED_8DIR_FLAGS_NONE      = 0,
-    FORCED_8DIR_FLAGS_45DEG_CAM = (1 << 0),
-    // TODO: Slot reserved for smooth camera patch
+    FORCED_8DIR_FLAGS_NONE       = 0,
+    FORCED_8DIR_FLAGS_45DEG_CAM  = (1 << 0),
+    FORCED_8DIR_FLAGS_SMOOTH_CAM = (2 << 0),
 };
 
 /**
@@ -673,6 +673,7 @@ extern s16 gChsCurrentRock;
 
 // DECOMP_DO: sort all of this extremely messy shit out after the split
 
+f32 find_surface_on_ray(Vec3f orig, Vec3f dir, struct Surface **hit_surface, Vec3f hit_pos, s32 flags);
 void set_camera_shake_from_hit(s16 shake);
 void set_environmental_camera_shake(s16 shake);
 void set_camera_shake_from_point(s16 shake, f32 posX, f32 posY, f32 posZ);

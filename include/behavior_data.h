@@ -494,6 +494,7 @@ extern const BehaviorScript bhvSeesawPlatform[];
 extern const BehaviorScript bhvFerrisWheelAxle[];
 extern const BehaviorScript bhvFerrisWheelPlatform[];
 extern const BehaviorScript bhvWaterBombSpawner[];
+extern const BehaviorScript bhvWaterBombSpawnerChaos[];
 extern const BehaviorScript bhvWaterBomb[];
 extern const BehaviorScript bhvWaterBombShadow[];
 extern const BehaviorScript bhvTTCRotatingSolid[];

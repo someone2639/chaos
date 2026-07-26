@@ -4093,7 +4093,7 @@ Gfx dvd_logo[] = {
 	gsDPPipeSync(),
 	gsDPSetCombineLERP(PRIMITIVE, 0, TEXEL0, 0, 0, 0, 0, TEXEL0, PRIMITIVE, 0, TEXEL0, 0, 0, 0, 0, TEXEL0),
 	gsDPSetAlphaDither(G_AD_NOISE),
-	gsDPSetRenderMode(G_RM_AA_ZB_XLU_SURF, G_RM_AA_ZB_XLU_SURF2),
+	gsDPSetRenderMode(G_RM_AA_XLU_SURF, G_RM_AA_XLU_SURF2),
 	gsSPTexture(65535, 65535, 0, 0, 1),
 	gsDPSetTextureImage(G_IM_FMT_IA, G_IM_SIZ_8b_LOAD_BLOCK, 1, texture_dvd_logo),
 	gsDPSetTile(G_IM_FMT_IA, G_IM_SIZ_8b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
@@ -4103,8 +4103,9 @@ Gfx dvd_logo[] = {
 	gsSPVertex(dvd_logo_vtx + 0, 4, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
 	gsDPPipeSync(),
+    gsDPSetRenderMode(G_RM_AA_ZB_OPA_SURF, G_RM_AA_ZB_OPA_SURF2),
     gsDPSetPrimColor(0, 0, 255, 255, 255, 255),
-	gsDPSetCombineLERP(0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT, 0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT),
+    gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
 	gsSPTexture(65535, 65535, 0, 0, 0),
 	gsSPSetGeometryMode(G_SHADE | G_LIGHTING),
 	gsDPSetAlphaDither(G_AD_DISABLE),
@@ -4257,4 +4258,52 @@ Gfx coin_flip_coin_mesh[] = {
 	gsSPSetGeometryMode(G_ZBUFFER),
 	gsDPSetAlphaDither(G_AD_DISABLE),
 	gsSPEndDisplayList(),
+};
+
+ALIGNED8 u8 wth_cave_rgba16[] = {
+	#include "textures/segment2/wth_cave.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_clock_rgba16[] = {
+	#include "textures/segment2/wth_clock.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_cloud_rgba16[] = {
+	#include "textures/segment2/wth_cloud.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_hot_rgba16[] = {
+	#include "textures/segment2/wth_hot.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_none_rgba16[] = {
+	#include "textures/segment2/wth_none.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_snow_rgba16[] = {
+	#include "textures/segment2/wth_snow.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_spooky_rgba16[] = {
+	#include "textures/segment2/wth_spooky.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_sun_rgba16[] = {
+	#include "textures/segment2/wth_sun.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_wet_rgba16[] = {
+	#include "textures/segment2/wth_wet.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wow_health_meter_rgba16[] = {
+    #include "textures/segment2/wow_health_meter.rgba16.inc.c"
+};
+
+ALIGNED8 u8 breaking_news_rgba16[] = {
+    #include "textures/segment2/breaking_news.rgba16.inc.c"
+};
+
+ALIGNED8 u8 radar_bg_rgba16[] = {
+    #include "textures/segment2/radar_bg.rgba16.inc.c"
 };

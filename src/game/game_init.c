@@ -212,7 +212,7 @@ void clear_framebuffer(s32 color) {
     gDPSetFillColor(gDisplayListHead++, color);
     gDPFillRectangle(gDisplayListHead++,
                      GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(0), gBorderHeight,
-                     GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(0) - 1, SCREEN_HEIGHT - gBorderHeight - 1);
+                     GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(0), SCREEN_HEIGHT - gBorderHeight);
 
     gDPPipeSync(gDisplayListHead++);
 
@@ -653,10 +653,49 @@ void adjust_analog_stick(struct Controller *controller) {
         controller->stickY *= 64 / controller->stickMag;
         controller->stickMag = 64;
     }
+}
 
-    if (isGameFlipped) {
-        controller->stickX *= -1;
+/**
+ * Swap the C buttons with the analog stick
+ */
+void swap_stick_with_c_buttons(struct Controller *controller) {
+#define PRESS_THRESHOLD 54
+#define PRESS_MAX 80
+
+    u16 buttons = (controller->controllerData->button & C_BUTTONS);
+    controller->controllerData->button &= ~C_BUTTONS;
+
+    if (controller->controllerData->stick_x <= -PRESS_THRESHOLD) {
+        controller->controllerData->button |= L_CBUTTONS;
     }
+    if (controller->controllerData->stick_x >= PRESS_THRESHOLD) {
+        controller->controllerData->button |= R_CBUTTONS;
+    }
+    if (controller->controllerData->stick_y <= -PRESS_THRESHOLD) {
+        controller->controllerData->button |= D_CBUTTONS;
+    }
+    if (controller->controllerData->stick_y >= PRESS_THRESHOLD) {
+        controller->controllerData->button |= U_CBUTTONS;
+    }
+
+    controller->controllerData->stick_x = 0;
+    controller->controllerData->stick_y = 0;
+
+    if (buttons & L_CBUTTONS) {
+        controller->controllerData->stick_x -= PRESS_MAX;
+    }
+    if (buttons & R_CBUTTONS) {
+        controller->controllerData->stick_x += PRESS_MAX;
+    }
+    if (buttons & D_CBUTTONS) {
+        controller->controllerData->stick_y -= PRESS_MAX;
+    }
+    if (buttons & U_CBUTTONS) {
+        controller->controllerData->stick_y += PRESS_MAX;
+    }
+
+#undef PRESS_MAX
+#undef PRESS_THRESHOLD
 }
 
 /**
@@ -773,6 +812,10 @@ void read_controller_inputs(void) {
 
                 controller->controllerData->button &= ~(Z_TRIG | R_TRIG | A_BUTTON | B_BUTTON);
                 controller->controllerData->button |= newButtons;
+            }
+
+            if (chaos_check_if_patch_active(CHAOS_PATCH_SWAPPED_C_STICK)) {
+                swap_stick_with_c_buttons(controller);
             }
 
             if (chaos_check_if_patch_active(CHAOS_PATCH_BUTTON_BROKEN_A)) {
@@ -1039,12 +1082,12 @@ void thread5_game_loop(UNUSED void *arg) {
         menu_update_input_dir();
         addr = level_script_execute(addr);
 
-        if (gPlayer1Controller->buttonPressed & R_TRIG) {
-            chaos_remove_expired_entry(0, "%s: Removed patch!");
-        }
 #ifdef SOMEONE2639_CRAZY_EXPERIMENTS
         if (gPlayer1Controller->buttonPressed & L_TRIG) {
             chaos_add_new_entry(CHAOS_PATCH_MIRROR_MODE);
+        }
+        if (gPlayer1Controller->buttonPressed & R_TRIG) {
+            chaos_remove_expired_entry(0, "%s: Removed patch!");
         }
         if ((gPlayer1Controller->buttonPressed & (A_BUTTON|L_TRIG)) && (gPlayer1Controller->buttonDown & (A_BUTTON|L_TRIG)) == (A_BUTTON | L_TRIG)) {
             extern void chs_debug_serve_ads(void);

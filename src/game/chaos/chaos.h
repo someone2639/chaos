@@ -120,6 +120,7 @@ enum ChaosPatchID {
     CHAOS_PATCH_RED_LIGHT,
     CHAOS_PATCH_COSMIC_RAYS,
     CHAOS_PATCH_RANDOM_BUTTON_PRESSES,
+    CHAOS_PATCH_RANDOM_INVISIBLE_WALLS,
 
 // Movement Modifiers
     CHAOS_PATCH_LOSEMOVE_BREAKDANCE,
@@ -139,7 +140,7 @@ enum ChaosPatchID {
     CHAOS_PATCH_HARDER_LONG_JUMPS,
     CHAOS_PATCH_FORWARDS_BLJ,
     CHAOS_PATCH_CANT_STOP_WONT_STOP,
-    CHAOS_PATCH_64DS_MOMENTUM,
+    CHAOS_PATCH_REFRIGERATOR_MOVEMENT,
     CHAOS_PATCH_UNDERWATER_GROUNDPOUND,
     CHAOS_PATCH_SUNSHINE_TWIRL,
 
@@ -149,6 +150,7 @@ enum ChaosPatchID {
     CHAOS_PATCH_SPAWN_ON_SHELL,
     CHAOS_PATCH_DOUBLE_CHERRY,
     CHAOS_PATCH_COSMIC_CLONES,
+    CHAOS_PATCH_WATER_BOMBS,
 
 // Visual Modifiers
     CHAOS_PATCH_NO_Z_BUFFER,
@@ -174,6 +176,7 @@ enum ChaosPatchID {
     CHAOS_PATCH_DARKNESS,
     CHAOS_PATCH_CLOWN_VOMIT,
     CHAOS_PATCH_45_DEGREE_CAM,
+    CHAOS_PATCH_SMOOTH_CAM,
     CHAOS_PATCH_CARTRIDGE_TILT,
     CHAOS_PATCH_CORRUPTION,
     CHAOS_PATCH_SQUINT_MODE,
@@ -220,6 +223,7 @@ enum ChaosPatchID {
     CHAOS_PATCH_BUTTON_BROKEN_Z,
     CHAOS_PATCH_BUTTON_BROKEN_C,
     CHAOS_PATCH_SWAPPED_ZR_AB,
+    CHAOS_PATCH_SWAPPED_C_STICK,
     CHAOS_PATCH_INVERTED_CAMERA_X,
     CHAOS_PATCH_INVERTED_STICK_X,
     CHAOS_PATCH_INVERTED_STICK_Y,
@@ -233,7 +237,6 @@ enum ChaosPatchID {
 // Lethal Damages
     CHAOS_PATCH_LETHAL_BONK,
     CHAOS_PATCH_LETHAL_FALL_DAMAGE,
-    CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE,
 
 // Audio Modifiers
     CHAOS_PATCH_INVERTED_SOUND,
@@ -246,6 +249,8 @@ enum ChaosPatchID {
     CHAOS_PATCH_PLEASANT_CAMERA_SOUNDS,
 
 // Miscellaneous Modifiers
+    CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE,
+    CHAOS_PATCH_FALL_CANCEL_CANCEL,
     CHAOS_PATCH_MARIO_INVISIBLE,
     CHAOS_PATCH_SIGNREAD_FAR,
     CHAOS_PATCH_ONE_HIT_WONDER,
@@ -276,6 +281,7 @@ enum ChaosPatchID {
     CHAOS_PATCH_NUMBER_BLINDNESS,
     CHAOS_PATCH_TETRIS,
     CHAOS_PATCH_STAR_MEDALLION,
+    CHAOS_PATCH_MORE_HUD,
 
 // Patch Count
     CHAOS_PATCH_COUNT,
@@ -349,6 +355,10 @@ struct ChaosPatch {
 
     const u8 incompatibleCount;            // Number of specified incompatible patches
     const enum ChaosPatchID *incompatible; // List of all incompatible patch IDs (Optional)
+#ifdef DEBUG_ASSERTIONS
+    const u8 __dbg_exemptCount;            // Number of specified exempt patches
+    const enum ChaosPatchID *__dbg_exempt; // List of all patch IDs in which associated patch lists as incompatible, but this one does not (Optional, for debugging purposes to catch any missed mutual exclusions)
+#endif
 
     u8   (*conditionalFunc  )(void);                     // Check specific scenarios for whether this patch type is allowed to show up, beyond just conflicting patch IDs (Optional)
     void (*activatedInitFunc)(void);                     // Invoked the moment this patch takes effect (Optional)
@@ -488,6 +498,12 @@ void chaos_frame_update(void);
 
 // Iterates through deferred patch list at the end of the frame and deactivates them accordingly.
 void chaos_remove_deferred_patches(void);
+
+// Debug function to verify mutual exclusions are properly handled between all patches at boot time.
+// Each match must have an INCOMPAIBLE() entry that includes the alternative patch. If this is undesirable
+// for any reason and should only work one way, the patch must use __DEBUG_EXEMPT() to prevent the
+// debug assertion from tripping inside of this function.
+s32 chaos_precheck_conditional_exclusions(UNUSED s16 arg0, UNUSED s32 arg1);
 
 
 #include "chaos_patch_shared_vars.h"

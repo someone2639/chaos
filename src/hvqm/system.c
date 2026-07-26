@@ -122,6 +122,7 @@ void hvqm_drawHLE(void *buf) {
     // gDPPipeSync(video_glistp++);
     gDPSetColorImage(video_glistp++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 320, buf);
     gDPSetScissor(video_glistp++, G_SC_NON_INTERLACE, 0, 0, 320, 240);
+    clear_framebuffer(0);
 
     render_multi_image((Texture *) buf, 0, 0, 320, 240);
 
@@ -135,6 +136,24 @@ void hvqm_drawHLE(void *buf) {
     osSpTaskStart(&gGfxSPTask->task);
     osRecvMesg(&spMesgQ, NULL, OS_MESG_BLOCK);
     osRecvMesg(&dpMesgQ, NULL, OS_MESG_BLOCK);
+}
+
+void hvqm_clearCurrentFB(void *buf, u32 size) {
+    bzero(buf, size);
+    select_gfx_pool();
+    clear_framebuffer(0);
+
+    gDPFullSync(video_glistp++);
+    gSPEndDisplayList(video_glistp++);
+
+    osWritebackDCacheAll();
+    create_gfx_task_structure();
+    gGfxSPTask->task.t.data_ptr = (u64 *) gGfxPool->buffer;
+    gGfxSPTask->task.t.data_size = ((u32)video_glistp - (u32)gGfxPool->buffer) * sizeof(Gfx);
+    osSpTaskStart(&gGfxSPTask->task);
+    osRecvMesg(&spMesgQ, NULL, OS_MESG_BLOCK);
+    osRecvMesg(&dpMesgQ, NULL, OS_MESG_BLOCK);
+    osViSwapBuffer(buf);
 }
 
 static void mainproc(void *arg) {

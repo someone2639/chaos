@@ -29,6 +29,7 @@
 
 #define TET_LINE_CLEAR_ANIM 10
 #define TET_GAME_OVER_ANIM  60
+#define TET_RESET_TIMER  300
 
 // Collision offset, left and right borders of collision are padded with 3 thick walls, but tetrimino piece positioning + image drawing does not account for this
 #define TET_COL_OFF     3   
@@ -97,7 +98,7 @@ struct Tetris {
     u8 state;
 
     // A generic timer with a different use case per state
-    u16 timer;
+    u32 timer;
 
     // Score for the tetris game. Entirely superficial in this hack but it's still fun to include!
     u32 score;
