@@ -1372,5 +1372,5 @@ s32 chaos_precheck_conditional_exclusions(UNUSED s16 arg0, UNUSED s32 arg1) {
     }
 #endif
 
-    return 0;
+    return FALSE;
 }

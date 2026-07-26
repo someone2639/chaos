@@ -1279,7 +1279,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 1,
         .duration           = 8,
 
-        INCOMPATIBLE(CHAOS_PATCH_SUNSHINE_TWIRL)
+        INCOMPATIBLE(CHAOS_PATCH_SUNSHINE_TWIRL, CHAOS_PATCH_MORE_HUD)
 
         .name               = "Beta",
         .shortDescription   = "YAAHAA!!! Triple Jumps will now cause you to twirl!",
@@ -2893,7 +2893,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 12,
         .durationImpossible = 14,
 
-        INCOMPATIBLE(CHAOS_PATCH_TETRIS, CHAOS_PATCH_NO_HUD)
+        INCOMPATIBLE(CHAOS_PATCH_TETRIS, CHAOS_PATCH_NO_HUD, CHAOS_PATCH_BETA)
 
         .activatedInitFunc  = chs_act_more_hud,
         .levelInitFunc      = chs_lvlinit_more_hud,
