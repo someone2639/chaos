@@ -1326,3 +1326,51 @@ void chaos_remove_deferred_patches(void) {
     
     deferredPatchCount = 0;
 }
+
+s32 chaos_precheck_conditional_exclusions(UNUSED s16 arg0, UNUSED s32 arg1) {
+#ifdef DEBUG_ASSERTIONS
+    for (enum ChaosPatchID currentPatchID = 0; currentPatchID < ARRAY_COUNT(gChaosPatches); currentPatchID++) {
+        const struct ChaosPatch *currentPatch = &gChaosPatches[currentPatchID];
+        if (currentPatch->incompatible == NULL || currentPatch->incompatibleCount == 0) {
+            continue;
+        }
+
+        for (s32 incompatiblePatchIndex = 0; incompatiblePatchIndex < currentPatch->incompatibleCount; incompatiblePatchIndex++) {
+            const enum ChaosPatchID incompatiblePatchID = currentPatch->incompatible[incompatiblePatchIndex];
+            const struct ChaosPatch *incompatiblePatch = &gChaosPatches[incompatiblePatchID];
+            u8 found = FALSE;
+
+            if (incompatiblePatch->incompatible != NULL && incompatiblePatch->incompatibleCount > 0) {
+                for (s32 matchingPatchIndex = 0; matchingPatchIndex < incompatiblePatch->incompatibleCount; matchingPatchIndex++) {
+                    const enum ChaosPatchID matchingPatchID = incompatiblePatch->incompatible[matchingPatchIndex];
+                    if (currentPatchID == matchingPatchID) {
+                        found = TRUE;
+                        break;
+                    }
+                }
+            }
+
+            if (!found && incompatiblePatch->__dbg_exempt != NULL && incompatiblePatch->__dbg_exemptCount > 0) {
+                for (s32 matchingPatchIndex = 0; matchingPatchIndex < incompatiblePatch->__dbg_exemptCount; matchingPatchIndex++) {
+                    const enum ChaosPatchID matchingPatchID = incompatiblePatch->__dbg_exempt[matchingPatchIndex];
+                    if (currentPatchID == matchingPatchID) {
+                        found = TRUE;
+                        break;
+                    }
+                }
+            }
+
+            assert_args(found, "chaos_precheck_conditional_exclusions:\n" \
+                "Exclusion mismatch found!\n" \
+                "\n" \
+                "Bad Patch:\n" \
+                "  %s:\n" \
+                "Should exclude:\n" \
+                "  %s\n", \
+            incompatiblePatch->name, currentPatch->name);
+        }
+    }
+#endif
+
+    return 0;
+}

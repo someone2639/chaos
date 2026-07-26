@@ -728,6 +728,10 @@ void render_hud(void) {
         sPowerMeterStoredHealth = 8;
         sPowerMeterVisibleTimer = 0;
     } else {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_MORE_HUD)) {
+            draw_more_hud();
+        }
+
         if (gCurrentArea != NULL && gCurrentArea->camera->mode == CAMERA_MODE_INSIDE_CANNON) {
             render_hud_cannon_reticle();
         }
@@ -760,10 +764,6 @@ void render_hud(void) {
 
     if(chaos_check_if_patch_active(CHAOS_PATCH_TIME_LIMIT)) {
         render_chaos_time_limit();
-    }
-
-    if(chaos_check_if_patch_active(CHAOS_PATCH_MORE_HUD)) {
-        draw_more_hud();
     }
 
     if(chaos_check_if_patch_active(CHAOS_PATCH_TETRIS)) {

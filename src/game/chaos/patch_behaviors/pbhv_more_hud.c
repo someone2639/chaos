@@ -10,6 +10,7 @@
 #include "game/level_update.h"
 #include "engine/behavior_script.h"
 #include "game/object_list_processor.h"
+#include "game/rendering_graph_node.h"
 #include "engine/math_util.h"
 
 #include "game/chaos/chaos.h"
@@ -179,9 +180,50 @@ const char *sMoreHudHeadlines[] = {
     "New Study Finds Gamers Don't Touch Grass",
     "Press F1 For Help",
     "safsggi3wh Sorry My Cat Stepped on The Keyboard",
+    "F",
+    "The News is Still Broken",
     "Insert Headline Here",
-    "\"Ad Breaks\" Patch Still Crashes Sometimes",
 };
+
+f32 sMoreHudHeadlinesWeights[ARRAY_COUNT(sMoreHudHeadlines)];
+
+#define HEADLINE_WEIGHT_INCREASE (1.0f / (f32) ARRAY_COUNT(sMoreHudHeadlines))
+s32 more_hud_get_headline(void) {
+    s32 index;
+
+    f32 weightTotal = 0.0f;
+    f32 currentWeight = 0.0f;
+    f32 generatedWeight = random_float();
+
+    for (index = 0; index < ARRAY_COUNT(sMoreHudHeadlines); index++) {
+        // Increase the probability selection window for each headline; offers future benefit against more recently selected indexes
+        sMoreHudHeadlinesWeights[index] += HEADLINE_WEIGHT_INCREASE;
+
+        // If weight is below 0, effectively exclude it from the possible selection pool
+        if (sMoreHudHeadlinesWeights[index] > 0.0f) {
+            weightTotal += sMoreHudHeadlinesWeights[index];
+        }
+    }
+
+    generatedWeight *= weightTotal;
+
+    for (index = 0; index < ARRAY_COUNT(sMoreHudHeadlines) - 1; index++) { // ARRAY_COUNT(sMoreHudHeadlines) - 1 not an accident
+        // If weight is below 0, skip the index. This in theory should never favor the last unprocessed index if that falls below 0.
+        if (sMoreHudHeadlinesWeights[index] <= 0.0f) {
+            continue;
+        }
+
+        currentWeight += sMoreHudHeadlinesWeights[index];
+        if (currentWeight > generatedWeight) {
+            break;
+        }
+    }
+
+    // Index should be guaranteed to not show up for next 50% of headlines, then will later become possible at low but increasing probability
+    sMoreHudHeadlinesWeights[index] = -0.5f;
+
+    return index;
+}
 
 void more_hud_draw_weather(void) {
     enum Weather weather = sMoreHudLevelData[gCurrCourseNum].weather;
@@ -218,7 +260,13 @@ void more_hud_draw_weather(void) {
 void more_hud_draw_health_meter(void) {
     s32 x = 20;
     s32 y = (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) ? 24 : 6;
-    f32 barFill = 1.0f - ((f32)((gMarioState->maxHealth - 0xFF) - (gMarioState->health - 0xFF)) / (f32)(gMarioState->maxHealth - 0xFF));
+    f32 barFill = 0.0f;
+
+    // Div by 0 check
+    if (gMarioState->maxHealth != 0xFF) {
+        barFill = 1.0f - ((f32)((gMarioState->maxHealth - 0xFF) - (gMarioState->health - 0xFF)) / (f32)(gMarioState->maxHealth - 0xFF));
+    }
+    s32 wedges = gMarioState->health / 0x100;
 
     gDPPipeSync(gDisplayListHead++);
     gDPSetTexturePersp(gDisplayListHead++, G_TP_NONE);
@@ -235,8 +283,21 @@ void more_hud_draw_health_meter(void) {
     gDPSetRenderMode(gDisplayListHead++, G_RM_AA_ZB_OPA_SURF, G_RM_AA_ZB_OPA_SURF);
 
     gDPSetCombineLERP(gDisplayListHead++, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT, 0, 0, 0, ENVIRONMENT);
-    gDPSetEnvColor(gDisplayListHead++, 0x0A, 0xCF, 0x09, 0xFF);
-    gDPFillRectangle(gDisplayListHead++, x + 46, y + 30, x + 46 + (80.0f * barFill), y + 36);
+    // gDPSetEnvColor(gDisplayListHead++, 0x0A, 0xCF, 0x09, 0xFF);
+    if (wedges > 8) {
+        gDPSetEnvColor(gDisplayListHead++, 0xFD, 0xBD, 0x56, 0xFF);
+    } else if (wedges > 6) {
+        gDPSetEnvColor(gDisplayListHead++, 0x08, 0x83, 0xFF, 0xFF);
+    } else if (wedges > 4) {
+        gDPSetEnvColor(gDisplayListHead++, 0x08, 0xFF, 0x08, 0xFF);
+    } else if (wedges > 2) {
+        gDPSetEnvColor(gDisplayListHead++, 0xFF, 0xFF, 0x00, 0xFF);
+    } else {
+        gDPSetEnvColor(gDisplayListHead++, 0xFF, 0x29, 0x29, 0xFF);
+    }
+    if (gMarioState->health >= 0x100) {
+        gDPFillRectangle(gDisplayListHead++, x + 46, y + 30, x + 46 + (79.0f * barFill) + 1, y + 36);
+    }
     gDPPipeSync(gDisplayListHead++);
 
     gDPSetCombineMode (gDisplayListHead++, G_CC_SHADE, G_CC_SHADE);
@@ -265,14 +326,32 @@ void more_hud_draw_breaking_news(void) {
 
 void more_hud_draw_pings_for_list(struct Object* list, s32 x, s32 y) {
     struct Object *head = (struct Object *)list->header.next;
+    f32 flipX = 1.0f;
+    s16 cameraYaw = -gLakituState.yaw;
+
+    if (isGameFlipped) {
+        flipX *= -1.0f;
+    }
+    if (chaos_check_if_patch_active(CHAOS_PATCH_UPSIDE_DOWN_CAMERA)) {
+        cameraYaw += 0x8000;
+    }
+    if (chaos_check_if_patch_active(CHAOS_PATCH_SIDEWAYS_CAMERA)) {
+        if (gChsSidewaysOrientation == 1) {
+            cameraYaw += 0x4000;
+        } else {
+            cameraYaw -= 0x4000;
+        }
+    }
 
     while (head != list) {
         if(head->header.gfx.sharedChild != NULL) {
             f32 dist;
+            s16 objYaw;
             vec3f_get_lateral_dist(&head->oPosVec, &gMarioObject->oPosVec, &dist);
+            vec3f_get_yaw(&head->oPosVec, &gMarioObject->oPosVec, &objYaw);
             if(dist < 2900.0f) {
-                f32 offX = ((gMarioObject->oPosX - head->oPosX) / 3000.0f) * 16;
-                f32 offZ = ((gMarioObject->oPosZ - head->oPosZ) / 3000.0f) * 16;
+                f32 offX = sins(cameraYaw + objYaw) * (dist / 3000.0f) * -16.0f * flipX;
+                f32 offZ = coss(cameraYaw + objYaw) * (dist / 3000.0f) * -16.0f;
 
                 gDPFillRectangle(gDisplayListHead++, (x + 16 + offX) - 1, (y + 16 + offZ) - 1, (x + 16 + offX) + 1, (y + 16 + offZ) + 1);
             }
@@ -313,8 +392,6 @@ void more_hud_draw_radar(void) {
 }
 
 void draw_more_hud(void) {
-    if (gInActSelect) return;
-
     more_hud_draw_weather();
     more_hud_draw_health_meter();
     more_hud_draw_breaking_news();
@@ -322,12 +399,15 @@ void draw_more_hud(void) {
 }
 
 void more_hud_update(void) {
-    sMoreHudHeadlineIndex = random_u16() % ARRAY_COUNT(sMoreHudHeadlines);
+    sMoreHudHeadlineIndex = more_hud_get_headline();
     sMoreHudCurTempHigh = sMoreHudLevelData[gCurrCourseNum].temperature + (random_float() * 4.0f);
     sMoreHudCurTempLow = sMoreHudLevelData[gCurrCourseNum].temperature - (random_float() * 4.0f);
 }
 
 void chs_act_more_hud(void) {
+    for (u32 i = 0; i < ARRAY_COUNT(sMoreHudHeadlinesWeights); i++) {
+        sMoreHudHeadlinesWeights[i] = HEADLINE_WEIGHT_INCREASE;
+    }
     more_hud_update();
 }
 

@@ -355,6 +355,10 @@ struct ChaosPatch {
 
     const u8 incompatibleCount;            // Number of specified incompatible patches
     const enum ChaosPatchID *incompatible; // List of all incompatible patch IDs (Optional)
+#ifdef DEBUG_ASSERTIONS
+    const u8 __dbg_exemptCount;            // Number of specified exempt patches
+    const enum ChaosPatchID *__dbg_exempt; // List of all patch IDs in which associated patch lists as incompatible, but this one does not (Optional, for debugging purposes to catch any missed mutual exclusions)
+#endif
 
     u8   (*conditionalFunc  )(void);                     // Check specific scenarios for whether this patch type is allowed to show up, beyond just conflicting patch IDs (Optional)
     void (*activatedInitFunc)(void);                     // Invoked the moment this patch takes effect (Optional)
@@ -494,6 +498,12 @@ void chaos_frame_update(void);
 
 // Iterates through deferred patch list at the end of the frame and deactivates them accordingly.
 void chaos_remove_deferred_patches(void);
+
+// Debug function to verify mutual exclusions are properly handled between all patches at boot time.
+// Each match must have an INCOMPAIBLE() entry that includes the alternative patch. If this is undesirable
+// for any reason and should only work one way, the patch must use __DEBUG_EXEMPT() to prevent the
+// debug assertion from tripping inside of this function.
+s32 chaos_precheck_conditional_exclusions(UNUSED s16 arg0, UNUSED s32 arg1);
 
 
 #include "chaos_patch_shared_vars.h"
