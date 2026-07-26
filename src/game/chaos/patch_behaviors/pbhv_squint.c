@@ -245,7 +245,7 @@ static void draw_n64_controls(void) {
 
 void draw_room(float scaleXY) {
     // betah(chaos_check_if_patch_active(CHAOS_PATCH_BETA));
-    betah(gPlayer1Controller->buttonDown & A_BUTTON);
+    // betah(gPlayer1Controller->buttonDown & A_BUTTON);
 
     internal_scale = scaleXY;
     Mtx *baseScale = alloc_display_list(sizeof(Mtx));
