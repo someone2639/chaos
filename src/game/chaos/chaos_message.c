@@ -191,12 +191,12 @@ void chaosmsg_init(void) {
     chsStrParams[chsStrIter].status = CHSMSG_INACTIVE;
 }
 
-void chaosmsg_display_log_recap(void) {
-    s32 printX = BASE_X;
+void chaosmsg_display_log_recap(s32 xTranslation) {
+    s32 printX = BASE_X + xTranslation;
     s32 printY;
     struct ChaosMessageParams *params;
-
-    menu_single_button_prompt(&gDisplayListHead, SCREEN_WIDTH - 32, SCREEN_HEIGHT - 23, MENU_PROMPT_B_BUTTON, "Back", FALSE);
+    s32 bgPrintX = MAX(printX - MESSAGE_MARGIN, 0);
+    s32 bgWidth = MIN((printX - MESSAGE_MARGIN) + MAX_WIDTH + (MESSAGE_MARGIN * 2), MAX_WIDTH + (MESSAGE_MARGIN * 2));
 
 #ifdef CHAOS_ENGINE_DEBUG
     u8 lastNumBlindness = gChsNumberBlindness;
@@ -208,10 +208,10 @@ void chaosmsg_display_log_recap(void) {
         if(chsStrParams[i].status != CHSMSG_UNINITIALIZED) {
             params = &chsStrParams[i];
             printY = SCREEN_HEIGHT - params->yOffset - MESSAGE_MARGIN;
-            if(printY > MESSAGE_MARGIN) {
-                chaosmsg_draw_bg(printX - MESSAGE_MARGIN,
+            if (printY > MESSAGE_MARGIN && bgWidth > 0) {
+                chaosmsg_draw_bg(bgPrintX,
                     printY + (gFasttextFonts[FT_FONT].lineHeight - gFasttextFonts[FT_FONT].averageCharHeight) - MESSAGE_MARGIN, 
-                    MAX_WIDTH + (MESSAGE_MARGIN * 2),
+                    bgWidth,
                     params->lineHeight,
                     255);
                 fasttext_draw_texrect(&gDisplayListHead, printX, printY, params->str, FT_FLAG_ALIGN_LEFT, 255, 255, 255, 255);

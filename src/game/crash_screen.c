@@ -11,6 +11,7 @@
 #include "game/emutest.h"
 #include "game/game_init.h"
 #include "game/rumble_init.h"
+#include "game/save_file.h"
 
 #include "printf.h"
 
@@ -433,7 +434,7 @@ void thread2_crash_screen(UNUSED void *arg) {
     } while (thread == NULL);
 
     gCrashScreen.framebuffer = (u16*) gFramebuffers[sRenderingFramebuffer];
-    if (!(gEmulator & (EMU_CONSOLE | EMU_WIIVC | EMU_ARES | EMU_SIMPLE64 | EMU_CEN64))) {
+    if (gAllowInstantInput && save_file_check_instant_input_active()) {
         gCrashScreen.framebuffer = (u16*) gFramebuffers[(sRenderingFramebuffer + 1) % 3];
         bcopy(gFramebuffers[sRenderingFramebuffer], gCrashScreen.framebuffer, sizeof(gFramebuffers[0]));
     }

@@ -180,6 +180,7 @@ void clear_areas(void) {
     gWarpTransition.isActive = FALSE;
     gWarpTransition.pauseRendering = FALSE;
     gMarioSpawnInfo->areaIndex = -1;
+    gCamera = NULL;
 
     for (i = 0; i < 8; i++) {
         gAreaData[i].index = i;
@@ -416,7 +417,6 @@ void process_viewport_transitions(struct GraphNodeRoot *node) {
     }
 }
 
-extern s8 sShowMessageLogRecap;
 void drawslots();
 void draw_room(float);
 void render_game(void) {
@@ -495,7 +495,7 @@ void render_game(void) {
             }
         }
 
-        if(!sShowMessageLogRecap) {
+        if(sShowMessageLogRecap == CHAOS_MSG_RECAP_CLOSED) {
             chaosmsg_render();
         }
     } else {

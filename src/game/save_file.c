@@ -1,6 +1,7 @@
 #include <ultra64.h>
 
 #include "sm64.h"
+#include "buffers/framebuffers.h"
 #include "game_init.h"
 #include "main.h"
 #include "audio/external.h"
@@ -767,6 +768,32 @@ s32 check_warp_checkpoint(struct WarpNode *warpNode) {
     return warpCheckpointActive;
 }
 
+void save_file_set_instant_input_active(u8 active) {
+    u8 changed;
+
+    if (active != FALSE) {
+        changed = (gSaveBuffer.menuData.instantInput == TRUE ? FALSE : TRUE);
+        gSaveBuffer.menuData.instantInput = TRUE;
+    } else {
+        changed = (gSaveBuffer.menuData.instantInput == FALSE ? FALSE : TRUE);
+        gSaveBuffer.menuData.instantInput = FALSE;
+    }
+
+    if (!changed) {
+        return;
+    }
+
+    gMainMenuDataModified = TRUE;
+    if (gAllowInstantInput && gSaveBuffer.menuData.instantInput) {
+        sRenderingFramebuffer = sRenderedFramebuffer;
+    } else {
+        sRenderingFramebuffer = (sRenderedFramebuffer + 1) % ARRAY_COUNT(gFramebuffers);
+    }
+}
+
+u32 save_file_check_instant_input_active(void) {
+    return gSaveBuffer.menuData.instantInput;
+}
 
 u16 save_file_get_rng_seed(void) {
     return gSaveBuffer.files[gCurrSaveFileNum - 1].rngSeed;

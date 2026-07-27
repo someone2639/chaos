@@ -41,9 +41,6 @@
 #include "patch_selection_ui.h"
 #include "game/chaos/patch_behaviors/pbhv_cosmic_clones.h"
 
-// Emulators that the Instant Input patch should not be applied to
-#define INSTANT_INPUT_BLACKLIST (EMU_CONSOLE | EMU_WIIVC | EMU_ARES | EMU_SIMPLE64 | EMU_CEN64)
-
 // First 3 controller slots
 struct Controller gControllers[3];
 
@@ -58,6 +55,7 @@ OSContStatus gControllerStatuses[4];
 OSContPadEx gControllerPads[4];
 u8 gControllerBits;
 u8 gBorderHeight;
+u8 gAllowInstantInput = FALSE;
 #ifdef EEP
 s8 gEepromProbe;
 #endif
@@ -440,7 +438,7 @@ void render_init(void) {
     // Skip incrementing the initial framebuffer index on emulators so that they display immediately as the Gfx task finishes
     // VC probably emulates osViSwapBuffer accurately so instant patch breaks VC compatibility
     // Currently, Ares and Simple64 have issues with single buffering so disable it there as well.
-    if (gEmulator & INSTANT_INPUT_BLACKLIST) {
+    if (!(gAllowInstantInput && save_file_check_instant_input_active())) {
         sRenderingFramebuffer++;
     }
     gGlobalTimer++;
@@ -572,11 +570,11 @@ void display() {
 void display_and_vsync(void) {
     display();
     // Skip swapping buffers on inaccurate emulators other than VC so that they display immediately as the Gfx task finishes
-    if (gEmulator & INSTANT_INPUT_BLACKLIST) {
-        if (++sRenderedFramebuffer == 3) {
+    if (!(gAllowInstantInput && save_file_check_instant_input_active())) {
+        if (++sRenderedFramebuffer >= 3) {
             sRenderedFramebuffer = 0;
         }
-        if (++sRenderingFramebuffer == 3) {
+        if (++sRenderingFramebuffer >= 3) {
             sRenderingFramebuffer = 0;
         }
     }

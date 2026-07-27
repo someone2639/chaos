@@ -22,6 +22,9 @@
 #include "usb/debug.h"
 #endif
 
+// Emulators that the Instant Input patch should not be applied to
+#define INSTANT_INPUT_BLACKLIST (EMU_CONSOLE | EMU_WIIVC | EMU_ARES | EMU_SIMPLE64 | EMU_CEN64)
+
 u32 gHVQMPlaying = 0;
 
 OSThread D_80339210; // unused?
@@ -380,6 +383,9 @@ void thread3_main(UNUSED void *arg) {
     alloc_pool();
     load_engine_code_segment();
     detect_emulator();
+    if (!(gEmulator & INSTANT_INPUT_BLACKLIST)) {
+        gAllowInstantInput = TRUE;
+    }
 #ifndef UNF
     crash_screen_init();
 #endif
