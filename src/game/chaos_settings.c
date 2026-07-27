@@ -157,7 +157,7 @@ void chaos_settings_set_instant_input(s32 selected) {
 struct ChaosSettingsOption sInstantInputOptions[] = {
     {
         .option = "Enable",
-        .description = "Instant Input will be enabled. This may not take effect if a setup is determined to be incompatible (e.g. use of an N64 console or a high-accuracy emulator is detected).",
+        .description = "Instant Input will be enabled. This may not take effect if a setup is determined to be incompatible (e.g. use of a real N64 console or a very high-accuracy emulator such as Ares is detected).",
     },
     {
         .option = "Disable",
@@ -196,7 +196,7 @@ struct ChaosSettingsCategory gSettingsOptions[] = {
     {
         .display = "Instant Input Settings",
         .shortName = "Instant Input",
-        .description = "Instant Input can save up to 2 frames of visual latency on emulators using Framebuffer Emulation. @1FFF1F--Enabling this is recommended for most players!\n"
+        .description = "Instant Input can reduce up to 2 frames of visual latency on emulators using Framebuffer Emulation. @1FFF1F--Enabling this is recommended for most players!\n"
         "@------9F(This option is disabled by default just in case, as it will cause severe rendering issues with the wrong setup).@--------",
         .options = sInstantInputOptions,
         .numOptions = ARRAY_COUNT(sInstantInputOptions),
@@ -404,9 +404,9 @@ s32 chaos_settings_anim_disappear() {
             play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
         }
 
-        gChaosSettingsMenu.descY = menu_anim_s32(prog, MENU_EASE_OUT, SETTINGS_DESC_Y, SETTINGS_DESC_Y_START);
-        gChaosSettingsMenu.catX = menu_anim_s32(prog, MENU_EASE_OUT, SETTINGS_CAT_X, SETTINGS_CAT_X_START);
-        gChaosSettingsMenu.optX = menu_anim_s32(prog, MENU_EASE_OUT, SETTINGS_OPT_X, SETTINGS_OPT_X_START);
+        gChaosSettingsMenu.descY = menu_anim_s32(prog, MENU_EASE_IN, SETTINGS_DESC_Y, SETTINGS_DESC_Y_START);
+        gChaosSettingsMenu.catX = menu_anim_s32(prog, MENU_EASE_IN, SETTINGS_CAT_X, SETTINGS_CAT_X_START);
+        gChaosSettingsMenu.optX = menu_anim_s32(prog, MENU_EASE_IN, SETTINGS_OPT_X, SETTINGS_OPT_X_START);
     } else {
         gChaosSettingsMenu.menu.flags &= ~CHAOS_SETTINGS_ACTIVE;
         gChaosSettingsMenu.menu.animFrames = MENU_ANIM_LOOP;

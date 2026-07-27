@@ -411,7 +411,6 @@ void process_viewport_transitions(struct GraphNodeRoot *node) {
     }
 }
 
-extern s8 sShowMessageLogRecap;
 void drawslots();
 void draw_room(float);
 void render_game(void) {
@@ -491,7 +490,7 @@ void render_game(void) {
             }
         }
 
-        if(!sShowMessageLogRecap) {
+        if(sShowMessageLogRecap == CHAOS_MSG_RECAP_CLOSED) {
             chaosmsg_render();
         }
     } else {
