@@ -161,7 +161,7 @@ struct ChaosSettingsOption sInstantInputOptions[] = {
     },
     {
         .option = "Disable",
-        .description = "Instant Input not be disabled.",
+        .description = "Instant Input will be disabled.",
     },
 };
 
