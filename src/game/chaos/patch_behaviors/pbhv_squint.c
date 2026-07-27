@@ -92,7 +92,7 @@ static void mtxTransformStick(Mtx *m, Vec3f translate, Vec2f stick, Vec3f scale)
     Mtx transM;
     Mtx rotM;
     Mtx scaleM;
-    Mtx SR;
+    Mtx scale_rotateM;
 
     translate[1] -= ((internal_scale - 1.6f) * BUTTON_STICK_TRANSITION_SPEED);
 
@@ -103,8 +103,8 @@ static void mtxTransformStick(Mtx *m, Vec3f translate, Vec2f stick, Vec3f scale)
     guScale(&scaleM, scale[0], scale[1], scale[2]);
     guRotate(&rotM, totalStick, axis[0], axis[1], axis[2]);
     guTranslate(&transM, translate[0], translate[1], translate[2]);
-    guMtxCatL(&scaleM, &rotM, &SR);
-    guMtxCatL(&SR, &transM, m);
+    guMtxCatL(&scaleM, &rotM, &scale_rotateM);
+    guMtxCatL(&scale_rotateM, &transM, m);
 
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(m), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
 }
@@ -260,6 +260,8 @@ void draw_room(float scaleXY) {
 
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
     gSPPopMatrix(gDisplayListHead++, G_MTX_PROJECTION);
+
+    gSPClearGeometryMode(gDisplayListHead++, G_ZBUFFER);
 }
 
 void chs_squint_init(void) {
