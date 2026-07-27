@@ -48,6 +48,7 @@ extern u8 *gGfxPoolEnd;
 extern struct GfxPool *gGfxPool;
 extern u8 gControllerBits;
 extern u8 gBorderHeight;
+extern u8 gAllowInstantInput;
 #ifdef EEP
 extern s8 gEepromProbe;
 #endif
@@ -71,6 +72,7 @@ extern struct DmaHandlerList gDemoInputsBuf;
 extern u8 gMarioAnims[];
 extern u8 gDemoInputs[];
 
+extern u16 sRenderedFramebuffer;
 extern u16 sRenderingFramebuffer;
 extern u32 gGlobalTimer;
 

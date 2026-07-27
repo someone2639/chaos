@@ -15,7 +15,7 @@
 
 #define SETTINGS_DESC_X         SCREEN_CENTER_X
 
-#define SETTINGS_CAT_X          (SETTINGS_DESC_X - 55)
+#define SETTINGS_CAT_X          (SETTINGS_DESC_X - 51)
 #define SETTINGS_CAT_X_START    (-110 - WIDE_UI_EDGE_OFFSET)
 
 #define SETTINGS_OPT_X          (SETTINGS_DESC_X + 104)
