@@ -91,7 +91,7 @@ void slowtext_draw_ortho_text(Gfx **dl, s32 x, s32 y, const char* string, enum F
 
     const struct FastTextProps *fontProps = &gFasttextFonts[fasttextCachedFontId];
     const u8 *kerningTable = fontProps->kerningTable;
-    y += fontProps->yShift;
+    y += fontProps->yShift; // BUG: This should actually subtract! But not worth changing every call this close to release, as it introduces new risk.
     yPos = y;
 
     gDPSetPrimColor(dlHead++, 0, 0, rgbaBaseColors[0], rgbaBaseColors[1], rgbaBaseColors[2], rgbaBaseColors[3]);
