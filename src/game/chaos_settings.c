@@ -308,7 +308,7 @@ void render_settings_description() {
     Main rendering function for the settings menu
 */
 void render_settings_menu() {
-    shade_screen();
+    shade_screen(&gDisplayListHead);
     squish_ui(&gDisplayListHead);
     render_settings_categories();
     render_settings_options();

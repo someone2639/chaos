@@ -203,6 +203,9 @@ u8 chs_cond_uneventful(void);
 u8 chs_cond_forgiveness(void);
 void chs_menuinit_gambling_wheel(void);
 void chs_menuupdate_gambling_wheel(Gfx **dl);
+u8 chs_cond_sweet_relief(void);
+void chs_menuinit_sweet_relief(void);
+void chs_menuupdate_sweet_relief(Gfx **dl);
 
 // Speed Modifiers
 u8 chs_cond_push_back(void);

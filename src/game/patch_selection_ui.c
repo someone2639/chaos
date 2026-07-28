@@ -582,6 +582,7 @@ void patch_select_state_select() {
         }
     } else if (gPlayer1Controller->buttonPressed & R_TRIG) {
         init_active_patches_menu();
+        active_patches_menu_fill();
         menu_play_anim(menu, PATCH_SELECT_ANIM_ACTIVE_PATCHES);
         menu_set_state(menu, PATCH_SELECT_STATE_SHOW_ACTIVE_PATCHES);
     } else if (gPlayer1Controller->buttonPressed & START_BUTTON) {
@@ -901,17 +902,21 @@ static void draw_patch_quality(s32 quality) {
 /*
     Draws a patch type indicator at the given x/y coordinates
 */
-void draw_patch_type(f32 x, f32 y, enum ChaosPatchDurationType type) {
+void draw_patch_type(Gfx **dl, f32 x, f32 y, enum ChaosPatchDurationType type) {
+    Gfx *dlHead = *dl;
+
     Mtx* transMtx = alloc_display_list(sizeof(Mtx));
     guTranslate(transMtx, x, y, 0);
-    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
+    gSPMatrix(dlHead++, VIRTUAL_TO_PHYSICAL(transMtx),
           G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     if(type == CHAOS_DURATION_STARS || type == CHAOS_DURATION_INFINITE) {
-        gSPDisplayList(gDisplayListHead++, star_timer);
+        gSPDisplayList(dlHead++, star_timer);
     } else if (type == CHAOS_DURATION_USE_COUNT) {
-        gSPDisplayList(gDisplayListHead++, uses_counter);
+        gSPDisplayList(dlHead++, uses_counter);
     }
-    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    gSPPopMatrix(dlHead++, G_MTX_MODELVIEW);
+
+    *dl = dlHead;
 }
 
 /*
@@ -939,13 +944,13 @@ void draw_single_patch_info(const struct ChaosPatch *patch) {
     //Draw patch type
     gSPDisplayList(gDisplayListHead++, patch_use_type_start);
     if (patch->durationType == CHAOS_DURATION_STARS || patch->durationType == CHAOS_DURATION_USE_COUNT) {
-        draw_patch_type(42, 8, patch->durationType);
+        draw_patch_type(&gDisplayListHead, 42, 8, patch->durationType);
         s32 duration = chaos_calculate_patch_duration(patch);
 
         assert(duration < 1000, "render_patch_card:\nduration out of range!");
         sprintf(timerText, "%d", duration);
     } else if (patch->durationType == CHAOS_DURATION_INFINITE) {
-        draw_patch_type(42, 8, patch->durationType);
+        draw_patch_type(&gDisplayListHead, 42, 8, patch->durationType);
         sprintf(timerText, "`"); // Infinity symbol
     } else {
         timerText[0] = '\0';
@@ -972,25 +977,25 @@ void draw_double_patch_info(const struct ChaosPatch *pos, const struct ChaosPatc
     //Draw patch type(s)
     gSPDisplayList(gDisplayListHead++, patch_use_type_start);
     if (pos->durationType == CHAOS_DURATION_STARS || pos->durationType == CHAOS_DURATION_USE_COUNT) {
-        draw_patch_type(42, 8, pos->durationType);
+        draw_patch_type(&gDisplayListHead, 42, 8, pos->durationType);
         s32 duration = chaos_calculate_patch_duration(pos);
 
         assert(duration < 1000, "render_patch_card:\nduration out of range!");
         sprintf(timer1Text, "%d", duration);
     } else if (pos->durationType == CHAOS_DURATION_INFINITE) {
-        draw_patch_type(42, 8, pos->durationType);
+        draw_patch_type(&gDisplayListHead, 42, 8, pos->durationType);
         sprintf(timer1Text, "`"); // Infinity symbol
     } else {
         timer1Text[0] = '\0';
     }
     if (neg->durationType == CHAOS_DURATION_STARS || neg->durationType == CHAOS_DURATION_USE_COUNT) {
-        draw_patch_type(42, -16, neg->durationType);
+        draw_patch_type(&gDisplayListHead, 42, -16, neg->durationType);
         s32 duration = chaos_calculate_patch_duration(neg);
 
         assert(duration < 1000, "render_patch_card:\nduration out of range!");
         sprintf(timer2Text, "%d", duration);
     } else if (neg->durationType == CHAOS_DURATION_INFINITE) {
-        draw_patch_type(42, -16, neg->durationType);
+        draw_patch_type(&gDisplayListHead, 42, -16, neg->durationType);
         sprintf(timer2Text, "`"); // Infinity symbol
     } else {
         timer2Text[0] = '\0';
@@ -1285,7 +1290,7 @@ void display_patch_selection_ui() {
         squish_ui(&gDisplayListHead);
 
         if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) {
-            render_active_patches();
+            render_active_patches(&gDisplayListHead);
         }
 
         for(int i = numPatches - 1; i >= 0; i--) {

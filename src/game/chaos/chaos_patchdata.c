@@ -2070,6 +2070,20 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
                                "  - @3FBF3F--Many Positive Outcomes@--------\n"
                                "  - @FFFFAF--One Incredible Jackpot!!!@--------"
     },
+    [CHAOS_PATCH_SWEET_RELIEF] = {
+        .durationType       = CHAOS_DURATION_ONCE,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 3,
+        .isStackable        = TRUE,
+
+        .conditionalFunc    = chs_cond_sweet_relief,
+        .hasMenuEvent       = TRUE,
+        .chsMenuInitFunc    = chs_menuinit_sweet_relief,
+        .chsMenuUpdateFunc  = chs_menuupdate_sweet_relief,
+
+        .name               = "Sweet Relief",
+        .shortDescription   = "Remove a currently applied negative patch of your choice.",
+    },
 
 // Speed Modifiers
     [CHAOS_PATCH_PUSH_BACK] = {

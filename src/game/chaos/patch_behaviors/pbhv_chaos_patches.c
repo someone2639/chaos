@@ -11,6 +11,7 @@
 #include "game/debug.h"
 #include "game/level_update.h"
 #include "game/save_file.h"
+#include "game/chaos_pause_menu.h"
 
 static u8 inRandomPatchActivationFunc = FALSE;
 
@@ -222,4 +223,82 @@ u8 chs_cond_uneventful(void) {
 
 u8 chs_cond_forgiveness(void) {
     return (gChaosDifficulty != CHAOS_DIFFICULTY_IMPOSSIBLE);
+}
+
+u8 chs_cond_sweet_relief(void) {
+    s32 validPatches = 0;
+
+    for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+        struct ChaosActiveEntry *entry = &gChaosActiveEntries[i];
+        const enum ChaosPatchID patchId = entry->id;
+        const struct ChaosPatch *patch = &gChaosPatches[patchId];
+
+        if (patch->effectType != CHAOS_EFFECT_NEGATIVE || (patch->durationType == CHAOS_DURATION_STARS && entry->remainingDuration <= 1)) {
+            continue;
+        }
+
+        s32 blacklistedMatchFound = FALSE;
+        for (s32 j = 0; j < ARRAY_COUNT(patchBlacklist); j++) {
+            if (patchId == patchBlacklist[j]) {
+                blacklistedMatchFound = TRUE;
+                break;
+            }
+        }
+
+        if (blacklistedMatchFound) {
+            continue;
+        }
+
+        validPatches++;
+
+        if (validPatches >= 2) {
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}
+
+void chs_menuinit_sweet_relief(void) {
+    s32 index = 0;
+
+    init_active_patches_menu();
+    for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
+        struct ChaosActiveEntry *entry = &gChaosActiveEntries[i];
+        const enum ChaosPatchID patchId = entry->id;
+        const struct ChaosPatch *patch = &gChaosPatches[patchId];
+
+        if (patch->effectType != CHAOS_EFFECT_NEGATIVE || (patch->durationType == CHAOS_DURATION_STARS && entry->remainingDuration <= 1)) {
+            continue;
+        }
+
+        s32 blacklistedMatchFound = FALSE;
+        for (s32 j = 0; j < ARRAY_COUNT(patchBlacklist); j++) {
+            if (patchId == patchBlacklist[j]) {
+                blacklistedMatchFound = TRUE;
+                break;
+            }
+        }
+
+        if (blacklistedMatchFound) {
+            continue;
+        }
+
+        active_patches_menu_append(entry);
+        index++;
+    }
+
+    gChaosPauseMenu->activePatchesMenu.menuState = ACTIVE_PATCHES_MENU_STATE_ELIMINATION;
+}
+
+void chs_menuupdate_sweet_relief(Gfx **dl) {
+    if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) {
+        update_active_patches_menu();
+        render_active_patches(dl);
+    } else {
+        struct ChaosActiveEntry *entry = active_patches_get_selected_patch();
+        u32 index = ((uintptr_t) entry - (uintptr_t) &gChaosActiveEntries[0]) / sizeof(gChaosActiveEntries[0]);
+        chaos_remove_expired_entry(index, "Patch deactivated: %s");
+        chaos_menuevent_finish_event();
+    }
 }

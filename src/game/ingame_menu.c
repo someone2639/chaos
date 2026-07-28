@@ -2269,21 +2269,24 @@ void change_dialog_camera_angle(void) {
     }
 }
 
-void shade_screen(void) {
-    create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_PUSH, GFX_DIMENSIONS_FROM_LEFT_EDGE(0), SCREEN_HEIGHT, 0);
+void shade_screen(Gfx **dl) {
+    Gfx *dlHead = *dl;
+    create_dl_translation_matrix(&dlHead, MENU_MTX_PUSH, GFX_DIMENSIONS_FROM_LEFT_EDGE(0), SCREEN_HEIGHT, 0);
 
     // This is a bit weird. It reuses the dialog text box (width 130, height -80),
     // so scale to at least fit the screen.
 #ifdef WIDESCREEN
-    create_dl_scale_matrix(&gDisplayListHead, MENU_MTX_NOPUSH,
+    create_dl_scale_matrix(&dlHead, MENU_MTX_NOPUSH,
                            GFX_DIMENSIONS_ASPECT_RATIO * SCREEN_HEIGHT / 130.0f, 3.0f, 1.0f);
 #else
-    create_dl_scale_matrix(&gDisplayListHead, MENU_MTX_NOPUSH, 2.6f, 3.4f, 1.0f);
+    create_dl_scale_matrix(&dlHead, MENU_MTX_NOPUSH, 2.6f, 3.4f, 1.0f);
 #endif
 
-    gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, 110);
-    gSPDisplayList(gDisplayListHead++, dl_draw_text_bg_box);
-    gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    gDPSetEnvColor(dlHead++, 0, 0, 0, 110);
+    gSPDisplayList(dlHead++, dl_draw_text_bg_box);
+    gSPPopMatrix(dlHead++, G_MTX_MODELVIEW);
+
+    *dl = dlHead;
 }
 
 void print_animated_red_coin(s16 x, s16 y) {
@@ -2325,6 +2328,7 @@ void handle_page_switch_inputs(void) {
         init_settings_menu();
     } else if (gPlayer1Controller->buttonPressed & R_TRIG) {
         init_active_patches_menu();
+        active_patches_menu_fill();
     } else if (gPlayer1Controller->buttonPressed & Z_TRIG) {
         sShowMessageLogRecap = CHAOS_MSG_RECAP_OPENING;
         sShowMessageLogRecapTimer = 0;
@@ -2843,7 +2847,7 @@ s16 render_pause_courses_and_castle(void) {
     s16 index;
 
     if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) {
-        render_active_patches();
+        render_active_patches(&gDisplayListHead);
         return MENU_OPT_NONE;
     }
 
@@ -2856,7 +2860,7 @@ s16 render_pause_courses_and_castle(void) {
             recapTransform = menu_anim_s32((f32) sShowMessageLogRecapTimer / (f32) CHAOS_MSG_RECAP_OPEN_CLOSE_FRAMES, MENU_EASE_IN, 0, CHAOS_MSG_RECAP_OPEN_CLOSE_OFFSET);
         }
 
-        shade_screen();
+        shade_screen(&gDisplayListHead);
         chaosmsg_display_log_recap(recapTransform);
         sShowMessageLogRecapTimer++;
         if (sShowMessageLogRecap == CHAOS_MSG_RECAP_OPEN) {
@@ -2901,7 +2905,7 @@ s16 render_pause_courses_and_castle(void) {
             break;
 
         case DIALOG_STATE_VERTICAL:
-            shade_screen();
+            shade_screen(&gDisplayListHead);
             render_pause_my_score_coins();
             render_pause_red_coins();
 
@@ -2940,7 +2944,7 @@ s16 render_pause_courses_and_castle(void) {
             break;
 
         case DIALOG_STATE_HORIZONTAL:
-            shade_screen();
+            shade_screen(&gDisplayListHead);
             print_hud_pause_colorful_str();
             render_pause_castle_menu_box(160, 143);
             render_pause_castle_main_strings(104, 60);
