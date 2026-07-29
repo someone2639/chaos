@@ -68,6 +68,7 @@ void init_active_patches_menu() {
     gChaosPauseMenu->chaosListSize = 0;
     gChaosPauseMenu->chaosListStart = 0;
     gChaosPauseMenu->activePatchesMenu.flags = (ACTIVE_PATCHES_MENU_ACTIVE | ACTIVE_PATCHES_MENU_HALT_INPUT);
+    gChaosPauseMenu->activePatchesMenu.index = 0;
     gChaosPauseMenu->activePatchesMenu.animTimer = 0;
     gChaosPauseMenu->activePatchesMenu.animFrames = MENU_ANIM_LOOP;
     gChaosPauseMenu->activePatchesMenu.animId = ACTIVE_PATCHES_MENU_ANIM_STARTUP;
