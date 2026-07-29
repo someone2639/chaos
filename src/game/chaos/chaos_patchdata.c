@@ -2053,7 +2053,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     },
     [CHAOS_PATCH_LETS_GO_GAMBLING] = {
         .durationType       = CHAOS_DURATION_STARS,
-        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
         .duration           = 6,
 

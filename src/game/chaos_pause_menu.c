@@ -66,6 +66,7 @@ void scroll_mini_patch_cards() {
 void init_active_patches_menu() {
     bzero(gChaosPauseMenu->chaosList, sizeof(struct ChaosActiveEntry *) * CHAOS_PATCH_ENTRIES);
     gChaosPauseMenu->chaosListSize = 0;
+    gChaosPauseMenu->chaosListStart = 0;
     gChaosPauseMenu->activePatchesMenu.flags = (ACTIVE_PATCHES_MENU_ACTIVE | ACTIVE_PATCHES_MENU_HALT_INPUT);
     gChaosPauseMenu->activePatchesMenu.animTimer = 0;
     gChaosPauseMenu->activePatchesMenu.animFrames = MENU_ANIM_LOOP;
@@ -296,6 +297,7 @@ void draw_mini_patch_card(Gfx **dl, f32 x, f32 y, struct ChaosActiveEntry *patch
 
     //Center name if it's only one line long
     fasttext_compute_print_text_with_line_breaks(FT_FONT_SMALL_THIN, CARD_STRING_WIDTH, &lines, &length, drawName, patchName);
+    assert_args(length < ARRAY_COUNT(drawName) - 1, "draw_mini_patch_card:\nPatch name too long:\n%s", patchInfo->name);
     nameY = (lines == 1) ? -10 : -3;
     Mtx *transMtx = alloc_display_list(sizeof(Mtx));
 
@@ -303,7 +305,7 @@ void draw_mini_patch_card(Gfx **dl, f32 x, f32 y, struct ChaosActiveEntry *patch
 
     gDPSetPrimColor(dlHead++, 0, 0, effectR, effectG, effectB, 0xFF);
     guTranslate(transMtx, x, y, 0);
-    gSPMatrix(dlHead++, VIRTUAL_TO_PHYSICAL(transMtx++),
+    gSPMatrix(dlHead++, VIRTUAL_TO_PHYSICAL(transMtx),
               G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     gSPDisplayList(dlHead++, patch_bg_s_mesh_s_mesh);
 
@@ -773,7 +775,7 @@ s32 (*sActivePatchesMenuAnims[])(void) = {
     Main update function for the active patches menu
 */
 void update_active_patches_menu() {
-    if((gChaosPauseMenu->chaosListStart > gChaosPauseMenu->chaosListSize) || (gChaosPauseMenu->activePatchesMenu.index > gChaosPauseMenu->chaosListSize)) {
+    if((gChaosPauseMenu->chaosListStart >= gChaosPauseMenu->chaosListSize) || (gChaosPauseMenu->activePatchesMenu.index >= gChaosPauseMenu->chaosListSize)) {
         gChaosPauseMenu->chaosListStart = 0;
         gChaosPauseMenu->activePatchesMenu.index = 0;
     }

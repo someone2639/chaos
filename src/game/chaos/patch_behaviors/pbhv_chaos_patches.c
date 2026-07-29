@@ -260,15 +260,14 @@ u8 chs_cond_sweet_relief(void) {
 }
 
 void chs_menuinit_sweet_relief(void) {
-    s32 index = 0;
-
     init_active_patches_menu();
+
     for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
         struct ChaosActiveEntry *entry = &gChaosActiveEntries[i];
         const enum ChaosPatchID patchId = entry->id;
         const struct ChaosPatch *patch = &gChaosPatches[patchId];
 
-        if (patch->effectType != CHAOS_EFFECT_NEGATIVE || (patch->durationType == CHAOS_DURATION_STARS && entry->remainingDuration <= 1)) {
+        if (patch->effectType != CHAOS_EFFECT_NEGATIVE) {
             continue;
         }
 
@@ -285,7 +284,6 @@ void chs_menuinit_sweet_relief(void) {
         }
 
         active_patches_menu_append(entry);
-        index++;
     }
 
     gChaosPauseMenu->activePatchesMenu.menuState = ACTIVE_PATCHES_MENU_STATE_ELIMINATION;
