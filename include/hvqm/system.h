@@ -41,12 +41,12 @@
 /*
  * Size of buffer for video records 
  */
-#define HVQ_DATASIZE_MAX  300000
+#define HVQ_DATASIZE_MAX  50000
 
 /*
  * Size of buffer for audio records
  */
-#define AUDIO_RECORD_SIZE_MAX  30000
+#define AUDIO_RECORD_SIZE_MAX  5000
 
 /*
  * Size of data area for HVQM2 microcode
