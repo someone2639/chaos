@@ -29,6 +29,9 @@
 #define CARD_4_X_START      (CARD_X_RIGHT_START + 300)
 #define CARD_X_END          (CARD_X_RIGHT_START + 80)
 
+#define REROLL_Y_START      (SCREEN_HEIGHT + 30)
+#define REROLL_Y_END        (SCREEN_HEIGHT - 9)
+
 #define CARD_SCALE_DEFAULT  1.0f
 #define CARD_SCALE_HOVER    1.05f
 #define CARD_SCALE_SELECTED 1.75f
@@ -60,8 +63,8 @@ enum PatchSelectMenuAnim {
     PATCH_SELECT_ANIM_CONFIRMATION_RETURN,
     PATCH_SELECT_ANIM_EXT_DESC,
     PATCH_SELECT_ANIM_EXT_DESC_RETURN,
-    PATCH_SELECT_ANIM_ACTIVE_PATCHES,
-    PATCH_SELECT_ANIM_ACTIVE_PATCHES_RETURN,
+    PATCH_SELECT_ANIM_GO_OFF_SCREEN,
+    PATCH_SELECT_ANIM_RETURN_ON_SCREEN,
     PATCH_SELECT_ANIM_ENDING_1,
     PATCH_SELECT_ANIM_ENDING_2,
 };
@@ -77,6 +80,7 @@ enum PatchSelectMenuState {
     PATCH_SELECT_STATE_UPDATE_EVENT,
     PATCH_SELECT_STATE_CLOSING,
     PATCH_SELECT_STATE_CLOSED,
+    PATCH_SELECT_STATE_REROLL,
 };
 
 enum PatchSelectionMenuFlags {
@@ -96,6 +100,7 @@ struct PatchSelectionMenu {
     Vec2f descPos;
     Vec2f curtainPos;
     Vec2f selectPatchTextPos;
+    Vec2f rerollPos;
     f32 extendedDescScale;
     f32 selectPatchTextScale;
     f32 eventTextScale;

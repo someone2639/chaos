@@ -2084,6 +2084,17 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Sweet Relief",
         .shortDescription   = "Remove a currently applied negative patch of your choice.",
     },
+    [CHAOS_PATCH_REROLL] = {
+        .durationType       = CHAOS_DURATION_USE_COUNT,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .duration           = 2,
+        .severity           = 3,
+        .isStackable        = TRUE,
+
+        .name               = "Re-Roll!",
+        .shortDescription   = "Gain the ability to re-roll the available patches during patch selection.",
+        .longDescription    = "Patches can be re-rolled by pressing the B button during patch selection. Chaos events will still apply to the newly generated patches."
+    },
 
 // Speed Modifiers
     [CHAOS_PATCH_PUSH_BACK] = {

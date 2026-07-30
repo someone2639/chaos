@@ -167,6 +167,8 @@ void reset_patch_selection_menu() {
     gPatchSelectionMenu->curtainPos[1] = CURTAIN_Y_START;
     gPatchSelectionMenu->selectPatchTextPos[0] = SCREEN_CENTER_X;
     gPatchSelectionMenu->selectPatchTextPos[1] = SCREEN_CENTER_Y;
+    gPatchSelectionMenu->rerollPos[0] = SCREEN_WIDTH - 33;
+    gPatchSelectionMenu->rerollPos[1] = REROLL_Y_START;
     gPatchSelectionMenu->extendedDescScale = 0.0f;
     gPatchSelectionMenu->selectPatchTextScale = 0.0f;
     gPatchSelectionMenu->eventTextScale = 0.0f;
@@ -220,6 +222,9 @@ s32 patch_select_anim_startup() {
         case 2:
             //Wait a few frames
             menu->animFrames = PATCH_SELECT_STARTUP_IDLE_FRAMES;
+            // Also drop down reroll icon if visible
+            prog = ((f32)animTimer / (f32)menu->animFrames);
+            gPatchSelectionMenu->rerollPos[1] = menu_anim_f32(prog, MENU_EASE_OUT, REROLL_Y_START, REROLL_Y_END);
             break;
         case 3:
             //Text goes off screen
@@ -298,7 +303,6 @@ s32 patch_select_anim_ending_2() {
 /*
     Scales the card that the cursor is hovering over
 */
-
 s32 patch_select_anim_select() {
     struct ChaosMenu *menu = &gPatchSelectionMenu->menu;
     s32 selected = gPatchSelectionMenu->selectedPatch;
@@ -366,6 +370,9 @@ s32 patch_select_anim_confirmation() {
 
             gPatchSelectionMenu->patchCards[selectedPatch].pos[0] = menu_anim_f32(prog, MENU_EASE_OUT, xStart, PATCH_SELECTED_X);
             gPatchSelectionMenu->patchCards[selectedPatch].pos[1] = menu_anim_f32(prog, MENU_EASE_OUT, yStart, PATCH_SELECTED_Y);
+
+            // Raise reroll icon if visible
+            gPatchSelectionMenu->rerollPos[1] = menu_anim_f32(prog, MENU_EASE_OUT, REROLL_Y_END, REROLL_Y_START);
             break;
         default:
             //End animation and turn on input
@@ -405,6 +412,9 @@ s32 patch_select_anim_confirmation_return() {
 
             gPatchSelectionMenu->patchCards[selectedPatch].pos[0] = menu_anim_f32(prog, MENU_EASE_OUT, PATCH_SELECTED_X, xEnd);
             gPatchSelectionMenu->patchCards[selectedPatch].pos[1] = menu_anim_f32(prog, MENU_EASE_OUT, PATCH_SELECTED_Y, yEnd);
+
+            // Lower reroll icon if visible
+            gPatchSelectionMenu->rerollPos[1] = menu_anim_f32(prog, MENU_EASE_OUT, REROLL_Y_START, REROLL_Y_END);
             break;
         case 1:
             //If only one card, skip phase
@@ -455,6 +465,8 @@ s32 patch_select_anim_ext_desc() {
         f32 prog = ((f32)menu->animTimer / (f32)menu->animFrames);
 
         gPatchSelectionMenu->extendedDescScale = menu_anim_f32(prog, MENU_EASE_NONE, 0.0f, 1.0f);
+        // Raise reroll icon if visible
+        gPatchSelectionMenu->rerollPos[1] = menu_anim_f32(prog, MENU_EASE_OUT, REROLL_Y_END, REROLL_Y_START);
 
         return FALSE;
     } else {
@@ -478,6 +490,8 @@ s32 patch_select_menu_anim_ext_desc_return() {
         f32 prog = ((f32)menu->animTimer / (f32)menu->animFrames);
 
         gPatchSelectionMenu->extendedDescScale = menu_anim_f32(prog, MENU_EASE_NONE, 1.0f, 0.0f);
+        // Lower reroll icon if visible
+        gPatchSelectionMenu->rerollPos[1] = menu_anim_f32(prog, MENU_EASE_OUT, REROLL_Y_START, REROLL_Y_END);
 
         return FALSE;
     } else {
@@ -489,7 +503,7 @@ s32 patch_select_menu_anim_ext_desc_return() {
 }
 
 #define PATCH_SELECT_ACTIVE_PATCHES_CARDS_SLIDE_FRAMES  7
-s32 patch_select_menu_anim_active_patches() {
+s32 patch_select_menu_anim_go_off_screen() {
     struct ChaosMenu *menu = &gPatchSelectionMenu->menu;
 
     if(menu->animPhase == 0) {
@@ -499,6 +513,10 @@ s32 patch_select_menu_anim_active_patches() {
 
         f32 prog = ((f32)menu->animTimer / (f32)menu->animFrames);
 
+        if(menu->animTimer == 0) {
+            play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
+        }
+
         for(int i = 0; i < MAX_CARDS; i++) {
             s32 start = gPatchSelectionMenu->patchCards[i].layoutPos[0];
             s32 end = (i % 2) ? CARD_X_RIGHT_START : CARD_X_LEFT_START;
@@ -506,13 +524,15 @@ s32 patch_select_menu_anim_active_patches() {
         }
 
         gPatchSelectionMenu->descPos[1] = menu_anim_f32(prog, MENU_EASE_OUT, PATCH_DESC_Y, PATCH_DESC_Y_START);
+        // Raise reroll icon if visible
+        gPatchSelectionMenu->rerollPos[1] = menu_anim_f32(prog, MENU_EASE_OUT, REROLL_Y_END, REROLL_Y_START);
         return FALSE;
     } else {
         return TRUE;
     }
 }
 
-s32 patch_select_menu_anim_active_patches_return() {
+s32 patch_select_menu_anim_return_on_screen() {
     struct ChaosMenu *menu = &gPatchSelectionMenu->menu;
 
     if(menu->animPhase == 0) {
@@ -521,6 +541,10 @@ s32 patch_select_menu_anim_active_patches_return() {
 
         f32 prog = ((f32)menu->animTimer / (f32)menu->animFrames);
 
+        if(menu->animTimer == 0) {
+            play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
+        }
+
         for(int i = 0; i < MAX_CARDS; i++) {
             s32 start = (i % 2) ? CARD_X_RIGHT_START : CARD_X_LEFT_START;
             s32 end = gPatchSelectionMenu->patchCards[i].layoutPos[0];
@@ -528,6 +552,8 @@ s32 patch_select_menu_anim_active_patches_return() {
         }
 
         gPatchSelectionMenu->descPos[1] = menu_anim_f32(prog, MENU_EASE_OUT, PATCH_DESC_Y_START, PATCH_DESC_Y);
+        // Lower reroll icon if visible
+        gPatchSelectionMenu->rerollPos[1] = menu_anim_f32(prog, MENU_EASE_OUT, REROLL_Y_START, REROLL_Y_END);
         return FALSE;
     } else {
         menu->flags &= ~PATCH_SELECT_FLAG_HALT_INPUT;
@@ -543,8 +569,8 @@ s32 (*sPatchSelectMenuAnims[])(void) = {
     [PATCH_SELECT_ANIM_CONFIRMATION_RETURN]     = &patch_select_anim_confirmation_return,
     [PATCH_SELECT_ANIM_EXT_DESC]                = &patch_select_anim_ext_desc,
     [PATCH_SELECT_ANIM_EXT_DESC_RETURN]         = &patch_select_menu_anim_ext_desc_return,
-    [PATCH_SELECT_ANIM_ACTIVE_PATCHES]          = &patch_select_menu_anim_active_patches,
-    [PATCH_SELECT_ANIM_ACTIVE_PATCHES_RETURN]   = &patch_select_menu_anim_active_patches_return,
+    [PATCH_SELECT_ANIM_GO_OFF_SCREEN]           = &patch_select_menu_anim_go_off_screen,
+    [PATCH_SELECT_ANIM_RETURN_ON_SCREEN]        = &patch_select_menu_anim_return_on_screen,
     [PATCH_SELECT_ANIM_ENDING_1]                = &patch_select_anim_ending_1,
     [PATCH_SELECT_ANIM_ENDING_2]                = &patch_select_anim_ending_2,
 };
@@ -561,7 +587,7 @@ void patch_select_state_select() {
     s32 numPatches = gPatchSelectionMenu->numPatches;
     s32 navDir = menu_get_input_dir();
 
-    if(gPlayer1Controller->buttonPressed & (A_BUTTON)) {
+    if (gPlayer1Controller->buttonPressed & (A_BUTTON)) {
         menu_play_anim(menu, PATCH_SELECT_ANIM_CONFIRMATION);
         menu_set_state(menu, PATCH_SELECT_STATE_CONFIRMATION);
         play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
@@ -583,20 +609,24 @@ void patch_select_state_select() {
     } else if (gPlayer1Controller->buttonPressed & R_TRIG) {
         init_active_patches_menu();
         active_patches_menu_fill();
-        menu_play_anim(menu, PATCH_SELECT_ANIM_ACTIVE_PATCHES);
+        menu_play_anim(menu, PATCH_SELECT_ANIM_GO_OFF_SCREEN);
         menu_set_state(menu, PATCH_SELECT_STATE_SHOW_ACTIVE_PATCHES);
     } else if (gPlayer1Controller->buttonPressed & START_BUTTON) {
         chstut_tutorial_init();
         menu_set_state(menu, PATCH_SELECT_STATE_TUTORIAL);
         menu->flags |= PATCH_SELECT_FLAG_HALT_INPUT;
-    } else if(navDir & (MENU_DIR_U | MENU_DIR_D)) {
+    } else if (gPlayer1Controller->buttonPressed & B_BUTTON && chaos_check_if_patch_active(CHAOS_PATCH_REROLL)) {
+        chaos_decrement_patch_usage(CHAOS_PATCH_REROLL);
+        menu_play_anim(menu, PATCH_SELECT_ANIM_GO_OFF_SCREEN);
+        menu_set_state(menu, PATCH_SELECT_STATE_REROLL);
+    } else if (navDir & (MENU_DIR_U | MENU_DIR_D)) {
         if(numPatches > 2) {
             selection += 2;
             if(selection > numPatches - 1) {
                 selection = previousSelection - 2;
             }
         }
-    } else if(navDir & (MENU_DIR_L | MENU_DIR_R)) {
+    } else if (navDir & (MENU_DIR_L | MENU_DIR_R)) {
         selection++;
         if(selection > numPatches - 1 || !(selection % 2)) {
             //Hard coded check to make menu navigation feel more natural with 3 patches
@@ -608,11 +638,11 @@ void patch_select_state_select() {
         }
     }
 
-    if(selection >= numPatches || selection < 0) {
+    if (selection >= numPatches || selection < 0) {
         selection = numPatches - 1;
     }
 
-    if(selection != previousSelection) {
+    if (selection != previousSelection) {
         play_sound(SOUND_MENU_MESSAGE_NEXT_PAGE, gGlobalSoundSource);
     }
 
@@ -681,6 +711,20 @@ void patch_select_state_confirmation() {
     menu->index = selection;
 }
 
+void patch_select_state_reroll() {
+    struct ChaosMenu *menu = &gPatchSelectionMenu->menu;
+    s32 numPatches = gPatchSelectionMenu->numPatches;
+    const struct ChaosPatchSelection *generatedPatches = chaos_roll_for_new_patches(gChaosLastForcedSeverity, gChaosLastEventType);
+    aggress(generatedPatches, "Chaos patches uninitialized!");
+    bcopy(generatedPatches, patches, sizeof(patches));
+    for (s32 i = 0; i < numPatches; i++) {
+        gPatchSelectionMenu->patchCards[i].sel = &patches[i];
+    }
+
+    menu_set_state(menu, PATCH_SELECT_STATE_SELECT);
+    menu_play_anim(menu, PATCH_SELECT_ANIM_RETURN_ON_SCREEN);
+}
+
 /*
     Updates the patch selection menu
 */
@@ -740,9 +784,12 @@ void update_patch_selection_menu() {
                 if(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE) {
                     update_active_patches_menu();
                 } else {
-                    menu_play_anim(menu, PATCH_SELECT_ANIM_ACTIVE_PATCHES_RETURN);    
+                    menu_play_anim(menu, PATCH_SELECT_ANIM_RETURN_ON_SCREEN);    
                     menu_set_state(menu, PATCH_SELECT_STATE_SELECT);
                 }
+                break;
+            case PATCH_SELECT_STATE_REROLL:
+                patch_select_state_reroll();
                 break;
         }
     }
@@ -763,6 +810,7 @@ void patch_bg_scroll() {
 	int deltaY;
 	Vtx *vertices = segmented_to_virtual(patch_bg_mesh_mesh_vtx_0);
 	Vtx *vertices_r = segmented_to_virtual(patch_bg_r_mesh_r_mesh_vtx_0);
+    Vtx *vertices_re = segmented_to_virtual(patch_reroll_mesh_re_mesh_vtx_0);
 
 	deltaX = (int)(-0.25f * 0x20) % width;
 	deltaY = (int)(-0.25f * 0x20) % height;
@@ -779,6 +827,8 @@ void patch_bg_scroll() {
 		vertices[i].n.tc[1] += deltaY;
 		vertices_r[i].n.tc[0] += deltaX;
 		vertices_r[i].n.tc[1] += deltaY;
+		vertices_re[i].n.tc[0] += deltaX;
+		vertices_re[i].n.tc[1] += deltaY;
 	}
 	currentX += deltaX;	currentY += deltaY;
 }
@@ -1254,6 +1304,33 @@ void render_patch_hud_info() {
     }
 }
 
+void render_reroll_icon() {
+    if(chaos_check_if_patch_active(CHAOS_PATCH_REROLL)) {
+        s32 x = gPatchSelectionMenu->rerollPos[0];
+        s32 y = gPatchSelectionMenu->rerollPos[1];
+        Mtx *transMtx = alloc_display_list(sizeof(Mtx));
+        guTranslate(transMtx, x, y, 0);
+        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
+                  G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+        gSPDisplayList(gDisplayListHead++, patch_reroll_mesh_re_mesh);
+
+        const s32 color1[4] = {0x7F, 0x7F, 0x7F, -1};
+        const s32 color2[4] = {0xFF, 0xFF, 0xFF, -1};
+        char str[32];
+
+        menu_apply_color_oscillation_to_string(str, "Re-roll!", 22, color1, color2);
+
+        slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_SMALL_THIN);
+        slowtext_draw_ortho_text(&gDisplayListHead, -1, -17, str, FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+        slowtext_finished_rendering(&gDisplayListHead);
+
+        menu_start_button_ortho(&gDisplayListHead);
+        menu_draw_button_ortho(&gDisplayListHead, 9, -6, MENU_PROMPT_B_BUTTON, ((gGlobalTimer % 60) >= 30));
+        menu_end_button_ortho(&gDisplayListHead);
+
+        gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
+    }
+}
 
 /*
     Displays the patch selection menu
@@ -1296,6 +1373,8 @@ void display_patch_selection_ui() {
         for(int i = numPatches - 1; i >= 0; i--) {
             render_patch_card(&gPatchSelectionMenu->patchCards[i], (i % 2));
         }
+
+        render_reroll_icon();
 
         render_lower_box(gPatchSelectionMenu->descPos[0], gPatchSelectionMenu->descPos[1]);
 
