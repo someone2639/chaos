@@ -348,6 +348,7 @@ void render_active_patches(Gfx **dl) {
     //Draw default message if no patches available
     if (gChaosPauseMenu->chaosListSize == 0) {
         draw_default_patch_desc(&dlHead, gChaosPauseMenu->descX, ACTIVE_PATCH_DESC_Y);
+        *dl = dlHead;
         return;
     }
 
@@ -580,11 +581,7 @@ void handle_active_patches_inputs_state_conf_elimination() {
 /*
     Main input handling function for the active patches menu
 */
-void handle_active_patches_inputs() {
-    if(gChaosPauseMenu->chaosListSize == 0) {
-        return;
-    }
-    
+void handle_active_patches_inputs() {    
     switch(gChaosPauseMenu->activePatchesMenu.menuState) {
         case ACTIVE_PATCHES_MENU_STATE_DEFAULT:
             handle_active_patches_inputs_state_default();
