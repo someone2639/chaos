@@ -51,7 +51,7 @@
 /*
  * Size of data area for HVQM2 microcode
  */
-#define HVQ_SPFIFO_SIZE   200000
+#define HVQ_SPFIFO_SIZE   30000
 
 /*
  * Frame buffer specifications
