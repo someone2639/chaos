@@ -1,11 +1,3 @@
-Lights1 luigi_Overalls_lights = gdSPDefLights1(
-	0x5, 0x3, 0x3E,
-	0x13, 0xC, 0x83, 0x49, 0x49, 0x49);
-
-Lights1 luigi_Hat_lights = gdSPDefLights1(
-	0x0, 0x56, 0x0,
-	0x0, 0xB0, 0x0, 0x49, 0x49, 0x49);
-
 Lights1 luigi_Moustache_lights = gdSPDefLights1(
 	0x7F, 0x60, 0x3C,
 	0xFE, 0xC1, 0x79, 0x49, 0x49, 0x49);
@@ -4429,7 +4421,7 @@ Gfx luigi_000_displaylist_005_mesh_layer_1_tri_0[] = {
 
 
 Gfx mat_luigi_Overalls[] = {
-	gsSPSetLights1(luigi_Overalls_lights),
+	gsSPSetLights1(mario_blue_lights_group),
 	gsDPPipeSync(),
 	gsDPSetCombineLERP(TEXEL0, SHADE, TEXEL0_ALPHA, SHADE, 0, 0, 0, ENVIRONMENT, TEXEL0, SHADE, TEXEL0_ALPHA, SHADE, 0, 0, 0, ENVIRONMENT),
 	gsDPSetAlphaDither(G_AD_NOISE),
@@ -4475,7 +4467,7 @@ Gfx mat_revert_luigi_metal_v3_001[] = {
 };
 
 Gfx mat_luigi_Hat[] = {
-	gsSPSetLights1(luigi_Hat_lights),
+	gsSPSetLights1(mario_red_lights_group),
 	gsDPPipeSync(),
 	gsDPSetCombineLERP(TEXEL0, SHADE, TEXEL0_ALPHA, SHADE, 0, 0, 0, ENVIRONMENT, TEXEL0, SHADE, TEXEL0_ALPHA, SHADE, 0, 0, 0, ENVIRONMENT),
 	gsDPSetAlphaDither(G_AD_NOISE),

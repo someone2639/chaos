@@ -24,6 +24,8 @@
 #include "save_file.h"
 #include "skybox.h"
 #include "sound_init.h"
+#include "game/chaos/chaos_patch_behaviors.h"
+#include "actors/group0.h"
 
 #define TOAD_STAR_1_REQUIREMENT 12
 #define TOAD_STAR_2_REQUIREMENT 25
@@ -698,4 +700,43 @@ Gfx *geo_mirror_mario_backface_culling(s32 callContext, struct GraphNode *node, 
         asGenerated->fnNode.node.flags = (asGenerated->fnNode.node.flags & 0xFF) | (LAYER_OPAQUE << 8);
     }
     return gfx;
+}
+
+Lights1 luigi_overalls_lights = gdSPDefLights1(
+	0x5, 0x3, 0x3E,
+	0x13, 0xC, 0x83, 0x49, 0x49, 0x49
+);
+
+Lights1 luigi_hat_lights = gdSPDefLights1(
+	0x0, 0x56, 0x0,
+	0x0, 0xB0, 0x0, 0x49, 0x49, 0x49
+);
+
+Lights1 mario_overalls_lights = gdSPDefLights1(
+    0x00, 0x00, 0x7f,
+    0x00, 0x00, 0xff, 0x28, 0x28, 0x28
+);
+
+Lights1 mario_hat_lights = gdSPDefLights1(
+    0x7f, 0x00, 0x00,
+    0xff, 0x00, 0x00, 0x28, 0x28, 0x28
+);
+
+Gfx *geo_set_mario_lights(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 *c) {
+    if (callContext == GEO_CONTEXT_RENDER) {
+        Lights1 *overallLights = (Lights1*)segmented_to_virtual(&mario_blue_lights_group);
+        Lights1 *hatLights = (Lights1*)segmented_to_virtual(&mario_red_lights_group);
+        if(chaos_check_if_patch_active(CHAOS_PATCH_MARIO_RAINBOW)) {
+            *overallLights = gRainbowOverallLights;
+            *hatLights = gRainbowHatLights;
+        } else if (chaos_check_if_patch_active(CHAOS_PATCH_LUIGI)) {
+            *overallLights = luigi_overalls_lights;
+            *hatLights = luigi_hat_lights;
+        } else {
+            *overallLights = mario_overalls_lights;
+            *hatLights = mario_hat_lights;
+        }
+    }
+    
+    return NULL;
 }

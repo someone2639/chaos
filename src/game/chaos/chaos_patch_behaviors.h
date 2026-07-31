@@ -288,3 +288,6 @@ u8 chs_star_medallion_can_collect_star(void);
 void draw_more_hud(void);
 void chs_act_more_hud(void);
 void chs_lvlinit_more_hud(void);
+void chs_update_mario_rainbow(void);
+extern Lights1 gRainbowOverallLights;
+extern Lights1 gRainbowHatLights;

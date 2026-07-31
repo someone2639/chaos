@@ -1736,6 +1736,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 7,
         .durationImpossible = 8,
 
+        INCOMPATIBLE(CHAOS_PATCH_MARIO_RAINBOW)
+
         .name               = "Clown Vomit",
         .shortDescription   = "Makes the world a bit more colorful.",
     },
@@ -2550,7 +2552,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 9,
         .durationImpossible = 10,
 
-        INCOMPATIBLE(CHAOS_PATCH_LUIGI, CHAOS_PATCH_POSER)
+        INCOMPATIBLE(CHAOS_PATCH_LUIGI, CHAOS_PATCH_POSER, CHAOS_PATCH_MARIO_RAINBOW)
 
         .name               = "Potion of Invisibility",
         .shortDescription   = "Mario is now invisible. Not even his shadow can be seen anymore!",
@@ -2942,5 +2944,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Raiding UI",
         .shortDescription   = "Adds lots of \"useful\" information to the heads up display.",
+    },
+    [CHAOS_PATCH_MARIO_RAINBOW] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 1,
+        .duration           = 12,
+
+        INCOMPATIBLE(CHAOS_PATCH_MARIO_INVISIBLE, CHAOS_PATCH_CLOWN_VOMIT)
+
+        .frameUpdateFunc    = chs_update_mario_rainbow,
+
+        .name               = "Rainbow Mario",
+        .shortDescription   = "All the looks of a Starman without any of the actual power!",
     },
 };
