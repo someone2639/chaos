@@ -2055,7 +2055,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 2,
-        .duration           = 6,
+        .duration           = 5,
 
         .hasMenuEvent       = TRUE,
         .chsMenuInitFunc    = chs_menuinit_gambling_wheel,
@@ -2091,9 +2091,11 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 3,
         .isStackable        = TRUE,
 
+        .conditionalFunc    = chs_cond_reroll,
+
         .name               = "Re-Roll!",
         .shortDescription   = "Gain the ability to re-roll the available patches during patch selection.",
-        .longDescription    = "Patches can be re-rolled by pressing the B button during patch selection. Chaos events will still apply to the newly generated patches."
+        .longDescription    = "Patches can be re-rolled by pressing the B button during patch selection. Any forced patch ranks or chaos events will still be applied to the newly generated patches, so re-roll with caution!"
     },
 
 // Speed Modifiers

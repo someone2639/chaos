@@ -300,3 +300,12 @@ void chs_menuupdate_sweet_relief(Gfx **dl) {
         chaos_menuevent_finish_event();
     }
 }
+
+u8 chs_cond_reroll(void) {
+    struct ChaosActiveEntry *match;
+    if (chaos_find_first_active_patch(CHAOS_PATCH_REROLL, &match) >= 0) {
+        return (match->remainingDuration + gChaosPatches[match->id].duration <= 4);
+    } else {
+        return TRUE;
+    }
+}

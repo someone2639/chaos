@@ -206,6 +206,7 @@ void chs_menuupdate_gambling_wheel(Gfx **dl);
 u8 chs_cond_sweet_relief(void);
 void chs_menuinit_sweet_relief(void);
 void chs_menuupdate_sweet_relief(Gfx **dl);
+u8 chs_cond_reroll(void);
 
 // Speed Modifiers
 u8 chs_cond_push_back(void);

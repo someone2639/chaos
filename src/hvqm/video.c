@@ -201,11 +201,11 @@ void decode_video(VideoRing *vbuf) {
             
 #ifdef DEBUG_ASSERTIONS
             const u32 saved = __osDisableInt();
-            s32 index = HVQ_SPFIFO_SIZE * sizeof(HVQM2Info) - 1;
-            u8 *addr = (u8*) hvq_spfifo;
+            const u32 *addr = (u32*) hvq_spfifo;
+            s32 index = HVQ_SPFIFO_SIZE * sizeof(HVQM2Info) / sizeof(u32) - 1;
             while (addr[index--] == 0);
             __osRestoreInt(saved);
-            assert_args((f32) (index / sizeof(HVQM2Info)) / (f32) HVQ_SPFIFO_SIZE < 0.8f, "HVQM decode_video:\nPlease increase hvq_spfifo buffer size!\n\nhvq_spfifo canary tripped at:\n  %.03f of total buffer usage", (f32) (index / sizeof(HVQM2Info)) / (f32) HVQ_SPFIFO_SIZE);
+            assert_args((f32) (index * sizeof(u32) / sizeof(HVQM2Info)) / (f32) HVQ_SPFIFO_SIZE < 0.8f, "HVQM decode_video:\nPlease increase hvq_spfifo buffer size!\n\nhvq_spfifo canary tripped at:\n  %.03f of total buffer usage", (f32) (index * sizeof(u32) / sizeof(HVQM2Info)) / (f32) HVQ_SPFIFO_SIZE);
 #endif
         }
     }
