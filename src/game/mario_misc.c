@@ -56,7 +56,7 @@ enum UnlockDoorStarStates {
  * The eye texture on succesive frames of Mario's blink animation.
  * He intentionally blinks twice each time.
  */
-static s8 gMarioBlinkAnimation[7] = { 1, 2, 1, 0, 1, 2, 1 };
+static s8 gMarioBlinkAnimation[] = { 1, 2, 1, 0, 1, 2, 1 };
 
 /**
  * The scale values per frame for Mario's foot/hand for his attack animation
@@ -368,7 +368,7 @@ Gfx *geo_switch_mario_eyes(s32 callContext, struct GraphNode *node, UNUSED Mat4 
     if (callContext == GEO_CONTEXT_RENDER) {
         if (bodyState->eyeState == 0) {
             blinkFrame = ((switchCase->numCases * 32 + gAreaUpdateCounter) >> 1) & 0x1F;
-            if (blinkFrame < 7) {
+            if (blinkFrame < ARRAY_COUNT(gMarioBlinkAnimation) && !chaos_check_if_patch_active(CHAOS_PATCH_POSER)) {
                 switchCase->selectedCase = gMarioBlinkAnimation[blinkFrame];
             } else {
                 switchCase->selectedCase = 0;
@@ -486,8 +486,13 @@ Gfx *geo_mario_hand_foot_scaler(s32 callContext, struct GraphNode *node, UNUSED 
                 bodyState->punchState -= 1;
                 sMarioAttackAnimCounter = gAreaUpdateCounter;
             }
+
+            s32 punchState = bodyState->punchState & 0x3F;
+            if (punchState > 0 && chaos_check_if_patch_active(CHAOS_PATCH_POSER)) {
+                punchState = 3;
+            }
             scaleNode->scale =
-                gMarioAttackScaleAnimation[asGenerated->parameter * 6 + (bodyState->punchState & 0x3F)]
+                gMarioAttackScaleAnimation[asGenerated->parameter * 6 + punchState]
                 / 10.0f;
         }
     }
@@ -514,12 +519,27 @@ Gfx *geo_switch_chaos_mario_invisible(s32 callContext, struct GraphNode *node, U
     struct GraphNodeSwitchCase *switchCase = (struct GraphNodeSwitchCase *) node;
 
     if (callContext == GEO_CONTEXT_RENDER) {
-        if (chaos_check_if_patch_active(CHAOS_PATCH_MARIO_INVISIBLE)) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_MARIO_INVISIBLE) || chaos_check_if_patch_active(CHAOS_PATCH_POSER)) {
             switchCase->selectedCase = 1;
         } else {
             switchCase->selectedCase = 0;
         }
     }
+    return NULL;
+}
+
+/**
+ * Check whether Mario is allowed to display a held object
+ */
+Gfx *geo_allow_display_held_obj_poser(UNUSED s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
+    struct GraphNodeGenerated *currentGraphNode = (struct GraphNodeGenerated *) node;
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_POSER)) {
+        gRenderHeldObject = (currentGraphNode->parameter == FALSE) ? FALSE : TRUE;
+    } else {
+        gRenderHeldObject = TRUE;
+    }
+
     return NULL;
 }
 

@@ -66,6 +66,7 @@ extern const GeoLayout mario_geo_load_body[];
 extern const GeoLayout mario_geo_load_medium_poly_body[];
 extern const GeoLayout mario_geo_load_low_poly_body[];
 extern const GeoLayout mario_geo_render_body[];
+extern const GeoLayout mario_geo_always_visible[];
 extern const GeoLayout mario_geo[];
 extern const Gfx mario_butt_dl[];
 extern const Gfx mario_butt[];

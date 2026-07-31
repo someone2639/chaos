@@ -714,7 +714,13 @@ void patch_select_state_confirmation() {
 void patch_select_state_reroll() {
     struct ChaosMenu *menu = &gPatchSelectionMenu->menu;
     s32 numPatches = gPatchSelectionMenu->numPatches;
-    const struct ChaosPatchSelection *generatedPatches = chaos_roll_for_new_patches(gChaosLastForcedSeverity, gChaosLastEventType);
+    enum ChaosPatchSpecialEvent forcedChaosEvent = gChaosLastEventType;
+
+    // Enforce CHAOS_SPECIAL_ZERO_POSITIVE upon collecting a repeat star
+    if (gChaosBlueStarLastCollected && !chaos_check_if_patch_active(CHAOS_PATCH_FORGIVENESS)) {
+        forcedChaosEvent = CHAOS_SPECIAL_ZERO_POSITIVE;
+    }
+    const struct ChaosPatchSelection *generatedPatches = chaos_roll_for_new_patches(gChaosLastForcedSeverity, forcedChaosEvent);
     aggress(generatedPatches, "Chaos patches uninitialized!");
     bcopy(generatedPatches, patches, sizeof(patches));
     for (s32 i = 0; i < numPatches; i++) {

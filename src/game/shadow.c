@@ -886,9 +886,7 @@ Gfx *create_shadow_below_xyz(f32 xPos, f32 yPos, f32 zPos, s16 shadowScale, u8 s
                 create_shadow_square(xPos, yPos, zPos, floorHeight, shadowScale, shadowSolidity, shadowType);
             break;
         case SHADOW_CIRCLE_PLAYER:
-            if (!chaos_check_if_patch_active(CHAOS_PATCH_MARIO_INVISIBLE)) {
-                displayList = create_shadow_player(pfloor, xPos, yPos, zPos, floorHeight, /* isLuigi */ FALSE, shadowScale, shadowSolidity);
-            }
+            displayList = create_shadow_player(pfloor, xPos, yPos, zPos, floorHeight, /* isLuigi */ FALSE, shadowScale, shadowSolidity);
             break;
         default:
             displayList = create_shadow_hardcoded_rectangle(xPos, yPos, zPos, floorHeight, shadowScale, shadowSolidity, shadowType);

@@ -16,6 +16,7 @@
 #include "level_update.h"
 
 u8 isGameFlipped = FALSE;
+u8 gRenderHeldObject = TRUE;
 
 /**
  * This file contains the code that processes the scene graph for rendering.
@@ -1024,7 +1025,7 @@ void geo_process_held_object(struct GraphNodeHeldObject *node) {
     if (node->fnNode.func != NULL) {
         node->fnNode.func(GEO_CONTEXT_RENDER, &node->fnNode.node, gMatStack[gMatStackIndex]);
     }
-    if (node->objNode != NULL && node->objNode->header.gfx.sharedChild != NULL) {
+    if (gRenderHeldObject && node->objNode != NULL && node->objNode->header.gfx.sharedChild != NULL) {
         s32 hasAnimation = (node->objNode->header.gfx.node.flags & GRAPH_RENDER_HAS_ANIMATION) != 0;
 
         translation[0] = node->translation[0] / 4.0f;

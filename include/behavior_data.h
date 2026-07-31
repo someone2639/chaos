@@ -9,6 +9,7 @@ extern const BehaviorScript bhvKaizoBlock[];
 extern const BehaviorScript bhvKaizoBlockCoin[];
 extern const BehaviorScript bhvChaosBulletBill[];
 extern const BehaviorScript bhvCosmicClone[];
+extern const BehaviorScript bhvPoser[];
 
 extern const BehaviorScript bhvStarDoor[];
 extern const BehaviorScript bhvMrI[];

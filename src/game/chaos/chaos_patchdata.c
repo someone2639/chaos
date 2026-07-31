@@ -1776,7 +1776,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 10,
         .durationImpossible = 12,
 
-        INCOMPATIBLE(CHAOS_PATCH_CONFUSED_OBJECTS, CHAOS_PATCH_UPSIDE_DOWN_OBJECTS)
+        INCOMPATIBLE(CHAOS_PATCH_CONFUSED_OBJECTS, CHAOS_PATCH_UPSIDE_DOWN_OBJECTS, CHAOS_PATCH_POSER)
 
         .conditionalFunc    = chs_cond_cartridge_tilt,
 
@@ -1812,6 +1812,21 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Squint Mode",
         .shortDescription   = "You've been sitting too close to the screen. Keep a good distance, for the sake of your eyes.",
+    },
+    [CHAOS_PATCH_POSER] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 1,
+        .duration           = 8,
+        .durationHard       = 10,
+        .durationImpossible = 12,
+        
+        INCOMPATIBLE(CHAOS_PATCH_MARIO_INVISIBLE, CHAOS_PATCH_LUIGI, CHAOS_PATCH_CARTRIDGE_TILT)
+        .frameUpdateFunc    = chs_update_poser,
+        .deactivationFunc   = chs_deact_poser,
+
+        .name               = "Poser",
+        .shortDescription   = "Mario isn't feeling very animated today...",
     },
 
 // Time Limit
@@ -2535,7 +2550,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 9,
         .durationImpossible = 10,
 
-        INCOMPATIBLE(CHAOS_PATCH_LUIGI)
+        INCOMPATIBLE(CHAOS_PATCH_LUIGI, CHAOS_PATCH_POSER)
 
         .name               = "Potion of Invisibility",
         .shortDescription   = "Mario is now invisible. Not even his shadow can be seen anymore!",
@@ -2681,7 +2696,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 1,
         .duration           = 10,
 
-        INCOMPATIBLE(CHAOS_PATCH_MARIO_INVISIBLE)
+        INCOMPATIBLE(CHAOS_PATCH_MARIO_INVISIBLE, CHAOS_PATCH_POSER)
         .frameUpdateFunc    = chs_update_luigi,
         .deactivationFunc   = chs_deact_luigi,
 
