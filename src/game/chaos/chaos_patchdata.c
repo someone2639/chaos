@@ -1736,6 +1736,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 7,
         .durationImpossible = 8,
 
+        INCOMPATIBLE(CHAOS_PATCH_MARIO_RAINBOW)
+
         .name               = "Clown Vomit",
         .shortDescription   = "Makes the world a bit more colorful.",
     },
@@ -1776,7 +1778,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 10,
         .durationImpossible = 12,
 
-        INCOMPATIBLE(CHAOS_PATCH_CONFUSED_OBJECTS, CHAOS_PATCH_UPSIDE_DOWN_OBJECTS)
+        INCOMPATIBLE(CHAOS_PATCH_CONFUSED_OBJECTS, CHAOS_PATCH_UPSIDE_DOWN_OBJECTS, CHAOS_PATCH_POSER)
 
         .conditionalFunc    = chs_cond_cartridge_tilt,
 
@@ -1813,6 +1815,21 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Squint Mode",
         .shortDescription   = "You've been sitting too close to the screen. Keep a good distance, for the sake of your eyes.",
         .longDescription    = "N64 Controller Model adapted from LambBrainz (decimated from 870000 tris to like 120)"
+    },
+    [CHAOS_PATCH_POSER] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_NEGATIVE,
+        .severity           = 1,
+        .duration           = 8,
+        .durationHard       = 10,
+        .durationImpossible = 12,
+        
+        INCOMPATIBLE(CHAOS_PATCH_MARIO_INVISIBLE, CHAOS_PATCH_LUIGI, CHAOS_PATCH_CARTRIDGE_TILT)
+        .frameUpdateFunc    = chs_update_poser,
+        .deactivationFunc   = chs_deact_poser,
+
+        .name               = "Poser",
+        .shortDescription   = "Mario isn't feeling very animated today...",
     },
 
 // Time Limit
@@ -2056,7 +2073,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 2,
-        .duration           = 6,
+        .duration           = 5,
 
         .hasMenuEvent       = TRUE,
         .chsMenuInitFunc    = chs_menuinit_gambling_wheel,
@@ -2070,6 +2087,33 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
                                "  - @CF3F3F--Other Slightly Negative Outcomes@--------\n"
                                "  - @3FBF3F--Many Positive Outcomes@--------\n"
                                "  - @FFFFAF--One Incredible Jackpot!!!@--------"
+    },
+    [CHAOS_PATCH_SWEET_RELIEF] = {
+        .durationType       = CHAOS_DURATION_ONCE,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 3,
+        .isStackable        = TRUE,
+
+        .conditionalFunc    = chs_cond_sweet_relief,
+        .hasMenuEvent       = TRUE,
+        .chsMenuInitFunc    = chs_menuinit_sweet_relief,
+        .chsMenuUpdateFunc  = chs_menuupdate_sweet_relief,
+
+        .name               = "Sweet Relief",
+        .shortDescription   = "Remove a currently applied negative patch of your choice.",
+    },
+    [CHAOS_PATCH_REROLL] = {
+        .durationType       = CHAOS_DURATION_USE_COUNT,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .duration           = 2,
+        .severity           = 3,
+        .isStackable        = TRUE,
+
+        .conditionalFunc    = chs_cond_reroll,
+
+        .name               = "Re-Roll!",
+        .shortDescription   = "Gain the ability to re-roll the available patches during patch selection.",
+        .longDescription    = "Patches can be re-rolled by pressing the B button during patch selection. Any forced patch ranks or chaos events will still be applied to the newly generated patches, so re-roll with caution!"
     },
 
 // Speed Modifiers
@@ -2509,7 +2553,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 9,
         .durationImpossible = 10,
 
-        INCOMPATIBLE(CHAOS_PATCH_LUIGI)
+        INCOMPATIBLE(CHAOS_PATCH_LUIGI, CHAOS_PATCH_POSER, CHAOS_PATCH_MARIO_RAINBOW)
 
         .name               = "Potion of Invisibility",
         .shortDescription   = "Mario is now invisible. Not even his shadow can be seen anymore!",
@@ -2655,7 +2699,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 1,
         .duration           = 10,
 
-        INCOMPATIBLE(CHAOS_PATCH_MARIO_INVISIBLE)
+        INCOMPATIBLE(CHAOS_PATCH_MARIO_INVISIBLE, CHAOS_PATCH_POSER)
         .frameUpdateFunc    = chs_update_luigi,
         .deactivationFunc   = chs_deact_luigi,
 
@@ -2901,5 +2945,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Raiding UI",
         .shortDescription   = "Adds lots of \"useful\" information to the heads up display.",
+    },
+    [CHAOS_PATCH_MARIO_RAINBOW] = {
+        .durationType       = CHAOS_DURATION_STARS,
+        .effectType         = CHAOS_EFFECT_POSITIVE,
+        .severity           = 1,
+        .duration           = 12,
+
+        INCOMPATIBLE(CHAOS_PATCH_MARIO_INVISIBLE, CHAOS_PATCH_CLOWN_VOMIT)
+
+        .frameUpdateFunc    = chs_update_mario_rainbow,
+
+        .name               = "Rainbow Mario",
+        .shortDescription   = "All the looks of a Starman without any of the actual power!",
     },
 };

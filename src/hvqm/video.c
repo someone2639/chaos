@@ -1,9 +1,11 @@
 #include <ultra64.h>
+#include <PR/os_internal_reg.h>
 #include <HVQM2File.h>
 #include <hvqm2dec.h>
 #include "system.h"
 #include "profiler.h"
 #include "buffers/framebuffers.h"
+#include "game/debug.h"
 #include "game/game_init.h"
 
 OSMesgQueue spMesgQ;
@@ -196,6 +198,15 @@ void decode_video(VideoRing *vbuf) {
             osRecvMesg(&spMesgQ, NULL, OS_MESG_BLOCK);
             // end_profiler("HVQM Part2 (RSP)");
             // print_profiler("HVQM Part2 (RSP)");
+            
+#ifdef DEBUG_ASSERTIONS
+            const u32 saved = __osDisableInt();
+            const u32 *addr = (u32*) hvq_spfifo;
+            s32 index = HVQ_SPFIFO_SIZE * sizeof(HVQM2Info) / sizeof(u32) - 1;
+            while (addr[index--] == 0);
+            __osRestoreInt(saved);
+            assert_args((f32) (index * sizeof(u32) / sizeof(HVQM2Info)) / (f32) HVQ_SPFIFO_SIZE < 0.8f, "HVQM decode_video:\nPlease increase hvq_spfifo buffer size!\n\nhvq_spfifo canary tripped at:\n  %.03f of total buffer usage", (f32) (index * sizeof(u32) / sizeof(HVQM2Info)) / (f32) HVQ_SPFIFO_SIZE);
+#endif
         }
     }
 }

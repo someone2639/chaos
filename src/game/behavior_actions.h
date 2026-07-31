@@ -564,6 +564,8 @@ void bhv_yoshi_loop(void);
 void bhv_volcano_trap_loop(void);
 void bhv_cosmic_clones_init(void);
 void bhv_cosmic_clones_loop(void);
+void bhv_poser_init(void);
+void bhv_poser_loop(void);
 void bhv_kaizo_block_loop(void);
 void bhv_noclip_plane_loop(void);
 

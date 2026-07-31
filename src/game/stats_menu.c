@@ -371,7 +371,7 @@ void render_stats_conf_delete() {
     s32 x = SCREEN_CENTER_X;
     s32 y = SCREEN_CENTER_Y;
 
-    shade_screen();
+    shade_screen(&gDisplayListHead);
 
     Gfx *bg = menu_create_chaos_text_bg(x, y, 298, 70, 255);
     create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_PUSH, x, y, 0);

@@ -170,6 +170,8 @@ void chs_update_corruption(void);
 void chs_deact_corruption(void);
 void chs_squint_init(void);
 void chs_squint_deinit(void);
+void chs_update_poser(void);
+void chs_deact_poser(void);
 
 // Time Limit
 void chs_level_init_time_limit(void);
@@ -203,6 +205,10 @@ u8 chs_cond_uneventful(void);
 u8 chs_cond_forgiveness(void);
 void chs_menuinit_gambling_wheel(void);
 void chs_menuupdate_gambling_wheel(Gfx **dl);
+u8 chs_cond_sweet_relief(void);
+void chs_menuinit_sweet_relief(void);
+void chs_menuupdate_sweet_relief(Gfx **dl);
+u8 chs_cond_reroll(void);
 
 // Speed Modifiers
 u8 chs_cond_push_back(void);
@@ -282,3 +288,6 @@ u8 chs_star_medallion_can_collect_star(void);
 void draw_more_hud(void);
 void chs_act_more_hud(void);
 void chs_lvlinit_more_hud(void);
+void chs_update_mario_rainbow(void);
+extern Lights1 gRainbowOverallLights;
+extern Lights1 gRainbowHatLights;

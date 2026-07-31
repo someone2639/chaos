@@ -1147,7 +1147,7 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(s32 forcedSeverityOverrid
             overruledSpecialEvent = FALSE;
         }
     }
-    if (overruledSpecialEvent) {
+    if (overruledSpecialEvent && forcedEventOverride == CHAOS_SPECIAL_DO_NOT_FORCE) {
         chaosmsg_print_debug("@FFFF009FAll generated patch events overridden to no event, discounting event...");
         gChaosLastEventType = CHAOS_SPECIAL_NONE;
     }

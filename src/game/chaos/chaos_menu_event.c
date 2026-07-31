@@ -88,7 +88,8 @@ void chaos_menuevent_populate_persistent_patch_events(void) {
             continue;
         }
 
-        assert_args(patch->isStackable == FALSE || patch->durationType != CHAOS_DURATION_STARS, "chaos_menuevent_populate_timer_events:\nStackable star timer patches not supported:\n0x%08X", patchId);
+        assert_args(patch->durationType != CHAOS_DURATION_USE_COUNT && patch->isStackable == FALSE,
+            "chaos_menuevent_populate_persistent_patch_events:\nEvent patch's duration type must either be ONCE, non-stackable STARS, or non-stackable INFINITE patch:\n0x%08X", patchId);
 
         chaos_menuevent_insert_event_at_end(patchId);
     }
@@ -120,8 +121,17 @@ u8 chaos_menuevent_update(Gfx **dl) {
     u8 shouldInit = FALSE;
 
     if (gChaosEventActiveEvent == CHAOS_PATCH_NONE) {
-        gChaosEventActiveEvent = chaos_menuevent_remove_event_at_start();
         shouldInit = TRUE;
+
+        // Make sure patch is still active before executing on event by using a do-while loop (in case a patch was removed via Sweet Relief).
+        // This does not handle stackable events properly, but this system already can't handle persistent stackable patches anyway due to reliance on patch ID.
+        do {
+            gChaosEventActiveEvent = chaos_menuevent_remove_event_at_start();
+        } while ( // SKIP AND RETRY IF ALL OF THE FOLLOWING ARE TRUE:
+                  gChaosEventActiveEvent != CHAOS_PATCH_NONE // This is a real patch and we didn't exhaust the event queue
+                   && !(gChaosPatches[gChaosEventActiveEvent].durationType == CHAOS_DURATION_ONCE && gChaosPatches[gChaosEventActiveEvent].isStackable == TRUE) // Patch is not a stackable ONCE type
+                   && !chaos_check_if_patch_active(gChaosEventActiveEvent) // Host patch for the event is no longer active
+        );
 
 #ifdef CHAOS_ENGINE_DEBUG
         if (gChaosEventActiveEvent != CHAOS_PATCH_NONE) {

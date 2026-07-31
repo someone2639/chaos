@@ -18,6 +18,8 @@ extern const Gfx burn_smoke_seg4_dl_04022048[];
 extern const Gfx burn_smoke_seg4_dl_04022070[];
 
 // mario
+extern Lights1 mario_blue_lights_group;
+extern Lights1 mario_red_lights_group;
 extern const GeoLayout mario_geo_face_and_wings[];
 extern const GeoLayout mario_geo_left_hand[];
 extern const GeoLayout mario_geo_right_hand[];
@@ -66,6 +68,7 @@ extern const GeoLayout mario_geo_load_body[];
 extern const GeoLayout mario_geo_load_medium_poly_body[];
 extern const GeoLayout mario_geo_load_low_poly_body[];
 extern const GeoLayout mario_geo_render_body[];
+extern const GeoLayout mario_geo_always_visible[];
 extern const GeoLayout mario_geo[];
 extern const Gfx mario_butt_dl[];
 extern const Gfx mario_butt[];

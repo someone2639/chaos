@@ -25,10 +25,12 @@ Gfx *geo_switch_mario_hand(s32 callContext, struct GraphNode *node, UNUSED Mat4 
 Gfx *geo_mario_hand_foot_scaler(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c);
 Gfx *geo_switch_mario_cap_effect(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c);
 Gfx *geo_switch_chaos_mario_invisible(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c);
+Gfx *geo_allow_display_held_obj_poser(UNUSED s32 callContext, struct GraphNode *node, UNUSED Mat4 *c);
 Gfx *geo_switch_mario_cap_on_off(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c);
 Gfx *geo_mario_rotate_wing_cap_wings(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c);
 Gfx *geo_switch_mario_hand_grab_pos(s32 callContext, struct GraphNode *b, Mat4 *mtx);
 Gfx *geo_render_mirror_mario(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c);
 Gfx *geo_mirror_mario_backface_culling(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c);
+Gfx *geo_set_mario_lights(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 *c);
 
 #endif // MARIO_MISC_H

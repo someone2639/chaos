@@ -74,7 +74,7 @@ void draw_quicktime_event_prompts() {
 
     create_dl_ortho_matrix(&gDisplayListHead);
     
-    shade_screen();
+    shade_screen(&gDisplayListHead);
 
     menu_start_button(&gDisplayListHead);
     f32 startX = SCREEN_CENTER_X - ((sQTEQueueLength * QTE_PADDING) / 2);

@@ -95,5 +95,8 @@ Gfx *menu_create_cursor(s32 x, s32 y, f32 scale, u8 r, u8 g, u8 b, u8 a);
 void menu_start_button(Gfx **dl);
 void menu_end_button(Gfx **dl);
 void menu_draw_button(Gfx **dl, s32 x, s32 y, s32 button, s32 pressed);
+void menu_start_button_ortho(Gfx **dl);
+void menu_end_button_ortho(Gfx **dl);
+void menu_draw_button_ortho(Gfx **dl, s32 x, s32 y, s32 button, s32 pressed);
 
 void menu_strip_coverage(Gfx **dl);
