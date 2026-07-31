@@ -75,15 +75,15 @@ static void mtxTransformRPY(Mtx *m, Vec3f translate, Vec3f rotateRPY, Vec3f scal
     Mtx transM;
     Mtx rotM;
     Mtx scaleM;
-    Mtx SR;
+    Mtx scale_rotateM;
 
     translate[1] -= ((internal_scale - 1.6f) * BUTTON_STICK_TRANSITION_SPEED);
 
     guScale(&scaleM, scale[0], scale[1], scale[2]);
     guRotateRPY(&rotM, rotateRPY[0], rotateRPY[1], rotateRPY[2]);
     guTranslate(&transM, translate[0], translate[1], translate[2]);
-    guMtxCatL(&scaleM, &rotM, &SR);
-    guMtxCatL(&SR, &transM, m);
+    guMtxCatL(&scaleM, &rotM, &scale_rotateM);
+    guMtxCatL(&scale_rotateM, &transM, m);
 
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(m), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
 }
