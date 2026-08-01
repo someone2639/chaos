@@ -1804,12 +1804,13 @@ const GeoLayout mario_geo_render_body[] = {
 };
 
 const GeoLayout mario_geo_always_visible[] = {
-   GEO_SHADOW(SHADOW_CIRCLE_PLAYER, 0xB4, 100), // No shadow for this, Mario's invisible model will still have one based on the way it's written
+   GEO_SHADOW(SHADOW_CIRCLE_PLAYER, 0xB4, 100),
    GEO_OPEN_NODE(),
       GEO_SCALE(0x00, 16384),
       GEO_OPEN_NODE(),
          GEO_NODE_START(),
          GEO_OPEN_NODE(),
+            GEO_ASM(0, geo_set_mario_lights),
             GEO_ASM(0, geo_mirror_mario_backface_culling),
             GEO_ASM(0, geo_mirror_mario_set_alpha),
             GEO_SWITCH_CASE(0, geo_switch_mario_stand_run),
@@ -1873,7 +1874,6 @@ const GeoLayout mario_geo[] = {
          GEO_SCALE(0x00, 16384),
          GEO_OPEN_NODE(),
             GEO_ASM(0, geo_set_mario_lights),
-            GEO_ASM(0, geo_mirror_mario_backface_culling),
             GEO_ASM(0, geo_mirror_mario_backface_culling),
             GEO_ASM(0, geo_mirror_mario_set_alpha),
             GEO_SWITCH_CASE(0, geo_switch_mario_stand_run),
