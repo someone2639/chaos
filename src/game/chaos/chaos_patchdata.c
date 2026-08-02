@@ -1814,6 +1814,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Squint Mode",
         .shortDescription   = "You've been sitting too close to the screen. Keep a good distance, for the sake of your eyes.",
+        .longDescription    = "N64 Controller Model adapted from LambBrainz (decimated from 870000 tris to like 120)"
     },
     [CHAOS_PATCH_POSER] = {
         .durationType       = CHAOS_DURATION_STARS,

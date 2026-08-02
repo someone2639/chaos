@@ -405,6 +405,12 @@ void process_viewport_transitions(struct GraphNodeRoot *node) {
         isGameFlipped = 0;
     }
 
+    if (node->height < (SCREEN_HEIGHT / 2)) {
+        isGameSquished = 1;
+    } else {
+        isGameSquished = 0;
+    }
+
     node->perspWidth = ABS(node->width);
     if (node->perspWidth != (SCREEN_WIDTH / 2)) {
         clear_framebuffer(gWarpTransFBSetColor);
@@ -436,8 +442,7 @@ void render_game(void) {
                       SCREEN_HEIGHT - gBorderHeight);
 
 
-        if (squint_room_scale < 5.0f) {
-            create_dl_ortho_matrix(&gDisplayListHead);
+        if ((squint_room_scale < 5.0f) && isGameSquished) {
             draw_room(squint_room_scale);
         }
 
