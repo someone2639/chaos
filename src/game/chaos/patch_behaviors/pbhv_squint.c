@@ -18,7 +18,7 @@
 
 static float internal_scale = 0;
 
-static void betah(int next_state) {
+UNUSED static void betah(int next_state) {
     static int cur_state = 0;
     u8 *betah_tex = segmented_to_virtual(squint_room_betah_rgba_ci8);
     u8 *betah_pal = segmented_to_virtual(squint_room_betah_rgba_pal_rgba16);

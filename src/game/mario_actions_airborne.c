@@ -2326,7 +2326,12 @@ s32 mario_execute_airborne_action(struct MarioState *m) {
     play_far_fall_sound(m);
 
     if (chaos_check_if_patch_active(CHAOS_PATCH_SUNSHINE_TWIRL)) {
-        if (m->canSpinJump) {
+        if (m->canSpinJump && (
+            m->action == ACT_FREEFALL ||
+            m->action == ACT_JUMP ||
+            m->action == ACT_DOUBLE_JUMP ||
+            m->action == ACT_SPIN_JUMP
+        )) {
             m->angleVel[1] = approach_s32(m->angleVel[1], 0x2800, 0x800, 0x800);
             m->twirlYaw += m->angleVel[1];
         }
@@ -2386,7 +2391,12 @@ s32 mario_execute_airborne_action(struct MarioState *m) {
     /* clang-format on */
 
     if (chaos_check_if_patch_active(CHAOS_PATCH_SUNSHINE_TWIRL)) {
-        if (m->canSpinJump) {
+        if (m->canSpinJump && (
+            m->action == ACT_FREEFALL ||
+            m->action == ACT_JUMP ||
+            m->action == ACT_DOUBLE_JUMP ||
+            m->action == ACT_SPIN_JUMP
+        )) {
             m->marioObj->header.gfx.angle[1] += m->twirlYaw;
         }
     }

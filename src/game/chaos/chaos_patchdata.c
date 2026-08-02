@@ -1422,7 +1422,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .instWarpPostFunc   = chs_instwarp_post_cosmic_clones,
         .frameUpdateFunc    = chs_update_cosmic_clones,
 
-        .name               = "Cosmic Clones", // TODO: Make these (and every other Bowser 3 problem patch) never show up in impossible mode durationImpossible stars before hitting 120 (with slight margin of error)
+        .name               = "Cosmic Clones",
         .shortDescription   = "Spawns a trail of cosmic Marios that copy your every move!",
     },
     [CHAOS_PATCH_WATER_BOMBS] = {
@@ -1800,7 +1800,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Corrupted Textures",
         .shortDescription   = "Because that grass texture was just too boring.",
     },
-    [CHAOS_PATCH_SQUINT_MODE] = { // TODO: Finish implementing (also BUG: fix act select crash)
+    [CHAOS_PATCH_SQUINT_MODE] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
