@@ -16,8 +16,6 @@
 #include "game/patch_selection_ui.h"
 #include "game/ingame_menu.h"
 
-#define NUM_STARS 120
-
 struct StarFlagsWithID {
     u32 flag;
     s32 id;

@@ -10,13 +10,14 @@
  * Lives Modifiers *
  *******************/
 
- #define LIFETIME_SALE_COIN_REQ 50
+#define LIFETIME_SALE_COIN_REQ 50
 
 /***********************
  * Star/Save Modifiers *
  ***********************/
 
- #define HIGH_ROLLER_COIN_REQ 60
+#define NUM_STARS 120
+#define HIGH_ROLLER_COIN_REQ 60
 
 /*******************
  * Random Griefing *

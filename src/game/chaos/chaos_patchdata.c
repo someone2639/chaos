@@ -1383,7 +1383,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration           = 5,
 
         INCOMPATIBLE(CHAOS_PATCH_NO_RIDING_SHELLS)
-        .levelInitFunc     = chs_lvlinit_spawn_on_shell,
+        .levelInitFunc      = chs_lvlinit_spawn_on_shell,
         .frameUpdateFunc    = chs_lvlupdate_spawn_on_shell,
 
         .name               = "Shell Spawn",
@@ -2026,8 +2026,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationImpossible = 5,
 
         INCOMPATIBLE(CHAOS_PATCH_POSITIVE_EXTENSION)
+        .conditionalFunc    = chs_cond_negative_extension,
 
-        .name               = "Negative Extension", // TODO: Make this never show up after about 100 stars on Impossible difficulty
+        .name               = "Negative Extension",
         .shortDescription   = "New negative effects will last 50% longer (rounded up).",
     },
     [CHAOS_PATCH_LOW_STAKES] = {

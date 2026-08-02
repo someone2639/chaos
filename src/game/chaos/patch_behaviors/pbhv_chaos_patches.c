@@ -221,6 +221,13 @@ u8 chs_cond_uneventful(void) {
     );
 }
 
+u8 chs_cond_negative_extension(void) {
+    return !(
+        gChaosDifficulty == CHAOS_DIFFICULTY_IMPOSSIBLE &&
+        save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= (NUM_STARS * 5 / 6)
+    );
+}
+
 u8 chs_cond_forgiveness(void) {
     return (gChaosDifficulty != CHAOS_DIFFICULTY_IMPOSSIBLE);
 }
