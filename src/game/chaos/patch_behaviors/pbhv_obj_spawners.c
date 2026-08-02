@@ -33,15 +33,17 @@ void chs_act_green_demon(void) {
         return;
     }
 
-    if(gCurrCourseNum != COURSE_NONE) {
-        spawn_object_abs_with_rot(gMarioState->marioObj, 0, MODEL_GREEN_DEMON, bhvGreenDemon,
+    if (gCurrCourseNum != COURSE_NONE && gCurrLevelNum != LEVEL_BOWSER_1 && gCurrLevelNum != LEVEL_BOWSER_2 && gCurrLevelNum != LEVEL_BOWSER_3) {
+        spawn_object_abs_with_rot(gMarioObject, 0, MODEL_GREEN_DEMON, bhvGreenDemon,
                             gMarioState->pos[0], gMarioState->pos[1], gMarioState->pos[2], 0, 0, 0);
     }
 }
 
 void chs_area_init_green_demon(void) {
-    spawn_object_abs_with_rot(gMarioState->marioObj, 0, MODEL_GREEN_DEMON, bhvGreenDemon,
-                            gMarioState->pos[0], gMarioState->pos[1], gMarioState->pos[2], 0, 0, 0);
+    if (gCurrCourseNum != COURSE_NONE && gCurrLevelNum != LEVEL_BOWSER_1 && gCurrLevelNum != LEVEL_BOWSER_2 && gCurrLevelNum != LEVEL_BOWSER_3) {
+        spawn_object_abs_with_rot(gMarioObject, 0, MODEL_GREEN_DEMON, bhvGreenDemon,
+                                gMarioState->pos[0], gMarioState->pos[1], gMarioState->pos[2], 0, 0, 0);
+    }
 }
 
 void chs_instwarp_pre_green_demon(UNUSED struct InstantWarp *warp) {

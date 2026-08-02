@@ -202,6 +202,7 @@ u8 chs_cond_remove_selectable_patch(void);
 u8 chs_cond_lucky_charm(void);
 u8 chs_cond_unlucky_charm(void);
 u8 chs_cond_uneventful(void);
+u8 chs_cond_negative_extension(void);
 u8 chs_cond_forgiveness(void);
 void chs_menuinit_gambling_wheel(void);
 void chs_menuupdate_gambling_wheel(Gfx **dl);

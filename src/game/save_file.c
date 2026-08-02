@@ -962,12 +962,13 @@ void save_file_update_best_clear() {
 /*
     Checks the current file against the saved best clear.
     Updates the best clear based on the following priority:
-        1. difficulty (impossible > hard > normal > easy)
-		2. game mode (hardcore > challenge > classic)
-		3. yellow stars (most)
-		4. blue stars (least)
-		5. deaths (fewest)
-		6. play time (lowest)
+		1. hardcore, non-easy game mode
+        2. difficulty (impossible > hard > normal > easy)
+		3. non-hardcore game mode (challenge > classic)
+		4. yellow stars (most)
+		5. blue stars (least)
+		6. deaths (fewest)
+		7. play time (lowest)
 
     In the unlikely event that all of the above are exactly equal, the older save will be prioritized.
 */
@@ -978,6 +979,12 @@ void save_file_check_best_clear() {
 
     // If the game hasn't been cleared yet, automatically update
     if(!scoreData->isBestClear) {
+        save_file_update_best_clear();
+        return;
+    }
+
+    // Check if hardcore game mode
+    if (saveFile->chaosGameMode == CHAOS_GAMEMODE_HARDCORE && saveFile->chaosGameMode > scoreData->bestGameMode && saveFile->chaosDifficulty > CHAOS_DIFFICULTY_EASY) {
         save_file_update_best_clear();
         return;
     }
