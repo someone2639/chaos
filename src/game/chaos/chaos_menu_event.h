@@ -13,7 +13,7 @@ extern enum ChaosPatchID gChaosEventQueue[CHAOS_EVENT_QUEUE_SIZE];
 // Initialize chaos event system
 void chaos_menuevent_init(void);
 
-// Function to populate chaos menu event queue with events that persist over multiple stars/uses.
+// Function to populate chaos menu event queue with events that persist over multiple stars / indefinitely.
 void chaos_menuevent_populate_persistent_patch_events(void);
 
 // Function to populate chaos menu event queue with an event that only activates once.

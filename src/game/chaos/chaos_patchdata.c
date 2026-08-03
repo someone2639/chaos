@@ -497,7 +497,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 10,
         .durationImpossible = 12,
 
-        INCOMPATIBLE(CHAOS_PATCH_GRAVITY_DECREASE, CHAOS_PATCH_STAR_MEDALLION)
+        INCOMPATIBLE(CHAOS_PATCH_GRAVITY_DECREASE, CHAOS_PATCH_STAR_MEDALLION, CHAOS_PATCH_WALKIES)
         .activatedInitFunc  = chs_act_gravity_increase,
         .deactivationFunc   = chs_deact_gravity_increase,
 
@@ -2142,7 +2142,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 4,
         .durationImpossible = 5,
 
-        INCOMPATIBLE(CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_SPEED_TAX, CHAOS_PATCH_HEALTH_DRAIN, CHAOS_PATCH_COSMIC_CLONES, CHAOS_PATCH_PUSH_BACK, CHAOS_PATCH_STAR_MEDALLION, CHAOS_PATCH_WATER_BOMBS)
+        INCOMPATIBLE(CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_SPEED_TAX, CHAOS_PATCH_HEALTH_DRAIN, CHAOS_PATCH_COSMIC_CLONES, CHAOS_PATCH_PUSH_BACK, CHAOS_PATCH_STAR_MEDALLION, CHAOS_PATCH_WATER_BOMBS, CHAOS_PATCH_GRAVITY_INCREASE)
 
         .name               = "Walkies",
         .shortDescription   = "Slows Mario down to walking speed. This is a Walkies level now.",

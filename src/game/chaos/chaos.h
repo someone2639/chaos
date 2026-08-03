@@ -322,7 +322,7 @@ enum ChaosGameMode {
 enum ChaosPatchDurationType {
     CHAOS_DURATION_DO_NOT_FORCE = -1, // Used to specify no forced duration type when checking conditionals
     CHAOS_DURATION_ONCE         =  0, // Calls init function, then deactivates immediately
-    CHAOS_DURATION_INFINITE,          // Activates forever and cannot be deactivated
+    CHAOS_DURATION_INFINITE,          // Activates forever and cannot be deactivated without help from other special patches
     CHAOS_DURATION_STARS,             // Duration is decremented for each star collected (blue stars included)
     CHAOS_DURATION_USE_COUNT,         // Duration is decremented each time its use case is invoked (this must be done manually!)
 };
@@ -343,7 +343,7 @@ enum ChaosStarDecrementType {
     CHAOS_STAR_DECREMENT_MENU_IMPACTING,
 };
 
-// Remaining Duration and Patch ID will be tracked within a separate array of active patch data (to be defined later). Memory behind said array should also be copied to the save file.
+// Remaining Duration and Patch ID is tracked within a separate array of active patch data. Memory behind said array is tied directly to the save file struct.
 // Any uses of activatedInitFunc should also consider save file reloads appropriately and never touch duration directly.
 struct ChaosPatch {
     const enum ChaosPatchDurationType durationType; // How/when should this patch be consumed or deactivated?
@@ -361,7 +361,7 @@ struct ChaosPatch {
     const enum ChaosPatchID *incompatible; // List of all incompatible patch IDs (Optional)
 #ifdef DEBUG_ASSERTIONS
     const u8 __dbg_exemptCount;            // Number of specified exempt patches
-    const enum ChaosPatchID *__dbg_exempt; // List of all patch IDs in which associated patch lists as incompatible, but this one does not (Optional, for debugging purposes to catch any missed mutual exclusions)
+    const enum ChaosPatchID *__dbg_exempt; // List of all patch IDs in which the associated patch lists as incompatible, but this one doesn't also mark incompatible in return (Optional, for debugging purposes to catch any missed mutual exclusions)
 #endif
 
     u8   (*conditionalFunc  )(void);                     // Check specific scenarios for whether this patch type is allowed to show up, beyond just conflicting patch IDs (Optional)
@@ -373,7 +373,7 @@ struct ChaosPatch {
     void (*frameUpdateFunc  )(void);                     // Invoked once at the start of each frame while active (Optional)
     void (*deactivationFunc )(void);                     // Invoked once the patch is deactivated (Optional)
 
-    const u8 hasMenuEvent;               // Does this patch have a chaos menu event? (Events activated immediately following patch selection, but prior to raising the curtain. Mainly for user-facing render events, such as Coin Flip or Let's Go Gambling!)
+    const u8 hasMenuEvent;               // Does this patch have a chaos menu event? (Events are activated immediately following patch selection, but prior to raising the curtain. Mainly for user-facing render events, such as Coin Flip or Let's Go Gambling!)
     void (*chsMenuInitFunc)(void);       // Invoked upon initialization of menu event (Optional if `hasMenuEvent` is TRUE)
     void (*chsMenuUpdateFunc)(Gfx **dl); // Invoked as the update/render entry point during a menu event (Mandatory if `hasMenuEvent` is TRUE)
 
@@ -421,7 +421,7 @@ extern enum ChaosPatchDurationType gChaosForcedDurationType;
 extern u32 gChaosForcedDurationMaximum;
 extern enum ChaosPatchID gChaosNegativePatchCompare;
 
-// Check whether a particular chaos patch is active. Overall cheaper operation than the function below this one.
+// Check whether a particular chaos patch is active. Overall cheaper operation than use of any alternative functions below.
 u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId);
 
 // Sorts all active patches to make them display in order.
@@ -440,13 +440,13 @@ u32 chaos_calculate_patch_duration(const struct ChaosPatch *patch);
 // Deactivate an old chaos patch, based on its current index.
 // Be careful when invoking this with stackable patches, as it may cause undesirable behavior if used incorrectly.
 // In general it is not recommended to invoke this (externally) with stackable patches that use CHAOS_DURATION_USE_COUNT (since they get combined).
-// Additionally a message may be printed, abiding by the format of chaosmsg_print.
+// Additionally a message may optionally be printed, abiding by the format of chaosmsg_print.
 void chaos_remove_expired_entry(const s32 patchIndex, const char *msg);
 
 // Deactivate an old chaos patch, based on its current patch ID (deferred for safety when invoked inside of callbacks).
 // Be careful when invoking this with stackable patches, as it may cause undesirable behavior if used incorrectly.
 // In general it is not recommended to invoke this (externally) with stackable patches that use CHAOS_DURATION_USE_COUNT (since they get combined).
-// Additionally a message may be printed, abiding by the format of chaosmsg_print (the print message will NOT be deferred however).
+// Additionally a message may optionally be printed, abiding by the format of chaosmsg_print (the print message will NOT be deferred however).
 void chaos_remove_expired_entry_deferred(const enum ChaosPatchID patchId, const char *msg);
 
 // Activate a new chaos patch.
@@ -472,7 +472,7 @@ void chaos_decrement_patch_usage(const enum ChaosPatchID patchId);
 //     forcedSeverityOverride:
 //         -2:                             Determine internally based on patches/history [DEFAULT]
 //         -1:                             Explicitly do not force severity on any of the generated patches
-//         [0 - CHAOS_PATCH_SEVERITY_MAX]: Force to that severity for all generated patches (this also override difficulty modifiers!)
+//         [0 - CHAOS_PATCH_SEVERITY_MAX]: Force to that severity for all generated patches (this also overrides difficulty modifiers!)
 //     forcedEventOverride:
 //         CHAOS_SPECIAL_DO_NOT_FORCE: Determine internally based on patches/history [DEFAULT]
 //         CHAOS_SPECIAL_NONE:         Explicitly do not activate an event for patch generation
