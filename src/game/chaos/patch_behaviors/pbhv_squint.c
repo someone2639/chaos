@@ -10,15 +10,16 @@
 #include "audio/external.h"
 #include "engine/math_util.h"
 #include "game/camera.h"
+#include "game/debug.h"
 #include "game/game_init.h"
 #include "game/ingame_menu.h"
 #include "game/level_update.h"
 
 #include "pbhv_viewport_mods.h"
 
-static float internal_scale = 0;
+static float internal_scale = 0.0f;
 
-static void ortho(Gfx **dl) {
+void ortho(Gfx **dl) {
     Gfx *dlHead = *dl;
     Mtx *matrix = (Mtx *) alloc_display_list(sizeof(Mtx));
 
@@ -40,38 +41,38 @@ static void ortho(Gfx **dl) {
 
 #define BUTTON_STICK_TRANSITION_SPEED 45.0f
 
-static void mtxTransformRPY(Mtx *m, Vec3f translate, Vec3f rotateRPY, Vec3f scale) {
+void mtxTransformRPY(Mtx *m, const Vec3f translate, const Vec3f rotateRPY, const Vec3f scale) {
     Mtx transM;
     Mtx rotM;
     Mtx scaleM;
     Mtx scale_rotateM;
 
-    translate[1] -= ((internal_scale - 1.6f) * BUTTON_STICK_TRANSITION_SPEED);
+    f32 transY = translate[1] - ((internal_scale - 1.6f) * BUTTON_STICK_TRANSITION_SPEED);
 
     guScale(&scaleM, scale[0], scale[1], scale[2]);
     guRotateRPY(&rotM, rotateRPY[0], rotateRPY[1], rotateRPY[2]);
-    guTranslate(&transM, translate[0], translate[1], translate[2]);
+    guTranslate(&transM, translate[0], transY, translate[2]);
     guMtxCatL(&scaleM, &rotM, &scale_rotateM);
     guMtxCatL(&scale_rotateM, &transM, m);
 
     gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(m), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
 }
 
-static void mtxTransformStick(Mtx *m, Vec3f translate, Vec2f stick, Vec3f scale) {
+void mtxTransformStick(Mtx *m, const Vec3f translate, const Vec2f stick, const Vec3f scale) {
     Mtx transM;
     Mtx rotM;
     Mtx scaleM;
     Mtx scale_rotateM;
 
-    translate[1] -= ((internal_scale - 1.6f) * BUTTON_STICK_TRANSITION_SPEED);
+    f32 transY = translate[1] - ((internal_scale - 1.6f) * BUTTON_STICK_TRANSITION_SPEED);
 
-    float totalStick = vec2_mag(stick) / 80.0f * 40.0f;
-    Vec3f axis = {stick[0], 0, -stick[1]};
+    float totalStick = vec2_mag(stick) * (40.0f / 80.0f);
+    Vec3f axis = {stick[0], 1.0f, -stick[1]};
     vec3_normalize(axis);
 
     guScale(&scaleM, scale[0], scale[1], scale[2]);
     guRotate(&rotM, totalStick, axis[0], axis[1], axis[2]);
-    guTranslate(&transM, translate[0], translate[1], translate[2]);
+    guTranslate(&transM, translate[0], transY, translate[2]);
     guMtxCatL(&scaleM, &rotM, &scale_rotateM);
     guMtxCatL(&scale_rotateM, &transM, m);
 
@@ -82,11 +83,12 @@ static void mtxTransformStick(Mtx *m, Vec3f translate, Vec2f stick, Vec3f scale)
     ((gPlayer1Controller->buttonDown & (button))) ? \
         ((val) - 2) : (val)
 
+#define NUM_MTXS 10
 static void draw_n64_controls(void) {
-    void *buttonDL = squint_room_button_squint_room_button_mesh_layer_1;
-    void *stickDL = squint_room_stick_squint_room_stick_mesh_layer_1;
-    void *dpadDL = squintroom_dpad_squintroom_dpad_mesh_layer_1;
-    Mtx *buttonMtxs = alloc_display_list(sizeof(Mtx) * 10);
+    const void *buttonDL = squint_room_button_squint_room_button_mesh_layer_1;
+    const void *stickDL = squint_room_stick_squint_room_stick_mesh_layer_1;
+    const void *dpadDL = squintroom_dpad_squintroom_dpad_mesh_layer_1;
+    Mtx *buttonMtxs = alloc_display_list(sizeof(Mtx) * NUM_MTXS);
 
     u32 curMtx = 0;
 
@@ -182,18 +184,16 @@ static void draw_n64_controls(void) {
         (Vec3f){0, 0, tiltCart ? 20 : 0},
         (Vec3f){1.0f, 1.0f, 1.0f}
     );
+    assert(curMtx <= NUM_MTXS, "draw_n64_controls:\ncurMtx moment");
     gSPDisplayList(gDisplayListHead++, squint_room_cart_squint_room_cart_mesh_layer_3_with_revert);
     gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
 }
+#undef NUM_MTXS
 
 void draw_room(float scaleXY) {
     internal_scale = scaleXY;
-    Mtx *baseScale = alloc_display_list(sizeof(Mtx));
     Mtx *final = alloc_display_list(sizeof(Mtx));
 
-    if (baseScale == NULL) {
-        return;
-    }
     if (final == NULL) {
         return;
     }
