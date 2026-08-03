@@ -168,7 +168,7 @@ struct ChaosSettingsOption sInstantInputOptions[] = {
 struct ChaosSettingsCategory gSettingsOptions[] = {
     {
         .display = "Widescreen Settings",
-        .shortName = "Aspect Type",
+        .shortName = "Aspect Ratio",
         .description = "Enable/Disable the use of stretched widescreen.",
         .options = sWideScreenOptions,
         .numOptions = ARRAY_COUNT(sWideScreenOptions),
