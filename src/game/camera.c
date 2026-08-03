@@ -3408,11 +3408,18 @@ void mode_top_down_cam(struct Camera *c) {
         }
     }
     f32 camCeilHeight = find_ceil(c->focus[0], gMarioState->pos[1] + 50, c->focus[2], &surface);
-    if (surface && (gCurrLevelNum != LEVEL_VCUTM)) {
+    if (surface && (gCurrLevelNum != LEVEL_VCUTM) && (gCurrLevelNum != LEVEL_TTC)) {
         c->pos[1] = camCeilHeight - 100.0f;
     } else {
-        // Hard coded check because otherwise it crashes on level entrance for some reason
-        if(gCurrLevelNum == LEVEL_VCUTM) {
+        if (gCurrLevelNum == LEVEL_TTC) {
+            // lol
+            if ((camCeilHeight) < (gMarioState->pos[1] + 2000.0f)) {
+                c->pos[1] = gMarioState->pos[1] + 1000.0f;
+            } else {
+                c->pos[1] = gMarioState->pos[1] + 2000.0f;
+            }
+        } else if (gCurrLevelNum == LEVEL_VCUTM) {
+            // Hard coded check because otherwise it crashes on level entrance for some reason
             if (topdown_vcutmlatch == 0) {
                 c->pos[1] = 6454;
                 topdown_vcutmlatch = 1;
