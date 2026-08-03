@@ -241,6 +241,18 @@ ifeq ($(HVQM),1)
   SRC_DIRS += src/hvqm
 endif
 
+# LIBPL - whether to include libpl library for interfacing with Parallel Launcher
+# (library will be pulled into repo after building with this enabled for the first time)
+#   1 - includes code in ROM
+#   0 - does not
+LIBPL ?= 1
+LIBPL_DIR := lib/libpl2
+$(eval $(call validate-option,LIBPL,0 1))
+ifeq ($(LIBPL),1)
+  DEFINES += LIBPL=1
+  SRC_DIRS += $(LIBPL_DIR)
+endif
+
 BUILD_DIR_BASE := build
 # BUILD_DIR is the location where all build artifacts are placed
 BUILD_DIR      := $(BUILD_DIR_BASE)/$(VERSION)_$(CONSOLE)
@@ -335,6 +347,17 @@ ifeq ($(filter clean distclean print-%,$(MAKECMDGOALS)),)
       $(error Failed to build tools)
     endif
   $(info Building ROM...)
+
+  # Clone any needed submodules
+  ifeq ($(LIBPL),1)
+    ifeq ($(wildcard $(LIBPL_DIR)/*.h),)
+      $(info Cloning libpl2 submodule...)
+      DUMMY != git submodule update --init $(LIBPL_DIR) > /dev/null || echo FAIL
+      ifeq ($(DUMMY),FAIL)
+        $(error Failed to clone libpl2 submodule)
+      endif
+    endif
+  endif
 
 endif
 

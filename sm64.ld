@@ -153,6 +153,9 @@ SECTIONS
 #endif
       */libnustd.a:*.o(.text);
       *libgcc.a:*.o(.text);
+#ifdef LIBPL
+      BUILD_DIR/lib/libpl*.o(.text*);
+#endif
       */librtc.a:*.o(.text);
       */libz.a:*.o(.text);
       */libhvqm2.a:*.o(.text);
@@ -172,6 +175,9 @@ SECTIONS
       *libultra_rom.a:*.o(.data*);
 #endif
       */libhvqm2.a:*.o(.data*);
+#ifdef LIBPL
+      BUILD_DIR/lib/libpl*.o(.*data*);
+#endif
       */librtc.a:*.o(.data*);
       */libz.a:*.o(.data*);
 #include "rspdata.inc.ld"
@@ -189,6 +195,9 @@ SECTIONS
       *libultra_rom.a:*.o(.rodata*);
 #endif
       *libgcc.a:*.o(.rodata*);
+#ifdef LIBPL
+      BUILD_DIR/lib/libpl*.o(.rodata*);
+#endif
       */librtc.a:*.o(.rodata*);
       */libz.a:*.o(.rodata*);
 
@@ -210,6 +219,9 @@ SECTIONS
       *libultra_rom.a:*.o(.*bss*);
 #endif
       */libhvqm2.a:*.o(.bss*);
+#ifdef LIBPL
+      BUILD_DIR/lib/libpl*.o(.*bss*);
+#endif
       */librtc.a:*.o(.bss*);
       */libz.a:*.o(.bss*);
       . = ALIGN(0x8);

@@ -1,0 +1,3 @@
+[submodule "lib/libpl2"]
+	path = lib/libpl2
+	url = https://gitlab.com/parallel-launcher/libpl2.git

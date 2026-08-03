@@ -1,6 +1,7 @@
 #include <PR/ultratypes.h>
 #include <PR/gbi.h>
 #include "types.h"
+#include "game/emutest.h"
 #include "game/segment2.h"
 #include "game/hud.h"
 #include "game/game_init.h"
@@ -12,8 +13,12 @@
 #include "game/object_list_processor.h"
 #include "game/rendering_graph_node.h"
 #include "engine/math_util.h"
+#include "lib/libpl2/libpl2-rhdc.h"
 
 #include "game/chaos/chaos.h"
+
+u8 rhdcUsernameSet = FALSE;
+char rhdcUsername[64] = "";
 
 enum Weather {
     WTH_NONE,
@@ -159,13 +164,13 @@ f32 sMoreHudCurTempLow = 0.0f;
 u16 sMoreHudHeadlineIndex = 0;
 
 const char *sMoreHudHeadlines[] = {
+    "Anonymous User Posts Cringe Online", // Note: THIS MUST COME FIRST! (libpl2 moment)
     "Local Player Still Hasn't Beat the Game",
     "B3313 Has Yet Another Drama Split",
     "There Isn't Enough Space On Screen To Fit This Headline",
     "I Can't See Anything!",
     "The Baseball Minigame is Real",
     "The Baseball Minigame is Fake",
-    "Anonymous User Posts Cringe Online",
     "There is No Cow Level",
     "L Might Be Real",
     "Romhacker Running Out of Ideas for Jokes",
@@ -324,7 +329,12 @@ void more_hud_draw_breaking_news(void) {
     gDPSetCombineMode (gDisplayListHead++, G_CC_SHADE, G_CC_SHADE);
 
     fasttext_setup_textrect_rendering(&gDisplayListHead, FT_FONT_MEDIUM_NOSHADOW);
-    fasttext_draw_texrect(&gDisplayListHead, 10, SCREEN_HEIGHT - 35, sMoreHudHeadlines[sMoreHudHeadlineIndex], FT_FLAG_ALIGN_LEFT, 0x10, 0x10, 0x10, 0xFF);
+    if (sMoreHudHeadlineIndex == 0 && rhdcUsernameSet) {
+        sprintf(gFasttextTmpBuffer, "%s Posts Cringe Online", rhdcUsername);
+        fasttext_draw_texrect(&gDisplayListHead, 10, SCREEN_HEIGHT - 35, gFasttextTmpBuffer, FT_FLAG_ALIGN_LEFT, 0x10, 0x10, 0x10, 0xFF);
+    } else {
+        fasttext_draw_texrect(&gDisplayListHead, 10, SCREEN_HEIGHT - 35, sMoreHudHeadlines[sMoreHudHeadlineIndex], FT_FLAG_ALIGN_LEFT, 0x10, 0x10, 0x10, 0xFF);
+    }
     fasttext_finished_rendering(&gDisplayListHead);
 }
 
@@ -409,6 +419,12 @@ void more_hud_update(void) {
 }
 
 void chs_act_more_hud(void) {
+    if (gLibplABI > 0 && lpl2_get_my_rhdc_username(rhdcUsername, NULL) > 0) {
+        rhdcUsernameSet = TRUE;
+    } else {
+        rhdcUsernameSet = FALSE;
+    }
+
     for (u32 i = 0; i < ARRAY_COUNT(sMoreHudHeadlinesWeights); i++) {
         sMoreHudHeadlinesWeights[i] = HEADLINE_WEIGHT_INCREASE;
     }
