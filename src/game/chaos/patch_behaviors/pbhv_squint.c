@@ -18,37 +18,6 @@
 
 static float internal_scale = 0;
 
-UNUSED static void betah(int next_state) {
-    static int cur_state = 0;
-    u8 *betah_tex = segmented_to_virtual(squint_room_betah_rgba_ci8);
-    u8 *betah_pal = segmented_to_virtual(squint_room_betah_rgba_pal_rgba16);
-
-    u8 *normal_tex = segmented_to_virtual(squint_room_inside_texture_ci8);
-    u8 *normal_pal = segmented_to_virtual(squint_room_inside_texture_pal_rgba16);
-
-    u8 *buffer_tex = segmented_to_virtual(squint_room_inside_buffer_ci8);
-    u8 *buffer_pal = segmented_to_virtual(squint_room_inside_buffer_pal_rgba16);
-
-    if (next_state != cur_state) {
-        next_state = cur_state;
-
-        osWritebackDCacheAll();
-        switch (next_state) {
-            case 0:
-                dma_read(buffer_tex, normal_tex, normal_tex + 0x800);
-                osWritebackDCacheAll();
-                dma_read(buffer_pal, normal_pal, normal_pal + 0x1A6);
-                break;
-            case 1:
-                dma_read(buffer_tex, betah_tex, betah_tex + 0x800);
-                osWritebackDCacheAll();
-                dma_read(buffer_pal, betah_pal, betah_pal + 0x1CC);
-                break;
-        }
-        osWritebackDCacheAll();
-    }
-}
-
 static void ortho(Gfx **dl) {
     Gfx *dlHead = *dl;
     Mtx *matrix = (Mtx *) alloc_display_list(sizeof(Mtx));
@@ -218,9 +187,6 @@ static void draw_n64_controls(void) {
 }
 
 void draw_room(float scaleXY) {
-    // betah(chaos_check_if_patch_active(CHAOS_PATCH_BETA));
-    // betah(gPlayer1Controller->buttonDown & A_BUTTON);
-
     internal_scale = scaleXY;
     Mtx *baseScale = alloc_display_list(sizeof(Mtx));
     Mtx *final = alloc_display_list(sizeof(Mtx));
@@ -246,6 +212,11 @@ void draw_room(float scaleXY) {
 
     gDPPipeSync(gDisplayListHead++);
     gDPSetRenderMode(gDisplayListHead++, G_RM_OPA_SURF,G_RM_OPA_SURF2);
+    if (chaos_check_if_patch_active(CHAOS_PATCH_BETA)) {
+        gSPDisplayList(gDisplayListHead++, &squint_room_squint_room_mesh_layer_1_betah_without_revert);
+    } else {
+        gSPDisplayList(gDisplayListHead++, &squint_room_squint_room_mesh_layer_1_normal_without_revert);
+    }
     gSPDisplayList(gDisplayListHead++, &squint_room_squint_room_mesh_layer_1_with_revert);
 
     gDPPipeSync(gDisplayListHead++);
