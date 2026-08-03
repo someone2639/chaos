@@ -3382,15 +3382,22 @@ void mode_top_down_cam(struct Camera *c) {
     vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, topdown_yawcorrection);
     c->yaw = topdown_yawcorrection;
 
-    if (gMarioState->action & ACT_FLAG_SWIMMING_OR_FLYING) {
-        vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0x8000 + gMarioState->faceAngle[1]);
-        c->yaw = gMarioState->faceAngle[1];
+    s16 yaw_to_use = gMarioState->faceAngle[1];
+
+    if (gMarioState->action == ACT_TWIRLING || gMarioState->action == ACT_LAVA_BOOST) {
+        // Use yaw from velocity instead
+        yaw_to_use = 0x8000;
+        vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0x8000 + yaw_to_use);
+        c->yaw = yaw_to_use + 0x8000;
+    } else if (gMarioState->action & ACT_FLAG_SWIMMING_OR_FLYING) {
+        vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0x8000 + yaw_to_use);
+        c->yaw = yaw_to_use;
     } else if ((gCurrLevelNum != LEVEL_VCUTM) && (gMarioState->action & ACT_FLAG_BUTT_OR_STOMACH_SLIDE)) {
-        vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0x8000 + gMarioState->faceAngle[1]);
-        c->yaw = gMarioState->faceAngle[1] + 0x8000;
+        vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0x8000 + yaw_to_use);
+        c->yaw = yaw_to_use + 0x8000;
     } else if (gMarioState->action == ACT_FLYING) {
-        vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0x8000 + gMarioState->faceAngle[1]);
-        c->yaw = gMarioState->faceAngle[1] + 0x8000;
+        vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0x8000 + yaw_to_use);
+        c->yaw = yaw_to_use + 0x8000;
     } else {
         // only do rotation handling if it's controllable
         if (gPlayer1Controller->buttonPressed & L_CBUTTONS) {
