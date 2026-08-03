@@ -18,6 +18,8 @@ extern const Gfx burn_smoke_seg4_dl_04022048[];
 extern const Gfx burn_smoke_seg4_dl_04022070[];
 
 // mario
+extern Lights1 mario_blue_lights_group;
+extern Lights1 mario_red_lights_group;
 extern const GeoLayout mario_geo_face_and_wings[];
 extern const GeoLayout mario_geo_left_hand[];
 extern const GeoLayout mario_geo_right_hand[];
@@ -66,6 +68,7 @@ extern const GeoLayout mario_geo_load_body[];
 extern const GeoLayout mario_geo_load_medium_poly_body[];
 extern const GeoLayout mario_geo_load_low_poly_body[];
 extern const GeoLayout mario_geo_render_body[];
+extern const GeoLayout mario_geo_always_visible[];
 extern const GeoLayout mario_geo[];
 extern const Gfx mario_butt_dl[];
 extern const Gfx mario_butt[];
@@ -314,6 +317,14 @@ extern const Gfx smoke_seg4_dl_04021778[];
 extern const Gfx smoke_seg4_dl_04021790[];
 extern const Gfx smoke_seg4_dl_040217A8[];
 
+// water_bubble
+extern const GeoLayout water_bomb_geo[];
+extern const GeoLayout water_bomb_chaos_geo[];
+extern const GeoLayout water_bomb_shadow_geo[];
+extern const Gfx water_bubble_seg5_dl_05010D30[];
+extern const Gfx water_bubble_seg5_dl_05011000[];
+extern const Gfx water_bubble_chaos_dl[];
+
 // water_splash
 extern const GeoLayout water_splash_geo[];
 extern const Gfx water_splash_seg4_dl_040325C8[];
@@ -361,4 +372,12 @@ extern const Gfx white_particle_small_unused_dl[];
 
 #include "noclip_plane/collision_header.h"
 
+#include "squint_room/geo_header.h"
+
+#include "squint_room_button/geo_header.h"
+
+#include "squint_room_stick/geo_header.h"
+
+#include "squintroom_dpad/geo_header.h"
+#include "squint_room_cart/geo_header.h"
 #endif

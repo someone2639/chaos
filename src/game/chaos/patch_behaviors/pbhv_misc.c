@@ -14,6 +14,8 @@
 #include "course_table.h"
 #include "behavior_data.h"
 #include "engine/surface_collision.h"
+#include "game/colors.h"
+#include "engine/math_util.h"
 
 u8 chs_cond_miracle_normal(void) {
     struct ChaosActiveEntry *match;
@@ -88,4 +90,46 @@ void chs_act_number_blindness(void) {
 
 void chs_deact_number_blindness(void) {
     gChsNumberBlindness = FALSE;
+}
+
+Lights1 gRainbowOverallLights = gdSPDefLights1(
+    0x00, 0x00, 0x7f,
+    0x00, 0x00, 0xff, 0x28, 0x28, 0x28
+);
+
+Lights1 gRainbowHatLights = gdSPDefLights1(
+    0x7f, 0x00, 0x00,
+    0xff, 0x00, 0x00, 0x28, 0x28, 0x28
+);
+
+#define CHANGE_LIGHT_COL(light, color)         \
+    light.l[0].l.col[0]    = color.c.r;       \
+    light.l[0].l.col[1]    = color.c.g;       \
+    light.l[0].l.col[2]    = color.c.b;       \
+    light.l[0].l.colc[0]   = color.c.r;       \
+    light.l[0].l.colc[1]   = color.c.g;       \
+    light.l[0].l.colc[2]   = color.c.b;       \
+    light.a.l.col[0]       = (color.c.r / 2); \
+    light.a.l.col[1]       = (color.c.g / 2); \
+    light.a.l.col[2]       = (color.c.b / 2); \
+    light.a.l.colc[0]      = (color.c.r / 2); \
+    light.a.l.colc[1]      = (color.c.g / 2); \
+    light.a.l.colc[2]      = (color.c.b / 2)
+
+void chs_update_mario_rainbow(void) {
+    RGBA overallRGB;
+    RGBA hatRGB;
+    HSV overallHSV = {.h = 0, .s = 1.0f, .v = 1.0f, .a = 1.0f};
+    HSV hatHSV = {.h = 0, .s = 1.0f, .v = 1.0f, .a = 1.0f};
+
+    struct ChaosActiveEntry *this;
+    chaos_find_first_active_patch(CHAOS_PATCH_MARIO_RAINBOW, &this);
+
+    overallHSV.h = (this->frameTimer * 2) % 360;
+    hatHSV.h = ((this->frameTimer * 2) + 180) % 360;
+    overallRGB = HSV_to_RGB(overallHSV);
+    hatRGB = HSV_to_RGB(hatHSV);
+
+    CHANGE_LIGHT_COL(gRainbowOverallLights, overallRGB);
+    CHANGE_LIGHT_COL(gRainbowHatLights, hatRGB);
 }

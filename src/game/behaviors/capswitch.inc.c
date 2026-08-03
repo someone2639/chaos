@@ -2,6 +2,49 @@
 
 UNUSED u8 sCapSwitchText[] = { DIALOG_010, DIALOG_011, DIALOG_012 };
 
+static u8 has_authentic_cap_unlocked(s32 flags) {
+    if (flags & SAVE_FLAG_HAVE_WING_CAP) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_GET_WING_CAP)) {
+            return FALSE;
+        }
+    } else if (flags & SAVE_FLAG_HAVE_METAL_CAP) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_GET_METAL_CAP)) {
+            return FALSE;
+        }
+    } else if (flags & SAVE_FLAG_HAVE_VANISH_CAP) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_GET_VANISH_CAP)) {
+            return FALSE;
+        }
+    }
+
+    return (save_file_get_flags() & flags);
+}
+
+static void activate_cap_switch(s32 flags) {
+    if (flags & SAVE_FLAG_HAVE_WING_CAP) {
+        s32 index = chaos_find_first_active_patch(CHAOS_PATCH_GET_WING_CAP, NULL);
+        if (index >= 0) {
+            chaos_remove_expired_entry(index, "%s: Expired!");
+        }
+    }
+
+    if (flags & SAVE_FLAG_HAVE_METAL_CAP) {
+        s32 index = chaos_find_first_active_patch(CHAOS_PATCH_GET_METAL_CAP, NULL);
+        if (index >= 0) {
+            chaos_remove_expired_entry(index, "%s: Expired!");
+        }
+    }
+
+    if (flags & SAVE_FLAG_HAVE_VANISH_CAP) {
+        s32 index = chaos_find_first_active_patch(CHAOS_PATCH_GET_VANISH_CAP, NULL);
+        if (index >= 0) {
+            chaos_remove_expired_entry(index, "%s: Expired!");
+        }
+    }
+
+    save_file_set_flags(flags);
+}
+
 void cap_switch_act_0(void) {
     o->oAnimState = o->oBehParams2ndByte;
     cur_obj_scale(0.5f);
@@ -10,7 +53,7 @@ void cap_switch_act_0(void) {
     spawn_object_relative_with_scale(0, 0, -71, 0, 0.5f, o, MODEL_CAP_SWITCH_BASE, bhvCapSwitchBase);
 
     if (gCurrLevelNum != LEVEL_UNKNOWN_32) {
-        if (save_file_get_flags() & sCapSaveFlags[o->oBehParams2ndByte]) {
+        if (has_authentic_cap_unlocked(sCapSaveFlags[o->oBehParams2ndByte])) {
             o->oAction = 3;
             o->header.gfx.scale[1] = 0.1f;
         } else {
@@ -23,7 +66,7 @@ void cap_switch_act_0(void) {
 
 void cap_switch_act_1(void) {
     if (cur_obj_is_mario_on_platform()) {
-        save_file_set_flags(sCapSaveFlags[o->oBehParams2ndByte]);
+        activate_cap_switch(sCapSaveFlags[o->oBehParams2ndByte]);
         o->oAction = 2;
         cur_obj_play_sound_2(SOUND_GENERAL_ACTIVATE_CAP_SWITCH);
     }

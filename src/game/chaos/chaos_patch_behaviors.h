@@ -149,6 +149,8 @@ void chs_act_cosmic_clones(void);
 void chs_area_init_cosmic_clones(void);
 void chs_instwarp_post_cosmic_clones(struct InstantWarp *warp);
 void chs_update_cosmic_clones(void);
+u8 chs_cond_water_bombs(void);
+void chs_update_water_bombs(void);
 
 // Visual Modifiers
 u8 chs_cond_no_zbuffer(void);
@@ -168,6 +170,8 @@ void chs_update_corruption(void);
 void chs_deact_corruption(void);
 void chs_squint_init(void);
 void chs_squint_deinit(void);
+void chs_update_poser(void);
+void chs_deact_poser(void);
 
 // Time Limit
 void chs_level_init_time_limit(void);
@@ -198,9 +202,14 @@ u8 chs_cond_remove_selectable_patch(void);
 u8 chs_cond_lucky_charm(void);
 u8 chs_cond_unlucky_charm(void);
 u8 chs_cond_uneventful(void);
+u8 chs_cond_negative_extension(void);
 u8 chs_cond_forgiveness(void);
 void chs_menuinit_gambling_wheel(void);
 void chs_menuupdate_gambling_wheel(Gfx **dl);
+u8 chs_cond_sweet_relief(void);
+void chs_menuinit_sweet_relief(void);
+void chs_menuupdate_sweet_relief(Gfx **dl);
+u8 chs_cond_reroll(void);
 
 // Speed Modifiers
 u8 chs_cond_push_back(void);
@@ -236,6 +245,7 @@ void chs_act_sound_effect_shuffle(void);
 s32 get_randomized_sound(s32 sound);
 
 // Misc
+u8 chs_cond_forced_mario_cam(void);
 void chs_act_serve_ads(void);
 void chs_update_serve_ads(void);
 u8 chs_cond_miracle_normal(void);
@@ -260,6 +270,8 @@ void chs_remove_cherry_clone(void);
 void chs_init_cherry_clones_after_warp(void);
 void chs_act_45_degree_camera(void);
 void chs_deact_45_degree_camera(void);
+void chs_act_smooth_camera(void);
+void chs_deact_smooth_camera(void);
 void chs_update_noclip(void);
 u8 chs_cond_randomize_warps(void);
 void chs_init_dvd(void);
@@ -274,3 +286,9 @@ void chs_area_init_star_medallion(void);
 void chs_instwarp_post_star_medallion(struct InstantWarp *warp);
 void chs_lvlinit_star_medallion(void);
 u8 chs_star_medallion_can_collect_star(void);
+void draw_more_hud(void);
+void chs_act_more_hud(void);
+void chs_lvlinit_more_hud(void);
+void chs_update_mario_rainbow(void);
+extern Lights1 gRainbowOverallLights;
+extern Lights1 gRainbowHatLights;

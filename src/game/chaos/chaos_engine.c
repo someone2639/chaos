@@ -68,7 +68,7 @@ u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId) {
 }
 
 static u8 chaos_check_conditional_func(const struct ChaosPatch *patch) {
-    if (gChaosGameMode == CHAOS_GAMEMODE_HARDCORE && patch->disableForHardcore) {
+    if (patch->disableForHardcore && (gChaosGameMode == CHAOS_GAMEMODE_HARDCORE || chaos_check_if_patch_active(CHAOS_PATCH_INSTANT_GAME_OVER))) {
         return FALSE;
     }
     if (gChaosForcedDurationType != CHAOS_DURATION_DO_NOT_FORCE && gChaosForcedDurationType != patch->durationType) {
@@ -1088,6 +1088,7 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(s32 forcedSeverityOverrid
     // Compute weights for generation
     f32 totalWeight = 0.0f;
 
+    // NOTE: We don't actually apply anything to severityWeights right now, so this essentially does nothing (apart from disabled severities)...
     for (s32 i = 1; i < ARRAY_COUNT(severityWeights); i++) {
         severityWeights[i] += WEIGHT_OFFSET;
         totalWeight += severityWeights[i];
@@ -1146,7 +1147,7 @@ struct ChaosPatchSelection *chaos_roll_for_new_patches(s32 forcedSeverityOverrid
             overruledSpecialEvent = FALSE;
         }
     }
-    if (overruledSpecialEvent) {
+    if (overruledSpecialEvent && forcedEventOverride == CHAOS_SPECIAL_DO_NOT_FORCE) {
         chaosmsg_print_debug("@FFFF009FAll generated patch events overridden to no event, discounting event...");
         gChaosLastEventType = CHAOS_SPECIAL_NONE;
     }
@@ -1324,4 +1325,52 @@ void chaos_remove_deferred_patches(void) {
     }
     
     deferredPatchCount = 0;
+}
+
+s32 chaos_precheck_conditional_exclusions(UNUSED s16 arg0, UNUSED s32 arg1) {
+#ifdef DEBUG_ASSERTIONS
+    for (enum ChaosPatchID currentPatchID = 0; currentPatchID < ARRAY_COUNT(gChaosPatches); currentPatchID++) {
+        const struct ChaosPatch *currentPatch = &gChaosPatches[currentPatchID];
+        if (currentPatch->incompatible == NULL || currentPatch->incompatibleCount == 0) {
+            continue;
+        }
+
+        for (s32 incompatiblePatchIndex = 0; incompatiblePatchIndex < currentPatch->incompatibleCount; incompatiblePatchIndex++) {
+            const enum ChaosPatchID incompatiblePatchID = currentPatch->incompatible[incompatiblePatchIndex];
+            const struct ChaosPatch *incompatiblePatch = &gChaosPatches[incompatiblePatchID];
+            u8 found = FALSE;
+
+            if (incompatiblePatch->incompatible != NULL && incompatiblePatch->incompatibleCount > 0) {
+                for (s32 matchingPatchIndex = 0; matchingPatchIndex < incompatiblePatch->incompatibleCount; matchingPatchIndex++) {
+                    const enum ChaosPatchID matchingPatchID = incompatiblePatch->incompatible[matchingPatchIndex];
+                    if (currentPatchID == matchingPatchID) {
+                        found = TRUE;
+                        break;
+                    }
+                }
+            }
+
+            if (!found && incompatiblePatch->__dbg_exempt != NULL && incompatiblePatch->__dbg_exemptCount > 0) {
+                for (s32 matchingPatchIndex = 0; matchingPatchIndex < incompatiblePatch->__dbg_exemptCount; matchingPatchIndex++) {
+                    const enum ChaosPatchID matchingPatchID = incompatiblePatch->__dbg_exempt[matchingPatchIndex];
+                    if (currentPatchID == matchingPatchID) {
+                        found = TRUE;
+                        break;
+                    }
+                }
+            }
+
+            assert_args(found, "chaos_precheck_conditional_exclusions:\n" \
+                "Exclusion mismatch found!\n" \
+                "\n" \
+                "Bad Patch:\n" \
+                "  %s:\n" \
+                "Should exclude:\n" \
+                "  %s\n", \
+            incompatiblePatch->name, currentPatch->name);
+        }
+    }
+#endif
+
+    return FALSE;
 }

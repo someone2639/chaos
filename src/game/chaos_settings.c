@@ -113,15 +113,15 @@ void chaos_settings_set_sound_mode(s32 selected) {
 struct ChaosSettingsOption sSoundOptions[] = {
     {
         .option = "Stereo",
-        .description = "The default \"stereo\" sound mode from Super Mario 64. Recommended for most setups.",
+        .description = "The default \"STEREO\" sound mode from Super Mario 64. Sound output will be processed differently between the left and right sound channels, allowing for a directional perception of sound.",
     },
     {
         .option = "Mono",
-        .description = "The \"mono\" sound mode from Super Mario 64. Not recommended for most setups.",
+        .description = "The \"MONO\" sound mode from Super Mario 64. The left and right sound channels will be mixed together, resulting in identical outputs for both channels.",
     },
     {
         .option = "Headset",
-        .description = "The \"headset\" sound mode from Super Mario 64. Not recommended for most setups.",
+        .description = "The \"HEADSET\" sound mode from Super Mario 64. Behaves similarly to stereo, but sound effects are processed differently, with a less exaggerated directional emphasis.",
     },
 };
 
@@ -143,6 +143,25 @@ struct ChaosSettingsOption sVisualsOptions[] = {
         .option = "Disable",
         .description = "Patches that could cause flashing, flickering lights, or are prone to motion sickness will no longer appear as options in the patch selection menu. "
         "Any currently applied patch that matches this criteria will have its effects disabled.",
+    },
+};
+
+s32 chaos_settings_get_instant_input(void) {
+    return (save_file_check_instant_input_active() == FALSE) ? 1 : 0;
+}
+
+void chaos_settings_set_instant_input(s32 selected) {
+    save_file_set_instant_input_active((selected == 0) ? TRUE : FALSE);
+}
+
+struct ChaosSettingsOption sInstantInputOptions[] = {
+    {
+        .option = "Enable",
+        .description = "Instant Input will be enabled. This may not take effect if a setup is determined to be incompatible (e.g. use of a real N64 console or a very high-accuracy emulator such as Ares is detected).",
+    },
+    {
+        .option = "Disable",
+        .description = "Instant Input will be disabled.",
     },
 };
 
@@ -175,9 +194,19 @@ struct ChaosSettingsCategory gSettingsOptions[] = {
         .setConfig = chaos_settings_set_sound_mode,
     },
     {
+        .display = "Instant Input Settings",
+        .shortName = "Instant Input",
+        .description = "Instant Input can reduce up to 2 frames of visual latency on emulators using Framebuffer Emulation. @1FFF1F--Enabling this is recommended for most players!\n"
+        "@------9F(This option is disabled by default just in case, as it will cause severe rendering issues with the wrong setup).@--------",
+        .options = sInstantInputOptions,
+        .numOptions = ARRAY_COUNT(sInstantInputOptions),
+        .getConfig = chaos_settings_get_instant_input,
+        .setConfig = chaos_settings_set_instant_input,
+    },
+    {
         .display = "Harsh Visuals Settings",
         .shortName = "Harsh Visuals",
-        .description = "Turn off some patch effects that may cause flashing, flickering lights, or are prone to motion sickness.",
+        .description = "Turn off some patch effects that may contain flashing, flickering lights, or are prone to motion sickness. Recommended for highly sensitive individuals, but will reduce overall patch variety.",
         .options = sVisualsOptions,
         .numOptions = ARRAY_COUNT(sVisualsOptions),
         .getConfig = chaos_settings_get_harsh_visuals,
@@ -203,15 +232,15 @@ void render_settings_categories() {
     s32 index = gChaosSettingsMenu.index;
 
     create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_PUSH, gChaosSettingsMenu.catX, SETTINGS_TOP_Y, 0);
-    Gfx *catBg = menu_create_chaos_text_bg(SETTINGS_CAT_X, SETTINGS_TOP_Y, 188, 92, 217);
+    Gfx *catBg = menu_create_chaos_text_bg(SETTINGS_CAT_X, SETTINGS_TOP_Y, 196, 108, 217);
     gSPDisplayList(gDisplayListHead++, catBg);
 
-    s32 yPos = 8;
+    s32 yPos = 16;
     Gfx *catCursor = menu_create_cursor(-80, yPos - (15 * index) + 9, 0.5f, 0xFF, 0xFF, 0xFF, 0xFF);
     gSPDisplayList(gDisplayListHead++, catCursor);
     
     slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_SMALL_BOLD);
-    slowtext_draw_ortho_text(&gDisplayListHead, 0, 26, "Settings", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(&gDisplayListHead, 0, 34, "Settings", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
     slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_SMALL_THIN);
     
     for(int i = 0; i < ARRAY_COUNT(gSettingsOptions); i++) {
@@ -235,10 +264,10 @@ void render_settings_options() {
     }
 
     create_dl_translation_matrix(&gDisplayListHead, MENU_MTX_PUSH, gChaosSettingsMenu.optX, SETTINGS_TOP_Y, 0);
-    Gfx *optBg = menu_create_chaos_text_bg(SETTINGS_OPT_X, SETTINGS_TOP_Y, 90, 92, 217);
+    Gfx *optBg = menu_create_chaos_text_bg(SETTINGS_OPT_X, SETTINGS_TOP_Y, 90, 108, 217);
     gSPDisplayList(gDisplayListHead++, optBg);
 
-    s32 yPos = (s32)((selCat->numOptions - 1) * 7.5f) - 8;
+    s32 yPos = (s32)((selCat->numOptions - 1) * 7.5f) - 0;
 
     if(gChaosSettingsMenu.menu.menuState == CHAOS_SETTINGS_STATE_SUB_MENU) {
         Gfx *optCursor = menu_create_cursor(-35, yPos - (15 * subIndex) + 9, 0.5f, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -246,7 +275,7 @@ void render_settings_options() {
     }
 
     slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_SMALL_BOLD);
-    slowtext_draw_ortho_text(&gDisplayListHead, 0, 26, selCat->shortName, FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
+    slowtext_draw_ortho_text(&gDisplayListHead, 0, 34, selCat->shortName, FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
     slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_SMALL_THIN);
     for(int i = 0; i < selCat->numOptions; i++) {
         u8 col = (i == savedIndex) ? 0xFF : 0x7F;
@@ -279,7 +308,7 @@ void render_settings_description() {
     Main rendering function for the settings menu
 */
 void render_settings_menu() {
-    shade_screen();
+    shade_screen(&gDisplayListHead);
     squish_ui(&gDisplayListHead);
     render_settings_categories();
     render_settings_options();
@@ -375,9 +404,9 @@ s32 chaos_settings_anim_disappear() {
             play_sound(SOUND_MENU_MESSAGE_DISAPPEAR, gGlobalSoundSource);
         }
 
-        gChaosSettingsMenu.descY = menu_anim_s32(prog, MENU_EASE_OUT, SETTINGS_DESC_Y, SETTINGS_DESC_Y_START);
-        gChaosSettingsMenu.catX = menu_anim_s32(prog, MENU_EASE_OUT, SETTINGS_CAT_X, SETTINGS_CAT_X_START);
-        gChaosSettingsMenu.optX = menu_anim_s32(prog, MENU_EASE_OUT, SETTINGS_OPT_X, SETTINGS_OPT_X_START);
+        gChaosSettingsMenu.descY = menu_anim_s32(prog, MENU_EASE_IN, SETTINGS_DESC_Y, SETTINGS_DESC_Y_START);
+        gChaosSettingsMenu.catX = menu_anim_s32(prog, MENU_EASE_IN, SETTINGS_CAT_X, SETTINGS_CAT_X_START);
+        gChaosSettingsMenu.optX = menu_anim_s32(prog, MENU_EASE_IN, SETTINGS_OPT_X, SETTINGS_OPT_X_START);
     } else {
         gChaosSettingsMenu.menu.flags &= ~CHAOS_SETTINGS_ACTIVE;
         gChaosSettingsMenu.menu.animFrames = MENU_ANIM_LOOP;

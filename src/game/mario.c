@@ -31,6 +31,7 @@
 #include "object_helpers.h"
 #include "object_list_processor.h"
 #include "print.h"
+#include "rendering_graph_node.h"
 #include "save_file.h"
 #include "sound_init.h"
 #include "rumble_init.h"
@@ -932,6 +933,12 @@ static u32 set_mario_action_airborne(struct MarioState *m, u32 action, u32 actio
             break;
     }
 
+    // Check if Mario was already in the air (check old action not new action)
+    if (((m->action & ACT_GROUP_MASK) == ACT_GROUP_AIRBORNE) && (m->action & ACT_FLAG_AIR)) {
+        m->peakHeightNoCancel = MAX(m->pos[1], m->peakHeightNoCancel);
+    } else {
+        m->peakHeightNoCancel = m->pos[1];
+    }
     m->peakHeight = m->pos[1];
     m->flags |= MARIO_UNKNOWN_08;
 
@@ -1415,7 +1422,8 @@ void update_mario_button_inputs(struct MarioState *m) {
     }
 }
 
-static u8 hitDirections[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+// 8 directions, plus one for any angles we can't catch
+static u8 hitDirections[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 void clear_stick_history(void) {
     for (int i = 0; i < ARRAY_COUNT(hitDirections); i++) {
@@ -1423,55 +1431,59 @@ void clear_stick_history(void) {
     }
 }
 
+#define IS_CLOSE(val, target, range) (ABS((s32) (val) - (s32) (target)) < (s32) (range))
+#define SPIN_DEADZONE 50.0f
+#define SPIN_JUMP_ANGLE_THRESHOLD_DIRECT (0x9FF)
+#define SPIN_JUMP_ANGLE_THRESHOLD_ANGLED (0x9FF)
+#define NUM_DIRECTIONS_HIT_FOR_SPIN 5
+#define NUM_FRAMES_HELD_TO_CANCEL_SPIN 4
+#define NUM_FRAMES_HELD_TO_CANCEL_SPIN_IF_CAN_ALREADY_SPIN 15
 void update_stick_history(struct MarioState *m, f32 mag, s16 s_angle) {
-    #define SPIN_DEADZONE 50.0f
-    u8 is_close(int val, int target, int range) {
-        if (ABS(val - target) < range) {
-            return TRUE;
-        }
-        return FALSE;
-    }
-
     if (chaos_check_if_patch_active(CHAOS_PATCH_SUNSHINE_TWIRL)) {
         if (mag < SPIN_DEADZONE) {
+            // osSyncPrintf("no spin stick off\n");
             clear_stick_history();
             return;
         }
 
         u16 angle = (u32)s_angle & 0xFFFF;
 
-        if (is_close(angle, 0x0000, 10)) {
+        if (IS_CLOSE(angle, 0x0000, SPIN_JUMP_ANGLE_THRESHOLD_DIRECT)) {
             hitDirections[0] += 1;
         }
-        if (is_close(angle, 0x4000, 10)) {
+        else if (IS_CLOSE(angle, 0x4000, SPIN_JUMP_ANGLE_THRESHOLD_DIRECT)) {
             hitDirections[1] += 1;
         }
-        if (is_close(angle, 0x8000, 10)) {
+        else if (IS_CLOSE(angle, 0x8000, SPIN_JUMP_ANGLE_THRESHOLD_DIRECT)) {
             hitDirections[2] += 1;
         }
-        if (is_close(angle, 0xC000, 10)) {
+        else if (IS_CLOSE(angle, 0xC000, SPIN_JUMP_ANGLE_THRESHOLD_DIRECT)) {
             hitDirections[3] += 1;
         }
-        if (is_close(angle, 0x2000, 10)) {
+        else if (IS_CLOSE(angle, 0x2000, SPIN_JUMP_ANGLE_THRESHOLD_ANGLED)) {
             hitDirections[4] += 1;
         }
-        if (is_close(angle, 0x6000, 10)) {
+        else if (IS_CLOSE(angle, 0x6000, SPIN_JUMP_ANGLE_THRESHOLD_ANGLED)) {
             hitDirections[5] += 1;
         }
-        if (is_close(angle, 0xA000, 10)) {
+        else if (IS_CLOSE(angle, 0xA000, SPIN_JUMP_ANGLE_THRESHOLD_ANGLED)) {
             hitDirections[6] += 1;
         }
-        if (is_close(angle, 0xE000, 10)) {
+        else if (IS_CLOSE(angle, 0xE000, SPIN_JUMP_ANGLE_THRESHOLD_ANGLED)) {
             hitDirections[7] += 1;
+        } else {
+            hitDirections[8] += 1;
         }
 
         u32 streak = 0;
         u32 min = 999;
         u32 max = 0;
+        // osSyncPrintf("STICK: [");
         for (int i = 0; i < ARRAY_COUNT(hitDirections); i++) {
             if (hitDirections[i] > 0) {
                 streak++;
             }
+            // osSyncPrintf("%d ", hitDirections[i]);
 
             // Prevent stale spin states
             if (hitDirections[i] < min) {
@@ -1481,29 +1493,41 @@ void update_stick_history(struct MarioState *m, f32 mag, s16 s_angle) {
                 max = hitDirections[i];
             }
         }
+        // osSyncPrintf("] %d\n", m->canSpinJump);
         // give up spinjump if we hold W for too long
-        if (max - min > 4) {
+        u32 threshold = m->canSpinJump ? NUM_FRAMES_HELD_TO_CANCEL_SPIN_IF_CAN_ALREADY_SPIN
+                                       : NUM_FRAMES_HELD_TO_CANCEL_SPIN;
+        if ((max - min) >= threshold) {
             // ... unless we're airborne
             if (!(m->action & ACT_FLAG_AIR)) {
+                // osSyncPrintf("no spin too w\n");
                 clear_stick_history();
+                m->canSpinJump = 0;
+                streak = 0;
             }
         }
 
-        if (streak > 5) {
+        if (streak >= NUM_DIRECTIONS_HIT_FOR_SPIN) {
             m->canSpinJump = 1;
-        } else {
-            m->canSpinJump = 0;
         }
     } else {
         m->canSpinJump = 0;
     }
 }
+#undef NUM_FRAMES_HELD_TO_CANCEL_SPIN_IF_CAN_ALREADY_SPIN
+#undef NUM_FRAMES_HELD_TO_CANCEL_SPIN
+#undef NUM_DIRECTIONS_HIT_FOR_SPIN
+#undef SPIN_JUMP_ANGLE_THRESHOLD_ANGLED
+#undef SPIN_JUMP_ANGLE_THRESHOLD_DIRECT
+#undef SPIN_DEADZONE
+#undef IS_CLOSE
 
 s32 make_mario_spin_jump(struct MarioState *m) {
     m->canSpinJump = 0;
     m->faceAngle[1] = atan2s(-m->controller->stickY, m->controller->stickX) + m->area->camera->yaw;
     clear_stick_history();
-    return set_mario_action(m, ACT_SPIN_JUMP, 0);
+    set_mario_action(m, ACT_SPIN_JUMP, 0);
+    return TRUE;
 }
 
 /**
@@ -1528,14 +1552,14 @@ void update_mario_joystick_inputs(struct MarioState *m) {
 
     update_stick_history(m, mag, atan2s(-controller->stickY, controller->stickX));
 
-    // CHAOS_PATCH_64DS_MOMENTUM:
-    //  - Never allow yaw correction in midair
-    //    - This has the secondary effect of making all corrective movements
-    //      move the player _faster_ in their direction of travel >:)
-    if (chaos_check_if_patch_active(CHAOS_PATCH_64DS_MOMENTUM)) {
+    // CHAOS_PATCH_REFRIGERATOR_MOVEMENT:
+    //  - Never allow yaw or momentum correction in midair
+    if (chaos_check_if_patch_active(CHAOS_PATCH_REFRIGERATOR_MOVEMENT)) {
         if (m->action & ACT_FLAG_AIR) {
+            m->intendedMag = m->storedMag;
             m->intendedYaw = m->storedYaw;
         } else {
+            m->storedMag = m->intendedMag;
             m->storedYaw = m->intendedYaw;
         }
     }
@@ -2047,6 +2071,9 @@ s32 execute_mario_action(UNUSED struct Object *o) {
 
             gMarioState->controller->stickX = adjustedX;
             gMarioState->controller->stickY = adjustedY;
+        }
+        if (isGameFlipped) {
+            gMarioState->controller->stickX *= -1.0f;
         }
         if (chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_STICK_X)) {
             gMarioState->controller->stickX *= -1.0f;

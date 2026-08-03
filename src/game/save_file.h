@@ -127,6 +127,7 @@ struct MainMenuSaveData {
     u8 wideMode: 2;
 #endif
     u8 disableHarshVisuals: 1;
+    u8 instantInput : 1;
 
     u8 __PADDING[11];
 
@@ -206,7 +207,7 @@ void save_file_erase(s32 fileIndex);
 BAD_RETURN(s32) save_file_copy(s32 srcFileIndex, s32 destFileIndex);
 void save_file_load_all(void);
 void save_file_reload(void);
-void save_file_collect_star_or_key(s16 coinScore, s16 starIndex);
+void save_file_collect_star_or_key(s16 coinScore, s16 starIndex, u32 *previousSaveFlags);
 s32 save_file_exists(s32 fileIndex);
 u32 save_file_get_max_coin_score(s32 courseIndex);
 s32 save_file_get_course_star_count(s32 fileIndex, s32 courseIndex);
@@ -248,6 +249,8 @@ void save_file_update_hardcore_score();
 void disable_warp_checkpoint(void);
 void check_if_should_set_warp_checkpoint(struct WarpNode *warpNode);
 s32 check_warp_checkpoint(struct WarpNode *warpNode);
+void save_file_set_instant_input_active(u8 active);
+u32 save_file_check_instant_input_active(void);
 u16 save_file_get_rng_seed(void);
 void save_file_update_rng_seed(u16 seed);
 

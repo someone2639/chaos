@@ -41,9 +41,6 @@
 #include "patch_selection_ui.h"
 #include "game/chaos/patch_behaviors/pbhv_cosmic_clones.h"
 
-// Emulators that the Instant Input patch should not be applied to
-#define INSTANT_INPUT_BLACKLIST (EMU_CONSOLE | EMU_WIIVC | EMU_ARES | EMU_SIMPLE64 | EMU_CEN64)
-
 // First 3 controller slots
 struct Controller gControllers[3];
 
@@ -58,6 +55,7 @@ OSContStatus gControllerStatuses[4];
 OSContPadEx gControllerPads[4];
 u8 gControllerBits;
 u8 gBorderHeight;
+u8 gAllowInstantInput = FALSE;
 #ifdef EEP
 s8 gEepromProbe;
 #endif
@@ -212,7 +210,7 @@ void clear_framebuffer(s32 color) {
     gDPSetFillColor(gDisplayListHead++, color);
     gDPFillRectangle(gDisplayListHead++,
                      GFX_DIMENSIONS_RECT_FROM_LEFT_EDGE(0), gBorderHeight,
-                     GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(0) - 1, SCREEN_HEIGHT - gBorderHeight - 1);
+                     GFX_DIMENSIONS_RECT_FROM_RIGHT_EDGE(0), SCREEN_HEIGHT - gBorderHeight);
 
     gDPPipeSync(gDisplayListHead++);
 
@@ -440,7 +438,7 @@ void render_init(void) {
     // Skip incrementing the initial framebuffer index on emulators so that they display immediately as the Gfx task finishes
     // VC probably emulates osViSwapBuffer accurately so instant patch breaks VC compatibility
     // Currently, Ares and Simple64 have issues with single buffering so disable it there as well.
-    if (gEmulator & INSTANT_INPUT_BLACKLIST) {
+    if (!(gAllowInstantInput && save_file_check_instant_input_active())) {
         sRenderingFramebuffer++;
     }
     gGlobalTimer++;
@@ -572,11 +570,11 @@ void display() {
 void display_and_vsync(void) {
     display();
     // Skip swapping buffers on inaccurate emulators other than VC so that they display immediately as the Gfx task finishes
-    if (gEmulator & INSTANT_INPUT_BLACKLIST) {
-        if (++sRenderedFramebuffer == 3) {
+    if (!(gAllowInstantInput && save_file_check_instant_input_active())) {
+        if (++sRenderedFramebuffer >= 3) {
             sRenderedFramebuffer = 0;
         }
-        if (++sRenderingFramebuffer == 3) {
+        if (++sRenderingFramebuffer >= 3) {
             sRenderingFramebuffer = 0;
         }
     }
@@ -653,10 +651,49 @@ void adjust_analog_stick(struct Controller *controller) {
         controller->stickY *= 64 / controller->stickMag;
         controller->stickMag = 64;
     }
+}
 
-    if (isGameFlipped) {
-        controller->stickX *= -1;
+/**
+ * Swap the C buttons with the analog stick
+ */
+void swap_stick_with_c_buttons(struct Controller *controller) {
+#define PRESS_THRESHOLD 54
+#define PRESS_MAX 80
+
+    u16 buttons = (controller->controllerData->button & C_BUTTONS);
+    controller->controllerData->button &= ~C_BUTTONS;
+
+    if (controller->controllerData->stick_x <= -PRESS_THRESHOLD) {
+        controller->controllerData->button |= L_CBUTTONS;
     }
+    if (controller->controllerData->stick_x >= PRESS_THRESHOLD) {
+        controller->controllerData->button |= R_CBUTTONS;
+    }
+    if (controller->controllerData->stick_y <= -PRESS_THRESHOLD) {
+        controller->controllerData->button |= D_CBUTTONS;
+    }
+    if (controller->controllerData->stick_y >= PRESS_THRESHOLD) {
+        controller->controllerData->button |= U_CBUTTONS;
+    }
+
+    controller->controllerData->stick_x = 0;
+    controller->controllerData->stick_y = 0;
+
+    if (buttons & L_CBUTTONS) {
+        controller->controllerData->stick_x -= PRESS_MAX;
+    }
+    if (buttons & R_CBUTTONS) {
+        controller->controllerData->stick_x += PRESS_MAX;
+    }
+    if (buttons & D_CBUTTONS) {
+        controller->controllerData->stick_y -= PRESS_MAX;
+    }
+    if (buttons & U_CBUTTONS) {
+        controller->controllerData->stick_y += PRESS_MAX;
+    }
+
+#undef PRESS_MAX
+#undef PRESS_THRESHOLD
 }
 
 /**
@@ -773,6 +810,10 @@ void read_controller_inputs(void) {
 
                 controller->controllerData->button &= ~(Z_TRIG | R_TRIG | A_BUTTON | B_BUTTON);
                 controller->controllerData->button |= newButtons;
+            }
+
+            if (chaos_check_if_patch_active(CHAOS_PATCH_SWAPPED_C_STICK)) {
+                swap_stick_with_c_buttons(controller);
             }
 
             if (chaos_check_if_patch_active(CHAOS_PATCH_BUTTON_BROKEN_A)) {

@@ -16,8 +16,6 @@
 #include "game/patch_selection_ui.h"
 #include "game/ingame_menu.h"
 
-#define NUM_STARS 120
-
 struct StarFlagsWithID {
     u32 flag;
     s32 id;
@@ -402,7 +400,7 @@ void add_uncollected_star(void) {
 void remove_collected_star(void) {
     s32 totalStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
     if (totalStars == 0) {
-        // This is now possible with gambling wheel (left alone to ensure there is always a catastrophe possibility)
+        // This is now possible with tetris and gambling wheel (left alone to ensure there is always a catastrophe possibility)
         // assert(FALSE, "remove_collected_star:\nTried to remove collected star with 0 stars!");
         return;
     }
@@ -570,6 +568,7 @@ void chs_act_get_key_1(void) {
 
 void chs_deact_get_key_1(void) {
     save_file_clear_flags(SAVE_FLAG_HAVE_KEY_1);
+    save_file_clear_flags(SAVE_FLAG_UNLOCKED_BASEMENT_DOOR);
 }
 
 u8 chs_cond_get_key_1(void) {
@@ -582,6 +581,7 @@ void chs_act_get_key_2(void) {
 
 void chs_deact_get_key_2(void) {
     save_file_clear_flags(SAVE_FLAG_HAVE_KEY_2);
+    save_file_clear_flags(SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR);
 }
 
 u8 chs_cond_get_key_2(void) {

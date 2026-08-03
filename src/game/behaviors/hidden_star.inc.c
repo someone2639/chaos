@@ -31,9 +31,16 @@ void bhv_hidden_star_loop(void) {
     }
 }
 
-// TODO: Tie secrets to coins in BoB to make coin magnet and coins doubling in size patches less impossible
+void bhv_hidden_star_trigger_init(void) {
+    f32 dist;
+    struct Object *obj = cur_obj_find_nearest_object_with_behavior(bhvYellowCoin, &dist);
+    if (obj && obj->parentObj == obj && dist < 50.0f) {
+        obj->parentObj = o;
+    }
+}
+
 void bhv_hidden_star_trigger_loop(void) {
-    if (obj_check_if_collided_with_object(o, gMarioObject) == TRUE) {
+    if (o->oHiddenStarCoinCollected || obj_check_if_collided_with_object(o, gMarioObject) == TRUE) {
         struct Object *hiddenStar = cur_obj_nearest_object_with_behavior(bhvHiddenStar);
 
         if (hiddenStar != NULL) {

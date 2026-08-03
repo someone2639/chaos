@@ -24,6 +24,8 @@
 #include "save_file.h"
 #include "skybox.h"
 #include "sound_init.h"
+#include "game/chaos/chaos_patch_behaviors.h"
+#include "actors/group0.h"
 
 #define TOAD_STAR_1_REQUIREMENT 12
 #define TOAD_STAR_2_REQUIREMENT 25
@@ -56,7 +58,7 @@ enum UnlockDoorStarStates {
  * The eye texture on succesive frames of Mario's blink animation.
  * He intentionally blinks twice each time.
  */
-static s8 gMarioBlinkAnimation[7] = { 1, 2, 1, 0, 1, 2, 1 };
+static s8 gMarioBlinkAnimation[] = { 1, 2, 1, 0, 1, 2, 1 };
 
 /**
  * The scale values per frame for Mario's foot/hand for his attack animation
@@ -368,7 +370,7 @@ Gfx *geo_switch_mario_eyes(s32 callContext, struct GraphNode *node, UNUSED Mat4 
     if (callContext == GEO_CONTEXT_RENDER) {
         if (bodyState->eyeState == 0) {
             blinkFrame = ((switchCase->numCases * 32 + gAreaUpdateCounter) >> 1) & 0x1F;
-            if (blinkFrame < 7) {
+            if (blinkFrame < ARRAY_COUNT(gMarioBlinkAnimation) && !chaos_check_if_patch_active(CHAOS_PATCH_POSER)) {
                 switchCase->selectedCase = gMarioBlinkAnimation[blinkFrame];
             } else {
                 switchCase->selectedCase = 0;
@@ -486,8 +488,13 @@ Gfx *geo_mario_hand_foot_scaler(s32 callContext, struct GraphNode *node, UNUSED 
                 bodyState->punchState -= 1;
                 sMarioAttackAnimCounter = gAreaUpdateCounter;
             }
+
+            s32 punchState = bodyState->punchState & 0x3F;
+            if (punchState > 0 && chaos_check_if_patch_active(CHAOS_PATCH_POSER)) {
+                punchState = 3;
+            }
             scaleNode->scale =
-                gMarioAttackScaleAnimation[asGenerated->parameter * 6 + (bodyState->punchState & 0x3F)]
+                gMarioAttackScaleAnimation[asGenerated->parameter * 6 + punchState]
                 / 10.0f;
         }
     }
@@ -514,12 +521,27 @@ Gfx *geo_switch_chaos_mario_invisible(s32 callContext, struct GraphNode *node, U
     struct GraphNodeSwitchCase *switchCase = (struct GraphNodeSwitchCase *) node;
 
     if (callContext == GEO_CONTEXT_RENDER) {
-        if (chaos_check_if_patch_active(CHAOS_PATCH_MARIO_INVISIBLE)) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_MARIO_INVISIBLE) || chaos_check_if_patch_active(CHAOS_PATCH_POSER)) {
             switchCase->selectedCase = 1;
         } else {
             switchCase->selectedCase = 0;
         }
     }
+    return NULL;
+}
+
+/**
+ * Check whether Mario is allowed to display a held object
+ */
+Gfx *geo_allow_display_held_obj_poser(UNUSED s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
+    struct GraphNodeGenerated *currentGraphNode = (struct GraphNodeGenerated *) node;
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_POSER)) {
+        gRenderHeldObject = (currentGraphNode->parameter == FALSE) ? FALSE : TRUE;
+    } else {
+        gRenderHeldObject = TRUE;
+    }
+
     return NULL;
 }
 
@@ -678,4 +700,43 @@ Gfx *geo_mirror_mario_backface_culling(s32 callContext, struct GraphNode *node, 
         asGenerated->fnNode.node.flags = (asGenerated->fnNode.node.flags & 0xFF) | (LAYER_OPAQUE << 8);
     }
     return gfx;
+}
+
+Lights1 luigi_overalls_lights = gdSPDefLights1(
+	0x5, 0x3, 0x3E,
+	0x13, 0xC, 0x83, 0x49, 0x49, 0x49
+);
+
+Lights1 luigi_hat_lights = gdSPDefLights1(
+	0x0, 0x56, 0x0,
+	0x0, 0xB0, 0x0, 0x49, 0x49, 0x49
+);
+
+Lights1 mario_overalls_lights = gdSPDefLights1(
+    0x00, 0x00, 0x7f,
+    0x00, 0x00, 0xff, 0x28, 0x28, 0x28
+);
+
+Lights1 mario_hat_lights = gdSPDefLights1(
+    0x7f, 0x00, 0x00,
+    0xff, 0x00, 0x00, 0x28, 0x28, 0x28
+);
+
+Gfx *geo_set_mario_lights(s32 callContext, UNUSED struct GraphNode *node, UNUSED Mat4 *c) {
+    if (callContext == GEO_CONTEXT_RENDER) {
+        Lights1 *overallLights = (Lights1*)segmented_to_virtual(&mario_blue_lights_group);
+        Lights1 *hatLights = (Lights1*)segmented_to_virtual(&mario_red_lights_group);
+        if(chaos_check_if_patch_active(CHAOS_PATCH_MARIO_RAINBOW)) {
+            *overallLights = gRainbowOverallLights;
+            *hatLights = gRainbowHatLights;
+        } else if (chaos_check_if_patch_active(CHAOS_PATCH_LUIGI)) {
+            *overallLights = luigi_overalls_lights;
+            *hatLights = luigi_hat_lights;
+        } else {
+            *overallLights = mario_overalls_lights;
+            *hatLights = mario_hat_lights;
+        }
+    }
+    
+    return NULL;
 }

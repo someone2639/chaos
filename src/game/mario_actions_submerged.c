@@ -173,7 +173,10 @@ static u32 perform_water_step(struct MarioState *m) {
 
     vec3f_copy(step, m->vel);
 
-    if (m->action & ACT_FLAG_SWIMMING) {
+    if (m->action & ACT_FLAG_SWIMMING
+                && m->action != ACT_GROUND_POUND_WATER
+                && m->action != ACT_GROUND_POUND_LAND_WATER
+    ) {
         apply_water_current(m, step);
     }
 
@@ -1132,6 +1135,7 @@ s32 act_ground_pound_water(struct MarioState *m) {
             if (m->pos[1] + yOffset + (160.0f * m->size) < m->ceilHeight) {
                 m->pos[1] += yOffset;
                 m->peakHeight = m->pos[1];
+                m->peakHeightNoCancel = m->pos[1];
                 vec3f_copy(m->marioObj->header.gfx.pos, m->pos);
             }
         }
@@ -1155,7 +1159,8 @@ s32 act_ground_pound_water(struct MarioState *m) {
 
         stepResult = perform_water_step(m);
         if (stepResult == WATER_STEP_HIT_FLOOR) {
-            play_mario_heavy_landing_sound(m, SOUND_ACTION_TERRAIN_HEAVY_LANDING_0);
+            play_mario_heavy_landing_sound(m, SOUND_ACTION_TERRAIN_HEAVY_LANDING_0_HPR);
+            m->particleFlags |= PARTICLE_MIST_CIRCLE | PARTICLE_HORIZONTAL_STAR;
             set_mario_action(m, ACT_GROUND_POUND_LAND_WATER, 0);
             set_camera_shake_from_hit(SHAKE_GROUND_POUND);
         } else if (stepResult == WATER_STEP_HIT_WALL) {
@@ -1168,6 +1173,7 @@ s32 act_ground_pound_water(struct MarioState *m) {
             m->bonkKill = TRUE;
             set_mario_action(m, ACT_BACKWARD_WATER_KB, 0);
         } else {
+            mario_set_forward_vel(m, 0.0f);
             m->vel[1] += 3.0f;
             if (m->vel[1] > 0) {
                 m->vel[1] = 0;
@@ -1416,7 +1422,7 @@ static s32 act_metal_water_jump(struct MarioState *m) {
     play_metal_water_jumping_sound(m, FALSE);
     set_mario_animation(m, MARIO_ANIM_SINGLE_JUMP);
 
-    switch (perform_air_step(m, 0)) {
+    switch (perform_air_step(m, 0, FALSE)) {
         case AIR_STEP_LANDED:
             set_mario_action(m, ACT_METAL_WATER_JUMP_LAND, 0);
             break;
@@ -1445,7 +1451,7 @@ static s32 act_hold_metal_water_jump(struct MarioState *m) {
     play_metal_water_jumping_sound(m, FALSE);
     set_mario_animation(m, MARIO_ANIM_JUMP_WITH_LIGHT_OBJ);
 
-    switch (perform_air_step(m, 0)) {
+    switch (perform_air_step(m, 0, FALSE)) {
         case AIR_STEP_LANDED:
             set_mario_action(m, ACT_HOLD_METAL_WATER_JUMP_LAND, 0);
             break;

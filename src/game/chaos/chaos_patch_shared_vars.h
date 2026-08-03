@@ -10,13 +10,14 @@
  * Lives Modifiers *
  *******************/
 
- #define LIFETIME_SALE_COIN_REQ 50
+#define LIFETIME_SALE_COIN_REQ 50
 
 /***********************
  * Star/Save Modifiers *
  ***********************/
 
- #define HIGH_ROLLER_COIN_REQ 60
+#define NUM_STARS 120
+#define HIGH_ROLLER_COIN_REQ 60
 
 /*******************
  * Random Griefing *
@@ -26,6 +27,15 @@
 #define BLIND_TIME_MAX    (30 * 60 * 4) // 3 minutes max without blindness
 #define BLIND_TIME_END    (BLIND_TIME_MAX + (30 * 5)) // BLIND_TIME_MAX + 5 seconds
 #define BLIND_TIME_BUFFER (30 * 60 * 1) // At least 60 seconds of relief
+
+// Invisible Wall Fun
+#define QSTEP_RANDOM_INVISWALL_CHANCE 0x800
+
+/**************
+ * Time Limit *
+ **************/
+ 
+#define CHS_TIME_LIMIT (3 * 60 * 30)
 
 /*********
  * Misc. *

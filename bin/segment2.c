@@ -3640,6 +3640,55 @@ Gfx patch_bg_s_mesh_s_mesh[] = {
 	gsSPEndDisplayList(),
 };
 
+Vtx patch_reroll_mesh_re_mesh_vtx_0[4] = {
+	{{ {-40, 15, 0}, 0, {3408, 865}, {255, 255, 255, 255} }},
+	{{ {-33, -15, 0}, 0, {3379, 3089}, {255, 255, 255, 255} }},
+	{{ {23, 15, 0}, 0, {8345, 1445}, {255, 255, 255, 255} }},
+	{{ {23, -15, 0}, 0, {7738, 3601}, {255, 255, 255, 255} }},
+};
+
+Vtx patch_reroll_mesh_re_mesh_vtx_1[8] = {
+	{{ {-35, -17, 0}, 0, {-179, 314}, {255, 255, 255, 255} }},
+	{{ {-33, -15, 0}, 0, {-108, 472}, {255, 255, 255, 255} }},
+	{{ {-40, 15, 0}, 0, {-102, 2086}, {255, 255, 255, 255} }},
+	{{ {25, -17, 0}, 0, {1462, 526}, {255, 255, 255, 255} }},
+	{{ {23, -15, 0}, 0, {1398, 663}, {255, 255, 255, 255} }},
+	{{ {25, 17, 0}, 0, {1670, 2606}, {255, 255, 255, 255} }},
+	{{ {23, 15, 0}, 0, {1574, 2397}, {255, 255, 255, 255} }},
+	{{ {-44, 17, 0}, 0, {-166, 2244}, {255, 255, 255, 255} }},
+};
+
+Gfx patch_reroll_mesh_re_mesh[] = {
+	gsSPClearGeometryMode(G_LIGHTING | G_SHADE | G_ZBUFFER),
+	gsDPPipeSync(),
+	gsDPSetCombineLERP(0, 0, 0, TEXEL0, 0, 0, 0, 1, 0, 0, 0, TEXEL0, 0, 0, 0, 1),
+	gsDPSetAlphaDither(G_AD_NOISE),
+	gsDPSetRenderMode(GBL_c1(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_MEM, G_BL_A_MEM) | GBL_c2(G_BL_CLR_IN, G_BL_A_IN, G_BL_CLR_MEM, G_BL_A_MEM), AA_EN | IM_RD | CVG_DST_CLAMP | ZMODE_OPA | ALPHA_CVG_SEL),
+	gsSPTexture(65535, 65535, 0, 0, 1),
+	gsDPSetTextureImage(G_IM_FMT_I, G_IM_SIZ_16b, 1, patch_bg_patch_bg_2_i4),
+	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
+	gsDPLoadBlock(7, 0, 0, 2047, 256),
+	gsDPSetTile(G_IM_FMT_I, G_IM_SIZ_4b, 8, 0, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 6, 0, G_TX_WRAP | G_TX_NOMIRROR, 7, 0),
+	gsDPSetTileSize(0, 0, 0, 508, 252),
+	gsSPVertex(patch_reroll_mesh_re_mesh_vtx_0 + 0, 4, 0),
+	gsSP2Triangles(0, 1, 2, 0, 1, 3, 2, 0),
+	gsDPPipeSync(),
+	gsDPSetCombineLERP(0, 0, 0, PRIMITIVE, 0, 0, 0, 1, 0, 0, 0, PRIMITIVE, 0, 0, 0, 1),
+	gsDPSetPrimColor(0, 0, 10, 255, 20, 255),
+	gsSPVertex(patch_reroll_mesh_re_mesh_vtx_1 + 0, 8, 0),
+	gsSP2Triangles(0, 1, 2, 0, 3, 1, 0, 0),
+	gsSP2Triangles(3, 4, 1, 0, 5, 4, 3, 0),
+	gsSP2Triangles(5, 6, 4, 0, 7, 6, 5, 0),
+	gsSP2Triangles(7, 2, 6, 0, 0, 2, 7, 0),
+	gsDPPipeSync(),
+	gsDPSetCombineLERP(0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT, 0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT),
+	gsSPTexture(65535, 65535, 0, 0, 0),
+	gsSPSetGeometryMode(G_LIGHTING | G_SHADE | G_ZBUFFER),
+	gsDPSetAlphaDither(G_AD_DISABLE),
+	gsDPSetRenderMode(G_RM_AA_ZB_OPA_SURF, G_RM_AA_ZB_OPA_SURF2),
+	gsSPEndDisplayList(),
+};
+
 Gfx patch_quality_bead_patch_quality_ia8_aligner[] = {gsSPEndDisplayList()};
 u8 patch_quality_bead_patch_quality_ia8[] = { 
 	#include "textures/segment2/patch_quality_custom.ia8.inc.c"
@@ -3997,6 +4046,13 @@ Gfx select_patch_text_event_3[] = {
 	gsSPEndDisplayList(),
 };
 
+Vtx button_mesh_vtx[4] = {
+	{{ {-8, -8, 0}, 0, {0, (16 << 5)}, {255, 255, 255, 255} }},
+	{{ {8, -8, 0}, 0, {(16 << 5), (16 << 5)}, {255, 255, 255, 255} }},
+	{{ {8, 8, 0}, 0, {(16 << 5), 0}, {255, 255, 255, 255} }},
+	{{ {-8, 8, 0}, 0, {0, 0}, {255, 255, 255, 255} }},
+};
+
 ALIGNED8 u8 texture_icon_a_button[] = {
 #include "textures/segment2/a_button_custom.rgba16.inc.c"
 };
@@ -4093,7 +4149,7 @@ Gfx dvd_logo[] = {
 	gsDPPipeSync(),
 	gsDPSetCombineLERP(PRIMITIVE, 0, TEXEL0, 0, 0, 0, 0, TEXEL0, PRIMITIVE, 0, TEXEL0, 0, 0, 0, 0, TEXEL0),
 	gsDPSetAlphaDither(G_AD_NOISE),
-	gsDPSetRenderMode(G_RM_AA_ZB_XLU_SURF, G_RM_AA_ZB_XLU_SURF2),
+	gsDPSetRenderMode(G_RM_AA_XLU_SURF, G_RM_AA_XLU_SURF2),
 	gsSPTexture(65535, 65535, 0, 0, 1),
 	gsDPSetTextureImage(G_IM_FMT_IA, G_IM_SIZ_8b_LOAD_BLOCK, 1, texture_dvd_logo),
 	gsDPSetTile(G_IM_FMT_IA, G_IM_SIZ_8b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
@@ -4103,8 +4159,9 @@ Gfx dvd_logo[] = {
 	gsSPVertex(dvd_logo_vtx + 0, 4, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
 	gsDPPipeSync(),
+    gsDPSetRenderMode(G_RM_AA_ZB_OPA_SURF, G_RM_AA_ZB_OPA_SURF2),
     gsDPSetPrimColor(0, 0, 255, 255, 255, 255),
-	gsDPSetCombineLERP(0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT, 0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT),
+    gsDPSetCombineMode(G_CC_SHADE, G_CC_SHADE),
 	gsSPTexture(65535, 65535, 0, 0, 0),
 	gsSPSetGeometryMode(G_SHADE | G_LIGHTING),
 	gsDPSetAlphaDither(G_AD_DISABLE),
@@ -4257,4 +4314,52 @@ Gfx coin_flip_coin_mesh[] = {
 	gsSPSetGeometryMode(G_ZBUFFER),
 	gsDPSetAlphaDither(G_AD_DISABLE),
 	gsSPEndDisplayList(),
+};
+
+ALIGNED8 u8 wth_cave_rgba16[] = {
+	#include "textures/segment2/wth_cave.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_clock_rgba16[] = {
+	#include "textures/segment2/wth_clock.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_cloud_rgba16[] = {
+	#include "textures/segment2/wth_cloud.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_hot_rgba16[] = {
+	#include "textures/segment2/wth_hot.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_none_rgba16[] = {
+	#include "textures/segment2/wth_none.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_snow_rgba16[] = {
+	#include "textures/segment2/wth_snow.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_spooky_rgba16[] = {
+	#include "textures/segment2/wth_spooky.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_sun_rgba16[] = {
+	#include "textures/segment2/wth_sun.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wth_wet_rgba16[] = {
+	#include "textures/segment2/wth_wet.rgba16.inc.c"
+};
+
+ALIGNED8 u8 wow_health_meter_rgba16[] = {
+    #include "textures/segment2/wow_health_meter.rgba16.inc.c"
+};
+
+ALIGNED8 u8 breaking_news_rgba16[] = {
+    #include "textures/segment2/breaking_news.rgba16.inc.c"
+};
+
+ALIGNED8 u8 radar_bg_rgba16[] = {
+    #include "textures/segment2/radar_bg.rgba16.inc.c"
 };

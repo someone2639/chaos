@@ -58,7 +58,67 @@ enum SeqId {
     SEQ_CHAOSEVENT_SA_CASINO_PARADISE_1,  // 0x2D
     SEQ_CHAOSEVENT_SMB2_BONUS_MINIGAME,   // 0x2E
     SEQ_CHAOSEVENT_SMG2_WARP_PIPE_ROOM,   // 0x2F
-    SEQ_COUNT
+
+    SEQ_COUNT                             // 0x30
+};
+
+enum JSONSoundbankId {
+    JSON_SOUNDBANK_SFX_1,                                 // 0x00
+    JSON_SOUNDBANK_SFX_TERRAIN,                           // 0x01
+    JSON_SOUNDBANK_SFX_WATER,                             // 0x02
+    JSON_SOUNDBANK_SFX_4,                                 // 0x03
+    JSON_SOUNDBANK_SFX_5_0,                               // 0x04
+    JSON_SOUNDBANK_SFX_5_1,                               // 0x05
+    JSON_SOUNDBANK_SFX_6,                                 // 0x06
+    JSON_SOUNDBANK_SFX_7,                                 // 0x07
+    JSON_SOUNDBANK_SFX_MARIO,                             // 0x08
+    JSON_SOUNDBANK_SFX_9,                                 // 0x09
+    JSON_SOUNDBANK_SFX_MARIO_PEACH,                       // 0x0A
+
+    JSON_SOUNDBANK_SFX_COUNT,                             // 0x0B
+
+    JSON_SOUNDBANK_LEVEL_SNOW = JSON_SOUNDBANK_SFX_COUNT, // 0x0B
+    JSON_SOUNDBANK_EXTENDED_SOUNDBANK,                    // 0x0C
+    JSON_SOUNDBANK_LEVEL_SLIDE,                           // 0x0D
+    JSON_SOUNDBANK_INSIDE_CASTLE,                         // 0x0E
+    JSON_SOUNDBANK_LEVEL_HOT,                             // 0x0F
+    JSON_SOUNDBANK_LEVEL_SPOOKY,                          // 0x10
+    JSON_SOUNDBANK_MENU_TITLE_SCREEN,                     // 0x11
+    JSON_SOUNDBANK_LEVEL_BOSS_KOOPA,                      // 0x12
+    JSON_SOUNDBANK_LEVEL_WATER,                           // 0x13
+    JSON_SOUNDBANK_PIRANHA_MUSIC_BOX,                     // 0x14
+    JSON_SOUNDBANK_LEVEL_UNDERGROUND,                     // 0x15
+    JSON_SOUNDBANK_COURSE_START,                          // 0x16
+    JSON_SOUNDBANK_EVENT_POWERUP,                         // 0x17
+    JSON_SOUNDBANK_EVENT_METAL_CAP,                       // 0x18
+    JSON_SOUNDBANK_LEVEL_KOOPA_ROAD,                      // 0x19
+    JSON_SOUNDBANK_EVENT_RACE,                            // 0x1A
+    JSON_SOUNDBANK_EVENT_BOSS,                            // 0x1B
+    JSON_SOUNDBANK_ENDLESS_STAIRS,                        // 0x1C
+    JSON_SOUNDBANK_BOWSER_ORGAN,                          // 0x1D
+    JSON_SOUNDBANK_EVENT_PEACH_MESSAGE,                   // 0x1E
+    JSON_SOUNDBANK_EVENT_HIGH_SCORE,                      // 0x1F
+    JSON_SOUNDBANK_EVENT_TOAD_MESSAGE,                    // 0x20
+    JSON_SOUNDBANK_EVENT_MERRY_GO_ROUND,                  // 0x21
+    JSON_SOUNDBANK_LEVEL_GRASS,                           // 0x22
+    JSON_SOUNDBANK_CUTSCENE_ENDING,                       // 0x23
+    JSON_SOUNDBANK_MENU_FILE_SELECT,                      // 0x24
+    JSON_SOUNDBANK_CUTSCENE_CREDITS,                      // 0x25
+    JSON_SOUNDBANK_CHAOSEVENT_MP1_CHANCE_TIME,            // 0x26
+    JSON_SOUNDBANK_CHAOSEVENT_RSE_GAME_CORNER,            // 0x27
+    JSON_SOUNDBANK_CHAOSEVENT_SMS_CASINO_DELFINO,         // 0x28
+    JSON_SOUNDBANK_CHAOSEVENT_YI_BONUS_MINIGAME,          // 0x29
+    JSON_SOUNDBANK_CHAOSEVENT_HGSS_GAME_CORNER,           // 0x2A
+    JSON_SOUNDBANK_CHAOSEVENT_SM3DW_WORLD_BOWSER,         // 0x2B
+    JSON_SOUNDBANK_CHAOSEVENT_DPPT_GAME_CORNER,           // 0x2C
+    JSON_SOUNDBANK_CHAOSEVENT_MKDS_WALUIGI_PINBALL,       // 0x2D
+    JSON_SOUNDBANK_CHAOSEVENT_MP3_GAME_GUY_MINIGAME,      // 0x2E
+    JSON_SOUNDBANK_CHAOSEVENT_OOT_SHOOTING_GALLERY,       // 0x2F
+    JSON_SOUNDBANK_CHAOSEVENT_SA_CASINO_PARADISE_1,       // 0x30
+    JSON_SOUNDBANK_CHAOSEVENT_SMB2_BONUS_MINIGAME,        // 0x31
+    JSON_SOUNDBANK_CHAOSEVENT_SMG2_WARP_PIPE_ROOM,        // 0x32
+
+    JSON_SOUNDBANK_COUNT                                  // 0x33
 };
 
 #endif // SEQ_IDS_H

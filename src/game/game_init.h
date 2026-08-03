@@ -11,7 +11,7 @@
 
 #define MAX_NUM_PLAYERS 2
 
-#define GFX_POOL_SIZE 16000 // Size of how large the master display list (gDisplayListHead) can be
+#define GFX_POOL_SIZE 24000 // Size of how large the master display list (gDisplayListHead) can be
 
 // NOTE: For some reason, checking something with index 13 and FBE_CHECK being set to 12 fails on some versions of GlideN64 (pain)
 // So apparently this value actually matters...???
@@ -48,6 +48,7 @@ extern u8 *gGfxPoolEnd;
 extern struct GfxPool *gGfxPool;
 extern u8 gControllerBits;
 extern u8 gBorderHeight;
+extern u8 gAllowInstantInput;
 #ifdef EEP
 extern s8 gEepromProbe;
 #endif
@@ -71,6 +72,7 @@ extern struct DmaHandlerList gDemoInputsBuf;
 extern u8 gMarioAnims[];
 extern u8 gDemoInputs[];
 
+extern u16 sRenderedFramebuffer;
 extern u16 sRenderingFramebuffer;
 extern u32 gGlobalTimer;
 

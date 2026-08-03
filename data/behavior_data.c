@@ -385,6 +385,15 @@ const BehaviorScript bhvCosmicClone[] = {
     END_LOOP(),
 };
 
+const BehaviorScript bhvPoser[] = {
+    BEGIN(OBJ_LIST_LEVEL),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    CALL_NATIVE(bhv_poser_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_poser_loop),
+    END_LOOP(),
+};
+
 const BehaviorScript bhvStarDoor[] = {
     BEGIN(OBJ_LIST_SURFACE),
     SET_INT(oInteractType, INTERACT_DOOR),
@@ -4798,6 +4807,7 @@ const BehaviorScript bhvHiddenStarTrigger[] = {
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
     SET_HITBOX(/*Radius*/ 100, /*Height*/ 100),
     SET_INT(oIntangibleTimer, 0),
+    CALL_NATIVE(bhv_hidden_star_trigger_init),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_hidden_star_trigger_loop),
     END_LOOP(),
@@ -5568,6 +5578,15 @@ const BehaviorScript bhvWaterBombSpawner[] = {
     DROP_TO_FLOOR(),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_water_bomb_spawner_update),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvWaterBombSpawnerChaos[] = {
+    BEGIN(OBJ_LIST_GENACTOR),
+    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    CALL_NATIVE(bhv_water_bomb_spawner_chaos_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_water_bomb_spawner_chaos_update),
     END_LOOP(),
 };
 

@@ -1,6 +1,7 @@
 #include <ultra64.h>
 #include <HVQM2File.h>
 #include "system.h"
+#include "game/debug.h"
 
 OSPiHandle *cartrom_hd;
 
@@ -45,6 +46,13 @@ s32 get_record(HVQM2Record *headerbuf, u16 type, void **stream) {
         }
         record_size = headerbuf->size;
         if (record_size == 0xFFFFFFFF) {
+            return -1;
+        }
+        if (record_type == HVQM2_VIDEO && record_size > HVQ_DATASIZE_MAX) {
+            assert_args(FALSE, "HVQM get_record:\nVideo record too large!");
+            return -1;
+        } else if (record_type == HVQM2_AUDIO && record_size > AUDIO_RECORD_SIZE_MAX) {
+            assert_args(FALSE, "HVQM get_record:\nAudio record too large!");
             return -1;
         }
         if (record_type == type)

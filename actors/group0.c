@@ -20,6 +20,8 @@
 
 #include "sparkle/model.inc.c"
 
+#include "water_bubble/model.inc.c"
+
 #include "water_splash/model.inc.c"
 
 #include "white_particle_small/model.inc.c"
@@ -37,3 +39,10 @@
 #include "kaizo_block/collision.inc.c"
 #include "kaizo_block/model.inc.c"
 #include "noclip_plane/collision.inc.c"
+
+#include "squint_room/model.inc.c"
+
+#include "squint_room_button/model.inc.c"
+#include "squint_room_stick/model.inc.c"
+#include "squintroom_dpad/model.inc.c"
+#include "squint_room_cart/model.inc.c"

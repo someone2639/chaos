@@ -57,6 +57,7 @@
 // 0x98 unused/removed.
 #define /*0x09C*/ oIntangibleTimer            OBJECT_FIELD_S32(0x05)
 #define /*0x0A0*/ O_POS_INDEX                 0x06
+#define /*0x0A0*/ oPosVec                     OBJECT_FIELD_F32(O_POS_INDEX)
 #define /*0x0A0*/ oPosX                       OBJECT_FIELD_F32(O_POS_INDEX + 0)
 #define /*0x0A4*/ oPosY                       OBJECT_FIELD_F32(O_POS_INDEX + 1)
 #define /*0x0A8*/ oPosZ                       OBJECT_FIELD_F32(O_POS_INDEX + 2)
@@ -924,6 +925,7 @@
 /* Hidden Star */
 // Secrets/Red Coins
 #define /*0x0F4*/ oHiddenStarTriggerCounter OBJECT_FIELD_S32(0x1B)
+#define /*0x0F8*/ oHiddenStarCoinCollected  OBJECT_FIELD_S32(0x1C)
 
 // Overall very difficult to determine usage, mostly stubbed code.
 /* Sparkle Spawn Star */

@@ -300,6 +300,67 @@ void menu_draw_button(Gfx **dl, s32 x, s32 y, s32 button, s32 pressed) {
     *dl = dlHead;
 }
 
+/*
+    Sets up to draw a button texture. Uses ortho tris.
+*/
+void menu_start_button_ortho(Gfx **dl) {
+    Gfx *dlHead = *dl;
+
+    gDPPipeSync(dlHead++);
+	gDPSetCycleType(dlHead++, G_CYC_1CYCLE);
+    gDPSetRenderMode(dlHead++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
+    gDPSetCombineMode(dlHead++, G_CC_DECALRGBA, G_CC_DECALRGBA);
+	gDPSetTexturePersp(dlHead++, G_TP_PERSP);
+	gDPSetAlphaCompare(dlHead++, G_AC_THRESHOLD);
+    gDPSetTextureFilter(dlHead++, G_TF_POINT);
+	gDPSetBlendColor(dlHead++, 255, 255, 255, 255);
+    gDPPipeSync(dlHead++);
+    gSPTexture(dlHead++, 65535, 65535, 0, 0, 1);
+
+    *dl = dlHead;
+}
+
+/*
+    Resets everything after drawing a button texture. Uses ortho tris.
+*/
+void menu_end_button_ortho(Gfx **dl) {
+    Gfx *dlHead = *dl;
+
+    gDPPipeSync(dlHead++);
+	gSPTexture(dlHead++, 65535, 65535, 0, G_TX_RENDERTILE, G_OFF);
+	gDPSetAlphaCompare(dlHead++, G_AC_NONE);
+
+    *dl = dlHead;
+}
+
+/*
+    Draws a button texture. Uses ortho tris.
+*/
+void menu_draw_button_ortho(Gfx **dl, s32 x, s32 y, s32 button, s32 pressed) {
+    Gfx *dlHead = *dl;
+
+    u8 *buttonTexture = (pressed) ? sButtonTextureTable[button].down : sButtonTextureTable[button].up;
+    buttonTexture = segmented_to_virtual(buttonTexture);
+
+    Mtx *transMtx = alloc_display_list(sizeof(Mtx));
+    guTranslate(transMtx, x, y, 0);
+    gSPMatrix(dlHead++, VIRTUAL_TO_PHYSICAL(transMtx),
+                G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+
+    gDPSetTextureImage(dlHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, buttonTexture);
+	gDPSetTile(dlHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0);
+	gDPLoadBlock(dlHead++, 7, 0, 0, 255, 512);
+	gDPSetTile(dlHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 4, 0, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 4, 0, G_TX_WRAP | G_TX_NOMIRROR, 4, 0);
+	gDPSetTileSize(dlHead++, 0, 0, 0, 60, 60);
+    gSPVertex(dlHead++, button_mesh_vtx + 0, 4, 0);
+	gSP2Triangles(dlHead++, 0, 1, 2, 0, 0, 2, 3, 0);
+    gDPPipeSync(dlHead++);
+
+    gSPPopMatrix(dlHead++, G_MTX_MODELVIEW);
+
+    *dl = dlHead;
+}
+
 void menu_apply_color_oscillation_to_string(char *dest, const char *src, const s32 oscillationFrames, const s32 color1[4], const s32 color2[4]) {
     const f32 colorPerc = (1.0f + sins((gGlobalTimer % oscillationFrames) * 0x10000 / oscillationFrames)) * 0.5f;
     char finalHexStr[8 + 1];
@@ -428,18 +489,20 @@ void menu_single_button_prompt(Gfx **dl, s32 x, s32 y, enum MenuButtonPrompt but
     menu_draw_button(&dlHead, x, y, button, pressed);
     menu_end_button(&dlHead);
 
-    s32 offset, align;
-    if(alignLeft) {
-        offset = 18;
-        align = FT_FLAG_ALIGN_LEFT;
-    } else {
-        offset = -2;
-        align = FT_FLAG_ALIGN_RIGHT;
-    }
+    if(text) {
+        s32 offset, align;
+        if(alignLeft) {
+            offset = 18;
+            align = FT_FLAG_ALIGN_LEFT;
+        } else {
+            offset = -2;
+            align = FT_FLAG_ALIGN_RIGHT;
+        }
 
-    fasttext_setup_textrect_rendering(&dlHead, FT_FONT_SMALL_THIN);
-    fasttext_draw_texrect(&dlHead, x + offset, y, text, align, 0xFF, 0xFF, 0xFF, 0xFF);
-    fasttext_finished_rendering(&dlHead);
+        fasttext_setup_textrect_rendering(&dlHead, FT_FONT_SMALL_THIN);
+        fasttext_draw_texrect(&dlHead, x + offset, y, text, align, 0xFF, 0xFF, 0xFF, 0xFF);
+        fasttext_finished_rendering(&dlHead);
+    }
 
     *dl = dlHead;
 }

@@ -13,6 +13,7 @@ extern struct GraphNodeObject *gCurGraphNodeObject;
 extern struct GraphNodeHeldObject *gCurGraphNodeHeldObject;
 extern u16 gAreaUpdateCounter;
 extern u8 isGameFlipped;
+extern u8 gRenderHeldObject;
 // after processing an object, the type is reset to this
 #define ANIM_TYPE_NONE                  0
 

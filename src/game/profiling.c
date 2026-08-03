@@ -4,6 +4,7 @@
 #include "game_init.h"
 #include "level_update.h"
 #include "ingame_menu.h"
+#include "object_list_processor.h"
 #include "camera.h"
 
 #include "profiling.h"
@@ -158,10 +159,6 @@ static void update_rdp_timers() {
     buffer_update(&all_profiling_data[PROFILER_TIME_PIPE], pipe, profile_buffer_index);
 }
 
-float profiler_get_fps() {
-    return (1000000.0f * PROFILING_BUFFER_SIZE) / (OS_CYCLES_TO_USEC(all_profiling_data[PROFILER_TIME_FPS].total));
-}
-
 u32 profiler_get_cpu_cycles() {
     u32 cpu_normal_time = all_profiling_data[PROFILER_TIME_TOTAL].total / PROFILING_BUFFER_SIZE;
     u32 cpu_audio_time = all_profiling_data[PROFILER_TIME_AUDIO].total / PROFILING_BUFFER_SIZE;
@@ -256,7 +253,7 @@ void profiler_print_times() {
             "RSP\t\t%d (%d%%)\n"
             " Gfx\t\t\t%d\n"
             " Audio\t\t\t%d\n",
-            1000000.0f / microseconds[PROFILER_TIME_FPS],
+            1000000.0f / MAX(microseconds[PROFILER_TIME_FPS], 1),
             total_cpu, total_cpu / 333, 
             microseconds[PROFILER_TIME_CONTROLLERS],
             microseconds[PROFILER_TIME_DYNAMIC],
@@ -283,7 +280,7 @@ void profiler_print_times() {
         text_buffer[0] = 0; // Effectively clear buffer
 
         // Very little point printing useless info if Mario doesn't even exist.
-        if (gMarioState->marioObj) {
+        if (gMarioObject) {
             sprintf(text_buffer,
                 "Mario Pos\n"
                 " X\t\t%d\n"

@@ -1,6 +1,7 @@
 #include <ultra64.h>
 
 #include "sm64.h"
+#include "buffers/framebuffers.h"
 #include "game_init.h"
 #include "main.h"
 #include "audio/external.h"
@@ -373,9 +374,10 @@ void save_file_load_all(void) {
  * Update the current save file after collecting a star or a key.
  * If coin score is greater than the current high score, update it.
  */
-void save_file_collect_star_or_key(s16 coinScore, s16 starIndex) {
+void save_file_collect_star_or_key(s16 coinScore, s16 starIndex, u32 *previousSaveFlags) {
     s32 fileIndex = gCurrSaveFileNum - 1;
     s32 courseIndex = COURSE_NUM_TO_INDEX(gCurrCourseNum);
+    s32 keyPatchIndex;
 
     s32 starFlag = 1 << starIndex;
     UNUSED s32 flags = save_file_get_flags();
@@ -405,12 +407,22 @@ void save_file_collect_star_or_key(s16 coinScore, s16 starIndex) {
 
     switch (gCurrLevelNum) {
         case LEVEL_BOWSER_1:
+            keyPatchIndex = chaos_find_first_active_patch(CHAOS_PATCH_GET_KEY_1, NULL);
+            if (keyPatchIndex >= 0) {
+                chaos_remove_expired_entry(keyPatchIndex, "%s: Expired!");
+                *previousSaveFlags = save_file_get_flags();
+            }
             if (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_1 | SAVE_FLAG_UNLOCKED_BASEMENT_DOOR))) {
                 save_file_set_flags(SAVE_FLAG_HAVE_KEY_1);
             }
             break;
 
         case LEVEL_BOWSER_2:
+            keyPatchIndex = chaos_find_first_active_patch(CHAOS_PATCH_GET_KEY_2, NULL);
+            if (keyPatchIndex >= 0) {
+                chaos_remove_expired_entry(keyPatchIndex, "%s: Expired!");
+                *previousSaveFlags = save_file_get_flags();
+            }
             if (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_2 | SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR))) {
                 save_file_set_flags(SAVE_FLAG_HAVE_KEY_2);
             }
@@ -756,6 +768,32 @@ s32 check_warp_checkpoint(struct WarpNode *warpNode) {
     return warpCheckpointActive;
 }
 
+void save_file_set_instant_input_active(u8 active) {
+    u8 changed;
+
+    if (active != FALSE) {
+        changed = (gSaveBuffer.menuData.instantInput == TRUE ? FALSE : TRUE);
+        gSaveBuffer.menuData.instantInput = TRUE;
+    } else {
+        changed = (gSaveBuffer.menuData.instantInput == FALSE ? FALSE : TRUE);
+        gSaveBuffer.menuData.instantInput = FALSE;
+    }
+
+    if (!changed) {
+        return;
+    }
+
+    gMainMenuDataModified = TRUE;
+    if (gAllowInstantInput && gSaveBuffer.menuData.instantInput) {
+        sRenderingFramebuffer = sRenderedFramebuffer;
+    } else {
+        sRenderingFramebuffer = (sRenderedFramebuffer + 1) % ARRAY_COUNT(gFramebuffers);
+    }
+}
+
+u32 save_file_check_instant_input_active(void) {
+    return gSaveBuffer.menuData.instantInput;
+}
 
 u16 save_file_get_rng_seed(void) {
     return gSaveBuffer.files[gCurrSaveFileNum - 1].rngSeed;
@@ -924,12 +962,13 @@ void save_file_update_best_clear() {
 /*
     Checks the current file against the saved best clear.
     Updates the best clear based on the following priority:
-        1. difficulty (impossible > hard > normal > easy)
-		2. game mode (hardcore > challenge > classic)
-		3. yellow stars (most)
-		4. blue stars (least)
-		5. deaths (fewest)
-		6. play time (lowest)
+		1. hardcore, non-easy game mode
+        2. difficulty (impossible > hard > normal > easy)
+		3. non-hardcore game mode (challenge > classic)
+		4. yellow stars (most)
+		5. blue stars (least)
+		6. deaths (fewest)
+		7. play time (lowest)
 
     In the unlikely event that all of the above are exactly equal, the older save will be prioritized.
 */
@@ -940,6 +979,12 @@ void save_file_check_best_clear() {
 
     // If the game hasn't been cleared yet, automatically update
     if(!scoreData->isBestClear) {
+        save_file_update_best_clear();
+        return;
+    }
+
+    // Check if hardcore game mode
+    if (saveFile->chaosGameMode == CHAOS_GAMEMODE_HARDCORE && saveFile->chaosGameMode > scoreData->bestGameMode && saveFile->chaosDifficulty > CHAOS_DIFFICULTY_EASY) {
         save_file_update_best_clear();
         return;
     }

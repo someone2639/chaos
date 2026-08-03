@@ -33,15 +33,17 @@ void chs_act_green_demon(void) {
         return;
     }
 
-    if(gCurrCourseNum != COURSE_NONE) {
-        spawn_object_abs_with_rot(gMarioState->marioObj, 0, MODEL_GREEN_DEMON, bhvGreenDemon,
+    if (gCurrCourseNum != COURSE_NONE && gCurrLevelNum != LEVEL_BOWSER_1 && gCurrLevelNum != LEVEL_BOWSER_2 && gCurrLevelNum != LEVEL_BOWSER_3) {
+        spawn_object_abs_with_rot(gMarioObject, 0, MODEL_GREEN_DEMON, bhvGreenDemon,
                             gMarioState->pos[0], gMarioState->pos[1], gMarioState->pos[2], 0, 0, 0);
     }
 }
 
 void chs_area_init_green_demon(void) {
-    spawn_object_abs_with_rot(gMarioState->marioObj, 0, MODEL_GREEN_DEMON, bhvGreenDemon,
-                            gMarioState->pos[0], gMarioState->pos[1], gMarioState->pos[2], 0, 0, 0);
+    if (gCurrCourseNum != COURSE_NONE && gCurrLevelNum != LEVEL_BOWSER_1 && gCurrLevelNum != LEVEL_BOWSER_2 && gCurrLevelNum != LEVEL_BOWSER_3) {
+        spawn_object_abs_with_rot(gMarioObject, 0, MODEL_GREEN_DEMON, bhvGreenDemon,
+                                gMarioState->pos[0], gMarioState->pos[1], gMarioState->pos[2], 0, 0, 0);
+    }
 }
 
 void chs_instwarp_pre_green_demon(UNUSED struct InstantWarp *warp) {
@@ -398,5 +400,29 @@ void chs_lvlupdate_spawn_on_shell(void) {
 
         set_mario_action(gMarioState, ACT_RIDING_SHELL_FALL, 0);
         this->frameTimer = 0xFFFFFF;
+    }
+}
+
+u8 chs_cond_water_bombs(void) {
+    return (chaos_count_active_instances(CHAOS_PATCH_WATER_BOMBS) < 3);
+}
+
+void chs_update_water_bombs(void) {
+    if (gCurrCourseNum == COURSE_NONE) {
+        return;
+    }
+
+    u32 objCount = count_objects_with_behavior(bhvWaterBombSpawnerChaos);
+    u32 patchCount = chaos_count_active_instances(CHAOS_PATCH_WATER_BOMBS);
+    if (objCount < patchCount) {
+        spawn_object_relative(0, 0, 0, 0, gMarioState->marioObj, MODEL_NONE, bhvWaterBombSpawnerChaos);
+    }
+    
+    while (objCount > patchCount) {
+        struct Object *obj = find_first_object_with_behavior(bhvWaterBombSpawnerChaos);
+        if (obj) {
+            obj_mark_for_deletion(obj);
+            objCount--;
+        }
     }
 }

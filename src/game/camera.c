@@ -1416,47 +1416,63 @@ s16 snap_to_45_degrees(s16 angle) {
     return angle;
 }
 
-#define MIN_CAMERA_DISTANCE 150.0f // Minimum distance between Mario and the camera.
-#define VERTICAL_RAY_OFFSET 300.0f // The ray is cast from 300 units above Mario in order to prevent small obstacles from constantly snapping the camera
-
+/* Handler copied from Mario Builder 64, with slight modifications */
+#define MIN_CAMERA_DISTANCE 300.0f // Minimum distance between Mario and the camera.
+#define VERTICAL_RAY_OFFSET 200.0f // The ray is cast from 200 units above Mario in order to prevent small obstacles from constantly snapping the camera
+#define VERTICAL_RAY_OFFSET_HANGING 100.0f // The ray is only cast 100 units away when hanging.
 void eight_dir_collision_handler(struct Camera *c) {
     struct Surface *surf = NULL;
 
+    Vec3f camera_looknormal;
     Vec3f camdir;
     Vec3f origin;
     Vec3f thick;
     Vec3f hitpos;
+    
+    vec3f_diff(camera_looknormal,c->focus,c->pos);
+    vec3f_normalize(camera_looknormal);
 
+    // CEILING COLLISION
+    // Standard camera raycast check for ceiling collision. No special shenanigans here!
     vec3f_copy(origin,gMarioState->pos);
+    
+    if (!(gMarioState->action & ACT_FLAG_HANGING)) {
+        origin[1] += VERTICAL_RAY_OFFSET;
+    } else {
+        origin[1] += VERTICAL_RAY_OFFSET_HANGING;
+    }
+    vec3f_diff(camdir,c->pos,origin);
 
-    origin[1] += VERTICAL_RAY_OFFSET; 
-    camdir[0] = c->pos[0] - origin[0];
-    camdir[1] = c->pos[1] - origin[1];
-    camdir[2] = c->pos[2] - origin[2];
-
-    find_surface_on_ray(origin, camdir, &surf, hitpos, (RAYCAST_FIND_FLOOR | RAYCAST_FIND_WALL | RAYCAST_FIND_CEIL));
+    find_surface_on_ray(origin, camdir, &surf, hitpos, RAYCAST_FIND_CEIL);
 
     if (surf) {
-        f32 distFromSurf = 100.0f;
-        f32 dist;
-        f32 yDist = 0;
-        Vec3f camToMario;
-        vec3f_diff(camToMario, gMarioState->pos, hitpos);
-        s16 yaw = atan2s(camToMario[2], camToMario[0]);
-        vec3f_get_lateral_dist(hitpos,gMarioState->pos, &dist);
-        if (dist < MIN_CAMERA_DISTANCE) {
-            distFromSurf += (dist - MIN_CAMERA_DISTANCE); // If Mario runs right up to the screen, the camera pull back slightly...
-            yDist = MIN_CAMERA_DISTANCE - CLAMP(dist, 0, MIN_CAMERA_DISTANCE); // ...and also up slightly.
+        c->pos[1] = hitpos[1];
+    }
+
+    // WALL/FLOOR COLLISION
+    // More complex; If ray successful, set the camera position to the wall/floor hit location
+    // and push the camera inward if Mario is close to the wall/floor.
+    vec3f_diff(camdir,c->pos,origin);
+
+    find_surface_on_ray(origin, camdir, &surf, hitpos, RAYCAST_FIND_WALL | RAYCAST_FIND_FLOOR);
+
+    if (surf) {
+        Vec3f camera_hit_diff;
+        vec3f_diff(camera_hit_diff,origin,hitpos);
+        f32 hit_to_mario_dist = vec3_mag(camera_hit_diff);
+
+        f32 thickMul = 35.0f;
+
+        if (hit_to_mario_dist < MIN_CAMERA_DISTANCE) {
+            thickMul -= MIN_CAMERA_DISTANCE - hit_to_mario_dist;
         }
-        thick[0] = sins(yaw) * distFromSurf;
-        thick[1] = yDist;
-        thick[2] = coss(yaw) * distFromSurf;
+
+        thick[0] = camera_looknormal[0] * thickMul;
+        thick[1] = camera_looknormal[1] * thickMul;
+        thick[2] = camera_looknormal[2] * thickMul;
         vec3f_add(hitpos,thick);
         vec3f_copy(c->pos,hitpos);
     }
-
-    c->yaw = atan2s(c->pos[2] - gMarioState->pos[2], c->pos[0] - gMarioState->pos[0]);
-
 }
 
 /**
@@ -1469,16 +1485,25 @@ void mode_8_directions_camera(struct Camera *c) {
 
     radial_camera_input(c, 0.f);
 
-    if (gPlayer1Controller->buttonPressed & R_CBUTTONS) {
-        s8DirModeYawOffset += DEGREES(45);
-        play_sound_cbutton_side();
-    }
-    if (gPlayer1Controller->buttonPressed & L_CBUTTONS) {
-        s8DirModeYawOffset -= DEGREES(45);
-        play_sound_cbutton_side();
+    if (gChsForced8DirCam & FORCED_8DIR_FLAGS_SMOOTH_CAM) {
+        if (gPlayer1Controller->buttonDown & R_CBUTTONS) {
+            s8DirModeYawOffset += DEGREES(6);
+        }
+        if (gPlayer1Controller->buttonDown & L_CBUTTONS) {
+            s8DirModeYawOffset -= DEGREES(6);
+        }
+    } else {
+        if (gPlayer1Controller->buttonPressed & R_CBUTTONS) {
+            s8DirModeYawOffset += DEGREES(45);
+            play_sound_cbutton_side();
+        }
+        if (gPlayer1Controller->buttonPressed & L_CBUTTONS) {
+            s8DirModeYawOffset -= DEGREES(45);
+            play_sound_cbutton_side();
+        }
     }
 
-    if (sSelectionFlags & CAM_MODE_8_DIR_ACTIVE) {
+    if (gChsForced8DirCam & FORCED_8DIR_FLAGS_45DEG_CAM) {
         if (gPlayer1Controller->buttonPressed & U_JPAD && gMarioState->action != ACT_DEBUG_FREE_MOVE) {
             s8DirModeYawOffset = 0;
             s8DirModeYawOffset = gMarioState->faceAngle[1] - 0x8000;
@@ -3357,15 +3382,22 @@ void mode_top_down_cam(struct Camera *c) {
     vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, topdown_yawcorrection);
     c->yaw = topdown_yawcorrection;
 
-    if (gMarioState->action & ACT_FLAG_SWIMMING_OR_FLYING) {
-        vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0x8000 + gMarioState->faceAngle[1]);
-        c->yaw = gMarioState->faceAngle[1];
+    s16 yaw_to_use = gMarioState->faceAngle[1];
+
+    if (gMarioState->action == ACT_TWIRLING || gMarioState->action == ACT_LAVA_BOOST) {
+        // hardcoded yaw xd
+        yaw_to_use = 0x8000;
+        vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0x8000 + yaw_to_use);
+        c->yaw = yaw_to_use + 0x8000;
+    } else if (gMarioState->action & ACT_FLAG_SWIMMING_OR_FLYING) {
+        vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0x8000 + yaw_to_use);
+        c->yaw = yaw_to_use;
     } else if ((gCurrLevelNum != LEVEL_VCUTM) && (gMarioState->action & ACT_FLAG_BUTT_OR_STOMACH_SLIDE)) {
-        vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0x8000 + gMarioState->faceAngle[1]);
-        c->yaw = gMarioState->faceAngle[1] + 0x8000;
+        vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0x8000 + yaw_to_use);
+        c->yaw = yaw_to_use + 0x8000;
     } else if (gMarioState->action == ACT_FLYING) {
-        vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0x8000 + gMarioState->faceAngle[1]);
-        c->yaw = gMarioState->faceAngle[1] + 0x8000;
+        vec3f_set_dist_and_angle(c->focus, c->pos, 4000.0f, 0x3C00, 0x8000 + yaw_to_use);
+        c->yaw = yaw_to_use + 0x8000;
     } else {
         // only do rotation handling if it's controllable
         if (gPlayer1Controller->buttonPressed & L_CBUTTONS) {
@@ -3376,11 +3408,18 @@ void mode_top_down_cam(struct Camera *c) {
         }
     }
     f32 camCeilHeight = find_ceil(c->focus[0], gMarioState->pos[1] + 50, c->focus[2], &surface);
-    if (surface && (gCurrLevelNum != LEVEL_VCUTM)) {
+    if (surface && (gCurrLevelNum != LEVEL_VCUTM) && (gCurrLevelNum != LEVEL_TTC)) {
         c->pos[1] = camCeilHeight - 100.0f;
     } else {
-        // Hard coded check because otherwise it crashes on level entrance for some reason
-        if(gCurrLevelNum == LEVEL_VCUTM) {
+        if (gCurrLevelNum == LEVEL_TTC) {
+            // lol
+            if ((camCeilHeight) < (gMarioState->pos[1] + 2000.0f)) {
+                c->pos[1] = gMarioState->pos[1] + 1000.0f;
+            } else {
+                c->pos[1] = gMarioState->pos[1] + 2000.0f;
+            }
+        } else if (gCurrLevelNum == LEVEL_VCUTM) {
+            // Hard coded check because otherwise it crashes on level entrance for some reason
             if (topdown_vcutmlatch == 0) {
                 c->pos[1] = 6454;
                 topdown_vcutmlatch = 1;
@@ -3404,7 +3443,7 @@ void mode_top_down_cam(struct Camera *c) {
 void update_camera(struct Camera *c) {
     u16 temporaryButtonDown = gPlayer1Controller->buttonDown;
     u16 temporaryButtonPressed = gPlayer1Controller->buttonPressed;
-    s32 forceMarioCam = chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM);
+    s32 forceMarioCam = (chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM) && !gConfig.disableHarshVisuals);
 
     if(chaos_check_if_patch_active(CHAOS_PATCH_TETRIS)) {
         if(gTetrisTriggerCameraR) {
@@ -3456,7 +3495,9 @@ void update_camera(struct Camera *c) {
         // Only process R_TRIG if 'fixed' is not selected in the menu
         if (cam_select_alt_mode(0) == CAM_SELECTION_MARIO || forceMarioCam) {
             s32 angle = set_cam_angle(NULL, 0);
-            if (gPlayer1Controller->buttonPressed & R_TRIG || forceMarioCam) {
+            if (gChsForced8DirCam & FORCED_8DIR_FLAGS_SMOOTH_CAM) {
+                set_cam_angle(c, CAM_ANGLE_8_DIR);
+            } else if (gPlayer1Controller->buttonPressed & R_TRIG || forceMarioCam) {
                 if (angle == CAM_ANGLE_LAKITU || forceMarioCam) {
                     set_cam_angle(c, CAM_ANGLE_MARIO);
                 } else if (angle == CAM_ANGLE_MARIO) {
@@ -4238,8 +4279,8 @@ s32 move_point_along_spline(Vec3f p, struct CutsceneSplinePoint spline[], s16 *s
  */
 s32 cam_select_alt_mode(s32 selection) {
     s32 mode = CAM_SELECTION_FIXED;
-    if(chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM)) {
-        return 1;
+    if (chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM) && !gConfig.disableHarshVisuals) {
+        return CAM_SELECTION_MARIO;
     }
 
     if (selection == CAM_SELECTION_MARIO) {
@@ -4272,7 +4313,9 @@ s32 cam_select_alt_mode(s32 selection) {
  * If `mode` is 3, start 8-dir mode
  */
 s32 set_cam_angle(struct Camera *c, s32 mode) {
-    if (mode == CAM_ANGLE_8_DIR && gChsForced8DirCam == FORCED_8DIR_FLAGS_NONE) {
+    if (gChsForced8DirCam & FORCED_8DIR_FLAGS_SMOOTH_CAM) {
+        mode = CAM_ANGLE_8_DIR;
+    } else if (mode == CAM_ANGLE_8_DIR && gChsForced8DirCam == FORCED_8DIR_FLAGS_NONE) {
         mode = CAM_ANGLE_LAKITU;
     }
 
@@ -5419,10 +5462,12 @@ void play_sound_cbutton_down(void) {
 }
 
 void play_sound_cbutton_side(void) {
-    if (chaos_check_if_patch_active(CHAOS_PATCH_PLEASANT_CAMERA_SOUNDS)) {
-        play_sound(SOUND_MENU_CAMERA_TURN_PLEASANT, gGlobalSoundSource);
-    } else {
-        play_sound(SOUND_MENU_CAMERA_TURN, gGlobalSoundSource);
+    if (!(gChsForced8DirCam & FORCED_8DIR_FLAGS_SMOOTH_CAM)) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_PLEASANT_CAMERA_SOUNDS)) {
+            play_sound(SOUND_MENU_CAMERA_TURN_PLEASANT, gGlobalSoundSource);
+        } else {
+            play_sound(SOUND_MENU_CAMERA_TURN, gGlobalSoundSource);
+        }
     }
 }
 
@@ -5435,7 +5480,9 @@ void play_sound_button_change_blocked(void) {
 }
 
 void play_sound_rbutton_changed(void) {
-    play_sound(SOUND_MENU_CLICK_CHANGE_VIEW, gGlobalSoundSource);
+    if (!(gChsForced8DirCam & FORCED_8DIR_FLAGS_SMOOTH_CAM) || !(sSelectionFlags & CAM_MODE_MARIO_SELECTED)) {
+        play_sound(SOUND_MENU_CLICK_CHANGE_VIEW, gGlobalSoundSource);
+    }
 }
 
 /**

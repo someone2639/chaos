@@ -606,6 +606,8 @@ struct SPTask *create_next_audio_frame_task(void) {
                 gAiBuffer_u32[processedLength] = sLagAudioBuffer_u32[sLagAudioBufStart];
                 sLagAudioBufStart = (sLagAudioBufStart + 1) % (sizeof(sLagAudioBuffer) / sizeof(u32));
             }
+
+            osWritebackDCache(gAiBuffers[index], ALIGN16(gAiBufferLengths[index] * sizeof(u32)));
         }
 
         osAiSetNextBuffer(gAiBuffers[index], gAiBufferLengths[index] * 4);
@@ -1569,7 +1571,7 @@ u8 sRandomMusicSeqsLUT[] = {
     SEQ_EVENT_ENDLESS_STAIRS,
     SEQ_LEVEL_BOSS_KOOPA_FINAL,
     SEQ_EVENT_CUTSCENE_ENDING,
-    SEQ_EVENT_CUTSCENE_CREDITS, // TODO: BUG: This keeps playing during patch selection (Can this be fixed without deliberately botching credits behavior? (you know...just in case!))
+    SEQ_EVENT_CUTSCENE_CREDITS,
 };
 
 
@@ -1938,7 +1940,7 @@ u8 begin_background_music_fade(u16 fadeDuration) {
     u8 targetVolume = 0xff;
 
     if (sCurrentBackgroundMusicSeqId == SEQUENCE_NONE
-        || sCurrentBackgroundMusicSeqId == SEQ_EVENT_CUTSCENE_CREDITS) {
+        || (sCurrentBackgroundMusicSeqId == SEQ_EVENT_CUTSCENE_CREDITS && !chaos_check_if_patch_active(CHAOS_PATCH_RANDOMIZED_MUSIC))) {
         return 0xff;
     }
 

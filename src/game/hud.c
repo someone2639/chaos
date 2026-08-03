@@ -14,12 +14,182 @@
 #include "save_file.h"
 #include "print.h"
 #include "fasttext.h"
+#include "engine/math_util.h"
 
 /* @file hud.c
  * This file implements HUD rendering and power meter animations.
  * That includes stars, lives, coins, camera status, power meter, timer
  * cannon reticle, and the unused keys.
  **/
+
+/**
+ * @brief Print a large texture to the screen.
+ * 
+ * This function can render an image of any size to the screen, supporting scale adjustments if desirable.
+ * Most of the primitive display list commands will still need to be set manually outside of this function
+ * (e.g. combiner, envcolor, texture filter, etc.)
+ * 
+ * Note that 1-cycle must be used with this function, as it will not render correctly with copy mode.
+ * 
+ * Display List Example Setup:
+ *   gDPPipeSync        (gDisplayListHead++);
+ *   gDPSetTexturePersp (gDisplayListHead++, G_TP_NONE);
+ *   gDPSetCombineMode  (gDisplayListHead++, G_CC_FADEA, G_CC_FADEA);
+ *   gDPSetTextureFilter(gDisplayListHead++, G_TF_POINT);
+ *   gDPSetCycleType    (gDisplayListHead++, G_CYC_1CYCLE);
+ *   gDPSetRenderMode   (gDisplayListHead++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
+ *   gDPSetEnvColor     (gDisplayListHead++, 255, 255, 255, alpha);
+ *
+ *   draw_sprite(&gDisplayListHead, ...);
+ *
+ *   gDPPipeSync        (gDisplayListHead++);
+ *   gDPSetTexturePersp (gDisplayListHead++, G_TP_PERSP);
+ *   gDPSetCombineMode  (gDisplayListHead++, G_CC_SHADE, G_CC_SHADE);
+ *   gDPSetTextureFilter(gDisplayListHead++, G_TF_BILERP);
+ * 
+ * Helper function initially provided by devwizard (this has since been modified).
+ * 
+ * @param dl The address of the display list head to use. Most commonly, this will be "&gDisplayListHead".
+ * @param texture The address of the texture to be rendered to the screen.
+ * @param dlImgFormat The display list image format to be used for the texture.
+ *   This function does not currently support CI textures.
+ *   Example: "G_IM_FMT_RGBA"
+ * @param dlImgSize The bit depth to be used for the texture.
+ *   Example: "G_IM_SIZ_32b" for RGBA32 textures
+ * @param bilerp Boolean for whether bilinear filtering should be used instead of point filtering.
+ *   The actual texture filter display list command will need to be applied outside of this function.
+ * @param textureWidth The pixel width of the source texture file.
+ * @param textureHeight The pixel height of the source texture file.
+ * @param x The x position from the left side of the screen to the left side of the texture.
+ * @param y The y position from the top of the screen to the top of the texture.
+ * @param displayWidth How wide the image should render, in pixels. This should match textureWidth if no change.
+ * @param displayHeight How tall the image should render, in pixels. This should match textureHeight if no change.
+ */
+void draw_sprite(Gfx **dl, const void *texture, s32 dlImgFormat, s32 dlImgSize, s32 bilerp,
+        u32 textureWidth, u32 textureHeight, f32 x, f32 y, f32 displayWidth, f32 displayHeight) {
+    Gfx *dlHead = *dl;
+    s32 sizeLoad = dlImgSize;
+    s32 sizeLine = dlImgSize;
+    s32 shift = 0;
+
+    if (displayWidth <= 0.0f || displayHeight <= 0.0f) {
+        // Cannot display negative width/height
+        return;
+    }
+
+    u32 shiftedDisplayWidth = (u32) roundf(displayWidth * 4.0f);
+    u32 shiftedDisplayHeight = (u32) roundf(displayHeight * 4.0f);
+    s32 shiftedX = roundf(x * 4.0f);
+    s32 shiftedY = roundf(y * 4.0f);
+
+    if (shiftedDisplayWidth == 0 || shiftedDisplayHeight == 0 || textureWidth == 0 || textureHeight == 0) {
+        // Div by 0
+        return;
+    }
+
+    u32 cw = 16 * (0x2448 >> (4 * dlImgSize) & 0xF);
+    u32 ch = 16 * (0x2244 >> (4 * dlImgSize) & 0xF);
+    u32 dsdx = ((0x400 * 4 * textureWidth ) + (shiftedDisplayWidth  / 2)) / shiftedDisplayWidth;
+    u32 dtdy = ((0x400 * 4 * textureHeight) + (shiftedDisplayHeight / 2)) / shiftedDisplayHeight;
+
+    if (dlImgSize == G_IM_SIZ_4b) {
+        sizeLoad = G_IM_SIZ_8b;
+        shift = 1;
+    }
+    if (dlImgSize == G_IM_SIZ_32b) {
+        sizeLine = G_IM_SIZ_16b;
+    }
+    if (bilerp) {
+        cw -= 2 << shift;
+        ch -= 2 << shift;
+    }
+
+    gDPSetTextureImage(dlHead++, dlImgFormat, sizeLoad, textureWidth >> shift, texture);
+
+    for (u32 ty = 0; ty < textureHeight; ty += ch) {
+        u32 ult = ty;
+        u32 lrt = ty + ch;
+        if (lrt > textureHeight) {
+            lrt = textureHeight;
+        }
+
+        s32 yl = shiftedY + ult * shiftedDisplayHeight / textureHeight;
+        s32 yh = shiftedY + lrt * shiftedDisplayHeight / textureHeight;
+        if (yh < 0 || yl > 4096) {
+            continue;
+        }
+
+        s32 t = ult << 5;
+        if (yl < 0) {
+            t -= (yl * dtdy) >> 7;
+            yl = 0;
+        }
+
+        if (bilerp) {
+            if (ult > 0) {
+                ult -= (1 << shift);
+            }
+            if (lrt < textureHeight) {
+                lrt += (1 << shift);
+            }
+            t -= 16;
+        }
+
+        for (u32 tx = 0; tx < textureWidth; tx += cw) {
+            u32 uls = tx;
+            u32 lrs = tx + cw;
+            if (lrs > textureWidth) {
+                lrs = textureWidth;
+            }
+
+            s32 xl = shiftedX + uls * shiftedDisplayWidth / textureWidth;
+            s32 xh = shiftedX + lrs * shiftedDisplayWidth / textureWidth;
+            if (xh < 0 || xl > 4096) {
+                continue;
+            }
+
+            s32 s = uls << 5;
+            if (xl < 0) {
+                s -= (xl * dsdx) >> 7;
+                xl = 0;
+            }
+
+            if (bilerp) {
+                if (uls > 0) {
+                    uls -= (1 << shift);
+                }
+                if (lrs < textureWidth) {
+                    lrs += (1 << shift);
+                }
+                s -= 16;
+            }
+
+            u32 line = (((lrs - uls) << sizeLine) + 14) >> 4;
+
+            gDPPipeSync(dlHead++);
+            gDPSetTile(dlHead++, dlImgFormat, sizeLoad, line, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            gDPLoadSync(dlHead++);
+            gDPLoadTile(
+                dlHead++, 0,
+                (uls    ) << G_TEXTURE_IMAGE_FRAC >> shift,
+                (ult    ) << G_TEXTURE_IMAGE_FRAC,
+                (lrs - 1) << G_TEXTURE_IMAGE_FRAC >> shift,
+                (lrt - 1) << G_TEXTURE_IMAGE_FRAC);
+            gDPSetTile(
+                dlHead++, dlImgFormat, dlImgSize, line, 0, 0, 0,
+                G_TX_CLAMP, 0, 0, G_TX_CLAMP, 0, 0);
+            gDPSetTileSize(
+                dlHead++, 0,
+                (uls    ) << G_TEXTURE_IMAGE_FRAC,
+                (ult    ) << G_TEXTURE_IMAGE_FRAC,
+                (lrs - 1) << G_TEXTURE_IMAGE_FRAC,
+                (lrt - 1) << G_TEXTURE_IMAGE_FRAC);
+            gSPTextureRectangle(dlHead++, xl, yl, xh, yh, 0, s, t, dsdx, dtdy);
+        }
+    }
+
+    *dl = dlHead;
+}
 
 struct PowerMeterHUD {
     s8 animation;
@@ -462,7 +632,11 @@ void render_hud_camera_status(void) {
             render_hud_tex_lut(x + 16, y, (*cameraLUT)[GLYPH_CAM_LAKITU_HEAD]);
             break;
         case CAM_STATUS_8_DIR:
-            render_hud_tex_lut(x + 16, y, (*cameraLUT)[GLYPH_CAM_45_DEGREES]);
+            if (gChsForced8DirCam & FORCED_8DIR_FLAGS_45DEG_CAM) {
+                render_hud_tex_lut(x + 16, y, (*cameraLUT)[GLYPH_CAM_45_DEGREES]);
+            } else {
+                render_hud_tex_lut(x + 16, y, (*cameraLUT)[GLYPH_CAM_LAKITU_HEAD]);
+            }
             break;
         case CAM_STATUS_FIXED:
             render_hud_tex_lut(x + 16, y, (*cameraLUT)[GLYPH_CAM_FIXED]);
@@ -495,7 +669,12 @@ void render_chaos_time_limit() {
     struct ChaosActiveEntry *chaosTimer;
     chaos_find_first_active_patch(CHAOS_PATCH_TIME_LIMIT, &chaosTimer);
     char limitText[16];
-    s32 timeLeft = (5400 - chaosTimer->frameTimer);
+
+    if (chaosTimer->frameTimer >= 0xFFFFFF) {
+        return;
+    }
+
+    s32 timeLeft = (CHS_TIME_LIMIT - chaosTimer->frameTimer);
     u32 mins = (timeLeft / (30 * 60));
     u32 secs = ((timeLeft - (mins * (30 * 60))) / 30);
 
@@ -516,7 +695,7 @@ void render_chaos_time_limit() {
     }
 
     //Flicker when time gets low
-    if((timeLeft < 1800 && timeLeft >= 1740) || (timeLeft < 900 && timeLeft >= 840) || (timeLeft < 300)) {
+    if((timeLeft < (30 * 60) && timeLeft >= (30 * (60 - 1))) || (timeLeft < (30 * 30) && timeLeft >= (30 * (30 - 1))) || (timeLeft < (30 * 10))) {
         if(timeLeft % 10 < 5) {
             a = 0;
         }
@@ -537,27 +716,21 @@ void render_chaos_time_limit() {
 void render_hud(void) {
     s16 hudDisplayFlags = gHudDisplay.flags;
 
+    create_dl_ortho_matrix(&gDisplayListHead);
+
+    // Draw DVD logo first
+    if(chaos_check_if_patch_active(CHAOS_PATCH_DVD)) {
+        draw_dvd_logo();
+    }
+
     if (hudDisplayFlags == HUD_DISPLAY_NONE || chaos_check_if_patch_active(CHAOS_PATCH_NO_HUD)) {
         sPowerMeterHUD.animation = POWER_METER_HIDDEN;
         sPowerMeterStoredHealth = 8;
         sPowerMeterVisibleTimer = 0;
     } else {
-#ifdef VERSION_EU
-        // basically create_dl_ortho_matrix but guOrtho screen width is different
-        Mtx *mtx = alloc_display_list(sizeof(*mtx));
-
-        if (mtx == NULL) {
-            return;
+        if (chaos_check_if_patch_active(CHAOS_PATCH_MORE_HUD)) {
+            draw_more_hud();
         }
-
-        create_dl_identity_matrix(&gDisplayListHead);
-        guOrtho(mtx, -16.0f, SCREEN_WIDTH + 16, 0, SCREEN_HEIGHT, -10.0f, 10.0f, 1.0f);
-        gSPPerspNormalize(gDisplayListHead++, 0xFFFF);
-        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx),
-                  G_MTX_PROJECTION | G_MTX_MUL | G_MTX_NOPUSH);
-#else
-        create_dl_ortho_matrix(&gDisplayListHead);
-#endif
 
         if (gCurrentArea != NULL && gCurrentArea->camera->mode == CAMERA_MODE_INSIDE_CANNON) {
             render_hud_cannon_reticle();
@@ -579,7 +752,7 @@ void render_hud(void) {
             render_hud_keys();
         }
 
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_CAMERA_AND_POWER) {
+        if (hudDisplayFlags & HUD_DISPLAY_FLAG_CAMERA_AND_POWER && !chaos_check_if_patch_active(CHAOS_PATCH_MORE_HUD)) {
             render_hud_power_meter();
             render_hud_camera_status();
         }
@@ -593,15 +766,11 @@ void render_hud(void) {
         render_chaos_time_limit();
     }
 
-    if(chaos_check_if_patch_active(CHAOS_PATCH_QUICKTIME)) {
-        draw_quicktime_event_prompts();
-    }
-
     if(chaos_check_if_patch_active(CHAOS_PATCH_TETRIS)) {
         draw_tetris();
     }
 
-    if(chaos_check_if_patch_active(CHAOS_PATCH_DVD)) {
-        draw_dvd_logo();
+    if(chaos_check_if_patch_active(CHAOS_PATCH_QUICKTIME)) {
+        draw_quicktime_event_prompts();
     }
 }

@@ -11,12 +11,13 @@
 #include "game/ingame_menu.h"
 #include "audio/external.h"
 
-#define MAX_PROMPTS                 8
-#define MIN_PROMPTS                 3
-#define NUM_QTE                     9
-#define QTE_PADDING                 18
-#define QTE_ACTIVATE_TIME           5400
-#define QTE_INPUT_TIME_PER_INPUT    22
+#define MAX_PROMPTS                    8
+#define MIN_PROMPTS                    3
+#define NUM_QTE                        9
+#define QTE_PADDING                    18
+#define QTE_ACTIVATE_TIME              5400
+#define QTE_INPUT_TIME_PER_INPUT       20
+#define QTE_INPUT_TIME_REACTION_OFFSET 20
 
 struct QuickTimePrompt {
     u16 button;
@@ -40,13 +41,13 @@ u8 sQTEQueueLength = MIN_PROMPTS;
 u8 sQTECurrentIndex = 0;
 u8 sQTEPrevDisplayTimer = 0;
 s16 sQTETimeLeft = 0;
-s16 sQTETimeTotal = QTE_INPUT_TIME_PER_INPUT;
+s16 sQTETimeTotal = QTE_INPUT_TIME_REACTION_OFFSET;
 
 void generate_qte() {
     sQTECurrentIndex = 0;
     sQTEPrevDisplayTimer = 0;
     sQTEQueueLength = MIN_PROMPTS + RAND((MAX_PROMPTS - MIN_PROMPTS + 1));
-    sQTETimeTotal = QTE_INPUT_TIME_PER_INPUT * sQTEQueueLength;
+    sQTETimeTotal = QTE_INPUT_TIME_REACTION_OFFSET + (QTE_INPUT_TIME_PER_INPUT * sQTEQueueLength);
     if (chaos_check_if_patch_active(CHAOS_PATCH_60_FPS)) {
         sQTETimeTotal *= (60.0f / 30.0f);
     } else if (chaos_check_if_patch_active(CHAOS_PATCH_45_FPS)) {
@@ -73,7 +74,7 @@ void draw_quicktime_event_prompts() {
 
     create_dl_ortho_matrix(&gDisplayListHead);
     
-    shade_screen();
+    shade_screen(&gDisplayListHead);
 
     menu_start_button(&gDisplayListHead);
     f32 startX = SCREEN_CENTER_X - ((sQTEQueueLength * QTE_PADDING) / 2);
@@ -96,8 +97,10 @@ void draw_quicktime_event_prompts() {
     gDPSetFillColor(gDisplayListHead++, (GPACK_RGBA5551(255, 255, 255, 1) << 16) | GPACK_RGBA5551(255, 255, 255, 1));
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 255);
     gDPFillRectangle(gDisplayListHead++, startX, (SCREEN_CENTER_Y + QTE_PADDING), startX + timerBarWidth, (SCREEN_CENTER_Y + QTE_PADDING + 2));
+
     gDPPipeSync(gDisplayListHead++);
     gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
+    gDPSetCombineMode(gDisplayListHead++, G_CC_SHADE, G_CC_SHADE);
 }
 
 void play_mode_quicktime() {
@@ -112,7 +115,7 @@ void play_mode_quicktime() {
                 sQTEPrevDisplayTimer = 5;
                 play_sound(SOUND_MENU_POWER_METER, gGlobalSoundSource);
             } else {
-                if(sQTETimeLeft < sQTETimeTotal - 20) {
+                if(sQTETimeLeft < sQTETimeTotal - (QTE_INPUT_TIME_REACTION_OFFSET + (1 * QTE_INPUT_TIME_PER_INPUT))) {
                     sQTETimeLeft -= QTE_INPUT_TIME_PER_INPUT;
                 }
                 play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);

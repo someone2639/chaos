@@ -14,7 +14,6 @@
 #include "game/debug.h"
 #include "game/object_list_processor.h"
 
-#define CHS_TIME_LIMIT                  (3 * 60 * 30)
 #define CHS_TIME_LIMIT_OFFSET_MAX       (90 * 30)
 s32 sTimeLimitOffset = 0;
 
@@ -29,17 +28,28 @@ void chs_update_time_limit(void) {
     chaos_find_first_active_patch(CHAOS_PATCH_TIME_LIMIT, &this);
     //Should not be active in the castle
     if (gCurrCourseNum == COURSE_NONE || gMarioState->action == ACT_JUMBO_STAR_CUTSCENE || gMarioState->action == ACT_CREDITS_CUTSCENE) {
-        this->frameTimer = -1;
-    } else {
-        if(gMarioState->action == ACT_STAR_DANCE_NO_EXIT) {
+        this->frameTimer = 0xFFFFFF;
+    } else if (
+        gMarioState->action == ACT_STAR_DANCE_NO_EXIT ||
+        gMarioState->action == ACT_STAR_DANCE_EXIT ||
+        gMarioState->action == ACT_STAR_DANCE_WATER ||
+        gMarioState->action == ACT_FALL_AFTER_STAR_GRAB
+    ) {
+        if (gMarioState->actionArg & 1) {
             this->frameTimer = sTimeLimitOffset;
+        } else {
+            this->frameTimer = 0xFFFFFF;
+        }
+    } else {
+        if (this->frameTimer >= 0xFFFFFF) {
+            return;
         }
         
         s32 timeLeft = (CHS_TIME_LIMIT - this->frameTimer);
 
         //Play ringing sfx at level start, 1 minute, and 30 second marks
         if(timeLeft == (30 * 30) || timeLeft == (60 * 30) || this->frameTimer == sTimeLimitOffset) {
-            if(!(gTimeStopState & (TIME_STOP_ENABLED | TIME_STOP_DIALOG | TIME_STOP_ALL_OBJECTS)) && gMarioState->action != ACT_STAR_DANCE_NO_EXIT) {
+            if(!(gTimeStopState & (TIME_STOP_ENABLED | TIME_STOP_DIALOG | TIME_STOP_ALL_OBJECTS)) && gMarioState->action) {
                 play_sound(SOUND_MENU_TIMER_RING, gGlobalSoundSource);
             }
         }

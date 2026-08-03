@@ -21,8 +21,10 @@ enum CameraHUDLut {
     GLYPH_CAM_ARROW_DOWN,
     GLYPH_CAM_45_DEGREES,
 };
-
+void draw_sprite(Gfx **dl, const void *texture, s32 dlImgFormat, s32 dlImgSize, s32 bilerp,
+        u32 textureWidth, u32 textureHeight, f32 x, f32 y, f32 displayWidth, f32 displayHeight);
 void set_hud_camera_status(s16 status);
 void render_hud(void);
+void render_hud_tex_lut(s32 x, s32 y, u8 *texture);
 
 #endif // HUD_H

@@ -782,7 +782,7 @@ void tetris_state_new_piece(void) {
     sTetris.usedHold = FALSE;
 
     if(!tetris_fit_piece(&sTetris.piece)) {
-        gMarioState->health = 0;
+        remove_collected_star();
         sTetris.state = TET_STATE_GAME_OVER;
     } else {
         sTetris.state = TET_STATE_DEFAULT;
@@ -794,10 +794,8 @@ void tetris_state_game_over(void) {
         play_sound(SOUND_MENU_TETRIS_LOCK, gGlobalSoundSource);
     }
 
-    if(sTetris.timer++ > TET_GAME_OVER_ANIM) {
-        if(gMarioState->health != 0) {
-            tetris_reset();
-        }
+    if(sTetris.timer++ > TET_RESET_TIMER) {
+        tetris_reset();
     }
 }
 
@@ -940,9 +938,12 @@ void tetris_draw_grid(void) {
                         G_TX_RENDERTILE, 0, 0, 256, 256);
     
     gDPPipeSync(gDisplayListHead++);
+    gDPSetRenderMode(gDisplayListHead++, G_RM_AA_ZB_OPA_SURF, G_RM_AA_ZB_OPA_SURF2);
+    gDPSetCombineMode(gDisplayListHead++, G_CC_SHADE, G_CC_SHADE);
 	gSPTexture(gDisplayListHead++, 65535, 65535, 0, G_TX_RENDERTILE, G_OFF);
 	gDPSetTexturePersp(gDisplayListHead++, G_TP_PERSP);
 	gDPSetAlphaCompare(gDisplayListHead++, G_AC_NONE);
+    gDPSetTextureFilter(gDisplayListHead++, G_TF_BILERP);
 
     // Draw text
     char buf[64];

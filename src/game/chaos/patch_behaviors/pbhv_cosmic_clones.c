@@ -33,6 +33,10 @@ static s8 gCosmicCloneAttackScaleAnimation[3 * 6] = {
 struct CosmicCloneFrameData gCosmicCloneFrames[TOTAL_CLONE_FRAMES];
 
 void spawn_cosmic_clones(s32 startActive) {
+    if(gCurrLevelNum == LEVEL_BOWSER_1 || gCurrLevelNum == LEVEL_BOWSER_2 || gCurrLevelNum == LEVEL_BOWSER_3) {
+        return;
+    }
+
     u32 model = (chaos_check_if_patch_active(CHAOS_PATCH_LUIGI)) ? MODEL_CLONE_LUIGI : MODEL_CLONE_MARIO;
 
     for(int i = 0; i < MAX_CLONES; i++) {
@@ -78,7 +82,7 @@ void chs_instwarp_post_cosmic_clones(struct InstantWarp *warp) {
 }
 
 void chs_update_cosmic_clones(void) {
-    if(gCurrCourseNum == COURSE_NONE) { 
+    if(gCurrCourseNum == COURSE_NONE || gCurrLevelNum == LEVEL_BOWSER_1 || gCurrLevelNum == LEVEL_BOWSER_2 || gCurrLevelNum == LEVEL_BOWSER_3) { 
         return;
     }
     // Wait for Mario to move away from the starting position, as determined by when he exits the landing animation

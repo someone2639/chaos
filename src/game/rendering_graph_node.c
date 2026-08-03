@@ -16,6 +16,7 @@
 #include "level_update.h"
 
 u8 isGameFlipped = FALSE;
+u8 gRenderHeldObject = TRUE;
 
 /**
  * This file contains the code that processes the scene graph for rendering.
@@ -310,8 +311,7 @@ void geo_process_perspective(struct GraphNodePerspective *node) {
         Mtx *mtx = alloc_display_list(sizeof(*mtx));
 
 #ifdef WIDE
-        // TODO: BUG: gCurrLevelNum not a valid check on game over; file select display should be fixed properly
-        if ((gConfig.widescreen & WIDE_SCREEN_ENABLED) && gCurrLevelNum != 0x01) {
+        if ((gConfig.widescreen & WIDE_SCREEN_ENABLED) && gCurrLevelNum != LEVEL_UNKNOWN_2) {
             sAspectRatio = 16.0f / 9.0f; // 1.775f
         } else {
             sAspectRatio = 4.0f / 3.0f; // 1.33333f
@@ -1025,7 +1025,7 @@ void geo_process_held_object(struct GraphNodeHeldObject *node) {
     if (node->fnNode.func != NULL) {
         node->fnNode.func(GEO_CONTEXT_RENDER, &node->fnNode.node, gMatStack[gMatStackIndex]);
     }
-    if (node->objNode != NULL && node->objNode->header.gfx.sharedChild != NULL) {
+    if (gRenderHeldObject && node->objNode != NULL && node->objNode->header.gfx.sharedChild != NULL) {
         s32 hasAnimation = (node->objNode->header.gfx.node.flags & GRAPH_RENDER_HAS_ANIMATION) != 0;
 
         translation[0] = node->translation[0] / 4.0f;

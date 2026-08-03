@@ -948,7 +948,7 @@ f32 D_EU_802298D0;
 s32 gRefreshRate;
 #endif
 
-ALIGNED8 s16 *gAiBuffers[NUMAIBUFFERS];
+ALIGNED16 s16 *gAiBuffers[NUMAIBUFFERS];
 s16 gAiBufferLengths[NUMAIBUFFERS];
 
 u32 gAudioRandom;

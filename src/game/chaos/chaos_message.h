@@ -28,4 +28,4 @@ void chaosmsg_print(enum ChaosPatchID patchId, const char *str);
 void chaosmsg_render(void);
 
 // Show recap of previous messages
-void chaosmsg_display_log_recap(void);
+void chaosmsg_display_log_recap(s32 xTranslation);

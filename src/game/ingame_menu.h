@@ -124,6 +124,13 @@ enum DialogResponseDefines {
     DIALOG_RESPONSE_NOT_DEFINED
 };
 
+enum ChaosMessageRecapActions {
+    CHAOS_MSG_RECAP_CLOSED,
+    CHAOS_MSG_RECAP_OPENING,
+    CHAOS_MSG_RECAP_OPEN,
+    CHAOS_MSG_RECAP_CLOSING,
+};
+
 extern s32 gDialogResponse;
 extern u16 gDialogColorFadeTimer;
 extern s8 gLastDialogLineNum;
@@ -134,6 +141,8 @@ extern s16 gCutsceneMsgYOffset;
 extern s8 gRedCoinsCollected;
 extern s8 gChsTrollDialog;
 extern u8 gChsNumberBlindness;
+extern enum ChaosMessageRecapActions sShowMessageLogRecap;
+extern u8 sShowMessageLogRecapTimer;
 
 void create_dl_identity_matrix(Gfx **dl);
 void create_dl_translation_matrix(Gfx **dl, s8 pushOp, f32 x, f32 y, f32 z);
@@ -172,6 +181,6 @@ void do_cutscene_handler(void);
 void render_hud_cannon_reticle(void);
 void reset_red_coins_collected(void);
 s16 render_menus_and_dialogs(void);
-void shade_screen();
+void shade_screen(Gfx **dl);
 
 #endif // INGAME_MENU_H

@@ -6,8 +6,10 @@
 #include "mario.h"
 #include "audio/external.h"
 #include "chaos/chaos.h"
+#include "engine/behavior_script.h"
 #include "game_init.h"
 #include "interaction.h"
+#include "mario_actions_airborne.h"
 #include "mario_step.h"
 #include "obj_behaviors.h"
 
@@ -391,7 +393,7 @@ u32 check_ledge_grab(struct MarioState *m, struct Surface *wall, Vec3f intendedP
     return TRUE;
 }
 
-s32 perform_air_quarter_step(struct MarioState *m, Vec3f intendedPos, u32 stepArg) {
+s32 perform_air_quarter_step(struct MarioState *m, Vec3f intendedPos, u32 stepArg, u8 griefInvisibleWall) {
     s16 wallDYaw;
     Vec3f nextPos;
     struct Surface *upperWall;
@@ -403,6 +405,16 @@ s32 perform_air_quarter_step(struct MarioState *m, Vec3f intendedPos, u32 stepAr
     f32 waterLevel;
 
     vec3f_copy(nextPos, intendedPos);
+
+    if (chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_INVISIBLE_WALLS)
+                    && (griefInvisibleWall)
+                    && (m->forwardVel > 1.0f)
+                    && (nextPos[1] > m->floorHeight)
+                    && ((random_u16() % QSTEP_RANDOM_INVISWALL_CHANCE) == 0)
+    ) {
+        m->pos[1] = nextPos[1];
+        return AIR_STEP_HIT_WALL;
+    }
 
     upperWall = resolve_and_return_wall_collisions(nextPos, 150.0f, 50.0f);
     lowerWall = resolve_and_return_wall_collisions(nextPos, 30.0f, 50.0f);
@@ -613,7 +625,7 @@ void apply_vertical_wind(struct MarioState *m) {
     }
 }
 
-s32 perform_air_step(struct MarioState *m, u32 stepArg) {
+s32 perform_air_step(struct MarioState *m, u32 stepArg, u8 griefInvisibleWall) {
     Vec3f intendedPos;
     s32 i;
     s32 quarterStepResult;
@@ -626,7 +638,7 @@ s32 perform_air_step(struct MarioState *m, u32 stepArg) {
         intendedPos[1] = m->pos[1] + m->vel[1] / 4.0f;
         intendedPos[2] = m->pos[2] + m->vel[2] / 4.0f;
 
-        quarterStepResult = perform_air_quarter_step(m, intendedPos, stepArg);
+        quarterStepResult = perform_air_quarter_step(m, intendedPos, stepArg, griefInvisibleWall);
 
         //! On one qf, hit OOB/ceil/wall to store the 2 return value, and continue
         // getting 0s until your last qf. Graze a wall on your last qf, and it will
@@ -645,6 +657,7 @@ s32 perform_air_step(struct MarioState *m, u32 stepArg) {
 
     if (m->vel[1] >= 0.0f) {
         m->peakHeight = m->pos[1];
+        m->peakHeightNoCancel = m->pos[1];
     }
 
     m->terrainSoundAddend = mario_get_terrain_sound_addend(m);

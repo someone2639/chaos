@@ -9,6 +9,7 @@ extern const BehaviorScript bhvKaizoBlock[];
 extern const BehaviorScript bhvKaizoBlockCoin[];
 extern const BehaviorScript bhvChaosBulletBill[];
 extern const BehaviorScript bhvCosmicClone[];
+extern const BehaviorScript bhvPoser[];
 
 extern const BehaviorScript bhvStarDoor[];
 extern const BehaviorScript bhvMrI[];
@@ -494,6 +495,7 @@ extern const BehaviorScript bhvSeesawPlatform[];
 extern const BehaviorScript bhvFerrisWheelAxle[];
 extern const BehaviorScript bhvFerrisWheelPlatform[];
 extern const BehaviorScript bhvWaterBombSpawner[];
+extern const BehaviorScript bhvWaterBombSpawnerChaos[];
 extern const BehaviorScript bhvWaterBomb[];
 extern const BehaviorScript bhvWaterBombShadow[];
 extern const BehaviorScript bhvTTCRotatingSolid[];
