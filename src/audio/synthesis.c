@@ -2,6 +2,7 @@
 #include <ultra64.h>
 
 #include "synthesis.h"
+#include "seq_ids.h"
 #include "heap.h"
 #include "data.h"
 #include "load.h"
@@ -1103,6 +1104,14 @@ void note_set_vel_pan_reverb(struct Note *note, f32 velocity, f32 pan, u8 reverb
 }
 
 void note_set_frequency(struct Note *note, f32 frequency) {
+    if (chaos_check_if_patch_active(CHAOS_PATCH_LUIGI)
+     && note->seqPlayer
+     && note->seqPlayer == &gSequencePlayers[SEQ_PLAYER_SFX]
+     && (note->bankId == JSON_SOUNDBANK_SFX_MARIO || note->bankId == JSON_SOUNDBANK_SFX_MARIO_PEACH)
+    ) {
+        frequency *= 1.1535f;
+    }
+
     if (chaos_check_if_patch_active(CHAOS_PATCH_CHILL_OUT)
      && note->seqPlayer
      && note->seqPlayer != &gSequencePlayers[SEQ_PLAYER_SFX]

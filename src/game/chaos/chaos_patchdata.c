@@ -2501,7 +2501,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 4,
         .durationImpossible = 5,
 
-        INCOMPATIBLE(CHAOS_PATCH_INVERTED_SOUND)
+        INCOMPATIBLE(CHAOS_PATCH_INVERTED_SOUND, CHAOS_PATCH_LUIGI)
         .activatedInitFunc  = chs_act_sound_effect_shuffle,
 
         .name               = "Sound Effect Shuffle",
@@ -2694,13 +2694,13 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "Fading Fantasy",
         .shortDescription   = "Fading teleports are all deactivated.",
     },
-    [CHAOS_PATCH_LUIGI] = { // TODO: Either add proper voice lines or pitch them up, Melee style
+    [CHAOS_PATCH_LUIGI] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 1,
         .duration           = 10,
 
-        INCOMPATIBLE(CHAOS_PATCH_MARIO_INVISIBLE, CHAOS_PATCH_POSER)
+        INCOMPATIBLE(CHAOS_PATCH_MARIO_INVISIBLE, CHAOS_PATCH_SOUND_EFFECT_SHUFFLE, CHAOS_PATCH_POSER)
         .frameUpdateFunc    = chs_update_luigi,
         .deactivationFunc   = chs_deact_luigi,
 
