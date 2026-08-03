@@ -181,7 +181,7 @@ const char *sMoreHudHeadlines[] = {
     VERSION_STRING " Out Now!",
     "That Last Death Was Really Embarrassing",
     "Ethan Wake Up",
-    "Eastmost Peninsula is the Secret",
+    "Eastmost Penninsula is the Secret",
     "New Study Finds Gamers Don't Touch Grass",
     "Press F1 for Help",
     "safsggi3wh Sorry My Cat Stepped on the Keyboard",
