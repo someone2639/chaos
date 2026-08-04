@@ -68,6 +68,9 @@ void bhv_bowser_tail_anchor_loop(void) {
     cur_obj_call_action_function(sBowserTailAnchorActions);
     // Position the tail
     o->oParentRelativePosX = 90.0f;
+    if(chaos_check_if_patch_active(CHAOS_PATCH_MARIO_SMALL)) {
+        o->oParentRelativePosY = (-50.0f / gMarioState->size);
+    }
 
     // Make it intangible while Bowser is dead
     if (o->parentObj->oAction == BOWSER_ACT_DEAD) {
