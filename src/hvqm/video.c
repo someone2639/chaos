@@ -109,6 +109,7 @@ int load_video_frame(void **streamp, VideoRing *vbuf) {
     // Get the next video record
 
     s32 record_size = get_record(&record_header, HVQM2_VIDEO, streamp);
+    video_remain--;
     if (record_size == -1) {
         video_remain = 0;
         return -1;
@@ -234,7 +235,6 @@ void show_next_frame(void **streamp) {
             return;
         }
         decode_video(currVBuf);
-        video_remain--;
         frames_elapsed++;
     }
     if (currVBuf->format != HVQM2_VIDEO_HOLD) {
