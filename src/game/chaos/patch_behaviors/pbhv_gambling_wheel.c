@@ -285,10 +285,10 @@ static void gwheel_type_act_negative_extend(void) {
     chaos_sort_active_patches();
 }
 
-static void gwheel_type_act_rank_1_positive(void)      { chs_activate_random_pos_neg_patch_of_severity(1, CHAOS_EFFECT_POSITIVE, TRUE, 2, CHAOS_DURATION_STARS); }
-static void gwheel_type_act_rank_2_positive(void)      { chs_activate_random_pos_neg_patch_of_severity(2, CHAOS_EFFECT_POSITIVE, TRUE, 2, CHAOS_DURATION_STARS); }
-static void gwheel_type_act_rank_3_positive(void)      { chs_activate_random_pos_neg_patch_of_severity(3, CHAOS_EFFECT_POSITIVE, TRUE, 2, CHAOS_DURATION_STARS); }
-static void gwheel_type_act_rank_3_positive_hard(void) { chs_activate_random_pos_neg_patch_of_severity(3, CHAOS_EFFECT_POSITIVE, TRUE, 4, CHAOS_DURATION_STARS); }
+static void gwheel_type_act_rank_1_positive(void)      { chs_activate_random_pos_neg_patch_of_severity(1, CHAOS_EFFECT_POSITIVE, TRUE, 3, CHAOS_DURATION_STARS); }
+static void gwheel_type_act_rank_2_positive(void)      { chs_activate_random_pos_neg_patch_of_severity(2, CHAOS_EFFECT_POSITIVE, TRUE, 3, CHAOS_DURATION_STARS); }
+static void gwheel_type_act_rank_3_positive(void)      { chs_activate_random_pos_neg_patch_of_severity(3, CHAOS_EFFECT_POSITIVE, TRUE, 3, CHAOS_DURATION_STARS); }
+static void gwheel_type_act_rank_3_positive_hard(void) { chs_activate_random_pos_neg_patch_of_severity(3, CHAOS_EFFECT_POSITIVE, TRUE, 5, CHAOS_DURATION_STARS); }
 static void gwheel_type_act_rank_1_negative(void)      { chs_activate_random_pos_neg_patch_of_severity(1, CHAOS_EFFECT_NEGATIVE, TRUE, 2, CHAOS_DURATION_STARS); }
 static void gwheel_type_act_rank_2_negative(void)      { chs_activate_random_pos_neg_patch_of_severity(2, CHAOS_EFFECT_NEGATIVE, TRUE, 2, CHAOS_DURATION_STARS); }
 static void gwheel_type_act_rank_3_negative(void)      { chs_activate_random_pos_neg_patch_of_severity(3, CHAOS_EFFECT_NEGATIVE, TRUE, 2, CHAOS_DURATION_STARS); }
@@ -394,7 +394,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .conditionalFunc = gwheel_type_cond_rank_3_positive_hard,
         .activationFunc  = gwheel_type_act_rank_3_positive_hard,
 
-        .description     = "Gain a positive rank 3 patch that will last at most four stars.",
+        .description     = "Gain a positive rank 3 patch that will last at most five stars.",
     },
 
     /* GWHEEL_TYPE_POSITIVE */
@@ -440,7 +440,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .conditionalFunc = NULL,
         .activationFunc  = gwheel_type_act_rank_1_positive,
 
-        .description     = "Gain a positive rank 1 patch that will last at most two stars.",
+        .description     = "Gain a positive rank 1 patch that will last at most three stars.",
     },
     [GWHEEL_OPT_POS_RANK_2] = {
         .id              = GWHEEL_OPT_POS_RANK_2,
@@ -451,7 +451,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .conditionalFunc = NULL,
         .activationFunc  = gwheel_type_act_rank_2_positive,
 
-        .description     = "Gain a positive rank 2 patch that will last at most two stars.",
+        .description     = "Gain a positive rank 2 patch that will last at most three stars.",
     },
     [GWHEEL_OPT_POS_RANK_3] = {
         .id              = GWHEEL_OPT_POS_RANK_3,
@@ -462,7 +462,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
         .conditionalFunc = gwheel_type_cond_rank_3_positive,
         .activationFunc  = gwheel_type_act_rank_3_positive,
 
-        .description     = "Gain a positive rank 3 patch that will last at most two stars.",
+        .description     = "Gain a positive rank 3 patch that will last at most three stars.",
     },
 
     /* GWHEEL_TYPE_NEUTRAL */
