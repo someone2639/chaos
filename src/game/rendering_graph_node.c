@@ -298,6 +298,8 @@ void geo_process_ortho_projection(struct GraphNodeOrthoProjection *node) {
     }
 }
 
+#define MAX_FOV 145
+
 /**
  * Process a perspective projection node.
  */
@@ -323,6 +325,10 @@ void geo_process_perspective(struct GraphNodePerspective *node) {
         }
         if (chaos_check_if_patch_active(CHAOS_PATCH_INCREASED_FOV)) {
             fov *= 3.0f;
+        }
+
+        if(fov > MAX_FOV) {
+            fov = MAX_FOV;
         }
 
         if (chaos_check_if_patch_active(CHAOS_PATCH_ORTHO) && !gInActSelect) {
