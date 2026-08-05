@@ -784,6 +784,8 @@ void save_file_set_instant_input_active(u8 active) {
     }
 
     gMainMenuDataModified = TRUE;
+    save_main_menu_data();
+
     if (gAllowInstantInput && gSaveBuffer.menuData.instantInput) {
         sRenderingFramebuffer = sRenderedFramebuffer;
     } else {
