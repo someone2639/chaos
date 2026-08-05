@@ -95,7 +95,7 @@ typedef u16 CFBPix;
 /*
  * PCM buffer specifications
  */
-#define  NUM_PCMBUFs    2  /* Number of PCM buffers (2 or more, at least 3 recommended) */
+#define  NUM_PCMBUFs     3  /* Number of PCM buffers (2 or more, at least 3 recommended) */
 #define  PCMBUF_SIZE     0x2000
 
 /*
@@ -135,18 +135,17 @@ void Main(void *);
  */
 void romcpy(void *dest, void *src, u32 len, s32 pri, OSIoMesg *mb, OSMesgQueue *mq);
 void dma_copy(void *dest, void *src, u32 len, OSIoMesg *msg);
-s32 get_record(HVQM2Record *headerbuf, u16 type, void **stream);
-void load_record(u32 record_size, u16 type, void *bodybuf, void **streamp);
-void skip_record(u32 record_size, void **streamp);
+s32 get_record(HVQM2Record *headerbuf, u16 type, void **stream, void *endDataAddr);
+s32 load_record(s32 record_size, u16 type, void *bodybuf, void **streamp, void *endDataAddr);
+s32 skip_record(s32 record_size, OSIoMesg *mb, void **streamp, void *endDataAddr);
 
 typedef struct {
     void *streamp; // ptr to first aud record
+    void *end_addr;
     u32 remain; // remaining audio frames
     u32 samples_per_sec;
     u32 num_channels;
 } hvqmAudThreadParams;
-
-extern HVQM2Header hvqm_header;
 
 // Buffers
 extern u16 hvqwork[(MAXWIDTH/8)*(MAXHEIGHT/4)*4];       /* Work buffer for HVQM2 decoder */
@@ -160,8 +159,8 @@ extern OSMesgQueue spMesgQ;
 
 extern void init_dma();
 extern void init_hvqm_task();
-extern void init_video(void **, u32);
-extern void show_next_frame(void **);
+extern void init_video(void **, u32, void *);
+extern void show_next_frame(void **, void *);
 extern void hvqm_drawHLE();
 
 // fault

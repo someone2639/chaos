@@ -10,6 +10,7 @@
 /* 1998-12-15 */
 
 #include <ultra64.h>
+#include "macros.h"
 #include "system.h"
 #include "game/game_init.h"
 

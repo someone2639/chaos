@@ -2,6 +2,7 @@
 #include <PR/os_internal_reg.h>
 #include <HVQM2File.h>
 #include <hvqm2dec.h>
+#include "macros.h"
 #include "system.h"
 #include "profiler.h"
 #include "buffers/framebuffers.h"
@@ -14,6 +15,10 @@ static OSMesg spMesgBuf;
 OSTask hvqtask;     // RSP task data
 HVQM2Arg hvq_sparg; // Parameter for the HVQM2 microcode
 
+extern volatile s32 hvqm_audio_done;
+extern volatile s32 hvqm_video_done;
+extern OSIoMesg dmaIOMesg;
+
 typedef struct VideoRing {
     struct VideoRing *next;
     struct VideoRing *prev;
@@ -24,7 +29,7 @@ typedef struct VideoRing {
     u64 endtime_us;
 } VideoRing;
 
-int load_video_frame(void **streamp, VideoRing *vbuf);
+int load_video_frame(void **streamp, VideoRing *vbuf, void *endDataAddr);
 void decode_video(VideoRing *vbuf);
 extern u64 playtime_us, disptime_us;
 u64 disptime_us = 0;
@@ -36,7 +41,6 @@ VideoRing vbuffer[NUM_CFBs] = {
 };
 VideoRing *currVBuf;
 
-volatile s32 video_remain = 0;
 u32 usec_per_frame = 0;
 u32 frames_elapsed = 0;
 
@@ -45,14 +49,13 @@ u32 video_playing() {
 }
 
 void hvqm_reset_bss() {
-    video_remain = 0;
     usec_per_frame = 0;
     frames_elapsed = 0;
     currVBuf = 0;
     playtime_us = disptime_us = 0;
 }
 
-void init_video(void **streamp, u32 offset) {
+void init_video(void **streamp, u32 offset, void *endDataAddr) {
     // new_profiler("HVQM Part1 (CPU)");
     // new_profiler("HVQM Part2 (RSP)");
     void hvqm_clearCurrentFB(void *buf, u32 size);
@@ -65,9 +68,9 @@ void init_video(void **streamp, u32 offset) {
     }
 
     for (int i = 0; i < NUM_CFBs; i++) {
-        int _ = load_video_frame(streamp, &vbuffer[i]);
+        int _ = load_video_frame(streamp, &vbuffer[i], endDataAddr);
         if (_ == -1) {
-            video_remain = 0;
+            hvqm_video_done = TRUE;
             return;
         }
         decode_video(&vbuffer[i]);
@@ -104,18 +107,20 @@ void init_hvqm_task() {
 
 
 // Loads the data required to decode a video frame
-int load_video_frame(void **streamp, VideoRing *vbuf) {
-    HVQM2Record record_header ALIGNED(16);
+int load_video_frame(void **streamp, VideoRing *vbuf, void *endDataAddr) {
+    ALIGNED16 union {
+        ALIGNED16 u8 _fill[ALIGN16(sizeof(HVQM2Record))];
+        ALIGNED16 HVQM2Record record;
+    } hdr;
     // Get the next video record
 
-    s32 record_size = get_record(&record_header, HVQM2_VIDEO, streamp);
-    video_remain--;
-    if (record_size == -1) {
-        video_remain = 0;
+    s32 record_size = get_record(&hdr.record, HVQM2_VIDEO, streamp, endDataAddr);
+    if (record_size < 0) {
+        hvqm_video_done = TRUE;
         return -1;
     }
 
-    vbuf->format = load16(record_header.format);
+    vbuf->format = load16(hdr.record.format);
 
     // A frame is scheduled for this many us past the start of the video
     u64 starttime_us = (frames_elapsed * usec_per_frame);
@@ -133,16 +138,17 @@ int load_video_frame(void **streamp, VideoRing *vbuf) {
             // Skip only as far as needed to sync up again, or to the next keyframe.
             //  Whichever comes first.
             while (playtime_us > starttime_us) {
-                skip_record(record_size, streamp);
+                if (skip_record(record_size, &dmaIOMesg, streamp, endDataAddr)) {
+                    return -1;
+                }
                 starttime_us += usec_per_frame;
                 skipped_frames++;
                 frames_elapsed++;
-                record_size = get_record(&record_header, HVQM2_VIDEO, streamp);
-                video_remain--;
-                if (video_remain <= 0) {
+                record_size = get_record(&hdr.record, HVQM2_VIDEO, streamp, endDataAddr);
+                if (record_size < 0) {
                     return -1;
                 }
-                if (record_header.format == HVQM2_VIDEO_KEYFRAME) {
+                if (hdr.record.format == HVQM2_VIDEO_KEYFRAME) {
                     // osSyncPrintf("(keyframed)\n");
                     // skup further if we're REALLY far behind
                     if (playtime_us > (starttime_us + (usec_per_frame * 2))) {
@@ -155,13 +161,15 @@ int load_video_frame(void **streamp, VideoRing *vbuf) {
             }
             // osSyncPrintf("(SKIPPED %d FRAMES)\n", skipped_frames);
         }
-        if (video_remain <= 0) {
+        if (hvqm_video_done) {
             return -1;
         } else {
-            vbuf->format = load16(record_header.format);
+            vbuf->format = load16(hdr.record.format);
         }
     }
-    load_record(record_size, HVQM2_VIDEO, hvqbuf, streamp);
+    if (load_record(record_size, HVQM2_VIDEO, hvqbuf, streamp, endDataAddr)) {
+        return -1;
+    }
 
     vbuf->endtime_us = starttime_us;
     return 0;
@@ -218,7 +226,7 @@ void hold_all_frames(u32 count) {
     }
 }
 
-void show_next_frame(void **streamp) {
+void show_next_frame(void **streamp, void *endDataAddr) {
     if (video_playing()) {
         // if (disptime_us > (playtime_us + (usec_per_frame * 10))) {
         //     u32 count = (disptime_us - playtime_us) / (usec_per_frame);
@@ -229,9 +237,9 @@ void show_next_frame(void **streamp) {
     }
     if (currVBuf->endtime_us <= playtime_us) {
         currVBuf = currVBuf->next;
-        int _ = load_video_frame(streamp, currVBuf);
+        int _ = load_video_frame(streamp, currVBuf, endDataAddr);
         if (_ == -1) {
-            video_remain = 0;
+            hvqm_video_done = TRUE;
             return;
         }
         decode_video(currVBuf);
@@ -247,15 +255,7 @@ void show_next_frame(void **streamp) {
     }
 }
 
-void reset_video(void **streamp, u32 remainbase, u32 offset) {
-    video_remain = remainbase;
-    frames_elapsed = 0;
-    osWritebackDCacheAll();
-    init_video(streamp, offset);
-    disptime_us = 0;
-}
-
 // Currently just a wrapper
-void VideoMain(void **streamp) {
-    show_next_frame(streamp);
+void VideoMain(void **streamp, void *endDataAddr) {
+    show_next_frame(streamp, endDataAddr);
 }
