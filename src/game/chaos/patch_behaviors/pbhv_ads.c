@@ -8,45 +8,36 @@
 #include "game/emutest.h"
 #include "game/game_init.h"
 
-#define HVQM_FILE(ptr) _ ## ptr ## SegmentRomStart
-#define HVQM_PTR(ptr) (u32*) &HVQM_FILE(ptr)
-#define HVQM_EXTERN(ptr) extern u32 *HVQM_FILE(ptr)
-
 #define AD_MINUTES 5
 
-HVQM_EXTERN(anime);
-HVQM_EXTERN(blj);
-HVQM_EXTERN(chaos);
-HVQM_EXTERN(chaos2);
-HVQM_EXTERN(chaos3);
-HVQM_EXTERN(chat);
-HVQM_EXTERN(cod);
-HVQM_EXTERN(krabs);
-HVQM_EXTERN(ligma);
-HVQM_EXTERN(fushigi);
-HVQM_EXTERN(pizza);
-HVQM_EXTERN(dream);
-HVQM_EXTERN(show);
-HVQM_EXTERN(castle);
-HVQM_EXTERN(miku);
-HVQM_EXTERN(miku2);
+#define HVQM_ENTRIES    \
+HVQM_MACRO(blj)         \
+HVQM_MACRO(chaos)       \
+HVQM_MACRO(chaos2)      \
+HVQM_MACRO(crash)       \
+HVQM_MACRO(cod)         \
+HVQM_MACRO(krabs)       \
+HVQM_MACRO(fushigi)     \
+HVQM_MACRO(pizza)       \
+HVQM_MACRO(dream)       \
+HVQM_MACRO(show)        \
+HVQM_MACRO(castle)      \
+HVQM_MACRO(miku)        \
+HVQM_MACRO(towncountry) \
+HVQM_MACRO(slapchop)    \
+HVQM_MACRO(roguechaos)  \
 
+#define HVQM_FILE(ptr) _ ## ptr ## SegmentRomStart
+#define HVQM_PTR(ptr) (u32*) &HVQM_FILE(ptr)
+#define HVQM_MACRO(ptr) extern u32 *HVQM_FILE(ptr);
+HVQM_ENTRIES
+#undef HVQM_MACRO
+
+#define HVQM_MACRO(ptr) (u32*) &HVQM_FILE(ptr),
 u32 *chsHVQMTable[] = {
-    HVQM_PTR(blj),
-    HVQM_PTR(chaos),
-    HVQM_PTR(chaos2),
-    HVQM_PTR(chaos3),
-    HVQM_PTR(chat),
-    HVQM_PTR(cod),
-    HVQM_PTR(krabs),
-    HVQM_PTR(pizza),
-    HVQM_PTR(fushigi),
-    HVQM_PTR(dream),
-    HVQM_PTR(show),
-    HVQM_PTR(castle),
-    HVQM_PTR(miku),
-    HVQM_PTR(miku2),
+HVQM_ENTRIES
 };
+
 u32 chsCurrentAd = 0;
 
 void chs_act_serve_ads(void) {
@@ -104,5 +95,5 @@ void chs_debug_serve_ads(void) {
         chsCurrentAd = 0;
     }
 
-    hvqm_play(chsHVQMTable[adToPlay]);
+    hvqm_play(HVQM_PTR(chaos));
 }
