@@ -211,18 +211,17 @@ void AudioMain(void *arg) {
 
         hvqm_audio_done = TRUE;
 
-        // NOTE: Don't wait for video in case it freezes
-        // s32 time = osGetTime();
-        // while (!hvqm_video_done) {
-        //     if (OS_CYCLES_TO_USEC(osGetTime() - time) > 1000000) {
-        //         break;
-        //     }
-        //     osSyncPrintf("audio yield\n");
-        //     osYieldThread();
-        // }
+        // Lower priority to match video thread so that it can continue working while we yield
+        osSetThreadPri(NULL, VID_PRIORITY);
 
-        if (!hvqm_video_done) {
-            osSyncPrintf("HVQM audio finished first...is video stuck?\n");
+        // NOTE: Don't wait for video if it takes longer than 1 second to finish after audio is done
+        s32 time = osGetTime();
+        while (!hvqm_video_done) {
+            if (OS_CYCLES_TO_USEC(osGetTime() - time) > 1000000) {
+                break;
+            }
+            osSyncPrintf("Waiting on HVQM video thread\n");
+            osYieldThread();
         }
 
         // osSyncPrintf("audio pre-vi\n");

@@ -119,7 +119,7 @@ enum Threads {
 
 #define IDLE_PRIORITY         10
 #define MAIN_PRIORITY         10
-#define VID_PRIORITY          14
+#define VID_PRIORITY          11
 #define AUD_PRIORITY          14
 #define CONT_PRIORITY         12
 
