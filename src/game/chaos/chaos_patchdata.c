@@ -536,7 +536,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 15,
         .durationImpossible = 18,
 
-        INCOMPATIBLE(CHAOS_PATCH_HEALTH_DRAIN, CHAOS_PATCH_A_BUTTON_CHALLENGE, CHAOS_PATCH_HEALING_BONUS)
+        INCOMPATIBLE(CHAOS_PATCH_HEALTH_DRAIN, CHAOS_PATCH_A_BUTTON_CHALLENGE, CHAOS_PATCH_HEALING_BONUS, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE)
 
         .name               = "Unaffordable Health Care",
         .shortDescription   = "Coins no longer heal Mario.",
@@ -2127,7 +2127,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 5,
         .durationImpossible = 6,
 
-        INCOMPATIBLE(CHAOS_PATCH_WALKIES, CHAOS_PATCH_STAR_MEDALLION)
+        INCOMPATIBLE(CHAOS_PATCH_WALKIES, CHAOS_PATCH_STAR_MEDALLION, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE)
         .conditionalFunc    = chs_cond_push_back,
         .frameUpdateFunc    = chs_update_push_back,
 
@@ -2228,9 +2228,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
-        .duration           = 5,
-        .durationHard       = 6,
-        .durationImpossible = 7,
+        .duration           = 4,
+        .durationHard       = 5,
+        .durationImpossible = 6,
 
         INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_B, CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SWAPPED_ZR_AB, CHAOS_PATCH_QUICKTIME, CHAOS_PATCH_TETRIS)
 
@@ -2241,9 +2241,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
-        .duration           = 6,
-        .durationHard       = 7,
-        .durationImpossible = 8,
+        .duration           = 5,
+        .durationHard       = 6,
+        .durationImpossible = 7,
 
         INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_A, CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SWAPPED_ZR_AB, CHAOS_PATCH_QUICKTIME, CHAOS_PATCH_TETRIS)
 
@@ -2254,9 +2254,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
-        .duration           = 5,
-        .durationHard       = 6,
-        .durationImpossible = 7,
+        .duration           = 4,
+        .durationHard       = 5,
+        .durationImpossible = 6,
 
         INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_A, CHAOS_PATCH_BUTTON_BROKEN_B, CHAOS_PATCH_SWAPPED_ZR_AB, CHAOS_PATCH_QUICKTIME, CHAOS_PATCH_TETRIS, CHAOS_PATCH_COLLECTORS_ANXIETY)
 
@@ -2528,7 +2528,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
             .durationHard       = 2,
             .durationImpossible = 3,
 
-            INCOMPATIBLE(CHAOS_PATCH_NO_FALL_DAMAGE, CHAOS_PATCH_COSMIC_RAYS, CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_LOSEMOVE_LEDGE_GRAB, CHAOS_PATCH_SONIC_SIMULATOR, CHAOS_PATCH_DAMAGE_LOTTERY, CHAOS_PATCH_GREEN_DEMON)
+            INCOMPATIBLE(CHAOS_PATCH_NO_FALL_DAMAGE, CHAOS_PATCH_COSMIC_RAYS, CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_LOSEMOVE_LEDGE_GRAB, CHAOS_PATCH_SONIC_SIMULATOR, CHAOS_PATCH_DAMAGE_LOTTERY, CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_NOHEAL_COINS, CHAOS_PATCH_PUSH_BACK)
 
             .name               = "Unrealistic Fall Damage",
             .shortDescription   = "Falling from any height whatsoever will crush Mario's stubby little legs.",
