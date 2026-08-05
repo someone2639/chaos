@@ -379,20 +379,31 @@ void chs_lvlupdate_spawn_on_shell(void) {
     struct ChaosActiveEntry *this;
     chaos_find_first_active_patch(CHAOS_PATCH_SPAWN_ON_SHELL, &this);
 
+    if (this->frameTimer >= 0xFFFFFF) {
+        return;
+    }
+    this->frameTimer = 0xFFFFFF;
+
     if (gCurrCourseNum == COURSE_NONE 
-        || gCurrLevelNum == LEVEL_SA
-        || gCurrLevelNum == LEVEL_BOWSER_1
-        || gCurrLevelNum == LEVEL_BOWSER_2
-        || gCurrLevelNum == LEVEL_BOWSER_3) {
-        this->frameTimer = 0xFFFFFF;
+                || gCurrLevelNum == LEVEL_SA
+                || gCurrLevelNum == LEVEL_TOTWC
+                || gCurrLevelNum == LEVEL_BOWSER_1
+                || gCurrLevelNum == LEVEL_BOWSER_2
+                || gCurrLevelNum == LEVEL_BOWSER_3
+    ) {
         return;
     }
 
-    if (gMarioState->health <= 0xFF) {
+    if (gMarioState->health <= 0xFF
+                || gMarioState->action == ACT_DEATH_EXIT
+                || gMarioState->action == ACT_UNUSED_DEATH_EXIT
+                || gMarioState->action == ACT_FALLING_DEATH_EXIT
+                || gMarioState->action == ACT_SPECIAL_DEATH_EXIT
+    ) {
         return;
     }
 
-    if (this->frameTimer < 0xFFFFFF && !(gMarioState->action & ACT_FLAG_RIDING_SHELL) && gMarioObject) {
+    if (!(gMarioState->action & ACT_FLAG_RIDING_SHELL) && gMarioObject) {
         struct Object *obj = spawn_object(gMarioObject, MODEL_KOOPA_SHELL, bhvKoopaShell);
         gMarioState->interactObj = obj;
         gMarioState->usedObj = obj;
