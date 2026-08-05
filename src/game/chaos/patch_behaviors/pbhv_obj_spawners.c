@@ -388,8 +388,12 @@ void chs_lvlupdate_spawn_on_shell(void) {
         return;
     }
 
-    if (this->frameTimer < 0xFFFFFF && !(gMarioState->action & ACT_FLAG_RIDING_SHELL) && gMarioState->marioObj) {
-        struct Object *obj = spawn_object(gMarioState->marioObj, MODEL_KOOPA_SHELL, bhvKoopaShell);
+    if (gMarioState->health <= 0xFF) {
+        return;
+    }
+
+    if (this->frameTimer < 0xFFFFFF && !(gMarioState->action & ACT_FLAG_RIDING_SHELL) && gMarioObject) {
+        struct Object *obj = spawn_object(gMarioObject, MODEL_KOOPA_SHELL, bhvKoopaShell);
         gMarioState->interactObj = obj;
         gMarioState->usedObj = obj;
         gMarioState->riddenObj = obj;
