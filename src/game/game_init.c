@@ -1087,11 +1087,13 @@ void thread5_game_loop(UNUSED void *arg) {
         if (gPlayer1Controller->buttonPressed & R_TRIG) {
             chaos_remove_expired_entry(0, "%s: Removed patch!");
         }
-        if ((gPlayer1Controller->buttonPressed & (A_BUTTON|L_TRIG)) && (gPlayer1Controller->buttonDown & (A_BUTTON|L_TRIG)) == (A_BUTTON | L_TRIG)) {
-            extern void chs_debug_serve_ads(void);
-            chs_debug_serve_ads();
-        }
 #endif // SOMEONE2639_CRAZY_EXPERIMENTS
+        if ((gPlayer1Controller->buttonPressed & (A_BUTTON|L_TRIG)) && (gPlayer1Controller->buttonDown & (A_BUTTON|L_TRIG)) == (A_BUTTON | L_TRIG)) {
+            // extern void chs_debug_serve_ads(void);
+            // chs_debug_serve_ads();
+            // HVQM_PLAY(mariodrip);
+            HVQM_PLAY(mariodrip);
+        }
         display_and_vsync();
 
         // when debug info is enabled, print the "BUF %d" information.

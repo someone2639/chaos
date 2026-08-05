@@ -133,6 +133,9 @@ int load_video_frame(void **streamp, VideoRing *vbuf) {
             // Skip only as far as needed to sync up again, or to the next keyframe.
             //  Whichever comes first.
             while (playtime_us > starttime_us) {
+                if (video_remain <= 0) {
+                    return -1;
+                }
                 skip_record(record_size, streamp);
                 starttime_us += usec_per_frame;
                 skipped_frames++;
