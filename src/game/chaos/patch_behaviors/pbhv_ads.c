@@ -95,5 +95,5 @@ void chs_debug_serve_ads(void) {
         chsCurrentAd = 0;
     }
 
-    hvqm_play(HVQM_PTR(chaos));
+    hvqm_play(chsHVQMTable[adToPlay]);
 }
