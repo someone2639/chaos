@@ -13,7 +13,6 @@
 #define HVQM_ENTRIES    \
 HVQM_MACRO(blj)         \
 HVQM_MACRO(chaos)       \
-HVQM_MACRO(chaos2)      \
 HVQM_MACRO(crash)       \
 HVQM_MACRO(cod)         \
 HVQM_MACRO(krabs)       \
@@ -26,6 +25,8 @@ HVQM_MACRO(miku)        \
 HVQM_MACRO(towncountry) \
 HVQM_MACRO(slapchop)    \
 HVQM_MACRO(roguechaos)  \
+HVQM_MACRO(webuygolf)   \
+HVQM_MACRO(easthills)   \
 
 #define HVQM_FILE(ptr) _ ## ptr ## SegmentRomStart
 #define HVQM_PTR(ptr) (u32*) &HVQM_FILE(ptr)
