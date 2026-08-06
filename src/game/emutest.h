@@ -1,6 +1,9 @@
 #ifndef EMUTEST_H
 #define EMUTEST_H
 
+// Emulators that the Instant Input patch should not be applied to
+#define INSTANT_INPUT_BLACKLIST (EMU_CONSOLE | EMU_WIIVC | EMU_ARES | EMU_SIMPLE64 | EMU_CEN64)
+
 enum Emulator {
     EMU_WIIVC = 0x0001,
     EMU_PROJECT64_ANY = 0x001E,
@@ -43,5 +46,7 @@ extern int gLibplABI;
 
 // Included for backwards compatibility when upgrading from HackerSM64 2.0
 #define gIsConsole ((gEmulator & EMU_CONSOLE) != 0)
+
+#define gInstantInputBlacklist ((gEmulator & INSTANT_INPUT_BLACKLIST) != 0)
 
 #endif

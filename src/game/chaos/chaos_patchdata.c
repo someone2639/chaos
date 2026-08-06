@@ -1603,10 +1603,11 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationImpossible = 6,
 
         INCOMPATIBLE(CHAOS_PATCH_20_FPS, CHAOS_PATCH_60_FPS)
+        .conditionalFunc    = chs_cond_45_fps,
 
         .name               = "45 FPS",
         .shortDescription   = "My internet's living, I'm adding frames, Grandma's living, she's adding frames...",
-        .longDescription    = "This maaaaaaay not run at a consistent 45 FPS while running on hardware. Whether that makes the game easier or harder is for the player to decide.",
+        // .longDescription    = "This maaaaaaay not run at a consistent 45 FPS while running on hardware. Whether that makes the game easier or harder is for the player to decide.",
     },
     [CHAOS_PATCH_60_FPS] = {
         .durationType       = CHAOS_DURATION_STARS,
@@ -1617,10 +1618,11 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationImpossible = 7,
 
         INCOMPATIBLE(CHAOS_PATCH_20_FPS, CHAOS_PATCH_45_FPS)
+        .conditionalFunc    = chs_cond_60_fps,
 
         .name               = "60 FPS (Double Time!)",
         .shortDescription   = "It's like playing the game two times at the same time!",
-        .longDescription    = "This will probably not regularly be hitting 60 FPS while running on hardware...hopefully console players enjoy the choppy framerates!",
+        // .longDescription    = "This will probably not regularly be hitting 60 FPS while running on hardware...hopefully console players enjoy the choppy framerates!",
     },
     [CHAOS_PATCH_TOP_DOWN_CAMERA] = { // TODO: BUG: Joystick is busted when twirling with top down camera, also TTC is completely unplayable
         .durationType       = CHAOS_DURATION_STARS,

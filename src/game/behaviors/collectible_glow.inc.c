@@ -145,7 +145,7 @@ static void new_glow_ray(s32 index) {
 void collectible_glow_init(void) {
     s32 numRays = NUM_RAYS;
     s32 numGlowBGs = NUM_GLOW_BGS;
-    if (gIsConsole) {
+    if (gInstantInputBlacklist) {
         numRays = NUM_RAYS_CONSOLE;
         numGlowBGs = NUM_GLOW_BGS_CONSOLE;
     }
@@ -353,7 +353,7 @@ static void collectible_glow_update_ray(s32 index) {
 void collectible_glow_update(void) {
     s32 numRays = NUM_RAYS;
     s32 numGlowBGs = NUM_GLOW_BGS;
-    if (gIsConsole) {
+    if (gInstantInputBlacklist) {
         numRays = NUM_RAYS_CONSOLE;
         numGlowBGs = NUM_GLOW_BGS_CONSOLE;
     }
@@ -411,7 +411,7 @@ Gfx *geo_obj_render_collectible_glow_bgs(s32 callContext, UNUSED struct GraphNod
         Vtx *verts;
         
         numGlowBGs = NUM_GLOW_BGS;
-        if (gIsConsole) {
+        if (gInstantInputBlacklist) {
             numGlowBGs = NUM_GLOW_BGS_CONSOLE;
         }
 
@@ -459,7 +459,7 @@ Gfx *geo_obj_render_collectible_glow_rays(s32 callContext, UNUSED struct GraphNo
         Vtx *verts;
 
         numRays = NUM_RAYS;
-        if (gIsConsole) {
+        if (gInstantInputBlacklist) {
             numRays = NUM_RAYS_CONSOLE;
         }
 

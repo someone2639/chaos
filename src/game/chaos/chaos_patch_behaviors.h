@@ -157,6 +157,8 @@ u8 chs_cond_no_zbuffer(void);
 u8 chs_cond_increased_fov(void);
 u8 chs_cond_low_resolution(void);
 u8 chs_cond_no_skybox(void);
+u8 chs_cond_45_fps(void);
+u8 chs_cond_60_fps(void);
 u8 chs_cond_dizzy_objects(void);
 u8 chs_cond_camera_lag(void);
 u8 chs_cond_darkness(void);

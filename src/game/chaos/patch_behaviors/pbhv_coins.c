@@ -184,6 +184,6 @@ u8 chs_collectors_anxiety_can_collect_star(void) {
 
 u8 chs_cond_coin_size(void) {
     u32 count = chaos_count_active_instances(CHAOS_PATCH_COIN_SIZE);
-    return (count < 3 && (count < 2 || !(gEmulator & EMU_CONSOLE)));
+    return (count < 3 && (count < 2 || !gInstantInputBlacklist));
 }
 

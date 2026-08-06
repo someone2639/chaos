@@ -20,10 +20,21 @@ u8 chs_cond_no_zbuffer(void)       { return !gConfig.disableHarshVisuals; }
 
 u8 chs_cond_increased_fov(void) { return (!(gEmulator & EMU_CONSOLE) || !chaos_check_if_patch_active(CHAOS_PATCH_TOP_DOWN_CAMERA)); }
 
-u8 chs_cond_low_resolution(void) { return (!(gEmulator & (EMU_CONSOLE | EMU_ARES)) && gFBEEnabled && (!gConfig.disableHarshVisuals)); }
+u8 chs_cond_low_resolution(void) { return (!gInstantInputBlacklist && gFBEEnabled && (!gConfig.disableHarshVisuals)); }
 
 u8 chs_cond_no_skybox(void) {
     return !gConfig.disableHarshVisuals;
+}
+
+// Skipping the VI for 45/60 FPS is capable of causing the game thread to hang on accurate emulators
+// TODO: Investigate why this happens in ultraSM64 but not HackerSM64
+u8 chs_cond_45_fps(void) {
+    return !gInstantInputBlacklist;
+}
+
+// Console and accurate emulators won't be hitting 60FPS very often anyway
+u8 chs_cond_60_fps(void) {
+    return !gInstantInputBlacklist;
 }
 
 u8 chs_cond_dizzy_objects(void) {
@@ -35,7 +46,7 @@ u8 chs_cond_camera_lag(void) {
 }
 
 u8 chs_cond_darkness(void) {
-    return !(gEmulator & (EMU_CONSOLE | EMU_ARES)); // Probably laggy
+    return !gInstantInputBlacklist; // Probably laggy
 }
 
 void chs_act_sideways_camera(void) {

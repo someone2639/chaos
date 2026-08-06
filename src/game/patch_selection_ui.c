@@ -898,7 +898,7 @@ void render_select_patch_text(enum ChaosPatchSpecialEvent event) {
     Renders black bars on the side of the patch select menu so youtubers will stop uploading playthroughs featuring extremely broken graphics
 */
 void render_cringe_blinders() {
-    if(gIsConsole || (gConfig.widescreen & WIDE_SCREEN_UI)) return; // There's no good way to test for viewport hack as far as I'm aware, but we can at least avoid wasting time on console.
+    if(gInstantInputBlacklist || (gConfig.widescreen & WIDE_SCREEN_UI)) return; // There's no good way to test for viewport hack as far as I'm aware, but we can at least avoid wasting time on console.
     Vtx *blinderVtx = alloc_display_list(sizeof(Vtx) * 8);
     Vec2s pos[8] = {
         {-70, SCREEN_HEIGHT},
