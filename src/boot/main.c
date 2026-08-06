@@ -455,6 +455,9 @@ void thread3_main(UNUSED void *arg) {
             case MESG_NMI_REQUEST:
                 handle_nmi_request();
                 break;
+            case MESG_RCP_HUNG:
+                alert_rcp_hung_up();
+                break;
         }
     }
 }
