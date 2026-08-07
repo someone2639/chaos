@@ -95,7 +95,7 @@ void bhv_water_bomb_spawner_chaos_update(void) {
             o->oWaterBombSpawnerTimeToSpawn--;
         } else {
             u8 shouldSpawnWaterBomb = TRUE;
-            f32 ceilHeight = 2000.0f;
+            f32 ceilHeight = 3000.0f;
             Vec3f hitpos;
             struct Surface *surf = NULL;
             Vec3f pos = {gMarioObject->oPosX, gMarioObject->oPosY + ceilHeight, gMarioObject->oPosZ};
@@ -135,7 +135,7 @@ void bhv_water_bomb_spawner_chaos_update(void) {
                 }
             }
             
-            o->oWaterBombSpawnerTimeToSpawn = random_linear_offset(0, 150);
+            o->oWaterBombSpawnerTimeToSpawn = random_linear_offset(90, 150);
         }
     }
 }

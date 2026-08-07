@@ -532,9 +532,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
-        .duration           = 12,
-        .durationHard       = 15,
-        .durationImpossible = 18,
+        .duration           = 10,
+        .durationHard       = 12,
+        .durationImpossible = 14,
 
         INCOMPATIBLE(CHAOS_PATCH_HEALTH_DRAIN, CHAOS_PATCH_A_BUTTON_CHALLENGE, CHAOS_PATCH_HEALING_BONUS, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE)
 
@@ -1785,7 +1785,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc    = chs_cond_cartridge_tilt,
 
         .name               = "Cartridge Tilt",
-        .shortDescription   = "GEDDAN",
+        .shortDescription   = "GEDDAN! Messes up the animations for all objects.",
     },
     [CHAOS_PATCH_CORRUPTION] = {
         .durationType       = CHAOS_DURATION_STARS,
@@ -1957,9 +1957,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 3,
         .isStackable        = TRUE,
         .affectsPatchSelect = TRUE,
-        .duration           = 5,
-        .durationHard       = 6,
-        .durationImpossible = 7,
+        .duration           = 4,
+        .durationHard       = 4,
+        .durationImpossible = 5,
 
         .conditionalFunc    = chs_cond_remove_selectable_patch,
 
@@ -2024,9 +2024,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
         .affectsPatchSelect = TRUE,
-        .duration           = 5,
-        .durationHard       = 5,
-        .durationImpossible = 5,
+        .duration           = 3,
+        .durationHard       = 3,
+        .durationImpossible = 4,
 
         INCOMPATIBLE(CHAOS_PATCH_POSITIVE_EXTENSION)
         .conditionalFunc    = chs_cond_negative_extension,
