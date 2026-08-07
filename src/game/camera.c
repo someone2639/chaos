@@ -3122,7 +3122,7 @@ void mode_cannon_camera(struct Camera *c) {
     sLakituPitch = 0;
     gCameraMovementFlags &= ~CAM_MOVING_INTO_MODE;
     c->nextYaw = update_in_cannon(c, c->focus, c->pos);
-    if (gPlayer1Controller->buttonPressed & A_BUTTON) {
+    if (gMarioState->input & INPUT_A_PRESSED) {
         set_camera_mode(c, CAMERA_MODE_BEHIND_MARIO, 1);
         sPanDistance = 0.f;
         sCannonYOffset = 0.f;
