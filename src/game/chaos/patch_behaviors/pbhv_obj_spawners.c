@@ -25,7 +25,7 @@ static Vec3f demonPos;
 static s32 spawnDemon;
 
 u8 chs_cond_green_demon(void) {
-    return (gChaosDifficulty != CHAOS_DIFFICULTY_EASY);
+    return (gChaosDifficulty >= CHAOS_DIFFICULTY_HARD);
 }
 
 void chs_act_green_demon(void) {

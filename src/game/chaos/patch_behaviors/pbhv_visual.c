@@ -26,7 +26,7 @@ u8 chs_cond_no_skybox(void) {
     return !gConfig.disableHarshVisuals;
 }
 
-// Skipping the VI for 45/60 FPS is capable of causing the game thread to hang on accurate emulators
+// Skipping the VI for 45/60 FPS is capable of causing the game thread to hang on console and accurate emulators
 // TODO: Investigate why this happens in ultraSM64 but not HackerSM64
 u8 chs_cond_45_fps(void) {
     return !gInstantInputBlacklist;

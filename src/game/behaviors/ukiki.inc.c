@@ -370,6 +370,7 @@ void ukiki_act_go_to_cage(void) {
 
             if (cur_obj_can_mario_activate_textbox(200.0f, 30.0f, 0x7FFF)) {
                 o->oSubAction++; // fallthrough
+                FALL_THROUGH;
             } else {
                 break;
             }

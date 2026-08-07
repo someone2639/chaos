@@ -872,7 +872,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 12,
         .durationImpossible = 15,
 
-        INCOMPATIBLE(CHAOS_PATCH_DAMAGE_LOTTERY, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE)
+        INCOMPATIBLE(CHAOS_PATCH_DAMAGE_LOTTERY, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE, CHAOS_PATCH_SAFETY_NET)
 
         .name               = "Sonic Simulator",
         .shortDescription   = "Coins represent Mario's health. Just like in Sonic, Mario will drop all of his coins upon taking damage.",
@@ -1349,7 +1349,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
         .duration           = 1,
-        .durationHard       = 2,
+        .durationHard       = 1,
         .durationImpossible = 2,
 
         INCOMPATIBLE(CHAOS_PATCH_WALKIES, CHAOS_PATCH_RED_LIGHT, CHAOS_PATCH_BRAWL_TRIPPING, CHAOS_PATCH_RANDOM_SLEEP, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE, CHAOS_PATCH_RANDOM_SHOCK, CHAOS_PATCH_RANDOM_BURN)
@@ -2295,9 +2295,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
-        .duration           = 4,
-        .durationHard       = 5,
-        .durationImpossible = 6,
+        .duration           = 3,
+        .durationHard       = 4,
+        .durationImpossible = 5,
 
         INCOMPATIBLE(CHAOS_PATCH_45_DEGREE_CAM, CHAOS_PATCH_SMOOTH_CAM, CHAOS_PATCH_BUTTON_BROKEN_C, CHAOS_PATCH_TETRIS, CHAOS_PATCH_QUICKTIME, CHAOS_PATCH_SM64_DS)
 
@@ -2539,9 +2539,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
             .durationType       = CHAOS_DURATION_STARS,
             .effectType         = CHAOS_EFFECT_NEGATIVE,
             .severity           = 2,
-            .duration           = 8,
-            .durationHard       = 10,
-            .durationImpossible = 12,
+            .duration           = 10,
+            .durationHard       = 12,
+            .durationImpossible = 14,
 
             INCOMPATIBLE(CHAOS_PATCH_NO_FALL_DAMAGE, CHAOS_PATCH_COSMIC_RAYS)
 
@@ -2650,7 +2650,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 3,
         .duration           = 6,
 
-        INCOMPATIBLE(CHAOS_PATCH_HEALTH_DRAIN)
+        INCOMPATIBLE(CHAOS_PATCH_HEALTH_DRAIN, CHAOS_PATCH_SONIC_SIMULATOR)
 
         .name               = "Safety Net",
         .shortDescription   = "When Mario is at full HP, falling into the void will respawn him at his last safe location with 1 HP.",
