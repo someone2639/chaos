@@ -2303,6 +2303,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "C-Stick Switcharoo",
         .shortDescription   = "Swap the analog stick with C buttons. Because analog camera is way more important than analog movement!",
+        .longDescription    = "FUN FACT! If your C buttons are normally mapped to an analog stick, some emulators will allow you adjust the stick input thresholds to make inputs more or less sensitive. Try this if you're not able to consistently move in all 8 directions!",
     },
     [CHAOS_PATCH_INVERTED_CAMERA_X] = {
         .durationType       = CHAOS_DURATION_STARS,
@@ -2381,7 +2382,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .name               = "One Makes You Larger",
         .shortDescription   = "Increase Mario's size by 12.5% (additive).",
     },
-    [CHAOS_PATCH_MARIO_SMALL] = { // TODO: BUG: Maximum small Mario has some significant issues (especially with breaking yellow boxes and grabbing Bowser)
+    [CHAOS_PATCH_MARIO_SMALL] = {
         .durationType       = CHAOS_DURATION_INFINITE,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .negationId         = CHAOS_PATCH_MARIO_BIG,

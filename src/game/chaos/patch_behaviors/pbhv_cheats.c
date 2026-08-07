@@ -15,7 +15,7 @@ u8 chs_cond_l_to_levitate(void) {
     struct ChaosActiveEntry *match;
     chaos_find_first_active_patch(CHAOS_PATCH_L_TO_LEVITATE, &match);
     if(match) {
-        return (match->remainingDuration + gChaosPatches[match->id].duration <= 3);
+        return (match->remainingDuration + chaos_calculate_patch_duration(&gChaosPatches[match->id]) <= 3);
     } else {
         return TRUE;
     }

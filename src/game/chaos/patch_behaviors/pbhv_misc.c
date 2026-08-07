@@ -25,7 +25,7 @@ u8 chs_cond_miracle_normal(void) {
     }
 
     if (chaos_find_first_active_patch(CHAOS_PATCH_MIRACLE_NORMAL, &match) >= 0) {
-        return (match->remainingDuration + gChaosPatches[match->id].duration <= 4);
+        return (match->remainingDuration + chaos_calculate_patch_duration(&gChaosPatches[match->id]) <= 4);
     } else {
         return TRUE;
     }
@@ -70,7 +70,7 @@ void chs_deact_luigi(void) {
 
 
 u8 chs_cond_marth_grab(void) {
-    return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) <= (BITS_STAR_REQUIREMENT - (s32) (((f32) gChaosPatches[CHAOS_PATCH_MARTH_GRAB].duration * 1.334f) + 2.5f));
+    return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) <= (BITS_STAR_REQUIREMENT - (s32) (((f32) chaos_calculate_patch_duration(&gChaosPatches[CHAOS_PATCH_MARTH_GRAB]) * 1.334f) + 2.5f));
 }
 
 void chs_update_noclip(void) {

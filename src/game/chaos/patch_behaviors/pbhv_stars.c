@@ -632,7 +632,7 @@ u8 chs_cond_unlock_star_doors(void) {
 u8 chs_cond_star_cloning_device(void) {
     struct ChaosActiveEntry *match;
     if (chaos_find_first_active_patch(CHAOS_PATCH_STAR_CLONING_DEVICE, &match) >= 0) {
-        // return (match->remainingDuration + gChaosPatches[match->id].duration <= 1);
+        // return (match->remainingDuration + chaos_calculate_patch_duration(&gChaosPatches[match->id]) <= 1);
         return FALSE; // Above is always FALSE anyway
     } else {
         return TRUE;

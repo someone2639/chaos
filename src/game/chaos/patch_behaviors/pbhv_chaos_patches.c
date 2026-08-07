@@ -311,7 +311,7 @@ void chs_menuupdate_sweet_relief(Gfx **dl) {
 u8 chs_cond_reroll(void) {
     struct ChaosActiveEntry *match;
     if (chaos_find_first_active_patch(CHAOS_PATCH_REROLL, &match) >= 0) {
-        return (match->remainingDuration + gChaosPatches[match->id].duration <= 4);
+        return (match->remainingDuration + chaos_calculate_patch_duration(&gChaosPatches[match->id]) <= 4);
     } else {
         return TRUE;
     }
