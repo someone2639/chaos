@@ -609,7 +609,9 @@ s32 act_spin_jump(struct MarioState *m) {
     play_mario_sound(m, SOUND_ACTION_TERRAIN_JUMP_0, SOUND_MARIO_YAHOO);
     // update_lava_boost_or_twirling(m);
 
-    common_air_action_step(m, ACT_DOUBLE_JUMP_LAND, MARIO_ANIM_TWIRL, 0);
+    if(common_air_action_step(m, ACT_DOUBLE_JUMP_LAND, MARIO_ANIM_TWIRL, 0) == AIR_STEP_LANDED) {
+        m->angleVel[1] = 0;
+    }
 #if ENABLE_RUMBLE
     if (m->action == ACT_TRIPLE_JUMP_LAND) {
         queue_rumble_data(5, 40);
@@ -2318,6 +2320,8 @@ s32 check_common_airborne_cancels(struct MarioState *m) {
 
 s32 mario_execute_airborne_action(struct MarioState *m) {
     u32 cancel = FALSE;
+    u32 resetYawVel = FALSE;
+    u32 prevAction = m->action;
 
     if (check_common_airborne_cancels(m)) {
         return TRUE;
@@ -2334,6 +2338,7 @@ s32 mario_execute_airborne_action(struct MarioState *m) {
         )) {
             m->angleVel[1] = approach_s32(m->angleVel[1], 0x2800, 0x800, 0x800);
             m->twirlYaw += m->angleVel[1];
+            resetYawVel = TRUE;
         }
     }
 
@@ -2398,6 +2403,9 @@ s32 mario_execute_airborne_action(struct MarioState *m) {
             m->action == ACT_SPIN_JUMP
         )) {
             m->marioObj->header.gfx.angle[1] += m->twirlYaw;
+        }
+        if(resetYawVel && m->action != prevAction) {
+            m->angleVel[1] = 0;
         }
     }
 
