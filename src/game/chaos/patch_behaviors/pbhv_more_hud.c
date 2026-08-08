@@ -176,7 +176,7 @@ const char *sMoreHudHeadlines[] = {
     "Romhacker Running Out of Ideas for Jokes",
     "You Can Press the A Button to Jump",
     "Mario Builder Competition Still Ongoing",
-    "You Probably Haven't Seen Every Headline Yet",
+    "Just How Many Headlines Are There?",
     "Youngest Child Ever Just Born",
     VERSION_STRING " Out Now!",
     "That Last Death Was Really Embarrassing",
@@ -192,6 +192,15 @@ const char *sMoreHudHeadlines[] = {
     "Save Me",
     "Eating Laundry Detergent Found to be Unhealthy",
     "A Thing Happened",
+    "@008F00--The Headline Turned Green!@--------",
+    "Do You Know 'anime and games fan'?",
+    "Regional News Channel Delivers the News",
+    "Haha, Made You Look!",
+    "Kirby is a...Pink Guy? (More at 11)",
+    "Toad Soils Himself, Everyone Point and Laugh!",
+    "Swing Your Arms From Side to Side",
+    "Hotel Delfino Stocked With Dozens of Toasters",
+    "DNA Test Proves Luigi to Be Yoshi's Mother",
 };
 
 f32 sMoreHudHeadlinesWeights[ARRAY_COUNT(sMoreHudHeadlines)];
