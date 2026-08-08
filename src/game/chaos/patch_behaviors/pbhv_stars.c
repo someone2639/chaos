@@ -735,7 +735,7 @@ void chs_menuupdate_coin_flip(Gfx **dl) {
                 sCoinFlip.phase++;
                 play_sound(SOUND_MENU_COIN_FLIP, gGlobalSoundSource);
             }
-            menu_single_button_prompt(&gDisplayListHead, SCREEN_WIDTH - 32, SCREEN_HEIGHT - 23, MENU_PROMPT_A_BUTTON, "Flip Coin", FALSE);
+            menu_single_button_prompt(&dlHead, SCREEN_WIDTH - 32, SCREEN_HEIGHT - 23, MENU_PROMPT_A_BUTTON, "Flip Coin", FALSE);
             break;
         case 2:
             // Flip coin
@@ -784,7 +784,7 @@ void chs_menuupdate_coin_flip(Gfx **dl) {
                 sCoinFlip.phase++;
                 sCoinFlip.timer = 0;
             }
-            menu_single_button_prompt(&gDisplayListHead, SCREEN_WIDTH - 32, SCREEN_HEIGHT - 23, MENU_PROMPT_A_BUTTON, "Next", FALSE);
+            menu_single_button_prompt(&dlHead, SCREEN_WIDTH - 32, SCREEN_HEIGHT - 23, MENU_PROMPT_A_BUTTON, "Next", FALSE);
             break;
         case 6:
             if (sCoinFlip.timer == 0) {
