@@ -940,7 +940,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 16,
         .durationImpossible = 20,
 
-        INCOMPATIBLE(CHAOS_PATCH_COSMIC_CLONES, CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_WATER_BOMBS)
+        INCOMPATIBLE(CHAOS_PATCH_COSMIC_CLONES, CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_WATER_BOMBS, CHAOS_PATCH_ONE_HIT_WONDER)
         .activatedInitFunc  = chs_act_random_sleep,
         .frameUpdateFunc    = chs_update_random_sleep,
 
@@ -1056,7 +1056,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 10,
         .durationImpossible = 12,
 
-        INCOMPATIBLE(CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_COSMIC_CLONES, CHAOS_PATCH_QUICKTIME, CHAOS_PATCH_TETRIS, CHAOS_PATCH_WATER_BOMBS, CHAOS_PATCH_BULLET_HELL)
+        INCOMPATIBLE(CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_COSMIC_CLONES, CHAOS_PATCH_QUICKTIME, CHAOS_PATCH_TETRIS, CHAOS_PATCH_WATER_BOMBS, CHAOS_PATCH_BULLET_HELL, CHAOS_PATCH_ONE_HIT_WONDER)
         .activatedInitFunc  = chs_act_red_light,
         .frameUpdateFunc    = chs_update_red_light,
 
@@ -1226,7 +1226,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 12,
         .durationImpossible = 15,
 
-        INCOMPATIBLE(CHAOS_PATCH_COSMIC_CLONES, CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_WATER_BOMBS)
+        INCOMPATIBLE(CHAOS_PATCH_COSMIC_CLONES, CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_WATER_BOMBS, CHAOS_PATCH_ONE_HIT_WONDER)
         .frameUpdateFunc    = chs_update_brawl_tripping,
 
         .name               = "Brawl Mode",
@@ -2583,7 +2583,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 5,
         .durationImpossible = 6,
 
-        INCOMPATIBLE(CHAOS_PATCH_RANDOM_SHOCK, CHAOS_PATCH_RANDOM_BURN, CHAOS_PATCH_COSMIC_RAYS, CHAOS_PATCH_DAMAGE_LOTTERY, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE, CHAOS_PATCH_WATER_BOMBS)
+        INCOMPATIBLE(CHAOS_PATCH_RANDOM_SHOCK, CHAOS_PATCH_RANDOM_BURN, CHAOS_PATCH_COSMIC_RAYS, CHAOS_PATCH_DAMAGE_LOTTERY, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE, CHAOS_PATCH_WATER_BOMBS, CHAOS_PATCH_BRAWL_TRIPPING, CHAOS_PATCH_RANDOM_SLEEP, CHAOS_PATCH_RED_LIGHT)
 
         .name               = "One-Hit Wonder",
         .shortDescription   = "Mario will die instantly upon taking any form of damage (other than from swimming or poison).",
