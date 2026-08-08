@@ -2324,9 +2324,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
-        .duration           = 1,
+        .duration           = 2,
         .durationHard       = 2,
-        .durationImpossible = 2,
+        .durationImpossible = 3,
 
         .name               = "UNO Reverse Card",
         .shortDescription   = "Invert the X axis of the joystick when controlling Mario (i.e. left and right).",
