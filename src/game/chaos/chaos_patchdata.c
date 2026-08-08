@@ -1056,7 +1056,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 10,
         .durationImpossible = 12,
 
-        INCOMPATIBLE(CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_COSMIC_CLONES, CHAOS_PATCH_QUICKTIME, CHAOS_PATCH_TETRIS, CHAOS_PATCH_WATER_BOMBS)
+        INCOMPATIBLE(CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_COSMIC_CLONES, CHAOS_PATCH_QUICKTIME, CHAOS_PATCH_TETRIS, CHAOS_PATCH_WATER_BOMBS, CHAOS_PATCH_BULLET_HELL)
         .activatedInitFunc  = chs_act_red_light,
         .frameUpdateFunc    = chs_update_red_light,
 
@@ -1312,7 +1312,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_REFRIGERATOR_MOVEMENT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
-        .severity           = 2,
+        .severity           = 3,
         .duration           = 6,
         .durationHard       = 7,
         .durationImpossible = 8,
@@ -1369,6 +1369,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration           = 7,
         .durationHard       = 9,
         .durationImpossible = 11,
+
+        INCOMPATIBLE(CHAOS_PATCH_RED_LIGHT)
 
         .areaInitFunc       = chs_area_init_bullet_hell,
         .frameUpdateFunc    = chs_update_bullet_hell,
@@ -2745,9 +2747,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
-        .duration           = 10,
-        .durationHard       = 12,
-        .durationImpossible = 15,
+        .duration           = 7,
+        .durationHard       = 8,
+        .durationImpossible = 10,
 
         INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_A, CHAOS_PATCH_BUTTON_BROKEN_B, CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_BUTTON_BROKEN_C, CHAOS_PATCH_SWAPPED_ZR_AB, CHAOS_PATCH_RED_LIGHT, CHAOS_PATCH_SWAPPED_C_STICK)
         .frameUpdateFunc    = chs_update_quicktime,
