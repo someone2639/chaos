@@ -56,6 +56,8 @@ const BehaviorScript *ignorelist[] = {
     bhvBigChillBully,
     bhvMontyMole,
     bhvMontyMoleHole,
+    bhvKoopaRaceEndpoint,
+    bhvKoopa, // This is here for Koopa the Quick specifically, but because it uses the same behavior regular Koopas are ignored as well
 };
 
 const BehaviorScript *allowedWithParents[] = {
