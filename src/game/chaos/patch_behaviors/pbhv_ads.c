@@ -7,10 +7,13 @@
 #include "hvqm/hvqm.h"
 #include "game/emutest.h"
 #include "game/game_init.h"
+#include "game/save_file.h"
 
 #define AD_MINUTES 5
 
 #define HVQM_ENTRIES    \
+HVQM_MACRO(anime)         \
+HVQM_MACRO(anime2)         \
 HVQM_MACRO(blj)         \
 HVQM_MACRO(chaos)       \
 HVQM_MACRO(crash)       \
@@ -96,5 +99,17 @@ void chs_debug_serve_ads(void) {
         chsCurrentAd = 0;
     }
 
-    hvqm_play(chsHVQMTable[adToPlay]);
+    // Prioritize anime over anime2
+    u32 *adAddr = chsHVQMTable[adToPlay];
+    if (adAddr == HVQM_PTR(anime) || adAddr == HVQM_PTR(anime2)) {
+        if (save_file_get_hvqm_anime_status()) {
+            adAddr = HVQM_PTR(anime2);
+            save_file_set_hvqm_anime_status(FALSE);
+        } else {
+            adAddr = HVQM_PTR(anime);
+            save_file_set_hvqm_anime_status(TRUE);
+        }
+    }
+
+    hvqm_play(adAddr);
 }

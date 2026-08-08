@@ -128,6 +128,7 @@ struct MainMenuSaveData {
 #endif
     u8 disableHarshVisuals: 1;
     u8 instantInput : 1;
+    u8 hvqmAnimeStatus : 1;
 
     u8 __PADDING[11];
 
@@ -251,6 +252,8 @@ void check_if_should_set_warp_checkpoint(struct WarpNode *warpNode);
 s32 check_warp_checkpoint(struct WarpNode *warpNode);
 void save_file_set_instant_input_active(u8 active);
 u32 save_file_check_instant_input_active(void);
+void save_file_set_hvqm_anime_status(u8 status);
+u32 save_file_get_hvqm_anime_status(void);
 u16 save_file_get_rng_seed(void);
 void save_file_update_rng_seed(u16 seed);
 

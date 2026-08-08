@@ -797,6 +797,29 @@ u32 save_file_check_instant_input_active(void) {
     return gSaveBuffer.menuData.instantInput;
 }
 
+void save_file_set_hvqm_anime_status(u8 status) {
+    u8 changed;
+
+    if (status) {
+        changed = (gSaveBuffer.menuData.hvqmAnimeStatus == TRUE ? FALSE : TRUE);
+        gSaveBuffer.menuData.hvqmAnimeStatus = TRUE;
+    } else {
+        changed = (gSaveBuffer.menuData.hvqmAnimeStatus == FALSE ? FALSE : TRUE);
+        gSaveBuffer.menuData.hvqmAnimeStatus = FALSE;
+    }
+
+    if (!changed) {
+        return;
+    }
+
+    gMainMenuDataModified = TRUE;
+    save_main_menu_data();
+}
+
+u32 save_file_get_hvqm_anime_status(void) {
+    return gSaveBuffer.menuData.hvqmAnimeStatus;
+}
+
 u16 save_file_get_rng_seed(void) {
     return gSaveBuffer.files[gCurrSaveFileNum - 1].rngSeed;
 }

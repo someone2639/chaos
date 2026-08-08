@@ -1080,13 +1080,6 @@ void thread5_game_loop(UNUSED void *arg) {
         menu_update_input_dir();
         addr = level_script_execute(addr);
 
-#ifdef CHAOS_ENGINE_DEBUG
-        if ((gPlayer1Controller->buttonPressed & (A_BUTTON|L_TRIG)) && (gPlayer1Controller->buttonDown & (A_BUTTON|L_TRIG)) == (A_BUTTON | L_TRIG)) {
-            extern void chs_debug_serve_ads(void);
-            chs_debug_serve_ads();
-        }
-#endif
-
 #ifdef SOMEONE2639_CRAZY_EXPERIMENTS
         if (gPlayer1Controller->buttonPressed & L_TRIG) {
             chaos_add_new_entry(CHAOS_PATCH_MIRROR_MODE);

@@ -200,7 +200,7 @@ const char *sMoreHudHeadlines[] = {
     "Toad Soils Himself, Everyone Point and Laugh!",
     "Swing Your Arms From Side to Side",
     "Hotel Delfino Stocked With Dozens of Toasters",
-    "DNA Test Proves Luigi to Be Yoshi's Mother",
+    "DNA Test Confirms Luigi to Be Yoshi's Mother",
 };
 
 f32 sMoreHudHeadlinesWeights[ARRAY_COUNT(sMoreHudHeadlines)];
