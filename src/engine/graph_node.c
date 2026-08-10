@@ -271,6 +271,7 @@ struct GraphNodeRotation *init_graph_node_rotation(struct AllocOnlyPool *pool,
     if (graphNode != NULL) {
         init_scene_graph_node_links(&graphNode->node, GRAPH_NODE_TYPE_ROTATION);
         vec3s_copy(graphNode->rotation, rotation);
+        graphNode->scale = 0;
         graphNode->node.flags = (drawingLayer << 8) | (graphNode->node.flags & 0xFF);
         graphNode->displayList = displayList;
     }

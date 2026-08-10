@@ -432,11 +432,12 @@ Gfx *geo_mario_head_rotation(s32 callContext, struct GraphNode *node, UNUSED Mat
         } else {
             vec3s_set(bodyState->headAngle, 0, 0, 0);
             vec3s_set(rotNode->rotation, 0, 0, 0);
-            if (chaos_check_if_patch_active(CHAOS_PATCH_BIG_HEAD)) {
-                rotNode->scale = 0x8002;
-            } else {
-                rotNode->scale = 0;
-            }
+        }
+
+        if (chaos_check_if_patch_active(CHAOS_PATCH_BIG_HEAD)) {
+            rotNode->scale = 0x8002;
+        } else {
+            rotNode->scale = 0;
         }
     }
     return NULL;
