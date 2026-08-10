@@ -298,6 +298,7 @@ void save_file_populate_default_params(s32 fileIndex) {
     file->chaosEntryCount = 0;
     file->lastForcedSeverity = -2;
     file->lastEventType = CHAOS_SPECIAL_NONE;
+    file->rngSeed = SAVE_FILE_MAGIC;
 }
 
 void save_file_erase(s32 fileIndex) {
