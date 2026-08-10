@@ -1454,7 +1454,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 4,
         .durationImpossible = 5,
 
-        INCOMPATIBLE(CHAOS_PATCH_INVERTED_Z_BUFFER)
+        INCOMPATIBLE(CHAOS_PATCH_INVERTED_Z_BUFFER, CHAOS_PATCH_STAR_MEDALLION)
         .conditionalFunc    = chs_cond_no_zbuffer,
 
         .name               = "Geometry Freakout",
@@ -1468,7 +1468,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 3,
         .durationImpossible = 4,
 
-        INCOMPATIBLE(CHAOS_PATCH_NO_Z_BUFFER)
+        INCOMPATIBLE(CHAOS_PATCH_NO_Z_BUFFER, CHAOS_PATCH_STAR_MEDALLION)
 
         .name               = "Inside-Out",
         .shortDescription   = "Geometry that is further from the camera will render on top of closer geometry. Quite the perspective!",
@@ -2927,7 +2927,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationImpossible = 11,
         .disableForHardcore = TRUE, // Too much unpredictability
 
-        INCOMPATIBLE(CHAOS_PATCH_GRAVITY_INCREASE, CHAOS_PATCH_WALKIES, CHAOS_PATCH_PUSH_BACK)
+        INCOMPATIBLE(CHAOS_PATCH_GRAVITY_INCREASE, CHAOS_PATCH_WALKIES, CHAOS_PATCH_PUSH_BACK, CHAOS_PATCH_NO_Z_BUFFER, CHAOS_PATCH_INVERTED_Z_BUFFER)
         .activatedInitFunc  = chs_act_star_medallion,
         .levelInitFunc      = chs_lvlinit_star_medallion,
         .areaInitFunc       = chs_area_init_star_medallion,
