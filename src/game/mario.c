@@ -2393,3 +2393,13 @@ void update_mario_safe_pos(void) {
 
     m->safePosUpdatedLastFrame = TRUE;
 }
+
+#define MAX_MARIO_HEIGHT    200.0f
+f32 get_mario_height(struct MarioState *m) {
+    f32 height = (160.0f * m->size);
+    if (height >= MAX_MARIO_HEIGHT) {
+        height = MAX_MARIO_HEIGHT;
+    }
+
+    return height;
+}

@@ -289,7 +289,7 @@ static s32 perform_ground_quarter_step(struct MarioState *m, Vec3f nextPos) {
     }
 
     if (nextPos[1] > floorHeight + 100.0f) {
-        if (nextPos[1] + (160.0f * m->size) >= ceilHeight) {
+        if (nextPos[1] + get_mario_height(m) >= ceilHeight) {
             return GROUND_STEP_HIT_WALL_STOP_QSTEPS;
         }
 
@@ -402,9 +402,12 @@ s32 perform_air_quarter_step(struct MarioState *m, Vec3f intendedPos, u32 stepAr
     struct Surface *floor;
     f32 ceilHeight;
     f32 floorHeight;
+    f32 marioHeight;
     f32 waterLevel;
 
     vec3f_copy(nextPos, intendedPos);
+
+    marioHeight = get_mario_height(m);
 
     if (chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_INVISIBLE_WALLS)
                     && (griefInvisibleWall)
@@ -447,7 +450,7 @@ s32 perform_air_quarter_step(struct MarioState *m, Vec3f intendedPos, u32 stepAr
 
     //! This check uses f32, but findFloor uses short (overflow jumps)
     if (nextPos[1] <= floorHeight) {
-        if (ceilHeight - floorHeight > (160.0f * m->size)) {
+        if (ceilHeight - floorHeight > marioHeight) {
             m->pos[0] = nextPos[0];
             m->pos[2] = nextPos[2];
             m->floor = floor;
@@ -461,7 +464,7 @@ s32 perform_air_quarter_step(struct MarioState *m, Vec3f intendedPos, u32 stepAr
         return AIR_STEP_LANDED;
     }
 
-    if (nextPos[1] + (160.0f * m->size) > ceilHeight) {
+    if (nextPos[1] + marioHeight > ceilHeight) {
         if (m->vel[1] >= 0.0f) {
             m->vel[1] = 0.0f;
 

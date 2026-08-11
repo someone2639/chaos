@@ -73,17 +73,19 @@ static u32 perform_water_full_step(struct MarioState *m, Vec3f nextPos) {
     struct Surface *floor;
     f32 ceilHeight;
     f32 floorHeight;
+    f32 marioHeight;
 
     wall = resolve_and_return_wall_collisions(nextPos, 10.0f, 110.0f);
     floorHeight = find_floor(nextPos[0], nextPos[1], nextPos[2], &floor);
     ceilHeight = vec3f_find_ceil(nextPos, floorHeight, &ceil);
+    marioHeight = get_mario_height(m);
 
     if (floor == NULL) {
         return WATER_STEP_CANCELLED;
     }
 
     if (nextPos[1] >= floorHeight) {
-        if (ceilHeight - nextPos[1] >= (160.0f * m->size)) {
+        if (ceilHeight - nextPos[1] >= marioHeight) {
             vec3f_copy(m->pos, nextPos);
             m->floor = floor;
             m->floorHeight = floorHeight;
@@ -95,17 +97,17 @@ static u32 perform_water_full_step(struct MarioState *m, Vec3f nextPos) {
             }
         }
 
-        if (ceilHeight - floorHeight < (160.0f * m->size)) {
+        if (ceilHeight - floorHeight < marioHeight) {
             return WATER_STEP_CANCELLED;
         }
 
         //! Water ceiling downwarp
-        vec3f_set(m->pos, nextPos[0], ceilHeight - (160.0f * m->size), nextPos[2]);
+        vec3f_set(m->pos, nextPos[0], ceilHeight - marioHeight, nextPos[2]);
         m->floor = floor;
         m->floorHeight = floorHeight;
         return WATER_STEP_HIT_CEILING;
     } else {
-        if (ceilHeight - floorHeight < (160.0f * m->size)) {
+        if (ceilHeight - floorHeight < marioHeight) {
             return WATER_STEP_CANCELLED;
         }
 
@@ -1132,7 +1134,7 @@ s32 act_ground_pound_water(struct MarioState *m) {
     if (m->actionState == 0) {
         if (m->actionTimer < 10) {
             yOffset = 20 - 2 * m->actionTimer;
-            if (m->pos[1] + yOffset + (160.0f * m->size) < m->ceilHeight) {
+            if (m->pos[1] + yOffset + get_mario_height(m) < m->ceilHeight) {
                 m->pos[1] += yOffset;
                 m->peakHeight = m->pos[1];
                 m->peakHeightNoCancel = m->pos[1];

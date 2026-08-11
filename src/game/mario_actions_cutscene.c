@@ -538,9 +538,11 @@ s32 act_reading_sign(struct MarioState *m) {
 s32 act_debug_free_move(struct MarioState *m) {
     struct Surface *wall;
     struct Surface *floor, *ceil;
-    f32 floorHeight, ceilHeight;
+    f32 floorHeight, ceilHeight, marioHeight;
     Vec3f pos;
     f32 speed;
+
+    marioHeight = get_mario_height(m);
 
 #if defined(ENABLE_DEBUG_FREE_MOVE) && !defined(DISABLE_ALL)
     if (gPlayer1Controller->buttonPressed & L_TRIG) {
@@ -600,12 +602,12 @@ s32 act_debug_free_move(struct MarioState *m) {
     if (floor == NULL)
         return FALSE;
 
-    if (ceilHeight - floorHeight >= (160.0f * m->size)) {
+    if (ceilHeight - floorHeight >= marioHeight) {
         if (floor != NULL && pos[1] < floorHeight) {
             pos[1] = floorHeight;
         }
-        if (ceil != NULL && pos[1] + (160.0f * m->size) > ceilHeight) {
-            pos[1] = ceilHeight - (160.0f * m->size);
+        if (ceil != NULL && pos[1] + marioHeight > ceilHeight) {
+            pos[1] = ceilHeight - marioHeight;
         }
         vec3f_copy(m->pos, pos);
     }
@@ -1611,6 +1613,7 @@ s32 act_squished(struct MarioState *m) {
     f32 spaceUnderCeil;
     s16 surfAngle;
     s32 underSteepSurf = FALSE; // seems to be responsible for setting velocity?
+    f32 marioHeight = get_mario_height(m);
 
     if ((spaceUnderCeil = m->ceilHeight - m->floorHeight) < 0) {
         spaceUnderCeil = 0;
@@ -1618,7 +1621,7 @@ s32 act_squished(struct MarioState *m) {
 
     switch (m->actionState) {
         case 0:
-            if (spaceUnderCeil > (160.0f * m->size)) {
+            if (spaceUnderCeil > marioHeight) {
                 m->squishTimer = 0;
                 return set_mario_action(m, ACT_IDLE, 0);
             }
@@ -1627,7 +1630,7 @@ s32 act_squished(struct MarioState *m) {
 
             if (spaceUnderCeil >= 10.1f) {
                 // Mario becomes a pancake
-                squishAmount = spaceUnderCeil / (160.0f * m->size);
+                squishAmount = spaceUnderCeil / marioHeight;
                 vec3f_set(m->marioObj->header.gfx.scale, 2.0f - squishAmount, squishAmount,
                           2.0f - squishAmount);
                 m->marioObj->header.gfx.scale[0] *= m->size;

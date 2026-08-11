@@ -53,6 +53,7 @@ void init_mario_from_save_file(void);
 void set_hurt_counter(struct MarioState *m, u8 additionalDamage);
 void update_mario_safe_pos(void);
 void set_mario_y_vel_based_on_fspeed(struct MarioState *m, f32 initialVelY, f32 multiplier);
+f32 get_mario_height(struct MarioState *m);
 
 // sunshine twirl infrastructure
 s32 make_mario_spin_jump(struct MarioState *m);
