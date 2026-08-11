@@ -102,6 +102,7 @@ void chs_act_100c_decrease_lv3(void);
 void chs_deact_100c_decrease_lv2(void);
 void chs_deact_100c_decrease_lv3(void);
 u8 chs_pay2win_can_collect_star(void);
+void chs_lvlinit_collectors_anxiety(void);
 void chs_collectors_anxiety_load_new_level(void);
 void chs_collectors_anxiety_small_koopa_spawned(void);
 void chs_collectors_anxiety_coin_collected(s32 coinValue);

@@ -851,6 +851,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationImpossible = 8,
 
         INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SHUFFLE_OBJECTS, CHAOS_PATCH_ENEMY_BLUE_COINS)
+        .levelInitFunc      = chs_lvlinit_collectors_anxiety,
 
         .name               = "Collector's Anxiety",
         .shortDescription   = "Stars are only collectible after every single coin type in a level has been collected (when present).",

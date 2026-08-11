@@ -121,7 +121,7 @@ static const struct StarMedallionSpawnLocation starMedallionList_CCM[] = {
     {.areaNum = 1, .checkpointOnly = FALSE, .x = -4900, .y = -1745, .z = -3500, .conditionalFunc = NULL                          }, // At the midpoint section hidden by the 1-up box
     {.areaNum = 1, .checkpointOnly = FALSE, .x = -1942, .y =  1395, .z =  1678, .conditionalFunc = NULL                          }, // On the slide near the top, on the coin bridge (over the coins)
     // Area 2
-    {.areaNum = 2, .checkpointOnly = FALSE, .x = -6200, .y =  6906, .z = -5700, .conditionalFunc = NULL                          }, // Hidden behind the default camera at the start of the slide in a corner
+    // {.areaNum = 2, .checkpointOnly = FALSE, .x = -6200, .y =  6906, .z = -5700, .conditionalFunc = NULL                          }, // Hidden behind the default camera at the start of the slide in a corner (NOTE: too cruel, removed)
     {.areaNum = 2, .checkpointOnly = FALSE, .x =  1200, .y =  4315, .z =  -250, .conditionalFunc = NULL                          }, // At the end of the coin jump on the slide
     {.areaNum = 2, .checkpointOnly = FALSE, .x =  6640, .y =  -938, .z =   118, .conditionalFunc = NULL                          }, // Above the steep coin slope near the end of the slide
     {.areaNum = 2, .checkpointOnly = FALSE, .x = -6150, .y = -4586, .z =  -175, .conditionalFunc = NULL                          }, // Before the ice section at the end of the slide

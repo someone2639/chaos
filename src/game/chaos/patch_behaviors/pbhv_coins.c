@@ -11,6 +11,7 @@
 #include "game/debug.h"
 #include "game/emutest.h"
 #include "game/level_update.h"
+#include "game/save_file.h"
 
 #define TIMELIMIT (30 * 30)
 
@@ -94,6 +95,11 @@ enum CollectorsAnxietyCoinCourseFlags {
     COLLECTORS_ANXIETY_ALL    = (COLLECTORS_ANXIETY_YELLOW | COLLECTORS_ANXIETY_RED | COLLECTORS_ANXIETY_BLUE),
 };
 
+struct CollectorsAnxietyCheckpointParams {
+    const u8 courseNum;
+    const enum CollectorsAnxietyCoinCourseFlags startoutFlags;
+};
+
 const enum CollectorsAnxietyCoinCourseFlags sCollectorsAnxietyCourseFlags[COURSE_COUNT] = {
     [COURSE_NONE] = COLLECTORS_ANXIETY_NONE,
     [COURSE_BOB]  = (COLLECTORS_ANXIETY_YELLOW | COLLECTORS_ANXIETY_RED), // Note: Koopa has a blue coin...
@@ -123,8 +129,27 @@ const enum CollectorsAnxietyCoinCourseFlags sCollectorsAnxietyCourseFlags[COURSE
     [COURSE_SA]       = (COLLECTORS_ANXIETY_YELLOW | COLLECTORS_ANXIETY_RED),
 };
 
+const struct CollectorsAnxietyCheckpointParams sCollectorsAnxietyCheckpointFlags[] = {
+    {COURSE_LLL, COLLECTORS_ANXIETY_RED | COLLECTORS_ANXIETY_BLUE},
+    {COURSE_SSL, COLLECTORS_ANXIETY_RED},
+    {COURSE_TTM, COLLECTORS_ANXIETY_NONE}, // Kicks you back out into area 1 anyway
+};
+
 enum CollectorsAnxietyCoinCourseFlags sCollectorsAnxietyCoinFlags = COLLECTORS_ANXIETY_NONE;
 u8 sBoBKoopaSpawned = FALSE;
+
+void chs_lvlinit_collectors_anxiety(void) {
+    // NOTE: If you enter a one-way warp into a checkpointable area without the necessary coins collected, you have to either die or exit course (this is intentional).
+    // Respawning with a checkpoint however will instead not require you to collect anything not present in the subarea so that you can still resume from there and not have to go to a different course.
+    if (gCurrCourseNum == gWarpCheckpoint.courseNum && gWarpCheckpoint.courseNum != COURSE_NONE) {
+        for (s32 i = 0; i < ARRAY_COUNT(sCollectorsAnxietyCheckpointFlags); i++) {
+            if (sCollectorsAnxietyCheckpointFlags[i].courseNum == gCurrCourseNum) {
+                sCollectorsAnxietyCoinFlags |= sCollectorsAnxietyCheckpointFlags[i].startoutFlags;
+                break;
+            }
+        }
+    }
+}
 
 void chs_collectors_anxiety_load_new_level(void) {
     sCollectorsAnxietyCoinFlags = COLLECTORS_ANXIETY_NONE;
