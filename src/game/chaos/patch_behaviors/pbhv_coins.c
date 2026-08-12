@@ -132,7 +132,7 @@ const enum CollectorsAnxietyCoinCourseFlags sCollectorsAnxietyCourseFlags[COURSE
 const struct CollectorsAnxietyCheckpointParams sCollectorsAnxietyCheckpointFlags[] = {
     {COURSE_LLL, COLLECTORS_ANXIETY_RED | COLLECTORS_ANXIETY_BLUE},
     {COURSE_SSL, COLLECTORS_ANXIETY_RED},
-    {COURSE_TTM, COLLECTORS_ANXIETY_NONE}, // Kicks you back out into area 1 anyway
+    {COURSE_TTM, COLLECTORS_ANXIETY_NONE}, // Kicks you back out into area 1 anyway (also the slide is already required for blues, so this checkpoint is still an advantage)
 };
 
 enum CollectorsAnxietyCoinCourseFlags sCollectorsAnxietyCoinFlags = COLLECTORS_ANXIETY_NONE;

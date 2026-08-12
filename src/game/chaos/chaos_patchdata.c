@@ -2948,7 +2948,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         INCOMPATIBLE(CHAOS_PATCH_TETRIS, CHAOS_PATCH_NO_HUD, CHAOS_PATCH_BETA)
 
         .activatedInitFunc  = chs_act_more_hud,
-        .levelInitFunc      = chs_lvlinit_more_hud,
+        .frameUpdateFunc    = chs_update_more_hud,
 
         .name               = "Raiding UI",
         .shortDescription   = "Adds lots of \"useful\" information to the heads up display.",

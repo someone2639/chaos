@@ -19,6 +19,7 @@
 
 u8 rhdcUsernameSet = FALSE;
 char rhdcUsername[64] = "";
+s16 sMoreHUDLastCourseNum = -1;
 
 enum Weather {
     WTH_NONE,
@@ -244,7 +245,7 @@ s32 more_hud_get_headline(void) {
 }
 
 void more_hud_draw_weather(void) {
-    enum Weather weather = sMoreHudLevelData[gCurrCourseNum].weather;
+    enum Weather weather = sMoreHudLevelData[sMoreHUDLastCourseNum].weather;
 
     f32 tempHighF = sMoreHudCurTempHigh;
     f32 tempHighC = (tempHighF - 32.0f) * (5.0f / 9.0f);
@@ -421,13 +422,8 @@ void draw_more_hud(void) {
     more_hud_draw_radar();
 }
 
-void more_hud_update(void) {
-    sMoreHudHeadlineIndex = more_hud_get_headline();
-    sMoreHudCurTempHigh = sMoreHudLevelData[gCurrCourseNum].temperature + (random_float() * 4.0f);
-    sMoreHudCurTempLow = sMoreHudLevelData[gCurrCourseNum].temperature - (random_float() * 4.0f);
-}
-
 void chs_act_more_hud(void) {
+    sMoreHUDLastCourseNum = -1;
     if (gLibplABI > 0 && lpl2_get_my_rhdc_username(rhdcUsername, NULL) > 0) {
         rhdcUsernameSet = TRUE;
     } else {
@@ -437,9 +433,20 @@ void chs_act_more_hud(void) {
     for (u32 i = 0; i < ARRAY_COUNT(sMoreHudHeadlinesWeights); i++) {
         sMoreHudHeadlinesWeights[i] = HEADLINE_WEIGHT_INCREASE;
     }
-    more_hud_update();
+
+    chs_update_more_hud();
 }
 
-void chs_lvlinit_more_hud(void) {
-    more_hud_update();
+void chs_update_more_hud(void) {
+    if (gCurrCourseNum == sMoreHUDLastCourseNum) {
+        return;
+    }
+
+    if (gCurrCourseNum != COURSE_NONE || sMoreHUDLastCourseNum < 0) {
+        sMoreHudHeadlineIndex = more_hud_get_headline();
+    }
+    sMoreHudCurTempHigh = sMoreHudLevelData[gCurrCourseNum].temperature + (random_float() * 4.0f);
+    sMoreHudCurTempLow = sMoreHudLevelData[gCurrCourseNum].temperature - (random_float() * 4.0f);
+
+    sMoreHUDLastCourseNum = gCurrCourseNum;
 }
