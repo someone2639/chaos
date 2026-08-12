@@ -2055,9 +2055,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
         .affectsPatchSelect = TRUE,
-        .duration           = 4,
-        .durationHard       = 4,
-        .durationImpossible = 4,
+        .duration           = 5,
+        .durationHard       = 5,
+        .durationImpossible = 5,
 
         INCOMPATIBLE(CHAOS_PATCH_LOW_STAKES)
 
