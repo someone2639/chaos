@@ -81,7 +81,7 @@ void chs_deact_health_up(void) {
 */
 
 u8 chs_cond_health_down(void) {
-    return (gMarioState->maxHealth > 0x480);
+    return (gMarioState->maxHealth > 0x480 && (gMarioState->maxHealth >= 0x800 || !chaos_check_if_patch_active(CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE)));
 }
 
 void chs_act_health_down(void) {

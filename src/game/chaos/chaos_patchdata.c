@@ -1434,9 +1434,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 3,
         .isStackable        = TRUE,
         .disableForHardcore = TRUE, // Patch too unpredictable (also with one-hit wonder)
-        .duration           = 8,
-        .durationHard       = 10,
-        .durationImpossible = 12,
+        .duration           = 9,
+        .durationHard       = 11,
+        .durationImpossible = 13,
 
         INCOMPATIBLE(CHAOS_PATCH_WALKIES, CHAOS_PATCH_RED_LIGHT, CHAOS_PATCH_BRAWL_TRIPPING, CHAOS_PATCH_RANDOM_SLEEP, CHAOS_PATCH_ONE_HIT_WONDER)
         .conditionalFunc    = chs_cond_water_bombs,
@@ -1859,12 +1859,13 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_LOWER_TIME_LIMIT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
-        .severity           = 2,
+        .severity           = 3,
         .isStackable        = TRUE,
         .duration           = CHS_TIME_LIMIT_DURATION,
         .durationHard       = CHS_TIME_LIMIT_DURATION_HARD,
         .durationImpossible = CHS_TIME_LIMIT_DURATION_IMPOSSIBLE,
 
+        INCOMPATIBLE(CHAOS_PATCH_WALKIES)
         .conditionalFunc    = chs_cond_lower_time_limit,
         .activatedInitFunc  = chs_act_lower_time_limit,
         .deactivationFunc   = chs_deact_lower_time_limit,
@@ -1988,7 +1989,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 2,
         .affectsPatchSelect = TRUE,
         .duration           = 5,
-        .durationHard       = 7,
+        .durationHard       = 6,
         .durationImpossible = 7,
 
         INCOMPATIBLE(CHAOS_PATCH_LUCKY_CHARM, CHAOS_PATCH_UNEVENTFUL)
@@ -2042,7 +2043,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 3,
         .affectsPatchSelect = TRUE,
-        .duration           = 6,
+        .duration           = 5,
 
         INCOMPATIBLE(CHAOS_PATCH_HIGH_STAKES)
 
@@ -2054,9 +2055,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
         .affectsPatchSelect = TRUE,
-        .duration           = 5,
-        .durationHard       = 6,
-        .durationImpossible = 7,
+        .duration           = 4,
+        .durationHard       = 4,
+        .durationImpossible = 4,
 
         INCOMPATIBLE(CHAOS_PATCH_LOW_STAKES)
 
@@ -2068,7 +2069,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 3,
         .affectsPatchSelect = TRUE,
-        .duration           = 18,
+        .duration           = 20,
 
         .conditionalFunc    = chs_cond_forgiveness,
 
@@ -2147,7 +2148,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 4,
         .durationImpossible = 5,
 
-        INCOMPATIBLE(CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_SPEED_TAX, CHAOS_PATCH_HEALTH_DRAIN, CHAOS_PATCH_COSMIC_CLONES, CHAOS_PATCH_PUSH_BACK, CHAOS_PATCH_STAR_MEDALLION, CHAOS_PATCH_WATER_BOMBS, CHAOS_PATCH_GRAVITY_INCREASE)
+        INCOMPATIBLE(CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_SPEED_TAX, CHAOS_PATCH_HEALTH_DRAIN, CHAOS_PATCH_COSMIC_CLONES, CHAOS_PATCH_PUSH_BACK, CHAOS_PATCH_STAR_MEDALLION, CHAOS_PATCH_WATER_BOMBS, CHAOS_PATCH_GRAVITY_INCREASE, CHAOS_PATCH_LOWER_TIME_LIMIT)
 
         .name               = "Walkies",
         .shortDescription   = "Slows Mario down to walking speed. This is a Walkies level now.",
@@ -2196,6 +2197,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 3,
         .isStackable        = TRUE,
 
+        INCOMPATIBLE(CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE)
         .conditionalFunc    = chs_cond_remove_cap,
         .activatedInitFunc  = chs_act_remove_cap,
 
@@ -2534,7 +2536,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
             .durationHard       = 2,
             .durationImpossible = 3,
 
-            INCOMPATIBLE(CHAOS_PATCH_NO_FALL_DAMAGE, CHAOS_PATCH_COSMIC_RAYS, CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_LOSEMOVE_LEDGE_GRAB, CHAOS_PATCH_SONIC_SIMULATOR, CHAOS_PATCH_DAMAGE_LOTTERY, CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_NOHEAL_COINS, CHAOS_PATCH_PUSH_BACK)
+            INCOMPATIBLE(CHAOS_PATCH_NO_FALL_DAMAGE, CHAOS_PATCH_COSMIC_RAYS, CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_LOSEMOVE_LEDGE_GRAB, CHAOS_PATCH_SONIC_SIMULATOR, CHAOS_PATCH_DAMAGE_LOTTERY, CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_NOHEAL_COINS, CHAOS_PATCH_PUSH_BACK, CHAOS_PATCH_REMOVE_CAP)
+            .conditionalFunc    = chs_cond_no_tolerance_fall_damage,
 
             .name               = "Unrealistic Fall Damage",
             .shortDescription   = "Falling from any height whatsoever will crush Mario's stubby little legs.",
@@ -2571,7 +2574,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 2,
         .duration           = 7,
         .durationHard       = 9,
-        .durationImpossible = 11,
+        .durationImpossible = 10,
 
         .name               = "Tutorial Mode",
         .shortDescription   = "New to SM64? We'll make extra sure you don't miss any tutorial signs by increasing their range!",
@@ -2652,7 +2655,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 3,
-        .duration           = 6,
+        .duration           = 8,
 
         INCOMPATIBLE(CHAOS_PATCH_HEALTH_DRAIN, CHAOS_PATCH_SONIC_SIMULATOR)
 

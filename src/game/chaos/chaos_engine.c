@@ -19,6 +19,8 @@
 #define EVENT_ODDS_UNLUCKY 0.175f
 #define EVENT_ODDS_CHAOS   0.125f
 
+#define CHECK_PATCH_ACTIVE_INLINE(id) (activePatchCounts[id] > 0 || id == gChaosNegativePatchCompare)
+
 static u32 activePatchCounts[CHAOS_PATCH_COUNT];
 static u8 availablePatches[CHAOS_PATCH_COUNT];
 static struct ChaosPatchSelection generatedPatches[CHAOS_PATCH_MAX_GENERATABLE];
@@ -62,9 +64,9 @@ static void chaos_recompute_active_patch_counts(void) {
     }
 }
 
-// NOTE: Function duplicated in chaos_check_conditional_func (for optimization)
+// NOTE: Inline check duplicated in chaos_check_conditional_func (for optimization)
 u8 chaos_check_if_patch_active(const enum ChaosPatchID patchId) {
-    return (activePatchCounts[patchId] > 0 || patchId == gChaosNegativePatchCompare);
+    return CHECK_PATCH_ACTIVE_INLINE(patchId);
 }
 
 static u8 chaos_check_conditional_func(const struct ChaosPatch *patch) {
@@ -81,7 +83,7 @@ static u8 chaos_check_conditional_func(const struct ChaosPatch *patch) {
         const enum ChaosPatchID patchId = patch->incompatible[i];
 
         // NOTE: Inline of chaos_check_if_patch_active (for optimization)
-        if (activePatchCounts[patchId] > 0 || patchId == gChaosNegativePatchCompare) {
+        if (CHECK_PATCH_ACTIVE_INLINE(patchId)) {
             return FALSE;
         }
     }

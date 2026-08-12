@@ -14,7 +14,8 @@
 #include "game/debug.h"
 #include "game/object_list_processor.h"
 
-#define CHS_TIME_LIMIT_OFFSET_MAX       (90 * 30)
+#define CHS_TIME_LIMIT_OFFSET_MAX            (90 * 30)
+#define CHS_TIME_LIMIT_OFFSET_MAX_IMPOSSIBLE (60 * 30)
 s32 sTimeLimitOffset = 0;
 
 void chs_level_init_time_limit(void) {
@@ -83,7 +84,15 @@ void chs_deact_time_limit(void) {
 }
 
 u8 chs_cond_lower_time_limit(void) {
-    return (chaos_check_if_patch_active(CHAOS_PATCH_TIME_LIMIT) && sTimeLimitOffset < CHS_TIME_LIMIT_OFFSET_MAX && gChaosForcedDurationMaximum == 0);
+    if (!chaos_check_if_patch_active(CHAOS_PATCH_TIME_LIMIT)
+             || sTimeLimitOffset >= CHS_TIME_LIMIT_OFFSET_MAX
+             || (gChaosDifficulty >= CHAOS_DIFFICULTY_IMPOSSIBLE && sTimeLimitOffset >= CHS_TIME_LIMIT_OFFSET_MAX_IMPOSSIBLE)
+             || gChaosForcedDurationMaximum > 0
+    ) {
+        return FALSE;
+    }
+
+    return TRUE;
 }
 
 void chs_act_lower_time_limit(void) {

@@ -251,6 +251,7 @@ s32 get_randomized_sound(s32 sound);
 u8 chs_cond_forced_mario_cam(void);
 void chs_act_serve_ads(void);
 void chs_update_serve_ads(void);
+u8 chs_cond_no_tolerance_fall_damage(void);
 u8 chs_cond_miracle_normal(void);
 u8 chs_cond_miracle_hardcore(void);
 void chs_update_miracle(void);
