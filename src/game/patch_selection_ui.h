@@ -48,6 +48,7 @@
 
 #define CARD_STRING_WIDTH 94
 #define DESC_STRING_WIDTH 284
+#define DESC_STRING_WIDTH_SUB_Z 14
 
 struct PatchCard {
     struct ChaosPatchSelection *sel;

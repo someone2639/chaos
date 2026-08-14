@@ -432,7 +432,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc    = chs_cond_star_cloning_device,
 
         .name               = "Star Cloning Device",
-        .shortDescription   = "When collected, a blue star will be swapped with another random uncollected star in the course (if applicable).",
+        .shortDescription   = "When collected, a blue star will be swapped with any uncollected star in the course (if applicable).",
         .longDescription    = "This will act like collecting a yellow star normally, and will not punish the player with the effects of collecting a blue star (as long as there are still yellow stars remaining in the course). This patch will take effect only when a star swap can been made.",
     },
     [CHAOS_PATCH_COIN_FLIP] = {
@@ -773,7 +773,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         INCOMPATIBLE(CHAOS_PATCH_SONIC_SIMULATOR, CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE)
 
         .name               = "Damage Lottery",
-        .shortDescription   = "Lose a random amount of health whenever Mario takes damage, between 0 and the max number of health slices.",
+        .shortDescription   = "Lose a random amount of health whenever Mario takes damage, between 0 and the max number of HP slices.",
         .longDescription    = "Insta-kill patches are given priority over this patch, but this overrides other health-related patches. This patch ignores damage from water or poison.",
     },
     [CHAOS_PATCH_MARIO_DIES] = {
@@ -1057,7 +1057,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 10,
         .durationImpossible = 12,
 
-        INCOMPATIBLE(CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_COSMIC_CLONES, CHAOS_PATCH_QUICKTIME, CHAOS_PATCH_TETRIS, CHAOS_PATCH_WATER_BOMBS, CHAOS_PATCH_BULLET_HELL, CHAOS_PATCH_ONE_HIT_WONDER)
+        INCOMPATIBLE(CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_COSMIC_CLONES, CHAOS_PATCH_QUICKTIME, CHAOS_PATCH_TETRIS, CHAOS_PATCH_WATER_BOMBS, CHAOS_PATCH_BULLET_HELL, CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_RANDOM_BUTTON_PRESSES)
         .activatedInitFunc  = chs_act_red_light,
         .frameUpdateFunc    = chs_update_red_light,
 
@@ -1088,6 +1088,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 7,
         .durationImpossible = 9,
 
+        INCOMPATIBLE(CHAOS_PATCH_RED_LIGHT)
         .frameUpdateFunc    = chs_update_random_button_presses,
 
         .name               = "Random Button Presses",
@@ -2087,7 +2088,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .chsMenuUpdateFunc  = chs_menuupdate_gambling_wheel,
 
         .name               = "Let's Go Gambling!",
-        .shortDescription   = "Test your luck! Spin a roulette wheel for an extra boost (or nerf) after every time you select a new patch!",
+        .shortDescription   = "Test your luck! Spin a roulette wheel for an extra boost (or nerf) whenever you select new patches!",
         .longDescription    = "Each wheel spin may consist of the following...\n"
                                "  - @AFAFAF--A Few Duds@--------\n"
                                "  - @671F57--One Very Negative Outcome@--------\n"
@@ -2689,7 +2690,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc    = chs_update_miracle,
 
         .name               = "The Miracle Happened",
-        .shortDescription   = "The next time Mario dies, he is revived as if nothing ever happened. Essentially a free lifeline for your run!",
+        .shortDescription   = "The next time Mario dies, he is revived as if nothing ever happened. Essentially a free lifeline for the run!",
         .longDescription    = "On death, Mario will be instantly healed back to full health instead of being thrown out of the level. He will maintain his level and coin progress. This can also be used instead to exit course without a game over."
     },
     [CHAOS_PATCH_DISABLE_FADE_WARPS] = {
@@ -2868,7 +2869,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 1,
 
         .name               = "From Beyond the Grave",
-        .shortDescription   = "Mario may still recover from coins or collect stars, even when he has no health left (pre-death animation only).",
+        .shortDescription   = "Mario may still recover from coins and collect stars, even if he has no HP left (pre-death animation only).",
         .longDescription    = "This may be useful in specific situations, such as flying around with the wing cap while dead."
     },
     [CHAOS_PATCH_DVD] = {
@@ -2913,7 +2914,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .frameUpdateFunc    = chs_update_tetris,
 
         .name               = "Tetris Effect",
-        .shortDescription   = "Control a simultaneous game of Tetris. Mario will lose one star per failure. See details screen for controls!",
+        .shortDescription   = "Play a simultaneous game of Tetris! Mario will lose one star per failure. See details screen for controls!",
         .longDescription    = "Hold @9F9FFF--R@-------- to control Tetris and lock Mario's inputs.\n"
                               "Move Piece\t@7F7F7F-- -- @9F9FFF--D-Pad/C Left/Right@--------\n"
                               "Hard Drop\t@7F7F7F-- -- @9F9FFF--D-Pad/C Up@--------\n"

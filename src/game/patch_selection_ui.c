@@ -1135,11 +1135,24 @@ void render_patch_desc() {
     const struct ChaosPatch *neg = sel->negativePatch;
 
     slowtext_setup_ortho_rendering(&gDisplayListHead, FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text_linebreaks(&gDisplayListHead, -142, 15, DESC_STRING_WIDTH, pos->shortDescription, FT_FLAG_ALIGN_LEFT, 
+    slowtext_draw_ortho_text_linebreaks(&gDisplayListHead, -(DESC_STRING_WIDTH / 2) + (pos->longDescription ? DESC_STRING_WIDTH_SUB_Z : 0), 15,
+        DESC_STRING_WIDTH - (pos->longDescription ? DESC_STRING_WIDTH_SUB_Z : 0), pos->shortDescription, FT_FLAG_ALIGN_LEFT, 
         sEffectColors[EFFECT_COLOR_GOOD][0], sEffectColors[EFFECT_COLOR_GOOD][1], sEffectColors[EFFECT_COLOR_GOOD][2], 0xFF);
-    slowtext_draw_ortho_text_linebreaks(&gDisplayListHead, -142, -15, DESC_STRING_WIDTH, neg->shortDescription, FT_FLAG_ALIGN_LEFT, 
+    slowtext_draw_ortho_text_linebreaks(&gDisplayListHead, -(DESC_STRING_WIDTH / 2) + (neg->longDescription ? DESC_STRING_WIDTH_SUB_Z : 0), -15,
+        DESC_STRING_WIDTH - (neg->longDescription ? DESC_STRING_WIDTH_SUB_Z : 0), neg->shortDescription, FT_FLAG_ALIGN_LEFT, 
         sEffectColors[EFFECT_COLOR_BAD][0], sEffectColors[EFFECT_COLOR_BAD][1], sEffectColors[EFFECT_COLOR_BAD][2], 0xFF);
     slowtext_finished_rendering(&gDisplayListHead);
+
+    if (!(gPatchSelectionMenu->menu.flags & PATCH_SELECT_FLAG_HALT_INPUT) && (pos->longDescription || neg->longDescription)) {
+        menu_start_button(&gDisplayListHead);
+        if (pos->longDescription) {
+            menu_draw_button(&gDisplayListHead, PATCH_DESC_X - (DESC_STRING_WIDTH / 2) - 3, (SCREEN_HEIGHT - PATCH_DESC_Y - 13) - 15, MENU_PROMPT_Z_TRIG, (gGlobalTimer % 60) >= 30);
+        }
+        if (neg->longDescription) {
+            menu_draw_button(&gDisplayListHead, PATCH_DESC_X - (DESC_STRING_WIDTH / 2) - 3, (SCREEN_HEIGHT - PATCH_DESC_Y - 13) + 15, MENU_PROMPT_Z_TRIG, (gGlobalTimer % 60) >= 30);
+        }
+        menu_end_button(&gDisplayListHead);
+    }
 }
 
 /*
