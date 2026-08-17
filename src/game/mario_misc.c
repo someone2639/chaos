@@ -730,7 +730,7 @@ Gfx *geo_set_mario_lights(s32 callContext, UNUSED struct GraphNode *node, UNUSED
         if(chaos_check_if_patch_active(CHAOS_PATCH_MARIO_RAINBOW)) {
             *overallLights = gRainbowOverallLights;
             *hatLights = gRainbowHatLights;
-        } else if (chaos_check_if_patch_active(CHAOS_PATCH_LUIGI)) {
+        } else if (gMarioState->marioObj && gMarioState->marioObj->header.gfx.sharedChild == gLoadedGraphNodes[MODEL_LUIGI]) {
             *overallLights = luigi_overalls_lights;
             *hatLights = luigi_hat_lights;
         } else {

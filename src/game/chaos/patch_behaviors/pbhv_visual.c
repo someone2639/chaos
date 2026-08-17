@@ -17,6 +17,7 @@
 #include "game/main.h"
 
 u8 chs_cond_no_zbuffer(void)       { return !gConfig.disableHarshVisuals; }
+u8 chs_cond_inverted_zbuffer(void) { return gChaosDifficulty >= CHAOS_DIFFICULTY_NORMAL; }
 
 u8 chs_cond_increased_fov(void) { return (!(gEmulator & EMU_CONSOLE) || !chaos_check_if_patch_active(CHAOS_PATCH_TOP_DOWN_CAMERA)); }
 
@@ -26,13 +27,7 @@ u8 chs_cond_no_skybox(void) {
     return !gConfig.disableHarshVisuals;
 }
 
-// Skipping the VI for 45/60 FPS is capable of causing the game thread to hang on console and accurate emulators
-// TODO: Investigate why this happens in ultraSM64 but not HackerSM64
-u8 chs_cond_45_fps(void) {
-    return !gInstantInputBlacklist;
-}
-
-// Console and accurate emulators won't be hitting 60FPS very often anyway
+// Console and accurate emulators won't be hitting 60FPS very often, probably not worth supporting
 u8 chs_cond_60_fps(void) {
     return !gInstantInputBlacklist;
 }

@@ -839,6 +839,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 8,
         .durationImpossible = 10,
 
+        INCOMPATIBLE(CHAOS_PATCH_LOWER_TIME_LIMIT)
+
         .name               = "Pay to Win",
         .shortDescription   = "Stars are only collectible when Mario has at least 30 coins.",
     },
@@ -850,7 +852,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 6,
         .durationImpossible = 8,
 
-        INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SHUFFLE_OBJECTS, CHAOS_PATCH_ENEMY_BLUE_COINS)
+        INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SHUFFLE_OBJECTS, CHAOS_PATCH_ENEMY_BLUE_COINS, CHAOS_PATCH_LOWER_TIME_LIMIT)
         .levelInitFunc      = chs_lvlinit_collectors_anxiety,
 
         .name               = "Collector's Anxiety",
@@ -1315,9 +1317,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
-        .duration           = 6,
-        .durationHard       = 7,
-        .durationImpossible = 8,
+        .duration           = 5,
+        .durationHard       = 5,
+        .durationImpossible = 6,
 
         INCOMPATIBLE(CHAOS_PATCH_STICKY_WALL_JUMP)
 
@@ -1460,17 +1462,18 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .conditionalFunc    = chs_cond_no_zbuffer,
 
         .name               = "Geometry Freakout",
-        .shortDescription   = "Geometry can now render itself in whatever order it wants (sensory warning for most setups!)",
+        .shortDescription   = "Geometry can now render itself in whatever order it wants (sensory warning for some setups!)",
     },
     [CHAOS_PATCH_INVERTED_Z_BUFFER] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
-        .duration           = 2,
-        .durationHard       = 3,
-        .durationImpossible = 4,
+        .duration           = 1,
+        .durationHard       = 2,
+        .durationImpossible = 2,
 
         INCOMPATIBLE(CHAOS_PATCH_NO_Z_BUFFER, CHAOS_PATCH_STAR_MEDALLION)
+        .conditionalFunc    = chs_cond_inverted_zbuffer,
 
         .name               = "Inside-Out",
         .shortDescription   = "Geometry that is further from the camera will render on top of closer geometry. Quite the perspective!",
@@ -1607,11 +1610,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationImpossible = 6,
 
         INCOMPATIBLE(CHAOS_PATCH_20_FPS, CHAOS_PATCH_60_FPS)
-        .conditionalFunc    = chs_cond_45_fps,
 
         .name               = "45 FPS",
         .shortDescription   = "My internet's living, I'm adding frames, Grandma's living, she's adding frames...",
-        // .longDescription    = "This maaaaaaay not run at a consistent 45 FPS while running on hardware. Whether that makes the game easier or harder is for the player to decide.",
+        .longDescription    = "This maaaaaaay not run at a consistent 45 FPS while running on hardware. Whether that makes the game easier or harder is for the player to decide.",
     },
     [CHAOS_PATCH_60_FPS] = {
         .durationType       = CHAOS_DURATION_STARS,
@@ -1626,7 +1628,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "60 FPS (Double Time!)",
         .shortDescription   = "It's like playing the game two times at the same time!",
-        // .longDescription    = "This will probably not regularly be hitting 60 FPS while running on hardware...hopefully console players enjoy the choppy framerates!",
+        .longDescription    = "This patch is probably almost indistinguishable from the 45 FPS one on a console...",
     },
     [CHAOS_PATCH_TOP_DOWN_CAMERA] = { // TODO: BUG: Joystick is busted when twirling with top down camera, also TTC is completely unplayable
         .durationType       = CHAOS_DURATION_STARS,
@@ -1685,9 +1687,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
-        .duration           = 6,
-        .durationHard       = 8,
-        .durationImpossible = 9,
+        .duration           = 5,
+        .durationHard       = 6,
+        .durationImpossible = 7,
 
         INCOMPATIBLE(CHAOS_PATCH_INCREASED_FOV, CHAOS_PATCH_DECREASED_FOV/* , CHAOS_PATCH_TOP_DOWN_CAMERA */)
 
@@ -1769,7 +1771,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 13,
         .durationImpossible = 15,
 
-        INCOMPATIBLE(CHAOS_PATCH_FORCED_MARIO_CAM, CHAOS_PATCH_TOP_DOWN_CAMERA, CHAOS_PATCH_45_DEGREE_CAM, CHAOS_PATCH_PLEASANT_CAMERA_SOUNDS, CHAOS_PATCH_SWAPPED_C_STICK)
+        INCOMPATIBLE(CHAOS_PATCH_FORCED_MARIO_CAM, CHAOS_PATCH_TOP_DOWN_CAMERA, CHAOS_PATCH_45_DEGREE_CAM, CHAOS_PATCH_PLEASANT_CAMERA_SOUNDS, CHAOS_PATCH_SWAPPED_C_STICK, CHAOS_PATCH_BUTTON_BROKEN_C)
         .activatedInitFunc  = chs_act_smooth_camera,
         .deactivationFunc   = chs_deact_smooth_camera,
 
@@ -1866,7 +1868,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = CHS_TIME_LIMIT_DURATION_HARD,
         .durationImpossible = CHS_TIME_LIMIT_DURATION_IMPOSSIBLE,
 
-        INCOMPATIBLE(CHAOS_PATCH_WALKIES)
+        INCOMPATIBLE(CHAOS_PATCH_WALKIES, CHAOS_PATCH_PAY2WIN, CHAOS_PATCH_STAR_MEDALLION, CHAOS_PATCH_COLLECTORS_ANXIETY)
         .conditionalFunc    = chs_cond_lower_time_limit,
         .activatedInitFunc  = chs_act_lower_time_limit,
         .deactivationFunc   = chs_deact_lower_time_limit,
@@ -2149,7 +2151,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 4,
         .durationImpossible = 5,
 
-        INCOMPATIBLE(CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_SPEED_TAX, CHAOS_PATCH_HEALTH_DRAIN, CHAOS_PATCH_COSMIC_CLONES, CHAOS_PATCH_PUSH_BACK, CHAOS_PATCH_STAR_MEDALLION, CHAOS_PATCH_WATER_BOMBS, CHAOS_PATCH_GRAVITY_INCREASE, CHAOS_PATCH_LOWER_TIME_LIMIT)
+        INCOMPATIBLE(CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_SPEED_TAX, CHAOS_PATCH_HEALTH_DRAIN, CHAOS_PATCH_COSMIC_CLONES, CHAOS_PATCH_PUSH_BACK, CHAOS_PATCH_STAR_MEDALLION, CHAOS_PATCH_WATER_BOMBS, CHAOS_PATCH_GRAVITY_INCREASE, CHAOS_PATCH_LOWER_TIME_LIMIT, CHAOS_PATCH_SLIPPERY_FLOORS)
 
         .name               = "Walkies",
         .shortDescription   = "Slows Mario down to walking speed. This is a Walkies level now.",
@@ -2279,7 +2281,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 6,
         .durationImpossible = 7,
 
-        INCOMPATIBLE(CHAOS_PATCH_QUICKTIME, CHAOS_PATCH_TETRIS, CHAOS_PATCH_SWAPPED_C_STICK)
+        INCOMPATIBLE(CHAOS_PATCH_QUICKTIME, CHAOS_PATCH_TETRIS, CHAOS_PATCH_SWAPPED_C_STICK, CHAOS_PATCH_SMOOTH_CAM)
 
         .name               = "Camera Malfunction",
         .shortDescription   = "All C buttons are completely nonfunctional (even for menus!)",
@@ -2793,7 +2795,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 5,
         .durationImpossible = 6,
 
-        INCOMPATIBLE(CHAOS_PATCH_CLIMBING_BOOTS)
+        INCOMPATIBLE(CHAOS_PATCH_CLIMBING_BOOTS, CHAOS_PATCH_WALKIES)
 
         .name               = "Wet Floor",
         .shortDescription   = "All floors will be slippery.",
@@ -2857,6 +2859,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration           = 5,
         .durationHard       = 6,
         .durationImpossible = 8,
+        .disableForHardcore = TRUE, // Areas like JRB ship + star restriction like Pay to Win = guaranteed game over
 
         .conditionalFunc    = chs_cond_randomize_warps,
 
@@ -2932,7 +2935,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationImpossible = 11,
         .disableForHardcore = TRUE, // Too much unpredictability
 
-        INCOMPATIBLE(CHAOS_PATCH_GRAVITY_INCREASE, CHAOS_PATCH_WALKIES, CHAOS_PATCH_PUSH_BACK, CHAOS_PATCH_NO_Z_BUFFER, CHAOS_PATCH_INVERTED_Z_BUFFER)
+        INCOMPATIBLE(CHAOS_PATCH_GRAVITY_INCREASE, CHAOS_PATCH_WALKIES, CHAOS_PATCH_PUSH_BACK, CHAOS_PATCH_NO_Z_BUFFER, CHAOS_PATCH_INVERTED_Z_BUFFER, CHAOS_PATCH_LOWER_TIME_LIMIT)
         .activatedInitFunc  = chs_act_star_medallion,
         .levelInitFunc      = chs_lvlinit_star_medallion,
         .areaInitFunc       = chs_area_init_star_medallion,

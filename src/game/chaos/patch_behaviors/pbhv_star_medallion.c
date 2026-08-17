@@ -52,8 +52,8 @@ static u8 sm_lll_a1_lava_check(void)           { return ((gCurrActNum >= 5 && !c
 static u8 sm_ddd_a2_bowser_sub_active(void)    { return (gCurrActNum == 1); }
 static u8 sm_ddd_a2_poles_active(void)         { return (gCurrActNum != 1); }
 static u8 sm_sl_a1_shell_check(void)           { return !chaos_check_if_patch_active(CHAOS_PATCH_NO_RIDING_SHELLS); }
-static u8 sm_wdw_a2(void)                      { return (!chaos_check_if_patch_active(CHAOS_PATCH_LOCK_CANNONS) && gCurrActNum >= 5); }
-static u8 sm_wdw_a2_vanish_cap(void)           { return (!chaos_check_if_patch_active(CHAOS_PATCH_LOCK_CANNONS) && gCurrActNum >= 5 && (save_file_get_flags() & SAVE_FLAG_HAVE_VANISH_CAP) && !chaos_check_if_patch_active(CHAOS_PATCH_DISABLE_CAPS)); }
+// static u8 sm_wdw_a2(void)                      { return (!chaos_check_if_patch_active(CHAOS_PATCH_LOCK_CANNONS) && gCurrActNum >= 5); }
+// static u8 sm_wdw_a2_vanish_cap(void)           { return (!chaos_check_if_patch_active(CHAOS_PATCH_LOCK_CANNONS) && gCurrActNum >= 5 && (save_file_get_flags() & SAVE_FLAG_HAVE_VANISH_CAP) && !chaos_check_if_patch_active(CHAOS_PATCH_DISABLE_CAPS)); }
 static u8 sm_ttm_a1_can_warp(void)             { return (!chaos_check_if_patch_active(CHAOS_PATCH_DISABLE_FADE_WARPS)); }
 static u8 sm_ttm_a1_can_wall_kick(void)        { return (gChaosDifficulty > CHAOS_DIFFICULTY_EASY && !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_WALL_KICK)); }
 static u8 sm_thi_a1_can_wall_kick(void)        { return (gChaosDifficulty > CHAOS_DIFFICULTY_EASY && !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_WALL_KICK)); }
@@ -267,12 +267,12 @@ static const struct StarMedallionSpawnLocation starMedallionList_WDW[] = {
     {.areaNum = 1, .checkpointOnly = FALSE, .x = -3689, .y =    53, .z =  3205, .conditionalFunc = NULL                          }, // Hidden inside pushable box near the bottom of the stage (non-encased one)
     {.areaNum = 1, .checkpointOnly = FALSE, .x = -1843, .y =  2357, .z = -3694, .conditionalFunc = NULL                          }, // Hidden inside pushable box near the top of the stage
     {.areaNum = 1, .checkpointOnly = FALSE, .x =  1537, .y =  1997, .z = -3582, .conditionalFunc = NULL                          }, // On top of spawn
-    // Area 2
-    {.areaNum = 2, .checkpointOnly = FALSE, .x =  -465, .y =   -82, .z =  2094, .conditionalFunc = sm_wdw_a2                     }, // By water triangle in top center of area (cannon involved)
-    {.areaNum = 2, .checkpointOnly = FALSE, .x =  2048, .y = -2309, .z = -1279, .conditionalFunc = sm_wdw_a2                     }, // By two trees and 1-UP box (cannon involved)
-    {.areaNum = 2, .checkpointOnly = FALSE, .x = -3589, .y = -2309, .z =  3584, .conditionalFunc = sm_wdw_a2                     }, // Tucked in corner next to vanish cap box (cannon involved)
-    {.areaNum = 2, .checkpointOnly = FALSE, .x =  1592, .y = -2309, .z =  3640, .conditionalFunc = sm_wdw_a2_vanish_cap          }, // Behind vanish cap cage (cannon involved)
-    {.areaNum = 2, .checkpointOnly = FALSE, .x =  2137, .y = -1357, .z =  1020, .conditionalFunc = sm_wdw_a2                     }, // Hidden behind breakable box on white building (cannon involved)
+    // // Area 2 (Removed, as there is no reason to voluntarily select Act 5/6 if you know about it, and it's just confusing if you don't...)
+    // {.areaNum = 2, .checkpointOnly = FALSE, .x =  -465, .y =   -82, .z =  2094, .conditionalFunc = sm_wdw_a2                     }, // By water triangle in top center of area (cannon involved)
+    // {.areaNum = 2, .checkpointOnly = FALSE, .x =  2048, .y = -2309, .z = -1279, .conditionalFunc = sm_wdw_a2                     }, // By two trees and 1-UP box (cannon involved)
+    // {.areaNum = 2, .checkpointOnly = FALSE, .x = -3589, .y = -2309, .z =  3584, .conditionalFunc = sm_wdw_a2                     }, // Tucked in corner next to vanish cap box (cannon involved)
+    // {.areaNum = 2, .checkpointOnly = FALSE, .x =  1592, .y = -2309, .z =  3640, .conditionalFunc = sm_wdw_a2_vanish_cap          }, // Behind vanish cap cage (cannon involved)
+    // {.areaNum = 2, .checkpointOnly = FALSE, .x =  2137, .y = -1357, .z =  1020, .conditionalFunc = sm_wdw_a2                     }, // Hidden behind breakable box on white building (cannon involved)
 };
 static const struct StarMedallionSpawnLocation starMedallionList_TTM[] = {
     // Area 1
