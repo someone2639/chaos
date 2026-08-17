@@ -17,7 +17,7 @@
  ***********************/
 
 #define NUM_STARS 120
-#define HIGH_ROLLER_COIN_REQ 60
+#define HIGH_ROLLER_COIN_REQ 65
 
 /*******************
  * Random Griefing *

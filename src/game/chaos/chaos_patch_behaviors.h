@@ -29,6 +29,8 @@ void add_uncollected_star(void);
 void remove_collected_star(void);
 void update_any_star(u8 shouldRemove, s8 negativeRetriesBias);
 u8 chs_cond_star_shuffle(void);
+u8 chs_cond_stars_increase_lv2(void);
+u8 chs_cond_stars_increase_lv3(void);
 u8 chs_cond_stars_increase_guarantee(void);
 u8 chs_cond_stars_decrease_guarantee(void);
 u8 chs_cond_toad_star_restock(void);

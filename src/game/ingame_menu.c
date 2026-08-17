@@ -3069,7 +3069,7 @@ void print_hud_course_complete_coins(s16 x, s16 y) {
             
             if (chaos_check_if_patch_active(CHAOS_PATCH_HIGH_ROLLER)) {
                 if (gCourseCompleteCoins > 0 && gCourseCompleteCoins % HIGH_ROLLER_COIN_REQ == 0) {
-                    update_any_star(FALSE, 1);
+                    add_uncollected_star();
                     play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
                 }
             }

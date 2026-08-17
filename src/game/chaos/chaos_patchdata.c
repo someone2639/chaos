@@ -247,6 +247,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         // NOTE: Negative patch generation happens first, so conflicting immediate-use positive patches can be checked against negatives at generation time, but not the reverse.
         INCOMPATIBLE(CHAOS_PATCH_STARS_DECREASE_LV2, CHAOS_PATCH_STARS_DECREASE_LV3, CHAOS_PATCH_STARS_DECREASE_GUARANTEE)
+        .conditionalFunc    = chs_cond_stars_increase_lv2,
         .activatedInitFunc  = chs_act_stars_increase_lv2,
 
         .name               = "One-Star Offer",
@@ -262,6 +263,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         // NOTE: Negative patch generation happens first, so conflicting immediate-use positive patches can be checked against negatives at generation time, but not the reverse.
         INCOMPATIBLE(CHAOS_PATCH_STARS_DECREASE_LV2, CHAOS_PATCH_STARS_DECREASE_LV3, CHAOS_PATCH_STARS_DECREASE_GUARANTEE)
+        .conditionalFunc    = chs_cond_stars_increase_lv3,
         .activatedInitFunc  = chs_act_stars_increase_lv3,
 
         .name               = "Two-Star Treat",
@@ -466,11 +468,11 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 3,
-        .duration           = 6,
+        .duration           = 4,
 
         .name               = "High Roller",
         .shortDescription   = "Get one random star for every " STR2(HIGH_ROLLER_COIN_REQ) " coins collected whenever you complete a normal star mission!",
-        .longDescription    = "These are NOT guaranteed to be yellow stars. Rolls for star gain come with disadvantage. In other words, this will reattempt to provide a star you don't have if it succeeds the first time. Your odds of gaining a new star are about 50% by the time you've collected a total of 35 stars.",
+        .longDescription    = "These coin rewards will always provide a new star not currently in your possession (assuming you haven't collected every star in the game already).",
     },
 
 // Gravity Modifiers

@@ -362,8 +362,9 @@ static void print_star_collect_message(u8 shouldRemove, s32 courseNum, s32 starI
 void add_uncollected_star(void) {
     s32 totalStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
     if (totalStars >= NUM_STARS) {
-        // This is now possible with gambling wheel (left alone to ensure there is always a jackpot possibility)
+        // This is now possible with high roller and gambling wheel (left alone to ensure there is always a jackpot possibility)
         // assert(FALSE, "add_uncollected_star:\nTried to add uncollected star with 120 stars!");
+        update_any_star(FALSE, 0);
         return;
     }
     s32 starToUpdate = random_u16() % (NUM_STARS - totalStars);
@@ -402,6 +403,7 @@ void remove_collected_star(void) {
     if (totalStars == 0) {
         // This is now possible with tetris and gambling wheel (left alone to ensure there is always a catastrophe possibility)
         // assert(FALSE, "remove_collected_star:\nTried to remove collected star with 0 stars!");
+        update_any_star(TRUE, 0);
         return;
     }
     s32 starToUpdate = random_u16() % totalStars;
@@ -475,8 +477,13 @@ void update_any_star(u8 shouldRemove, s8 negativeRetriesBias) {
 u8 chs_cond_star_shuffle(void) {
     return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 2;
 }
-u8 chs_cond_stars_increase_guarantee(void) {
-    return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) <= (NUM_STARS - 1);
+u8 chs_cond_stars_increase_lv2(void) {
+    // After this point, probability is just never worth selecting non-guaranteed stars.
+    return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) < BITS_STAR_REQUIREMENT;
+}
+u8 chs_cond_stars_increase_lv3(void) {
+    // After this point, probability is just never worth selecting non-guaranteed stars, so exclude them completely.
+    return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) < BITS_STAR_REQUIREMENT;
 }
 u8 chs_cond_stars_decrease_guarantee(void) {
     return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 1;
