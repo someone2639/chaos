@@ -485,6 +485,9 @@ u8 chs_cond_stars_increase_lv3(void) {
     // After this point, probability is just never worth selecting non-guaranteed stars, so exclude them completely.
     return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) < BITS_STAR_REQUIREMENT;
 }
+u8 chs_cond_stars_increase_guarantee(void) {
+    return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) <= (NUM_STARS - 1);
+}
 u8 chs_cond_stars_decrease_guarantee(void) {
     return save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1) >= 1;
 }
