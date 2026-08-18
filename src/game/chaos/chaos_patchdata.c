@@ -1668,7 +1668,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 5,
         .durationImpossible = 6,
 
-        INCOMPATIBLE(CHAOS_PATCH_SQUINT_MODE)
+        INCOMPATIBLE(CHAOS_PATCH_SQUINT_MODE, CHAOS_PATCH_TETRIS)
         .conditionalFunc    = chs_cond_low_resolution,
 
         .name               = "Potato Graphics",
@@ -2913,7 +2913,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 5,
         .durationImpossible = 6,
         
-        INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_A, CHAOS_PATCH_BUTTON_BROKEN_B, CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SWAPPED_ZR_AB, CHAOS_PATCH_BUTTON_BROKEN_C, CHAOS_PATCH_RED_LIGHT, CHAOS_PATCH_SWAPPED_C_STICK, CHAOS_PATCH_MORE_HUD)
+        INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_A, CHAOS_PATCH_BUTTON_BROKEN_B, CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SWAPPED_ZR_AB, CHAOS_PATCH_BUTTON_BROKEN_C, CHAOS_PATCH_RED_LIGHT, CHAOS_PATCH_SWAPPED_C_STICK, CHAOS_PATCH_MORE_HUD, CHAOS_PATCH_LOW_RESOLUTION)
         .activatedInitFunc  = chs_act_tetris,
         .deactivationFunc   = chs_deact_tetris,
         .frameUpdateFunc    = chs_update_tetris,

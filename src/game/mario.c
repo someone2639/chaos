@@ -1435,7 +1435,7 @@ void clear_stick_history(void) {
 #define SPIN_DEADZONE 50.0f
 #define SPIN_JUMP_ANGLE_THRESHOLD_DIRECT (0x9FF)
 #define SPIN_JUMP_ANGLE_THRESHOLD_ANGLED (0x9FF)
-#define NUM_DIRECTIONS_HIT_FOR_SPIN 5
+#define NUM_DIRECTIONS_HIT_FOR_SPIN 6
 #define NUM_FRAMES_HELD_TO_CANCEL_SPIN 4
 #define NUM_FRAMES_HELD_TO_CANCEL_SPIN_IF_CAN_ALREADY_SPIN 15
 void update_stick_history(struct MarioState *m, f32 mag, s16 s_angle) {
@@ -1558,6 +1558,11 @@ void update_mario_joystick_inputs(struct MarioState *m) {
         if (m->action & ACT_FLAG_AIR) {
             m->intendedMag = m->storedMag;
             m->intendedYaw = m->storedYaw;
+            if (m->intendedMag > 0.0f) {
+                m->input |= INPUT_NONZERO_ANALOG;
+            } else {
+                m->input &= ~INPUT_NONZERO_ANALOG;
+            }
         } else {
             m->storedMag = m->intendedMag;
             m->storedYaw = m->intendedYaw;
