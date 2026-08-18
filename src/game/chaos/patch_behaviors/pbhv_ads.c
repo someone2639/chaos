@@ -55,6 +55,38 @@ void chs_act_serve_ads(void) {
     this->frameTimer = 0;
 }
 
+void chs_serve_ads(void) {
+    s32 adToPlay = 0;
+    if (chsCurrentAd == 0) {
+        // Shuffle order of ads
+        for (s32 i = ARRAY_COUNT(chsHVQMTable) - 1; i >= 0; i--) {
+            s32 randIndex = random_float() * (i + 1);
+            u32 *tmp = chsHVQMTable[randIndex];
+            chsHVQMTable[randIndex] = chsHVQMTable[i];
+            chsHVQMTable[i] = tmp;
+        }
+    }
+
+    adToPlay = chsCurrentAd++;
+    if (chsCurrentAd >= ARRAY_COUNT(chsHVQMTable)) {
+        chsCurrentAd = 0;
+    }
+
+    // Prioritize anime over anime2
+    u32 *adAddr = chsHVQMTable[adToPlay];
+    if (adAddr == HVQM_PTR(anime) || adAddr == HVQM_PTR(anime2)) {
+        if (save_file_get_hvqm_anime_status()) {
+            adAddr = HVQM_PTR(anime2);
+            save_file_set_hvqm_anime_status(FALSE);
+        } else {
+            adAddr = HVQM_PTR(anime);
+            save_file_set_hvqm_anime_status(TRUE);
+        }
+    }
+
+    hvqm_play(adAddr);
+}
+
 void chs_update_serve_ads(void) {
     struct ChaosActiveEntry *this;
     chaos_find_first_active_patch(CHAOS_PATCH_AD_BREAK, &this);
@@ -62,66 +94,6 @@ void chs_update_serve_ads(void) {
         return;
     }
 
-    s32 adToPlay = 0;
-    if (chsCurrentAd == 0) {
-        // Shuffle order of ads
-        for (s32 i = ARRAY_COUNT(chsHVQMTable) - 1; i >= 0; i--) {
-            s32 randIndex = random_float() * (i + 1);
-            u32 *tmp = chsHVQMTable[randIndex];
-            chsHVQMTable[randIndex] = chsHVQMTable[i];
-            chsHVQMTable[i] = tmp;
-        }
-    }
-
-    adToPlay = chsCurrentAd++;
-    if (chsCurrentAd >= ARRAY_COUNT(chsHVQMTable)) {
-        chsCurrentAd = 0;
-    }
-
-    // Prioritize anime over anime2
-    u32 *adAddr = chsHVQMTable[adToPlay];
-    if (adAddr == HVQM_PTR(anime) || adAddr == HVQM_PTR(anime2)) {
-        if (save_file_get_hvqm_anime_status()) {
-            adAddr = HVQM_PTR(anime2);
-            save_file_set_hvqm_anime_status(FALSE);
-        } else {
-            adAddr = HVQM_PTR(anime);
-            save_file_set_hvqm_anime_status(TRUE);
-        }
-    }
-
-    hvqm_play(adAddr);
+    chs_serve_ads();
     this->frameTimer = 0;
-}
-
-void chs_debug_serve_ads(void) {
-    s32 adToPlay = 0;
-    if (chsCurrentAd == 0) {
-        // Shuffle order of ads
-        for (s32 i = ARRAY_COUNT(chsHVQMTable) - 1; i >= 0; i--) {
-            s32 randIndex = random_float() * (i + 1);
-            u32 *tmp = chsHVQMTable[randIndex];
-            chsHVQMTable[randIndex] = chsHVQMTable[i];
-            chsHVQMTable[i] = tmp;
-        }
-    }
-
-    adToPlay = chsCurrentAd++;
-    if (chsCurrentAd >= ARRAY_COUNT(chsHVQMTable)) {
-        chsCurrentAd = 0;
-    }
-
-    // Prioritize anime over anime2
-    u32 *adAddr = chsHVQMTable[adToPlay];
-    if (adAddr == HVQM_PTR(anime) || adAddr == HVQM_PTR(anime2)) {
-        if (save_file_get_hvqm_anime_status()) {
-            adAddr = HVQM_PTR(anime2);
-            save_file_set_hvqm_anime_status(FALSE);
-        } else {
-            adAddr = HVQM_PTR(anime);
-            save_file_set_hvqm_anime_status(TRUE);
-        }
-    }
-
-    hvqm_play(adAddr);
 }

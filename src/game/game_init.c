@@ -1088,8 +1088,8 @@ void thread5_game_loop(UNUSED void *arg) {
             chaos_remove_expired_entry(0, "%s: Removed patch!");
         }
         if ((gPlayer1Controller->buttonPressed & (A_BUTTON|L_TRIG)) && (gPlayer1Controller->buttonDown & (A_BUTTON|L_TRIG)) == (A_BUTTON | L_TRIG)) {
-            extern void chs_debug_serve_ads(void);
-            chs_debug_serve_ads();
+            extern void chs_serve_ads(void);
+            chs_serve_ads();
         }
 #endif // SOMEONE2639_CRAZY_EXPERIMENTS
         display_and_vsync();
