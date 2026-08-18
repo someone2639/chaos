@@ -809,7 +809,6 @@ u32 interact_coin(struct MarioState *m, UNUSED u32 interactType, struct Object *
     chs_collectors_anxiety_coin_collected(coinCount);
     if (coinCount >= 5 && chaos_check_if_patch_active(CHAOS_PATCH_BLUECOIN_LOTTERY)) {
         o->oInteractStatus = INT_STATUS_INTERACTED;
-        void init_slots(struct Object *, f32);
         struct Object *obj = spawn_object(o, MODEL_NONE, bhvSlotCoinPlaceholder);
         obj->parentObj = obj;
         obj->oDamageOrCoinValue = o->oDamageOrCoinValue;

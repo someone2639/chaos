@@ -55,6 +55,7 @@ struct ChaosPatchSeq {
 
 #define CHAOS_SEQ_VOL_LOWER 0.6f
 
+u32 gPauseDisabled = 0;
 u8 chaosSeqVolSubtractable = FALSE;
 static f32 chaosSeqVolMult = 1.0f;
 static u8 chaosSeqSelected = 0;
@@ -237,7 +238,7 @@ u32 pressed_pause(void) {
     u32 intangible = (gMarioState->action & ACT_FLAG_INTANGIBLE) != 0;
 
     if (!intangible && !dialogActive && !gWarpTransition.isActive && sDelayedWarpOp == WARP_OP_NONE
-        && (gPlayer1Controller->buttonPressed & START_BUTTON)) {
+        && (gPauseDisabled == 0) && (gPlayer1Controller->buttonPressed & START_BUTTON)) {
         return TRUE;
     }
 
@@ -1474,6 +1475,7 @@ s32 init_level(void) {
     sDelayedWarpOp = WARP_OP_NONE;
     sTransitionTimer = 0;
     D_80339EE0 = 0;
+    gPauseDisabled = 0;
 
     if (gCurrCreditsEntry == NULL) {
         gHudDisplay.flags = HUD_DISPLAY_DEFAULT;
@@ -1597,6 +1599,7 @@ s32 lvl_init_from_save_file(UNUSED s16 arg0, s32 levelNum) {
     gSavedCourseNum = COURSE_NONE;
     gCurrCreditsEntry = NULL;
     gSpecialTripleJump = FALSE;
+    gPauseDisabled = 0;
 
     init_mario_from_save_file();
     disable_warp_checkpoint();

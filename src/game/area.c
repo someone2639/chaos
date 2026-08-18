@@ -246,6 +246,7 @@ void load_area(s32 index) {
 }
 
 void unload_area(void) {
+    reset_slots();
     if (gCurrentArea != NULL) {
         unload_objects_from_area(0, gCurrentArea->index);
         geo_call_global_function_nodes(&gCurrentArea->unk04->node, GEO_CONTEXT_AREA_UNLOAD);
@@ -464,13 +465,15 @@ void render_game(void) {
             gSaveOptSelectIndex = gMenuOptSelectIndex;
         }
 
-        if (chaos_check_if_patch_active(CHAOS_PATCH_BLUECOIN_LOTTERY)) {
-            drawslots();
-        }
+        if (check_moving_play_mode(sCurrPlayMode) && !gInActSelect) {
+            if (chaos_check_if_patch_active(CHAOS_PATCH_BLUECOIN_LOTTERY)) {
+                drawslots();
+            }
 
-        if (chaos_check_if_patch_active(CHAOS_PATCH_DARKNESS) && check_moving_play_mode(sCurrPlayMode) && !gInActSelect) {
-            create_dl_ortho_matrix(&gDisplayListHead);
-            chstut_draw_shaded_background(&gDisplayListHead, WIDESCREEN_HACK_WIDTH_START, WIDESCREEN_HACK_WIDTH_END, 0, SCREEN_HEIGHT, 0, 0, 0, 183);
+            if (chaos_check_if_patch_active(CHAOS_PATCH_DARKNESS)) {
+                create_dl_ortho_matrix(&gDisplayListHead);
+                chstut_draw_shaded_background(&gDisplayListHead, WIDESCREEN_HACK_WIDTH_START, WIDESCREEN_HACK_WIDTH_END, 0, SCREEN_HEIGHT, 0, 0, 0, 183);
+            }
         }
 
         if (D_8032CE78 != NULL) {

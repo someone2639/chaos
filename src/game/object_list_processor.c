@@ -542,6 +542,7 @@ void clear_objects(void) {
         gDoorAdjacentRooms[i][1] = 0;
     }
 
+    reset_slots();
     debug_unknown_level_select_check();
 
     init_free_object_list();

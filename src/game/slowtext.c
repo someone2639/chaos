@@ -194,6 +194,11 @@ void slowtext_draw_ortho_text_linebreaks(Gfx **dl, s32 x, s32 y, s32 width, cons
     s32 lines = 0;
     s32 length = 0;
 
+    if (!string) {
+        assert(FALSE, "Attempted to pass NULL string to slowtext!");
+        return;
+    }
+
     assert(string != gFasttextTmpBuffer, "slowtext_draw_ortho_text_linebreaks:\nInput may not use gFasttextTmpBuffer!");
     fasttext_compute_print_text_with_line_breaks(fasttextCachedFontId, width, &lines, &length, gFasttextTmpBuffer, string);
 

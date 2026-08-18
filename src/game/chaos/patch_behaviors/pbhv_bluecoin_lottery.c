@@ -20,10 +20,20 @@
 #define NUM_SLOTS 3
 #define SUPERSTAR_INDEX 1
 
+enum SlotStates {
+    S_STANDBY = 0,
+    S_GO,
+    S_SHOWUP,
+    S_ROLL,
+    S_STOP,
+    S_SHOWDOWN,
+    S_FINISH
+};
+
 // to get slot i: 30 + (60 * i)
 // i = 1 for blue coin
-u32 slot_state = 0;
-u32 slot_nextstate = 0;
+u32 slot_state = S_STANDBY;
+u32 slot_nextstate = S_STANDBY;
 u32 slot_timer = 0;
 struct Object *currCoin = NULL;
 
@@ -36,16 +46,6 @@ u32 timers[NUM_SLOTS] = {16, 24, 32};
 u32 speeds[NUM_SLOTS];
 u16 rotations[NUM_SLOTS];
 s32 pregenerated[NUM_SLOTS];
-
-enum SlotStates {
-    S_STANDBY = 0,
-    S_GO,
-    S_SHOWUP,
-    S_ROLL,
-    S_STOP,
-    S_SHOWDOWN,
-    S_FINISH
-};
 
 u32 interact_coin_delayed(struct MarioState *m, struct Object *obj) {
     s32 coinCount = obj->oDamageOrCoinValue;
@@ -89,6 +89,20 @@ u32 interact_coin_delayed(struct MarioState *m, struct Object *obj) {
 #endif
 
     return FALSE;
+}
+
+void reset_slots(void) {
+    if (slot_state != S_STANDBY) {
+        disable_time_stop_including_mario();
+        if (gPauseDisabled > 0) {
+            gPauseDisabled--;
+        }
+    }
+
+    currCoin = NULL;
+    slot_state = S_STANDBY;
+    slot_nextstate = S_STANDBY;
+    slot_timer = 0;
 }
 
 void init_slots(struct Object *oo, f32 chance) {
@@ -144,9 +158,14 @@ void drawslots() {
     s32 win;
     s32 winningNumber;
 
+    if (sCurrPlayMode != PLAY_MODE_NORMAL) {
+        return;
+    }
+
     switch (slot_state) {
         case S_STANDBY: break;
         case S_GO:
+            gPauseDisabled++;
             enable_time_stop_including_mario();
             slot_nextstate = S_SHOWUP;
             break;
@@ -286,6 +305,9 @@ void drawslots() {
             break;
         case S_FINISH:
             disable_time_stop_including_mario();
+            if (gPauseDisabled > 0) {
+                gPauseDisabled--;
+            }
             slot_nextstate = S_STANDBY;
             interact_coin_delayed(gMarioState, currCoin);
             // Deactivate patch

@@ -109,6 +109,8 @@ void chs_collectors_anxiety_load_new_level(void);
 void chs_collectors_anxiety_small_koopa_spawned(void);
 void chs_collectors_anxiety_coin_collected(s32 coinValue);
 u8 chs_collectors_anxiety_can_collect_star(void);
+void reset_slots(void);
+void init_slots(struct Object *oo, f32 chance);
 u8 chs_cond_coin_size(void);
 
 // Movement Modifiers

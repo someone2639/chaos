@@ -166,8 +166,9 @@ void draw_active_patch_ext_desc(Gfx **dl, struct ChaosActiveEntry *patch) {
     gSPDisplayList(dlHead++, bg);
 
     slowtext_setup_ortho_rendering(&dlHead, FT_FONT_VANILLA_SHADOW);
-    slowtext_draw_ortho_text_linebreaks(&dlHead, -142, 87, DESC_STRING_WIDTH, patchDesc, FT_FLAG_ALIGN_LEFT, 
-        effectR, effectG, effectB, 0xFF);
+    slowtext_draw_ortho_text_linebreaks(&dlHead, -142, 87, DESC_STRING_WIDTH,
+        (patchDesc != NULL) ? patchDesc : "@8F8F8F--No additional patch details to display.@--------",
+        FT_FLAG_ALIGN_LEFT, effectR, effectG, effectB, 0xFF);
     slowtext_finished_rendering(&dlHead);
 
     gSPPopMatrix(dlHead++, G_MTX_MODELVIEW);

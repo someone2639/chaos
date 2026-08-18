@@ -72,7 +72,7 @@ struct CreditsEntry {
     /*0x04*/ Vec3s marioPos;
     /*0x0C*/ const char **unk0C;
 };
-
+extern u32 gPauseDisabled;
 extern u8 chaosSeqVolSubtractable;
 extern struct CreditsEntry *gCurrCreditsEntry;
 
