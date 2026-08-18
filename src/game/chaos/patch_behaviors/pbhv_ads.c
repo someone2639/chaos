@@ -78,7 +78,19 @@ void chs_update_serve_ads(void) {
         chsCurrentAd = 0;
     }
 
-    hvqm_play(chsHVQMTable[adToPlay]);
+    // Prioritize anime over anime2
+    u32 *adAddr = chsHVQMTable[adToPlay];
+    if (adAddr == HVQM_PTR(anime) || adAddr == HVQM_PTR(anime2)) {
+        if (save_file_get_hvqm_anime_status()) {
+            adAddr = HVQM_PTR(anime2);
+            save_file_set_hvqm_anime_status(FALSE);
+        } else {
+            adAddr = HVQM_PTR(anime);
+            save_file_set_hvqm_anime_status(TRUE);
+        }
+    }
+
+    hvqm_play(adAddr);
     this->frameTimer = 0;
 }
 
