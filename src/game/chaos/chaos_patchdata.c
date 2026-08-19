@@ -877,7 +877,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 12,
         .durationImpossible = 15,
 
-        INCOMPATIBLE(CHAOS_PATCH_DAMAGE_LOTTERY, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE, CHAOS_PATCH_SAFETY_NET)
+        INCOMPATIBLE(CHAOS_PATCH_DAMAGE_LOTTERY, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE, CHAOS_PATCH_SAFETY_NET, CHAOS_PATCH_SHUFFLE_OBJECTS)
 
         .name               = "Sonic Simulator",
         .shortDescription   = "Coins represent Mario's health. Just like in Sonic, Mario will drop all of his coins upon taking damage.",
@@ -2592,7 +2592,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 5,
         .durationImpossible = 6,
 
-        INCOMPATIBLE(CHAOS_PATCH_RANDOM_SHOCK, CHAOS_PATCH_RANDOM_BURN, CHAOS_PATCH_COSMIC_RAYS, CHAOS_PATCH_DAMAGE_LOTTERY, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE, CHAOS_PATCH_WATER_BOMBS, CHAOS_PATCH_BRAWL_TRIPPING, CHAOS_PATCH_RANDOM_SLEEP, CHAOS_PATCH_RED_LIGHT)
+        INCOMPATIBLE(CHAOS_PATCH_RANDOM_SHOCK, CHAOS_PATCH_RANDOM_BURN, CHAOS_PATCH_COSMIC_RAYS, CHAOS_PATCH_DAMAGE_LOTTERY, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE, CHAOS_PATCH_WATER_BOMBS, CHAOS_PATCH_BRAWL_TRIPPING, CHAOS_PATCH_RANDOM_SLEEP, CHAOS_PATCH_RED_LIGHT, CHAOS_PATCH_SHUFFLE_OBJECTS)
 
         .name               = "One-Hit Wonder",
         .shortDescription   = "Mario will die instantly upon taking any form of damage (other than from swimming or poison).",
@@ -2846,7 +2846,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 7,
         .durationImpossible = 8,
 
-        INCOMPATIBLE(CHAOS_PATCH_COLLECTORS_ANXIETY)
+        INCOMPATIBLE(CHAOS_PATCH_COLLECTORS_ANXIETY, CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_SONIC_SIMULATOR)
         .areaInitFunc       = chs_start_shuffle,
         .instWarpPostFunc   = chs_instwarp_post_shuffle,
         .frameUpdateFunc    = chs_shuffle_objects,
