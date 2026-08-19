@@ -144,6 +144,8 @@ void chs_update_random_blind(void) {
 
 #define DIALOGUE_TIME_MAX      (4 * 60 * 30)
 
+extern s16 gDialogID;
+
 void chs_act_random_dialogue(void) {
     struct ChaosActiveEntry *this;
     chaos_find_first_active_patch(CHAOS_PATCH_RANDOM_DIALOGUE, &this);
@@ -154,7 +156,7 @@ void chs_update_random_dialogue(void) {
     struct ChaosActiveEntry *this;
     u32 dialog;
     chaos_find_first_active_patch(CHAOS_PATCH_RANDOM_DIALOGUE, &this);
-    if(this->frameTimer > DIALOGUE_TIME_MAX && !(gMarioState->action & ACT_GROUP_CUTSCENE)) {
+    if(this->frameTimer > DIALOGUE_TIME_MAX && !(gMarioState->action & ACT_GROUP_CUTSCENE) && (gDialogID == DIALOG_NONE)) {
         do {
             dialog = RAND(DIALOG_COUNT);
         } while (dialog == DIALOG_020);
