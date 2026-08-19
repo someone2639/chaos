@@ -718,11 +718,6 @@ void render_hud(void) {
 
     create_dl_ortho_matrix(&gDisplayListHead);
 
-    // Draw DVD logo first
-    if(chaos_check_if_patch_active(CHAOS_PATCH_DVD)) {
-        draw_dvd_logo();
-    }
-
     if (hudDisplayFlags == HUD_DISPLAY_NONE || chaos_check_if_patch_active(CHAOS_PATCH_NO_HUD)) {
         sPowerMeterHUD.animation = POWER_METER_HIDDEN;
         sPowerMeterStoredHealth = 8;
@@ -768,6 +763,10 @@ void render_hud(void) {
 
     if(chaos_check_if_patch_active(CHAOS_PATCH_TETRIS)) {
         draw_tetris();
+    }
+
+    if(chaos_check_if_patch_active(CHAOS_PATCH_DVD)) {
+        draw_dvd_logo();
     }
 
     if(chaos_check_if_patch_active(CHAOS_PATCH_QUICKTIME)) {
