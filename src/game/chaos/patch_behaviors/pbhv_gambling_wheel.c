@@ -400,7 +400,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
     /* GWHEEL_TYPE_POSITIVE */
     [GWHEEL_OPT_POS_1_STAR] = {
         .id              = GWHEEL_OPT_POS_1_STAR,
-        .weight          = 1.25f,
+        .weight          = 1.5f,
         .textureDlBig    = gambling_wheel_dl_icon_stars_1_big,
         .textureDlSmall  = gambling_wheel_dl_icon_stars_1_small,
 
@@ -481,7 +481,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
     /* GWHEEL_TYPE_NEGATIVE */
     [GWHEEL_OPT_NEG_1_STAR] = {
         .id              = GWHEEL_OPT_NEG_1_STAR,
-        .weight          = 1.25f,
+        .weight          = 1.0f,
         .textureDlBig    = gambling_wheel_dl_icon_stars_m1_big,
         .textureDlSmall  = gambling_wheel_dl_icon_stars_m1_small,
 

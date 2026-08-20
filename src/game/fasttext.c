@@ -9,6 +9,8 @@
 #include "game_init.h"
 #include "fasttext.h"
 #include "ingame_menu.h"
+#include "emutest.h"
+#include "lib/libpl2/libpl2-emu.h"
 
 #define TEX_ASCII_START '!'
 
@@ -20,6 +22,19 @@ enum FastTextFont fasttextCachedFontId = FT_FONT_NONE;
 char gFasttextTmpBuffer[0x1000];
 
 #include "fasttext_data.c.in"
+
+void fasttext_init_startup(void) {
+    lpl2_plugin_info plugin;
+
+    if (gLibplABI > 0 && lpl2_get_graphics_plugin(&plugin, NULL)) {
+        if (plugin.pluginId == LPL2_PLUGIN_OGRE
+                     || plugin.pluginId == LPL2_PLUGIN_GLIDE64
+                     || plugin.pluginId == LPL2_GLN64
+        ) {
+            fasttextGFXPluginOffset = -(1 << 4) + 1;
+        }
+    }
+}
 
 u8 fasttext_string_to_byte_with_fallback(u8 leftNibbleChar, u8 rightNibbleChar, u8 fallbackValue) {
     u8 ret = 0;

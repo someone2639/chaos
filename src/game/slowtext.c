@@ -15,6 +15,8 @@
 #define G_CC_TEXT PRIMITIVE, 0, TEXEL0, 0, 0, 0, 0, TEXEL0
 #define G_CC_TEXTA TEXEL0, 0, PRIMITIVE, 0, TEXEL0, 0, PRIMITIVE, 0
 
+s32 fasttextGFXPluginOffset = 1;
+
 static Vtx *slowtext_char_vtx[32];
 
 static void alloc_verts_at_index(s32 width, s32 height) {
@@ -51,12 +53,12 @@ static void slowtext_draw_char(Gfx **dl, const struct FastTextProps *fontProps, 
     const s32 renderWidth = fontProps->offsetTable[charIndex].renderWidth;
     const s32 textureOffset = fontProps->offsetTable[charIndex].horizontalOffset;
 
-    // NOTE: 1 being added to each of these to fix rendering issues with tri misalignment
-    // or something (which only happens with gSPModifyVertex for some reason?)
-    const s32 s1 = ((textureOffset << 5) + 1) << 16;
-    const s32 s2 = (((textureOffset + renderWidth) << 5) + 1) << 16;
-    const s32 t1 = (0 << 5) + 1;
-    const s32 t2 = (textureHeight << 5) + 1;
+    // NOTE: Additional offset being added to each of these to fix rendering issues with tri misalignment
+    // or something for more accurate setups (which only happens with gSPModifyVertex for some reason?)
+    const s32 s1 = ((textureOffset << 5) + fasttextGFXPluginOffset) << 16;
+    const s32 s2 = (((textureOffset + renderWidth) << 5) + fasttextGFXPluginOffset) << 16;
+    const s32 t1 = (0 << 5) + fasttextGFXPluginOffset;
+    const s32 t2 = (textureHeight << 5) + fasttextGFXPluginOffset;
 
     alloc_verts_at_index(renderWidth, textureHeight);
 

@@ -27,6 +27,7 @@
 #include "rumble_init.h"
 #include "profiling.h"
 #include "emutest.h"
+#include "fasttext.h"
 #ifdef HVQM
 #include <hvqm/hvqm.h>
 #endif
@@ -1050,6 +1051,7 @@ void thread5_game_loop(UNUSED void *arg) {
     gConfig.disableHarshVisuals = save_file_get_harsh_visuals_mode();
     render_init();
 
+    fasttext_init_startup();
     collectible_glow_init();
     reset_patch_selection_menu();
 

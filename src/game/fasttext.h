@@ -51,6 +51,7 @@ struct FastTextProps {
 extern const struct FastTextProps gFasttextFonts[FT_FONT_COUNT];
 extern enum FastTextFont fasttextCachedFontId;
 extern char gFasttextTmpBuffer[0x1000];
+extern s32 fasttextGFXPluginOffset;
 
 /**
  * fasttext vs slowtext:
@@ -69,6 +70,12 @@ extern char gFasttextTmpBuffer[0x1000];
  * fasttext: y=0 at the top of the screen
  * slowtext: y=0 at the bottom of the screen (or applicable transformation)
 */
+
+/*******************************************************
+ * fasttext initialization: to be invoked once on boot *
+ *******************************************************/
+// Sets up some fasttext/slowtest configuration at boot time.
+void fasttext_init_startup(void);
 
 /*********************************************************************
  * fasttext rendering: use these together for texrect printing only! *
