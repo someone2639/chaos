@@ -68,10 +68,15 @@ void chs_update_random_shock(void) {
         s32 actGroup = (gMarioState->action & ACT_GROUP_MASK);
         if(!(actGroup == ACT_GROUP_CUTSCENE || actGroup == ACT_GROUP_AUTOMATIC) && (gMarioState->action != ACT_FIRST_PERSON)) {
             if(!RAND(90)) {
-                if (gMarioState->action & (ACT_FLAG_SWIMMING | ACT_FLAG_METAL_WATER)) {
-                    hurt_and_set_mario_action(gMarioState, ACT_WATER_SHOCKED, 0, 4);
-                } else {
-                    hurt_and_set_mario_action(gMarioState, ACT_SHOCKED, 0, 4);
+                if (!chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_INVINCIBILITY)) {
+                    if (gMarioState->action & (ACT_FLAG_SWIMMING | ACT_FLAG_METAL_WATER)) {
+                        drop_and_set_mario_action(gMarioState, ACT_WATER_SHOCKED, 0);
+                    } else {
+                        drop_and_set_mario_action(gMarioState, ACT_SHOCKED, 0);
+                    }
+                    if (!(gMarioState->flags & MARIO_METAL_CAP)) {
+                        set_hurt_counter(gMarioState, 4);
+                    }
                 }
                 sRandomShockTimer = RAND(SHOCK_TIME_RAND) + SHOCK_TIME_MIN;
             }
@@ -96,21 +101,21 @@ void chs_update_random_burn(void) {
         s32 actGroup = (gMarioState->action & ACT_GROUP_MASK);
         if(!(actGroup == ACT_GROUP_CUTSCENE || actGroup == ACT_GROUP_SUBMERGED || actGroup == ACT_GROUP_AUTOMATIC) && (gMarioState->action != ACT_FIRST_PERSON)) {
             if(!RAND(90)) {
-                gMarioState->marioObj->oMarioBurnTimer = 0;
-                u32 burningAction = ACT_BURNING_JUMP;
+                if (!chaos_check_if_patch_active(CHAOS_PATCH_RANDOM_INVINCIBILITY) && !(gMarioState->flags & MARIO_METAL_CAP)) {
+                    gMarioState->marioObj->oMarioBurnTimer = 0;
+                    u32 burningAction = ACT_BURNING_JUMP;
 
-                play_mario_sound(gMarioState, SOUND_MARIO_ON_FIRE, 0);
-                if (!chs_check_temporary_invincibility()) {
+                    play_mario_sound(gMarioState, SOUND_MARIO_ON_FIRE, 0);
                     if (chaos_check_if_patch_active(CHAOS_PATCH_SONIC_SIMULATOR) && gCurrCourseNum != COURSE_NONE) {
                         set_hurt_counter(gMarioState, (gMarioState->flags & MARIO_CAP_ON_HEAD) ? 12 : 18);
                     }
-                }
 
-                if ((gMarioState->action & ACT_FLAG_AIR) && gMarioState->vel[1] <= 0.0f) {
-                    burningAction = ACT_BURNING_FALL;
-                }
+                    if ((gMarioState->action & ACT_FLAG_AIR) && gMarioState->vel[1] <= 0.0f) {
+                        burningAction = ACT_BURNING_FALL;
+                    }
 
-                set_mario_action(gMarioState, burningAction, 0);
+                    set_mario_action(gMarioState, burningAction, 0);
+                }
 
                 sRandomBurnTimer = RAND(BURN_TIME_RAND) + BURN_TIME_MIN;
             }

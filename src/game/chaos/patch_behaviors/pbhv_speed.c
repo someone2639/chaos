@@ -16,7 +16,7 @@
 */
 
 u8 chs_cond_push_back(void) {
-    return (chaos_count_active_instances(CHAOS_PATCH_PUSH_BACK) < 3);
+    return (chaos_count_active_instances(CHAOS_PATCH_PUSH_BACK) < 2);
 }
 
 void chs_update_push_back(void) {

@@ -54,7 +54,7 @@ static void slowtext_draw_char(Gfx **dl, const struct FastTextProps *fontProps, 
     const s32 textureOffset = fontProps->offsetTable[charIndex].horizontalOffset;
 
     // NOTE: Additional offset being added to each of these to fix rendering issues with tri misalignment
-    // or something for more accurate setups (which only happens with gSPModifyVertex for some reason?)
+    // or something (which only happens with gSPModifyVertex for some reason?)
     const s32 s1 = ((textureOffset << 5) + fasttextGFXPluginOffset) << 16;
     const s32 s2 = (((textureOffset + renderWidth) << 5) + fasttextGFXPluginOffset) << 16;
     const s32 t1 = (0 << 5) + fasttextGFXPluginOffset;
