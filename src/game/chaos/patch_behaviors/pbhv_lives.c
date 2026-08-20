@@ -31,6 +31,15 @@ u8 chs_cond_instant_game_over(void)  {
         return FALSE;
     }
 
+    // Make sure there's more than one selectable patch available
+    s32 patchCount = DEFAULT_PATCH_DISPLAY_QUANTITY;
+    patchCount += chaos_count_active_instances(CHAOS_PATCH_ADD_SELECTABLE_PATCH);
+    patchCount -= chaos_count_active_instances(CHAOS_PATCH_REMOVE_SELECTABLE_PATCH);
+    if (patchCount <= 1) {
+        // That's too mean!
+        return FALSE;
+    }
+
     // Make sure no active patches are disabled in hardcore mode for fairness
     for (s32 i = 0; i < *gChaosActiveEntryCount; i++) {
         struct ChaosActiveEntry *entry = &gChaosActiveEntries[i];
