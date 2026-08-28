@@ -176,7 +176,7 @@ const char *sMoreHudHeadlines[] = {
     "L Might Be Real",
     "Romhacker Running Out of Ideas for Jokes",
     "You Can Press the A Button to Jump",
-    "Mario Builder Competition Still Ongoing",
+    "Mario Builder Competition Is Finally Over",
     "Just How Many Headlines Are There?",
     "Youngest Child Ever Just Born",
     VERSION_STRING " Out Now!",
@@ -202,6 +202,16 @@ const char *sMoreHudHeadlines[] = {
     "Swing Your Arms From Side to Side",
     "Hotel Delfino Stocked With Dozens of Toasters",
     "DNA Test Confirms Luigi to Be Yoshi's Mother",
+    "Mario is BALD???",
+    "Dog Does a Silly Dance. 12 Dead 20 Injured",
+    "The Economy is Doing Either Bad or Good",
+    "HackerSM64 2.4 Delayed Another Year",
+    "All Romhacks Found to Actually be Made by Kaze",
+    "Christmas is Just a Week Away",
+    "Remember to Call Your Mother",
+    "You are Now Breathing Manually",
+    "There is a Skeleton Inside Us All",
+    "We Fired Our Previous Headline Writer",
 };
 
 f32 sMoreHudHeadlinesWeights[ARRAY_COUNT(sMoreHudHeadlines)];
@@ -280,6 +290,7 @@ void more_hud_draw_health_meter(void) {
     s32 x = 20;
     s32 y = (gChaosGameMode == CHAOS_GAMEMODE_CHALLENGE) ? 24 : 6;
     f32 barFill = 0.0f;
+    u8 *meterTexture = (chaos_check_if_patch_active(CHAOS_PATCH_LUIGI)) ? wow_health_meter_luigi_rgba16 : wow_health_meter_rgba16;
 
     // Div by 0 check
     if (gMarioState->maxHealth != 0xFF) {
@@ -294,7 +305,7 @@ void more_hud_draw_health_meter(void) {
     gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
     gDPSetRenderMode(gDisplayListHead++, G_RM_TEX_EDGE, G_RM_TEX_EDGE2);
 
-    draw_sprite(&gDisplayListHead, wow_health_meter_rgba16, G_IM_FMT_RGBA, G_IM_SIZ_16b, FALSE, 128, 64, x, y, 128, 64);
+    draw_sprite(&gDisplayListHead, meterTexture, G_IM_FMT_RGBA, G_IM_SIZ_16b, FALSE, 128, 64, x, y, 128, 64);
 
     gDPPipeSync(gDisplayListHead++);
     gDPSetTexturePersp(gDisplayListHead++, G_TP_PERSP);

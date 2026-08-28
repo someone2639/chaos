@@ -4356,6 +4356,10 @@ ALIGNED8 u8 wow_health_meter_rgba16[] = {
     #include "textures/segment2/wow_health_meter.rgba16.inc.c"
 };
 
+ALIGNED8 u8 wow_health_meter_luigi_rgba16[] = {
+    #include "textures/segment2/wow_health_meter_luigi.rgba16.inc.c"
+};
+
 ALIGNED8 u8 breaking_news_rgba16[] = {
     #include "textures/segment2/breaking_news.rgba16.inc.c"
 };

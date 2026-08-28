@@ -126,6 +126,7 @@ extern u8 wth_spooky_rgba16[];
 extern u8 wth_sun_rgba16[];
 extern u8 wth_wet_rgba16[];
 extern u8 wow_health_meter_rgba16[];
+extern u8 wow_health_meter_luigi_rgba16[];
 extern u8 breaking_news_rgba16[];
 extern u8 radar_bg_rgba16[];
 
