@@ -1070,20 +1070,38 @@ void save_file_update_clears() {
     save_file_do_save(gCurrSaveFileNum - 1);
 }
 
+#define STAR_DIFFICULTY_SCALER 1.67f
 void save_file_update_hardcore_score() {
     struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
     struct ScoreData *scoreData = &gSaveBuffer.menuData.scoreData;
-    s32 stars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
 
-    if(saveFile->chaosGameMode == CHAOS_GAMEMODE_HARDCORE) {
-        if ((saveFile->chaosDifficulty > scoreData->bestHardcoreDifficulty) ||
-            ((saveFile->chaosDifficulty == scoreData->bestHardcoreDifficulty) && (stars > scoreData->bestHardcoreStars))) {
-            scoreData->bestHardcoreDifficulty = saveFile->chaosDifficulty;
-            scoreData->bestHardcoreStars = stars;
-            gMainMenuDataModified = TRUE;
-        }
+    if (saveFile->chaosGameMode != CHAOS_GAMEMODE_HARDCORE) {
+        return;
+    }
+
+    s32 stars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
+    f32 scaledSavedStars = (f32) scoreData->bestHardcoreStars;
+
+    // Weight stars in terms of difficulty.
+    // For example, 30 stars on Impossible is more impressive than 40 stars on Hard.
+    // However, 1 star on Impossible is less impressive than even 5 stars on Easy.
+    u8 difficultyIndex = scoreData->bestHardcoreDifficulty;
+    while (difficultyIndex > saveFile->chaosDifficulty) {
+        scaledSavedStars *= STAR_DIFFICULTY_SCALER;
+        difficultyIndex--;
+    }
+    while (difficultyIndex < saveFile->chaosDifficulty) {
+        scaledSavedStars *= (1.0f / STAR_DIFFICULTY_SCALER);
+        difficultyIndex++;
+    }
+
+    if ((stars > (s32) scaledSavedStars) || (stars == (s32) scaledSavedStars && saveFile->chaosDifficulty > scoreData->bestHardcoreDifficulty)) {
+        scoreData->bestHardcoreDifficulty = saveFile->chaosDifficulty;
+        scoreData->bestHardcoreStars = stars;
+        gMainMenuDataModified = TRUE;
     }
 }
+#undef STAR_DIFFICULTY_SCALER
 
 void save_file_delete_stats() {
     struct ScoreData *scoreData = &gSaveBuffer.menuData.scoreData;

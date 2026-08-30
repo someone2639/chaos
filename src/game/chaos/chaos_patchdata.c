@@ -851,8 +851,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
         .duration           = 4,
-        .durationHard       = 6,
-        .durationImpossible = 8,
+        .durationHard       = 5,
+        .durationImpossible = 7,
 
         INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SHUFFLE_OBJECTS, CHAOS_PATCH_ENEMY_BLUE_COINS, CHAOS_PATCH_LOWER_TIME_LIMIT)
         .levelInitFunc      = chs_lvlinit_collectors_anxiety,
@@ -2932,9 +2932,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
-        .duration           = 7,
-        .durationHard       = 9,
-        .durationImpossible = 11,
+        .duration           = 6,
+        .durationHard       = 8,
+        .durationImpossible = 10,
         .disableForHardcore = TRUE, // Too much unpredictability
 
         INCOMPATIBLE(CHAOS_PATCH_GRAVITY_INCREASE, CHAOS_PATCH_WALKIES, CHAOS_PATCH_PUSH_BACK, CHAOS_PATCH_NO_Z_BUFFER, CHAOS_PATCH_INVERTED_Z_BUFFER, CHAOS_PATCH_LOWER_TIME_LIMIT)
