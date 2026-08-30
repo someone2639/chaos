@@ -1095,7 +1095,7 @@ void save_file_update_hardcore_score() {
         difficultyIndex++;
     }
 
-    if ((stars > (s32) scaledSavedStars) || (stars == (s32) scaledSavedStars && saveFile->chaosDifficulty > scoreData->bestHardcoreDifficulty)) {
+    if (((f32) stars > scaledSavedStars) || ((f32) stars == scaledSavedStars && saveFile->chaosDifficulty > scoreData->bestHardcoreDifficulty)) {
         scoreData->bestHardcoreDifficulty = saveFile->chaosDifficulty;
         scoreData->bestHardcoreStars = stars;
         gMainMenuDataModified = TRUE;
