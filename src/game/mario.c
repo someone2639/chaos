@@ -934,7 +934,7 @@ static u32 set_mario_action_airborne(struct MarioState *m, u32 action, u32 actio
     }
 
     // Check if Mario was already in the air (check old action not new action)
-    if (((m->action & ACT_GROUP_MASK) == ACT_GROUP_AIRBORNE) && (m->action & ACT_FLAG_AIR)) {
+    if (((m->action & ACT_GROUP_MASK) == ACT_GROUP_AIRBORNE) && ((m->action & ACT_FLAG_AIR) && !(m->action & ACT_FLAG_SWIMMING_OR_FLYING))) {
         m->peakHeightNoCancel = MAX(m->pos[1], m->peakHeightNoCancel);
     } else {
         m->peakHeightNoCancel = m->pos[1];
@@ -1555,7 +1555,7 @@ void update_mario_joystick_inputs(struct MarioState *m) {
     // CHAOS_PATCH_REFRIGERATOR_MOVEMENT:
     //  - Never allow yaw or momentum correction in midair
     if (chaos_check_if_patch_active(CHAOS_PATCH_REFRIGERATOR_MOVEMENT)) {
-        if (m->action & ACT_FLAG_AIR) {
+        if ((m->action & ACT_FLAG_AIR) && m->action != ACT_VERTICAL_WIND) {
             m->intendedMag = m->storedMag;
             m->intendedYaw = m->storedYaw;
             if (m->intendedMag > 0.0f) {

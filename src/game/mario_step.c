@@ -105,7 +105,7 @@ void mario_bonk_reflection(struct MarioState *m, u32 negateSpeed) {
         mario_set_forward_vel(m, -m->forwardVel);
     } else {
         m->faceAngle[1] += 0x8000;
-        if (chaos_check_if_patch_active(CHAOS_PATCH_REFRIGERATOR_MOVEMENT) && m->action & ACT_FLAG_AIR) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_REFRIGERATOR_MOVEMENT) && (m->action & ACT_FLAG_AIR)) {
             m->intendedYaw += 0x8000;
             m->storedYaw = m->intendedYaw;
         }

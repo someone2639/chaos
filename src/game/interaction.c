@@ -632,7 +632,7 @@ u32 determine_knockback_action(struct MarioState *m, UNUSED s32 arg) {
     } else {
         m->faceAngle[1] += 0x8000;
         bonkAction = sForwardKnockbackActions[terrainIndex][strengthIndex];
-        if (chaos_check_if_patch_active(CHAOS_PATCH_REFRIGERATOR_MOVEMENT) && bonkAction & ACT_FLAG_AIR) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_REFRIGERATOR_MOVEMENT) && (bonkAction & ACT_FLAG_AIR)) {
             m->intendedYaw += 0x8000;
             m->storedYaw = m->intendedYaw;
         }
