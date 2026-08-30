@@ -604,7 +604,7 @@ void geo_process_generated_list(struct GraphNodeGenerated *node) {
  */
 void geo_process_background(struct GraphNodeBackground *node) {
     Gfx *list = NULL;
-    s32 drawBG = (gConfig.disableHarshVisuals) ? TRUE : !chaos_check_if_patch_active(CHAOS_PATCH_NO_SKYBOX);
+    s32 drawBG = (NO_HARSH_FLASHING) ? TRUE : !chaos_check_if_patch_active(CHAOS_PATCH_NO_SKYBOX);
 
     if (drawBG) {
         if (node->fnNode.func != NULL) {
@@ -685,7 +685,7 @@ void geo_process_animated_part(struct GraphNodeAnimatedPart *node) {
     }
 
     if (gCurrAnimType == ANIM_TYPE_ROTATION) {
-        if(!gConfig.disableHarshVisuals && chaos_check_if_patch_active(CHAOS_PATCH_CARTRIDGE_TILT)) {
+        if(!NO_HARSH_FLASHING && chaos_check_if_patch_active(CHAOS_PATCH_CARTRIDGE_TILT)) {
             rotation[0] = RAND(0x10000);
             rotation[1] = RAND(0x10000);
             rotation[2] = RAND(0x10000);
@@ -940,7 +940,7 @@ void geo_process_object(struct Object *node) {
             }
         }
 
-        if (chaos_check_if_patch_active(CHAOS_PATCH_DIZZY_OBJECTS) && !gConfig.disableHarshVisuals){
+        if (chaos_check_if_patch_active(CHAOS_PATCH_DIZZY_OBJECTS) && !NO_HARSH_MOTION){
             struct Object *obj = (struct Object *) node;
             if(obj->behavior != segmented_to_virtual(bhvMario)) {
                 s16 phase = (0x10000 / 60) * (gGlobalTimer % 60);
@@ -950,7 +950,7 @@ void geo_process_object(struct Object *node) {
         }
 
         if (node->header.gfx.throwMatrix != NULL
-                && (!chaos_check_if_patch_active(CHAOS_PATCH_DIZZY_OBJECTS) || gConfig.disableHarshVisuals)
+                && (!chaos_check_if_patch_active(CHAOS_PATCH_DIZZY_OBJECTS) || NO_HARSH_MOTION)
                 && !chaos_check_if_patch_active(CHAOS_PATCH_CONFUSED_OBJECTS)
                 && !chaos_check_if_patch_active(CHAOS_PATCH_UPSIDE_DOWN_OBJECTS)
         ) {
@@ -1219,7 +1219,7 @@ void geo_process_root(struct GraphNodeRoot *node, Vp *b, Vp *c, s32 clearColor) 
         gMatStackIndex = 0;
         gCurrAnimType = 0;
 
-        if (chaos_check_if_patch_active(CHAOS_PATCH_NO_Z_BUFFER) && !gConfig.disableHarshVisuals) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_NO_Z_BUFFER) && !NO_HARSH_FLASHING) {
             vec3s_set(viewport->vp.vtrans, node->x * 4, node->y * 4, -511);
             vec3s_set(viewport->vp.vscale, node->width * 4, node->height * 4, 511);
         } else if (chaos_check_if_patch_active(CHAOS_PATCH_INVERTED_Z_BUFFER)) {

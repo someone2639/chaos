@@ -684,12 +684,12 @@ void save_file_set_widescreen_mode(u8 mode) {
 }
 #endif
 
-u32 save_file_get_harsh_visuals_mode(void) {
+enum DisableVisualsFlags save_file_get_harsh_visuals_mode(void) {
     return gSaveBuffer.menuData.disableHarshVisuals;
 }
 
-void save_file_set_harsh_visuals_mode(u8 mode) {
-    gSaveBuffer.menuData.disableHarshVisuals = mode;
+void save_file_set_harsh_visuals_mode(enum DisableVisualsFlags flags) {
+    gSaveBuffer.menuData.disableHarshVisuals = flags;
 
     gMainMenuDataModified = TRUE;
     save_main_menu_data();

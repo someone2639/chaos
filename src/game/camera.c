@@ -3313,7 +3313,7 @@ void update_lakitu(struct Camera *c) {
                 gLakituState.roll -= 0x4000;
             }
         }
-        if (chaos_check_if_patch_active(CHAOS_PATCH_ROCKING_CAMERA) && !gConfig.disableHarshVisuals) {
+        if (chaos_check_if_patch_active(CHAOS_PATCH_ROCKING_CAMERA) && !NO_HARSH_MOTION) {
             gLakituState.roll += gChsCurrentRock;
         }
 
@@ -3443,7 +3443,7 @@ void mode_top_down_cam(struct Camera *c) {
 void update_camera(struct Camera *c) {
     u16 temporaryButtonDown = gPlayer1Controller->buttonDown;
     u16 temporaryButtonPressed = gPlayer1Controller->buttonPressed;
-    s32 forceMarioCam = (chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM) && !gConfig.disableHarshVisuals);
+    s32 forceMarioCam = (chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM) && !NO_HARSH_MOTION);
 
     if(chaos_check_if_patch_active(CHAOS_PATCH_TETRIS)) {
         if(gTetrisTriggerCameraR) {
@@ -4068,7 +4068,7 @@ void create_camera(struct GraphNodeCamera *gc, struct AllocOnlyPool *pool) {
 }
 
 static void process_lag_camera(struct GraphNodeCamera *gc) {
-    if (chaos_check_if_patch_active(CHAOS_PATCH_CAMERA_LAG) && !gConfig.disableHarshVisuals) {
+    if (chaos_check_if_patch_active(CHAOS_PATCH_CAMERA_LAG) && !NO_HARSH_MOTION) {
         // Preemtively fill buffer when buffer data doesn't exist
         if (gc->lakituLagFrame == -1) {
             for (s32 i = 0; i < ARRAY_COUNT(gc->camHistory); i++) {
@@ -4279,7 +4279,7 @@ s32 move_point_along_spline(Vec3f p, struct CutsceneSplinePoint spline[], s16 *s
  */
 s32 cam_select_alt_mode(s32 selection) {
     s32 mode = CAM_SELECTION_FIXED;
-    if (chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM) && !gConfig.disableHarshVisuals) {
+    if (chaos_check_if_patch_active(CHAOS_PATCH_FORCED_MARIO_CAM) && !NO_HARSH_MOTION) {
         return CAM_SELECTION_MARIO;
     }
 

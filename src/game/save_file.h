@@ -121,16 +121,19 @@ struct MainMenuSaveData {
     // the older the high score is. This is used for tie-breaking when displaying
     // on the high score screen.
     u32 coinScoreAges[NUM_SAVE_FILES];
+
     u8 soundMode: 2;
     u8 disableBGMusic: 1;
 #ifdef WIDE
     u8 wideMode: 2;
 #endif
-    u8 disableHarshVisuals: 1;
+    u8 __oldHarshVisuals: 1; // NOTE: This should be left untouched for backwards compatibility, up until next time a save-clearing patch is released (as of v2.0)
     u8 instantInput : 1;
     u8 hvqmAnimeStatus : 1;
 
-    u8 __PADDING[11];
+    u8 disableHarshVisuals;
+
+    u8 __PADDING[10];
 
     struct SaveBlockSignature signature;
 };
@@ -265,8 +268,8 @@ u32 save_file_get_widescreen_mode(void);
 void save_file_set_widescreen_mode(u8 mode);
 #endif
 
-u32 save_file_get_harsh_visuals_mode(void);
-void save_file_set_harsh_visuals_mode(u8 mode);
+enum DisableVisualsFlags save_file_get_harsh_visuals_mode(void);
+void save_file_set_harsh_visuals_mode(enum DisableVisualsFlags flags);
 
 #ifdef VERSION_EU
 enum EuLanguages {

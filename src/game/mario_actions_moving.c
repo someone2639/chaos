@@ -1502,7 +1502,7 @@ s32 act_crouch_slide(struct MarioState *m) {
         if (m->input & INPUT_A_PRESSED && !chaos_check_if_patch_active(CHAOS_PATCH_LOSEMOVE_LONG_JUMP)) {
             if (m->forwardVel > 10.0f) {
                 if (chaos_check_if_patch_active(CHAOS_PATCH_HARDER_LONG_JUMPS)) {
-                    if (random_float() < 0.33f) {
+                    if (random_float() < 0.25f) {
                         return set_mario_action(m, ACT_GROUND_POUND, 0);
                     }
                 }

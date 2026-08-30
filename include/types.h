@@ -32,15 +32,24 @@ enum WideScreenFlags {
     WIDE_SCREEN_UI              = (1 << 1),
 };
 
+enum DisableVisualsFlags {
+    VISUALFLAG_NONE     = 0,
+    VISUALFLAG_FLASHING = (1 << 0),
+    VISUALFLAG_MOTION   = (1 << 1),
+};
+
 struct Config {
     f32 audioFrequency;
 #ifdef WIDE
     s16 widescreen;
 #endif
     u8 disableBGMusic;
-    u8 disableHarshVisuals;
     u8 tvType;
+    enum DisableVisualsFlags disableHarshVisuals;
 };
+
+#define NO_HARSH_MOTION   (gConfig.disableHarshVisuals & VISUALFLAG_MOTION)
+#define NO_HARSH_FLASHING (gConfig.disableHarshVisuals & VISUALFLAG_FLASHING)
 
 struct Controller {
   /*0x00*/ s16 rawStickX;       //

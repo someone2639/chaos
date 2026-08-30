@@ -16,15 +16,15 @@
 #include "game/level_update.h"
 #include "game/main.h"
 
-u8 chs_cond_no_zbuffer(void)       { return !gConfig.disableHarshVisuals; }
+u8 chs_cond_no_zbuffer(void)       { return !NO_HARSH_FLASHING; }
 u8 chs_cond_inverted_zbuffer(void) { return gChaosDifficulty >= CHAOS_DIFFICULTY_NORMAL; }
 
 u8 chs_cond_increased_fov(void) { return (!(gEmulator & EMU_CONSOLE) || !chaos_check_if_patch_active(CHAOS_PATCH_TOP_DOWN_CAMERA)); }
 
-u8 chs_cond_low_resolution(void) { return (!gInstantInputBlacklist && gFBEEnabled && (!gConfig.disableHarshVisuals)); }
+u8 chs_cond_low_resolution(void) { return (!gInstantInputBlacklist && gFBEEnabled && !NO_HARSH_FLASHING); }
 
 u8 chs_cond_no_skybox(void) {
-    return !gConfig.disableHarshVisuals;
+    return !NO_HARSH_FLASHING;
 }
 
 // Console and accurate emulators won't be hitting 60FPS very often, probably not worth supporting
@@ -33,11 +33,11 @@ u8 chs_cond_60_fps(void) {
 }
 
 u8 chs_cond_dizzy_objects(void) {
-    return !gConfig.disableHarshVisuals;
+    return !NO_HARSH_MOTION;
 }
 
 u8 chs_cond_camera_lag(void) {
-    return !gConfig.disableHarshVisuals;
+    return !NO_HARSH_MOTION;
 }
 
 u8 chs_cond_darkness(void) {
@@ -60,7 +60,7 @@ s16 sChsRockStart = 0;
 s16 sChsRockEnd = 0;
 
 u8 chs_cond_rocking_camera(void) {
-    return !gConfig.disableHarshVisuals;
+    return !NO_HARSH_MOTION;
 }
 
 void chs_act_rocking_camera(void) {
@@ -72,7 +72,7 @@ void chs_act_rocking_camera(void) {
 }
 
 void chs_update_rocking_camera(void) {
-    if (gConfig.disableHarshVisuals) {
+    if (NO_HARSH_MOTION) {
         chs_act_rocking_camera();
         return;
     }
@@ -101,14 +101,14 @@ void chs_update_rocking_camera(void) {
 }
 
 u8 chs_cond_cartridge_tilt(void) {
-    return !gConfig.disableHarshVisuals; 
+    return !NO_HARSH_FLASHING; 
 }
 
 void *sCorruptionOriginalAddr = NULL;
 u8 sCorruptionLastLevel = LEVEL_NONE;
 
 u8 chs_cond_corruption(void) {
-    return !gConfig.disableHarshVisuals; 
+    return !NO_HARSH_FLASHING; 
 }
 
 void chs_update_corruption(void) {
@@ -117,10 +117,10 @@ void chs_update_corruption(void) {
         sCorruptionOriginalAddr = NULL;
     }
 
-    if(!sCorruptionOriginalAddr && !gConfig.disableHarshVisuals) {
+    if(!sCorruptionOriginalAddr && !NO_HARSH_FLASHING) {
         sCorruptionOriginalAddr = get_segment_base_addr(0x09); 
         set_segment_base_addr(0x09, get_segment_base_addr(0x07));
-    } else if (sCorruptionOriginalAddr && gConfig.disableHarshVisuals) {
+    } else if (sCorruptionOriginalAddr && NO_HARSH_FLASHING) {
         set_segment_base_addr(0x09, sCorruptionOriginalAddr);
         sCorruptionOriginalAddr = NULL;
     }

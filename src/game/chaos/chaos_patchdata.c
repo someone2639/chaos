@@ -1076,7 +1076,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 10,
         .durationImpossible = 12,
 
-        INCOMPATIBLE(CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_FALL_CANCEL_CANCEL, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE)
+        INCOMPATIBLE(CHAOS_PATCH_LETHAL_FALL_DAMAGE, CHAOS_PATCH_ONE_HIT_WONDER, CHAOS_PATCH_FALL_CANCEL_CANCEL, CHAOS_PATCH_NO_TOLERANCE_FALL_DAMAGE, CHAOS_PATCH_LETHAL_BONK)
         .activatedInitFunc  = chs_act_cosmic_rays,
         .frameUpdateFunc    = chs_update_cosmic_rays,
 
@@ -1319,9 +1319,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
-        .duration           = 5,
-        .durationHard       = 5,
-        .durationImpossible = 6,
+        .duration           = 3,
+        .durationHard       = 4,
+        .durationImpossible = 5,
 
         INCOMPATIBLE(CHAOS_PATCH_STICKY_WALL_JUMP)
 
@@ -1474,7 +1474,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 2,
         .durationImpossible = 2,
 
-        INCOMPATIBLE(CHAOS_PATCH_NO_Z_BUFFER, CHAOS_PATCH_STAR_MEDALLION)
+        INCOMPATIBLE(CHAOS_PATCH_NO_Z_BUFFER, CHAOS_PATCH_STAR_MEDALLION, CHAOS_PATCH_TOP_DOWN_CAMERA)
         .conditionalFunc    = chs_cond_inverted_zbuffer,
 
         .name               = "Inside-Out",
@@ -1640,7 +1640,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 7,
         .durationImpossible = 9,
 
-        INCOMPATIBLE(CHAOS_PATCH_INVERTED_CAMERA_X, CHAOS_PATCH_FORCED_MARIO_CAM, CHAOS_PATCH_DECREASED_FOV, CHAOS_PATCH_INCREASED_FOV, CHAOS_PATCH_45_DEGREE_CAM, CHAOS_PATCH_SMOOTH_CAM, CHAOS_PATCH_SQUINT_MODE)
+        INCOMPATIBLE(CHAOS_PATCH_INVERTED_CAMERA_X, CHAOS_PATCH_FORCED_MARIO_CAM, CHAOS_PATCH_DECREASED_FOV, CHAOS_PATCH_INCREASED_FOV, CHAOS_PATCH_45_DEGREE_CAM, CHAOS_PATCH_SMOOTH_CAM, CHAOS_PATCH_SQUINT_MODE, CHAOS_PATCH_INVERTED_Z_BUFFER)
 
         .name               = "Top-Down Camera",
         .shortDescription   = "Now you're playing Zelda! (without the items) (without the story) (without the combat) (without the",
@@ -2260,7 +2260,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_A, CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SWAPPED_ZR_AB, CHAOS_PATCH_QUICKTIME, CHAOS_PATCH_TETRIS)
 
         .name               = "The Busted B",
-        .shortDescription   = "The B button is finnicky and doesn't work sometimes.",
+        .shortDescription   = "The B button is finicky and doesn't work sometimes.",
     },
     [CHAOS_PATCH_BUTTON_BROKEN_Z] = {
         .durationType       = CHAOS_DURATION_STARS,
@@ -2416,7 +2416,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 8,
         .durationImpossible = 10,
 
-        INCOMPATIBLE(CHAOS_PATCH_RANDOM_INVISIBLE_WALLS)
+        INCOMPATIBLE(CHAOS_PATCH_RANDOM_INVISIBLE_WALLS, CHAOS_PATCH_COSMIC_RAYS)
 
         .name               = "Realistic Concussions",
         .shortDescription   = "Careful not to hit your head! Bonking now results in severe brain trauma.",
@@ -2726,7 +2726,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 1,
-        .duration           = 8,
+        .duration           = 18,
 
         .name               = "Not So Bossy",
         .shortDescription   = "All bosses die in one hit (except for during the final Bowser fight).",

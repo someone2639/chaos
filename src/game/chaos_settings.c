@@ -136,11 +136,21 @@ void chaos_settings_set_harsh_visuals(s32 selected) {
 
 struct ChaosSettingsOption sVisualsOptions[] = {
     {
-        .option = "Enable",
+        .option = "Enable All",
         .description = "Certain patches that could cause flashing, flickering lights, or are prone to motion sickness may appear as options in the patch selection menu.",
     },
     {
-        .option = "Disable",
+        .option = "Motion Only",
+        .description = "Certain patches that are prone to motion sickness may appear as options in the patch selection menu. "
+        "Patches containing flashing or flickering lights will not show up and have their currently active effects disabled.",
+    },
+    {
+        .option = "Flashing Only",
+        .description = "Certain patches containing flashing or flickering lights may appear as options in the patch selection menu. "
+        "Patches that are prone to motion sickness will not show up and have their currently active effects disabled.",
+    },
+    {
+        .option = "Disable All",
         .description = "Patches that could cause flashing, flickering lights, or are prone to motion sickness will no longer appear as options in the patch selection menu. "
         "Any currently applied patch that matches this criteria will have its effects disabled.",
     },
@@ -268,6 +278,7 @@ void render_settings_options() {
     gSPDisplayList(gDisplayListHead++, optBg);
 
     s32 yPos = (s32)((selCat->numOptions - 1) * 7.5f) - 0;
+    yPos = MIN(yPos, 15);
 
     if(gChaosSettingsMenu.menu.menuState == CHAOS_SETTINGS_STATE_SUB_MENU) {
         Gfx *optCursor = menu_create_cursor(-35, yPos - (15 * subIndex) + 9, 0.5f, 0xFF, 0xFF, 0xFF, 0xFF);

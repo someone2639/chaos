@@ -547,7 +547,7 @@ void display() {
     exec_display_list(&gGfxPool->spTask);
     profiler_log_thread5_time(AFTER_DISPLAY_LISTS);
 
-    if (chaos_check_if_patch_active(CHAOS_PATCH_LOW_RESOLUTION) && !gConfig.disableHarshVisuals) {
+    if (chaos_check_if_patch_active(CHAOS_PATCH_LOW_RESOLUTION) && !NO_HARSH_FLASHING) {
         render_low_resolution();
     }
 

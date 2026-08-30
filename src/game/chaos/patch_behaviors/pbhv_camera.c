@@ -10,7 +10,7 @@
 #include "game/chaos/chaos.h"
 
 u8 chs_cond_forced_mario_cam(void) {
-    return !gConfig.disableHarshVisuals;
+    return !NO_HARSH_MOTION;
 }
 
 void chs_act_45_degree_camera(void) {
