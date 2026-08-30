@@ -40,7 +40,9 @@ void chs_act_random_sleep(void) {
 void chs_update_random_sleep(void) {
     if(sRandomSleepTimer == 0) {
         s32 actGroup = (gMarioState->action & ACT_GROUP_MASK);
-        if((actGroup == ACT_GROUP_MOVING || actGroup == ACT_GROUP_STATIONARY) && (gMarioState->action != ACT_FIRST_PERSON)) {
+        if((actGroup == ACT_GROUP_MOVING || actGroup == ACT_GROUP_STATIONARY)
+         && !(gMarioState->action & ACT_FLAG_RIDING_SHELL)
+         && (gMarioState->action != ACT_FIRST_PERSON)) {
             set_mario_action(gMarioState, ACT_START_SLEEPING, 0);
             sRandomSleepTimer = -1;
         }
