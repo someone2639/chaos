@@ -69,6 +69,7 @@ enum GamblingWheelOptionType {
     GWHEEL_OPT_POS_1_STAR    = GWHEEL_OPT_POS_START,
     GWHEEL_OPT_POS_5_LIVES,
     GWHEEL_OPT_POS_EXTEND,
+    GWHEEL_OPT_POS_REMOVE,
     GWHEEL_OPT_POS_RANK_1,
     GWHEEL_OPT_POS_RANK_2,
     GWHEEL_OPT_POS_RANK_3,
@@ -86,6 +87,7 @@ enum GamblingWheelOptionType {
     GWHEEL_OPT_NEG_1_STAR    = GWHEEL_OPT_NEG_START,
     GWHEEL_OPT_NEG_3_LIVES,
     GWHEEL_OPT_NEG_EXTEND,
+    GWHEEL_OPT_NEG_REMOVE,
     GWHEEL_OPT_NEG_RANK_1,
     GWHEEL_OPT_NEG_RANK_2,
 
@@ -222,6 +224,9 @@ static u8 gwheel_type_cond_negative_extend(void) {
     return FALSE;
 }
 
+static u8 gwheel_type_cond_positive_remove(void) { return chs_cond_remove_patch_of_type(CHAOS_EFFECT_NEGATIVE, 1); }
+static u8 gwheel_type_cond_negative_remove(void) { return chs_cond_remove_patch_of_type(CHAOS_EFFECT_POSITIVE, 1); }
+
 static void gwheel_type_act_stars_increase_1(void) {
     add_uncollected_star();
     play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
@@ -284,6 +289,9 @@ static void gwheel_type_act_negative_extend(void) {
     // Sort all patches
     chaos_sort_active_patches();
 }
+
+static void gwheel_type_act_positive_remove(void) { chs_act_remove_patch_of_type(CHAOS_EFFECT_NEGATIVE); }
+static void gwheel_type_act_negative_remove(void) { chs_act_remove_patch_of_type(CHAOS_EFFECT_POSITIVE); }
 
 static void gwheel_type_act_rank_1_positive(void)      { chs_activate_random_pos_neg_patch_of_severity(1, CHAOS_EFFECT_POSITIVE, TRUE, 3, CHAOS_DURATION_STARS); }
 static void gwheel_type_act_rank_2_positive(void)      { chs_activate_random_pos_neg_patch_of_severity(2, CHAOS_EFFECT_POSITIVE, TRUE, 3, CHAOS_DURATION_STARS); }
@@ -365,7 +373,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
     /* GWHEEL_TYPE_JACKPOT */
     [GWHEEL_OPT_JPT_3_STARS] = {
         .id              = GWHEEL_OPT_JPT_3_STARS,
-        .weight          = 1.25f,
+        .weight          = 1.5f,
         .textureDlBig    = gambling_wheel_dl_icon_stars_3_big,
         .textureDlSmall  = gambling_wheel_dl_icon_stars_3_small,
 
@@ -376,7 +384,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
     },
     [GWHEEL_OPT_JPT_12_LIVES] = {
         .id              = GWHEEL_OPT_JPT_12_LIVES,
-        .weight          = 0.75f,
+        .weight          = 0.67f,
         .textureDlBig    = gambling_wheel_dl_icon_lives_12_big,
         .textureDlSmall  = gambling_wheel_dl_icon_lives_12_small,
 
@@ -387,7 +395,7 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
     },
     [GWHEEL_OPT_JPT_RANK_3] = {
         .id              = GWHEEL_OPT_JPT_RANK_3,
-        .weight          = 1.125f,
+        .weight          = 1.0f,
         .textureDlBig    = gambling_wheel_dl_icon_rank_3_big,
         .textureDlSmall  = gambling_wheel_dl_icon_rank_3_small,
 
@@ -422,14 +430,25 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
     },
     [GWHEEL_OPT_POS_EXTEND] = {
         .id              = GWHEEL_OPT_POS_EXTEND,
-        .weight          = 1.0f,
-        .textureDlBig    = gambling_wheel_dl_icon_timer_big,
-        .textureDlSmall  = gambling_wheel_dl_icon_timer_small,
+        .weight          = 0.85f,
+        .textureDlBig    = gambling_wheel_dl_icon_extend_patches_big,
+        .textureDlSmall  = gambling_wheel_dl_icon_extend_patches_small,
 
         .conditionalFunc = gwheel_type_cond_positive_extend,
         .activationFunc  = gwheel_type_act_positive_extend,
 
         .description     = "Extend all positive patch durations by two stars.",
+    },
+    [GWHEEL_OPT_POS_REMOVE] = {
+        .id              = GWHEEL_OPT_POS_REMOVE,
+        .weight          = 1.0f,
+        .textureDlBig    = gambling_wheel_dl_icon_remove_patch_big,
+        .textureDlSmall  = gambling_wheel_dl_icon_remove_patch_small,
+
+        .conditionalFunc = gwheel_type_cond_positive_remove,
+        .activationFunc  = gwheel_type_act_positive_remove,
+
+        .description     = "Deactivate a negative patch at random.",
     },
     [GWHEEL_OPT_POS_RANK_1] = {
         .id              = GWHEEL_OPT_POS_RANK_1,
@@ -504,13 +523,24 @@ const struct GamblingWheelOptionProps gamblingWheelOptionParams[] = {
     [GWHEEL_OPT_NEG_EXTEND] = {
         .id              = GWHEEL_OPT_NEG_EXTEND,
         .weight          = 0.75f,
-        .textureDlBig    = gambling_wheel_dl_icon_timer_big,
-        .textureDlSmall  = gambling_wheel_dl_icon_timer_small,
+        .textureDlBig    = gambling_wheel_dl_icon_extend_patches_big,
+        .textureDlSmall  = gambling_wheel_dl_icon_extend_patches_small,
 
         .conditionalFunc = gwheel_type_cond_negative_extend,
         .activationFunc  = gwheel_type_act_negative_extend,
 
         .description     = "Extend all negative patch durations by one star.",
+    },
+    [GWHEEL_OPT_NEG_REMOVE] = {
+        .id              = GWHEEL_OPT_NEG_REMOVE,
+        .weight          = 1.0f,
+        .textureDlBig    = gambling_wheel_dl_icon_remove_patch_big,
+        .textureDlSmall  = gambling_wheel_dl_icon_remove_patch_small,
+
+        .conditionalFunc = gwheel_type_cond_negative_remove,
+        .activationFunc  = gwheel_type_act_negative_remove,
+
+        .description     = "Deactivate a positive patch at random.",
     },
     [GWHEEL_OPT_NEG_RANK_1] = {
         .id              = GWHEEL_OPT_NEG_RANK_1,
@@ -831,12 +861,56 @@ struct GamblingWheelParams gamblingWheel_4[] = {
     },
 };
 
+struct GamblingWheelParams gamblingWheel_5[] = {
+    { /* 0 */
+        .size             = GWHEEL_SIZE_SMALL,
+        .type             = GWHEEL_TYPE_JACKPOT,
+        .forcedOptionType = GWHEEL_OPT_JPT_3_STARS,
+    },
+    { /* 1 - 3 */
+        .size             = GWHEEL_SIZE_LARGE,
+        .type             = GWHEEL_TYPE_POSITIVE,
+        .forcedOptionType = GWHEEL_OPT_ANY,
+    },
+    { /* 4 */
+        .size             = GWHEEL_SIZE_SMALL,
+        .type             = GWHEEL_TYPE_NEUTRAL,
+        .forcedOptionType = GWHEEL_OPT_ANY,
+    },
+    { /* 5 - 7 */
+        .size             = GWHEEL_SIZE_LARGE,
+        .type             = GWHEEL_TYPE_POSITIVE,
+        .forcedOptionType = GWHEEL_OPT_ANY,
+    },
+    { /* 8 */
+        .size             = GWHEEL_SIZE_SMALL,
+        .type             = GWHEEL_TYPE_JACKPOT,
+        .forcedOptionType = GWHEEL_OPT_ANY,
+    },
+    { /* 9 - 11 */
+        .size             = GWHEEL_SIZE_LARGE,
+        .type             = GWHEEL_TYPE_POSITIVE,
+        .forcedOptionType = GWHEEL_OPT_ANY,
+    },
+    { /* 12 */
+        .size             = GWHEEL_SIZE_SMALL,
+        .type             = GWHEEL_TYPE_NEUTRAL,
+        .forcedOptionType = GWHEEL_OPT_ANY,
+    },
+    { /* 13 - 15 */
+        .size             = GWHEEL_SIZE_LARGE,
+        .type             = GWHEEL_TYPE_POSITIVE,
+        .forcedOptionType = GWHEEL_OPT_ANY,
+    },
+};
+
 const struct GamblingWheelEntries gamblingWheels[] = {
     {.entries = gamblingWheel_0, .count = ARRAY_COUNT(gamblingWheel_0)},
     {.entries = gamblingWheel_1, .count = ARRAY_COUNT(gamblingWheel_1)},
     {.entries = gamblingWheel_2, .count = ARRAY_COUNT(gamblingWheel_2)},
     {.entries = gamblingWheel_3, .count = ARRAY_COUNT(gamblingWheel_3)},
     {.entries = gamblingWheel_4, .count = ARRAY_COUNT(gamblingWheel_4)},
+    {.entries = gamblingWheel_5, .count = ARRAY_COUNT(gamblingWheel_5)},
 };
 
 void chs_menuinit_gambling_wheel(void) {

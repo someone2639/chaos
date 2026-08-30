@@ -42,8 +42,12 @@ ALIGNED8 static const Texture icon_none[] = {
 #include "actors/gambling_wheel/custom_icon_none.rgba16.inc.c"
 };
 
-ALIGNED8 static const Texture icon_timer[] = {
-#include "actors/gambling_wheel/custom_icon_timer.rgba16.inc.c"
+ALIGNED8 static const Texture icon_extend_patches[] = {
+#include "actors/gambling_wheel/custom_icon_extend_patches.rgba16.inc.c"
+};
+
+ALIGNED8 static const Texture icon_remove_patch[] = {
+#include "actors/gambling_wheel/custom_icon_remove_patch.rgba16.inc.c"
 };
 
 ALIGNED8 static const Texture icon_stars_3[] = {
@@ -458,17 +462,33 @@ Gfx gambling_wheel_dl_icon_none_small[] = {
     gsSPEndDisplayList(),
 };
 
-Gfx gambling_wheel_dl_icon_timer_big[] = {
+Gfx gambling_wheel_dl_icon_extend_patches_big[] = {
     gsDPPipeSync(),
-    gsDPLoadTextureBlock(icon_timer, G_IM_FMT_RGBA, G_IM_SIZ_16b, 32, 32, 0, G_TX_MIRROR | G_TX_WRAP, G_TX_MIRROR | G_TX_WRAP, 5, 5, G_TX_NOLOD, G_TX_NOLOD),
+    gsDPLoadTextureBlock(icon_extend_patches, G_IM_FMT_RGBA, G_IM_SIZ_16b, 32, 32, 0, G_TX_MIRROR | G_TX_WRAP, G_TX_MIRROR | G_TX_WRAP, 5, 5, G_TX_NOLOD, G_TX_NOLOD),
     gsSPVertex(icon_28_28, 4, 0),
     gsSP2Triangles(0, 1, 2, 0x0, 0, 2, 3, 0x0),
     gsSPEndDisplayList(),
 };
 
-Gfx gambling_wheel_dl_icon_timer_small[] = {
+Gfx gambling_wheel_dl_icon_extend_patches_small[] = {
     gsDPPipeSync(),
-    gsDPLoadTextureBlock(icon_timer, G_IM_FMT_RGBA, G_IM_SIZ_16b, 32, 32, 0, G_TX_MIRROR | G_TX_WRAP, G_TX_MIRROR | G_TX_WRAP, 5, 5, G_TX_NOLOD, G_TX_NOLOD),
+    gsDPLoadTextureBlock(icon_extend_patches, G_IM_FMT_RGBA, G_IM_SIZ_16b, 32, 32, 0, G_TX_MIRROR | G_TX_WRAP, G_TX_MIRROR | G_TX_WRAP, 5, 5, G_TX_NOLOD, G_TX_NOLOD),
+    gsSPVertex(icon_18_18, 4, 0),
+    gsSP2Triangles(0, 1, 2, 0x0, 0, 2, 3, 0x0),
+    gsSPEndDisplayList(),
+};
+
+Gfx gambling_wheel_dl_icon_remove_patch_big[] = {
+    gsDPPipeSync(),
+    gsDPLoadTextureBlock(icon_remove_patch, G_IM_FMT_RGBA, G_IM_SIZ_16b, 32, 32, 0, G_TX_MIRROR | G_TX_WRAP, G_TX_MIRROR | G_TX_WRAP, 5, 5, G_TX_NOLOD, G_TX_NOLOD),
+    gsSPVertex(icon_28_28, 4, 0),
+    gsSP2Triangles(0, 1, 2, 0x0, 0, 2, 3, 0x0),
+    gsSPEndDisplayList(),
+};
+
+Gfx gambling_wheel_dl_icon_remove_patch_small[] = {
+    gsDPPipeSync(),
+    gsDPLoadTextureBlock(icon_remove_patch, G_IM_FMT_RGBA, G_IM_SIZ_16b, 32, 32, 0, G_TX_MIRROR | G_TX_WRAP, G_TX_MIRROR | G_TX_WRAP, 5, 5, G_TX_NOLOD, G_TX_NOLOD),
     gsSPVertex(icon_18_18, 4, 0),
     gsSP2Triangles(0, 1, 2, 0x0, 0, 2, 3, 0x0),
     gsSPEndDisplayList(),

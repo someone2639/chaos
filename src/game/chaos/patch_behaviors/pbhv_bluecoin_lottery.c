@@ -38,7 +38,7 @@ u32 slot_timer = 0;
 struct Object *currCoin = NULL;
 
 static s32 shouldWinSlots = FALSE;
-#define WIN_CHANCE 0.04f
+#define WIN_CHANCE 0.05f
 
 #define OFFSCREEN_POS -50.0f
 static f32 globalY = OFFSCREEN_POS;

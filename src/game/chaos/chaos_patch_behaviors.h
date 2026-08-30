@@ -196,7 +196,9 @@ void chs_update_debug_free_move(void);
 u8 chs_cond_debug_free_move(void);
 
 // Patches
+u8 chs_cond_remove_patch_of_type(enum ChaosPatchEffectType effectType, u8 minPatchesNeeded);
 u8 chs_cond_remove_negative_patch(void);
+void chs_act_remove_patch_of_type(enum ChaosPatchEffectType effectType);
 void chs_act_remove_negative_patch(void);
 enum ChaosPatchID chs_activate_random_pos_neg_patch_of_severity(s32 patchSeverity, enum ChaosPatchEffectType effectType,
             u8 skipSeverityModifier, u32 maxForcedDuration, enum ChaosPatchDurationType durationType);

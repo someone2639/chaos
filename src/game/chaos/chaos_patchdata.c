@@ -886,10 +886,10 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 3,
-        .duration           = 8,
+        .duration           = 12,
 
         .name               = "Blue Coin Lottery",
-        .shortDescription   = "Test your luck! Every blue coin is a 4% chance to win big!",
+        .shortDescription   = "Test your luck! Every blue coin is a 5% chance to win big!",
         .longDescription    = "This patch will expire the instant a blue coin lottery has been won. Use this wisely!"
     },
     [CHAOS_PATCH_COIN_SIZE] = {
@@ -2092,7 +2092,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .chsMenuUpdateFunc  = chs_menuupdate_gambling_wheel,
 
         .name               = "Let's Go Gambling!",
-        .shortDescription   = "Test your luck! Spin a roulette wheel for an extra boost (or nerf) whenever you select new patches!",
+        .shortDescription   = "Spin a roulette wheel for an extra boost (or nerf) whenever you select new patches!",
         .longDescription    = "Each wheel spin may consist of the following...\n"
                                "  - @AFAFAF--A Few Duds@--------\n"
                                "  - @671F57--One Very Negative Outcome@--------\n"
