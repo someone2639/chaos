@@ -582,7 +582,7 @@ void chs_deact_get_key_1(void) {
 }
 
 u8 chs_cond_get_key_1(void) {
-    return (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_1 | SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)));
+    return (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_1 | SAVE_FLAG_UNLOCKED_BASEMENT_DOOR | SAVE_FLAG_MOAT_DRAINED)));
 }
 
 void chs_act_get_key_2(void) {
