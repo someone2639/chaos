@@ -2382,9 +2382,9 @@ void update_mario_safe_pos(void) {
             return;
     }
 
-    // if (mario_floor_is_slippery(m)) {
-    //     return;
-    // }
+    if (mario_floor_is_slippery(m)) {
+        return;
+    }
     
     if (safePosLastFrame) {
         vec3f_copy(m->lastSafePos[m->lastSafePosIndex], m->pos);

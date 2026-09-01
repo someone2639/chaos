@@ -3330,7 +3330,7 @@ void update_lakitu(struct Camera *c) {
         gLakituState.roll += sHandheldShakeRoll;
         gLakituState.roll += gLakituState.keyDanceRoll;
 
-        if (c->mode != CAMERA_MODE_C_UP && c->cutscene == 0) {
+        if (c->mode != CAMERA_MODE_C_UP && c->mode != CAMERA_MODE_TOP_DOWN && c->cutscene == 0) {
             gCheckingSurfaceCollisionsForCamera = TRUE;
             distToFloor = find_floor(gLakituState.pos[0],
                                      gLakituState.pos[1] + 20.0f,
@@ -3375,6 +3375,8 @@ void set_camera_mode_top_down(struct Camera *c, s16 transitionTime) {
     }
 }
 
+#define TOP_DOWN_HEIGHT 2000.0f
+#define TOP_DOWN_DEATH_FLOOR_HEIGHT 2000.0f
 void mode_top_down_cam(struct Camera *c) {
     struct Surface *surface;
 
@@ -3401,36 +3403,37 @@ void mode_top_down_cam(struct Camera *c) {
     } else {
         // only do rotation handling if it's controllable
         if (gPlayer1Controller->buttonPressed & L_CBUTTONS) {
+            play_sound_cbutton_side();
             topdown_yawcorrection -= 0x2000;
         }
         if (gPlayer1Controller->buttonPressed & R_CBUTTONS) {
+            play_sound_cbutton_side();
             topdown_yawcorrection += 0x2000;
         }
     }
     f32 camCeilHeight = find_ceil(c->focus[0], gMarioState->pos[1] + 50, c->focus[2], &surface);
-    if (surface && (gCurrLevelNum != LEVEL_VCUTM) && (gCurrLevelNum != LEVEL_TTC)) {
-        c->pos[1] = camCeilHeight - 100.0f;
-    } else {
-        if (gCurrLevelNum == LEVEL_TTC) {
-            // lol
-            if ((camCeilHeight) < (gMarioState->pos[1] + 2000.0f)) {
-                c->pos[1] = gMarioState->pos[1] + 1000.0f;
-            } else {
-                c->pos[1] = gMarioState->pos[1] + 2000.0f;
-            }
-        } else if (gCurrLevelNum == LEVEL_VCUTM) {
-            // Hard coded check because otherwise it crashes on level entrance for some reason
-            if (topdown_vcutmlatch == 0) {
-                c->pos[1] = 6454;
-                topdown_vcutmlatch = 1;
-            } else {
-                c->pos[1] = ((gMarioState->pos[1] - gMarioState->floorHeight) > 2000.0f) ? (gMarioState->pos[1] + 3000.0f) : (gMarioState->floorHeight + 5000.0f);
-            }
+    if (gCurrLevelNum == LEVEL_TTC) {
+        // lol
+        if ((camCeilHeight) < (gMarioState->pos[1] + 2000.0f)) {
+            c->pos[1] = gMarioState->pos[1] + 1000.0f;
         } else {
-            c->pos[1] = ((gMarioState->pos[1] - gMarioState->floorHeight) > 2000.0f) ? (gMarioState->pos[1] + 3000.0f) : (gMarioState->floorHeight + 5000.0f);
+            c->pos[1] = gMarioState->pos[1] + 2000.0f;
         }
+    } else if (gCurrLevelNum == LEVEL_VCUTM) {
+        // Hard coded check because otherwise it crashes on level entrance for some reason
+        if (topdown_vcutmlatch == 0) {
+            c->pos[1] = 6454;
+            topdown_vcutmlatch = 1;
+        } else {
+            c->pos[1] = ((gMarioState->pos[1] - gMarioState->floorHeight) > TOP_DOWN_DEATH_FLOOR_HEIGHT) ? (gMarioState->pos[1] + TOP_DOWN_HEIGHT) : (gMarioState->floorHeight + TOP_DOWN_HEIGHT + TOP_DOWN_DEATH_FLOOR_HEIGHT);
+        }
+    } else {
+        c->pos[1] = ((gMarioState->pos[1] - gMarioState->floorHeight) > TOP_DOWN_DEATH_FLOOR_HEIGHT) ? (gMarioState->pos[1] + TOP_DOWN_HEIGHT) : (gMarioState->floorHeight + TOP_DOWN_HEIGHT + TOP_DOWN_DEATH_FLOOR_HEIGHT);
     }
 
+    if (surface) {
+        c->pos[1] = MIN(camCeilHeight - 100.0f, c->pos[1]);
+    }
 
     sLakituPitch = 0x3C00;
 }
@@ -6098,7 +6101,7 @@ s16 next_lakitu_state(Vec3f newPos, Vec3f newFoc, Vec3f curPos, Vec3f curFoc,
         vec3f_copy(newFoc, nextFoc);
         vec3f_copy(newPos, nextPos);
 
-        if (gCamera->cutscene != 0 || !(gCameraMovementFlags & CAM_MOVE_C_UP_MODE)) {
+        if (gCamera->mode != CAMERA_MODE_TOP_DOWN && (gCamera->cutscene != 0 || !(gCameraMovementFlags & CAM_MOVE_C_UP_MODE))) {
             floorHeight = find_floor(newPos[0], newPos[1], newPos[2], &floor);
             if (floorHeight != FLOOR_LOWER_LIMIT) {
                 if ((floorHeight += 125.f) > newPos[1]) {
@@ -6257,6 +6260,10 @@ void check_blocking_area_processing(const u8 *mode) {
     if ((*mode == CAMERA_MODE_BEHIND_MARIO &&
             !(sMarioCamState->action & (ACT_FLAG_SWIMMING | ACT_FLAG_METAL_WATER))) ||
          *mode == CAMERA_MODE_INSIDE_CANNON) {
+        sStatusFlags |= CAM_FLAG_BLOCK_AREA_PROCESSING;
+    }
+
+    if (*mode == CAMERA_MODE_TOP_DOWN) {
         sStatusFlags |= CAM_FLAG_BLOCK_AREA_PROCESSING;
     }
 }
