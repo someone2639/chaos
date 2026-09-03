@@ -128,10 +128,11 @@ struct MainMenuSaveData {
     u8 wideMode: 2;
 #endif
     u8 __oldHarshVisuals: 1; // NOTE: This should be left untouched for backwards compatibility, up until next time a save-clearing patch is released (as of v2.0)
-    u8 instantInput : 1;
+    u8 __oldInstantInput : 1; // NOTE: This should be left untouched for backwards compatibility, up until next time a save-clearing patch is released (as of v2.0)
     u8 hvqmAnimeStatus : 1;
 
-    u8 disableHarshVisuals;
+    u8 disableHarshVisuals : 2;
+    u8 disableInstantInput : 1;
 
     u8 __PADDING[10];
 

@@ -773,11 +773,11 @@ void save_file_set_instant_input_active(u8 active) {
     u8 changed;
 
     if (active != FALSE) {
-        changed = (gSaveBuffer.menuData.instantInput == TRUE ? FALSE : TRUE);
-        gSaveBuffer.menuData.instantInput = TRUE;
+        changed = (gSaveBuffer.menuData.disableInstantInput == FALSE ? FALSE : TRUE);
+        gSaveBuffer.menuData.disableInstantInput = FALSE;
     } else {
-        changed = (gSaveBuffer.menuData.instantInput == FALSE ? FALSE : TRUE);
-        gSaveBuffer.menuData.instantInput = FALSE;
+        changed = (gSaveBuffer.menuData.disableInstantInput == TRUE ? FALSE : TRUE);
+        gSaveBuffer.menuData.disableInstantInput = TRUE;
     }
 
     if (!changed) {
@@ -787,7 +787,7 @@ void save_file_set_instant_input_active(u8 active) {
     gMainMenuDataModified = TRUE;
     save_main_menu_data();
 
-    if (gAllowInstantInput && gSaveBuffer.menuData.instantInput) {
+    if (gAllowInstantInput && !gSaveBuffer.menuData.disableInstantInput) {
         sRenderingFramebuffer = sRenderedFramebuffer;
     } else {
         sRenderingFramebuffer = (sRenderedFramebuffer + 1) % ARRAY_COUNT(gFramebuffers);
@@ -795,7 +795,7 @@ void save_file_set_instant_input_active(u8 active) {
 }
 
 u32 save_file_check_instant_input_active(void) {
-    return gSaveBuffer.menuData.instantInput;
+    return ((gSaveBuffer.menuData.disableInstantInput) ? FALSE : TRUE);
 }
 
 void save_file_set_hvqm_anime_status(u8 status) {

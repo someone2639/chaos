@@ -206,8 +206,8 @@ struct ChaosSettingsCategory gSettingsOptions[] = {
     {
         .display = "Instant Input Settings",
         .shortName = "Instant Input",
-        .description = "Instant Input can reduce up to 2 frames of visual latency on emulators using Framebuffer Emulation. @1FFF1F--Enabling this is recommended for most players!\n"
-        "@------9F(This option is disabled by default just in case, as it will cause severe rendering issues with the wrong setup).@--------",
+        .description = "Instant Input can reduce up to 2 frames of visual latency on emulators using Framebuffer Emulation. @1FFF1F--This is recommended for most players@-------- that aren't used to the latency of console; "
+        "however it can also lead to major rendering issues on some high-accuracy emulators @9F9F9F--(the effects of which will be immediately noticeable)@--------.",
         .options = sInstantInputOptions,
         .numOptions = ARRAY_COUNT(sInstantInputOptions),
         .getConfig = chaos_settings_get_instant_input,
