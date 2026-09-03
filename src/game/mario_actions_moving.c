@@ -1383,7 +1383,11 @@ s32 act_burning_ground(struct MarioState *m) {
         }
 
         if (m->health < 0x100) {
-            set_mario_action(m, ACT_STANDING_DEATH, 0);
+            if (chs_is_miracle_active()) {
+                chs_update_miracle();
+            } else {
+                set_mario_action(m, ACT_STANDING_DEATH, 0);
+            }
         }
     }
 

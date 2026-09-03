@@ -1166,7 +1166,11 @@ s32 act_burning_jump(struct MarioState *m) {
         }
 
         if (m->health < 0x100) {
-            m->health = 0xFF;
+            if (chs_is_miracle_active()) {
+                chs_update_miracle();
+            } else {
+                m->health = 0xFF;
+            }
         }
     }
 #if ENABLE_RUMBLE
@@ -1195,7 +1199,11 @@ s32 act_burning_fall(struct MarioState *m) {
         }
 
         if (m->health < 0x100) {
-            m->health = 0xFF;
+            if (chs_is_miracle_active()) {
+                chs_update_miracle();
+            } else {
+                m->health = 0xFF;
+            }
         }
     }
 #if ENABLE_RUMBLE
