@@ -521,6 +521,8 @@ static void render_low_resolution(void) {
             }
         }
     }
+
+    osWritebackDCache(fb, ALIGN16(sizeof(gFramebuffers[0])));
 }
 #undef OPT_SCREEN_WIDTH
 #undef DOWNSAMPLE_SHIFT
