@@ -629,6 +629,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         // Since instakill lava lasts a log time and this one doesn't, ignore conditional for this patch only, and allow it to take precedent over instakill
         __DEBUG_EXEMPT(CHAOS_PATCH_INSTAKILL_LAVA)
+        .conditionalFunc    = chs_cond_no_lava_damage,
 
         .name               = "Extreme Thermal Shoes",
         .shortDescription   = "Mario is immune to lava and freezing water (and may run on it normally).",
@@ -669,6 +670,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationImpossible = 28,
 
         INCOMPATIBLE(CHAOS_PATCH_NO_LAVA_DAMAGE)
+        .conditionalFunc    = chs_cond_instakill_lava,
 
         .name               = "The Lavas of Hell",
         .shortDescription   = "Mario will instantly die upon touching lava or freezing water.",

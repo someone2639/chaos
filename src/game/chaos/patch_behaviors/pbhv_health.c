@@ -7,6 +7,7 @@
 #include "game/area.h"
 #include "game/level_update.h"
 #include "game/mario.h"
+#include "game/save_file.h"
 #include "game/chaos/chaos.h"
 
 #define TEMPORARY_INVINCIBILITY_DURATION (30 * 30)
@@ -132,6 +133,18 @@ void chs_lvlinit_temporary_invincibility(void) {
     chaos_find_first_active_patch(CHAOS_PATCH_TEMPORARY_INVINCIBILITY, &this);
 
     this->frameTimer = 0;
+}
+
+/*
+    Lava Patches
+*/
+
+u8 chs_cond_no_lava_damage(void) {
+    return (save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_1 | SAVE_FLAG_UNLOCKED_BASEMENT_DOOR | SAVE_FLAG_MOAT_DRAINED));
+}
+
+u8 chs_cond_instakill_lava(void) {
+    return (save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_1 | SAVE_FLAG_UNLOCKED_BASEMENT_DOOR | SAVE_FLAG_MOAT_DRAINED));
 }
 
 /*
