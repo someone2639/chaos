@@ -1021,6 +1021,7 @@ void reset_dialog_render_state(void) {
     gLastDialogResponse = 0;
     gLastDialogPageStrPos = 0;
     gDialogResponse = DIALOG_RESPONSE_NONE;
+    gChsTrollDialog = FALSE;
 }
 
 #if defined(VERSION_JP) || defined(VERSION_SH)
@@ -1856,6 +1857,7 @@ void render_dialog_entries(void) {
     // if the dialog entry is invalid, set the ID to DIALOG_NONE.
     if (segmented_to_virtual(NULL) == dialog) {
         gDialogID = DIALOG_NONE;
+        gChsTrollDialog = FALSE;
         return;
     }
 
@@ -1938,6 +1940,7 @@ void render_dialog_entries(void) {
             if (gDialogBoxOpenTimer == DEFAULT_DIALOG_BOX_ANGLE) {
                 gDialogBoxState = DIALOG_STATE_OPENING;
                 gDialogID = DIALOG_NONE;
+                gChsTrollDialog = FALSE;
                 gDialogTextPos = 0;
                 gLastDialogResponse = 0;
                 gLastDialogPageStrPos = 0;
@@ -2220,6 +2223,7 @@ void print_peach_letter_message(void) {
         gCutsceneMsgIndex = -1;
         gCutsceneMsgFade = 0; //! uselessly reset since the next execution will just set it to 0 again.
         gDialogID = DIALOG_NONE;
+        gChsTrollDialog = FALSE;
         gCutsceneMsgTimer = 0;
         return; // return to avoid incrementing the timer
     }
