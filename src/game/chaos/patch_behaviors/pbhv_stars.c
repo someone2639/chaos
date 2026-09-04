@@ -709,7 +709,7 @@ static struct {
 
 u8 chs_cond_coin_flip(void) {
     s32 totalStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
-    return ((totalStars > 0) && (totalStars < NUM_STARS));
+    return (totalStars < NUM_STARS);
 }
 
 void chs_menuinit_coin_flip(void) {
@@ -801,8 +801,6 @@ void chs_menuupdate_coin_flip(Gfx **dl) {
                 if(sCoinFlip.result == 0) {
                     add_uncollected_star();
                     play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
-                } else {
-                    remove_collected_star();
                 }
             }
 
