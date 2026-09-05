@@ -803,6 +803,10 @@ static void level_cmd_set_echo(void) {
 void hvqm_play(void *addr) {
     extern u8 _hvqmworkSegmentBssStart[];
     extern u8 _adpcmbufSegmentBssEnd[];
+
+    // Prevent locking up by waiting for GFX to finish
+    osRecvMesg(&gGfxVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
+
     gHVQMPlaying = 1;
 
     bzero(_hvqmworkSegmentBssStart, (u32)_adpcmbufSegmentBssEnd - (u32)_hvqmworkSegmentBssStart);
@@ -824,6 +828,9 @@ void hvqm_play(void *addr) {
     osAiSetFrequency(gAudioSessionSettings.frequency);
 
     gHVQMPlaying = 0;
+
+    // Since we consumed the GFX message, send out a new one to accomodate for it
+    osSendMesg(&gGfxVblankQueue, NULL, OS_MESG_NOBLOCK);
 }
 
 static void level_cmd_play_hvqm(void) {
