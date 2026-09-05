@@ -361,9 +361,11 @@ void chs_update_cosmic_rays(void) {
     chaos_find_first_active_patch(CHAOS_PATCH_COSMIC_RAYS, &this);
 
     if(this->frameTimer > COSMIC_RAYS_TIME_MAX) {
-        gMarioState->pos[1] += 3155.25f;
-        gMarioState->peakHeight = gMarioState->pos[1];
-        gMarioState->peakHeightNoCancel = MAX(gMarioState->pos[1], gMarioState->peakHeight);
+        if (!(gMarioState->action & ACT_FLAG_INTANGIBLE)) {
+            gMarioState->pos[1] += 3155.25f;
+            gMarioState->peakHeight = gMarioState->pos[1];
+            gMarioState->peakHeightNoCancel = MAX(gMarioState->pos[1], gMarioState->peakHeight);
+        }
         this->frameTimer = RAND(COSMIC_RAYS_TIME_MAX);
     }
 }
