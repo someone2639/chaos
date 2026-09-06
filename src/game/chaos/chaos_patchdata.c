@@ -1490,7 +1490,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 3,
         .durationImpossible = 4,
 
-        INCOMPATIBLE(CHAOS_PATCH_SIDEWAYS_CAMERA)
+        INCOMPATIBLE(CHAOS_PATCH_SIDEWAYS_CAMERA, CHAOS_PATCH_TOP_DOWN_CAMERA)
 
         .name               = "Australia Mode",
         .shortDescription   = "Flips the camera upside-down so you can experience what it's like to be from the land down under.",
@@ -1642,7 +1642,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 7,
         .durationImpossible = 9,
 
-        INCOMPATIBLE(CHAOS_PATCH_INVERTED_CAMERA_X, CHAOS_PATCH_FORCED_MARIO_CAM, CHAOS_PATCH_DECREASED_FOV, CHAOS_PATCH_INCREASED_FOV, CHAOS_PATCH_45_DEGREE_CAM, CHAOS_PATCH_SMOOTH_CAM, CHAOS_PATCH_SQUINT_MODE, CHAOS_PATCH_INVERTED_Z_BUFFER)
+        INCOMPATIBLE(CHAOS_PATCH_INVERTED_CAMERA_X, CHAOS_PATCH_FORCED_MARIO_CAM, CHAOS_PATCH_DECREASED_FOV, CHAOS_PATCH_INCREASED_FOV, CHAOS_PATCH_45_DEGREE_CAM, CHAOS_PATCH_SMOOTH_CAM, CHAOS_PATCH_SQUINT_MODE, CHAOS_PATCH_INVERTED_Z_BUFFER, CHAOS_PATCH_UPSIDE_DOWN_CAMERA)
 
         .name               = "Top-Down Camera",
         .shortDescription   = "Now you're playing Zelda! (without the items) (without the story) (without the combat) (without the",
