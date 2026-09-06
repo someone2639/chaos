@@ -205,7 +205,6 @@ const char *sMoreHudHeadlines[] = {
     "Mario is BALD???",
     "Dog Does a Silly Dance. 12 Dead 20 Injured",
     "The Economy is Doing Either Bad or Good",
-    "HackerSM64 2.4 Delayed Another Year",
     "All Romhacks Found to Actually be Made by Kaze",
     "Christmas is Just a Week Away",
     "Remember to Call Your Mother",
