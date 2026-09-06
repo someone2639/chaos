@@ -17,7 +17,7 @@
 #include "game/main.h"
 
 u8 chs_cond_no_zbuffer(void)       { return !NO_HARSH_FLASHING; }
-u8 chs_cond_inverted_zbuffer(void) { return gChaosDifficulty >= CHAOS_DIFFICULTY_NORMAL; }
+u8 chs_cond_inverted_zbuffer(void) { return gChaosDifficulty >= CHAOS_DIFFICULTY_HARD; }
 
 u8 chs_cond_increased_fov(void) { return (!(gEmulator & EMU_CONSOLE) || !chaos_check_if_patch_active(CHAOS_PATCH_TOP_DOWN_CAMERA)); }
 

@@ -8107,7 +8107,7 @@ chan_end
 
 .layer_camera_zoom_in_pleasant:
 layer_portamento 0x81, 20, 255
-layer_note1 39, 0x18, 71
+layer_note1 39, 0x18, 87
 layer_end
 
 .sound_menu_camera_zoom_out_pleasant:
@@ -8121,7 +8121,7 @@ chan_end
 
 .layer_camera_zoom_out_pleasant:
 layer_portamento 0x81, 38, 255
-layer_note1 19, 0x1C, 71
+layer_note1 19, 0x1C, 87
 layer_end
 
 .sound_menu_camera_turn_pleasant:
@@ -8135,7 +8135,7 @@ chan_end
 
 .layer_camera_turn_pleasant:
 layer_portamento 0x81, 15, 255
-layer_note1 39, 0x28, 63
+layer_note1 39, 0x28, 79
 layer_end
 
 .sound_menu_camera_buzz_pleasant:
@@ -8148,9 +8148,9 @@ chan_setlayer 0, .layer_camera_buzz_pleasant
 chan_end
 
 .layer_camera_buzz_pleasant:
-layer_note1 19, 0x6, 79
+layer_note1 19, 0x6, 95
 layer_delay 0x4
-layer_note1 19, 0xA, 79
+layer_note1 19, 0xA, 95
 layer_end
 
 .sound_general_bird_chirp2:
