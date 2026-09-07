@@ -8121,7 +8121,7 @@ chan_end
 
 .layer_camera_zoom_out_pleasant:
 layer_portamento 0x81, 38, 255
-layer_note1 19, 0x1C, 87
+layer_note1 19, 0x1C, 79
 layer_end
 
 .sound_menu_camera_turn_pleasant:
