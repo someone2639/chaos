@@ -41,7 +41,7 @@ u8 chs_cond_camera_lag(void) {
 }
 
 u8 chs_cond_darkness(void) {
-    return !gInstantInputBlacklist; // Probably laggy
+    return !gInstantInputBlacklist; // Possibly laggy (also sometimes too dark on certain console setups)
 }
 
 void chs_act_sideways_camera(void) {

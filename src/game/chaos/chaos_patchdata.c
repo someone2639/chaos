@@ -203,7 +203,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 2,
-        .duration           = 6,
+        .duration           = 12,
 
         .conditionalFunc    = chs_cond_lifetime_sale,
 
@@ -468,7 +468,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 3,
-        .duration           = 4,
+        .duration           = 5,
 
         .name               = "High Roller",
         .shortDescription   = "Get one random star for every " STR2(HIGH_ROLLER_COIN_REQ) " coins collected whenever you complete a normal star mission!",
@@ -559,9 +559,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .negationId         = CHAOS_PATCH_HEALTH_GAIN,
         .severity           = 3,
-        .duration           = 8,
-        .durationHard       = 10,
-        .durationImpossible = 12,
+        .duration           = 9,
+        .durationHard       = 11,
+        .durationImpossible = 13,
 
         INCOMPATIBLE(CHAOS_PATCH_HEALTH_GAIN, CHAOS_PATCH_NOHEAL_COINS, CHAOS_PATCH_WALKIES, CHAOS_PATCH_SAFETY_NET)
         .frameUpdateFunc    = chs_update_health_drain,
@@ -574,7 +574,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .negationId         = CHAOS_PATCH_HEALTH_DRAIN,
         .severity           = 3,
-        .duration           = 8,
+        .duration           = 9,
 
         INCOMPATIBLE(CHAOS_PATCH_HEALTH_DRAIN)
         .frameUpdateFunc    = chs_update_health_gain,
@@ -637,13 +637,13 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_TEMPORARY_INVINCIBILITY] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
-        .severity           = 2,
-        .duration           = 12,
+        .severity           = 3,
+        .duration           = 15,
 
         .levelInitFunc     = chs_lvlinit_temporary_invincibility,
 
         .name               = "Temporary Invincibility",
-        .shortDescription   = "Mario cannot take damage for 30 seconds upon entering a new level.",
+        .shortDescription   = "Mario cannot lose health for 30 seconds upon entering a new level.",
     },
     [CHAOS_PATCH_INSTAKILL_SQUISH] = {
         .durationType       = CHAOS_DURATION_INFINITE,
@@ -744,7 +744,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
     [CHAOS_PATCH_RANDOM_INVINCIBILITY] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
-        .severity           = 2,
+        .severity           = 1,
         .duration           = 10,
 
         .frameUpdateFunc    = chs_update_random_invincibility,
@@ -854,7 +854,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .severity           = 2,
         .duration           = 4,
         .durationHard       = 5,
-        .durationImpossible = 7,
+        .durationImpossible = 6,
 
         INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SHUFFLE_OBJECTS, CHAOS_PATCH_ENEMY_BLUE_COINS, CHAOS_PATCH_LOWER_TIME_LIMIT)
         .levelInitFunc      = chs_lvlinit_collectors_anxiety,
@@ -929,7 +929,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 3,
-        .duration           = 5,
+        .duration           = 6,
 
         INCOMPATIBLE(CHAOS_PATCH_COLLECTORS_ANXIETY)
 
@@ -943,9 +943,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 1,
-        .duration           = 12,
-        .durationHard       = 16,
-        .durationImpossible = 20,
+        .duration           = 10,
+        .durationHard       = 14,
+        .durationImpossible = 18,
 
         INCOMPATIBLE(CHAOS_PATCH_COSMIC_CLONES, CHAOS_PATCH_GREEN_DEMON, CHAOS_PATCH_WATER_BOMBS, CHAOS_PATCH_ONE_HIT_WONDER)
         .activatedInitFunc  = chs_act_random_sleep,
@@ -991,9 +991,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
         .disableForHardcore = TRUE,
-        .duration           = 6,
-        .durationHard       = 8,
-        .durationImpossible = 10,
+        .duration           = 7,
+        .durationHard       = 9,
+        .durationImpossible = 11,
 
         .activatedInitFunc  = chs_act_random_blind,
         .frameUpdateFunc    = chs_update_random_blind,
@@ -1223,7 +1223,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
 
         .name               = "Can't Stop, Won't Stop",
         .shortDescription   = "Mario will always be moving at full speed, even if you let go of the analog stick!",
-        .longDescription    = "This will essentially act as if the joystick is always pointed in the held direction at the maximum magnitude. If the joystick is not being held, it will reuse the most recently held direction."
+        .longDescription    = "This will essentially act as if the joystick is always pointed in the held direction at the maximum magnitude. If the joystick is not being held, it will reuse the most recently held direction. Have fun swimming or flying like this!"
     },
     [CHAOS_PATCH_BRAWL_TRIPPING] = {
         .durationType       = CHAOS_DURATION_STARS,
@@ -1297,9 +1297,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 1,
-        .duration           = 8,
-        .durationHard       = 10,
-        .durationImpossible = 12,
+        .duration           = 6,
+        .durationHard       = 8,
+        .durationImpossible = 10,
 
         INCOMPATIBLE(CHAOS_PATCH_LOSEMOVE_LONG_JUMP)
 
@@ -1334,16 +1334,16 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 1,
-        .duration           = 15,
+        .duration           = 20,
 
         .name               = "Underwater Ground Pound",
-        .shortDescription   = "Allows ground pounds while underwater. Get down to deep places quicker!",
+        .shortDescription   = "Allows ground pounds while underwater. Get down to deep places with style!",
     },
     [CHAOS_PATCH_SUNSHINE_TWIRL] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 1,
-        .duration           = 15,
+        .duration           = 12,
 
         INCOMPATIBLE(CHAOS_PATCH_BETA)
 
@@ -1356,7 +1356,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
-        .duration           = 1,
+        .duration           = 1, // Not in Normal Difficulty
         .durationHard       = 1,
         .durationImpossible = 2,
 
@@ -1472,7 +1472,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
-        .duration           = 1,
+        .duration           = 1, // Not in Normal Difficulty
         .durationHard       = 2,
         .durationImpossible = 2,
 
@@ -1634,7 +1634,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .shortDescription   = "It's like playing the game two times at the same time!",
         .longDescription    = "This patch is probably almost indistinguishable from the 45 FPS one on a console...",
     },
-    [CHAOS_PATCH_TOP_DOWN_CAMERA] = { // TODO: BUG: Joystick is busted when twirling with top down camera, also TTC is completely unplayable
+    [CHAOS_PATCH_TOP_DOWN_CAMERA] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 3,
@@ -1835,7 +1835,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration           = 8,
         .durationHard       = 10,
         .durationImpossible = 12,
-        
+
         INCOMPATIBLE(CHAOS_PATCH_MARIO_INVISIBLE, CHAOS_PATCH_LUIGI, CHAOS_PATCH_CARTRIDGE_TILT)
         .frameUpdateFunc    = chs_update_poser,
         .deactivationFunc   = chs_deact_poser,
@@ -1982,7 +1982,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 2,
         .affectsPatchSelect = TRUE,
-        .duration           = 7,
+        .duration           = 12,
 
         INCOMPATIBLE(CHAOS_PATCH_UNLUCKY_CHARM)
         .conditionalFunc    = chs_cond_lucky_charm,
@@ -1995,9 +1995,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
         .affectsPatchSelect = TRUE,
-        .duration           = 5,
-        .durationHard       = 6,
-        .durationImpossible = 7,
+        .duration           = 7,
+        .durationHard       = 8,
+        .durationImpossible = 9,
 
         INCOMPATIBLE(CHAOS_PATCH_LUCKY_CHARM, CHAOS_PATCH_UNEVENTFUL)
         .conditionalFunc    = chs_cond_unlucky_charm,
@@ -2010,7 +2010,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 2,
         .affectsPatchSelect = TRUE,
-        .duration           = 8,
+        .duration           = 9,
 
         INCOMPATIBLE(CHAOS_PATCH_UNLUCKY_CHARM)
         .conditionalFunc    = chs_cond_uneventful,
@@ -2229,7 +2229,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 2,
-        .duration           = 8,
+        .duration           = 10,
 
         .conditionalFunc    = chs_cond_uncapped_caps,
 
@@ -2579,8 +2579,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 2,
-        .duration           = 7,
-        .durationHard       = 9,
+        .duration           = 6,
+        .durationHard       = 8,
         .durationImpossible = 10,
 
         .name               = "Tutorial Mode",
@@ -2638,7 +2638,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationType       = CHAOS_DURATION_STARS,
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 1,
-        .duration           = 10,
+        .duration           = 12,
         .durationHard       = 15,
         .durationImpossible = 18,
 
@@ -2725,10 +2725,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .longDescription    = "Luigi model originally created by Vl-Tone / Starxxon."
     },
     [CHAOS_PATCH_WEAK_BOSSES] = {
-        .durationType       = CHAOS_DURATION_STARS,
+        .durationType       = CHAOS_DURATION_INFINITE,
         .effectType         = CHAOS_EFFECT_POSITIVE,
         .severity           = 1,
-        .duration           = 18,
 
         .name               = "Not So Bossy",
         .shortDescription   = "All bosses die in one hit (except for during the final Bowser fight).",
@@ -2774,8 +2773,8 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .effectType         = CHAOS_EFFECT_NEGATIVE,
         .severity           = 1,
         .duration           = 12,
-        .durationHard       = 18,
-        .durationImpossible = 24,
+        .durationHard       = 15,
+        .durationImpossible = 18,
 
         .name               = "Platform Misplacement",
         .shortDescription   = "Moving platforms will move Mario more than usual.",
@@ -2824,7 +2823,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration           = 5,
         .durationHard       = 7,
         .durationImpossible = 9,
-        
+
         .frameUpdateFunc    = chs_update_noclip,
 
         .name               = "No Clip",

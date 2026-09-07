@@ -215,7 +215,7 @@ void chs_update_random_invincibility(void) {
 */
 
 u8 chs_cond_mario_dies(void) {
-    return ((gCurrCourseNum != COURSE_NONE) && (gChaosGameMode != CHAOS_GAMEMODE_CHALLENGE || gMarioState->numLives >= chs_life_gambler_get_lives_lost()));
+    return ((gCurrCourseNum != COURSE_NONE) && !chs_is_miracle_active() && (gChaosGameMode != CHAOS_GAMEMODE_CHALLENGE || gMarioState->numLives >= chs_life_gambler_get_lives_lost()));
 }
 
 void chs_act_mario_dies(void) {

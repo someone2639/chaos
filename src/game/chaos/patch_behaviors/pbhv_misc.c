@@ -18,8 +18,8 @@
 #include "engine/math_util.h"
 
 u8 chs_cond_no_tolerance_fall_damage(void) {
-    // < 2 Health Down patches, cap still on Mario's head
-    return (gMarioState->maxHealth >= 0x700 && chs_cond_remove_cap());
+    // Normal+ difficulty, < 2 Health Down patches, cap still on Mario's head
+    return (gChaosDifficulty >= CHAOS_DIFFICULTY_NORMAL && gMarioState->maxHealth >= 0x700 && chs_cond_remove_cap());
 }
 
 u8 chs_cond_miracle_normal(void) {
