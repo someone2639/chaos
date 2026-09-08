@@ -28,6 +28,7 @@
 #include "patch_selection_ui.h"
 #include "chaos_pause_menu.h"
 #include "chaos_tutorial.h"
+#include "chaos_stats.h"
 
 struct SpawnInfo gPlayerSpawnInfos[1];
 struct GraphNode *D_8033A160[MODEL_ID_COUNT];
@@ -442,6 +443,9 @@ void render_game(void) {
         gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, gBorderHeight, SCREEN_WIDTH,
                       SCREEN_HEIGHT - gBorderHeight);
 
+        if(gGoddardVblankCallback) {
+            draw_chaos_stats(&gDisplayListHead);
+        }
 
         if ((squint_room_scale < 5.0f) && isGameSquished) {
             draw_room(squint_room_scale);

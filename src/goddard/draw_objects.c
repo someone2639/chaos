@@ -797,6 +797,7 @@ void drawscene(enum SceneType process, struct ObjGroup *interactables, struct Ob
         set_gd_mtx_parameters(G_MTX_PROJECTION | G_MTX_MUL | G_MTX_PUSH);
     }
 
+    gd_dl_mul_trans_matrix(550.0f, 0.0f, -200.0f);
     if (gViewUpdateCamera != NULL) {
         draw_camera(gViewUpdateCamera);
     } else {

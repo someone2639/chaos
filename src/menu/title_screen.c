@@ -16,6 +16,7 @@
 #include "seq_ids.h"
 #include "sm64.h"
 #include "title_screen.h"
+#include "game/chaos_stats.h"
 
 /**
  * @file title_screen.c
@@ -220,9 +221,9 @@ s32 intro_game_over(void) {
     }
 #endif
 
-    print_intro_text();
+    // print_intro_text();
 
-    if (gPlayer1Controller->buttonPressed & START_BUTTON) {
+    if (update_chaos_stats()) {
         play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
 #if ENABLE_RUMBLE
         queue_rumble_data(60, 70);
@@ -274,6 +275,9 @@ s32 lvl_intro_update(s16 arg, UNUSED s32 unusedArg) {
  * Delete the most recently used chaos save file.
  */
 s32 intro_delete_chaos_save_file(UNUSED s16 arg, UNUSED s32 unusedArg) {
+    save_file_add_death_count();
+    init_chaos_stats();
+
     // Deactivate all patches
     while (*gChaosActiveEntryCount > 0) {
         chaos_remove_expired_entry(0, NULL);

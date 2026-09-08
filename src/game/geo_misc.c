@@ -22,6 +22,7 @@
 #include "game_init.h"
 #include "object_helpers.h"
 #include "chaos_menus.h"
+#include "chaos_stats.h"
 
 /**
  * @file geo_misc.c
@@ -268,6 +269,7 @@ Gfx *geo_exec_cake_end_screen(s32 callContext, struct GraphNode *node, UNUSED f3
                 scale = 0.5f;
                 transX = (SCREEN_WIDTH / 2);
                 transY = (SCREEN_HEIGHT / 4);
+                break;
         }
 
         Mtx *transMtx = alloc_display_list(sizeof(Mtx));
@@ -290,131 +292,8 @@ Gfx *geo_exec_cake_end_screen(s32 callContext, struct GraphNode *node, UNUSED f3
 Gfx *geo_chaos_cake_stats(s32 callContext, UNUSED struct GraphNode *node, UNUSED f32 mtx[4][4]) {
     if(callContext == GEO_CONTEXT_RENDER) {
         if(sEndCakePhase >= 2) {
-            create_dl_ortho_matrix(&gDisplayListHead);
-
-            if(sEndCakeTimer == 0) {
-                play_sound(SOUND_MENU_MESSAGE_APPEAR, gGlobalSoundSource);
-            }
-
-            f32 scale;
-            if(sEndCakeTimer < 7) {
-                scale = ((f32)sEndCakeTimer / 7.0f);
-            } else {
-                scale = 1.0f;
-            }
-
-            Mtx *transMtx = alloc_display_list(sizeof(Mtx));
-            Mtx *scaleMtx = alloc_display_list(sizeof(Mtx));
-
-            guTranslate(transMtx, (SCREEN_WIDTH / 4) + 4, SCREEN_CENTER_Y, 0);
-            gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(transMtx),
-                          G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
-            guScale(scaleMtx, 1.0f, scale, 1.0f);
-            gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(scaleMtx),
-                    G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
-            Gfx *bg = menu_create_chaos_text_bg((SCREEN_WIDTH / 4) + 4, SCREEN_CENTER_Y, 150, 163, 217);
-            gSPDisplayList(gDisplayListHead++, bg);
-            gSPPopMatrix(gDisplayListHead++, G_MTX_MODELVIEW);
-
-            fasttext_setup_textrect_rendering(&gDisplayListHead, FT_FONT_VANILLA_SHADOW);
-            if(sEndCakeTimer > 15) {
-                fasttext_draw_texrect(&gDisplayListHead, (SCREEN_WIDTH - 16), (SCREEN_HEIGHT - 24), VERSION_STRING, FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_setup_textrect_rendering(&gDisplayListHead, FT_FONT_MEDIUM);
-                fasttext_draw_texrect(&gDisplayListHead, SCREEN_CENTER_X, 15, "FINAL SCORE", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
-                
-                //Difficulty
-                fasttext_draw_texrect(&gDisplayListHead, 16, 40, "Difficulty:", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-                switch(save_file_get_difficulty(gCurrSaveFileNum - 1)) {
-                    case CHAOS_DIFFICULTY_EASY:
-                        fasttext_draw_texrect(&gDisplayListHead, 150, 40, "Easy", FT_FLAG_ALIGN_RIGHT, 0x05, 0xDf, 0x15, 0xFF);
-                        break;
-                    case CHAOS_DIFFICULTY_NORMAL:
-                    default:
-                        fasttext_draw_texrect(&gDisplayListHead, 150, 40, "Normal", FT_FLAG_ALIGN_RIGHT, 0xAF, 0xAF, 0xAF, 0xFF);
-                        break;
-                    case CHAOS_DIFFICULTY_HARD:
-                        fasttext_draw_texrect(&gDisplayListHead, 150, 40, "Hard", FT_FLAG_ALIGN_RIGHT, 0xFF, 0x15, 0x25, 0xFF);
-                        break;
-                    case CHAOS_DIFFICULTY_IMPOSSIBLE:
-                        fasttext_draw_texrect(&gDisplayListHead, 150, 40, "Impossible", FT_FLAG_ALIGN_RIGHT, 0x5F, 0x5F, 0x5F, 0xFF);
-                        break;
-                }
-            }
-            if(sEndCakeTimer > 30) {
-                //Gamemode
-                fasttext_draw_texrect(&gDisplayListHead, 16, 60, "Gamemode:", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-                switch (save_file_get_game_mode(gCurrSaveFileNum - 1)) {
-                    case CHAOS_GAMEMODE_HARDCORE:
-                        fasttext_draw_texrect(&gDisplayListHead, 150, 60, "Hardcore", FT_FLAG_ALIGN_RIGHT, 0xAF, 0x5F, 0xCF, 0xFF);
-                        break;
-                    case CHAOS_GAMEMODE_CHALLENGE:
-                        fasttext_draw_texrect(&gDisplayListHead, 150, 60, "Challenge", FT_FLAG_ALIGN_RIGHT, 0xBB, 0xA1, 0x24, 0xFF);
-                        break;
-                    case CHAOS_GAMEMODE_CLASSIC:
-                    default:
-                        fasttext_draw_texrect(&gDisplayListHead, 150, 60, "Classic", FT_FLAG_ALIGN_RIGHT, 0xAF, 0xAF, 0xAF, 0xFF);
-                        break;
-                }
-            }
-            if(sEndCakeTimer > 45) {
-                //Star count
-                char starCountText[8];
-                s32 starCount = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
-                sprintf(starCountText, "%d", starCount);
-                fasttext_draw_texrect(&gDisplayListHead, 16, 80, "Total Stars:", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_draw_texrect(&gDisplayListHead, 150, 80, starCountText, FT_FLAG_ALIGN_RIGHT, 0xD0, 0xC4, 0x00, 0xFF);
-            }
-            if(sEndCakeTimer > 60) {
-                //Blue star count
-                char blueStarCountText[8];
-                s32 blueStarCount = save_file_get_blue_stars();
-                sprintf(blueStarCountText, "%d", blueStarCount);
-                fasttext_draw_texrect(&gDisplayListHead, 16, 100, "Blue Stars:", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_draw_texrect(&gDisplayListHead, 150, 100, blueStarCountText, FT_FLAG_ALIGN_RIGHT, 0x47, 0x8D, 0xCE, 0xFF);
-            }
-            if(sEndCakeTimer > 75) {
-                //Deaths
-                char deathsText[8];
-                s32 deathCount = save_file_get_death_count();
-                sprintf(deathsText, "%d", deathCount);
-                fasttext_draw_texrect(&gDisplayListHead, 16, 120, "Total Deaths:", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_draw_texrect(&gDisplayListHead, 150, 120, deathsText, FT_FLAG_ALIGN_RIGHT, 0xFF, 0x15, 0x25, 0xFF);
-            }
-            if(sEndCakeTimer > 90) {
-                //Game loads
-                char loadsText[8];
-                s32 loadCount = save_file_get_game_loads();
-                sprintf(loadsText, "%d", loadCount);
-                fasttext_draw_texrect(&gDisplayListHead, 16, 140, "Game Loads:", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_draw_texrect(&gDisplayListHead, 150, 140, loadsText, FT_FLAG_ALIGN_RIGHT, 0x9F, 0x9F, 0x9F, 0xFF);
-            }
-            if(sEndCakeTimer > 105) {
-                //Total Patches
-                char totalPatchesText[8];
-                s32 totalPatchesCount = save_file_get_total_patches();
-                sprintf(totalPatchesText, "%d", totalPatchesCount);
-                fasttext_draw_texrect(&gDisplayListHead, 16, 160, "Total Patches:", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_draw_texrect(&gDisplayListHead, 150, 160, totalPatchesText, FT_FLAG_ALIGN_RIGHT, 0x9F, 0x9F, 0x9F, 0xFF);
-            }
-            if(sEndCakeTimer > 120) {
-                //Play time
-                u32 playTime = save_file_get_play_time();
-                u32 hours = playTime / (30 * 60 * 60);
-                u32 mins = (playTime - (hours * (30 * 60 * 60))) / (60 * 30);
-                u32 secs = (playTime - (hours * (30 * 60 * 60)) - (mins * (60 * 30))) / 30;
-                char playTimeText[32];
-                sprintf(playTimeText, "%dh %dm %ds", hours, mins, secs);
-                fasttext_draw_texrect(&gDisplayListHead, 16, 180, "Play Time:", FT_FLAG_ALIGN_LEFT, 0xFF, 0xFF, 0xFF, 0xFF);
-                fasttext_draw_texrect(&gDisplayListHead, 150, 180, playTimeText, FT_FLAG_ALIGN_RIGHT, 0x9F, 0x9F, 0x9F, 0xFF);
-            } else {
-                sEndCakeTimer++;
-            }
-
-            if(!(sEndCakeTimer % 15)) {
-                play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
-            }
-
-            fasttext_finished_rendering(&gDisplayListHead);
+            update_chaos_stats();
+            draw_chaos_stats(&gDisplayListHead);
         }
     }
     return NULL;

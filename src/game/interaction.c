@@ -25,6 +25,7 @@
 #include "sm64.h"
 #include "sound_init.h"
 #include "rumble_init.h"
+#include "chaos_stats.h"
 
 #define INT_GROUND_POUND_OR_TWIRL (1 << 0) // 0x01
 #define INT_PUNCH                 (1 << 1) // 0x02
@@ -939,6 +940,7 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
 
             if (grandStar) {
                 save_file_update_clears();
+                init_chaos_stats();
                 return set_mario_action(m, ACT_JUMBO_STAR_CUTSCENE, 0);
             }
 
