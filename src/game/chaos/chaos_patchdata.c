@@ -450,7 +450,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .chsMenuUpdateFunc  = chs_menuupdate_coin_flip,
 
         .name               = "One-Star Coin Flip",
-        .shortDescription   = "Flip a coin! If heads, gain a random unobtained star. If tails, enjoy some free disappointment on the house!",
+        .shortDescription   = "Flip a coin! If heads, gain a random unobtained star. But if tails, gain some random negative rank 1 patch!",
     },
     [CHAOS_PATCH_TOAD_STAR_RESTOCK] = {
         .durationType       = CHAOS_DURATION_ONCE,

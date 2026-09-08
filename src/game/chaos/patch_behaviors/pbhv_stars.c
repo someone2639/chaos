@@ -709,7 +709,7 @@ static struct {
 
 u8 chs_cond_coin_flip(void) {
     s32 totalStars = save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
-    return (totalStars < NUM_STARS);
+    return (gChaosDifficulty >= CHAOS_DIFFICULTY_NORMAL && !inRandomPatchActivationFunc && totalStars < NUM_STARS);
 }
 
 void chs_menuinit_coin_flip(void) {
@@ -799,8 +799,12 @@ void chs_menuupdate_coin_flip(Gfx **dl) {
         case 6:
             if (sCoinFlip.timer == 0) {
                 if(sCoinFlip.result == 0) {
+                    // Give the player an uncollected star
                     add_uncollected_star();
                     play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
+                } else {
+                    // Generate non-infinite, non-single use rank 1 negative patch of any duration
+                    chs_activate_random_pos_neg_patch_of_severity(1, CHAOS_EFFECT_NEGATIVE, TRUE, 0, CHAOS_DURATION_STARS);
                 }
             }
 

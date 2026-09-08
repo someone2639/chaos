@@ -13,7 +13,7 @@
 #include "game/save_file.h"
 #include "game/chaos_pause_menu.h"
 
-static u8 inRandomPatchActivationFunc = FALSE;
+u8 inRandomPatchActivationFunc = FALSE;
 
 static const enum ChaosPatchID patchBlacklist[] = {
     CHAOS_PATCH_LOWER_TIME_LIMIT,
@@ -130,7 +130,7 @@ void chs_act_add_random_buff(void) {
 u8 chs_cond_bite_sized_split(void) {
     // This is not an eligible patch if it's already in the process of being activated (recursion moment).
     // Make sure it's also not on easy difficulty, since it may become misleading what a rank 1 patch even is.
-    return (!inRandomPatchActivationFunc && gChaosDifficulty != CHAOS_DIFFICULTY_EASY);
+    return (!inRandomPatchActivationFunc && gChaosDifficulty >= CHAOS_DIFFICULTY_NORMAL);
 }
 
 void chs_act_bite_sized_split(void) {
