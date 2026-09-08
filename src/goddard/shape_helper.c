@@ -1175,7 +1175,15 @@ struct ObjNet *make_netfromshape(struct ObjShape *shape) {
 /**
  * Controls the dizzy (game over) animation of Mario's head.
  */
+float gameover_timer = 0;
 void animate_mario_head_gameover(struct ObjAnimator *self) {
+    gameover_timer += M_PI / 64;
+    if (gameover_timer >= (M_PI * 2)) {
+        gameover_timer -= (M_PI * 2);
+    }
+    #define GAMEOVER_LOOP_START_FRAME (87.0f)
+    #define GAMEOVER_LOOP_END_FRAME (130.0f)
+    #define GAMEOVER_LOOP_SPEED (2.0f)
     switch (self->state) {
         case 0:
             self->frame = 1.0f;
@@ -1184,13 +1192,16 @@ void animate_mario_head_gameover(struct ObjAnimator *self) {
             break;
         case 1:
             self->frame += 1.0f;
-            // After the gameover animation ends, switch to the normal animation
-            if (self->frame == 166.0f) {
-                self->frame = 69.0f;
-                self->state = 4;
-                self->controlFunc = animate_mario_head_normal;
-                self->animSeqNum = 0;  // normal anim sequence
+            if (self->frame >= GAMEOVER_LOOP_START_FRAME) {
+                gameover_timer = 0;
+                self->state = 2;
             }
+            break;
+        case 2:
+            self->frame =
+                ((GAMEOVER_LOOP_END_FRAME - GAMEOVER_LOOP_START_FRAME) / 2.0f)
+                    * sinf((GAMEOVER_LOOP_SPEED * gameover_timer) - (M_PI / 2.0f))
+                + ((GAMEOVER_LOOP_END_FRAME + GAMEOVER_LOOP_START_FRAME) / 2.0f);
             break;
     }
 }
@@ -1329,19 +1340,19 @@ s32 load_mario_head(void (*aniFn)(struct ObjAnimator *)) {
     particle->shapePtr = gShapeSilverSpark;
     addto_group(gGdLightGroup, &particle->header);
 
-    particle = make_particle(0, COLOUR_WHITE, 0.0f, 0.0f, 0.0f);
-    particle->unk60 = 3;
-    particle->unk64 = 2;
-    particle->attachedToObj = d_use_obj("N228l"); // DYNOBJ_SILVER_STAR_LIGHT
-    particle->shapePtr = gShapeSilverSpark;
-    addto_group(gGdLightGroup, &particle->header);
+    // particle = make_particle(0, COLOUR_WHITE, 0.0f, 0.0f, 0.0f);
+    // particle->unk60 = 3;
+    // particle->unk64 = 2;
+    // particle->attachedToObj = d_use_obj("N228l"); // DYNOBJ_SILVER_STAR_LIGHT
+    // particle->shapePtr = gShapeSilverSpark;
+    // addto_group(gGdLightGroup, &particle->header);
 
-    particle = make_particle(0, COLOUR_RED, 0.0f, 0.0f, 0.0f);
-    particle->unk60 = 3;
-    particle->unk64 = 2;
-    particle->attachedToObj = d_use_obj("N231l"); // DYNOBJ_RED_STAR_LIGHT
-    particle->shapePtr = gShapeRedSpark;
-    addto_group(gGdLightGroup, &particle->header);
+    // particle = make_particle(0, COLOUR_RED, 0.0f, 0.0f, 0.0f);
+    // particle->unk60 = 3;
+    // particle->unk64 = 2;
+    // particle->attachedToObj = d_use_obj("N231l"); // DYNOBJ_RED_STAR_LIGHT
+    // particle->shapePtr = gShapeRedSpark;
+    // addto_group(gGdLightGroup, &particle->header);
 
     mainShapesGrp = (struct ObjGroup *) d_use_obj("N1000l");  // DYNOBJ_MARIO_MAIN_SHAPES_GROUP
     create_gddl_for_shapes(mainShapesGrp);
