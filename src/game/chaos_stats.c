@@ -172,7 +172,7 @@ s32 update_chaos_stats(void) {
         } else {
             if(gPlayer1Controller->buttonPressed & R_TRIG) {
                 init_active_patches_menu();
-                for(int i = 0; i < sChaosStats.totalPatches; i++) {
+                for(int i = 0; i < sChaosStats.finalPatchCount; i++) {
                     active_patches_menu_append(&sChaosStats.finalPatches[i]);
                 }
             } else if(gPlayer1Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
