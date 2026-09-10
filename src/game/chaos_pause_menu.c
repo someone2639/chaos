@@ -199,6 +199,12 @@ void draw_default_patch_desc(Gfx **dl, f32 x, f32 y) {
 
     gSPPopMatrix(dlHead++, G_MTX_MODELVIEW);
 
+    if(!(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_HALT_INPUT)) {
+        struct ButtonPromptList prompts = {0};
+        menu_add_button_prompt(&prompts, MENU_PROMPT_B_BUTTON, "Back");
+        menu_render_button_prompt_list(&dlHead, SCREEN_WIDTH - 33, PAUSE_BUTTON_PROMPTS_Y, &prompts);
+    }
+
     *dl = dlHead;
 }
 
