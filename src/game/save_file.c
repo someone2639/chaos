@@ -42,6 +42,8 @@ u8 gCurrCourseStarFlags = 0;
 
 u8 gSpecialTripleJump = FALSE;
 
+f32 sSaveTimeTick = 0.0f; // Keeps track of how many partial ticks have accumulated due to FPS adjustment patches
+
 #define STUB_LEVEL(_0, _1, courseenum, _3, _4, _5, _6, _7, _8) courseenum,
 #define DEFINE_LEVEL(_0, _1, courseenum, _3, _4, _5, _6, _7, _8, _9, _10) courseenum,
 
@@ -352,6 +354,7 @@ void save_file_load_all(void) {
 
     gMainMenuDataModified = FALSE;
     gSaveFileModified = FALSE;
+    sSaveTimeTick = 0.0f;
 
     bzero(&gSaveBuffer, sizeof(gSaveBuffer));
     read_eeprom_data(&gSaveBuffer, sizeof(gSaveBuffer));
@@ -907,10 +910,29 @@ u16 save_file_get_game_loads() {
 
 void save_file_update_play_time() {
     struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1];
-    saveFile->playTime++;
-    gSaveBuffer.menuData.scoreData.totalPlayTime++;
-    gSaveFileModified = TRUE;
-    gMainMenuDataModified = TRUE;
+    f32 tick;
+
+    // Correct the tick amount for frame rate modifying patches
+    if (chaos_check_if_patch_active(CHAOS_PATCH_60_FPS)) {
+        tick = (30.0f / 60.0f);
+    } else if (chaos_check_if_patch_active(CHAOS_PATCH_45_FPS)) {
+        tick = (30.0f / 45.0f);
+    } else if (chaos_check_if_patch_active(CHAOS_PATCH_20_FPS)) {
+        tick = (30.0f / 20.0f);
+    } else {
+        tick = 1.0f;
+    }
+
+    sSaveTimeTick += tick;
+
+    // Keep incrementing save time until we are out of full ticks
+    while (sSaveTimeTick >= 1.0f) {
+        saveFile->playTime++;
+        gSaveBuffer.menuData.scoreData.totalPlayTime++;
+        gSaveFileModified = TRUE;
+        gMainMenuDataModified = TRUE;
+        sSaveTimeTick -= 1.0f;
+    }
 }
 
 void save_file_update_attempts() {

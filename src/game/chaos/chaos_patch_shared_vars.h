@@ -37,6 +37,12 @@
  
 #define CHS_TIME_LIMIT (3 * 60 * 30)
 
+/*******************
+ * Chaos Modifiers *
+ *******************/
+
+extern u8 inRandomPatchActivationFunc;
+
 /*********
  * Misc. *
  *********/

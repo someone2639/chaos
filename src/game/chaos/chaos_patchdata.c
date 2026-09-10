@@ -450,7 +450,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .chsMenuUpdateFunc  = chs_menuupdate_coin_flip,
 
         .name               = "One-Star Coin Flip",
-        .shortDescription   = "Flip a coin! If heads, gain a random unobtained star. If tails, enjoy some free disappointment on the house!",
+        .shortDescription   = "Flip a coin! If heads, gain a random unobtained star. But if tails, gain some random negative rank 1 patch!",
     },
     [CHAOS_PATCH_TOAD_STAR_RESTOCK] = {
         .durationType       = CHAOS_DURATION_ONCE,
@@ -843,7 +843,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 8,
         .durationImpossible = 10,
 
-        INCOMPATIBLE(CHAOS_PATCH_LOWER_TIME_LIMIT)
+        INCOMPATIBLE(CHAOS_PATCH_LOWER_TIME_LIMIT, CHAOS_PATCH_RANDOMIZE_WARPS)
 
         .name               = "Pay to Win",
         .shortDescription   = "Stars are only collectible when Mario has at least 30 coins.",
@@ -856,7 +856,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationHard       = 5,
         .durationImpossible = 6,
 
-        INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SHUFFLE_OBJECTS, CHAOS_PATCH_ENEMY_BLUE_COINS, CHAOS_PATCH_LOWER_TIME_LIMIT)
+        INCOMPATIBLE(CHAOS_PATCH_BUTTON_BROKEN_Z, CHAOS_PATCH_SHUFFLE_OBJECTS, CHAOS_PATCH_ENEMY_BLUE_COINS, CHAOS_PATCH_LOWER_TIME_LIMIT, CHAOS_PATCH_RANDOMIZE_WARPS)
         .levelInitFunc      = chs_lvlinit_collectors_anxiety,
 
         .name               = "Collector's Anxiety",
@@ -2862,8 +2862,9 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .duration           = 5,
         .durationHard       = 6,
         .durationImpossible = 8,
-        .disableForHardcore = TRUE, // Areas like JRB ship + star restriction like Pay to Win = guaranteed game over
+        .disableForHardcore = TRUE, // Potentially risky and unfair
 
+        INCOMPATIBLE(CHAOS_PATCH_PAY2WIN, CHAOS_PATCH_COLLECTORS_ANXIETY, CHAOS_PATCH_STAR_MEDALLION)
         .conditionalFunc    = chs_cond_randomize_warps,
 
         .name               = "Randomize Warps",
@@ -2938,7 +2939,7 @@ const struct ChaosPatch gChaosPatches[CHAOS_PATCH_COUNT] = {
         .durationImpossible = 10,
         .disableForHardcore = TRUE, // Too much unpredictability
 
-        INCOMPATIBLE(CHAOS_PATCH_GRAVITY_INCREASE, CHAOS_PATCH_WALKIES, CHAOS_PATCH_PUSH_BACK, CHAOS_PATCH_NO_Z_BUFFER, CHAOS_PATCH_INVERTED_Z_BUFFER, CHAOS_PATCH_LOWER_TIME_LIMIT)
+        INCOMPATIBLE(CHAOS_PATCH_GRAVITY_INCREASE, CHAOS_PATCH_WALKIES, CHAOS_PATCH_PUSH_BACK, CHAOS_PATCH_NO_Z_BUFFER, CHAOS_PATCH_INVERTED_Z_BUFFER, CHAOS_PATCH_LOWER_TIME_LIMIT, CHAOS_PATCH_RANDOMIZE_WARPS)
         .activatedInitFunc  = chs_act_star_medallion,
         .levelInitFunc      = chs_lvlinit_star_medallion,
         .areaInitFunc       = chs_area_init_star_medallion,
