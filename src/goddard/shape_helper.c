@@ -1187,7 +1187,8 @@ void animate_mario_head_gameover(struct ObjAnimator *self) {
     #define GAMEOVER_LOOP_END_FRAME (130.0f)
     #define GAMEOVER_LOOP_SPEED (2.0f)
 
-    if (gPlayer1Controller->buttonDown & (A_BUTTON | START_BUTTON)) {
+    if (gGoddardMarioSmile) {
+        gGoddardMarioSmile = FALSE;
         self->state = 3;
     }
 
