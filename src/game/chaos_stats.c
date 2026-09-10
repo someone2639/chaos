@@ -54,7 +54,9 @@ void draw_chaos_stats(Gfx **dl) {
 
     fasttext_setup_textrect_rendering(&dlHead, FT_FONT_VANILLA_SHADOW);
     if(sChaosStats.menuTimer > 15) {
-        fasttext_draw_texrect(&dlHead, (SCREEN_WIDTH - 16), (SCREEN_HEIGHT - 24), VERSION_STRING, FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+        if (!(gChaosPauseMenu->activePatchesMenu.flags & ACTIVE_PATCHES_MENU_ACTIVE)) {
+            fasttext_draw_texrect(&dlHead, (SCREEN_WIDTH - 16), (SCREEN_HEIGHT - 24), VERSION_STRING, FT_FLAG_ALIGN_RIGHT, 0xFF, 0xFF, 0xFF, 0xFF);
+        }
         fasttext_setup_textrect_rendering(&dlHead, FT_FONT_MEDIUM);
         fasttext_draw_texrect(&dlHead, (SCREEN_WIDTH / 4) + 4, 15, "FINAL SCORE", FT_FLAG_ALIGN_CENTER, 0xFF, 0xFF, 0xFF, 0xFF);
         
