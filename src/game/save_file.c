@@ -354,6 +354,7 @@ void save_file_load_all(void) {
 
     gMainMenuDataModified = FALSE;
     gSaveFileModified = FALSE;
+    sSaveTimeTick = 0.0f;
 
     bzero(&gSaveBuffer, sizeof(gSaveBuffer));
     read_eeprom_data(&gSaveBuffer, sizeof(gSaveBuffer));
