@@ -99,6 +99,7 @@ u16 sRenderingFramebuffer = 0;
 
 // Goddard Vblank Function Caller
 void (*gGoddardVblankCallback)(void) = NULL;
+u32 gGoddardMarioSmile = FALSE;
 
 // Defined controller slots
 struct Controller *gPlayer1Controller = &gControllers[0];

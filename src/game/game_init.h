@@ -57,6 +57,7 @@ extern s8 gSramProbe;
 #endif
 
 extern void (*gGoddardVblankCallback)(void);
+extern u32 gGoddardMarioSmile;
 extern struct Controller *gPlayer1Controller;
 extern struct Controller *gPlayer2Controller;
 extern struct Controller *gPlayer3Controller;

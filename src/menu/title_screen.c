@@ -213,6 +213,7 @@ s32 intro_regular(void) {
  */
 s32 intro_game_over(void) {
     s32 level = LEVEL_NONE;
+    gGoddardMarioSmile = FALSE;
 
 #ifndef VERSION_JP
     if (sPlayMarioGameOver == TRUE) {
@@ -232,6 +233,7 @@ s32 intro_game_over(void) {
         level = ((gDebugLevelSelect == TRUE) ? LEVEL_LEVEL_SELECT : LEVEL_FILE_SELECT);
 #ifndef VERSION_JP
         sPlayMarioGameOver = TRUE;
+        gGoddardMarioSmile = TRUE;
 #endif
     }
     // return run_level_id_or_demo(level); // Demos break stuff currently
