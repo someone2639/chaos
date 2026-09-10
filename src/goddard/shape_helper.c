@@ -1176,6 +1176,7 @@ struct ObjNet *make_netfromshape(struct ObjShape *shape) {
  * Controls the dizzy (game over) animation of Mario's head.
  */
 #include "game/game_init.h"
+#include "game/camera.h"
 float gameover_timer = 0;
 void animate_mario_head_gameover(struct ObjAnimator *self) {
     gameover_timer += M_PI / 64;
@@ -1210,10 +1211,7 @@ void animate_mario_head_gameover(struct ObjAnimator *self) {
                 + ((GAMEOVER_LOOP_END_FRAME + GAMEOVER_LOOP_START_FRAME) / 2.0f);
             break;
         case 3:
-            self->frame += 2.0f;
-            if (self->frame >= 163) {
-                self->frame = 163;
-            }
+            self->frame = approach_f32_asymptotic(self->frame, 164.0, 0.25f);
             break;
     }
 
