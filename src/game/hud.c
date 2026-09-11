@@ -701,10 +701,16 @@ void render_chaos_time_limit() {
         }
     }
 
+    s32 yPos = SCREEN_HEIGHT - 40;
+
+    if(chaos_check_if_patch_active(CHAOS_PATCH_MORE_HUD)) {
+        yPos -= 40;
+    }
+
     if(timeLeft >= 0) {
         sprintf(limitText, "Time: %d:%02d", mins, secs);
         fasttext_setup_textrect_rendering(&gDisplayListHead, FT_FONT_MEDIUM);
-        fasttext_draw_texrect(&gDisplayListHead, SCREEN_CENTER_X, SCREEN_HEIGHT - 40, limitText, FT_FLAG_ALIGN_CENTER, r, g, b, a);
+        fasttext_draw_texrect(&gDisplayListHead, SCREEN_CENTER_X, yPos, limitText, FT_FLAG_ALIGN_CENTER, r, g, b, a);
         fasttext_finished_rendering(&gDisplayListHead);
     }
 }
